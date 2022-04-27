@@ -105,7 +105,7 @@ public:
     Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
     Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
     Data<bool> unbuilt; ///< Compliance is not fully built
-    Data<bool> d_multithreading; ///< Compliances built concurrently
+    Data<bool> d_multithreading; ///< Build compliances concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
     Data<std::map < std::string, sofa::type::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
@@ -117,7 +117,7 @@ public:
     Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
     Data<double> currentError; ///< OUTPUT: current error
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
-    Data<type::vector< double >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
+    Data<type::vector< double >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
     sofa::core::MultiVecDerivId getLambda() const override;

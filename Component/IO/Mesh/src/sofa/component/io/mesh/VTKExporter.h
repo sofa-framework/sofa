@@ -55,7 +55,7 @@ protected:
 
 public:
     sofa::core::objectmodel::DataFileName vtkFilename;
-    Data<bool> fileFormat;	///< 0 for Simple Legacy Formats, 1 for XML File Format
+    Data<bool> fileFormat; ///< Set to true to use XML format
     Data<defaulttype::Vec3Types::VecCoord> position; ///< points position (will use points from topology or mechanical state if this is empty)
     Data<bool> writeEdges; ///< write edge topology
     Data<bool> writeTriangles; ///< write triangle topology

@@ -146,8 +146,8 @@ public:
 
 protected :
 
-    Data<bool> d_useSymbolicDecomposition ;
-    Data<bool> d_applyPermutation ;
+    Data<bool> d_useSymbolicDecomposition ; ///< If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step.
+    Data<bool> d_applyPermutation ; ///< If true the solver will apply a fill-reducing permutation to the matrix of the system.
 
     SparseLDLSolverImpl() : Inherit() 
     , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))

@@ -92,18 +92,18 @@ public:
 protected:
 
     TransformationMethod transformationMethod;
-    Data<Coord> f_origin; ///< origin used by projectOnPlane
-    Data<VecCoord> f_inputX; ///< input position
-    Data<VecCoord> f_outputX; ///< ouput position
-    Data<Coord> f_normal; ///< normal used by projectOnPlane
-    Data<Coord> f_translation; ///< translation
-    Data<Coord> f_rotation; ///< rotation
-    Data<Coord> f_scale; ///< scale
-    Data<Mat4x4> f_affineMatrix; ///< affine transformation
-    Data<sofa::helper::OptionsGroup> f_method; ///< the method of the transformation
-    Data<long> f_seed; ///< the seed for the random generator
-    Data<Real> f_maxRandomDisplacement; ///< the maximum displacement for the random generator
-    Data<SetIndex> f_fixedIndices; ///< the indices of the elements that are not transformed
+    Data<Coord> f_origin; ///< A 3d point on the plane/Center of the scale
+    Data<VecCoord> f_inputX; ///< input array of 3d points
+    Data<VecCoord> f_outputX; ///< output array of 3d points projected on a plane
+    Data<Coord> f_normal; ///< plane normal
+    Data<Coord> f_translation; ///< translation vector 
+    Data<Coord> f_rotation; ///< rotation vector 
+    Data<Coord> f_scale; ///< scale factor
+    Data<Mat4x4> f_affineMatrix; ///< 4x4 affine matrix
+    Data<sofa::helper::OptionsGroup> f_method; ///< transformation method either translation or scale or rotation or random or projectOnPlane
+    Data<long> f_seed; ///< the seed value for the random generator
+    Data<Real> f_maxRandomDisplacement; ///< the maximum displacement around initial position for the random transformation
+    Data<SetIndex> f_fixedIndices; ///< Indices of the entries that are not transformed
     core::objectmodel::DataFileName f_filename; ///< filename of an affine matrix. Supported extensions are: .trm, .tfm, .xfm and .txt(read as .xfm)
     Data<bool> f_drawInput; ///< Draw input points
     Data<bool> f_drawOutput; ///< Draw output points

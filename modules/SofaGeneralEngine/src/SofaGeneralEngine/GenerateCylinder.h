@@ -64,23 +64,23 @@ public:
     void doUpdate() override;
 
 public:
-    Data<VecCoord> f_outputTetrahedraPositions; ///< ouput tetrahedra position
-	Data<VecCoord> f_outputTrianglesPositions; ///< ouput triangle positions
-    Data<SeqTetrahedra> f_tetrahedra; ///< output tetrahedra
-	Data<SeqTriangles> f_triangles; ///< output triangles
-	Data<sofa::type::vector<Real> > f_bezierTriangleWeight; ///<  output weight for rational Bezier triangles
-	Data<sofa::type::vector<bool> > f_isBezierTriangleRational; ///<  for each Bezier triangle indicates if it is rational or integral
-    Data<size_t> f_bezierTriangleDegree; ///< degree of Bezier triangles
-	Data<sofa::type::vector<Real> > f_bezierTetrahedronWeight; ///<  output weight for rational Bezier triangles
-    Data<sofa::type::vector<bool> > f_isBezierTetrahedronRational; ///<  for each Bezier tetrahedron indicates if it is rational
-	Data<size_t> f_bezierTetrahedronDegree; ///< degree of Bezier tetrahedron
-    Data<Real > f_radius; ///< radius of cylinder 
-	Data<Real > f_height; ///< height of cylinder
-    Data<Coord> f_origin; ///< origin
-    Data<bool> f_openSurface; ///< if the triangulated surface is open or not
-    Data<size_t> f_resolutionCircumferential; ///< number of points in the circumferential direction
-    Data<size_t> f_resolutionRadial; ///< number of points in the radial  direction
-    Data<size_t> f_resolutionHeight; ///< number of points in the height direction
+    Data<VecCoord> f_outputTetrahedraPositions; ///< output array of 3d points of tetrahedra mesh
+	Data<VecCoord> f_outputTrianglesPositions; ///< output array of 3d points of triangle mesh
+    Data<SeqTetrahedra> f_tetrahedra; ///< output mesh tetrahedra
+	Data<SeqTriangles> f_triangles; ///< output triangular mesh
+	Data<sofa::type::vector<Real> > f_bezierTriangleWeight; ///< weights of rational Bezier triangles
+	Data<sofa::type::vector<bool> > f_isBezierTriangleRational; ///< booleans indicating if each Bezier triangle is rational or integral
+    Data<size_t> f_bezierTriangleDegree; ///< order of Bezier triangles
+	Data<sofa::type::vector<Real> > f_bezierTetrahedronWeight; ///< weights of rational Bezier tetrahedra
+    Data<sofa::type::vector<bool> > f_isBezierTetrahedronRational; ///< booleans indicating if each Bezier tetrahedron is rational or integral
+	Data<size_t> f_bezierTetrahedronDegree; ///< order of Bezier tetrahedra
+    Data<Real > f_radius; ///< input cylinder radius
+	Data<Real > f_height; ///< input cylinder height
+    Data<Coord> f_origin; ///< cylinder origin point
+    Data<bool> f_openSurface; ///< if the cylinder is open at its 2 ends
+    Data<size_t> f_resolutionCircumferential; ///< Resolution in the circumferential direction
+    Data<size_t> f_resolutionRadial; ///< Resolution in the radial direction
+    Data<size_t> f_resolutionHeight; ///< Resolution in the height direction
 };
 
 

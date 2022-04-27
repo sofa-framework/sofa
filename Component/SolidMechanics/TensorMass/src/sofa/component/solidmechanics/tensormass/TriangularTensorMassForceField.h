@@ -120,7 +120,7 @@ protected:
     bool updateMatrix;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
-    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> f_youngModulus; ///< Young's modulus in Hooke's law
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularTensorMassForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

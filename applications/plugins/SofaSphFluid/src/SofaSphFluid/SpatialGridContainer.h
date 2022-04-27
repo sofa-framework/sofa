@@ -319,7 +319,7 @@ public:
     using Index = sofa::Index;
 
     Grid* grid;
-    Data<Real> d_cellWidth; ///< Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered.
+    Data<Real> d_cellWidth; ///< Width each cell in the grid. If it is used to compute neighboors, it should be greater than the max radius considered.
     Data<bool> d_showGrid; ///< activate rendering of the grid
     Data<bool> d_autoUpdate; ///< Automatically update the grid at each iteration.
     Data<bool> d_sortPoints; ///< Sort points depending on which cell they are in the grid. This is required for efficient collision detection.

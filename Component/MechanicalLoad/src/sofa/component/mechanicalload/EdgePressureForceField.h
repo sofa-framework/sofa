@@ -83,12 +83,12 @@ protected:
     Data<Deriv> pressure; ///< Pressure force per unit area
     Data<type::vector<Index> > edgeIndices; ///< Indices of edges separated with commas where a pressure is applied
     Data<type::vector<sofa::core::topology::Edge> > edges; ///< List of edges where a pressure is applied
-    Data<Deriv> normal; ///< the normal used to define the edge subjected to the pressure force
-    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
-    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
-    Data< SReal > arrowSizeCoef; ///< for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data<Deriv> normal; ///< Normal direction for the plane selection of edges
+    Data<Real> dmin; ///< Minimum distance from the origin along the normal direction
+    Data<Real> dmax; ///< Maximum distance from the origin along the normal direction
+    Data< SReal > arrowSizeCoef; ///< Size of the drawn arrows (0->no arrows, sign->direction of drawing
     Data< type::vector<Real> > p_intensity; ///< pressure intensity on edge normal
-    Data<Coord> p_binormal; ///< binormal of the 2D plane
+    Data<Coord> p_binormal; ///< Binormal of the 2D plane
     Data<bool> p_showForces; ///< draw arrows of edge pressures
 
     /// Link to be set to the topology container in the component graph.

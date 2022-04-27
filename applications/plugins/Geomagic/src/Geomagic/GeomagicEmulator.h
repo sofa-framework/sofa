@@ -73,7 +73,7 @@ public:
 
 
 
-    Data <SReal> d_speedFactor; ///< factor to increase/decrease the movements speed    
+    Data <SReal> d_speedFactor; ///< factor to increase/decrease the movements speed
 
     void applyTranslation(sofa::type::Vec3 translation);
     void worldToLocal(sofa::type::Vec3& vector);

@@ -140,7 +140,7 @@ public:
 
 public:
     int method;
-    Data<std::string> f_method; ///< the computation method of the displacements
+    Data<std::string> f_method; ///< "small", "large" (by QR) or "polar" displacements
     Data<Real> _poissonRatio; ///< FEM Poisson Ratio
     Data<Real> _youngModulus; ///< FEM Young Modulus
     Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]

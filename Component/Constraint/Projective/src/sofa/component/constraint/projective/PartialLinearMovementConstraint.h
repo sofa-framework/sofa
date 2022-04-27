@@ -97,7 +97,7 @@ public :
     core::objectmodel::Data<unsigned> mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes 
     core::objectmodel::Data<unsigned> minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment 
     core::objectmodel::Data<unsigned> maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment 
-    core::objectmodel::Data<type::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
+    core::objectmodel::Data<type::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< The imposed displacment on macro nodes
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
     Data<Real> X0; ///< Size of specimen in X-direction
     Data<Real> Y0; ///< Size of specimen in Y-direction
@@ -105,7 +105,7 @@ public :
 
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::type::fixed_array<bool,NumDimensions> VecBool;
-    core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
+    core::objectmodel::Data<VecBool> movedDirections; ///< for each direction, 1 if moved, 0 if free
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PartialLinearMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

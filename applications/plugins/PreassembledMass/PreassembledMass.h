@@ -106,7 +106,7 @@ public:
 
 
 
-    Data<MassMatrix> d_massMatrix; ///< assembled mass matrix
+    Data<MassMatrix> d_massMatrix; ///< AssembledMassMatrix
 
 
 

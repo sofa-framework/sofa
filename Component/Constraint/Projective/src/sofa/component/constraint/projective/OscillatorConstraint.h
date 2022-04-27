@@ -81,7 +81,7 @@ protected:
         }
     };
 
-    Data< type::vector< Oscillator > > constraints; ///< constrained particles
+    Data< type::vector< Oscillator > > constraints; ///< Define a sequence of oscillating particules:  [index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]
 
 
 public:

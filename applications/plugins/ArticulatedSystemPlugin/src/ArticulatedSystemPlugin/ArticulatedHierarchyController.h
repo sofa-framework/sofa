@@ -108,10 +108,10 @@ public:
     virtual void applyController(void);
 
 protected:
-    Data<type::vector< int > > articulationsIndices; ///< Stores controlled articulations indices.
-    Data<type::vector< char > > bindingKeys; ///< Stores controlled articulations keyboard keys.
-    Data< double > angleDelta; ///< Angle step added at each event reception.
-    Data< bool > propagateUserInteraction; ///< Says wether or not to apportion the articulation modification to its children in the hierarchy.
+    Data<type::vector< int > > articulationsIndices; ///< Indices of articulations controlled by the keyboard
+    Data<type::vector< char > > bindingKeys; ///< Keys to press to control the articulations
+    Data< double > angleDelta; ///< Angle incrementation due to each user interaction
+    Data< bool > propagateUserInteraction; ///< Says wether or not the user interaction is local on the articulations, or must be propagated to children recursively
 
     type::vector< bool > activeArticulations; ///< Stores activated articulations information.
     std::map<int, type::vector< int > > articulationsPropagationChains;

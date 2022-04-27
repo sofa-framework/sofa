@@ -159,7 +159,7 @@ public:
 
     //TODO(dmarchal) guideline de sofa.
     Data< VecReal > radius; ///< Radius of each sphere
-    Data< SReal > defaultRadius; ///< Default Radius
+    Data< SReal > defaultRadius; ///< Default Radius. (default=1.0)
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 

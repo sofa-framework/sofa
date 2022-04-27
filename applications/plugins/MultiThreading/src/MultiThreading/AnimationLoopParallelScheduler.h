@@ -51,7 +51,7 @@ public:
 	typedef sofa::core::behavior::BaseAnimationLoop Inherit;
 	SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
-    Data<std::string> schedulerName; ///< scheduler name type
+    Data<std::string> schedulerName; ///< name of the scheduler to use
 
 	Data<unsigned int> threadNumber; ///< number of thread
 

@@ -81,7 +81,7 @@ public:
 
 protected :
 
-    Data<sofa::helper::OptionsGroup> d_typePermutation;
+    Data<sofa::helper::OptionsGroup> d_typePermutation; ///< Type of fill reducing permutation
 
     css* symbolic_LU(cs *A);
 

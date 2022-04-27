@@ -61,7 +61,7 @@ public:
 
     Data< type::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
     Data< std::string >                    d_ODESolverName; ///< name of the ode solver
-    Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
+    Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix
 
 protected:
     GenericConstraintCorrection();

@@ -86,9 +86,9 @@ public:
 
 //    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
 //    Data< type::vector< Real > > f_restLengths;		///< rest length of each link
-    Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< sofa::type::RGBAColor > d_color;         ///< drawing color
-    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data< Real >           d_showObjectScale; ///< Scale for object display
+    Data< sofa::type::RGBAColor > d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
+    Data< unsigned >       d_geometricStiffness; ///< 0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<SquareDistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

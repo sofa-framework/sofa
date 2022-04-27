@@ -82,9 +82,9 @@ protected:
 
 public:
     IndexSubsetData f_indices;  ///< the particles to project
-    Data<CPos> f_origin;       ///< A point in the plane
-    Data<CPos> f_normal;       ///< The normal to the plane. Will be normalized by init().
-    Data<SReal> f_drawSize;    ///< The size of the display of the constrained particles
+    Data<CPos> f_origin; ///< A point in the plane
+    Data<CPos> f_normal; ///< Normal vector to the plane
+    Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<ProjectToPlaneConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
