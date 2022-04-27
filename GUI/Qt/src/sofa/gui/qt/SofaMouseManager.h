@@ -48,7 +48,7 @@ public:
         return mapIndexOperation;
     }
 
-    void updateOperation( sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting);
+    void updateOperation( sofa::component::setting::MouseButtonSetting* setting);
     void updateOperation(common::MOUSE_BUTTON button, const std::string &id);
 
 

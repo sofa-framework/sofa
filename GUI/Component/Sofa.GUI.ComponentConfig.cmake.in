@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Component.UserInteraction.ConfigurationSetting QUIET REQUIRED)
+find_package(Sofa.Component.Setting QUIET REQUIRED)
 find_package(Sofa.Component.Visual QUIET REQUIRED)
 find_package(Sofa.Component.SolidMechanics.Spring QUIET REQUIRED)
 find_package(Sofa.Component.Constraint.Projective QUIET REQUIRED)

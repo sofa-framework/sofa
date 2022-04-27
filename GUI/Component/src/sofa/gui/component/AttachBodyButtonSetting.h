@@ -24,15 +24,15 @@
 #include <sofa/gui/component/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/setting/MouseButtonSetting.h>
 
 namespace sofa::gui::component
 {
 
-class SOFA_GUI_COMPONENT_API AttachBodyButtonSetting: public sofa::component::userinteraction::configurationsetting::MouseButtonSetting
+class SOFA_GUI_COMPONENT_API AttachBodyButtonSetting: public sofa::component::setting::MouseButtonSetting
 {
 public:
-    SOFA_CLASS(AttachBodyButtonSetting, sofa::component::userinteraction::configurationsetting::MouseButtonSetting);
+    SOFA_CLASS(AttachBodyButtonSetting, sofa::component::setting::MouseButtonSetting);
 protected:
     AttachBodyButtonSetting();
 public:

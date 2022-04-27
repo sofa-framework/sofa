@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/gui/component/config.h>
 
-#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/setting/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/fwd.h>
 
@@ -42,7 +42,7 @@ public:
     InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
     virtual ~InteractionPerformer() {}
 
-    virtual void configure(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* /*setting*/) {}
+    virtual void configure(sofa::component::setting::MouseButtonSetting* /*setting*/) {}
 
     virtual void start()=0;
     virtual void execute()=0;

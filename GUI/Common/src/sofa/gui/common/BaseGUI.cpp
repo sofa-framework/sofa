@@ -29,10 +29,9 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/component/setting/ViewerSetting.h>
 #include <sofa/component/setting/MouseButtonSetting.h>
-
-#include <SofaBaseVisual/BackgroundSetting.h>
-#include <SofaGraphComponent/StatsSetting.h>
-#include <SofaGraphComponent/SofaDefaultPathSetting.h>
+#include <sofa/component/setting/BackgroundSetting.h>
+#include <sofa/component/setting/StatsSetting.h>
+#include <sofa/component/setting/SofaDefaultPathSetting.h>
 
 #include <algorithm>
 #include <cstring>
@@ -67,7 +66,7 @@ BaseGUI::~BaseGUI()
 void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 {
 
-    sofa::component::configurationsetting::SofaDefaultPathSetting *defaultPath;
+    sofa::component::setting::SofaDefaultPathSetting *defaultPath;
     groot->get(defaultPath, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (defaultPath)
     {
@@ -82,7 +81,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 
 
     //Background
-    sofa::component::configurationsetting::BackgroundSetting *background;
+    sofa::component::setting::BackgroundSetting *background;
     groot->get(background, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (background)
     {
@@ -93,7 +92,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     }
 
     //Stats
-    sofa::component::configurationsetting::StatsSetting *stats;
+    sofa::component::setting::StatsSetting *stats;
     groot->get(stats, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (stats)
     {

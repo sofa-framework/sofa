@@ -40,7 +40,7 @@ public:
     GLBackend();
     virtual ~GLBackend();
 
-    void setPickingMethod(sofa::gui::common::PickHandler* pick, sofa::component::configurationsetting::ViewerSetting* viewerConf);
+    void setPickingMethod(sofa::gui::common::PickHandler* pick, sofa::component::setting::ViewerSetting* viewerConf);
     void setPrefix(const std::string& prefix);
     const std::string screenshotName();
     void screenshot(const std::string& filename, int compression_level = -1);

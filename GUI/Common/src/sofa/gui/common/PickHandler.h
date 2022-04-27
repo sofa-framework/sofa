@@ -108,7 +108,7 @@ public:
 
     Operation *getOperation(MOUSE_BUTTON button) {return operations[button];}
 
-    Operation *changeOperation(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting);
+    Operation *changeOperation(sofa::component::setting::MouseButtonSetting* setting);
     Operation *changeOperation(MOUSE_BUTTON button, const std::string &op);
 
     void addCallBack(CallBackPicker *c) {callbacks.push_back(c);}

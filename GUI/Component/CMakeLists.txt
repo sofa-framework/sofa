@@ -53,7 +53,7 @@ set(SOURCE_FILES
 )
 
 find_package(Sofa.SimulationCore REQUIRED)
-sofa_find_package(Sofa.Component.UserInteraction.ConfigurationSetting REQUIRED)
+sofa_find_package(Sofa.Component.Setting REQUIRED)
 sofa_find_package(Sofa.Component.Visual REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
@@ -66,7 +66,7 @@ sofa_find_package(Sofa.Component.Topology.Mapping REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.UserInteraction.ConfigurationSetting)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Setting)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Visual)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Projective)

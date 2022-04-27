@@ -107,7 +107,7 @@ void SofaMouseManager::selectOperation(int operation)
     else if (combo == gui->RightOperationCombo)  updateOperation(RIGHT,  operationName);
 }
 
-void SofaMouseManager::updateOperation(  sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting)
+void SofaMouseManager::updateOperation(  sofa::component::setting::MouseButtonSetting* setting)
 {
     //By changing the operation, we delete the previous operation
     Operation *operation=pickHandler->changeOperation( setting);

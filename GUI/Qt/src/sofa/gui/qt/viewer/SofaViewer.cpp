@@ -497,7 +497,7 @@ void SofaViewer::captureEvent()
 }
 
 
-void SofaViewer::configure(sofa::component::configurationsetting::ViewerSetting* viewerConf)
+void SofaViewer::configure(sofa::component::setting::ViewerSetting* viewerConf)
 {
     BaseViewer::configure(viewerConf);
 

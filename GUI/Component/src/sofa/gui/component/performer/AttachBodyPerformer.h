@@ -53,7 +53,7 @@ public:
     void setArrowSize(float s) {size=s;}
     void setShowFactorSize(float s) {showFactorSize = s;}
 
-    virtual void configure(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting)
+    virtual void configure(sofa::component::setting::MouseButtonSetting* setting)
     {
        auto* s = dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(setting);
         if (s)

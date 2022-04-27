@@ -6,7 +6,7 @@
 set(SOFA_GUI_COMMON_HAVE_SOFA_GL @SOFA_GUI_COMMON_HAVE_SOFA_GL@)
 
 find_package(SofaSimulationCommon REQUIRED)
-find_package(Sofa.Component.UserInteraction.ConfigurationSetting QUIET REQUIRED)
+find_package(Sofa.Component.Setting QUIET REQUIRED)
 find_package(Sofa.Component.Collision.Response.Contact QUIET REQUIRED)
 find_package(Sofa.GUI.Component QUIET REQUIRED)
 sofa_find_package(cxxopts QUIET REQUIRED)

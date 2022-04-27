@@ -23,8 +23,9 @@
 #include "QMouseOperations.h"
 #include "QDisplayDataWidget.h"
 #include "DataWidget.h"
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
-#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
+
+#include <sofa/gui/component/AttachBodyButtonSetting.h>
+#include <sofa/gui/component/AddRecordedCameraButtonSetting.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -85,9 +86,9 @@ QAttachOperation::QAttachOperation()
 }
 
 
-void QAttachOperation::configure(PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button)
+void QAttachOperation::configure(PickHandler *picker, sofa::component::setting::MouseButtonSetting* button)
 {
-    if (sofa::component::configurationsetting::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::component::configurationsetting::AttachBodyButtonSetting*>(button))
+    if (sofa::gui::component::AttachBodyButtonSetting* attachSetting=dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(button))
     {
         AttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
         setting->stiffness.copyValueFrom(&(attachSetting->stiffness));
@@ -106,9 +107,9 @@ void QAttachOperation::configure(PickHandler *picker, sofa::component::userinter
 QAddRecordedCameraOperation::QAddRecordedCameraOperation()
 {}
 
-void QAddRecordedCameraOperation::configure(PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button)
+void QAddRecordedCameraOperation::configure(PickHandler *picker, sofa::component::setting::MouseButtonSetting* button)
 {
-    if (/*sofa::component::configurationsetting::AddRecordedCameraButtonSetting* cameraSetting=*/dynamic_cast<sofa::component::configurationsetting::AddRecordedCameraButtonSetting*>(button))
+    if (dynamic_cast<sofa::gui::component::AddRecordedCameraButtonSetting*>(button))
     {
         AddRecordedCameraOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
     }
@@ -122,9 +123,9 @@ void QAddRecordedCameraOperation::configure(PickHandler *picker, sofa::component
 QStartNavigationOperation::QStartNavigationOperation()
 {}
 
-void QStartNavigationOperation::configure(PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button)
+void QStartNavigationOperation::configure(PickHandler *picker, sofa::component::setting::MouseButtonSetting* button)
 {
-    if (/*sofa::component::configurationsetting::StartNavigationButtonSetting* cameraSetting=*/dynamic_cast<sofa::component::configurationsetting::StartNavigationButtonSetting*>(button))
+    if (dynamic_cast<sofa::gui::component::StartNavigationButtonSetting*>(button))
     {
         StartNavigationOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
     }
@@ -146,9 +147,9 @@ QFixOperation::QFixOperation()
     layout->addWidget(stiffnessWidget);
 }
 
-void QFixOperation::configure(PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button)
+void QFixOperation::configure(PickHandler *picker, sofa::component::setting::MouseButtonSetting* button)
 {
-    if (sofa::gui::component::FixPickedParticleButtonSetting* fixSetting=dynamic_cast<sofa::gui::component::FixPickedParticleButtonSetting*>(button))
+    if (auto* fixSetting=dynamic_cast<sofa::gui::component::FixPickedParticleButtonSetting*>(button))
     {
         FixOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId() )) ;
         setting->stiffness.setValue(fixSetting->stiffness.getValue());

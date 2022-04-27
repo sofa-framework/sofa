@@ -55,7 +55,7 @@ class QAttachOperation : public QMouseOperation, public common::AttachOperation
     Q_OBJECT
 public:
     QAttachOperation();
-    void configure(common::PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::setting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *stiffnessWidget;
@@ -68,7 +68,7 @@ class QAddRecordedCameraOperation : public QMouseOperation, public common::AddRe
     Q_OBJECT
 public:
     QAddRecordedCameraOperation();
-    void configure(common::PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::setting::MouseButtonSetting* button) override;
 };
 
 class QStartNavigationOperation : public QMouseOperation, public common::StartNavigationOperation
@@ -76,7 +76,7 @@ class QStartNavigationOperation : public QMouseOperation, public common::StartNa
     Q_OBJECT
 public:
     QStartNavigationOperation();
-    void configure(common::PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::setting::MouseButtonSetting* button) override;
 };
 
 class QFixOperation : public QMouseOperation, public common::FixOperation
@@ -84,7 +84,7 @@ class QFixOperation : public QMouseOperation, public common::FixOperation
     Q_OBJECT
 public:
     QFixOperation();
-    void configure(common::PickHandler *picker, sofa::component::userinteraction::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::setting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *stiffnessWidget;

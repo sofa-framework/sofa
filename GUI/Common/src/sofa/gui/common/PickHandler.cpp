@@ -162,7 +162,7 @@ void PickHandler::unload()
 
 }
 
-Operation *PickHandler::changeOperation(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting)
+Operation *PickHandler::changeOperation(sofa::component::setting::MouseButtonSetting* setting)
 {
     if (operations[setting->button.getValue().getSelectedId()])
     {
