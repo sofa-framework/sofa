@@ -43,7 +43,6 @@ SparseCholeskySolver<TMatrix,TVector>::~SparseCholeskySolver()
 {
     if (S) cs_sfree (S);
     if (N) cs_nfree (N);
-    if (permuted_A) cs_free(permuted_A);
 }
 
 template<class TMatrix, class TVector>
