@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/roi/ComplementaryROI.h>
+#include <sofa/component/engine/select/ComplementaryROI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/roi/ComplementaryROI.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/ComplementaryROI.h")
 
 namespace sofa::component::engine
 {
     template<class DataTypes>
-    using ComplementaryROI = sofa::component::engine::roi::ComplementaryROI<DataTypes>;
+    using ComplementaryROI = sofa::component::engine::select::ComplementaryROI<DataTypes>;
 
 } // namespace sofa::component::engine

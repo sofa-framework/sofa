@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/data/Index2ValuesMapper.inl>
+#include <sofa/component/engine/transform/Index2ValuesMapper.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/data/Index2ValuesMapper.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/Index2ValuesMapper.inl")

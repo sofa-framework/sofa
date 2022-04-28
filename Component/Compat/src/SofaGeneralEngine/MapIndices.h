@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/data/MapIndices.h>
+#include <sofa/component/engine/transform/MapIndices.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/data/MapIndices.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/MapIndices.h")
 
 namespace sofa::component::engine
 {
     template<class DataTypes>
-    using MapIndices = sofa::component::engine::data::MapIndices<DataTypes>;
+    using MapIndices = sofa::component::engine::transform::MapIndices<DataTypes>;
 
 } // namespace sofa::component::engine

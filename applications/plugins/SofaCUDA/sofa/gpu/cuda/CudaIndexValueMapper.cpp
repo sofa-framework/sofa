@@ -21,11 +21,11 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralEngine/IndexValueMapper.inl>
+#include <sofa/component/engine/transform/IndexValueMapper.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine::data
+namespace sofa::component::engine::transform
 {
 
 template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3fTypes>;
@@ -35,17 +35,17 @@ template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa::component::engine::data
+} // namespace sofa::component::engine::transform
 
 namespace sofa::gpu::cuda
 {
 
 int IndexValueMapperClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::engine::data::IndexValueMapper<CudaVec3fTypes> >()
-        .add< component::engine::data::IndexValueMapper<CudaVec3f1Types> >()
+        .add<component::engine::transform::IndexValueMapper<CudaVec3fTypes> >()
+        .add<component::engine::transform::IndexValueMapper<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::engine::data::IndexValueMapper<CudaVec3dTypes> >()
-        .add< component::engine::data::IndexValueMapper<CudaVec3d1Types> >()
+        .add<component::engine::transform::IndexValueMapper<CudaVec3dTypes> >()
+        .add<component::engine::transform::IndexValueMapper<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

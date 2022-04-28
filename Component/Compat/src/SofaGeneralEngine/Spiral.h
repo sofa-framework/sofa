@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/Spiral.h>
+#include <sofa/component/engine/generate/Spiral.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/Spiral.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/Spiral.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using Spiral = sofa::component::engine::mesh::Spiral<DataTypes>;
+    using Spiral = sofa::component::engine::generate::Spiral<DataTypes>;
 
 } // namespace sofa::component::engine

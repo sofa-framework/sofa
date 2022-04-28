@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/math/MathOp.inl>
+#include <sofa/component/engine/transform/MathOp.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/math/MathOp.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/MathOp.inl")

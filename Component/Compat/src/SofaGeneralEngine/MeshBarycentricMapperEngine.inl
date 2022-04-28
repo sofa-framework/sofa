@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/MeshBarycentricMapperEngine.inl>
+#include <sofa/component/engine/generate/MeshBarycentricMapperEngine.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/MeshBarycentricMapperEngine.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MeshBarycentricMapperEngine.inl")

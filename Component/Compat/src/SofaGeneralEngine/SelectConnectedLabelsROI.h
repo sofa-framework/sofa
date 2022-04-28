@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/roi/SelectConnectedLabelsROI.h>
+#include <sofa/component/engine/select/SelectConnectedLabelsROI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/roi/SelectConnectedLabelsROI.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SelectConnectedLabelsROI.h")
 
 namespace sofa::component::engine
 {
     template <class _T>
-    using SelectConnectedLabelsROI = sofa::component::engine::roi::SelectConnectedLabelsROI<_T>;
+    using SelectConnectedLabelsROI = sofa::component::engine::select::SelectConnectedLabelsROI<_T>;
 
 } // namespace sofa::component::engine

@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/ExtrudeEdgesAndGenerateQuads.h>
+#include <sofa/component/engine/generate/ExtrudeEdgesAndGenerateQuads.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/ExtrudeEdgesAndGenerateQuads.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/ExtrudeEdgesAndGenerateQuads.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using ExtrudeEdgesAndGenerateQuads = sofa::component::engine::mesh::ExtrudeEdgesAndGenerateQuads<DataTypes>;
+    using ExtrudeEdgesAndGenerateQuads = sofa::component::engine::generate::ExtrudeEdgesAndGenerateQuads<DataTypes>;
 
 } // namespace sofa::component::engine

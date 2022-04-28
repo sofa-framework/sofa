@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/MergeMeshes.inl>
+#include <sofa/component/engine/generate/MergeMeshes.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/MergeMeshes.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MergeMeshes.inl")

@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/SmoothMeshEngine.h>
+#include <sofa/component/engine/transform/SmoothMeshEngine.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/SmoothMeshEngine.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/SmoothMeshEngine.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using SmoothMeshEngine = sofa::component::engine::mesh::SmoothMeshEngine<DataTypes>;
+    using SmoothMeshEngine = sofa::component::engine::transform::SmoothMeshEngine<DataTypes>;
 
 } // namespace sofa::component::engine

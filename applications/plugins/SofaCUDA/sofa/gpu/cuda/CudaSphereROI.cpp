@@ -21,11 +21,11 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralEngine/SphereROI.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/engine/select/SphereROI.inl>
 
-namespace sofa::component::engine::roi
+namespace sofa::component::engine::select
 {
 
 template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3fTypes>;
@@ -35,17 +35,17 @@ template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa::component::engine::roi
+} // namespace sofa::component::engine::select
 
 namespace sofa::gpu::cuda
 {
 
 int SphereROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::engine::roi::SphereROI<CudaVec3fTypes> >()
-        .add< component::engine::roi::SphereROI<CudaVec3f1Types> >()
+        .add< component::engine::select::SphereROI<CudaVec3fTypes> >()
+        .add< component::engine::select::SphereROI<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::engine::roi::SphereROI<CudaVec3dTypes> >()
-        .add< component::engine::roi::SphereROI<CudaVec3d1Types> >()
+        .add< component::engine::select::SphereROI<CudaVec3dTypes> >()
+        .add< component::engine::select::SphereROI<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/rigid/Vertex2Frame.inl>
+#include <sofa/component/engine/transform/Vertex2Frame.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/rigid/Vertex2Frame.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/Vertex2Frame.inl")

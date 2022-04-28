@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/GenerateCylinder.h>
+#include <sofa/component/engine/generate/GenerateCylinder.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/GenerateCylinder.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateCylinder.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using GenerateCylinder = sofa::component::engine::mesh::GenerateCylinder<DataTypes>;
+    using GenerateCylinder = sofa::component::engine::generate::GenerateCylinder<DataTypes>;
 
 } // namespace sofa::component::engine

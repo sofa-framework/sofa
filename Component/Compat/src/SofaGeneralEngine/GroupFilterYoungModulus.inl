@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/data/GroupFilterYoungModulus.inl>
+#include <sofa/component/engine/generate/GroupFilterYoungModulus.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/data/GroupFilterYoungModulus.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GroupFilterYoungModulus.inl")

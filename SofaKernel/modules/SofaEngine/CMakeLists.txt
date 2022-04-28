@@ -14,11 +14,11 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.ROI instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Select instead.")
 
 # forward to the new sofang module
-sofa_find_package(Sofa.Component.Engine.ROI REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.ROI)
+sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Select)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

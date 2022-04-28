@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/data/MergePoints.h>
+#include <sofa/component/engine/generate/MergePoints.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/data/MergePoints.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MergePoints.h")
 
 namespace sofa::component::engine
 {
     template<class DataTypes>
-    using MergePoints = sofa::component::engine::data::MergePoints<DataTypes>;
+    using MergePoints = sofa::component::engine::generate::MergePoints<DataTypes>;
 
 } // namespace sofa::component::engine

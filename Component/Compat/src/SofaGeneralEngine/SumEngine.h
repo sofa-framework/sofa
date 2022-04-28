@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/math/SumEngine.h>
+#include <sofa/component/engine/analyze/SumEngine.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/math/SumEngine.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/analyze/SumEngine.h")
 
 namespace sofa::component::engine
 {
     template< class TDataTypes >
-    using SumEngine = sofa::component::engine::math::SumEngine<TDataTypes>;
+    using SumEngine = sofa::component::engine::analyze::SumEngine<TDataTypes>;
 
 } // namespace sofa::component::engine

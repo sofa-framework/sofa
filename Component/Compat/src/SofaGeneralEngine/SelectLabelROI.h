@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/roi/SelectLabelROI.h>
+#include <sofa/component/engine/select/SelectLabelROI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/roi/SelectLabelROI.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SelectLabelROI.h")
 
 namespace sofa::component::engine
 {
     template <class _T>
-    using SelectLabelROI = sofa::component::engine::roi::SelectLabelROI<_T>;
+    using SelectLabelROI = sofa::component::engine::select::SelectLabelROI<_T>;
 
 } // namespace sofa::component::engine

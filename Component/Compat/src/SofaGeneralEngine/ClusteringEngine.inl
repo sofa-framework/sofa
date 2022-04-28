@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/geometry/ClusteringEngine.inl>
+#include <sofa/component/engine/analyze/ClusteringEngine.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/geometry/ClusteringEngine.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/analyze/ClusteringEngine.inl")

@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/MeshSplittingEngine.inl>
+#include <sofa/component/engine/select/MeshSplittingEngine.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/MeshSplittingEngine.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/MeshSplittingEngine.inl")

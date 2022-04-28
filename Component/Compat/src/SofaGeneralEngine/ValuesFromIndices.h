@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/data/ValuesFromIndices.h>
+#include <sofa/component/engine/select/ValuesFromIndices.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/data/ValuesFromIndices.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/ValuesFromIndices.h")
 
 namespace sofa::component::engine
 {
     template<class T>
-    using ValuesFromIndices = sofa::component::engine::data::ValuesFromIndices<T>;
+    using ValuesFromIndices = sofa::component::engine::select::ValuesFromIndices<T>;
 
 } // namespace sofa::component::engine

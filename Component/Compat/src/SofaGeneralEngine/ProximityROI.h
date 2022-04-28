@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/roi/ProximityROI.h>
+#include <sofa/component/engine/select/ProximityROI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/roi/ProximityROI.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/ProximityROI.h")
 
 namespace sofa::component::engine
 {
     template<class DataTypes>
-    using ProximityROI = sofa::component::engine::roi::ProximityROI<DataTypes>;
+    using ProximityROI = sofa::component::engine::select::ProximityROI<DataTypes>;
 
 } // namespace sofa::component::engine

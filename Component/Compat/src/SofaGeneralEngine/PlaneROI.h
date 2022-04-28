@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/roi/PlaneROI.h>
+#include <sofa/component/engine/select/PlaneROI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/roi/PlaneROI.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/PlaneROI.h")
 
 namespace sofa::component::engine
 {
     template<class DataTypes>
-    using PlaneROI = sofa::component::engine::roi::PlaneROI<DataTypes>;
+    using PlaneROI = sofa::component::engine::select::PlaneROI<DataTypes>;
 
 } // namespace sofa::component::engine

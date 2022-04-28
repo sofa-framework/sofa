@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/geometry/ShapeMatching.inl>
+#include <sofa/component/engine/analyze/ShapeMatching.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/geometry/ShapeMatching.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/analyze/ShapeMatching.inl")

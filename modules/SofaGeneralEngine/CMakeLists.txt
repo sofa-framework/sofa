@@ -16,25 +16,18 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Data, Sofa.Component.Engine.Geometry, 
-        Sofa.Component.Engine.Math, Sofa.Component.Engine.Mesh, Sofa.Component.Engine.Rigid, Sofa.Component.Engine.ROI and Sofa.Component.Engine.Transform instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Analyze, Sofa.Component.Engine.Generate, Sofa.Component.Engine.Select and Sofa.Component.Engine.Transform instead.")
 
 # forward to the new sofang module
-sofa_find_package(Sofa.Component.Engine.Data QUIET)
-sofa_find_package(Sofa.Component.Engine.Geometry QUIET)
-sofa_find_package(Sofa.Component.Engine.Math QUIET)
-sofa_find_package(Sofa.Component.Engine.Mesh QUIET)
-sofa_find_package(Sofa.Component.Engine.Rigid QUIET)
-sofa_find_package(Sofa.Component.Engine.ROI QUIET)
+sofa_find_package(Sofa.Component.Engine.Analyze QUIET)
+sofa_find_package(Sofa.Component.Engine.Generate QUIET)
+sofa_find_package(Sofa.Component.Engine.Select QUIET)
 sofa_find_package(Sofa.Component.Engine.Transform QUIET)
 sofa_find_package(Sofa.GL QUIET)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Data)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Geometry)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Math)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Mesh)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Rigid)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.ROI)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Analyze)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Generate)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Select)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Transform)
 
 

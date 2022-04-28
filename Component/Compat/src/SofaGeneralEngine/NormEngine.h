@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/geometry/NormEngine.h>
+#include <sofa/component/engine/generate/NormEngine.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/geometry/NormEngine.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/NormEngine.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using NormEngine = sofa::component::engine::geometry::NormEngine<DataTypes>;
+    using NormEngine = sofa::component::engine::generate::NormEngine<DataTypes>;
 
 } // namespace sofa::component::engine

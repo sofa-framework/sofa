@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralEngine/NearestPointROI.inl>
+#include <sofa/component/engine/select/NearestPointROI.inl>
 
-namespace sofa::component::engine::roi
+namespace sofa::component::engine::select
 {
 
 template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3fTypes>;
@@ -39,11 +39,11 @@ namespace sofa::gpu::cuda
 {
 
 int NearestPointROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::engine::roi::NearestPointROI<CudaVec3fTypes> >()
-        .add< component::engine::roi::NearestPointROI<CudaVec3f1Types> >()
+        .add< component::engine::select::NearestPointROI<CudaVec3fTypes> >()
+        .add< component::engine::select::NearestPointROI<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::engine::roi::NearestPointROI<CudaVec3dTypes> >()
-        .add< component::engine::roi::NearestPointROI<CudaVec3d1Types> >()
+        .add< component::engine::select::NearestPointROI<CudaVec3dTypes> >()
+        .add< component::engine::select::NearestPointROI<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

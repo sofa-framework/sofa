@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/rigid/GenerateRigidMass.inl>
+#include <sofa/component/engine/generate/GenerateRigidMass.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/rigid/GenerateRigidMass.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateRigidMass.inl")

@@ -3,7 +3,7 @@ project(Sofa.Component.Engine LANGUAGES CXX)
 
 set(SOFACOMPONENTENGINE_SOURCE_DIR "src/sofa/component/engine")
 
-set(SOFACOMPONENTENGINE_DIRS Data Geometry Math Mesh Rigid ROI Transform)
+set(SOFACOMPONENTENGINE_DIRS Analyze Generate Select Transform)
 set(SOFACOMPONENTENGINE_TARGETS)
 foreach(engine_dir ${SOFACOMPONENTENGINE_DIRS})
     sofang_add_component_subdirectory(${engine_dir} ${PROJECT_NAME}.${engine_dir})

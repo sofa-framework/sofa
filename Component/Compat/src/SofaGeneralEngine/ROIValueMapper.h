@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/data/ROIValueMapper.h>
+#include <sofa/component/engine/transform/ROIValueMapper.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/data/ROIValueMapper.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/ROIValueMapper.h")
 
 namespace sofa::component::engine
 {
-    using ROIValueMapper = sofa::component::engine::data::ROIValueMapper;
+    using ROIValueMapper = sofa::component::engine::transform::ROIValueMapper;
 
 } // namespace sofa::component::engine

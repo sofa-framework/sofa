@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/roi/MeshBoundaryROI.h>
+#include <sofa/component/engine/select/MeshBoundaryROI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/roi/MeshBoundaryROI.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/MeshBoundaryROI.h")
 
 namespace sofa::component::engine
 {
-    using MeshBoundaryROI = sofa::component::engine::roi::MeshBoundaryROI;
+    using MeshBoundaryROI = sofa::component::engine::select::MeshBoundaryROI;
 
 } // namespace sofa::component::engine

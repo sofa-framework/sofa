@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/MeshBarycentricMapperEngine.h>
+#include <sofa/component/engine/generate/MeshBarycentricMapperEngine.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/MeshBarycentricMapperEngine.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MeshBarycentricMapperEngine.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using MeshBarycentricMapperEngine = sofa::component::engine::mesh::MeshBarycentricMapperEngine<DataTypes>;
+    using MeshBarycentricMapperEngine = sofa::component::engine::generate::MeshBarycentricMapperEngine<DataTypes>;
 
 } // namespace sofa::component::engine

@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/roi/NearestPointROI.h>
+#include <sofa/component/engine/select/NearestPointROI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/roi/NearestPointROI.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/NearestPointROI.h")
 
 namespace sofa::component::engine
 {
     template<class DataTypes>
-    using NearestPointROI = sofa::component::engine::roi::NearestPointROI<DataTypes>;
+    using NearestPointROI = sofa::component::engine::select::NearestPointROI<DataTypes>;
 
 } // namespace sofa::component::engine

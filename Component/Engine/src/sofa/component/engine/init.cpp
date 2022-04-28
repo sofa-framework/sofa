@@ -21,12 +21,9 @@
 ******************************************************************************/
 #include <sofa/component/engine/config.h>
 
-#include <sofa/component/engine/data/init.h>
-#include <sofa/component/engine/geometry/init.h>
-#include <sofa/component/engine/math/init.h>
-#include <sofa/component/engine/mesh/init.h>
-#include <sofa/component/engine/rigid/init.h>
-#include <sofa/component/engine/roi/init.h>
+#include <sofa/component/engine/analyze/init.h>
+#include <sofa/component/engine/generate/init.h>
+#include <sofa/component/engine/select/init.h>
 #include <sofa/component/engine/transform/init.h>
 
 namespace sofa::component::engine
@@ -43,12 +40,9 @@ void initExternalModule()
     if (first)
     {        
         // force dependencies at compile-time
-        sofa::component::engine::data::init();
-        sofa::component::engine::geometry::init();
-        sofa::component::engine::math::init();
-        sofa::component::engine::mesh::init();
-        sofa::component::engine::rigid::init();
-        sofa::component::engine::roi::init();
+        sofa::component::engine::analyze::init();
+        sofa::component::engine::generate::init();
+        sofa::component::engine::select::init();
         sofa::component::engine::transform::init();
 
         first = false;

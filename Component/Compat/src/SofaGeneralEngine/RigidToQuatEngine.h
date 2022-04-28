@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/rigid/RigidToQuatEngine.h>
+#include <sofa/component/engine/transform/RigidToQuatEngine.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/rigid/RigidToQuatEngine.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/RigidToQuatEngine.h")
 
 namespace sofa::component::engine
 {
     template<class T>
-    using RigidToQuatEngine = sofa::component::engine::rigid::RigidToQuatEngine<T>;
+    using RigidToQuatEngine = sofa::component::engine::transform::RigidToQuatEngine<T>;
 
 } // namespace sofa::component::engine

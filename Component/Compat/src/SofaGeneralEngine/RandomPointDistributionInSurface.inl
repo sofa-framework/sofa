@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/geometry/RandomPointDistributionInSurface.inl>
+#include <sofa/component/engine/generate/RandomPointDistributionInSurface.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/geometry/RandomPointDistributionInSurface.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/RandomPointDistributionInSurface.inl")

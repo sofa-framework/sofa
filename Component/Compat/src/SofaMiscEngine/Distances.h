@@ -21,15 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/geometry/Distances.h>
+#include <sofa/component/engine/analyze/Distances.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/geometry/Distances.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/analyze/Distances.h")
 
 namespace sofa::component::engine
 {
     template < class DataTypes >
-    using ProjectiveTransformEngine = sofa::component::engine::geometry::Distances<DataTypes>;
-    
-{
+    using ProjectiveTransformEngine = sofa::component::engine::analyze::Distances<DataTypes>;   
 
 } // namespace sofa::component::engine

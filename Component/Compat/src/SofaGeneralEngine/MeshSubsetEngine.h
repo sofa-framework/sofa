@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/MeshSubsetEngine.h>
+#include <sofa/component/engine/select/MeshSubsetEngine.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/MeshSubsetEngine.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/MeshSubsetEngine.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using MeshSubsetEngine = sofa::component::engine::mesh::MeshSubsetEngine<DataTypes>;
+    using MeshSubsetEngine = sofa::component::engine::select::MeshSubsetEngine<DataTypes>;
 
 } // namespace sofa::component::engine

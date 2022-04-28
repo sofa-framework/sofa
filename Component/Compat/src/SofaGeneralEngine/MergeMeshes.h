@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/MergeMeshes.h>
+#include <sofa/component/engine/generate/MergeMeshes.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/MergeMeshes.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MergeMeshes.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using MergeMeshes = sofa::component::engine::mesh::MergeMeshes<DataTypes>;
+    using MergeMeshes = sofa::component::engine::generate::MergeMeshes<DataTypes>;
 
 } // namespace sofa::component::engine

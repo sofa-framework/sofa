@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/mesh/MeshClosingEngine.h>
+#include <sofa/component/engine/generate/MeshClosingEngine.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/mesh/MeshClosingEngine.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MeshClosingEngine.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using MeshClosingEngine = sofa::component::engine::mesh::MeshClosingEngine<DataTypes>;
+    using MeshClosingEngine = sofa::component::engine::generate::MeshClosingEngine<DataTypes>;
 
 } // namespace sofa::component::engine

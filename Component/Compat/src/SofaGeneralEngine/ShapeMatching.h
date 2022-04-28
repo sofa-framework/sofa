@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/geometry/ShapeMatching.h>
+#include <sofa/component/engine/analyze/ShapeMatching.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/geometry/ShapeMatching.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/analyze/ShapeMatching.h")
 
 namespace sofa::component::engine
 {
     template< class DataTypes >
-    using ShapeMatching = sofa::component::engine::geometry::ShapeMatching<DataTypes>;
+    using ShapeMatching = sofa::component::engine::analyze::ShapeMatching<DataTypes>;
 
 } // namespace sofa::component::engine

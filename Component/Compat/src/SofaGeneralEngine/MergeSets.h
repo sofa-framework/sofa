@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/engine/data/MergeSets.h>
+#include <sofa/component/engine/generate/MergeSets.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/data/MergeSets.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MergeSets.h")
 
 namespace sofa::component::engine
 {
     template<class VecT>
-    using MergeSets = sofa::component::engine::data::MergeSets<VecT>;
+    using MergeSets = sofa::component::engine::generate::MergeSets<VecT>;
 
 } // namespace sofa::component::engine
