@@ -139,6 +139,9 @@ void ParallelBVHNarrowPhase::createOutput(
 
 void ParallelBVHNarrowPhase::initializeTopology(sofa::core::topology::BaseMeshTopology* topology)
 {
+    if (!topology)
+        return;
+
     auto insertionIt = m_initializedTopology.insert(topology);
     if (insertionIt.second)
     {
@@ -146,9 +149,18 @@ void ParallelBVHNarrowPhase::initializeTopology(sofa::core::topology::BaseMeshTo
         // Those arrays cannot be created on the fly, in a concurrent environment,
         // due to possible race conditions.
         // Depending on the scene graph, it is possible that those calls are not enough.
-        topology->getTrianglesAroundVertex(0);
-        topology->getEdgesInTriangle(0);
-        topology->getTrianglesAroundEdge(0);
+        if (topology->getNbPoints())
+        {
+            topology->getTrianglesAroundVertex(0);
+        }
+        if (topology->getNbTriangles())
+        {
+            topology->getEdgesInTriangle(0);
+        }
+        if (topology->getNbEdges())
+        {
+            topology->getTrianglesAroundEdge(0);
+        }
     }
 }
 

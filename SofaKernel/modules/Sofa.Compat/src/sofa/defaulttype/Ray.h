@@ -21,12 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/Ray.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Ray.h")
-
-namespace sofa::defaulttype
-{
-    using Ray = sofa::type::Ray;
-
-} // namespace sofa::helper::types
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/Ray.h")

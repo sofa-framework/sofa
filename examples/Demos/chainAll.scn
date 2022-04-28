@@ -1,17 +1,25 @@
 <Node dt="0.01" name="root">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaLoader'/>
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <DefaultPipeline depth="6" draw="0" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection alarmDistance="0.3" contactDistance="0.2" name="Proximity" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
 
-    <MeshObjLoader name="loader_torus" filename="mesh/torus.obj" />
-    <MeshObjLoader name="loader_torus2" filename="mesh/torus2.obj" />
-    <MeshObjLoader name="loader_torus_for_collision" filename="mesh/torus_for_collision.obj" />
-    <MeshObjLoader name="loader_torus2_for_collision" filename="mesh/torus2_for_collision.obj" />
+    <MeshOBJLoader name="loader_torus" filename="mesh/torus.obj" />
+    <MeshOBJLoader name="loader_torus2" filename="mesh/torus2.obj" />
+    <MeshOBJLoader name="loader_torus_for_collision" filename="mesh/torus_for_collision.obj" />
+    <MeshOBJLoader name="loader_torus2_for_collision" filename="mesh/torus2_for_collision.obj" />
     <MeshGmshLoader name="loader_torus_low_res" filename="mesh/torus_low_res.msh" />
     <MeshGmshLoader name="loader_torus2_low_res" filename="mesh/torus2_low_res.msh" />
 

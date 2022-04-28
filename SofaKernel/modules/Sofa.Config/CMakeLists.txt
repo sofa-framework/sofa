@@ -56,11 +56,12 @@ endif()
 
 # Options
 option(SOFA_DETECTIONOUTPUT_FREEMOTION "Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
-option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
 option(SOFA_NO_UPDATE_BBOX "Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
 option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." OFF)
 if(MSVC)
-    option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
+    option(SOFA_VECTORIZE "(deprecated) Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
+    option(SOFA_ENABLE_SIMD "Enable the use of SIMD instructions by the compiler (AVX/AVX2 for msvc, march=native for gcc/clang)." OFF)
+    option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theorically faster but can bring unexpected results/bugs)." OFF)
 endif()
 ### Mask
 ### Removed since v21.12
@@ -194,6 +195,21 @@ if(WIN32)
         list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "/GL")
         list(APPEND SOFACONFIG_LINK_OPTIONS_RELEASE "/LTCG")
     endif()
+
+
+    # Experimental: compilation with MSVC/Clang-cl
+    if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+        if( ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT} STREQUAL MSVC) # something weird happens if we put the two test in one if ??
+            message(WARNING "Experimental: you are trying to compile with MSVC and the clang-cl toolchain; this is not officially supported.")
+            # remove lots of warnings (the Wall of "normal" clang seems different of Wall of clang-cl)
+            list(APPEND SOFACONFIG_COMPILE_OPTIONS -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-double-promotion -Wno-old-style-cast -Wno-reserved-id-macro -Wno-language-extension-token -Wno-dllexport-explicit-instantiation-decl -Wno-nonportable-system-include-path -Wno-zero-as-null-pointer-constant -Wno-documentation)
+            # optimization flags (not sure if necessary..)
+            list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE -march=native)
+            if(SOFA_ENABLE_FAST_MATH)
+                list(APPEND SOFACONFIG_COMPILE_OPTIONS "/fp:fast")
+            endif()
+        endif()
+    endif()
 endif()
 
 # Mac specific
@@ -238,8 +254,25 @@ if(MSVC)
     # Increase Number of Sections in .Obj file
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "/bigobj")
     if(SOFA_VECTORIZE)
-        # SSE2 flags
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS "/arch:SSE2;/fp:fast")
+        message("SOFA_VECTORIZE option is deprecated and has been split between SOFA_ENABLE_SIMD and SOFA_ENABLE_FAST_MATH. These 2 options will be enabled.")
+        set(SOFA_ENABLE_SIMD ON)
+        set(SOFA_ENABLE_FAST_MATH ON)
+    endif()
+    # SIMD flags
+    if(SOFA_ENABLE_SIMD)
+        include(find_avx)
+        MSVC_CHECK_FOR_AVX() # search for availability of AVX2 (otherwise set to AVX)
+        if (HAVE_AVX2_EXTENSIONS)
+            message("Your CPU supports AVX2 SIMD. Using flags: ${AVX_FLAGS}")
+        elseif(HAVE_AVX_EXTENSIONS)
+            message("Your CPU supports only AVX SIMD. Using flags: ${AVX_FLAGS}")
+        else()
+            message("Your CPU does not support AVX SIMD.") # SSE2 is the default when x64 is set
+        endif()
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "${AVX_FLAGS}")
+    endif()
+    if(SOFA_ENABLE_FAST_MATH)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "/fp:fast")
     endif()
 endif()
 
@@ -284,7 +317,7 @@ configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/lib/cmake/C
 install(FILES cmake/CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 
 # SofaMacros*.cmake
-set(macro_files SofaMacros.cmake SofaMacrosConfigure.cmake SofaMacrosInstall.cmake SofaMacrosPython.cmake SofaMacrosUtils.cmake)
+set(macro_files SofaMacros.cmake SofaMacrosConfigure.cmake SofaMacrosInstall.cmake SofaMacrosPython.cmake SofaMacrosUtils.cmake SofaNGMacros.cmake)
 foreach(macro_file ${macro_files})
     configure_file(cmake/${macro_file} ${CMAKE_BINARY_DIR}/lib/cmake/${macro_file} COPYONLY)
     install(FILES cmake/${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)

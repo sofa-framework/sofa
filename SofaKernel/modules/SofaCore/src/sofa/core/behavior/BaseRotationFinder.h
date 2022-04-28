@@ -19,31 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
-#define SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    virtual void getRotations(defaulttype::BaseMatrix * m, int offset = 0) = 0;
+    virtual void getRotations(linearalgebra::BaseMatrix * m, int offset = 0) = 0;
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+} // namespace sofa::core::behavior

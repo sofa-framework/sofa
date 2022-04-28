@@ -25,9 +25,9 @@
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
 
 #include <assert.h>
@@ -85,7 +85,7 @@ protected:
     class SparsePARDISOSolverInvertData : public MatrixInvertData
     {
     public :
-        CompressedRowSparseMatrix<double> Mfiltered;
+        linearalgebra::CompressedRowSparseMatrix<double> Mfiltered;
         SparsePARDISOSolver<Matrix,Vector>* solver;
         void*  pardiso_pt[64];
         int    pardiso_iparm[64];

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/MechanicalObject.inl>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;

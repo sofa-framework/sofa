@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaTriangleModel.h"
+#include <sofa/gpu/cuda/CudaLineModel.h>
 #include <SofaMeshCollision/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::collision::geometry
 {
-
-namespace component
-{
-
-namespace collision
-{
-
 template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 
@@ -41,27 +33,19 @@ template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3dTy
 template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace collision
+} // namespace sofa::component::collision::geometry
 
-} // namespace component
 
-namespace gpu
+namespace sofa::gpu::cuda
 {
 
-namespace cuda
-{
-
-int LineModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::LineCollisionModel<CudaVec3fTypes> >()
-        .add< component::collision::LineCollisionModel<CudaVec3f1Types> >()
+const int LineModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::LineCollisionModel<CudaVec3dTypes> >()
-        .add< component::collision::LineCollisionModel<CudaVec3d1Types> >()
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

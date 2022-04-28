@@ -22,7 +22,6 @@
 #include <SofaUserInteraction/InciseAlongPathPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 #include <sofa/helper/Factory.inl>
 
@@ -160,21 +159,22 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     // Get new coordinate of first incision point:
     sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
-    const sofa::type::Vector3& the_point = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[initialNbPoints];
+    const auto& positions = MechanicalObject->read(core::ConstVecCoordId::position())->getValue();
+    const sofa::type::Vector3& the_point = positions[initialNbPoints];
 
     // Get triangle index that will be incise
     // - Creating direction of incision
     sofa::type::Vector3 dir = startBody.point - the_point;
     // - looking for triangle in this direction
-    sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeometry;
-    startBody.body->getContext()->get(triangleGeometry);
-    int the_triangle = triangleGeometry->getTriangleInDirection(initialNbPoints, dir);
+    const auto& shell = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
+    auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
 
-    if (the_triangle == -1)
+    if (triangleIDInShell == sofa::InvalidID)
     {
         msg_error("InciseAlongPathPerformer") << " initial triangle of incision has not been found." ;
         return;
     }
+    auto the_triangle = shell[triangleIDInShell];
 
     sofa::core::topology::TopologyModifier* topologyModifier;
     startBody.body->getContext()->get(topologyModifier);
@@ -221,20 +221,20 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
     if (!topoGeo)
         return;
 
-    sofa::component::topology::TriangleSetTopologyContainer* topoCon;
+    sofa::core::topology::BaseMeshTopology* topoCon;
     firstBody.body->getContext()->get(topoCon);
 
-    if (!topoCon)
+    if (!topoCon || topoCon->getTriangles().empty())
         return;
 
     // Output declarations
     sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
     sofa::type::vector<Index> indices_list;
-    sofa::type::vector< sofa::type::Vec<3, double> > coords2_list;
-    sofa::type::Vec<3,double> pointA = firstBody.point;
-    sofa::type::Vec<3,double> pointB = currentBody.point;
+    sofa::type::vector< sofa::type::Vec3 > coords2_list;
+    sofa::type::Vec3 pointA = firstBody.point;
+    sofa::type::Vec3 pointB = currentBody.point;
 
-    sofa::type::vector< sofa::type::Vec<3, double> > positions;
+    sofa::type::vector< sofa::type::Vec3 > positions;
     bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
 
     if (!path_ok)
@@ -254,7 +254,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
         else if (topoPath_list[i] == sofa::core::topology::TopologyElementType::EDGE)
         {
             sofa::core::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
-            const sofa::type::Vec<3, double> AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
+            const auto AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
             positions[i] = topoGeo->getPointPosition(theEdge[0]) + AB *coords2_list[i][0];
         }
         else if(topoPath_list[i] == sofa::core::topology::TopologyElementType::TRIANGLE)
@@ -272,7 +272,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
+    constexpr sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
     std::vector<sofa::type::Vector3> vertices;
     for (unsigned int i = 1; i<positions.size(); ++i)
     {

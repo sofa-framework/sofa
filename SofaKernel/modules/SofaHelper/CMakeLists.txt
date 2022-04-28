@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.Helper)
 
-# DEPENDENCIES
-# sofa_find_package(Sofa.Type REQUIRED)
-
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
-sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
+sofa_find_package(Json 3.1.2 REQUIRED)
+# STB (header only)
+sofa_find_package(STB REQUIRED)
+
 
 set(SRC_ROOT "src/sofa/helper")
 
@@ -31,6 +31,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MatEigen.h
     ${SRC_ROOT}/MemoryManager.h
     ${SRC_ROOT}/NameDecoder.h
+    ${SRC_ROOT}/narrow_cast.h
     ${SRC_ROOT}/OptionsGroup.h
     ${SRC_ROOT}/OwnershipSPtr.h
     ${SRC_ROOT}/Polynomial_LD.h
@@ -41,6 +42,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
+    ${SRC_ROOT}/TriangleOctree.h
     ${SRC_ROOT}/Utils.h
     ${SRC_ROOT}/accessor.h
     ${SRC_ROOT}/decompose.h
@@ -61,6 +63,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/io/MeshGmsh.h
     ${SRC_ROOT}/io/MeshTopologyLoader.h
     ${SRC_ROOT}/io/SphereLoader.h
+    ${SRC_ROOT}/io/STBImage.h
     ${SRC_ROOT}/io/TriangleLoader.h
     ${SRC_ROOT}/kdTree.h
     ${SRC_ROOT}/kdTree.inl
@@ -128,6 +131,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
+    ${SRC_ROOT}/TriangleOctree.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
@@ -143,6 +147,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/MeshGmsh.cpp
     ${SRC_ROOT}/io/MeshTopologyLoader.cpp
     ${SRC_ROOT}/io/SphereLoader.cpp
+    ${SRC_ROOT}/io/STBImage.cpp
     ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
     ${SRC_ROOT}/kdTree.cpp
@@ -227,9 +232,11 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Json (header only) needed by AdvancedTimer
-if(JSON_FOUND)
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
-endif()
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
+
+# STB (header only) for Image
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${STB_INCLUDE_DIR}>")
+
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

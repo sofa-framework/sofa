@@ -137,7 +137,6 @@ public:
         return sortedFind(v, Range(0,(Index)v.size()), val, result);
     }
 
-public :
     // size
     Index nRow,nCol;         ///< Mathematical size of the matrix, in scalars
     Index nBlockRow,nBlockCol; ///< Mathematical size of the matrix, in blocks.
@@ -157,7 +156,7 @@ public :
     VecIndex oldRowBegin;
     VecIndex oldColsIndex;
     VecBlock  oldColsValue;
-public:
+
     CompressedRowSparseMatrix()
         : nRow(0), nCol(0), nBlockRow(0), nBlockCol(0), compressed(true)
     {
@@ -1220,7 +1219,7 @@ protected:
     template<class Vec> static Real vget(const Vec& vec, Index i, Index j, Index k) { return vget( vec, i*j+k ); }
     template<class Vec> static Real vget(const type::vector<Vec>&vec, Index i, Index /*j*/, Index k) { return vec[i][k]; }
 
-                          static Real  vget(const linearalgebra::BaseVector& vec, Index i) { return vec.element(i); }
+                          static auto  vget(const linearalgebra::BaseVector& vec, Index i) { return vec.element(i); }
     template<class Real2> static Real2 vget(const FullVector<Real2>& vec, Index i) { return vec[i]; }
 
 
@@ -1418,16 +1417,16 @@ public:
 
         if( m.rowIndex.empty() ) return; // if m is null
 
-        for( Index xi = 0; xi < (Index)rowIndex.size(); ++xi )  // for each non-null block row
+        for( std::size_t xi = 0; xi < rowIndex.size(); ++xi )  // for each non-null block row
         {
-            unsigned mr = 0; // block row index in m
+            std::size_t mr = 0; // block row index in m
 
             Index row = rowIndex[xi];      // block row
 
             Range rowRange( rowBegin[xi], rowBegin[xi+1] );
             for( Index xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )  // for each non-null block
             {
-                Index col = colsIndex[xj];     // block column
+                auto col = colsIndex[xj];     // block column
                 const Block& b = colsValue[xj]; // block value
 
                 // find the non-null row in m, if any
@@ -1734,7 +1733,7 @@ public:
         return name.c_str();
     }
 
-    bool check_matrix()
+    bool check_matrix() const
     {
         return check_matrix(
                 this->getColsValue().size(),
@@ -1747,7 +1746,7 @@ public:
     }
 
     static bool check_matrix(
-        Index nzmax,// nb values
+        std::size_t nzmax,// nb values
         Index m,// number of row
         Index n,// number of columns
         Index * a_p,// column pointers (size n+1) or col indices (size nzmax)
@@ -1770,11 +1769,7 @@ public:
                 return false;
             }
         }
-        if (nzmax == -1)
-        {
-            nzmax = a_p[m];
-        }
-        else if (a_p[m]!=nzmax)
+        if (a_p[m] != nzmax)
         {
             msg_error("CompressedRowSparseMatrix") << "Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] ;
             return false;
@@ -1782,7 +1777,7 @@ public:
 
 
         Index k=1;
-        for (Index i=0; i<nzmax; i++)
+        for (decltype(nzmax) i=0; i<nzmax; i++)
         {
             i++;
             for (; i<a_p[k]; i++)

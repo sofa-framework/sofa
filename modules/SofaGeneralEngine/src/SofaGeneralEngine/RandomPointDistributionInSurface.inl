@@ -45,6 +45,10 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
     , f_outPoints( initData (&f_outPoints, "outPoints", "Points outside the surface") )
     , safeCounter(0), safeLimit(UINT_MAX)
 {
+    addInput(&f_triangles);
+    addInput(&f_vertices);
+
+    addOutput(&f_inPoints);
 }
 
 template <class DataTypes>
@@ -69,11 +73,6 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     generateRandomDirections();
 
     safeLimit = numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue();
-
-    addInput(&f_triangles);
-    addInput(&f_vertices);
-
-    addOutput(&f_inPoints);
 
     setDirtyValue();
 }
@@ -154,7 +153,7 @@ bool RandomPointDistributionInSurface<DataTypes>::isInside(Coord p)
     const type::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
     unsigned int numberOfInsideTest=0;
-    collision::TriangleOctree::traceResult result;
+    helper::TriangleOctree::traceResult result;
 
     for (unsigned int i=0 ; i<numberOfTests.getValue() ; i++)
     {
@@ -208,7 +207,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
     outPoints->clear();
 
 
-    type::vector<type::Vector3> verticesD;
+    type::vector<type::Vec3> verticesD;
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 

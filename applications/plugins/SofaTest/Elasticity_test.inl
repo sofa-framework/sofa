@@ -65,8 +65,8 @@ typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
 typedef component::mapping::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
-typedef component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> UniformMassRigid3;
-typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
+typedef component::mass::UniformMass<defaulttype::Rigid3Types> UniformMassRigid3;
+typedef component::mass::UniformMass<defaulttype::Vec3Types> UniformMass3;
 typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Rigid3Types> FixedConstraintRigid3;
 typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
 
@@ -88,7 +88,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     PatchTestStruct<DataTypes> patchStruct;
     typedef typename DataTypes::Real Real;
     typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename sofa::component::mass::UniformMass <DataTypes, Real> UniformMass;
+    typedef typename sofa::component::mass::UniformMass <DataTypes> UniformMass;
     typedef component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
     typedef typename sofa::component::engine::PairBoxROI<DataTypes> PairBoxRoi;
@@ -198,7 +198,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
     tractionStruct.dofs=meca1;
     // MeshMatrixMass
-    typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes,Real> >(root,"BezierMass");
+    typename sofa::component::mass::MeshMatrixMass<DataTypes>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes> >(root,"BezierMass");
     sofa::type::vector< Real > massDensity;
     massDensity.clear();
     massDensity.resize(1);

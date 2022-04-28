@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
-#define SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
+#pragma once
 
 
 #include <sofa/core/config.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
-namespace sofa
-{
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseObject
@@ -81,7 +75,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) {
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) {
         getConstraintViolation(cParams,v,m_cId);
     }
 
@@ -90,8 +84,8 @@ public:
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cIndex is the index of the next constraint equation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, defaulttype::BaseVector * /*v*/, unsigned int /*cIndex*/) {
-        dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
+    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, linearalgebra::BaseVector * /*v*/, unsigned int /*cIndex*/) {
+        dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
     }
 
 protected:
@@ -106,10 +100,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

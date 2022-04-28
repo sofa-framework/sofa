@@ -80,10 +80,8 @@ protected:
 
     void changeInstanceNP(Instance inst) override;
 
-protected:
     std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
 
-protected:
     DetectionOutputMap m_outputsMap;
 
     size_t m_primitiveTestCount; // used only for statistics purpose

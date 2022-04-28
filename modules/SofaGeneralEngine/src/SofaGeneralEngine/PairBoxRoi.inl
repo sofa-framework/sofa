@@ -46,6 +46,10 @@ PairBoxROI<DataTypes>::PairBoxROI()
     addAlias(&f_pointsInROI,"pointsInBox");
     addAlias(&f_X0,"rest_position");
 
+    addInput(&f_X0);
+
+    addOutput(&f_indices);
+    addOutput(&f_pointsInROI);
 }
 
 template <class DataTypes>
@@ -91,11 +95,6 @@ void PairBoxROI<DataTypes>::init()
             }
         }
     }
-
-    addInput(&f_X0);
-
-    addOutput(&f_indices);
-    addOutput(&f_pointsInROI);
 
     setDirtyValue();
 
@@ -183,7 +182,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
-    sofa::type::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
+    constexpr sofa::type::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
 
     vparams->drawTool()->saveLastState();
     /// Draw inclusive box

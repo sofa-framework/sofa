@@ -45,7 +45,6 @@ namespace helper
 /// based on random functions from OpenBSD
 class SOFA_HELPER_API RandomGenerator
 {
-private:
 
     unsigned short __rand48_seed[3];
     unsigned short __rand48_mult[3];
@@ -92,7 +91,7 @@ public:
     }
 
 private:
-	static const unsigned long RANDOM_BASE_MAX;
+	static constexpr unsigned long RANDOM_BASE_MAX = 4294967295U;
 
 };
 

@@ -211,8 +211,9 @@ void RotationMatrix<Real>::rotateMatrix(linearalgebra::BaseMatrix * mat,const li
         mat->resize(Jmat->rowSize(),Jmat->colSize());
     }
 
-    if (const SparseMatrix<float> * J = dynamic_cast<const SparseMatrix<float> * >(Jmat)) {
-        for (typename sofa::linearalgebra::SparseMatrix<float>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+    if (const auto* Jf = dynamic_cast<const SparseMatrix<float> * >(Jmat))
+    {
+        for (typename sofa::linearalgebra::SparseMatrix<float>::LineConstIterator jit1 = Jf->begin(), jend = Jf->end() ; jit1 != jend; jit1++)
         {
             sofa::SignedIndex l = jit1->first;
             for (typename sofa::linearalgebra::SparseMatrix<float>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
@@ -226,8 +227,10 @@ void RotationMatrix<Real>::rotateMatrix(linearalgebra::BaseMatrix * mat,const li
                 mat->set(l,c+2,v0 * data[(c+0)*3+2] + v1 * data[(c+1)*3+2] + v2 * data[(c+2)*3+2] );
             }
         }
-    } else if (const SparseMatrix<double> * J = dynamic_cast<const SparseMatrix<double> * >(Jmat)) {
-        for (typename sofa::linearalgebra::SparseMatrix<double>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+    }
+    else if (const auto* Jd = dynamic_cast<const SparseMatrix<double> * >(Jmat))
+    {
+        for (typename sofa::linearalgebra::SparseMatrix<double>::LineConstIterator jit1 = Jd->begin(), jend = Jd->end() ; jit1 != jend; jit1++)
         {
             sofa::SignedIndex l = jit1->first;
             for (typename sofa::linearalgebra::SparseMatrix<double>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
@@ -241,7 +244,9 @@ void RotationMatrix<Real>::rotateMatrix(linearalgebra::BaseMatrix * mat,const li
                 mat->set(l,c+2,v0 * data[(c+0)*3+2] + v1 * data[(c+1)*3+2] + v2 * data[(c+2)*3+2] );
             }
         }
-    } else {
+    }
+    else
+    {
         dmsg_warning("RotationMatrix") << "rotateMatrix for this kind of matrix is not implemented" ;
     }
 }

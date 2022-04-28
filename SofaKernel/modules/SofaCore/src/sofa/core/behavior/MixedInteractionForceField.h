@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
+#include <sofa/core/behavior/PairStateAccessor.h>
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -42,10 +37,10 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class MixedInteractionForceField : public BaseInteractionForceField
+class MixedInteractionForceField : public BaseInteractionForceField, public PairStateAccessor<TDataTypes1, TDataTypes2>
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(MixedInteractionForceField,TDataTypes1,TDataTypes2), BaseInteractionForceField);
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE2(MixedInteractionForceField,TDataTypes1,TDataTypes2), BaseInteractionForceField, SOFA_TEMPLATE2(PairStateAccessor,TDataTypes1, TDataTypes2));
 
     typedef TDataTypes1 DataTypes1;
     typedef typename DataTypes1::VecCoord VecCoord1;
@@ -53,6 +48,7 @@ public:
     typedef typename DataTypes1::Coord    Coord1;
     typedef typename DataTypes1::Deriv    Deriv1;
     typedef typename DataTypes1::Real     Real1;
+
     typedef TDataTypes2 DataTypes2;
     typedef typename DataTypes2::VecCoord VecCoord2;
     typedef typename DataTypes2::VecDeriv VecDeriv2;
@@ -60,23 +56,16 @@ public:
     typedef typename DataTypes2::Deriv    Deriv2;
     typedef typename DataTypes2::Real     Real2;
 
-    typedef core::objectmodel::Data<VecCoord1>    DataVecCoord1;
-    typedef core::objectmodel::Data<VecDeriv1>    DataVecDeriv1;
-    typedef core::objectmodel::Data<VecCoord2>    DataVecCoord2;
-    typedef core::objectmodel::Data<VecDeriv2>    DataVecDeriv2;
+    typedef core::objectmodel::Data<VecCoord1> DataVecCoord1;
+    typedef core::objectmodel::Data<VecDeriv1> DataVecDeriv1;
+    typedef core::objectmodel::Data<VecCoord2> DataVecCoord2;
+    typedef core::objectmodel::Data<VecDeriv2> DataVecDeriv2;
+
 protected:
-    MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
+    explicit MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
 
     ~MixedInteractionForceField() override;
 public:
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes1>* getMState1() { return mstate1.get(); }
-    BaseMechanicalState* getMechModel1() override { return mstate1.get(); }
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes2>* getMState2() { return mstate2.get(); }
-    BaseMechanicalState* getMechModel2() override { return mstate2.get(); }
 
     /// @name Vector operations
     /// @{
@@ -182,10 +171,8 @@ public:
         return name;
     }
 
-protected:
-    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-
+    using Inherit2::getMechModel1;
+    using Inherit2::getMechModel2;
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)
@@ -204,10 +191,4 @@ extern template class SOFA_CORE_API MixedInteractionForceField<defaulttype::Rigi
 
 
 #endif
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaMiscSolver/initSofaMiscSolver.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,11 @@ void initSofaMiscSolver()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaMiscSolver") << "SofaMiscSolver is deprecated. It will be removed at v23.06. Use Sofa.Component.ODESolver.Forward and/or Sofa.Component.ODESolver.Backward instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.ODESolver.Forward");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.ODESolver.Backward");
+
         first = false;
     }
 }

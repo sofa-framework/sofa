@@ -25,7 +25,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QChart>

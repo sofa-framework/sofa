@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MULTIVEC_H
-#define SOFA_CORE_BEHAVIOR_MULTIVEC_H
+#pragma once
 
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/BaseVectorOperations.h>
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /// Helper class providing a high-level view of underlying state vectors.
@@ -71,10 +64,10 @@ public:
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    TMultiVec( BaseVectorOperations* vop, bool dynamic=true) : vop(vop), v(MyMultiVecId::null()), dynamic(dynamic)
+    TMultiVec( BaseVectorOperations* vop, bool dynamic=true, const VecIdProperties& properties = {}) : vop(vop), v(MyMultiVecId::null()), dynamic(dynamic)
     {
         static_assert(vtype == V_COORD || vtype == V_DERIV, "");
-        vop->v_alloc( v );
+        vop->v_alloc( v, properties);
     }
 
 
@@ -97,10 +90,10 @@ public:
 
     /// allocates vector for every newly appeared mechanical states (initializing them to 0 and does not modify already allocated mechanical states)
     /// \param interactionForceField set to true, also allocate external mechanical states linked by an InteractionForceField (TODO remove this option by seeing external mmstates as abstract null vectors)
-    void realloc( BaseVectorOperations* _vop, bool interactionForceField=false, bool propagate=false )
+    void realloc( BaseVectorOperations* _vop, bool interactionForceField=false, bool propagate=false, const VecIdProperties& properties = {} )
     {
         vop = _vop;
-        vop->v_realloc(v, interactionForceField, propagate);
+        vop->v_realloc(v, interactionForceField, propagate, properties);
     }
 
     /// v = 0
@@ -229,11 +222,6 @@ typedef TMultiVec<V_MATDERIV> MultiVecMatrixDeriv;
 
 
 
-} // namespace behavior
+} // namespace sofa::core::behavior
 
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_MULTIVEC_H
 

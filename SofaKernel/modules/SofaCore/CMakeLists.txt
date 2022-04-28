@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionElement.h
     ${SRC_ROOT}/CollisionModel.h
     ${SRC_ROOT}/ComponentLibrary.h
+    ${SRC_ROOT}/ComponentNameHelper.h
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
     ${SRC_ROOT}/DataTracker.h
@@ -51,12 +52,14 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
+    ${SRC_ROOT}/behavior/BlocMatrixWriter.h
     ${SRC_ROOT}/behavior/Constraint.h
     ${SRC_ROOT}/behavior/Constraint.inl
     ${SRC_ROOT}/behavior/ConstraintCorrection.h
     ${SRC_ROOT}/behavior/ConstraintCorrection.inl
     ${SRC_ROOT}/behavior/ConstraintResolution.h
     ${SRC_ROOT}/behavior/ConstraintSolver.h
+    ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
@@ -79,10 +82,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/PairInteractionForceField.inl
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.inl
+    ${SRC_ROOT}/behavior/PairStateAccessor.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationFinder.h
-    ${SRC_ROOT}/behavior/RotationMatrix.h
+    ${SRC_ROOT}/behavior/StateAccessor.h
+    ${SRC_ROOT}/behavior/SingleMatrixAccessor.h
+    ${SRC_ROOT}/behavior/SingleStateAccessor.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h
@@ -136,6 +142,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/MouseEvent.h
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
+    ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
     ${SRC_ROOT}/objectmodel/Tag.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h
@@ -151,8 +158,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologyData.inl
     ${SRC_ROOT}/topology/TopologyDataHandler.h
     ${SRC_ROOT}/topology/TopologyDataHandler.inl
-    ${SRC_ROOT}/topology/TopologySparseData.h
-    ${SRC_ROOT}/topology/TopologySparseData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.h
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
@@ -172,6 +177,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CategoryLibrary.cpp
     ${SRC_ROOT}/CollisionModel.cpp
     ${SRC_ROOT}/ComponentLibrary.cpp
+    ${SRC_ROOT}/ComponentNameHelper.cpp
     ${SRC_ROOT}/ConstraintParams.cpp
     ${SRC_ROOT}/DataEngine.cpp
     ${SRC_ROOT}/DataTracker.cpp
@@ -201,6 +207,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/ConstraintResolution.cpp
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
+    ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/Mass.cpp
@@ -214,6 +221,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
+    ${SRC_ROOT}/behavior/SingleMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/fwd.cpp
     ${SRC_ROOT}/collision/BroadPhaseDetection.cpp
     ${SRC_ROOT}/collision/Contact.cpp
@@ -278,6 +286,14 @@ sofa_find_package(Sofa.Topology REQUIRED)
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 
+# to move to core ?
+option(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR "Use CompressedRowSparseMatrix to store global matrix (caution: it will lead to compile CRSMultiMatrixAcessor, which takes a considerable time to compile)" OFF)
+mark_as_advanced(FORCE SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
+if(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
+    list(APPEND HEADER_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.h)
+    list(APPEND SOURCE_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.cpp)
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 # Create alias to support compatibility, starting from v21.06
 # This alias will be deleted in v21.12
@@ -293,6 +309,11 @@ endif()
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
+
+# SOFA-NG: make everybody be able to use Sofa.Component.Compat
+if(TARGET Sofa.Component.Compat)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Compat)
 endif()
 
 sofa_create_package_with_targets(

@@ -23,7 +23,7 @@
 
 #include <sofa/linearalgebra/DiagonalMatrix.h>
 
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/DiagonalMatrix.h")
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/DiagonalMatrix.h")
 // BlockDiagonalMatrix was located in DiagonalMatrix previously
 #include <sofa/linearalgebra/BlockDiagonalMatrix.h>
 

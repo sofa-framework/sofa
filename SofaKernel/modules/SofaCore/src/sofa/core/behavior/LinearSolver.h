@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_LINEARSOLVER_H
-#define SOFA_CORE_BEHAVIOR_LINEARSOLVER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 
@@ -41,7 +34,7 @@ namespace behavior
  *  \brief Abstract base class (as type identifier) for linear system solvers without any API
  *
  */
-class SOFA_CORE_API BaseLinearSolver : public objectmodel::BaseObject
+class SOFA_CORE_API BaseLinearSolver : virtual public objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);
@@ -104,7 +97,7 @@ public:
     virtual void init_partial_solve() { msg_warning() << "partial_solve is not implemented yet."; }
 
     ///
-    virtual void partial_solve(std::list<defaulttype::BaseMatrix::Index>& /*I_last_Disp*/, std::list<defaulttype::BaseMatrix::Index>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
+    virtual void partial_solve(std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Disp*/, std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
 
     /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
     virtual void invertSystem() {}
@@ -115,7 +108,7 @@ public:
     /// @param J the matrix J to use
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, SReal fact)
+    virtual bool addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
     {
         SOFA_UNUSED(result);
         SOFA_UNUSED(J);
@@ -130,7 +123,7 @@ public:
     /// @param result the variable where the result will be added
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, SReal fact)
+    virtual bool buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact)
     {
         SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
@@ -140,14 +133,14 @@ public:
     }
 
     /// Apply the contactforce dx = Minv * J^t * f and store the resut in dx VecId
-    virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const defaulttype::BaseVector* /*f*/) {
+    virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/) {
         msg_error() << "applyConstraintForce has not been implemented.";
     }
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute mparams->dF() = J^t lambda
     /// the result is written in mparams->dF()
-    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector* /*f*/) {
+    virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector* /*f*/) {
         msg_error() << "computeResidual has not been implemented.";
     }
 
@@ -158,7 +151,7 @@ public:
     /// @param J the matrix J to use
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, SReal fact)
+    virtual bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
     {
         SOFA_UNUSED(result);
         SOFA_UNUSED(J);
@@ -167,19 +160,19 @@ public:
     }
 
     /// Get the linear system matrix, or nullptr if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
+    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() { return nullptr; }
 
     /// Get the MultiMatrix view of the linear system, or nullptr if this solved does not build it
     virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return nullptr; }
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemRHBaseVector() { return nullptr; }
+    virtual linearalgebra::BaseVector* getSystemRHBaseVector() { return nullptr; }
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemLHBaseVector() { return nullptr; }
+    virtual linearalgebra::BaseVector* getSystemLHBaseVector() { return nullptr; }
 
     /// Get the linear system inverse matrix, or nullptr if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix() { return nullptr; }
+    virtual linearalgebra::BaseMatrix* getSystemInverseBaseMatrix() { return nullptr; }
 
     /// Read the Matrix solver from a file
     virtual bool readFile(std::istream& /*in*/) { return false;}
@@ -197,10 +190,4 @@ protected:
     bool frozen;
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

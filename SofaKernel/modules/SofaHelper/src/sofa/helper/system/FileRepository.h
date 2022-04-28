@@ -173,7 +173,7 @@ public:
         return _flux;
     }
 
-    void displayPaths() {std::cout<<(*this)<<std::endl;}
+    void displayPaths() const {std::cout<<(*this)<<std::endl;}
 
     const std::string getTempPath() const;
 

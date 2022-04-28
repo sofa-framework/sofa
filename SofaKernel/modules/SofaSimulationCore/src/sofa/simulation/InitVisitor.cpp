@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/core/BaseMapping.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/simulation/Node.h>

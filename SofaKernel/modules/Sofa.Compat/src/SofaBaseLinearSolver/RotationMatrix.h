@@ -23,7 +23,7 @@
 
 #include <sofa/linearalgebra/RotationMatrix.h>
 
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/RotationMatrix.h")
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/RotationMatrix.h")
 
 namespace sofa::component::linearsolver
 {

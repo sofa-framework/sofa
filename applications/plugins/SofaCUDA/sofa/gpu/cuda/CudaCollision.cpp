@@ -32,6 +32,7 @@
 #include <SofaUserInteraction/MouseInteractor.inl>
 #include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
+#include <SofaUserInteraction/RayDiscreteIntersection.h>
 #include <SofaUserInteraction/RayDiscreteIntersection.inl>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaUserInteraction/ComponentMouseInteraction.inl>
@@ -41,23 +42,16 @@
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
-#include <SofaGeneralDeformable/VectorSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
 #include <sofa/gl/gl.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/Mapping.inl>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::gpu::cuda;
-
 
 template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
@@ -71,19 +65,7 @@ template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
 template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
 #endif
 
-ContactMapperCreator< ContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("default",true);
-
-#ifdef WIN32
-template<> SOFA_GPU_CUDA_API
-std::unordered_map<std::type_index, typename FixParticlePerformer<CudaVec3fTypes>::GetFixationPointsOnModelFunction >
-FixParticlePerformer<CudaVec3fTypes>::s_mapSupportedModels;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-std::unordered_map<std::type_index, typename FixParticlePerformer<CudaVec3dTypes>::GetFixationPointsOnModelFunction >
-FixParticlePerformer<CudaVec3dTypes>::s_mapSupportedModels;
-#endif
-
-#endif // WIN32
+response::mapper::ContactMapperCreator< response::mapper::ContactMapper<geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("PenalityContactForceField", true);
 
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
@@ -100,16 +82,10 @@ using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types
 int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
 
-} //namespace collision
+} //namespace sofa::component::collision
 
 
-} //namespace component
-
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 
@@ -147,10 +123,6 @@ int CudaProximityIntersectionClass = core::RegisterObject("GPGPU Proximity Inter
         .add< CudaProximityIntersection >()
         ;
 
-sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("ray",true);
+sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

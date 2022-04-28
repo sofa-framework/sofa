@@ -1,12 +1,19 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialCollisionUncoupledConstraints -->
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [LocalMinDistance] -->
 
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
@@ -15,7 +22,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001" maxIterations="1000"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube1">
@@ -25,7 +32,7 @@
         <UniformMass name="UniformMass" totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
-            <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+            <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
             <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
             <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube1_RigidDOF" output="@Visual_Cube" />
         </Node>
@@ -47,7 +54,7 @@
         <UniformMass name="UniformMass" totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
-            <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+            <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
             <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
             <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube2_RigidDOF" output="@Visual_Cube" />
         </Node>

@@ -343,7 +343,7 @@ void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
+void QtGLViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 {
     if (r==0.0)
         r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
@@ -857,7 +857,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         switch(e->key())
         {
         case Qt::Key_A: // axis
-        case Qt::Key_S: // sofa screenshot
         case Qt::Key_H: // help page
         case Qt::Key_G: // show grid
         {
@@ -877,6 +876,13 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         }
     }
     update();
+}
+
+
+void QtGLViewer::screenshot(const std::string& filename, int compression_level)
+{
+    SOFA_UNUSED(compression_level);
+    QGLViewer::saveSnapshot(QString::fromStdString(filename), false);
 }
 
 

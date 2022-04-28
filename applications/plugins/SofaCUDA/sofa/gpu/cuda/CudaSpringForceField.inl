@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
+#pragma once
 
 #include "CudaSpringForceField.h"
-#include <SofaDeformable/SpringForceField.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
-#include <SofaDeformable/MeshSpringForceField.inl>
-#include <SofaGeneralDeformable/TriangleBendingSprings.inl>
-#include <SofaGeneralDeformable/QuadBendingSprings.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/MeshSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/TriangleBendingSprings.inl>
+#include <sofa/component/solidmechanics/spring/QuadBendingSprings.inl>
 #include <sofa/core/MechanicalParams.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -152,14 +145,9 @@ public:
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::solidmechanics::spring
 {
 
 using namespace gpu::cuda;
@@ -287,17 +275,19 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         f2.resize(x2.size());
         int d1 = data.springs1.vertex0;
         int d2 = data.springs2.vertex0;
+
         if (data.springs1.nbSpringPerVertex > 0)
         {
-            if (!stiff)
+            if (!stiff) {
                 Kernels::addExternalForce(data.springs1.nbVertex,
-                        data.springs1.nbSpringPerVertex,
-                        data.springs1.springs.deviceRead(),
-                        (      Deriv*)f1.deviceWrite() + d1,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2);
+                    data.springs1.nbSpringPerVertex,
+                    data.springs1.springs.deviceRead(),
+                    (Deriv*)f1.deviceWrite() + d1,
+                    (const Coord*)x1.deviceRead() + d1,
+                    (const Deriv*)v1.deviceRead() + d1,
+                    (const Coord*)x2.deviceRead() + d2,
+                    (const Deriv*)v2.deviceRead() + d2);
+            }
             else
                 Kernels::addExternalForce(data.springs1.nbVertex,
                         data.springs1.nbSpringPerVertex,
@@ -455,10 +445,4 @@ CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #undef CudaSpringForceField_ImplMethods
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::solidmechanics::spring

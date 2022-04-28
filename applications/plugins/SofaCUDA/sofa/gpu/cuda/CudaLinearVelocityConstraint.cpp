@@ -24,13 +24,8 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::constraint::projective
 {
 template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaVec6fTypes>;
 template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaRigid3fTypes>;
@@ -38,27 +33,19 @@ template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaRigid3f
 template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaVec6dTypes>;
 template class SOFA_GPU_CUDA_API LinearVelocityConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
-}// namespace projectiveconstraintset
 
-}// namespace component
+}// namespace sofa::component::constraint::projective
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int LinearVelocityConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaVec6fTypes> >()
-        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaRigid3fTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaVec6fTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaVec6dTypes> >()
-        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaRigid3dTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaVec6dTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

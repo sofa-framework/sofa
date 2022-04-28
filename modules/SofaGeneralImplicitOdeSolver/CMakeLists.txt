@@ -12,17 +12,13 @@ set(SOURCE_FILES
     ${SOFAGENERALIMPLICITODESOLVER_SRC}/initSofaGeneralImplicitOdeSolver.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALIMPLICITODESOLVER_SRC}/VariationalSymplecticSolver.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALIMPLICITODESOLVER_SRC}/VariationalSymplecticSolver.cpp
-    )
-
-sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.ODESolver.Backward instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Backward)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -32,12 +28,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
 )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFAGENERALIMPLICITODESOLVER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFAGENERALIMPLICITODESOLVER_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()
-

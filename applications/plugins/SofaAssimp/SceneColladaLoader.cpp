@@ -313,7 +313,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                         if(generateCollisionModels.getValue())
                         {
-                            UniformMass<Rigid3Types, Rigid3Mass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types, Rigid3Mass> >();
+                            UniformMass<Rigid3Types>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types> >();
                             {
                                 // adding the generated UniformMass to its parent Node
                                 currentSubNode->addObject(currentUniformMass);
@@ -378,7 +378,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             }
                         }
 
-                        UniformMass<Rigid3Types, Rigid3Mass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types, Rigid3Mass> >();
+                        UniformMass<Rigid3Types>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types> >();
                         {
                             // adding the generated UniformMass to its parent Node
                             currentSubNode->addObject(currentUniformMass);
@@ -1104,8 +1104,8 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
                 localRigid = meshTransformationRigid.mult(localRigid);
 
                 // apply the mesh transformation to each channel if the skeleton root joint contains animation
-                for(std::size_t i = 0; i < currentSkeletonJoint.mChannels.size(); ++i)
-                    currentSkeletonJoint.mChannels[i] = meshTransformationRigid.mult(currentSkeletonJoint.mChannels[i]);
+                for(std::size_t kk = 0; kk < currentSkeletonJoint.mChannels.size(); ++kk)
+                    currentSkeletonJoint.mChannels[kk] = meshTransformationRigid.mult(currentSkeletonJoint.mChannels[kk]);
             }
 
             currentSkeletonJoint.setRestPosition(localRigid);

@@ -70,7 +70,7 @@ extern "C"
 template<class real>
 __global__ void UniformMassCuda1t_addMDx_kernel(int size, const real mass, real* res, const real* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
     {
         res[index] += dx[index] * mass;
@@ -80,7 +80,7 @@ __global__ void UniformMassCuda1t_addMDx_kernel(int size, const real mass, real*
 template<class real>
 __global__ void UniformMassCuda3t_addMDx_kernel(int size, const real mass, CudaVec3<real>* res, const CudaVec3<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
     {
         //res[index] += dx[index] * mass;
@@ -94,7 +94,7 @@ __global__ void UniformMassCuda3t_addMDx_kernel(int size, const real mass, CudaV
 template<class real>
 __global__ void UniformMassCuda3t1_addMDx_kernel(int size, const real mass, CudaVec4<real>* res, const CudaVec4<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
     {
         //res[index] += dx[index] * mass;
@@ -148,7 +148,7 @@ __global__ void UniformMassCudaRigid3t_addMDx_kernel(const unsigned int size, co
 template<class real>
 __global__ void UniformMassCuda1t_accFromF_kernel(int size, const real inv_mass, real* a, const real* f)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
     {
         a[index] = f[index] * inv_mass;
@@ -158,7 +158,7 @@ __global__ void UniformMassCuda1t_accFromF_kernel(int size, const real inv_mass,
 template<class real>
 __global__ void UniformMassCuda3t_accFromF_kernel(int size, const real inv_mass, CudaVec3<real>* a, const CudaVec3<real>* f)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
     {
         //a[index] = f[index] * inv_mass;
@@ -171,7 +171,7 @@ __global__ void UniformMassCuda3t_accFromF_kernel(int size, const real inv_mass,
 template<class real>
 __global__ void UniformMassCuda3t1_accFromF_kernel(int size, const real inv_mass, CudaVec4<real>* a, const CudaVec4<real>* f)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
     {
         //a[index] = f[index] * inv_mass;
@@ -230,7 +230,7 @@ __global__ void UniformMassCudaRigid3t_accFromF_kernel(const unsigned int size, 
 template<class real>
 __global__ void UniformMassCuda1t_addForce_kernel(int size, const real mg, real* f)
 {
-    int index = umul24(blockIdx.x,BSIZE);
+    int index = blockIdx.x * BSIZE;
     if (index < size)
     {
         f[index] += mg;
@@ -241,9 +241,9 @@ template<class real>
 //__global__ void UniformMassCuda3t_addForce_kernel(int size, const CudaVec3<real> mg, real* f)
 __global__ void UniformMassCuda3t_addForce_kernel(int size, real mg_x, real mg_y, real mg_z, real* f)
 {
-    //int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    //int index = blockIdx.x * BSIZE+threadIdx.x;
     //f[index] += mg;
-    f += umul24(blockIdx.x,BSIZE*3); //blockIdx.x*BSIZE*3;
+    f += blockIdx.x * BSIZE * 3;
     int index = threadIdx.x;
     __shared__  real temp[BSIZE*3];
     temp[index] = f[index];
@@ -252,9 +252,9 @@ __global__ void UniformMassCuda3t_addForce_kernel(int size, real mg_x, real mg_y
 
     __syncthreads();
 
-    if (umul24(blockIdx.x,BSIZE)+threadIdx.x < size)
+    if (blockIdx.x * BSIZE+threadIdx.x < size)
     {
-        int index3 = umul24(index,3); //3*index;
+        int index3 = index * 3;
         temp[index3+0] += mg_x;
         temp[index3+1] += mg_y;
         temp[index3+2] += mg_z;
@@ -270,7 +270,7 @@ __global__ void UniformMassCuda3t_addForce_kernel(int size, real mg_x, real mg_y
 template<class real>
 __global__ void UniformMassCuda3t1_addForce_kernel(int size, real mg_x, real mg_y, real mg_z, CudaVec4<real>* f)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
     {
         //f[index] += mg;

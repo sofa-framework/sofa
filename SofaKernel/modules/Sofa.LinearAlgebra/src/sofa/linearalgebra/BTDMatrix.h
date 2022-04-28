@@ -108,7 +108,7 @@ public:
         }
         Block i() const
         {
-            Bloc r;
+            Block r;
             const bool canInvert = r.invert(*this);
             assert(canInvert);
             SOFA_UNUSED(canInvert);

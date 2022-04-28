@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_CONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_CONSTRAINT_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -45,10 +40,10 @@ namespace behavior
  *
  */
 template<class DataTypes>
-class Constraint : public BaseConstraint
+class Constraint : public BaseConstraint, public SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Constraint,DataTypes), BaseConstraint);
+    SOFA_CLASS2(SOFA_TEMPLATE(Constraint, DataTypes), BaseConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -68,18 +63,13 @@ public:
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate; }
-
     using BaseConstraintSet::getConstraintViolation;
 
     /// Construct the Constraint violations vector of each constraint
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) override;
+    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -89,7 +79,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) = 0;
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) = 0;
 
 
     /// Construct the Jacobian Matrix
@@ -110,7 +100,7 @@ public:
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x) = 0;
 
 
-    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -125,11 +115,8 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-protected:
-    MechanicalState<DataTypes> *mstate;
-
 private:
-    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
+    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
@@ -141,10 +128,4 @@ extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2Types>;
 
 
 #endif
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

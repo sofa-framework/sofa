@@ -7,11 +7,13 @@ trivially, it does not require a linear solver.
 -->
 
 <Node name="root" gravity="-1.8 0 100" dt="0.0001">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaExplicitOdeSolver"/>
-    <RequiredPlugin name="SofaLoader"/>
-    <RequiredPlugin name="SofaBoundaryCondition"/>
-    <RequiredPlugin name="SofaSimpleFem"/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <Node name="DeformableObject">
 
@@ -28,14 +30,14 @@ trivially, it does not require a linear solver.
         <TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.49" method="large" />
 
         <Node name="Visual">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red"/>
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 
     <Node name="floor-visual">
-        <MeshObjLoader name="meshLoader" filename="mesh/floorFlat.obj"/>
+        <MeshOBJLoader name="meshLoader" filename="mesh/floorFlat.obj"/>
         <OglModel src="@meshLoader" dy="-18"/>
         <OglModel src="@meshLoader" rx="90" dz="20" dy="2"/>
     </Node>

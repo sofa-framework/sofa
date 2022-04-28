@@ -1,6 +1,15 @@
 <!-- Hierarchical Group Basic Test -->
 <Node name="root" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline depth="6" verbose="0" draw="1" />
     <BruteForceBroadPhase/>
@@ -21,7 +30,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf">
-                <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+                <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -38,7 +47,7 @@
                 <RigidMapping />
             </Node>
             <Node name="Surf">
-                <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+                <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -60,7 +69,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf">
-                <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+                <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -81,7 +90,7 @@
                 </Node>
             </Node>
             <Node name="Surf">
-                <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+                <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -99,7 +108,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf">
-                <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+                <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -120,7 +129,7 @@
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf">
-                <MeshObjLoader filename="mesh/dragon.obj" name="loader" />
+                <MeshOBJLoader filename="mesh/dragon.obj" name="loader" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -136,7 +145,7 @@
         <StiffSpringForceField name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="@M5" object2="@M6/Points" />
     </Node>
     <Node name="Floor">
-        <MeshObjLoader filename="mesh/floor.obj" name="loader" />
+        <MeshOBJLoader filename="mesh/floor.obj" name="loader" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-20" />
         <TriangleCollisionModel name="Floor" simulated="0" moving="0" />

@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
@@ -37,6 +36,7 @@
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerCallback.h>
+#include <sofa/type/fwd.h>
 
 #include <sofa/helper/system/SofaOStream.h>
 
@@ -453,7 +453,7 @@ public:
     /// The default implementation return the class name.
     ///
     /// This method should be used as follow :
-    /// \code  std::string type = Base::shortNam<B>(); \endcode
+    /// \code  std::string type = Base::shortName<B>(); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
     static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )

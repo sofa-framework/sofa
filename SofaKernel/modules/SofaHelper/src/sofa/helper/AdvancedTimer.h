@@ -28,6 +28,8 @@
 #include <ostream>
 #include <string>
 #include <map>
+#include <unordered_map>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::simulation
 {
@@ -165,7 +167,7 @@ public:
 
             /// the list of the id names. the Ids are the indices in the vector
             std::vector<std::string> idsList;
-            std::map<std::string, unsigned int> idsMap;
+            std::unordered_map<std::string, unsigned int> idsMap;
 
             IdFactory()
             {
@@ -188,8 +190,8 @@ public:
                 const auto it = idfac.idsMap.find(name);
                 if (it == idfac.idsMap.end())
                 {
-                    const auto idsMapSize = idfac.idsMap.size();
-                    idfac.idsMap.insert({name, idsMapSize});
+                    const auto idsMapSize = sofa::helper::narrow_cast<unsigned int>(idfac.idsMap.size());
+                    idfac.idsMap.insert(it, {name, idsMapSize});
                     idfac.idsList.push_back(name);
                     return idsMapSize;
                 }
@@ -381,7 +383,7 @@ public:
      * @param node simulation::Node* 
      * @return std::string, the output if JSON format is set
      */
-    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
     static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();

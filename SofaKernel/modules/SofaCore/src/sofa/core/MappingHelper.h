@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/config.h>
+#include <sofa/core/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>

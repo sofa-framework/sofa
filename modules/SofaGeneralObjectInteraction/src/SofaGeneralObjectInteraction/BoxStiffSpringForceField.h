@@ -21,11 +21,10 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralObjectInteraction/config.h>
-
-
-
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <sofa/type/Vec.h>
+#include <sofa/simulation/Node.h>
+#include <SofaEngine/BoxROI.h>
+#include <SofaGeneralEngine/NearestPointROI.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -33,43 +32,76 @@ namespace sofa::component::interactionforcefield
 /** Set springs between the particles located inside a given box.
 */
 template <class DataTypes>
-class BoxStiffSpringForceField : public sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>
+class BoxStiffSpringForceField : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BoxStiffSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(BoxStiffSpringForceField, DataTypes), sofa::core::objectmodel::BaseObject);
 
-    typedef StiffSpringForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-    typedef typename Inherit::Spring Spring;
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef type::Vec<6,Real> Vec6;
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
 
-    using Index = sofa::Index;
+        MechanicalState* mstate1 = nullptr;
+        MechanicalState* mstate2 = nullptr;
+        std::string object1 = arg->getAttribute("object1","@./");
+        std::string object2 = arg->getAttribute("object2","@./");
+        if (object1.empty()) object1 = "@./";
+        if (object2.empty()) object2 = "@./";
 
-protected:
+        context->findLinkDest(mstate1, object1, nullptr);
+        context->findLinkDest(mstate2, object2, nullptr);
 
-    //float Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;
+        sofa::type::fixed_array<typename engine::BoxROI<DataTypes>::SPtr, 2> boxes;
+        for (const auto* mstate : {mstate1, mstate2})
+        {
+            auto boxROI = sofa::core::objectmodel::New<engine::BoxROI<DataTypes> >();
+            const std::size_t id = mstate != mstate1;
+            boxes[id] = boxROI;
+            boxROI->setName("box_" + mstate->getName());
+            boxROI->d_X0.setParent(mstate->findData("position"));
+            if (arg)
+            {
+                const std::string boxString = arg->getAttribute("box_object" + std::to_string(id+1), "");
+                boxROI->d_alignedBoxes.read(boxString);
+            }
+            if (context)
+            {
+                context->addObject(boxROI);
+            }
+        }
 
+        auto np = sofa::core::objectmodel::New<sofa::component::engine::NearestPointROI<DataTypes> >(mstate1, mstate2);
+        np->f_radius.setValue(std::numeric_limits<typename DataTypes::Real>::max());
+        np->setName(helper::NameDecoder::shortName(np->getClassName()));
+        if (context)
+        {
+            context->addObject(np);
+        }
 
+        np->d_inputIndices1.setParent(&boxes[0]->d_indices);
+        np->d_inputIndices2.setParent(&boxes[1]->d_indices);
 
-    BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
-    BoxStiffSpringForceField(double ks=100.0, double kd=5.0);
-public:
-    void init() override;
-    void bwdInit() override;
+        auto springs = sofa::core::objectmodel::New<sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> >(mstate1, mstate2);
+        springs->d_indices1.setParent(&np->f_indices1);
+        springs->d_indices2.setParent(&np->f_indices2);
+        springs->d_lengths.setParent(&np->d_distances);
+        if (arg)
+        {
+            springs->parse(arg);
+        }
+        if (context)
+        {
+            context->addObject(springs);
+        }
 
-    Data<Vec6>  box_object1; ///< Box for the object1 where springs will be attached
-    Data<Vec6>  box_object2; ///< Box for the object2 where springs will be attached
-    Data<SReal> factorRestLength; ///< Factor used to compute the rest length of the springs generated
-    Data<bool>  forceOldBehavior; ///< Keep using the old behavior
-    // -- VisualModel interface
-
-    void draw(const core::visual::VisualParams* vparams) override;
+        return obj;
+    }
 
 };
 

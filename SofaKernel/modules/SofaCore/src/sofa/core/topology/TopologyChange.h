@@ -150,9 +150,9 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& d);
 /// Topology change informations related to the ancestor topology element of a point
 struct PointAncestorElem
 {
-    typedef type::Vec<3, double> LocalCoords;
+    typedef type::Vec3 LocalCoords;
 
-    PointAncestorElem() : type(TopologyElementType::POINT), index((Topology::ElemID)-1) {}
+    PointAncestorElem() : type(TopologyElementType::POINT), index(sofa::InvalidID) {}
 
     PointAncestorElem(TopologyElementType _type, Topology::ElemID _index, const LocalCoords& _localCoords)
         : type(_type)
@@ -390,7 +390,6 @@ public:
 
     ~PointsIndicesSwap() override;
 
-public:
     Topology::PointID index[2];
 };
 
@@ -412,7 +411,7 @@ public:
 
     PointsAdded(const size_t nV,
             const sofa::type::vector< sofa::type::vector< Topology::PointID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double       > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal       > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::POINTSADDED)
         , nVertices(nV), ancestorsList(ancestors), coefs(baryCoefs)
     { }
@@ -420,7 +419,7 @@ public:
     PointsAdded(const size_t nV,
             const sofa::type::vector< Topology::PointID >& indices,
             const sofa::type::vector< sofa::type::vector< Topology::PointID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double       > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal       > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::POINTSADDED)
         , nVertices(nV), pointIndexArray(indices), ancestorsList(ancestors), coefs(baryCoefs)
     { }
@@ -429,7 +428,7 @@ public:
             const sofa::type::vector< Topology::PointID >& indices,
             const sofa::type::vector< PointAncestorElem >& srcElems,
             const sofa::type::vector< sofa::type::vector< Topology::PointID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double       > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal       > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::POINTSADDED)
         , nVertices(nV)
         , pointIndexArray(indices)
@@ -447,12 +446,10 @@ public:
     const sofa::type::vector< Topology::PointID >& getIndexArray() const { return pointIndexArray; }
     const sofa::type::vector< Topology::Point >& getElementArray() const { return pointIndexArray; }
 
-
-public:
     size_t nVertices;
     sofa::type::vector< Topology::PointID > pointIndexArray;
     sofa::type::vector< sofa::type::vector< Topology::PointID > > ancestorsList;
-    sofa::type::vector< sofa::type::vector< double > > coefs;
+    sofa::type::vector< sofa::type::vector< SReal > > coefs;
     sofa::type::vector< PointAncestorElem > ancestorElems;
 };
 
@@ -469,7 +466,6 @@ public:
 
     const sofa::type::vector<Topology::PointID> &getArray() const { return removedVertexArray;	}
 
-public:
     sofa::type::vector<Topology::PointID> removedVertexArray;
 };
 
@@ -494,7 +490,6 @@ public:
 
     const sofa::type::vector<Topology::PointID> &getinv_IndexArray() const { return inv_indexArray; }
 
-public:
     sofa::type::vector<Topology::PointID> indexArray;
     sofa::type::vector<Topology::PointID> inv_indexArray;
 };
@@ -507,7 +502,7 @@ public:
 
     PointsMoved(const sofa::type::vector<Topology::PointID>& indices,
             const sofa::type::vector< sofa::type::vector< Topology::PointID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::POINTSMOVED)
         , indicesList(indices), ancestorsList(ancestors), baryCoefsList(baryCoefs)
     {}
@@ -516,10 +511,9 @@ public:
     
     const sofa::type::vector<Topology::PointID> &getIndexArray() const { return indicesList; }
 
-public:
     sofa::type::vector<Topology::PointID> indicesList;
     sofa::type::vector< sofa::type::vector< Topology::PointID > > ancestorsList;
-    sofa::type::vector< sofa::type::vector< double > > baryCoefsList;
+    sofa::type::vector< sofa::type::vector< SReal > > baryCoefsList;
 };
 
 
@@ -542,7 +536,6 @@ public:
 
     ~EdgesIndicesSwap() override;
 
-public:
     Topology::EdgeID index[2];
 };
 
@@ -579,7 +572,7 @@ public:
             const sofa::type::vector< Topology::Edge >& edgesList,
             const sofa::type::vector< Topology::EdgeID >& edgesIndex,
             const sofa::type::vector< sofa::type::vector< Topology::EdgeID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::EDGESADDED),
           nEdges(nE),
           edgeArray(edgesList),
@@ -593,7 +586,7 @@ public:
             const sofa::type::vector< Topology::EdgeID >& edgesIndex,
             const sofa::type::vector< EdgeAncestorElem >& srcElems,
             const sofa::type::vector< sofa::type::vector< Topology::EdgeID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::EDGESADDED),
           nEdges(nE),
           edgeArray(edgesList),
@@ -619,12 +612,11 @@ public:
     const sofa::type::vector< Topology::EdgeID >& getIndexArray() const { return edgeIndexArray; }
     const sofa::type::vector< Topology::Edge >& getElementArray() const { return edgeArray; }
 
-public:
     size_t nEdges;
     sofa::type::vector< Topology::Edge > edgeArray;
     sofa::type::vector< Topology::EdgeID > edgeIndexArray;
     sofa::type::vector< sofa::type::vector< Topology::EdgeID > > ancestorsList;
-    sofa::type::vector< sofa::type::vector< double > > coefs;
+    sofa::type::vector< sofa::type::vector< SReal > > coefs;
     sofa::type::vector< EdgeAncestorElem > ancestorElems;
 };
 
@@ -649,7 +641,6 @@ public:
         return removedEdgesArray.size();
     }
 
-public:
     sofa::type::vector<Topology::EdgeID> removedEdgesArray;
 };
 
@@ -668,7 +659,6 @@ public:
     
     const sofa::type::vector< Topology::EdgeID >& getIndexArray() const { return edgesAroundVertexMoved; }
 
-public:
     sofa::type::vector< Topology::EdgeID > edgesAroundVertexMoved;
 };
 
@@ -690,7 +680,6 @@ public:
     const sofa::type::vector< Topology::EdgeID >& getIndexArray() const { return edgesAroundVertexMoved; }
     const sofa::type::vector< Topology::Edge >& getElementArray() const { return edgeArray2Moved; }
 
-public:
     sofa::type::vector< Topology::EdgeID > edgesAroundVertexMoved;
     sofa::type::vector< Topology::Edge > edgeArray2Moved;
 };
@@ -715,7 +704,6 @@ public:
 
     const sofa::type::vector<Topology::EdgeID> &getinv_IndexArray() const { return inv_indexArray; }
 
-public:
     sofa::type::vector<Topology::EdgeID> indexArray;
     sofa::type::vector<Topology::EdgeID> inv_indexArray;
 };
@@ -739,7 +727,6 @@ public:
 
     ~TrianglesIndicesSwap() override;
 
-public:
     Topology::TriangleID index[2];
 };
 
@@ -765,7 +752,7 @@ public:
             const sofa::type::vector< Topology::Triangle >& _triangleArray,
             const sofa::type::vector< Topology::TriangleID >& trianglesIndex,
             const sofa::type::vector< sofa::type::vector< Topology::TriangleID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::TRIANGLESADDED),
           nTriangles(nT),
           triangleArray(_triangleArray),
@@ -779,7 +766,7 @@ public:
             const sofa::type::vector< Topology::TriangleID >& trianglesIndex,
             const sofa::type::vector< TriangleAncestorElem >& srcElems,
             const sofa::type::vector< sofa::type::vector< Topology::TriangleID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::TRIANGLESADDED),
           nTriangles(nT),
           triangleArray(_triangleArray),
@@ -810,12 +797,11 @@ public:
     const sofa::type::vector< Topology::TriangleID >& getIndexArray() const { return triangleIndexArray; }
     const sofa::type::vector< Topology::Triangle >& getElementArray() const { return triangleArray; }
 
-public:
     size_t nTriangles;
     sofa::type::vector< Topology::Triangle > triangleArray;
     sofa::type::vector< Topology::TriangleID > triangleIndexArray;
     sofa::type::vector< sofa::type::vector< Topology::TriangleID > > ancestorsList;
-    sofa::type::vector< sofa::type::vector< double > > coefs;
+    sofa::type::vector< sofa::type::vector< SReal > > coefs;
     sofa::type::vector< TriangleAncestorElem > ancestorElems;
 };
 
@@ -865,7 +851,6 @@ public:
     
     const sofa::type::vector< Topology::TriangleID >& getIndexArray() const { return trianglesAroundVertexMoved; }
 
-public:
     sofa::type::vector< Topology::TriangleID > trianglesAroundVertexMoved;
 };
 
@@ -887,7 +872,6 @@ public:
     const sofa::type::vector< Topology::TriangleID >& getIndexArray() const { return trianglesAroundVertexMoved; }
     const sofa::type::vector< Topology::Triangle >& getElementArray() const { return triangleArray2Moved; }
 
-public:
     sofa::type::vector< Topology::TriangleID > trianglesAroundVertexMoved;
     const sofa::type::vector< Topology::Triangle > triangleArray2Moved;
 };
@@ -913,7 +897,6 @@ public:
 
     const sofa::type::vector<Topology::TriangleID> &getinv_IndexArray() const { return inv_indexArray; }
 
-public:
     sofa::type::vector<Topology::TriangleID> indexArray;
     sofa::type::vector<Topology::TriangleID> inv_indexArray;
 };
@@ -936,7 +919,6 @@ public:
 
     ~QuadsIndicesSwap() override;
 
-public:
     Topology::QuadID index[2];
 };
 
@@ -962,7 +944,7 @@ public:
             const sofa::type::vector< Topology::Quad >& _quadArray,
             const sofa::type::vector< Topology::QuadID >& quadsIndex,
             const sofa::type::vector< sofa::type::vector< Topology::QuadID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::QUADSADDED),
           nQuads(nT),
           quadArray(_quadArray),
@@ -976,7 +958,7 @@ public:
             const sofa::type::vector< Topology::QuadID >& quadsIndex,
             const sofa::type::vector< QuadAncestorElem >& srcElems,
             const sofa::type::vector< sofa::type::vector< Topology::QuadID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::QUADSADDED),
           nQuads(nT),
           quadArray(_quadArray),
@@ -1007,12 +989,11 @@ public:
     const sofa::type::vector< Topology::QuadID >& getIndexArray() const { return quadIndexArray; }
     const sofa::type::vector< Topology::Quad >& getElementArray() const { return quadArray; }
 
-public:
     size_t nQuads;
     sofa::type::vector< Topology::Quad > quadArray;
     sofa::type::vector< Topology::QuadID > quadIndexArray;
     sofa::type::vector< sofa::type::vector< Topology::QuadID > > ancestorsList;
-    sofa::type::vector< sofa::type::vector< double > > coefs;
+    sofa::type::vector< sofa::type::vector< SReal > > coefs;
     sofa::type::vector< QuadAncestorElem > ancestorElems;
 };
 
@@ -1061,7 +1042,6 @@ public:
     
     const sofa::type::vector< Topology::QuadID >& getIndexArray() const { return quadsAroundVertexMoved; }
 
-public:
     sofa::type::vector< Topology::QuadID > quadsAroundVertexMoved;
 };
 
@@ -1083,7 +1063,6 @@ public:
     const sofa::type::vector< Topology::QuadID >& getIndexArray() const { return quadsAroundVertexMoved; }
     const sofa::type::vector< Topology::Quad >& getElementArray() const { return quadArray2Moved; }
 
-public:
     sofa::type::vector< Topology::QuadID > quadsAroundVertexMoved;
     const sofa::type::vector< Topology::Quad > quadArray2Moved;
 };
@@ -1109,7 +1088,6 @@ public:
 
     const sofa::type::vector<Topology::QuadID> &getinv_IndexArray() const { return inv_indexArray; }
 
-public:
     sofa::type::vector<Topology::QuadID> indexArray;
     sofa::type::vector<Topology::QuadID> inv_indexArray;
 };
@@ -1132,7 +1110,6 @@ public:
 
     ~TetrahedraIndicesSwap() override;
 
-public:
     Topology::TetrahedronID index[2];
 };
 
@@ -1158,7 +1135,7 @@ public:
             const sofa::type::vector< Topology::Tetrahedron >& _tetrahedronArray,
             const sofa::type::vector< Topology::TetrahedronID >& tetrahedraIndex,
             const sofa::type::vector< sofa::type::vector< Topology::TetrahedronID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::TETRAHEDRAADDED),
           nTetrahedra(nT),
           tetrahedronArray(_tetrahedronArray),
@@ -1172,7 +1149,7 @@ public:
             const sofa::type::vector< Topology::TetrahedronID >& tetrahedraIndex,
             const sofa::type::vector< TetrahedronAncestorElem >& srcElems,
             const sofa::type::vector< sofa::type::vector< Topology::TetrahedronID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::TETRAHEDRAADDED),
           nTetrahedra(nT),
           tetrahedronArray(_tetrahedronArray),
@@ -1198,12 +1175,11 @@ public:
     const sofa::type::vector< Topology::TetrahedronID >& getIndexArray() const { return tetrahedronIndexArray; }
     const sofa::type::vector< Topology::Tetrahedron >& getElementArray() const { return tetrahedronArray; }
 
-public:
     size_t nTetrahedra;
     sofa::type::vector< Topology::Tetrahedron > tetrahedronArray;
     sofa::type::vector< Topology::TetrahedronID > tetrahedronIndexArray;
     sofa::type::vector< sofa::type::vector< Topology::TetrahedronID > > ancestorsList;
-    sofa::type::vector< sofa::type::vector< double > > coefs;
+    sofa::type::vector< sofa::type::vector< SReal > > coefs;
     sofa::type::vector< TetrahedronAncestorElem > ancestorElems;
 };
 
@@ -1228,7 +1204,6 @@ public:
         return removedTetrahedraArray.size();
     }
 
-public:
     sofa::type::vector<Topology::TetrahedronID> removedTetrahedraArray;
 };
 
@@ -1248,7 +1223,6 @@ public:
     
     const sofa::type::vector< Topology::TetrahedronID >& getIndexArray() const { return tetrahedraAroundVertexMoved; }
 
-public:
     sofa::type::vector< Topology::TetrahedronID > tetrahedraAroundVertexMoved;
 };
 
@@ -1270,7 +1244,6 @@ public:
     const sofa::type::vector< Topology::TetrahedronID >& getIndexArray() const { return tetrahedraAroundVertexMoved; }
     const sofa::type::vector< Topology::Tetrahedron >& getElementArray() const { return tetrahedronArray2Moved; }
 
-public:
     sofa::type::vector< Topology::TetrahedronID > tetrahedraAroundVertexMoved;
     const sofa::type::vector< Topology::Tetrahedron > tetrahedronArray2Moved;
 };
@@ -1297,7 +1270,6 @@ public:
 
     const sofa::type::vector<Topology::TetrahedronID> &getinv_IndexArray() const { return inv_indexArray; }
 
-public:
     sofa::type::vector<Topology::TetrahedronID> indexArray;
     sofa::type::vector<Topology::TetrahedronID> inv_indexArray;
 };
@@ -1320,7 +1292,6 @@ public:
 
     ~HexahedraIndicesSwap() override;
 
-public:
     Topology::HexahedronID index[2];
 };
 
@@ -1346,7 +1317,7 @@ public:
             const sofa::type::vector< Topology::Hexahedron >& _hexahedronArray,
             const sofa::type::vector< Topology::HexahedronID >& hexahedraIndex,
             const sofa::type::vector< sofa::type::vector< Topology::HexahedronID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::HEXAHEDRAADDED),
           nHexahedra(nT),
           hexahedronArray(_hexahedronArray),
@@ -1360,7 +1331,7 @@ public:
             const sofa::type::vector< Topology::HexahedronID >& hexahedraIndex,
             const sofa::type::vector< HexahedronAncestorElem >& srcElems,
             const sofa::type::vector< sofa::type::vector< Topology::HexahedronID > >& ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
         : core::topology::TopologyChange(core::topology::HEXAHEDRAADDED),
           nHexahedra(nT),
           hexahedronArray(_hexahedronArray),
@@ -1381,12 +1352,11 @@ public:
     const sofa::type::vector< Topology::HexahedronID >& getIndexArray() const { return hexahedronIndexArray; }
     const sofa::type::vector< Topology::Hexahedron >& getElementArray() const { return hexahedronArray; }
 
-public:
     size_t nHexahedra;
     sofa::type::vector< Topology::Hexahedron > hexahedronArray;
     sofa::type::vector< Topology::HexahedronID > hexahedronIndexArray;
     sofa::type::vector< sofa::type::vector< Topology::HexahedronID > > ancestorsList;
-    sofa::type::vector< sofa::type::vector< double > > coefs;
+    sofa::type::vector< sofa::type::vector< SReal > > coefs;
     sofa::type::vector< HexahedronAncestorElem > ancestorElems;
 };
 
@@ -1411,7 +1381,6 @@ public:
         return removedHexahedraArray.size();
     }
 
-public:
     sofa::type::vector<Topology::HexahedronID> removedHexahedraArray;
 };
 
@@ -1431,7 +1400,6 @@ public:
 
     const sofa::type::vector< Topology::HexahedronID >& getIndexArray() const { return hexahedraAroundVertexMoved; }
 
-public:
     sofa::type::vector< Topology::HexahedronID > hexahedraAroundVertexMoved;
 };
 
@@ -1453,7 +1421,6 @@ public:
     const sofa::type::vector< Topology::HexahedronID >& getIndexArray() const { return hexahedraAroundVertexMoved; }
     const sofa::type::vector< Topology::Hexahedron >& getElementArray() const { return hexahedronArray2Moved; }
 
-public:
     sofa::type::vector< Topology::HexahedronID > hexahedraAroundVertexMoved;
     const sofa::type::vector< Topology::Hexahedron > hexahedronArray2Moved;
 };
@@ -1479,7 +1446,6 @@ public:
 
     const sofa::type::vector<Topology::HexahedronID> &getinv_IndexArray() const { return inv_indexArray; }
 
-public:
     sofa::type::vector<Topology::HexahedronID> indexArray;
     sofa::type::vector<Topology::HexahedronID> inv_indexArray;
 };
@@ -1494,11 +1460,11 @@ public:
 #ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_DEFINITION
 namespace std
 {
-    extern template class std::list<const sofa::core::topology::TopologyChange*>;
+    extern template class SOFA_CORE_API std::list<const sofa::core::topology::TopologyChange*>;
 }
 namespace sofa::core::objectmodel
 {
-    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+    extern template class SOFA_CORE_API Data<std::list<const sofa::core::topology::TopologyChange*>>;
 }
 
 #endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION

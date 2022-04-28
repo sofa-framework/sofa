@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
-#define SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
+#pragma once
 
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 class BaseVectorOperations
@@ -51,15 +44,15 @@ public:
     {}
 
     /// Allocate a temporary vector
-    virtual void v_alloc(sofa::core::MultiVecCoordId& id) = 0;
-    virtual void v_alloc(sofa::core::MultiVecDerivId& id) = 0;
+    virtual void v_alloc(sofa::core::MultiVecCoordId& id, const VecIdProperties& properties = {}) = 0;
+    virtual void v_alloc(sofa::core::MultiVecDerivId& id, const VecIdProperties& properties = {}) = 0;
     /// Free a previously allocated temporary vector
     virtual void v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) = 0;
     virtual void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) = 0;
 
     /// keep already allocated vectors and allocates others. If interactionForceField, also allocates mechanical states linked by an InteractionForceField
-    virtual void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) = 0;
-    virtual void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) = 0;
+    virtual void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false, const VecIdProperties& properties = {}) = 0;
+    virtual void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false, const VecIdProperties& properties = {}) = 0;
 
     virtual void v_clear(core::MultiVecId v) = 0; ///< v=0
     virtual void v_eq(core::MultiVecId v, core::ConstMultiVecId a) = 0; ///< v=a
@@ -81,11 +74,5 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif //SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
+} // namespace sofa::core::behavior
 

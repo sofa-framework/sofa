@@ -31,9 +31,10 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/type/RGBAColor.h>
 #include <vector>
 #include <iterator>
@@ -47,10 +48,6 @@ namespace sofa
 
 namespace component
 {
-namespace topology
-{
-    class PointSetTopologyModifier;
-}
 
 namespace misc
 {
@@ -73,7 +70,7 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;    
     typedef type::vector<sofa::Index> SetIndexArray;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;

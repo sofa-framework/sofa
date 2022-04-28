@@ -47,14 +47,14 @@ public:
     VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
 
     /// Allocate a temporary vector
-    void v_alloc(sofa::core::MultiVecCoordId& v) override;
-    void v_alloc(sofa::core::MultiVecDerivId& v) override;
+    void v_alloc(sofa::core::MultiVecCoordId& v, const core::VecIdProperties& properties = {}) override;
+    void v_alloc(sofa::core::MultiVecDerivId& v, const core::VecIdProperties& properties = {}) override;
     /// Free a previously allocated temporary vector
     void v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) override;
     void v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) override;
 
-    void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false) override;
-    void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false) override;
+    void v_realloc(sofa::core::MultiVecCoordId& id, bool interactionForceField=false, bool propagate=false, const core::VecIdProperties& properties = {}) override;
+    void v_realloc(sofa::core::MultiVecDerivId& id, bool interactionForceField=false, bool propagate=false, const core::VecIdProperties& properties = {}) override;
 
     void v_clear(core::MultiVecId v) override; ///< v=0
     void v_eq(core::MultiVecId v, core::ConstMultiVecId a) override; ///< v=a

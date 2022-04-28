@@ -71,6 +71,30 @@ SphereROI<DataTypes>::SphereROI()
 
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+
+    addInput(&f_X0);
+    addInput(&f_edges);
+    addInput(&f_triangles);
+    addInput(&f_quads);
+    addInput(&f_tetrahedra);
+
+    addInput(&centers);
+    addInput(&radii);
+    addInput(&direction);
+    addInput(&normal);
+    addInput(&edgeAngle);
+    addInput(&triAngle);
+
+    addOutput(&f_indices);
+    addOutput(&f_edgeIndices);
+    addOutput(&f_triangleIndices);
+    addOutput(&f_quadIndices);
+    addOutput(&f_pointsInROI);
+    addOutput(&f_edgesInROI);
+    addOutput(&f_trianglesInROI);
+    addOutput(&f_quadsInROI);
+    addOutput(&f_tetrahedraInROI);
+    addOutput(&f_indicesOut);
 }
 
 template <class DataTypes>
@@ -151,30 +175,6 @@ void SphereROI<DataTypes>::init()
             }
         }
     }
-
-    addInput(&f_X0);
-    addInput(&f_edges);
-    addInput(&f_triangles);
-    addInput(&f_quads);
-    addInput(&f_tetrahedra);
-
-    addInput(&centers);
-    addInput(&radii);
-    addInput(&direction);
-    addInput(&normal);
-    addInput(&edgeAngle);
-    addInput(&triAngle);
-
-    addOutput(&f_indices);
-    addOutput(&f_edgeIndices);
-    addOutput(&f_triangleIndices);
-    addOutput(&f_quadIndices);
-    addOutput(&f_pointsInROI);
-    addOutput(&f_edgesInROI);
-    addOutput(&f_trianglesInROI);
-    addOutput(&f_quadsInROI);
-    addOutput(&f_tetrahedraInROI);
-    addOutput(&f_indicesOut);
 
     setDirtyValue();
 }
@@ -453,7 +453,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
+    constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {

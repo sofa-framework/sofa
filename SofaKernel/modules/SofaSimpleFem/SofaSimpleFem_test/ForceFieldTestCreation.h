@@ -29,7 +29,7 @@ using sofa::testing::NumericTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SceneCreator/SceneUtils.h>
@@ -270,7 +270,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         }
 
         // check stiffness matrix: compare its product with dx to actual force change
-        typedef component::linearsolver::EigenBaseSparseMatrix<SReal> Sqmat;
+        typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
         Sqmat K( n*DataTypes::deriv_total_size, n*DataTypes::deriv_total_size );
         component::linearsolver::SingleMatrixAccessor accessor( &K );
         mparams.setKFactor(1.0);

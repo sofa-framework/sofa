@@ -25,6 +25,7 @@
 #include <sofa/simulation/Node.h>
 
 #include <SofaBaseUtils/initSofaBaseUtils.h>
+#include <SofaBaseCollision/initSofaBaseCollision.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <thread>
@@ -135,7 +136,8 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
 void LCPForceFeedback_test::loadTestScene(const std::string& filename)
 {
     sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
-
+    sofa::component::initSofaBaseCollision(); // needed to instanciate RequiredPlugin
+    
     simulation::Simulation* simu;
     sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
 

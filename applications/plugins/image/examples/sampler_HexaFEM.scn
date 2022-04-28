@@ -4,7 +4,7 @@
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showVisual" />
 
-  <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
   <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="1.5" padSize="1" rotateImage="true" />
   <ImageContainer template="ImageB" name="image" src="@rasterizer" />
   <ImageViewer template="ImageB" name="viewer" src="@image"  />
@@ -20,7 +20,7 @@
           <HexahedronFEMForceField youngModulus="30.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" />
 
 	  <Node name="Visual"  >
-	     <MeshObjLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
+	     <MeshOBJLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
 	     <OglModel src="@meshLoader_0"   />
 	     <BarycentricMapping input="@.." output="@." />
 	  </Node>

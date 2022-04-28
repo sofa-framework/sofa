@@ -19,36 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATRIANGULARFEMFORCEFIELDOPTIM_H
-#define SOFA_GPU_CUDA_CUDATRIANGULARFEMFORCEFIELDOPTIM_H
+#pragma once
 
-#include "CudaTypes.h"
-#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
 
-namespace sofa
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
-namespace gpu
-{
-
-namespace cuda
-{
-
-} // namespace cuda
-
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
-{
-
-template <>
-class TriangularFEMForceFieldOptimInternalData<gpu::cuda::CudaVec3fTypes>
+template <class TCoord, class TDeriv, class TReal>
+class TriangularFEMForceFieldOptimInternalData< gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> >
 {
 public:
-    typedef TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes> Main;
+    typedef gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> DataTypes;
+    typedef TriangularFEMForceFieldOptim<DataTypes> Main;
+    
     struct GPUTriangleInfo
     {
         int ia, ib, ic;
@@ -61,7 +46,7 @@ public:
     void reinit(Main* m)
     {
 
-        const Main::VecElement& triangles = m->l_topology.get()->getTriangles();
+        const typename Main::VecElement& triangles = m->l_topology.get()->getTriangles();
         helper::WriteAccessor< VecGPUTriangleInfo > gpuTriangleInfo = this->gpuTriangleInfo;
 
         gpuTriangleInfo.resize(triangles.size());
@@ -71,7 +56,6 @@ public:
             gpuTriangleInfo[i].ib = triangles[i][1];
             gpuTriangleInfo[i].ic = triangles[i][2];
         }
-        std::cout << "CREATED " << gpuTriangleInfo.size() << " GPU TRIANGLESTATE" << std::endl;
     }
 
 };
@@ -82,10 +66,12 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addForce(const cor
 template <>
 void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
-} // namespace forcefield
 
-} // namespace component
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template <>
+void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+template <>
+void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::solidmechanics::fem::elastic

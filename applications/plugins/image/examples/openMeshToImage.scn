@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
   <RequiredPlugin pluginName="image"/>
   <VisualStyle displayFlags="showVisual" />
-  <MeshObjLoader name="mesh" filename="mesh/c_open.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh" filename="mesh/c_open.obj" triangulate="1"/>
   <MeshClosingEngine name="closer" inputPosition="@mesh.position" inputTriangles="@mesh.triangles" />
    
   <OglModel name="visual"  src="@mesh" color="0.5 0.5 1 .5"/>

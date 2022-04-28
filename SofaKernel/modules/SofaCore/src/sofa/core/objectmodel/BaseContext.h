@@ -24,6 +24,8 @@
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
+#include <sofa/core/objectmodel/TypeOfInsertion.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 namespace sofa::simulation
 {
@@ -50,7 +52,7 @@ public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
-    typedef type::Vector3 Vec3;
+    using Vec3 = sofa::type::Vec3;
 
 protected:
     BaseContext();
@@ -169,7 +171,7 @@ public:
     /// Returns a list of object of type passed as a parameter.
     template<class Container>
     Container* getObjects(Container* result, SearchDirection dir = SearchUp){
-        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(result, dir);
+        this->get<std::remove_pointer_t<typename Container::value_type>, Container>(result, dir);
         return result ;
     }
 
@@ -179,7 +181,7 @@ public:
     ///       context->getObjects(results) ;
     template<class Container>
     Container& getObjects(Container& result, SearchDirection dir = SearchUp){
-        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(&result, dir);
+        this->get<std::remove_pointer_t<typename Container::value_type>, Container>(&result, dir);
         return result ;
     }
 
@@ -369,7 +371,7 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( sptr<BaseObject> /*obj*/ )
+    virtual bool addObject( sptr<BaseObject> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd)
     {
         return false;
     }
@@ -381,6 +383,9 @@ public:
     }
 
     /// @}
+
+    /// Returns utilitary object to uniquely name objects in the context
+    ComponentNameHelper& getNameHelper() { return m_nameHelper; }
 
     /// @name Visitors.
     /// @{
@@ -404,6 +409,9 @@ public:
     /// @}
 
     friend std::ostream SOFA_CORE_API & operator << (std::ostream& out, const BaseContext& c );
+
+protected:
+    ComponentNameHelper m_nameHelper;
 };
 
 } // namespace sofa::core::objectmodel

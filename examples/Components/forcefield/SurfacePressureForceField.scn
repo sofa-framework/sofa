@@ -1,18 +1,24 @@
 <Node name="root" dt="0.01">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaDeformable'/>
-    <RequiredPlugin pluginName='SofaEngine'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [SurfacePressureForceField] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" usePointPoint="1" alarmDistance="3.5" contactDistance="1.5" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="Frog">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -23,12 +29,12 @@
         <BoxConstraint box="-18.0 2.0 -5.0 -2.0 3.0 5.0" />
         <MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/frog.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/frog.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="0.5 1.0 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="TriangleSurf">
-            <MeshObjLoader name="loader" filename="mesh/frog.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/frog.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />
@@ -47,12 +53,12 @@
         <BoxConstraint box="2.0 2.0 -5.0 18.0 3.0 5.0" />
         <MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_1" filename="mesh/frog_quads.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/frog_quads.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="QuadSurf">
-            <MeshObjLoader name="loader" filename="mesh/frog_quads.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/frog_quads.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />

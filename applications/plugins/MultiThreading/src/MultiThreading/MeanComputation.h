@@ -88,7 +88,7 @@ namespace sofa
 
             private:
 
-                Data<VecCoord> d_result;
+                Data<VecCoord> d_result; ///< Result: mean computed from the input values
 
                 //std::vector<component::container::MechanicalObject<DataTypes>*> _inputMechObjs;
                 

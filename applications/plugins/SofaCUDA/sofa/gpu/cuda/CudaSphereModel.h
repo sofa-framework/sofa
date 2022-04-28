@@ -19,50 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASPHEREMODEL_H
-#define SOFA_GPU_CUDA_CUDASPHEREMODEL_H
+#pragma once
 
-#include "CudaTypes.h"
-
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaBaseCollision/SphereModel.h>
 
-namespace sofa
+namespace sofa::gpu::cuda
 {
 
-namespace gpu
+using CudaSphereCollisionModel = sofa::component::collision::geometry::SphereCollisionModel<CudaVec3Types>;
+using CudaSphereCollisionModelf1 = sofa::component::collision::geometry::SphereCollisionModel<CudaVec3f1Types>;
+
+using CudaSphere = sofa::component::collision::TSphere<CudaVec3fTypes>;
+
+} // namespace sofa::gpu::cuda
+
+
+namespace sofa::component::collision
 {
-
-namespace cuda
-{
-
-using CudaSphere = sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types>;
-
-
-} // namespace cuda
-
-} // namespace gpu
-
-
-namespace component
-{
-namespace collision
-{
-
 
 #if  !defined(SOFA_BUILD_GPU_CUDA)
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
+extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

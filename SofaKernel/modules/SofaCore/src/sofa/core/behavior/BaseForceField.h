@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior { class MultiMatrixAccessor; }
@@ -45,18 +45,18 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  *
  */
-class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseForceField : public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseForceField, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseForceField, StateAccessor);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseForceField)
 protected:
     BaseForceField();
     ~BaseForceField() override = default;
 	
 private:
-	BaseForceField(const BaseForceField& n) ;
-	BaseForceField& operator=(const BaseForceField& n) ;	
+	BaseForceField(const BaseForceField& n) = delete;
+	BaseForceField& operator=(const BaseForceField& n) = delete;
 
 	
 public:
@@ -154,7 +154,7 @@ public:
     /// \param mparams \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
-    //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
+    //virtual void addBToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
 
     /// \brief Compute the system matrix corresponding to \f$ m M + b B + k K \f$
     ///
@@ -164,7 +164,7 @@ public:
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
-    ////virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
+    ////virtual void addMBKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
 
     /// @}
 
@@ -185,7 +185,7 @@ public:
 
     /// Return a pointer to the compliance matrix C
     /// \f$ C = K^{-1} \f$
-    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return nullptr; }
+    virtual const sofa::linearalgebra::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return nullptr; }
 
     /// \brief Accumulate the contribution of the C compliant matrix multiplied
     /// by the given Lagrange multipliers lambda vector with the given cFactor coefficient.

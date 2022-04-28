@@ -631,7 +631,7 @@ void MeshLoader::updatePoints()
         {
             return;    // all points are attached
         }
-        helper::WriteAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > waPositions = d_positions;
+        helper::WriteAccessor<Data<type::vector<sofa::type::Vec3 > > > waPositions = d_positions;
         type::vector<Topology::ElemID> old2new;
         old2new.resize(waPositions.size());
         Topology::ElemID p = 0;
@@ -707,7 +707,7 @@ void MeshLoader::updatePoints()
 
 void MeshLoader::updateNormals()
 {
-    helper::ReadAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > raPositions = d_positions;
+    helper::ReadAccessor<Data<type::vector<sofa::type::Vec3 > > > raPositions = d_positions;
     helper::ReadAccessor<Data< type::vector< Triangle > > > raTriangles = d_triangles;
     helper::ReadAccessor<Data< type::vector< Quad > > > raQuads = d_quads;
 
@@ -717,16 +717,16 @@ void MeshLoader::updateNormals()
         return;
     }
 
-    helper::WriteAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > waNormals = d_normals;
+    helper::WriteAccessor<Data<type::vector<sofa::type::Vec3 > > > waNormals = d_normals;
 
     waNormals.resize(raPositions.size());
 
     for (Size i = 0; i < raTriangles.size() ; i++)
     {
-        const sofa::type::Vec<3, SReal>  v1 = raPositions[raTriangles[i][0]];
-        const sofa::type::Vec<3, SReal>  v2 = raPositions[raTriangles[i][1]];
-        const sofa::type::Vec<3, SReal>  v3 = raPositions[raTriangles[i][2]];
-        sofa::type::Vec<3, SReal> n = cross(v2 - v1, v3 - v1);
+        const sofa::type::Vec3  v1 = raPositions[raTriangles[i][0]];
+        const sofa::type::Vec3  v2 = raPositions[raTriangles[i][1]];
+        const sofa::type::Vec3  v3 = raPositions[raTriangles[i][2]];
+        sofa::type::Vec3 n = cross(v2 - v1, v3 - v1);
 
         n.normalize();
         waNormals[raTriangles[i][0]] += n;
@@ -736,14 +736,14 @@ void MeshLoader::updateNormals()
     }
     for (Size i = 0; i < raQuads.size() ; i++)
     {
-        const sofa::type::Vec<3, SReal>& v1 = raPositions[raQuads[i][0]];
-        const sofa::type::Vec<3, SReal>& v2 = raPositions[raQuads[i][1]];
-        const sofa::type::Vec<3, SReal>& v3 = raPositions[raQuads[i][2]];
-        const sofa::type::Vec<3, SReal>& v4 = raPositions[raQuads[i][3]];
-        sofa::type::Vec<3, SReal> n1 = cross(v2 - v1, v4 - v1);
-        sofa::type::Vec<3, SReal> n2 = cross(v3 - v2, v1 - v2);
-        sofa::type::Vec<3, SReal> n3 = cross(v4 - v3, v2 - v3);
-        sofa::type::Vec<3, SReal> n4 = cross(v1 - v4, v3 - v4);
+        const sofa::type::Vec3& v1 = raPositions[raQuads[i][0]];
+        const sofa::type::Vec3& v2 = raPositions[raQuads[i][1]];
+        const sofa::type::Vec3& v3 = raPositions[raQuads[i][2]];
+        const sofa::type::Vec3& v4 = raPositions[raQuads[i][3]];
+        sofa::type::Vec3 n1 = cross(v2 - v1, v4 - v1);
+        sofa::type::Vec3 n2 = cross(v3 - v2, v1 - v2);
+        sofa::type::Vec3 n3 = cross(v4 - v3, v2 - v3);
+        sofa::type::Vec3 n4 = cross(v1 - v4, v3 - v4);
         n1.normalize();
         n2.normalize();
         n3.normalize();
@@ -768,21 +768,21 @@ void MeshLoader::applyTransformation(type::Matrix4 const& T)
         msg_info() << "applyTransformation: ignored matrix which is not a transformation T=" << T ;
         return;
     }
-    sofa::helper::WriteAccessor <Data< type::vector<sofa::type::Vec<3, SReal> > > > my_positions = d_positions;
+    sofa::helper::WriteAccessor <Data< type::vector<sofa::type::Vec3 > > > my_positions = d_positions;
     for (Size i = 0; i < my_positions.size(); i++)
     {
         my_positions[i] = T.transform(my_positions[i]);
     }
 }
 
-void MeshLoader::addPosition(type::vector<sofa::type::Vec<3, SReal> >& pPositions, const sofa::type::Vec<3, SReal>& p)
+void MeshLoader::addPosition(type::vector<sofa::type::Vec3 >& pPositions, const sofa::type::Vec3& p)
 {
     pPositions.push_back(p);
 }
 
-void MeshLoader::addPosition(type::vector<sofa::type::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z)
+void MeshLoader::addPosition(type::vector<sofa::type::Vec3 >& pPositions,  SReal x, SReal y, SReal z)
 {
-    addPosition(pPositions, sofa::type::Vec<3, SReal>(x, y, z));
+    addPosition(pPositions, sofa::type::Vec3(x, y, z));
 }
 
 void MeshLoader::addPolyline(type::vector<Polyline>& pPolylines, Polyline p)

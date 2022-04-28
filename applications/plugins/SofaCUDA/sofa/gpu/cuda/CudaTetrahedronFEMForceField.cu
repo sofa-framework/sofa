@@ -26,8 +26,6 @@
 #include "mycuda.h"
 #include <stdio.h>
 
-//#define umul24(x,y) ((x)*(y))
-
 #if defined(__cplusplus)
 namespace sofa
 {
@@ -226,7 +224,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getX(int i, const TIn* x)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         float x1 = tex1Dfetch(tex_3f_x, i3);
         float x2 = tex1Dfetch(tex_3f_x, i3+1);
         float x3 = tex1Dfetch(tex_3f_x, i3+2);
@@ -245,7 +243,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getDX(int i, const TIn* dx)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         float x1 = tex1Dfetch(tex_3f_dx, i3);
         float x2 = tex1Dfetch(tex_3f_dx, i3+1);
         float x3 = tex1Dfetch(tex_3f_dx, i3+2);
@@ -318,7 +316,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getX(int i, const TIn* x)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         double x1 = tex1Dfetch(tex_3d_x, i3);
         double x2 = tex1Dfetch(tex_3d_x, i3+1);
         double x3 = tex1Dfetch(tex_3d_x, i3+2);
@@ -337,7 +335,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getDX(int i, const TIn* dx)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         double x1 = tex1Dfetch(tex_3d_dx, i3);
         double x2 = tex1Dfetch(tex_3d_dx, i3+1);
         double x3 = tex1Dfetch(tex_3d_dx, i3+2);
@@ -412,7 +410,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getElementForce(int i, const TIn* x)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         float x1 = tex1Dfetch(tex_3f_eforce, i3);
         float x2 = tex1Dfetch(tex_3f_eforce, i3+1);
         float x3 = tex1Dfetch(tex_3f_eforce, i3+2);
@@ -469,7 +467,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getElementForce(int i, const TIn* x)
     {
-        int i3 = umul24(i,3);
+        int i3 = i * 3;
         double x1 = tex1Dfetch(tex_3d_eforce, i3);
         double x2 = tex1Dfetch(tex_3d_eforce, i3+1);
         double x3 = tex1Dfetch(tex_3d_eforce, i3+2);
@@ -509,7 +507,7 @@ public:
 template<typename real, class TIn>
 __global__ void TetrahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, const GPUElement<real>* elems, real* rotations, real* eforce, const TIn* x)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -517,7 +515,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, cons
     //GPUElementState<real> s;
     const GPUElement<real>* e = elems + blockIdx.x;
     matrix3<real> Rt;
-    rotations += umul24(index0,9)+index1;
+    rotations += index0 * 9 + index1;
     //GPUElementForce<real> f;
     CudaVec3<real> fB,fC,fD;
 
@@ -655,7 +653,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, cons
 
     //! Dynamically allocated shared memory to reorder global memory access
     __shared__  real temp[BSIZE*13];
-    int index13 = umul24(index1,13);
+    int index13 = index1 * 13;
     temp[index13+0 ] = -(fB.x+fC.x+fD.x);
     temp[index13+1 ] = -(fB.y+fC.y+fD.y);
     temp[index13+2 ] = -(fB.z+fC.z+fD.z);
@@ -669,7 +667,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, cons
     temp[index13+10] = fD.y;
     temp[index13+11] = fD.z;
     __syncthreads();
-    real* out = ((real*)eforce)+(umul24(blockIdx.x,BSIZE*16))+index1;
+    real* out = ((real*)eforce)+(blockIdx.x * BSIZE * 16)+index1;
     real v = 0;
     bool read = true; //(index1&4)<3;
     index1 += (index1>>4) - (index1>>2); // remove one for each 4-values before this thread, but add an extra one each 16 threads (so each 12 input cells, to align to 13)
@@ -712,18 +710,18 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, cons
 template<typename real,int BSIZE>
 __global__ void TetrahedronFEMForceFieldCuda3t_addForce1_kernel(int nbVertex, unsigned int nbElemPerVertex, const CudaVec4<real>* eforce, const int* velems, real* f)
 {
-    int index0 = fastmul(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
-    int index3 = fastmul(index1,3); //3*index1;
+    int index3 = 3 * index1;
 
     //! Shared memory buffer to reorder global memory access
     __shared__  real temp[BSIZE*3];
 
-    int iext = fastmul(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
+    int iext = index0 * 3 + index1;
 
     CudaVec3<real> force = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 
-    velems+=fastmul(index0,nbElemPerVertex)+index1;
+    velems += index0 * nbElemPerVertex + index1;
 
     if (index0+index1 < nbVertex)
         for (int s = 0; s < nbElemPerVertex; s++)
@@ -751,7 +749,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce1_kernel(int nbVertex, un
 template<typename real,int BSIZE>
 __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, unsigned int nb4ElemPerVertex, const CudaVec4<real>* eforce, const int* velems, real* f)
 {
-    int index0 = fastmul(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Shared memory buffer to reorder global memory access
@@ -774,7 +772,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, un
     }
 
     //int iout = (index1>>2)*3 + (index1&3)*((BSIZE/4)*3);
-    int iout = fastmul((index1>>2) + ((index1&3)*(BSIZE/4)),3);
+    int iout = ((index1>>2) + ((index1&3)*(BSIZE/4)))*3;
     temp[iout  ] = force.x;
     temp[iout+1] = force.y;
     temp[iout+2] = force.z;
@@ -787,7 +785,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, un
 
         real res = temp[index1] + temp[index1+ (BSIZE/4)*3] + temp[index1+ 2*(BSIZE/4)*3] + temp[index1+ 3*(BSIZE/4)*3];
 
-        int iext = fastmul(blockIdx.x,(BSIZE/4)*3)+index1; //index0*3+index1;
+        int iext = blockIdx.x*(BSIZE/4)*3+index1; //index0*3+index1;
 
         f[iext] += res;
     }
@@ -796,7 +794,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, un
 template<typename real,int BSIZE>
 __global__ void TetrahedronFEMForceFieldCuda3t_addForce8_kernel(int nbVertex, unsigned int nb8ElemPerVertex, const CudaVec4<real>* eforce, const int* velems, real* f)
 {
-    int index0 = fastmul(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x*BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Shared memory buffer to reorder global memory access
@@ -819,7 +817,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce8_kernel(int nbVertex, un
     }
 
     //int iout = (index1>>2)*3 + (index1&7)*((BSIZE/8)*3);
-    int iout = fastmul((index1>>3) + ((index1&3)*(BSIZE/8)),3);
+    int iout = ((index1>>3) + ((index1&3)*(BSIZE/8)))*3;
     if (index1&4)
     {
         temp[iout  ] = force.x;
@@ -840,7 +838,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce8_kernel(int nbVertex, un
         // we need to merge 4 values together
         real res = temp[index1] + temp[index1+ (BSIZE/8)*3] + temp[index1+ 2*(BSIZE/8)*3] + temp[index1+ 3*(BSIZE/8)*3];
 
-        int iext = fastmul(blockIdx.x,(BSIZE/8)*3)+index1; //index0*3+index1;
+        int iext = blockIdx.x*(BSIZE/8)*3+index1; //index0*3+index1;
 
         f[iext] += res;
     }
@@ -849,13 +847,13 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce8_kernel(int nbVertex, un
 template<typename real, int BSIZE>
 __global__ void TetrahedronFEMForceFieldCuda3t1_addForce1_kernel(int nbVertex, unsigned int nbElemPerVertex, const CudaVec4<real>* eforce, const int* velems, CudaVec4<real>* f)
 {
-    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index0 = blockIdx.x * BSIZE; //blockDim.x;
     const int index1 = threadIdx.x;
     const int index = index0 + index1;
 
     CudaVec3<real> force = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 
-    velems+=umul24(index0,nbElemPerVertex)+index1;
+    velems += index0 * nbElemPerVertex + index1;
 
     if (index < nbVertex)
         for (int s = 0; s < nbElemPerVertex; s++)
@@ -877,7 +875,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t1_addForce1_kernel(int nbVertex, u
 template<typename real, class TIn>
 __global__ void TetrahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, const GPUElement<real>* elems, const real* rotations, real* eforce, const TIn* x, real factor)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -887,7 +885,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, con
     //GPUElementForce<real> f;
     CudaVec3<real> fB,fC,fD;
     matrix3<real> Rt;
-    rotations += umul24(index0,9)+index1;
+    rotations += index0 * 9 + index1;
     Rt.readAoS(rotations);
     //Rt = ((const rmatrix3*)rotations)[index];
 
@@ -1003,7 +1001,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, con
 
     //! Dynamically allocated shared memory to reorder global memory access
     __shared__  real temp[BSIZE*13];
-    int index13 = umul24(index1,13);
+    int index13 = index1 * 13;
     temp[index13+0 ] = -(fB.x+fC.x+fD.x);
     temp[index13+1 ] = -(fB.y+fC.y+fD.y);
     temp[index13+2 ] = -(fB.z+fC.z+fD.z);
@@ -1017,7 +1015,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, con
     temp[index13+10] = fD.y;
     temp[index13+11] = fD.z;
     __syncthreads();
-    real* out = ((real*)eforce)+(umul24(blockIdx.x,BSIZE*16))+index1;
+    real* out = ((real*)eforce)+(blockIdx.x * BSIZE * 16)+index1;
     real v = 0;
     bool read = true; //(index1&4)<3;
     index1 += (index1>>4) - (index1>>2); // remove one for each 4-values before this thread, but add an extra one each 16 threads (so each 12 input cells, to align to 13)
@@ -1059,7 +1057,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, con
 template<typename real>
 __global__ void TetrahedronFEMForceFieldCuda3t_getRotations_kernel(int nbVertex, const real* initState, const real* state, const int* rotationIdx, real* rotations)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -1097,14 +1095,14 @@ __global__ void TetrahedronFEMForceFieldCuda3t_getRotations_kernel(int nbVertex,
 template<typename real>
 __global__ void TetrahedronFEMForceFieldCuda3t_getElementRotations_kernel(unsigned nbElem,const real* rotationsAos, real* rotations)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
     if (index>=nbElem) return;
 
     matrix3<real> R;
-    rotationsAos += umul24(index0,9)+index1;
+    rotationsAos += index0 * 9 + index1;
     R.readAoS(rotationsAos);
 
     rotations += 9*index;

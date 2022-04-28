@@ -26,6 +26,11 @@
 namespace sofa::core::topology
 {
 
+
+/// static variable to be used when not all information are provided during topological event.
+static const sofa::type::vector< Index > s_empty_ancestors;
+static const sofa::type::vector< SReal > s_empty_coefficients;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +235,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Index>& index,
     const sofa::type::vector< TopologyElementType >& elems,
     const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
-    const sofa::type::vector<sofa::type::vector<double> >& coefs,
+    const sofa::type::vector<sofa::type::vector<SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
     std::size_t nbElements = index.size();
@@ -250,9 +255,6 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     data.resize(i0 + nbElements);
     this->m_lastElementIndex += sofa::Index(nbElements);
 
-    const sofa::type::vector< Index > empty_vecint;
-    const sofa::type::vector< double > empty_vecdouble;
-
     if (this->m_topologyHandler)
     {
         for (Index i = 0; i < nbElements; ++i)
@@ -260,26 +262,25 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
             value_type& t = data[i0 + i];
         
             this->m_topologyHandler->applyCreateFunction(Index(i0 + i), t, elems[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
+                    (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i],
                     (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
             
             if (p_onCreationCallback)
             {
                 p_onCreationCallback(Index(i0 + i), t, elems[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i]);
+                    (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i]);
             }
         }
     }
-    this->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Index>& indexList,
     const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-    const sofa::type::vector< sofa::type::vector< double > >& coefs)
+    const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
@@ -313,7 +314,7 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::ty
 
     // Recompute data
     sofa::type::vector< Index > ancestors;
-    sofa::type::vector< double >  coefs;
+    sofa::type::vector< SReal >  coefs;
     coefs.push_back(1.0);
     ancestors.resize(1);
 

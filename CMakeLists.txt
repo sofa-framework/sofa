@@ -4,8 +4,8 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 21)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 22)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -175,10 +175,6 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
-# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (Compliant, image, ...)
-# it simplifies binaries generation and cohabitation between SofaPython and SofaPython3
-option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
-
 ### Extlibs
 add_subdirectory(extlibs)
 
@@ -186,9 +182,10 @@ add_subdirectory(extlibs)
 option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders)." ON)
 if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
-    message("Headers from v20.12 are usable, but it is advised to change your code to use the new headers introduced in v21.06.")
+    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+    add_subdirectory(Component/Compat)
 endif()
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
@@ -198,7 +195,16 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
 endif()
 
+# SOFA-NG Components
+add_subdirectory(Component)
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
+
+# SOFA-NG Plugins
+option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
+if(SOFA_WITH_OPENGL)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
+endif()
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
@@ -259,6 +265,12 @@ if (SOFA_BUILD_ADD_SCENES)
     add_subdirectory(examples)
 endif()
 
+## SOFA shaders
+option(SOFA_BUILD_ADD_SHADERS "Add SOFA shaders as a project of the build." OFF)
+if (SOFA_BUILD_ADD_SHADERS)
+    add_subdirectory(share/shaders)
+endif()
+
 ## Build external projects at the same time
 set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
 if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
@@ -275,7 +287,15 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
-# Regroup all test-related projects into an IDE folder
+## IDE directories
+# Sofa.Component
+sofa_get_all_targets(all_targets)
+foreach(target ${all_targets})
+    if(target MATCHES "Sofa.Component.*" AND NOT target MATCHES ".*_relocatable_install")
+        set_target_properties(${target} PROPERTIES FOLDER Sofa.Component) # IDE folder
+    endif()
+endforeach()
+# Testing
 if(TARGET Sofa.Testing) # No need to search for test targets if tests are not enabled
     sofa_get_all_targets(all_targets)
     foreach(target ${all_targets})
@@ -284,8 +304,9 @@ if(TARGET Sofa.Testing) # No need to search for test targets if tests are not en
         endif()
     endforeach()
 endif()
+##
 
-# Install configuration
+## Install configuration
 #install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
 install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)

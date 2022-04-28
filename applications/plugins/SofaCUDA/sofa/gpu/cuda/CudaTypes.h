@@ -24,17 +24,18 @@
 
 #include "CudaCommon.h"
 #include "mycuda.h"
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/gl/gl.h>
 #include <sofa/type/Vec.h>
-#include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/type/vector.h>
-#include <sofa/helper/accessor.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <iostream>
-#include <sofa/gpu/cuda/CudaMemoryManager.h>
 #include <sofa/type/vector_device.h>
+#include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/core/behavior/ForceField.h>
+#include <sofa/gpu/cuda/CudaMemoryManager.h>
+#include <SofaBaseMechanics/MassType.h>
+#include <iostream>
 
 namespace sofa
 {
@@ -45,12 +46,20 @@ namespace gpu
 namespace cuda
 {
 
+// Empty class to be used to highlight deprecated objects in SofaCUDA plugin at compilation time.
+class CudaDeprecatedAndRemoved {};
+
+#define SOFA_CUDA_ATTRIBUTE_DEPRECATED(removeDate, toFixMsg) \
+    [[deprecated( \
+        "Has been DEPRECATED and removed since " removeDate ". " \
+        " To fix your code use " toFixMsg)]]
+
 template<typename T>
 struct DataTypeInfoManager
 {
-    template<class T2> struct rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
     {
-        typedef DataTypeInfoManager<T2> other;
+        using other = DataTypeInfoManager<T2>;
     };
 
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
@@ -830,5 +839,23 @@ template<> struct DataTypeName<sofa::gpu::cuda::Vec3d1> { static const char* nam
 } // namespace defaulttype
 
 } // namespace sofa
+
+// define MassType for CudaTypes
+namespace sofa::component::mass
+{
+    template<class TCoord, class TDeriv, class TReal>
+    struct MassType<sofa::gpu::cuda::CudaVectorTypes< TCoord, TDeriv, TReal> >
+    {
+        using type = TReal;
+    };
+
+    template<int N, typename real>
+    struct MassType<sofa::gpu::cuda::CudaRigidTypes<N, real> >
+    {
+        using type = sofa::defaulttype::RigidMass<N, real>;
+    };
+
+} // namespace sofa::component::mass
+
 
 #endif

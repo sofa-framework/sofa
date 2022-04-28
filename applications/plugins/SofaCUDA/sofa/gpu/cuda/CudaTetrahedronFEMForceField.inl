@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_INL
+#pragma once
 
 #include "CudaTetrahedronFEMForceField.h"
-#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.inl>
 #include <sofa/core/MechanicalParams.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -131,14 +124,9 @@ public:
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 using namespace gpu::cuda;
@@ -368,11 +356,11 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
     Data& data = m->data;
 
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat))
+    if (sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,double> > * crsmat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat))
     {
         const VecElement& elems = *m->_indexedElements;
 
@@ -440,7 +428,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
             *crsmat->wbloc(offd3 + e[3], offd3 + e[3],true) += tmpBlock[3][3];
         }
     }
-    else if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat))
+    else if (sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,float> > * crsmat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat))
     {
         const VecElement& elems = *m->_indexedElements;
 
@@ -603,7 +591,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m,defaulttype::BaseMatrix * rotations,int offset)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m,linearalgebra::BaseMatrix * rotations,int offset)
 {
     Data& data = m->data;
 
@@ -646,7 +634,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 } \
     template<> inline void TetrahedronFEMForceField< T >::getRotations(VecReal & rotations) \
 { data.getRotations(this, rotations); } \
-    template<> inline void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * rotations,int offset) \
+    template<> inline void TetrahedronFEMForceField< T >::getRotations(linearalgebra::BaseMatrix * rotations,int offset) \
 { data.getRotations(this, rotations,offset); } \
     template<> inline void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) \
 { \
@@ -655,7 +643,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     data.addDForce(this, df, dx, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams)); \
     d_df.endEdit(); \
 } \
-    template<> inline void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
+    template<> inline void TetrahedronFEMForceField< T >::addKToMatrix(sofa::linearalgebra::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
 { data.addKToMatrix(this, mat, kFactor, offset); }
 
 
@@ -671,10 +659,4 @@ CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #undef CudaTetrahedronFEMForceField_ImplMethods
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::solidmechanics::fem::elastic

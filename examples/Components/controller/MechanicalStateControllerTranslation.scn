@@ -1,18 +1,22 @@
 <Node name="root" dt="0.005" gravity="0 -10 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/>
-    <RequiredPlugin pluginName='SofaUserInteraction'/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
+    <RequiredPlugin name="SofaUserInteraction"/> <!-- Needed to use components [MechanicalStateController] -->
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="InstrumentEdgeSet">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
@@ -20,12 +24,12 @@
         <MechanicalObject template="Rigid3d" />
         <UniformMass totalMass="1" />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="50" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/sphere.obj" scale="50" handleSeams="1" />
             <OglModel color="0.500 0.500 0.500" src="@meshLoader_0" name="Visual" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
-            <MeshObjLoader name="loader" filename="mesh/sphere.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/sphere.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" scale="50" />
             <TriangleCollisionModel />

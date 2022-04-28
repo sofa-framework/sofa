@@ -30,7 +30,7 @@ namespace sofa::simulation::mechanicalvisitor
 template< sofa::core::VecType vtype>
 Visitor::Result MechanicalVAllocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->vAlloc(this->params, v.getId(mm) );
+    mm->vAlloc(this->params, v.getId(mm), m_properties );
     return RESULT_CONTINUE;
 }
 

@@ -25,9 +25,12 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
+#include <sofa/testing/NumericTest.h>
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
@@ -90,13 +93,13 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename type::vector<MassType> VecMass;
-    typedef MeshMatrixMass<TDataTypes, TMassType> TheMeshMatrixMass ;
+    typedef MeshMatrixMass<TDataTypes> TheMeshMatrixMass ;
 
     simulation::Simulation* simulation = nullptr;
     simulation::Node::SPtr root;
     simulation::Node::SPtr node;
     typename MechanicalObject<DataTypes>::SPtr mstate;
-    typename MeshMatrixMass<DataTypes, MassType>::SPtr mass;
+    typename MeshMatrixMass<DataTypes>::SPtr mass;
 
     void SetUp() override
     {
@@ -120,7 +123,7 @@ public:
         node->addObject(mstate);
         node->addObject(topologyContainer);
         node->addObject(geometryAlgorithms);
-        mass = New<MeshMatrixMass<DataTypes, MassType> >();
+        mass = New<MeshMatrixMass<DataTypes> >();
         node->addObject(mass);
     }
 
@@ -133,17 +136,17 @@ public:
         }
 
         // Check the total mass.
-        EXPECT_FLOAT_EQ(expectedTotalMass, mass->d_totalMass.getValue());
+        EXPECT_FLOATINGPOINT_EQ(expectedTotalMass, mass->d_totalMass.getValue());
 
         // Check mass density
-        EXPECT_FLOAT_EQ(expectedMassDensity, mass->getMassDensity()[0]);
+        EXPECT_FLOATINGPOINT_EQ(expectedMassDensity, mass->getMassDensity()[0]);
 
         // Check the mass at each index.
         auto vertexMass = mass->d_vertexMass.getValue();
         ASSERT_EQ(expectedVMass.size(), vertexMass.size());
 
         for (size_t i = 0 ; i < vertexMass.size(); i++)
-            EXPECT_FLOAT_EQ(expectedVMass[i], vertexMass[i]);
+            EXPECT_FLOATINGPOINT_EQ(expectedVMass[i], vertexMass[i]);
 
         // Check edge mass 
         auto edgeMass = mass->d_edgeMass.getValue();
@@ -151,7 +154,7 @@ public:
 
         for (size_t i = 0; i < edgeMass.size(); i++) {
             if (edgeMass[i] != 0.0) // == 0 is possible if edge is not part of the element structure (for example in grid)
-                EXPECT_FLOAT_EQ(expectedEMass[i], edgeMass[i]);
+                EXPECT_FLOATINGPOINT_EQ(expectedEMass[i], edgeMass[i]);
         }
     }
 
@@ -238,13 +241,13 @@ public:
             EXPECT_EQ( mass->d_vertexMass.getValue().size(), 27 );
             EXPECT_EQ( mass->d_edgeMass.getValue().size(), 90);
 
-            EXPECT_FLOAT_EQ( mass->getTotalMass(), expectedTotalMass);
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], expectedDensity);
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), expectedTotalMass);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
 
-            EXPECT_FLOAT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
-            EXPECT_FLOAT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
-            EXPECT_FLOAT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
-            EXPECT_FLOAT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40)); 
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40)); 
         }
 
         return ;
@@ -281,13 +284,13 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_EQ( mass->d_edgeMass.getValue().size(), 90);
 
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], expectedDensity);
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
 
-            EXPECT_FLOAT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
-            EXPECT_FLOAT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
-            EXPECT_FLOAT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
-            EXPECT_FLOAT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40));
         }
 
         return ;
@@ -326,14 +329,14 @@ public:
             EXPECT_EQ(mass->d_edgeMass.getValue().size(), 90);
 
             EXPECT_EQ(mass->isLumped(), true);
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], expectedDensity);
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
             EXPECT_EQ(mass->getVertexMass()[0], 1.0);
 
-            EXPECT_FLOAT_EQ(mass->d_vertexMass.getValue()[0], 1.0);
-            EXPECT_FLOAT_EQ(mass->d_vertexMass.getValue()[1], 1.0);
-            EXPECT_FLOAT_EQ(mass->d_edgeMass.getValue()[0], 0.0);
-            EXPECT_FLOAT_EQ(mass->d_edgeMass.getValue()[2], 0.0);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], 1.0);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], 1.0);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], 0.0);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], 0.0);
         }
 
         return ;
@@ -368,9 +371,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ( mass->getTotalMass(), 2.0 ); 
-            EXPECT_FLOAT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0); // 8 hexa
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0 ); 
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0); // 8 hexa
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
         }
 
         return ;
@@ -402,9 +405,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ( mass->getTotalMass(), 2.0 );
-            EXPECT_FLOAT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0);
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
         }
 
         return ;
@@ -436,9 +439,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ( mass->getTotalMass(), 8.0 );
-            EXPECT_FLOAT_EQ( mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.05 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05 );
         }
 
         return ;
@@ -471,9 +474,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ( mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ( mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
         }
 
         return ;
@@ -503,9 +506,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.00625);
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625);
         }
 
         return ;
@@ -535,9 +538,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
         }
 
         return ;
@@ -568,9 +571,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
         }
 
         return ;
@@ -600,9 +603,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
         }
 
         return ;
@@ -636,9 +639,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
         }
 
         return ;
@@ -670,9 +673,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 0.0125 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.0125 );
         }
 
         return ;
@@ -721,10 +724,10 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[7], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[7], (0.25/3.0) );
         }
         return ;
     }
@@ -759,10 +762,10 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[1], 0.1 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[1], 0.1 );
         }
 
         return ;
@@ -798,9 +801,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
         }
 
         return ;
@@ -837,9 +840,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 1.0 );
         }
 
         return ;
@@ -880,9 +883,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
         }
 
         return ;
@@ -919,9 +922,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
         }
 
         return ;
@@ -958,9 +961,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
         }
 
         return ;
@@ -999,9 +1002,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1037,9 +1040,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1075,9 +1078,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1113,9 +1116,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1150,9 +1153,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1192,9 +1195,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
         }
 
         return ;
@@ -1232,9 +1235,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOAT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOAT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOAT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
         }
 
         return ;
@@ -1301,21 +1304,21 @@ public:
         // check value at init
         EXPECT_EQ(vMasses.size(), 27);
         EXPECT_EQ(eMasses.size(), 90);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
         
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-            EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[2], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0.);
         }
         
         // -- remove hexahedron id: 0 -- 
@@ -1323,42 +1326,42 @@ public:
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 26);
         EXPECT_EQ(eMasses.size(), 87);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), 7.0);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 7.0);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
         }
 
         // -- remove hexahedron id: 0 --
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 25);
         EXPECT_EQ(eMasses.size(), 84);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), 6.0);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 6.0);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
         }
         
         // -- remove hexahedron id: 0, 1 --
@@ -1366,21 +1369,21 @@ public:
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 21);
         EXPECT_EQ(eMasses.size(), 74);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), 4.0);
+        EXPECT_NEAR(mass->getTotalMass(), 4.0, 1e-14);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[20], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[20], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
-            EXPECT_FLOAT_EQ(eMasses[20], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[20], 0.);
         }
 
         // -- remove hexahedron id: 0, 1, 2, 3 --
@@ -1459,21 +1462,21 @@ public:
         // check value at init
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_EQ(eMasses.size(), 19);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 5);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV * 5);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 3);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 3);
-            EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE * 3);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], refValueE * 2);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
         }
 
         // -- remove tetrahedron id: 0 -- 
@@ -1481,21 +1484,21 @@ public:
         modifier->removeTetrahedra(elemIds);
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_EQ(eMasses.size(), 18);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 4); // check update of Mass when removing tetra
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV * 4); // check update of Mass when removing tetra
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
         }
 
 
@@ -1503,21 +1506,21 @@ public:
         modifier->removeTetrahedra(elemIds);
         EXPECT_EQ(vMasses.size(), 7);
         EXPECT_EQ(eMasses.size(), 15);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 3); // check update of Mass when removing tetra
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV * 3); // check update of Mass when removing tetra
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
         }
 
 
@@ -1526,21 +1529,21 @@ public:
         modifier->removeTetrahedra(elemIds);
         EXPECT_EQ(vMasses.size(), 6);
         EXPECT_EQ(eMasses.size(), 11);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 4 * massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - 4 * massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
         }
 
         // -- remove tetrahedron id: 0, 1 --
@@ -1612,21 +1615,21 @@ public:
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_EQ(eMasses.size(), 16);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-            EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[2], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0.);
         }
 
         // -- remove quad id: 0 -- 
@@ -1634,42 +1637,42 @@ public:
         modifier->removeQuads(elemIds, true, true);
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_EQ(eMasses.size(), 14);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
         }
 
         // -- remove quad id: 0 --
         modifier->removeQuads(elemIds, true, true);
         EXPECT_EQ(vMasses.size(), 7);
         EXPECT_EQ(eMasses.size(), 12);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
         }
 
         // -- remove quad id: 0, 1 --
@@ -1743,21 +1746,21 @@ public:
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_EQ(eMasses.size(), 16);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 3);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-            EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], refValueE * 2);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
         }
 
 
@@ -1766,42 +1769,42 @@ public:
         modifier->removeTriangles(elemIds, true, true);
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_EQ(eMasses.size(), 15);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE * 2);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
         }
 
         // -- remove triangle id: 0 --
         modifier->removeTriangles(elemIds, true, true);
         EXPECT_EQ(vMasses.size(), 9);
         EXPECT_EQ(eMasses.size(), 14);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - 2 * massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE * 2);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
         }
 
         // -- remove triangle id: 0, 1 --
@@ -1809,21 +1812,21 @@ public:
         modifier->removeTriangles(elemIds, true, true);
         EXPECT_EQ(vMasses.size(), 7);
         EXPECT_EQ(eMasses.size(), 10);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), expectedTotalMass - 4 * massElem);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - 4 * massElem);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
-        EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV * 2);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], refValueV * 2);
         // check edge mass (only if not lumped else eMass is not computed)
         if(!lumped)
         {
-            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], refValueE);
         }
         else
         {
-            EXPECT_FLOAT_EQ(eMasses[0], 0.);
-            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
         }
 
         // -- remove triangle id: 0, 1, 2, 3 --
@@ -1885,7 +1888,7 @@ public:
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
         const VecMass& eMasses = mass->d_edgeMass.getValue();
-       static const MassType wrongValue = 0; 
+        static const MassType wrongValue = 0;
        // TODO epernod 2021-06-29: MeshMatrixMass based on edge topology doesn't support topological changes
        // Keeping expected values for record
        /*
@@ -1901,41 +1904,41 @@ public:
         // check value at init
         EXPECT_EQ(vMasses.size(), 4);
         EXPECT_EQ(eMasses.size(), 3);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), /*expectedTotalMass*/ wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), /*expectedTotalMass*/ wrongValue);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], wrongValue);
-        EXPECT_FLOAT_EQ(vMasses[1], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], wrongValue);
         // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], wrongValue);
-        EXPECT_FLOAT_EQ(eMasses[1], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(eMasses[0], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(eMasses[1], wrongValue);
 
         // -- remove edge id: 0 -- 
         sofa::type::vector<sofa::Index> elemIds = { 0 };
         modifier->removeEdges(elemIds, true);
         EXPECT_EQ(vMasses.size(), 3);
         EXPECT_EQ(eMasses.size(), 2);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), /*expectedTotalMass - massElem*/ wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), /*expectedTotalMass - massElem*/ wrongValue);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], wrongValue); // check update of Mass when removing tetra
-        EXPECT_FLOAT_EQ(vMasses[1], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], wrongValue); // check update of Mass when removing tetra
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], wrongValue);
         // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], wrongValue);
-        EXPECT_FLOAT_EQ(eMasses[1], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(eMasses[0], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(eMasses[1], wrongValue);
 
 
         // -- remove edge id: 0 --
         modifier->removeEdges(elemIds, true);
         EXPECT_EQ(vMasses.size(), 2);
         EXPECT_EQ(eMasses.size(), 1);
-        EXPECT_FLOAT_EQ(mass->getTotalMass(), /*expectedTotalMass - 2 * massElem*/ wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), /*expectedTotalMass - 2 * massElem*/ wrongValue);
 
         // check vertex mass
-        EXPECT_FLOAT_EQ(vMasses[0], wrongValue);
-        EXPECT_FLOAT_EQ(vMasses[1], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[0], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(vMasses[1], wrongValue);
         // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], wrongValue);
+        EXPECT_FLOATINGPOINT_EQ(eMasses[0], wrongValue);
 
 
         // -- remove edge id: 0 --

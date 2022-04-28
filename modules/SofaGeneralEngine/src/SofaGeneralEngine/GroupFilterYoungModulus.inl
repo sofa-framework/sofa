@@ -23,6 +23,7 @@
 #include "GroupFilterYoungModulus.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::component::engine
 {
@@ -37,14 +38,14 @@ GroupFilterYoungModulus<DataTypes>::GroupFilterYoungModulus()
     , p_defaultModulus( initData (&p_defaultModulus, (Real) 10000.0, "defaultYoungModulus", "Default value if the primitive is not in a group") )
     , p_groupMod( initData (&p_groupMod, "groupModulus", "list of young modulus for each group") )
 {
+    addInput(&f_groups);
+    addInput(&f_primitives);
+    addOutput(&f_youngModulus);
 }
 
 template <class DataTypes>
 void GroupFilterYoungModulus<DataTypes>::init()
 {
-    addInput(&f_groups);
-    addInput(&f_primitives);
-    addOutput(&f_youngModulus);
     setDirtyValue();
 }
 
@@ -77,7 +78,7 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
             Real youngModulus;
 
             //does not matter if primitives is empty
-            int maxSize = primitives.size();
+            int maxSize = sofa::helper::narrow_cast<int>(primitives.size());
             std::map<sofa::type::PrimitiveGroup, Real> mapMG;
 
             //read string and tokenize
@@ -134,8 +135,9 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
             }
         } else {
             youngModulusVector.clear();
-            unsigned sz = p_groupMod.getValue().size();
-            for (unsigned i=0;i<groups.size();i++) {
+            const auto sz = p_groupMod.getValue().size();
+            for (std::size_t i = 0; i < groups.size(); i++)
+            {
                 Real ym;
                 if (i<sz) ym = p_groupMod.getValue()[i];
                 else ym = defaultModulus;

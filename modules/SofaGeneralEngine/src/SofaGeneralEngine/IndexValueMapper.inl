@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "IndexValueMapper.h"
+#include <SofaGeneralEngine/IndexValueMapper.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::component::engine
 {
@@ -33,17 +34,16 @@ IndexValueMapper<DataTypes>::IndexValueMapper()
     , f_outputValues(initData(&f_outputValues, "outputValues", "New map between indices and values"))
     , p_defaultValue(initData(&p_defaultValue, (Real) 1.0, "defaultValue", "Default value for indices without any value"))
 {
-}
-
-template <class DataTypes>
-void IndexValueMapper<DataTypes>::init()
-{
     addInput(&f_inputValues);
     addInput(&f_indices);
     addInput(&f_value);
 
     addOutput(&f_outputValues);
+}
 
+template <class DataTypes>
+void IndexValueMapper<DataTypes>::init()
+{
     setDirtyValue();
 }
 
@@ -77,10 +77,10 @@ void IndexValueMapper<DataTypes>::doUpdate()
         //new index may be bigger than the current existing map, so have to resize it
         if (ind >= outputValues.size())
         {
-            unsigned int oldSize = outputValues.size();
+            const auto oldSize = sofa::helper::narrow_cast<Index>(outputValues.size());
             outputValues.resize(ind+1);
             //if there is hole when resizing, put default value
-            for (unsigned int j=oldSize ; j<ind+1 ; j++)
+            for (Index j=oldSize ; j<ind+1 ; ++j)
                 outputValues[j] = defaultValue;
         }
         outputValues[ind] = value;

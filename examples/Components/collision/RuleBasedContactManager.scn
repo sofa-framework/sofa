@@ -1,13 +1,19 @@
 <?xml version="1.0"?>
 <!-- Mechanical RuleBasedContactManager Example -->
 <Node name="root" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaMiscCollision"/>
-    <RequiredPlugin name='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/>
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [LocalMinDistance] -->
     
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
@@ -16,17 +22,17 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1.0" angleCone="0.0" />
-    <RuleBasedContactManager name="Response" response="FrictionContact" rules="4 * default" />
+    <RuleBasedContactManager name="Response" response="FrictionContactConstraint" rules="4 * default" />
     <DefaultCollisionGroupManager name="Group" />
     
     <Node name="Torus1">
-        <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader" />
+        <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader" />
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" scale="5.0" />
         <TriangleCollisionModel simulated="0" moving="0" name="Torus1Triangle" group="1" />
         <LineCollisionModel simulated="0" moving="0" name="Torus1Line" group="1" />
         <PointCollisionModel simulated="0" moving="0" name="Torus1Point" group="1" />
-        <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_2" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
         <OglModel name="Visual" src="@meshLoader_2" color="0.5 0.5 0.5 1.0" />
     </Node>
 
@@ -37,12 +43,12 @@
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_3" color="0.0 0.5 0.5 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
-            <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/torus_for_collision.obj" name="loader" />
             <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" scale="5.0" />
             <TriangleCollisionModel name="Torus2Triangle" group="2" />
@@ -59,12 +65,12 @@
         <UniformMass filename="BehaviorModels/torus2.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_1" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.25 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
-            <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" scale="5.0" />
             <TriangleCollisionModel name="Torus3Triangle" group="3" />
@@ -81,12 +87,12 @@
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="0.0 0.5 0.5 1.0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
-            <MeshObjLoader filename="mesh/torus_for_collision.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/torus_for_collision.obj" name="loader" />
             <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" scale="5.0" />
             <TriangleCollisionModel name="Torus4Triangle" group="4" />

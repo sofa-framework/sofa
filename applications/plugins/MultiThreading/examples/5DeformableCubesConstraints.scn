@@ -25,7 +25,7 @@ In this scene, collision is detected in parallel.
     <ParallelBruteForceBroadPhase/>
     <ParallelBVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
-    <DefaultContactManager name="Response" response="FrictionContact"/>
+    <DefaultContactManager name="Response" response="FrictionContactConstraint"/>
     <LCPConstraintSolver maxIt="1000" tolerance="0.001"  build_lcp="false"/>
     <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
 
@@ -201,7 +201,7 @@ In this scene, collision is detected in parallel.
     </Node>
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
         <TriangleCollisionModel simulated="false"/>

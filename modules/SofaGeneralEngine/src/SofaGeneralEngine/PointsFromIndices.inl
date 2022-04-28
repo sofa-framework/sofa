@@ -32,6 +32,9 @@ PointsFromIndices<DataTypes>::PointsFromIndices()
     , f_indices( initData(&f_indices,"indices","Indices of the points") )
     , f_indices_position( initData (&f_indices_position, "indices_position", "Coordinates of the points contained in indices"))
 {
+    addInput(&f_X);
+    addInput(&f_indices);
+    addOutput(&f_indices_position);
 }
 
 template <class DataTypes>
@@ -51,9 +54,7 @@ void PointsFromIndices<DataTypes>::init()
             }
         }
     }
-    addInput(&f_X);
-    addInput(&f_indices);
-    addOutput(&f_indices_position);
+
     setDirtyValue();
 }
 

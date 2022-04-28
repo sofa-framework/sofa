@@ -30,7 +30,7 @@ struct Pyramid
 {
     static const sofa::Size NumberOfNodes = 5;
 
-    Pyramid() = default;
+    Pyramid() = delete;
 };
 
 } // namespace sofa::geometry

@@ -4,6 +4,6 @@
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-	<CollisionResponse name="Response" response="default" />
+	<CollisionResponse name="Response" response="PenalityContactForceField" />
 	<CollisionGroup name="Group" />
 </Node>

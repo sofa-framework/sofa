@@ -1,29 +1,35 @@
 <?xml version="1.0" ?>
 <!-- Mechanical DeformableOnRigidFrameMapping Example -->
 <Node name="root" dt="0.02">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaEngine'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
-    <RequiredPlugin pluginName='SofaMiscMapping'/>
-    <RequiredPlugin pluginName='SofaSimpleFem'/> 
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [PlaneForceField] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     <VisualStyle displayFlags="showBehavior showVisual" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="ChainRigid">
         <Node name="TorusFixed">
-            <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
-            <MeshObjLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="gray" />
         </Node>
         <!-- 		<Node name="TorusRigid"> -->
@@ -44,7 +50,7 @@
                     <MechanicalObject name="deformedMO" />
                     <DeformableOnRigidFrameMapping input1="@.." input2="@../../rigidframe" output="@deformedMO" printLog="0" />
                     <Node name="TorusCollisLocal">
-                        <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                        <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj" />
                         <MeshTopology src="@loader" />
                         <MechanicalObject src="@loader" />
                         <TriangleCollisionModel group="2" />
@@ -52,7 +58,7 @@
                         <PlaneForceField name="Floor" normal="0 1 0" d="-4" stiffness="100" damping="1" />
                     </Node>
                     <Node name="Visu">
-                        <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+                        <MeshOBJLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
                         <OglModel name="Visual" src="@meshLoader_1" color="gray" />
                         <BarycentricMapping input="@.." output="@Visual" />
                     </Node>

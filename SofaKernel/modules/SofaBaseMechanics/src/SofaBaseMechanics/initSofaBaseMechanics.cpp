@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,12 @@ void initSofaBaseMechanics()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaBaseMechanics") << "SofaBaseMechanics is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass and Sofa.Component.Mapping and Sofa.Component.StateContainer instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mass");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.StateContainer");
+
         first = false;
     }
 }

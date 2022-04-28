@@ -459,14 +459,14 @@ protected:
                     img(l).resize(dimx,dimy,dimz,nbc);
                     cimg_forXYZ(img(l),x,y,z)
                     {
-                        Coord p=inT->toImage(outT->fromImage(Coord(x,y,z)));
-                        if(p[0]<-0.5 || p[1]<-0.5 || p[2]<-0.5 || p[0]>inimg(l).width()-0.5 || p[1]>inimg(l).height()-0.5 || p[2]>inimg(l).depth()-0.5)
+                        Coord p2=inT->toImage(outT->fromImage(Coord(x,y,z)));
+                        if(p2[0]<-0.5 || p2[1]<-0.5 || p2[2]<-0.5 || p2[0]>inimg(l).width()-0.5 || p2[1]>inimg(l).height()-0.5 || p2[2]>inimg(l).depth()-0.5)
                             for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = OutValue;
                         else
                         {
-                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(sofa::helper::round((double)p[0]),sofa::helper::round((double)p[1]),sofa::helper::round((double)p[2]),k);
-                            else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p[0],p[1],p[2],k,OutValue);
-                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p[0],p[1],p[2],k,OutValue,cimg_library::cimg::type<Ti>::min(),cimg_library::cimg::type<Ti>::max());
+                            if(interpolation==0) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).atXYZ(sofa::helper::round((double)p2[0]),sofa::helper::round((double)p2[1]),sofa::helper::round((double)p2[2]),k);
+                            else if(interpolation==1) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).linear_atXYZ(p2[0],p2[1],p2[2],k,OutValue);
+                            else if(interpolation==2) for(unsigned int k=0; k<nbc; k++) img(l)(x,y,z,k) = (To) inimg(l).cubic_atXYZ(p2[0],p2[1],p2[2],k,OutValue,cimg_library::cimg::type<Ti>::min(),cimg_library::cimg::type<Ti>::max());
                         }
                     }
                 }

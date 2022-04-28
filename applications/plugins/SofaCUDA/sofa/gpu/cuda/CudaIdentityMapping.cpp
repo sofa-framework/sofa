@@ -19,30 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
-#define SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
+#define  SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
 
-#include "CudaTypes.h"
-#include "CudaIdentityMapping.inl"
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
+#include <sofa/gpu/cuda/CudaIdentityMapping.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
-
 
 // CudaVec3fTypes
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3fTypes>;
@@ -65,27 +53,18 @@ template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3dTypes, Vec3Types>;
 
 template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3dTypes>;
-
-
 #endif
 
+} // namespace sofa::component::mapping::linear
 
-} // namespace mapping
 
-} // namespace component
-
-namespace gpu
+namespace sofa::gpu::cuda
 {
 
-namespace cuda
-{
 using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
 int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-
     // CudaVec3fTypes
     .add< IdentityMapping< CudaVec3fTypes, CudaVec3fTypes> >()
     .add< IdentityMapping< CudaVec3fTypes, CudaVec3f1Types> >()
@@ -108,14 +87,6 @@ int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computati
     .add< IdentityMapping< Vec3Types, CudaVec3dTypes> >()
 
 #endif
-        
-        ;
+    ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
-
-
-#endif // SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
+} // namespace sofa::gpu::cuda

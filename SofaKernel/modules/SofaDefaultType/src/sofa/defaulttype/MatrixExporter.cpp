@@ -20,26 +20,27 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/MatrixExporter.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
 #include <fstream>
+#include <iomanip>
 
 namespace sofa::defaulttype
 {
 
-std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap
+std::unordered_map<std::string, MatrixExportFunction> matrixExporterMap
 {
     {"txt", writeMatrixTxt},
     {"csv", writeMatrixCsv},
 };
 sofa::helper::OptionsGroup matrixExporterOptionsGroup(2, "txt", "csv");
     
-bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+bool writeMatrixTxt(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix, int precision)
 {
     if (matrix)
     {
         std::ofstream file(filename);
-        file << *matrix;
+        file << std::setprecision(precision) << *matrix;
         file.close();
 
         return true;
@@ -47,11 +48,12 @@ bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* 
     return false;
 }
 
-bool writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+bool writeMatrixCsv(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix, int precision)
 {
     if (matrix)
     {
         std::ofstream file(filename);
+        file << std::setprecision(precision);
 
         const auto nx = matrix->colSize();
         const auto ny = matrix->rowSize();

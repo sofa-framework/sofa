@@ -62,7 +62,7 @@ extern "C"
 template<typename TIn>
 __global__ void SubsetMappingCuda3f_apply_kernel(unsigned int size, const int* map, float* out, const TIn* in)
 {
-    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index0 = blockIdx.x * BSIZE; //blockDim.x;
     const int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
@@ -78,7 +78,7 @@ __global__ void SubsetMappingCuda3f_apply_kernel(unsigned int size, const int* m
 
     //__syncthreads();
 
-    const int index3 = umul24(index1,3);
+    const int index3 = index1 * 3;
 
     temp[index3  ] = res.x;
     temp[index3+1] = res.y;
@@ -86,7 +86,7 @@ __global__ void SubsetMappingCuda3f_apply_kernel(unsigned int size, const int* m
 
     __syncthreads();
 
-    out += umul24(index0,3);
+    out += index0 * 3;
     out[index1        ] = temp[index1        ];
     out[index1+  BSIZE] = temp[index1+  BSIZE];
     out[index1+2*BSIZE] = temp[index1+2*BSIZE];
@@ -95,7 +95,7 @@ __global__ void SubsetMappingCuda3f_apply_kernel(unsigned int size, const int* m
 template<typename TIn>
 __global__ void SubsetMappingCuda3f1_apply_kernel(unsigned int size, const int* map, CudaVec4<float>* out, const TIn* in)
 {
-    const int index = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    const int index = blockIdx.x * BSIZE + threadIdx.x;
 
     CudaVec4<float> res = CudaVec4<float>::make(0,0,0,0);
 
@@ -111,7 +111,7 @@ __global__ void SubsetMappingCuda3f1_apply_kernel(unsigned int size, const int* 
 template<typename TIn>
 __global__ void SubsetMappingCuda3f_applyJT_kernel(unsigned int size, unsigned int maxNOut, const int* mapT, float* out, const TIn* in)
 {
-    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index0 = blockIdx.x * BSIZE; //blockDim.x;
     const int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
@@ -120,7 +120,7 @@ __global__ void SubsetMappingCuda3f_applyJT_kernel(unsigned int size, unsigned i
     CudaVec3<float> res = CudaVec3<float>::make(0,0,0);
     //res += *((const CudaVec3<float>*)in) * mapT[index0+index1].f;
 
-    mapT+=umul24(index0,maxNOut)+index1;
+    mapT+=index0*maxNOut+index1;
     for (int s = 0; s < maxNOut; s++)
     {
         int data = *mapT;
@@ -129,7 +129,7 @@ __global__ void SubsetMappingCuda3f_applyJT_kernel(unsigned int size, unsigned i
             res += CudaVec3<float>::make(in[data]);
     }
 
-    const int index3 = umul24(index1,3);
+    const int index3 = index1 * 3;
 
     temp[index3  ] = res.x;
     temp[index3+1] = res.y;
@@ -137,7 +137,7 @@ __global__ void SubsetMappingCuda3f_applyJT_kernel(unsigned int size, unsigned i
 
     __syncthreads();
 
-    out += umul24(index0,3);
+    out += index0 * 3;
     out[index1        ] += temp[index1        ];
     out[index1+  BSIZE] += temp[index1+  BSIZE];
     out[index1+2*BSIZE] += temp[index1+2*BSIZE];
@@ -146,14 +146,14 @@ __global__ void SubsetMappingCuda3f_applyJT_kernel(unsigned int size, unsigned i
 template<typename TIn>
 __global__ void SubsetMappingCuda3f1_applyJT_kernel(unsigned int size, unsigned int maxNOut, const int* mapT, CudaVec4<float>* out, const TIn* in)
 {
-    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index0 = blockIdx.x * BSIZE; //blockDim.x;
     const int index1 = threadIdx.x;
     const int index = index0 + index1;
 
     CudaVec3<float> res = CudaVec3<float>::make(0,0,0);
     //res += *((const CudaVec3<float>*)in) * mapT[index0+index1].f;
 
-    mapT+=umul24(index0,maxNOut)+index1;
+    mapT+=index0*maxNOut+index1;
     for (int s = 0; s < maxNOut; s++)
     {
         int data = *mapT;
@@ -172,20 +172,20 @@ template<typename TOut>
 __global__ void SubsetMappingCuda3f_applyJT1_kernel(unsigned int size, const int* map, TOut* out, const float* in)
 {
 
-    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index0 = blockIdx.x * BSIZE; //blockDim.x;
     const int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
-    in += umul24(index0,3);
+    in += index0 * 3;
     temp[index1        ] = in[index1        ];
     temp[index1+  BSIZE] = in[index1+  BSIZE];
     temp[index1+2*BSIZE] = in[index1+2*BSIZE];
 
     __syncthreads();
 
-    const int index3 = umul24(3,index1);
+    const int index3 = 3 * index1;
     CudaVec3<float> res = CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
 
     int c = map[index0+index1];
@@ -202,7 +202,7 @@ __global__ void SubsetMappingCuda3f_applyJT1_kernel(unsigned int size, const int
 template<typename TOut>
 __global__ void SubsetMappingCuda3f1_applyJT1_kernel(unsigned int size, const int* map, TOut* out, const CudaVec4<float>* in)
 {
-    const int index = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    const int index = blockIdx.x * BSIZE + threadIdx.x;
 
     CudaVec3<float> res = CudaVec3<float>::make(in[index]);
 

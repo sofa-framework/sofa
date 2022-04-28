@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaGeneralLoader'/>
-    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBaseCollision"/> <!-- Needed to use components [SphereCollisionModel] -->
 
     <!-- Using the VisualStyle choose your visual options! -->
     <!-- ACTIVATE: showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame -->
@@ -21,7 +24,7 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="WireframeVisu" >
             <VisualStyle displayFlags="showVisual showWireframe" />
-            <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_1" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
@@ -36,7 +39,7 @@
         
         <Node name="TranslatedSurface" gravity="0 -9.81 0">
 <!--             default rendering should be flat rendered and not wireframed -->
-            <MeshObjLoader name="meshLoader_0" filename="mesh/liver.obj" translation="5 0 0" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver.obj" translation="5 0 0" handleSeams="1" />
             <OglModel src="@meshLoader_0" />
         </Node>
         

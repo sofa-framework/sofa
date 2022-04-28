@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MASS_H
-#define SOFA_CORE_BEHAVIOR_MASS_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -64,7 +57,6 @@ protected:
 
     ~Mass() override;
 public:
-    void init() override;
 
     /// @name Vector operations
     /// @{
@@ -130,11 +122,11 @@ public:
     /// @name Matrix operations
     /// @{
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
-    void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
+    void addBToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
 
     void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
+    virtual void addMToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -159,7 +151,7 @@ public:
 
     /// recover the mass of an element
     SReal getElementMass(sofa::Index) const override;
-    void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const override;
+    void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
@@ -183,10 +175,4 @@ extern template class SOFA_CORE_API Mass<defaulttype::Rigid2Types>;
 
 #endif
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

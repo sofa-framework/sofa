@@ -23,6 +23,7 @@
 #include <SofaMiscMapping/SquareDistanceMapping.h>
 
 #include <SofaBaseMechanics_test/MappingTestCreation.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 
 namespace sofa {
 namespace {
@@ -52,7 +53,7 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 //        map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
+        component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::container::dynamic::EdgeSetTopologyContainer>(this->root);
         edges->addEdge( 0, 1 );
         edges->addEdge( 2, 1 );
 
@@ -83,7 +84,7 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 //        restLength[1] = 2;
 //        map->f_restLengths.setValue( restLength );
 
-//        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
+//        component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::container::dynamic::EdgeSetTopologyContainer>(this->root);
 //        edges->addEdge( 0, 1 );
 //        edges->addEdge( 2, 1 );
 

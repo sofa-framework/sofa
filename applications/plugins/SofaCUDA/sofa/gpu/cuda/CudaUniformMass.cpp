@@ -35,13 +35,13 @@ namespace cuda
 {
 
 int UniformMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::UniformMass<CudaVec3fTypes,float> >()
-        .add< component::mass::UniformMass<CudaVec3f1Types,float> >()
-        .add< component::mass::UniformMass<CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> > >()
+        .add< component::mass::UniformMass<CudaVec3fTypes> >()
+        .add< component::mass::UniformMass<CudaVec3f1Types> >()
+        .add< component::mass::UniformMass<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mass::UniformMass<CudaVec3dTypes,double> >()
-        .add< component::mass::UniformMass<CudaVec3d1Types,double> >()
-        .add< component::mass::UniformMass<CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> > >()
+        .add< component::mass::UniformMass<CudaVec3dTypes> >()
+        .add< component::mass::UniformMass<CudaVec3d1Types> >()
+        .add< component::mass::UniformMass<CudaRigid3dTypes > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

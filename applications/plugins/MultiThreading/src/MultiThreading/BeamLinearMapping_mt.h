@@ -68,7 +68,7 @@ namespace mapping
         typedef type::Mat<N, N, Real> Mat;
         typedef type::Vec<N, Real> Vector;
         typedef type::Mat<NOut, NIn, Real> MBloc;
-        typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+        typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
         
         
         BeamLinearMapping_mt();

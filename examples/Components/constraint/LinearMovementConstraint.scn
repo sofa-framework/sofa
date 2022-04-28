@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <Node name="Root"  dt="0.1" >
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/> 
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementConstraint] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
 
     <Node name="Spoon1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -17,14 +20,14 @@
 										      0 0 -1  0 0 6.3
 										      0 0 -1   0 0 6.3" />
         <Node name="coli">
-            <MeshObjLoader name="loader" filename="mesh/liver.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/liver.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleCollisionModel moving="1" simulated="1" contactStiffness="100000000"/>
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_1" filename="mesh/liver.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="red" />
             <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual" />
         </Node>
@@ -39,14 +42,14 @@
 										      0 0 -1  0 0 6.3
 										      0 0 0   0 0 6.3" />
         <Node name="coli">
-            <MeshObjLoader name="loader" filename="mesh/liver.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/liver.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleCollisionModel moving="1" simulated="1" contactStiffness="100000000" />
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/liver.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="green" />
             <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual"/>
         </Node>
@@ -61,14 +64,14 @@
 										      0 0 -1  0 0 6.3
 										      0 0 -1   0 0 0" />
         <Node name="coli">
-            <MeshObjLoader name="loader" filename="mesh/liver.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/liver.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleCollisionModel moving="1" simulated="1" contactStiffness="100000000" />
             <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_2" filename="mesh/liver.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="blue" />
             <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual" />
         </Node>

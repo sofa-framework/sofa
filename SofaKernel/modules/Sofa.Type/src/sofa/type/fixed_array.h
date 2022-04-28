@@ -78,7 +78,7 @@ public:
     typedef sofa::Size     size_type;
     typedef std::ptrdiff_t difference_type;
 
-    constexpr fixed_array() = default;
+    constexpr fixed_array() {}
 
     /// Specific constructor for 1-element vectors.
     template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
@@ -104,6 +104,11 @@ public:
     {
         return elems;
     }
+    constexpr const_iterator cbegin() const noexcept
+    {
+        return elems;
+    }
+
     constexpr iterator end() noexcept
     {
         return elems+N;
@@ -111,6 +116,10 @@ public:
     constexpr const_iterator end() const noexcept
     {
         return elems+N;
+    }
+    constexpr const_iterator cend() const noexcept
+    {
+        return elems + N;
     }
 
     // operator[]

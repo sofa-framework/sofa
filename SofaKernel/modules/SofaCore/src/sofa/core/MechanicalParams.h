@@ -279,7 +279,6 @@ protected:
 
     /// @name Experimental compliance API
     /// @{
-protected:
     SReal m_implicitVelocity;  ///< ratio of future and current force used for velocity update    (1 is fully implicit, 0 is fully explicit)
     SReal m_implicitPosition;  ///< ratio of future and current velocity used for position update (1 is fully implicit, 0 is fully explicit)
 

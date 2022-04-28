@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAELLIPSOIDFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDAELLIPSOIDFORCEFIELD_INL
+#pragma once
 
 #include "CudaEllipsoidForceField.h"
 #include <SofaBoundaryCondition/EllipsoidForceField.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -45,14 +38,9 @@ extern "C"
     int EllipsoidForceFieldCuda3f_getNTmp();
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 using namespace gpu::cuda;
@@ -131,10 +119,4 @@ void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::Mech
     d_df.endEdit();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mechanicalload

@@ -77,7 +77,7 @@ public:
     static const char* Name() { return "Histogram"; }
 
     Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=false)
-        :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
+        :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),scaleVal(0.0),offsetVal(0.0),
           clamp(type::Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()))
     { }
 
@@ -125,9 +125,9 @@ public:
 
     inline friend std::istream& operator >> ( std::istream& in, Histogram& h )
     {
-        type::Vec<2,T> clamp;
-        in>>clamp;
-        h.setClamp(clamp);
+        type::Vec<2,T> myclamp;
+        in>>myclamp;
+        h.setClamp(myclamp);
         return in;
     }
 

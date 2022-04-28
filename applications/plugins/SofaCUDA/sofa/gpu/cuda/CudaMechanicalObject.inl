@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_INL
-#define SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_INL
+#pragma once
 
 #include "CudaMechanicalObject.h"
-#include <SofaBaseMechanics/MechanicalObject.inl>
+#include <sofa/component/statecontainer/MechanicalObject.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -275,10 +268,6 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // extern "C"
-
-
-
-
 
 template<>
 class CudaKernelsMechanicalObject<CudaVec1fTypes>
@@ -818,14 +807,9 @@ public:
 };
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::statecontainer
 {
 
 using namespace gpu::cuda;
@@ -835,11 +819,9 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
     if (!m->externalForces.getValue().empty())
     {
-        //std::cout << "ADD: external forces, size = "<< m->externalForces->size() << std::endl;
         Kernels::vAssign(m->externalForces.getValue().size(),m->f.beginEdit()->deviceWrite(),m->externalForces.getValue().deviceRead());
         m->f.endEdit();
     }
-    //else std::cout << "NO external forces" << std::endl;
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -857,7 +839,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     }
     else
     {
-        std::cerr << "Invalid alloc operation ("<<v<<")\n";
+        msg_error(m) << "Invalid alloc operation ("<<v<<")";
         return;
     }
     //vOp(v); // clear vector
@@ -869,10 +851,10 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     if(v.isNull())
     {
         // ERROR
-        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
         return;
     }
-    //std::cout << "> vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+
     if (a.isNull())
     {
         if (b.isNull())
@@ -900,7 +882,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
             if (b.type != v.type)
             {
                 // ERROR
-                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                 return;
             }
             if (v == b)
@@ -952,7 +934,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         if (a.type != v.type)
         {
             // ERROR
-            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+            msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
             return;
         }
         if (b.isNull())
@@ -1025,7 +1007,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -1065,7 +1047,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -1111,7 +1093,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -1156,14 +1138,13 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
             }
         }
     }
-    //std::cout << "< vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -1380,20 +1361,23 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     }
     else // no optimization for now for other cases
     {
-        std::cout << "size ops"<< ops.size() << "size second0"<< ops[0].second.size() << "size second1"<< ops[1].second.size() << std::endl;
-        std::cout << "CUDA: unoptimized vMultiOp:"<<std::endl;
+        dmsg_info(m) << "size ops"<< ops.size() << "size second0"<< ops[0].second.size() << "size second1"<< ops[1].second.size() ;
+        dmsg_info(m) << "CUDA: unoptimized vMultiOp:";
         for (unsigned int i=0; i<ops.size(); ++i)
         {
-            std::cout << ops[i].first << " =";
+            std::stringstream ss;
+            ss << ops[i].first << " =";
             if (ops[i].second.empty())
-                std::cout << "0";
+                ss << "0";
             else
+            {
                 for (unsigned int j=0; j<ops[i].second.size(); ++j)
                 {
-                    if (j) std::cout << " + ";
-                    std::cout << ops[i].second[j].first << "*" << ops[i].second[j].second;
+                    if (j) dmsg_info(m) << " + ";
+                    ss << ops[i].second[j].first << "*" << ops[i].second[j].second;
                 }
-            std::cout << std::endl;
+            }
+            dmsg_info(m)<< ss.str();
         }
         {
             using namespace sofa::core::behavior;
@@ -1440,12 +1424,12 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         //Real r2 = 0.0f;
         //for (unsigned int i=0; i<va->size(); i++)
         //	r2 += (*va)[i] * (*vb)[i];
-        //std::cout << "CUDA vDot: GPU="<<r<<"  CPU="<<r2<<" relative error="<<(fabsf(r2)>0.000001?fabsf(r-r2)/fabsf(r2):fabsf(r-r2))<<"\n";
+        //dmsg_info(m) << "CUDA vDot: GPU="<<r<<"  CPU="<<r2<<" relative error="<<(fabsf(r2)>0.000001?fabsf(r-r2)/fabsf(r2):fabsf(r-r2));
 #endif
     }
     else
     {
-        std::cerr << "Invalid dot operation ("<<a<<','<<b<<")\n";
+        msg_error(m) << "Invalid dot operation ("<<a<<','<<b<<")\n";
     }
     return r;
 }
@@ -1461,7 +1445,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyToBaseVector(Main* m, defaulttype::BaseVector * dest, ConstVecId src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyToBaseVector(Main* m, linearalgebra::BaseVector * dest, ConstVecId src, unsigned int &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
@@ -1523,7 +1507,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyFromBaseVector(Main* m, VecId dest, const defaulttype::BaseVector * src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::copyFromBaseVector(Main* m, VecId dest, const linearalgebra::BaseVector * src, unsigned int &offset)
 {
 
     if (dest.type == sofa::core::V_COORD)
@@ -1592,7 +1576,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addFromBaseVectorSameSize(Main* m, VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addFromBaseVectorSameSize(Main* m, VecId dest, const linearalgebra::BaseVector *src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -1670,11 +1654,9 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::accumul
 {
     if (!m->externalForces.getValue().empty())
     {
-        //std::cout << "ADD: external forces, size = "<< m->externalForces->size() << std::endl;
         Kernels::vAssignDeriv(m->externalForces.getValue().size(),m->f.beginEdit()->deviceWrite(),m->externalForces.getValue().deviceRead());
         m->f.endEdit();
     }
-    //else std::cout << "NO external forces" << std::endl;
 }
 
 
@@ -1693,7 +1675,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vAlloc(
     }
     else
     {
-        std::cerr << "Invalid alloc operation ("<<v<<")\n";
+        msg_error(m) << "Invalid alloc operation ("<<v<<")";
         return;
     }
     //vOp(v); // clear vector
@@ -1705,10 +1687,10 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
     if(v.isNull())
     {
         // ERROR
-        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
         return;
     }
-    //std::cout << "> vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+
     if (a.isNull())
     {
         if (b.isNull())
@@ -1736,7 +1718,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
             if (b.type != v.type)
             {
                 // ERROR
-                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                 return;
             }
             if (v == b)
@@ -1788,7 +1770,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
         if (a.type != v.type)
         {
             // ERROR
-            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+            msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
             return;
         }
         if (b.isNull())
@@ -1861,7 +1843,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -1901,7 +1883,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -1947,7 +1929,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -1990,22 +1972,19 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
                     else
                     {
                         // ERROR
-                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
             }
         }
     }
-    //std::cout << "< vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
 }
 
 template<int N, class real>
 void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops)
 {
-#ifdef DEBUG
-	std::cerr<<"MechanicalObjectInternalData::vMultiOp currently not implemented for CudaRigidTypes !"<<std::endl;
-#endif
+	dmsg_error(m) << "MechanicalObjectInternalData::vMultiOp currently not implemented for CudaRigidTypes !";
     // TODO : make corresponding kernels
 
     // optimize common integration case: v += a*dt, x += v*dt
@@ -2140,7 +2119,7 @@ double MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vDot(
     }
     else
     {
-        std::cerr << "Invalid dot operation ("<<a<<','<<b<<")\n";
+        msg_error(m) << "Invalid dot operation ("<<a<<','<<b<<")";
     }
     return r;
 }
@@ -2157,7 +2136,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::resetFo
 }
 
 template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToBaseVector(Main* m, defaulttype::BaseVector * dest, ConstVecId src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToBaseVector(Main* m, linearalgebra::BaseVector * dest, ConstVecId src, unsigned int &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
@@ -2219,7 +2198,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyToC
 }
 
 template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFromBaseVector(Main* m, VecId dest, const defaulttype::BaseVector * src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFromBaseVector(Main* m, VecId dest, const linearalgebra::BaseVector * src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -2287,7 +2266,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::copyFro
 }
 
 template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFromBaseVectorSameSize(Main* m, VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFromBaseVectorSameSize(Main* m, VecId dest, const linearalgebra::BaseVector *src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -2389,13 +2368,13 @@ template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params *
 { return data.vDot(this, a, b); }				    \
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* params, core::VecDerivId fid) \
 { if( fid==core::VecDerivId::force() ) data.resetForce(this); else core::behavior::BaseMechanicalState::resetForce(params,fid); } \
-template<> void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
+template<> void MechanicalObject< T >::copyToBaseVector(linearalgebra::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
 { if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) data.copyToCudaBaseVector(this, vec,src,offset); \
 else data.copyToBaseVector(this, dest,src,offset); } \
-template<> void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector * src, unsigned int &offset) \
+template<> void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const linearalgebra::BaseVector * src, unsigned int &offset) \
 { if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) data.copyFromCudaBaseVector(this, dest,vec,offset); \
 else data.copyFromBaseVector(this, dest,src,offset); } \
-template<> void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset) \
+template<> void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector *src, unsigned int &offset) \
 { if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) data.addFromCudaBaseVectorSameSize(this, dest,vec,offset); \
 else data.addFromBaseVectorSameSize(this, dest,src,offset); }
 
@@ -2418,17 +2397,4 @@ CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3dTypes)
 
 #undef CudaMechanicalObject_ImplMethods
 
-
-
-
-
-
-
-
-}
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::statecontainer

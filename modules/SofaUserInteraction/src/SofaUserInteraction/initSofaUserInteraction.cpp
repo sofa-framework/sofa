@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaUserInteraction/initSofaUserInteraction.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,13 @@ void initSofaUserInteraction()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaUserInteraction") << "SofaUserInteraction is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm, Sofa.Component.Collision.Detection.Intersection and Sofa.Component.Collision.Response.Contact instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Geometry");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Algorithm");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Response.Contact");
+
         first = false;
     }
 }

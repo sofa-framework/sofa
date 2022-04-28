@@ -292,7 +292,7 @@ public:
     /// @{
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
+    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation=sofa::core::objectmodel::TypeOfInsertion::AtEnd) final;
 
     /// Remove an object
     virtual bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
@@ -528,7 +528,7 @@ protected:
     bool debug_;
     bool initialized;
 
-    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
+    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj,  sofa::core::objectmodel::TypeOfInsertion insertionLocation= sofa::core::objectmodel::TypeOfInsertion::AtEnd);
     virtual bool doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
 
@@ -577,7 +577,6 @@ public:
     /// a MechanicalMapping is NOT in the Mapping Sequence
     /// a Mass is in the FF Sequence
     /// a MeshTopology is in the topology Sequence
-public:
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )

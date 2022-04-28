@@ -21,34 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/testing/NumericTest.h>
+#include <sofa/config.h>
 
-//SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/testing/NumericTest.h")
-
-namespace sofa::helper
-{
-    namespace testing = sofa::testing;
-}
-
-//namespace sofa::helper::testing
-//{
-//    template <typename _Real = SReal>
-//    using NumericTest = sofa::testing::NumericTest<_Real>;
-//
-//    template<class Vector, class ReadData>
-//    void copyFromData(Vector& v, const ReadData& d) 
-//    {
-//        sofa::testing::copyFromData(v,d);
-//    }
-//
-//    template<class WriteData, class Vector>
-//    void copyToData(WriteData& d, const Vector& v) 
-//    {
-//        sofa::testing::copyToData(v, d);
-//    }
-//
-//    template<class _DataTypes>
-//    using data_traits = sofa::testing::data_traits<_DataTypes>;
-//
-//
-//} // namespace sofa::helper::testing
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/testing/NumericTest.h")

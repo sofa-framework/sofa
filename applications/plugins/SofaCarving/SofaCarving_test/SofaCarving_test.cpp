@@ -26,6 +26,8 @@
 #include <sofa/testing/BaseSimulationTest.h>
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 #include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+#include <SofaBaseCollision/initSofaBaseCollision.h>
 
 using namespace sofa::testing;
 using namespace sofa::component::collision;
@@ -59,6 +61,8 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
     sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
     sofa::component::initSofaBaseLinearSolver(); // needed to instanciate CGLinearSolver
+    sofa::component::initSofaBaseMechanics(); // needed to instanciate DiagonalMass
+    sofa::component::initSofaBaseCollision();
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
@@ -78,7 +82,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(m_root, "BVHNarrowPhase", { { "name","Narrow Phase Detection" } });
     createObject(m_root, "CollisionResponse", {
         { "name", "Contact Manager" },
-        { "response", "default" }
+        { "response", "PenalityContactForceField" }
     });
     createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
         { "alarmDistance", "0.5" },

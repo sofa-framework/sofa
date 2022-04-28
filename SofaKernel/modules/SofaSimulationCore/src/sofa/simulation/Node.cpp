@@ -57,7 +57,6 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
-#include <sofa/simulation/UpdateMappingVisitor.h>
 
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/core/ObjectFactory.h>
@@ -222,10 +221,10 @@ void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
     doMoveChild(node, prev_parent);
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::addObject(BaseObject::SPtr obj)
+bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     notifyBeginAddObject(this, obj);
-    bool ret = doAddObject(obj);
+    bool ret = doAddObject(obj, insertionLocation);
     notifyEndAddObject(this, obj);
     return ret;
 }
@@ -586,10 +585,14 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::doAddObject(BaseObject::SPtr sobj)
+bool Node::doAddObject(BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     this->setObjectContext(sobj);
-    object.add(sobj);
+    if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
+        object.add(sobj);
+    else
+        object.addBegin(sobj);
+
     BaseObject* obj = sobj.get();
 
     if( !obj->insertInNode( this ) )

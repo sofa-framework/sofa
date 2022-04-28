@@ -552,7 +552,7 @@ template <class DataTypes>
 typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<DataTypes>::getElementInZone(VecIds& elementsToTest)
 {
     // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
-    type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    type::Vec3 sceneMinBBox, sceneMaxBBox;
     core::objectmodel::BaseNode* root = mstateCollision->getContext()->toBaseNode();
     if (root) root = root->getRoot();
     if (root) { sceneMinBBox = root->f_bbox.getValue().minBBox(); sceneMaxBBox = root->f_bbox.getValue().maxBBox(); }
@@ -655,7 +655,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
     std::vector<sofa::type::Vector3> vertices_quads;
     std::vector<sofa::type::Vector3> vertices_triangles;
-    sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
+    constexpr sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
     {

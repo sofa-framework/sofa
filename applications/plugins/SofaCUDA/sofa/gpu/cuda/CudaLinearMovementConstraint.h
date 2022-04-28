@@ -19,32 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDALINEARMOVEMENTCONSTRAINT_H
-#define SOFA_GPU_CUDA_CUDALINEARMOVEMENTCONSTRAINT_H
+#pragma once
 
 #include "CudaTypes.h"
 #include <SofaBoundaryCondition/LinearMovementConstraint.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 template<class DataTypes>
 class CudaKernelsLinearMovementConstraint;
 
-}// namespace cuda
+}// namespace sofa::gpu::cuda
 
-}// namespace gpu
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::constraint::projective
 {
 
 template<class TCoord, class TDeriv, class TReal>
@@ -63,7 +51,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::core::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef sofa::core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef sofa::core::objectmodel::Data<MatrixDeriv> DataMatrixDeriv;
@@ -107,7 +95,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::core::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef sofa::core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef sofa::core::objectmodel::Data<MatrixDeriv> DataMatrixDeriv;
@@ -219,10 +207,4 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectVelocity(co
 
 
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::constraint::projective

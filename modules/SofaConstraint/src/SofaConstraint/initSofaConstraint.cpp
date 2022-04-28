@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaConstraint/initSofaConstraint.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,16 @@ void initSofaConstraint()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaConstraint") << "SofaConstraint is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix, Sofa.Component.Constraint.Lagrangian.Model, Sofa.Component.Constraint.Lagrangian.Correction, Sofa.Component.Constraint.Lagrangian.Solver, Sofa.Component.AnimationLoop, Sofa.Component.Collision.Detection.Intersection and Sofa.Component.Collision.Response.Contact instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping.MappedMatrix");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Lagrangian.Model");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Lagrangian.Correction");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Lagrangian.Solver");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.AnimationLoop");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Response.Contact");
+
         first = false;
     }
 }

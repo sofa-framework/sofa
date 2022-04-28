@@ -39,15 +39,13 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
-
+    addInput(&input_position);
+    addOutput(&output_position);
 }
 
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::init()
 {
-    addInput(&input_position);
-    addOutput(&output_position);
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -180,7 +178,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
         std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
-        sofa::type::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
+        constexpr sofa::type::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
         vparams->drawTool()->setMaterial(color);
 
         for (unsigned int i=0; i<tri.size(); ++i)
@@ -199,7 +197,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     {
         std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
-        sofa::type::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
+        constexpr sofa::type::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
 
         for (unsigned int i=0; i<tri.size(); ++i)
         {

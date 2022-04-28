@@ -1,15 +1,17 @@
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaGeneralLoader'/>
-    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
     <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver" depend="topo dofs">
@@ -27,7 +29,7 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
             <!-- Using material contained in liver-smooth.obj -->
-            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_0" />
             <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
@@ -38,8 +40,8 @@
             <BarycentricMapping name="sphere mapping" />
         </Node>
     </Node>
-    <MeshObjLoader name='myLoaderDragon' filename='mesh/dragon.obj'/>  
-    <MeshObjLoader name='myLoaderFloor' filename='mesh/floor.obj'/>  
+    <MeshOBJLoader name='myLoaderDragon' filename='mesh/dragon.obj'/>  
+    <MeshOBJLoader name='myLoaderFloor' filename='mesh/floor.obj'/>  
     <OglModel name="VisualModel" src='@myLoaderDragon' color="green" dz="-25.0" scale="0.3 0.3 0.3"/>
     <OglModel name="FloorV" src='@myLoaderFloor' color="0.5 0.5 0.5" dy="-2.5"/>
     <!--<LightManager listening="true"/>

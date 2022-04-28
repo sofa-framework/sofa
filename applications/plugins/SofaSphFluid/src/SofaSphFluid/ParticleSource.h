@@ -25,8 +25,9 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/type/trait/Rebind.h>
 
 namespace sofa
 {
@@ -57,8 +58,8 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     //int lastparticle;
-    typedef typename VecCoord::template rebind<Index>::other VecIndex;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    using VecIndex = type::rebind_to<VecCoord, Index>;
+    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef typename SetIndex::container_type SetIndexArray;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
@@ -76,55 +77,6 @@ public:
     {
         return (Real)(rand()*1.0 / RAND_MAX);
     }
-
-    class PSPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<sofa::Index> >
-    {
-    public:
-        typedef type::vector<sofa::Index> VecIndex;
-        typedef sofa::Index value_type;
-        
-
-        PSPointHandler(ParticleSource<DataTypes>* _ps, sofa::component::topology::TopologySubsetIndices* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >(_data), ps(_ps) {}
-
-        void applyDestroyFunction(sofa::Index index, value_type& /*T*/)
-        {
-            dmsg_info("ParticleSource") << "PSRemovalFunction";
-            if(ps)
-            {
-                /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (Index)index);
-                 if (it != ps->lastparticles.end())
-                 {
-                    ps->lastpos.erase( ps->lastpos.begin()+(it-ps->lastparticles.begin()) );
-                    //ps->lastparticles.getArray().erase(it);
-                     helper::removeValue(ps->lastparticles,(Index)index);
-                 }*/
-                SetIndexArray& _lastparticles = *ps->m_lastparticles.beginEdit();
-
-                size_t size = _lastparticles.size();
-                for (unsigned int i = 0; i < size; ++i)
-                {
-                    if (_lastparticles[i] == index)
-                    {
-                        if (i < size-1)
-                        {
-                            _lastparticles[i] = _lastparticles[size-1];
-                            ps->m_lastpos[i] = ps->m_lastpos[size-1];
-                        }
-                        _lastparticles.pop_back();
-                        ps->m_lastpos.pop_back();
-                        return;
-                    }
-                }
-                ps->m_lastparticles.endEdit();
-            }
-        }
-
-
-    protected:
-        ParticleSource<DataTypes> *ps;
-    };
-
 
     virtual void animateBegin(double /*dt*/, double time);
     
@@ -187,10 +139,8 @@ protected:
     Real m_lastTime; ///< Last time particle have been computed
     Real m_maxdist;
 
-    sofa::component::topology::TopologySubsetIndices m_lastparticles; ///< lastparticles indices
+    sofa::core::topology::TopologySubsetIndices m_lastparticles; ///< lastparticles indices
     VecCoord m_lastpos;
-
-    PSPointHandler* m_pointHandler;
 
 };
 

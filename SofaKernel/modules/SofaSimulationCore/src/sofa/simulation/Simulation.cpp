@@ -25,20 +25,15 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/ResetVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
-#include <sofa/simulation/ExportOBJVisitor.h>
+#include <sofa/simulation/ExportVisualModelOBJVisitor.h>
 #include <sofa/simulation/WriteStateVisitor.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
@@ -52,6 +47,7 @@
 #include <sofa/helper/init.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 
@@ -65,6 +61,7 @@
 #include <cstring>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
@@ -164,22 +161,22 @@ void Simulation::init ( Node* root )
 
     if (!root->getAnimationLoop())
     {
-        msg_warning("Simulation") <<
+        msg_warning(root) <<
             "Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning";
         
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
-        aloop->setName(sofa::helper::NameDecoder::shortName(aloop->getClassName()));
-        root->addObject(aloop);
+        aloop->setName(root->getNameHelper().resolveName(aloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
+        root->addObject(aloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
     if(!root->getVisualLoop())
     {
-        msg_warning("Simulation") <<
+        msg_warning(root) <<
             "Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning";
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
-        vloop->setName(sofa::helper::NameDecoder::shortName(vloop->getClassName()));
-        root->addObject(vloop);
+        vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
+        root->addObject(vloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
     // all the objects have now been created, update the links
@@ -377,18 +374,11 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
     sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
 
-    sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
-    if(vloop)
+    for(auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
     {
         if (!vparams) vparams = sofa::core::visual::visualparams::defaultInstance();
         vparams->update();
-
-        vloop->drawStep(vparams);
-    }
-    else
-    {
-        msg_error() <<"Simulation::draw(): VisualLoop expected at the root node";
-        return;
+        visualLoop->drawStep(vparams);
     }
 
     sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
@@ -405,7 +395,7 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 
     if ( !exportMTL )
     {
-        ExportOBJVisitor act ( params, &fout );
+        ExportVisualModelOBJVisitor act ( params, &fout );
         root->execute ( &act );
     }
     else
@@ -425,13 +415,15 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
         mtl << "# Generated from SOFA Simulation" << std::endl;
         fout << "mtllib "<<mtlfilename<<'\n';
 
-        ExportOBJVisitor act ( params, &fout,&mtl );
+        ExportVisualModelOBJVisitor act ( params, &fout,&mtl );
         root->execute ( &act );
     }
 }
 
 void Simulation::dumpState ( Node* root, std::ofstream& out )
 {
+    sofa::helper::ScopedAdvancedTimer dumpStateTimer("dumpState");
+
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     out<<root->getTime() <<" ";
     WriteStateVisitor ( params, out ).execute ( root );

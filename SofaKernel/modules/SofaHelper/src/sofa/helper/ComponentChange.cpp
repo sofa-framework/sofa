@@ -22,14 +22,10 @@
 #include "ComponentChange.h"
 
 
-namespace sofa
-{
-namespace helper
-{
-namespace lifecycle
+namespace sofa::helper::lifecycle
 {
 
-std::map<std::string, Deprecated> deprecatedComponents = {
+const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     // SofaMiscForceField
     {"MatrixMass", Deprecated("v19.06", "v19.12")},
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
@@ -38,7 +34,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     {"PointConstraint", Deprecated("v21.12", "v22.06")},
 };
 
-std::map<std::string, ComponentChange> uncreatableComponents = {
+const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
     // SofaDistanceGrid was pluginized in #389
     {"BarycentricPenalityContact", Pluginized("v17.12", "SofaMeshCollision")},
     {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
@@ -469,7 +465,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "StaticSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
 
     // SofaLoader was pluginized in #1608
-    { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
+    { "MeshOBJLoader", Pluginized("v20.12", "SofaLoader") },
     { "MeshVTKLoader", Pluginized("v20.12", "SofaLoader") },
 
     // SofaEigen2Solver was pluginized in #1635
@@ -674,9 +670,451 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "CapsuleModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
 
+    // MOVED SINCE v21.12
+    { "LULinearSolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
+    //{"NewMatCholeskySolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
+    //{"NewMatCGLinearSolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
+
+    // MOVED SINCE v22.06
+    { "GlobalSystemMatrixExporter", Moved("v22.06", "SofaBaseLinearSolver", "SofaMatrix") },
+
 };
 
-} // namespace lifecycle
-} // namespace helper
-} // namespace sofa
+const std::map< std::string, CreatableMoved, std::less<> > movedComponents = 
+{
 
+    /***********************/
+    // MOVED SINCE v22.06
+    // SofaMiscSolver was deprecated in #2571
+    { "DampVelocitySolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Forward") },
+    { "NewmarkImplicitSolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Backward") },
+
+    // SofaExplicitOdeSolver was deprecated in #2571
+    { "EulerExplicitSolver", CreatableMoved("v22.06", "SofaExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+
+    // SofaImplicitOdeSolver was deprecated in #2571
+    { "EulerImplicitSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+    { "StaticSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+
+    // SofaGeneralExplicitOdeSolver was deprecated in #2571
+    { "CentralDifferenceSolver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    { "RungeKutta2Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    { "RungeKutta4Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+
+    // SofaGeneralImplicitOdeSolver was deprecated in #2571
+    { "VariationalSymplecticSolver", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+
+    // SofaLoader was deprecated in #2582
+    { "MeshOBJLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshVTKLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+
+    // SofaGeneralLoader was deprecated in #2582
+    { "MeshGmshLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "GIDMeshLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "GridMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshOffLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshSTLLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshTrianLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshXspLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "OffSequenceLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "SphereLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "StringMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "VoxelGridLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "ReadState", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+    { "ReadTopology", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+    { "InputEventReader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+
+    // SofaExporter was deprecated in #2582
+    { "BlenderExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "MeshExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "STLExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "VisualModelOBJExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "VTKExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "WriteState", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
+    { "WriteTopology", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
+
+    // SofaBaseUtils was deprecated in #2582 and ...
+    { "AddResourceRepository", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MakeAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MakeDataAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "FileMessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "RequiredPlugin", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+
+    // SofaGraphComponent was deprecated in #2582 and ...
+    { "APIVersion", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.SceneUtility") },
+    
+    // SofaBaseTopology was deprecated in #2612
+    { "EdgeSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "EdgeSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "EdgeSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "EdgeSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "MeshTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Constant") },
+    { "GridTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Grid") },
+    { "RegularGridTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Grid") },
+    { "SparseGridTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Grid") },
+
+    // SofaGeneralTopology was deprecated in #2612
+    { "CubeTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Constant") },
+    { "SphereQuadTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Constant") },
+    { "CylinderGridTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Grid") },
+    { "SphereGridTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Grid") },
+
+    // SofaNonUniformFem was deprecated in #2612 and #2759
+    { "DynamicSparseGridGeometryAlgorithms", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "DynamicSparseGridTopologyAlgorithms", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "DynamicSparseGridTopologyContainer", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "DynamicSparseGridTopologyModifier", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "MultilevelHexahedronSetTopologyContainer", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "SparseGridMultipleTopology", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Grid") },
+    { "SparseGridRamificationTopology", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Grid") },
+    { "NonUniformHexahedralFEMForceFieldAndMass", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.SolidMechanics.FEM.NonUniform") },
+    { "NonUniformHexahedronFEMForceFieldAndMass", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.SolidMechanics.FEM.NonUniform") },
+    { "HexahedronCompositeFEMForceFieldAndMass", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.SolidMechanics.FEM.NonUniform") },
+    { "HexahedronCompositeFEMMapping", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.SolidMechanics.FEM.NonUniform") },
+
+    // SofaTopologicalMapping was deprecated in #2612 and #XXXX
+    { "CenterPointTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Edge2QuadTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Hexa2QuadTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Hexa2TetraTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "IdentityTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Mesh2PointTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Quad2TriangleTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "SimpleTesselatedHexaTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "SimpleTesselatedTetraTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "SubsetTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Tetra2TriangleTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Triangle2EdgeTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Mesh2PointMechanicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Mapping.Linear") },
+    { "SimpleTesselatedTetraMechanicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Mapping.Linear") },
+
+    // SofaMiscTopology was deprecated in #2612
+    { "TopologicalChangeProcessor", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
+    { "TopologyBoundingTrasher", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
+    { "TopologyChecker", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
+
+    // SofaBaseVisual was deprecated in #2679
+    { "Camera", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+    { "InteractiveCamera", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+    { "VisualModelImpl", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+    { "VisualStyle", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+
+    // SofaGeneralVisual was deprecated in #2679
+    { "RecordedCamera", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
+    { "Visual3DText", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
+    { "VisualTransform", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
+
+    // SofaSimpleFem was deprecated in #2753 and ....
+    { "TetrahedronDiffusionFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.Diffusion") },
+
+    // SofaOpenglVisual was deprecated in #2709
+    { "DataDisplay", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "MergeVisualModels", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglCylinderModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglGrid", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglLineAxis", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "PointSplatModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "SlicedVolumetricModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglColorMap", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering2D") },
+    { "OglLabel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering2D") },
+    { "OglViewport", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering2D") },
+    { "ClipPlane", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "CompositingVisualLoop", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "DirectionalLight", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "PositionalLight", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "SpotLight", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "LightManager", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloatAttribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat2Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat3Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat4Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglIntAttribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt2Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt3Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt4Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUIntAttribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUInt2Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUInt3Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUInt4Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglOITShader", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglRenderingSRGB", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShader", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShaderMacro", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShaderVisualModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShadowShader", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglTexture", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglTexture2D", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglIntVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloatVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglIntVectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt2VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt3VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt4VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloatVectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat2VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat3VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat4VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix2x3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix3x2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix2x4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4x2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix3x4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4x3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OrderIndependentTransparencyManager", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "PostProcessManager", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "VisualManagerPass", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "VisualManagerSecondaryPass", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "TextureInterpolation", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Engine") },
+
+    // SofaBaseLinearSolver was deprecated in #2717
+    { "CGLinearSolver", CreatableMoved("v22.06", "SofaBaseLinearSolver", "Sofa.Component.LinearSolver.Iterative") },
+
+    // SofaGeneralLinearSolver was deprecated in #2717
+    { "MinResLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Iterative") },
+    { "BTDLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "CholeskySolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+
+    // SofaSparseSolver was deprecated in #2717
+    { "FillReducingOrdering", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "PrecomputedLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "SparseCholeskySolver", CreatableMoved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "SparseLDLSolver", CreatableMoved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "SparseLUSolver", CreatableMoved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
+
+    // SofaDenseSolver was deprecated in #2717
+    { "SVDLinearSolver", CreatableMoved("v22.06", "SofaDenseSolver", "Sofa.Component.LinearSolver.Direct") },
+        
+    // SofaPreconditioner was deprecated in #2717
+    { "ShewchukPCGLinearSolver", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Iterative") },
+    { "BlockJacobiPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+    { "PrecomputedWarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+    { "SSORPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+    { "WarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+
+    // SofaBaseMechanics was deprecated in #2752, #2635 and #2766
+    { "DiagonalMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    { "UniformMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    { "BarycentricMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
+    { "IdentityMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
+    { "SubsetMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
+    { "MechanicalObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
+    { "MappedObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
+    
+    // SofaMiscForceField was deprecated in #2752 and ...
+    { "MeshMatrixMass", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },
+    { "GearSpringForceField", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.SolidMechanics.Spring") },
+
+
+    // SofaRigid was deprecated in #2635 and #2759
+    { "RigidMapping", CreatableMoved("v22.06", "SofaRigid", "Sofa.Component.Mapping.NonLinear") },
+    { "RigidRigidMapping", CreatableMoved("v22.06", "SofaRigid", "Sofa.Component.Mapping.NonLinear") },
+    { "JointSpringForceField", CreatableMoved("v22.06", "SofaRigid", "Sofa.Component.SolidMechanics.Spring") },
+
+    // SofaGeneralRigid was deprecated in #2635 and ...
+    { "LineSetSkinningMapping", CreatableMoved("v22.06", "SofaGeneralRigid", "Sofa.Component.Mapping.Linear") },
+    { "SkinningMapping", CreatableMoved("v22.06", "SofaGeneralRigid", "Sofa.Component.Mapping.Linear") },
+
+    // SofaMiscMapping was deprecated in #2635
+    { "BeamLinearMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "CenterOfMassMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "CenterOfMassMulti2Mapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "CenterOfMassMultiMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "DeformableOnRigidFrameMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "DistanceFromTargetMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.NonLinear") },
+    { "DistanceMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.NonLinear") },
+    { "IdentityMultiMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "SquareMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.NonLinear") },
+    { "SquareDistanceMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.NonLinear") },
+    { "SubsetMultiMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "TubularMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+    { "VoidMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
+
+    // SofaConstraint was deprecated in #2635, #2790, #2796, #2813 and ...
+    { "MappingGeometricStiffnessForceField", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Mapping.MappedMatrix") },
+    { "BilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "GenericConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "GenericConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Solver") },
+    { "LCPConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Solver") },
+    { "LinearSolverConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "PrecomputedConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "SlidingConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "StopperConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "UncoupledConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "UniformConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "UnilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "ConstraintAnimationLoop", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.AnimationLoop") },
+    { "FreeMotionAnimationLoop", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.AnimationLoop") },
+    { "LocalMinDistance", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Collision.Detection.Intersection") },
+
+    // SofaGeneralAnimationLoop was deprecated in #2635 and #2796
+    { "MechanicalMatrixMapper", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.Mapping.MappedMatrix") },
+    { "MultiStepAnimationLoop", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.AnimationLoop") },
+    { "MultiTagAnimationLoop", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.AnimationLoop") },
+
+    // SofaSimpleFem was deprecated in #2759
+    { "HexahedronFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "TetrahedronFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+
+    // SofaGeneralSimpleFem was deprecated in #2759
+    { "BeamFEMForceField", CreatableMoved("v22.06", "SofaGeneralSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "HexahedralFEMForceField", CreatableMoved("v22.06", "SofaGeneralSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "HexahedralFEMForceFieldAndMass", CreatableMoved("v22.06", "SofaGeneralSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "HexahedronFEMForceFieldAndMass", CreatableMoved("v22.06", "SofaGeneralSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "TetrahedralCorotationalFEMForceField", CreatableMoved("v22.06", "SofaGeneralSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "TriangularFEMForceFieldOptim", CreatableMoved("v22.06", "SofaGeneralSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+
+    // SofaMiscFem was deprecated in #2759
+    { "FastTetrahedralCorotationalForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "StandardTetrahedralFEMForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "TriangleFEMForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "TriangularAnisotropicFEMForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "TriangularFEMForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "QuadBendingFEMForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
+    { "BoyceAndArruda", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "Costa", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "HyperelasticMaterial", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "MooneyRivlin", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "NeoHookean", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "Ogden", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "PlasticMaterial", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "StandardTetrahedralFEMForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "STVenantKirchhoff", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "TetrahedronHyperelasticityFEMForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "VerondaWestman", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.HyperElastic") },
+    { "TetrahedralTensorMassForceField", CreatableMoved("v22.06", "SofaMiscFem", "Sofa.Component.SolidMechanics.FEM.TensorMass") },
+
+    // SofaDeformable was deprecated in #2759
+    { "AngularSpringForceField", CreatableMoved("v22.06", "SofaDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "MeshSpringForceField", CreatableMoved("v22.06", "SofaDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "RestShapeSpringsForceField", CreatableMoved("v22.06", "SofaDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "PolynomialRestShapeSpringsForceField", CreatableMoved("v22.06", "SofaDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "SpringForceField", CreatableMoved("v22.06", "SofaDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "StiffSpringForceField", CreatableMoved("v22.06", "SofaDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "PolynomialSpringsForceField", CreatableMoved("v22.06", "SofaDeformable", "Sofa.Component.SolidMechanics.Spring") },
+
+    // SofaGeneralDeformable was deprecated in #2759
+    { "FastTriangularBendingSprings", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "FrameSpringForceField", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "QuadBendingSprings", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "QuadularBendingSprings", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "RegularGridSpringForceField", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "TriangleBendingSprings", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "TriangularBendingSprings", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "TriangleBendingSprings", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "TriangularBiquadraticSpringsForceField", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "TriangularQuadraticSpringsForceField", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "VectorSpringForceField", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
+    { "TriangularTensorMassForceField", CreatableMoved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.TensorMass") },
+
+    // SofaGeneralObjectInteraction was deprecated in #2759
+    { "RepulsiveSpringForceField", CreatableMoved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.SolidMechanics.Spring") },
+
+    // SofaGeneralObjectInteraction was deprecated in #2790 and ...
+    { "AttachConstraint", CreatableMoved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.Constraint.Projective") },
+
+    // SofaBoundaryCondition was deprecated in #2790 and ...
+    { "AffineMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedPlaneConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedRotationConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedTranslationConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "HermiteSplineConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "LinearMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "LinearVelocityConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "OscillatorConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ParabolicConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PartialFixedConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PartialLinearMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PatchTestMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PointConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PositionBasedDynamicsConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectDirectionConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectToLineConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectToPlaneConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectToPointConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "AttachConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "SkeletalMotionConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ConicalForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "ConstantForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "DiagonalVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "EdgePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "EllipsoidForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "LinearForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "OscillatingTorsionPressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "PlaneForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "QuadPressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "SphereForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "SurfacePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "TaitSurfacePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "TorsionForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "TrianglePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "UniformVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+
+    // SofaBaseCollision was deprecated in #2813
+    { "BruteForceBroadPhase", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "BruteForceDetection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "BVHNarrowPhase", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "DefaultPipeline", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "DiscreteIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
+    { "MinProximityIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
+    { "NewProximityIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
+    { "CubeCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "SphereCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "CylinderCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "DefaultContactManager", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Response.Contact") },
+    { "ContactListener", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Response.Contact") },
+
+    // SofaMeshCollision was deprecated in #2813
+    { "PointCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+    { "LineCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+    { "TriangleCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+
+    // SofaGeneralMeshCollision was deprecated in #2813
+    { "DirectSAP", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "DirectSAPNarrowPhase", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "IncrSAPClassSofaVector", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "RayTraceNarrowPhase", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "RayTraceDetection", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "TriangleOctreeModel", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Geometry") },
+
+    // SofaUserInteraction was deprecated in #2813
+    { "RayCollisionModel", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Collision.Geometry") },
+
+    // SofaObjectInteraction was deprecated in #2813
+    { "PenalityContactForceField", CreatableMoved("v22.06", "SofaObjectInteraction", "Sofa.Component.Collision.Response.Contact") },
+
+};
+
+} // namespace sofa::helper::lifecycle

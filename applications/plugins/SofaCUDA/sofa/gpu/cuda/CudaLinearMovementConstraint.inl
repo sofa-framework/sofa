@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDALINEARMOVEMENTCONSTRAINT_INL
-#define SOFA_GPU_CUDA_CUDALINEARMOVEMENTCONSTRAINT_INL
+#pragma once
 
 #include "CudaLinearMovementConstraint.h"
 #include <SofaBoundaryCondition/LinearMovementConstraint.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -131,14 +124,9 @@ public:
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::constraint::projective
 {
 
 /////////////////////////////////////
@@ -605,10 +593,4 @@ void LinearMovementConstraint< gpu::cuda::CudaRigid3dTypes >::projectVelocity(co
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::constraint::projective

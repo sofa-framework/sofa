@@ -21,29 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/vector_algorithm.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/vector_algorithm.h")
-
-namespace sofa::helper
-{
-
-    template<class T1, class T2>
-    void remove(T1& v, const T2& elem)
-    {
-        sofa::type::remove(v, elem);
-    }
-
-    template<class T1, class T2>
-    void removeValue(T1& v, const T2& elem)
-    {
-        sofa::type::removeValue(v, elem);
-    }
-
-    template<class T, class TT>
-    void removeIndex(std::vector<T, TT>& v, size_t index)
-    {
-        sofa::type::removeIndex(v, index);
-    }
-
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/vector_algorithm.h")

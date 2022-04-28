@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
-#define SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
+#pragma once
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
@@ -33,8 +32,7 @@ namespace sofa::core::behavior
 
 template<class DataTypes>
 ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
-    : BaseForceField()
-    , mstate(initLink("mstate", "MechanicalState used by this ForceField"), mm)
+    : BaseForceField(), SingleStateAccessor<DataTypes>(mm)
 {
 }
 
@@ -42,37 +40,25 @@ template<class DataTypes>
 ForceField<DataTypes>::~ForceField() = default;
 
 template<class DataTypes>
-void ForceField<DataTypes>::init()
-{
-    BaseForceField::init();
-
-    if (!mstate.get())
-        mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
-}
-
-
-
-
-template<class DataTypes>
 void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
-    if (mparams)
+    if (mparams && this->mstate)
     {
-        addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
+        addForce(mparams, *fId[this->mstate.get()].write() , *mparams->readX(this->mstate), *mparams->readV(this->mstate));
     }
 }
 
 template<class DataTypes>
 void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
-    if (mparams)
+    if (mparams && this->mstate)
     {
 
 #ifndef NDEBUG
             mparams->setKFactorUsed(false);
 #endif
 
-        addDForce(mparams, *dfId[mstate.get()].write(), *mparams->readDx(mstate.get()));
+        addDForce(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate.get()));
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
@@ -85,9 +71,9 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 template<class DataTypes>
 void ForceField<DataTypes>::addClambda(const MechanicalParams* mparams, MultiVecDerivId resId, MultiVecDerivId lambdaId, SReal cFactor )
 {
-    if (mparams)
+    if (mparams && this->mstate)
     {
-        addClambda(mparams, *resId[mstate.get()].write(), *lambdaId[mstate.get()].read(), cFactor);
+        addClambda(mparams, *resId[this->mstate.get()].write(), *lambdaId[this->mstate.get()].read(), cFactor);
     }
 }
 
@@ -103,21 +89,24 @@ template<class DataTypes>
 SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getPotentialEnergy(mparams, *mparams->readX(mstate));
+        return getPotentialEnergy(mparams, *mparams->readX(this->mstate));
     return 0;
 }
 
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    if (r)
-        addKToMatrix(r.matrix, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()), r.offset);
-    else msg_error()<<"addKToMatrix found no valid matrix accessor.";
+    if (this->mstate)
+    {
+        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+        if (r)
+            addKToMatrix(r.matrix, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()), r.offset);
+        else msg_error()<<"addKToMatrix found no valid matrix accessor.";
+    }
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
 {
     static int i=0;
     if (i < 10)
@@ -133,16 +122,17 @@ void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    if (r)
-        addBToMatrix(r.matrix, sofa::core::mechanicalparams::bFactor(mparams) , r.offset);
+    if (this->mstate)
+    {
+        sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+        if (r)
+            addBToMatrix(r.matrix, sofa::core::mechanicalparams::bFactor(mparams) , r.offset);
+    }
 }
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int &/*offset*/)
 {
 
 }
 
 } // namespace sofa::core::behavior
-
-#endif

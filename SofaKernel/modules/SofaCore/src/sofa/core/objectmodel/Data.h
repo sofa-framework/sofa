@@ -113,6 +113,7 @@ public:
     explicit Data(const InitData& init) : BaseData(init)
     {
         m_value = ValueType(init.value);
+        m_hasDefaultValue = true;
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
@@ -402,7 +403,6 @@ public:
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
 
-public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 
@@ -491,11 +491,8 @@ WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::D
 }
 
 template<class T>
-SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data)
-{
-    return getWriteAccessor(data);
-}
+SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
+WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) = delete;
 
 template<class T>
 SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
@@ -513,11 +510,8 @@ ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmode
 }
 
 template<class T>
-SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
-{
-    return getReadAccessor(data);
-}
+SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
+ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data) = delete;
 
 template<class T>
 SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")

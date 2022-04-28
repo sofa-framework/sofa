@@ -42,6 +42,7 @@
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 #include <deque>
+#include <unordered_map>
 
 namespace sofa::gui::qt
 {
@@ -105,17 +106,17 @@ class SofaWindowProfiler: public QDialog, public Ui_WindowProfiler
 public:
     SofaWindowProfiler(QWidget* parent);
 
-    /// method called when window is shown to activate advanceTimer recording.
+    /// method called when window is shown to activate AdvancedTimer recording.
     void activateATimer(bool activate);
 
-    /// main method to iterate on the advanceTimer Data and update the info in the widgets
+    /// main method to iterate on the AdvancedTimer Data and update the info in the widgets
     void pushStepData();
 
     /// Method to clear all Data and reset graph
     void resetGraph();
 
     /**
-     * @brief The AnimationSubStepData Internal class to store data for each step of the animation. Correspond to one AdvanceTimer::begin/end
+     * @brief The AnimationSubStepData Internal class to store data for each step of the animation. Correspond to one AdvancedTimer::begin/end
      * Data stored/computed will be step name, its time in ms and the corresponding % inside the whole step.
      * the total ms and percentage it represent if this step has substeps.
      * Buffer of AnimationSubStepData corresponding to its children substeps
@@ -146,7 +147,7 @@ public:
     };
 
     /**
-     * @brief The AnimationStepData internal class to store all info of a animation step recorded by advanceTimer
+     * @brief The AnimationStepData internal class to store all info of a animation step recorded by AdvancedTimer
      * Data stored/computed will be the step number, and the total time in ms of the step.
      * All Data will then be stored inside a tree of \sa AnimationSubStepData tree.
      */
@@ -157,6 +158,7 @@ public:
         AnimationStepData()
             : m_stepIteration(-1)
             , m_totalMs(0.0)
+            , m_overheadMs(0.)
         {}
 
         AnimationStepData(int step, const std::string& idString);
@@ -167,8 +169,17 @@ public:
         virtual ~AnimationStepData();
         int m_stepIteration;
         SReal m_totalMs;
+        SReal m_selfMs {}; ///< Difference between the total time and the time of all children
+        SReal m_selfPercent {}; ///< Difference between the total time and the time of all children as a percentage
+        std::string m_idString; ///< Name of the timer
 
         sofa::type::vector<AnimationSubStepData*> m_subSteps;
+
+        /// The overhead due to timers processing. In milliseconds
+        SReal m_overheadMs;
+
+        /// Total number of timers in this step
+        unsigned int m_totalTimers {};
     protected:
         bool processData(const std::string& idString);
     };
@@ -182,7 +193,9 @@ protected:
     /// Method called at each iteration to update the chart
     void updateChart();
     /// Method to add new QTreeWidgetItem item inside the QTreeWidget using the data from \sa AnimationSubStepData
-    void addTreeItem(AnimationSubStepData* subStep, QTreeWidgetItem* parent);
+    QTreeWidgetItem* addTreeItem(AnimationSubStepData* subStep);
+
+    QTreeWidgetItem* addTreeItem(const AnimationStepData* step);
 
 public slots:
     void closeEvent( QCloseEvent* ) override
@@ -230,6 +243,14 @@ protected:
 
     /// Serie of selection substep duration in ms to be plot on the graph. size = \sa m_bufferSize
     QtCharts::QLineSeries *m_selectionSeries;
+
+    struct CheckedSeries
+    {
+        QtCharts::QLineSeries* lineSeries;
+        std::string checkedParentStep;
+    };
+    std::unordered_map<std::string, CheckedSeries> m_checkedSeries;
+
     /// Name of the substep selected in the Tree
     std::string m_selectedStep;
     /// Name of the parent of the substep selected in the Tree

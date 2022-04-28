@@ -10,7 +10,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <DefaultContactManager name="Response" response="default" /> 
+    <DefaultContactManager name="Response" response="PenalityContactForceField" /> 
 
     <Node name="Particles">
         <EulerExplicitSolver symplectic="1" />
@@ -41,7 +41,7 @@
         
         <PointSetTopologyContainer name="con" />
         <PointSetTopologyModifier name="mod" />
-        <UniformMass name="M1" totalMass="1.0" handleTopologicalChanges="1" />
+        <UniformMass name="M1" totalMass="1.0" />
         <SpatialGridContainer cellWidth="0.75" />
         <SPHFluidForceField radius="0.7" density="25" kernelType="1" viscosityType="2" viscosity="10" pressure="1000" surfaceTension="-1000" printLog="0" />
 
@@ -65,7 +65,7 @@
             <SphereCollisionModel radius="1.0" showImpostors="false" contactStiffness="100" />
         </Node>    
         <Node name="Visual" >   
-            <MeshObjLoader name="loader" filename="mesh/sphere.obj" />         
+            <MeshOBJLoader name="loader" filename="mesh/sphere.obj" />         
             <OglModel src="@loader" />
         </Node>   
     </Node>

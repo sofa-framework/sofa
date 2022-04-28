@@ -12,7 +12,7 @@
   <DefaultPipeline verbose="0" />
   <BruteForceBroadPhase/>
   <BVHNarrowPhase/>
-  <DefaultContactManager response="default" />
+  <DefaultContactManager response="PenalityContactForceField" />
   <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.02"/>
   
   <CarvingManager active="true" carvingDistance="-0.02"/>

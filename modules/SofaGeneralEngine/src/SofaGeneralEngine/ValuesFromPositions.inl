@@ -55,6 +55,23 @@ ValuesFromPositions<DataTypes>::ValuesFromPositions()
     p_fieldType.setValue(m_newoptiongroup);
 
     addAlias(&f_X0,"rest_position");
+
+    addInput(&f_inputValues);
+    addInput(&f_direction);
+    addInput(&f_X0);
+    addInput(&f_edges);
+    addInput(&f_triangles);
+    addInput(&f_tetrahedra);
+
+    addOutput(&f_values);
+    addOutput(&f_edgeValues);
+    addOutput(&f_triangleValues);
+    addOutput(&f_tetrahedronValues);
+
+    addOutput(&f_pointVectors);
+    addOutput(&f_edgeVectors);
+    addOutput(&f_triangleVectors);
+    addOutput(&f_tetrahedronVectors);
 }
 
 template <class DataTypes>
@@ -127,22 +144,6 @@ void ValuesFromPositions<DataTypes>::init()
         }
     }
 
-    addInput(&f_inputValues);
-    addInput(&f_direction);
-    addInput(&f_X0);
-    addInput(&f_edges);
-    addInput(&f_triangles);
-    addInput(&f_tetrahedra);
-
-    addOutput(&f_values);
-    addOutput(&f_edgeValues);
-    addOutput(&f_triangleValues);
-    addOutput(&f_tetrahedronValues);
-
-    addOutput(&f_pointVectors);
-    addOutput(&f_edgeVectors);
-    addOutput(&f_triangleVectors);
-    addOutput(&f_tetrahedronVectors);
     setDirtyValue();
 }
 
@@ -277,7 +278,7 @@ void ValuesFromPositions<DataTypes>::doUpdate()
     data.x0 = x0;
 
     // Compute min and max of BB
-    sofa::type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     data.bmin = (Real)*sceneMinBBox.ptr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?

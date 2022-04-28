@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9 0" dt="0.04">
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, DiagonalMass, FixedConstraint, IdentityMapping, MechanicalObject, TetrahedronFEMForceField, TetrahedronSetGeometryAlgorithms, TriangleSetGeometryAlgorithms] -->
+    <RequiredPlugin name="SofaImplicitOdeSolver"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping, Tetra2TriangleTopologicalMapping] -->
+    
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+	
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <DefaultContactManager name="collision response" response="default" />
+    <DiscreteIntersection/>
+    
+    <Node name="HexahedronFEMForceField-GPU-Green">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        
+        <RegularGridTopology name="grid" n="76 16 16" min="0 6 -2" max="19 10 2" />
+        <MechanicalObject name="Volume" template="CudaVec3f"/>
+
+        <HexahedronSetTopologyContainer name="Container" src="@grid"/>
+        <HexahedronSetTopologyModifier name="Modifier" />
+        
+        <DiagonalMass totalMass="50.0" />
+        <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <HexahedronFEMForceField name="FEM" template="CudaVec3f" youngModulus="1000" poissonRatio="0.3" method="large" />
+        <PlaneForceField normal="0 1 0" d="2" stiffness="10000"  showPlane="1" />
+        
+        <Node name="surface">
+            <QuadSetTopologyContainer name="Container" />
+            <QuadSetTopologyModifier name="Modifier" />
+            
+            <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="green" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+    
+    
+    <Node name="Floor">
+		<RegularGridTopology
+			nx="4" ny="1" nz="4"
+			xmin="-10" xmax="30"
+			ymin="1.9" ymax="1.9"
+			zmin="-20" zmax="20" />
+		<MechanicalObject />
+		<Node name="Visu">
+			<OglModel name="Visual" color="white"/>
+			<IdentityMapping input="@.." output="@Visual"/>
+		</Node>
+	</Node>
+</Node>

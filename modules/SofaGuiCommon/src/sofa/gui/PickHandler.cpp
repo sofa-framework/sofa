@@ -22,7 +22,7 @@
 #include <sofa/gui/PickHandler.h>
 
 #include <SofaUserInteraction/ComponentMouseInteraction.h>
-#include <SofaUserInteraction/RayContact.h>
+#include <sofa/component/collision/response/contact/RayContact.h>
 
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
@@ -379,10 +379,10 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
 
     const type::Vector3& origin          = mouseCollision->getRay(0).origin();
     const type::Vector3& direction       = mouseCollision->getRay(0).direction();
-    const double& maxLength                     = mouseCollision->getRay(0).l();
+    const double& maxLength              = mouseCollision->getRay(0).l();
     
-    const std::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
-    for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
+    const auto &contacts = mouseCollision->getContacts();
+    for (auto it=contacts.cbegin(); it != contacts.cend(); ++it)
     {
 
         const sofa::type::vector<core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();

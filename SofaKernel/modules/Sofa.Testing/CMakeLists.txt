@@ -5,6 +5,7 @@ project(Sofa.Testing LANGUAGES CXX)
 enable_testing()
 
 # add gtest library
+# set(gtest_disable_pthreads ON CACHE INTERNAL "")
 add_subdirectory(extlibs/gtest)
 # add custom gtest main
 add_subdirectory(SofaGTestMain)
@@ -59,6 +60,5 @@ sofa_create_package_with_targets(
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
 
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()
+# test the tests...
+add_subdirectory(${PROJECT_NAME}_test)

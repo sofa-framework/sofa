@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 BaseConstraintCorrection::BaseConstraintCorrection(){}
@@ -35,19 +29,19 @@ BaseConstraintCorrection::~BaseConstraintCorrection(){}
 
 void BaseConstraintCorrection::rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
 
-void BaseConstraintCorrection::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
+void BaseConstraintCorrection::getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
 {
     msg_warning() << "getComplianceWithConstraintMerge is not implemented yet " ;
 }
 
-void BaseConstraintCorrection::computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector * /*lambda*/)
+void BaseConstraintCorrection::computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/)
 {
     dmsg_warning() << "ComputeResidual is not implemented in " << this->getName() ;
 }
 
-void BaseConstraintCorrection::getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
+void BaseConstraintCorrection::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
 {
-    dmsg_warning() << "getBlockDiagonalCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() ;
+    dmsg_warning() << "getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W) is not implemented in " << this->getTypeName() ;
 }
 
 bool BaseConstraintCorrection::hasConstraintNumber(int /*index*/) {return true;}
@@ -56,9 +50,5 @@ void BaseConstraintCorrection::addConstraintDisplacement(double * /*d*/, int /*b
 void BaseConstraintCorrection::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 

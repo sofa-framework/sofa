@@ -1,16 +1,19 @@
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaGeneralLoader'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
-    <RequiredPlugin pluginName='SofaSimpleFem'/> 
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollision" />
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     <DiscreteIntersection />
     <Node name="cubeFEM">
@@ -21,7 +24,7 @@
         <UniformMass vertexMass="0.25" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <SubsetMapping input="@.." output="@Visual" />
         </Node>
@@ -37,7 +40,7 @@
     <MechanicalObject position="@[-1].position" translation="0 -12.5 0" />
     <SphereCollisionModel name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="1000" />
     <Node>
-        <MeshObjLoader name="meshLoader_1" filename="mesh/floor2.obj" translation="0 -12.5 0" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_1" filename="mesh/floor2.obj" translation="0 -12.5 0" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor2.bmp" />
     </Node>
 </Node>

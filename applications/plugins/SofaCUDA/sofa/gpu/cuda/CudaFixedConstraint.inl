@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_INL
-#define SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_INL
+#pragma once
 
 #include "CudaFixedConstraint.h"
 #include <SofaBoundaryCondition/FixedConstraint.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -57,14 +50,9 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::constraint::projective
 {
 
 using namespace gpu::cuda;
@@ -462,10 +450,4 @@ CudaFixedConstraint_ImplMethods(gpu::cuda::CudaRigid3dTypes);
 
 #undef CudaFixedConstraint_ImplMethods
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::constraint::projective

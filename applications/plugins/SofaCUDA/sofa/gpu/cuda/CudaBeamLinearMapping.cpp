@@ -25,16 +25,10 @@
 #include <sofa/core/Mapping.inl>
 #include "CudaTypes.h"
 
-namespace sofa
+namespace sofa::gpu::cuda
 {
 
-namespace gpu
-{
-
-namespace cuda
-{
-
-using namespace sofa::component::mapping;
+using namespace sofa::component::mapping::linear;
 using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;
@@ -52,14 +46,9 @@ int BeamLinearMappingCudaClass = core::RegisterObject("Set the positions and vel
 #endif
         ;
 
-}
+} // namespace sofa::gpu::cuda
 
-}
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::linear
 {
 
 using namespace defaulttype;
@@ -76,9 +65,4 @@ template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3dTypes, sofa::gpu::cud
 #endif
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping::linear

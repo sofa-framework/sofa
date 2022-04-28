@@ -1,4 +1,5 @@
 
+#include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
 using sofa::component::collision::MeshMinProximityIntersection;
 
@@ -9,11 +10,10 @@ using sofa::component::collision::MeshNewProximityIntersection;
 
 using sofa::core::execparams::defaultInstance;
 using sofa::core::objectmodel::New;
+#include <SofaBaseCollision/SphereModel.h>
 using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel;
 using sofa::component::collision::RigidSphere;
-using sofa::component::collision::TriangleCollisionModel;
-
 using sofa::component::collision::TriangleCollisionModel;
 
 

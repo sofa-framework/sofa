@@ -34,12 +34,6 @@ namespace cuda
 {
 #endif
 
-#if (__CUDA_ARCH__ < 200)
-#define fastmul(x,y)	__mul24((x),(y))
-#else
-#define fastmul(x,y)	((x)*(y))
-#endif
-
 
 template<class real>
 class CudaVec2;
@@ -624,6 +618,13 @@ public:
                      x.z * v.x.x + y.z * v.y.x + z.z * v.z.x,
                      x.z * v.x.y + y.z * v.y.y + z.z * v.z.y,
                      x.z * v.x.z + y.z * v.y.z + z.z * v.z.z );
+    }
+
+    __device__ matrix3<real> transpose(const matrix3<real>& v) const
+    {
+        return make(v.x.x, v.y.x, v.z.x,
+                    v.x.y, v.y.y, v.z.y,
+                    v.x.z, v.y.z, v.z.z);
     }
 
     __device__ real determinant(matrix3<real> v)
