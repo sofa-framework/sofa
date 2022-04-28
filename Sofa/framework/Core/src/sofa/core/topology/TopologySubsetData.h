@@ -131,9 +131,9 @@ protected:
 
     /**
     * Internal method called at the end of @sa add method to apply internal mechanism, such as updating the map size.
-    * @param nbElements Number of element added
+    * @param dataLastId Index of the last element id in the TopologyData tracked
     */
-    virtual void addPostProcess(sofa::Size nbElements);
+    virtual void addPostProcess(sofa::Index dataLastId);
 
     /**
     * Internal method to update the last element of this Data and/or map when the topology buffer is reduced.

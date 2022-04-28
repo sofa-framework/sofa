@@ -57,7 +57,7 @@ protected:
 
     void removePostProcess(sofa::Size nbElements) override;
 
-    void addPostProcess(sofa::Size nbElements) override;
+    void addPostProcess(sofa::Index dataLastId) override;
 
     void updateLastIndex(Index posLastIndex, Index newGlobalId) override;
 };
