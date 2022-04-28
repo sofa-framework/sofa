@@ -146,11 +146,11 @@ public:
 
 protected :
 
-    Data<bool> d_useSymbolicDecomposition ;
+    Data<bool> d_usePrecomputedSymbolicDecomposition ;
     Data<bool> d_applyPermutation ;
 
     SparseLDLSolverImpl() : Inherit() 
-    , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
+    , d_usePrecomputedSymbolicDecomposition(initData(&d_usePrecomputedSymbolicDecomposition, true ,"usePrecomputedSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
     , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
     {}
 
@@ -243,7 +243,7 @@ protected :
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
-        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() )
+        if (data->new_factorization_needed  || !d_usePrecomputedSymbolicDecomposition.getValue() )
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("symbolic_factorization");
             msg_info() << "Recomputing new factorization" ;
@@ -297,7 +297,7 @@ protected :
 
         // split the bloc diag in data->Bdiag
 
-        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
+        if (data->new_factorization_needed  || !d_usePrecomputedSymbolicDecomposition.getValue() ) {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
