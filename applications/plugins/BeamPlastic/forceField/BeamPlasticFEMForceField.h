@@ -640,8 +640,8 @@ public:
 
 protected:
 
-    void drawElement(int i, std::vector<Vector3> &gaussPoints,
-                     std::vector<Vector3> &centrelinePoints,
+    void drawElement(int i, std::vector<Vec3> &gaussPoints,
+                     std::vector<Vec3> &centrelinePoints,
                      std::vector<RGBAColor> &colours, const VecCoord& x);
 
     void computeStiffness(int i, Index a, Index b);

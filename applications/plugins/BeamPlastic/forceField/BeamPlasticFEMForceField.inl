@@ -802,7 +802,7 @@ void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::Mechani
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    defaulttype::BaseMatrix* mat = r.matrix;
+    linearalgebra::BaseMatrix* mat = r.matrix;
 
     if (r)
     {
@@ -840,7 +840,7 @@ void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::Mechani
                 for (int x1 = 0; x1<12; x1 += 3) {
                     for (int y1 = x1; y1<12; y1 += 3)
                     {
-                        defaulttype::Mat<3, 3, Real> m;
+                        Mat<3, 3, Real> m;
                         K0.getsub(x1, y1, m);
                         m = R*m*Rt;
 
@@ -862,7 +862,7 @@ void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::Mechani
                 for (int x1 = 0; x1<12; x1 += 3) {
                     for (int y1 = 0; y1<12; y1 += 3)
                     {
-                        defaulttype::Mat<3, 3, Real> m;
+                        Mat<3, 3, Real> m;
                         K0.getsub(x1, y1, m);
                         m = R*m*Rt;
                         K.setsub(x1, y1, m);
@@ -893,8 +893,8 @@ void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector<defaulttype::Vector3> centrelinePoints;
-    std::vector<defaulttype::Vector3> gaussPoints;
+    std::vector<Vec3> centrelinePoints;
+    std::vector<Vec3> gaussPoints;
     std::vector<RGBAColor> colours;
 
     for (unsigned int i=0; i<m_indexedElements->size(); ++i)
@@ -909,15 +909,15 @@ void BeamPlasticFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 }
 
 template<class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 > &gaussPoints,
-                                                 std::vector< defaulttype::Vector3 > &centrelinePoints,
+void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< Vec3 > &gaussPoints,
+                                                 std::vector< Vec3 > &centrelinePoints,
                                                  std::vector<RGBAColor> &colours,
                                                  const VecCoord& x)
 {
     Index a = (*m_indexedElements)[i][0];
     Index b = (*m_indexedElements)[i][1];
 
-    defaulttype::Vec3d pa, pb;
+    Vec3 pa, pb;
     pa = x[a].getCenter();
     pb = x[b].getCenter();
 
@@ -934,7 +934,7 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
 
     m_beamsData.endEdit();
 
-    defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
+    Vec3 u, P1P2, P1P2_0;
     // local displacement
     Matrix12x1 disp;
 
@@ -1035,7 +1035,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeBBox(const core::ExecParams* pa
 
     for (size_t i = 0; i<npoints; i++)
     {
-        const defaulttype::Vector3 &pt = p[i].getCenter();
+        const Vec3 &pt = p[i].getCenter();
 
         for (int c = 0; c<3; c++)
         {
@@ -1598,11 +1598,11 @@ void BeamPlasticFEMForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     for (int i = 0; i < 12; i++)
         force[i] = fint[i][0];
 
-    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
-    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+    Vec3 fa1 = x[a].getOrientation().rotate(Vec3(force[0], force[1], force[2]));
+    Vec3 fa2 = x[a].getOrientation().rotate(Vec3(force[3], force[4], force[5]));
 
-    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
-    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+    Vec3 fb1 = x[a].getOrientation().rotate(Vec3(force[6], force[7], force[8]));
+    Vec3 fb2 = x[a].getOrientation().rotate(Vec3(force[9], force[10], force[11]));
 
     f[a] += Deriv(-fa1, -fa2);
     f[b] += Deriv(-fb1, -fb2);
@@ -1620,7 +1620,7 @@ void BeamPlasticFEMForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
 
     //Computes displacement increment, from last system solution
     Vec12 local_depl;
-    defaulttype::Vec<3, Real> u;
+    Vec3 u;
     Quat<SReal>& q = beamQuat(i); //x[a].getOrientation();
     q.normalize();
 
@@ -1647,7 +1647,7 @@ void BeamPlasticFEMForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     m_beamsData.endEdit(); // consecutive to the call to beamQuat
 
     const MechanicalState beamMechanicalState = m_beamsData.getValue()[i]._beamMechanicalState;
-    defaulttype::Vec<12, Real> local_dforce;
+    Vec12 local_dforce;
 
     // The stiffness matrix we use depends on the mechanical state of the beam element
 
@@ -1662,10 +1662,10 @@ void BeamPlasticFEMForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
             local_dforce = m_beamsData.getValue()[i]._Ke_loc * local_depl;
     }
 
-    Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_dforce[0], local_dforce[1], local_dforce[2]));
-    Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_dforce[3], local_dforce[4], local_dforce[5]));
-    Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_dforce[6], local_dforce[7], local_dforce[8]));
-    Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_dforce[9], local_dforce[10], local_dforce[11]));
+    Vec3 fa1 = q.rotate(Vec3(local_dforce[0], local_dforce[1], local_dforce[2]));
+    Vec3 fa2 = q.rotate(Vec3(local_dforce[3], local_dforce[4], local_dforce[5]));
+    Vec3 fb1 = q.rotate(Vec3(local_dforce[6], local_dforce[7], local_dforce[8]));
+    Vec3 fb2 = q.rotate(Vec3(local_dforce[9], local_dforce[10], local_dforce[11]));
 
     df[a] += Deriv(-fa1, -fa2) * fact;
     df[b] += Deriv(-fb1, -fb2) * fact;
@@ -1872,7 +1872,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeLocalDisplacement(const VecCoor
 
     m_beamsData.endEdit();
 
-    defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
+    Vec3 u, P1P2, P1P2_0;
 
     // translations //
     P1P2_0 = x0[b].getCenter() - x0[a].getCenter();

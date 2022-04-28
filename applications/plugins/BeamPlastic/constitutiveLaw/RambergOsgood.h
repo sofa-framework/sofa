@@ -23,12 +23,13 @@
 #include <BeamPlastic/config.h>
 
 #include "PlasticConstitutiveLaw.h"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 
 namespace sofa::plugin::beamplastic::component::constitutivelaw
 {
+
+using type::Mat;
 
 template<class DataTypes>
 class RambergOsgood : public PlasticConstitutiveLaw<DataTypes> {
@@ -36,8 +37,8 @@ class RambergOsgood : public PlasticConstitutiveLaw<DataTypes> {
 public:
 
     typedef typename DataTypes::Coord::value_type Real;
-    typedef defaulttype::Mat<3, 3, Real> Matrix3;
-    typedef defaulttype::Mat<6, 6, Real> Matrix6;
+    typedef Mat<3, 3, Real> Matrix3;
+    typedef Mat<6, 6, Real> Matrix6;
 
     RambergOsgood(Real E, Real yieldStress,
                   Real eps1 = (Real)0.00384942, Real sig1 = (Real)6.0e8,
