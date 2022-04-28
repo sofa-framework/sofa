@@ -32,8 +32,8 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <SofaGeneralEngine/SmoothMeshEngine.h>
-using sofa::component::engine::SmoothMeshEngine ;
+#include <sofa/component/engine/transform/SmoothMeshEngine.h>
+using sofa::component::engine::transform::SmoothMeshEngine ;
 
 using sofa::type::vector;
 

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralEngine/IndexValueMapper.h>
-using sofa::component::engine::IndexValueMapper;
+#include <sofa/component/engine/transform/IndexValueMapper.h>
+using sofa::component::engine::transform::IndexValueMapper;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::objectmodel::New ;

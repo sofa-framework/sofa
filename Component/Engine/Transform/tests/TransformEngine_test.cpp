@@ -25,12 +25,12 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaGeneralEngine/TransformEngine.h>
+#include <sofa/component/engine/transform/TransformEngine.h>
 #include <sofa/type/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-using sofa::component::engine::TransformEngine;
+using sofa::component::engine::transform::TransformEngine;
 
 sofa::type::Vector3		nullptr_VEC(0,0,0);
 sofa::type::Vector3		nullptr_SCALE(1,1,1);

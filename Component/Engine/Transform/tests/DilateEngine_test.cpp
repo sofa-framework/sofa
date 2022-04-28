@@ -33,8 +33,8 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <SofaGeneralEngine/DilateEngine.h>
-using sofa::component::engine::DilateEngine ;
+#include <sofa/component/engine/transform/DilateEngine.h>
+using sofa::component::engine::transform::DilateEngine ;
 
 using sofa::type::vector;
 

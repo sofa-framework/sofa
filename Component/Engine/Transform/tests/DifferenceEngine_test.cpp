@@ -36,8 +36,8 @@ using sofa::simulation::graph::DAGSimulation;
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams;
 
-#include <SofaGeneralEngine/DifferenceEngine.h>
-using sofa::component::engine::DifferenceEngine ;
+#include <sofa/component/engine/transform/DifferenceEngine.h>
+using sofa::component::engine::transform::DifferenceEngine ;
 
 using sofa::type::vector;
 

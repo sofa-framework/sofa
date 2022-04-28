@@ -42,10 +42,10 @@ using sofa::core::visual::VisualParams;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBase/initSofaBase.h>
-
 using std::vector;
 using std::string;
+
+#include <SofaSimulationGraph/SimpleApi.h>
 
 
 namespace sofa
@@ -64,14 +64,15 @@ struct MeshROI_test : public BaseSimulationTest,
 
     void SetUp() override
     {
-        sofa::component::initSofaBase();
+        simpleapi::importPlugin("Sofa.Component.Engine.Select");
+        simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
+        simpleapi::importPlugin("Sofa.Component.IO.Mesh");
 
         // SetUp3
         string scene2 =
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
-        "       <RequiredPlugin name='SofaLoader' />                       "
         "       <MeshOBJLoader name='loader' filename='mesh/cube.obj'/>    "
         "       <Mesh name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "

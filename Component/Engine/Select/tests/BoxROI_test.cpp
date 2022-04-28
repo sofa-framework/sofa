@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/UniformMass.h>
 
 #include <vector>
 using std::vector;
@@ -29,21 +28,14 @@ using std::string;
 
 #include <gtest/gtest.h>
 using ::testing::Types;
-
-using sofa::core::execparams::defaultInstance; 
-
+#include <sofa/core/fwd.h>
 #include <sofa/helper/BackTrace.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+
+#include <sofa/core/objectmodel/ComponentState.h>
 using sofa::core::objectmodel::ComponentState;
-using namespace sofa::type;
-using namespace sofa::defaulttype;
 
 #include <SofaEngine/BoxROI.h>
 using sofa::component::engine::BoxROI;
-
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseTopology/initSofaBaseTopology.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation;
@@ -54,8 +46,10 @@ using sofa::simulation::setSimulation;
 using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::New;
-using sofa::component::container::MechanicalObject;
 using sofa::defaulttype::Vec3Types;
+
+using namespace sofa::type;
+using namespace sofa::defaulttype;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
@@ -65,6 +59,8 @@ using sofa::helper::logging::MessageDispatcher;
 
 #include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/BaseTest.h>
+
+#include <SofaSimulationGraph/SimpleApi.h>
 
 template <typename TDataType>
 struct BoxROITest :  public sofa::testing::BaseTest
@@ -77,9 +73,9 @@ struct BoxROITest :  public sofa::testing::BaseTest
 
     void SetUp() override
     {
-        sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
-        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
-        sofa::component::initSofaBaseTopology(); // needed to instanciate TriangleSetTopologyContainer
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Engine.Select");
 
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
