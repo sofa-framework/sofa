@@ -29,8 +29,6 @@ using sofa::helper::BackTrace ;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-
 namespace light_test
 {
 
@@ -40,8 +38,6 @@ int initMessage(){
     if(t){
         t->init();
     }
-
-    sofa::simpleapi::importPlugin("SofaOpenglVisual");
 
     /// Install the backtrace so that we have more information in case of test segfault.
     BackTrace::autodump() ;
@@ -54,8 +50,9 @@ class TestLight : public BaseTest {
 public:
 
     void SetUp() override
-    {
-        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
+ {
+         sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
+         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
         sofa::simulation::setSimulation(new DAGSimulation());
     }

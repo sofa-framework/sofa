@@ -50,15 +50,14 @@ using sofa::helper::logging::ClangMessageHandler ;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-
 namespace sofa {
 
 struct TestLightManager : public BaseTest 
 {
     void SetUp() override
     {
-        sofa::component::initSofaBaseMechanics(); // needed to instanciate MechanicalObject
+        sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
         sofa::simulation::setSimulation(new DAGSimulation());
     }
