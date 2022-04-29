@@ -31,7 +31,7 @@ using namespace sofa::linearalgebra;
 
 // dont try to compile if floating point is float
 #ifdef SOFA_FLOAT
-SOFA_PRAGMA_WARNING("SparseLUSolver does support float as scalar.")
+SOFA_PRAGMA_WARNING("SparseLUSolver does not support float as scalar.")
 #else  // SOFA_DOUBLE
 int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
         .add< SparseLUSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >()
