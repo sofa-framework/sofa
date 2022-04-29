@@ -57,13 +57,13 @@ struct Engine_test : public BaseTest
 
        // Engine 2 linked to the ouput of engine 1
        engine2 = sofa::core::objectmodel::New<TestEngine>();
-       engine1->f_result.setParent(&engine2->f_numberToMultiply);
+       engine2->f_numberToMultiply.setParent(&engine1->f_result);
        engine2->f_factor.setValue(3);
        engine2->init();
 
        // Engine 3 linked to the ouput of engine 1
        engine3 = sofa::core::objectmodel::New<TestEngine>();
-       engine1->f_result.setParent(&engine3->f_numberToMultiply);
+       engine3->f_numberToMultiply.setParent(&engine1->f_result);
        engine3->f_factor.setValue(3);
        engine3->init();
 
