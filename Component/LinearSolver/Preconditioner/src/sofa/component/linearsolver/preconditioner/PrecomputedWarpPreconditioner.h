@@ -152,7 +152,9 @@ protected :
     PrecomputedWarpPreconditionerInternalData<TDataTypes> internalData;
 
     void rotateConstraints();
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
     void loadMatrixWithCSparse(TMatrix& M);
+#endif
     void loadMatrixWithSolver();
 
     template<class JMatrix>

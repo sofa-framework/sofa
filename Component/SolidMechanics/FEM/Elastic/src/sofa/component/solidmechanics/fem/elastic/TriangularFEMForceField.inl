@@ -282,7 +282,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
     triangleInf.resize(m_topology->getNbTriangles());
     for (Topology::TriangleID i = 0; i < m_topology->getNbTriangles(); ++i)
     {
-        createTriangleInformation(i, triangleInf[i], m_topology->getTriangle(i), (const sofa::type::vector< Index >)0, (const sofa::type::vector< double >)0);
+        createTriangleInformation(i, triangleInf[i], m_topology->getTriangle(i), (const sofa::type::vector< Index >)0, (const sofa::type::vector< Real >)0);
     }
     triangleInfo.endEdit();
 

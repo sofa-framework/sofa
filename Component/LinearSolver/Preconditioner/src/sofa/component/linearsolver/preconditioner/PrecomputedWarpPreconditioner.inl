@@ -40,7 +40,9 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
 #include <sofa/component/linearsolver/direct/SparseCholeskySolver.inl>
+#endif
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 #include <sofa/simulation/Node.h>
@@ -165,9 +167,19 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
         }
         else
         {
-            msg_info() << "Precompute : " << fname << " compliance." ;
-            if (solverName.getValue().empty()) loadMatrixWithCSparse(M);
-            else loadMatrixWithSolver();
+            msg_info() << "Precompute : " << fname << " compliance.";
+            if (solverName.getValue().empty())
+            {
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
+                loadMatrixWithCSparse(M);
+#else
+                msg_error() << "solverName is empty, but is required to load matrix.";
+                d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                return;
+#endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
+            }
+            else
+                loadMatrixWithSolver();
 
             if (use_file.getValue())
             {
@@ -194,6 +206,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     }
 }
 
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
@@ -248,6 +261,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
     tmpStr << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
     msg_info() << tmpStr.str();
 }
+#endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
 
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
