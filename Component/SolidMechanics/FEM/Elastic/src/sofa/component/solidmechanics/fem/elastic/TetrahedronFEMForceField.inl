@@ -1349,6 +1349,12 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
+    const Real& poissonRatio = _poissonRatio.getValue();
+    if (poissonRatio<0 || poissonRatio>=0.5)
+    {
+        msg_error() << "FEM Poisson Ratio in Hooke's law should be in [0,0.5[.";
+    }
+
     if (_updateStiffness.getValue() || isComputeVonMisesStressMethodSet())
     {
         this->f_listening.setValue(true);
