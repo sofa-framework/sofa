@@ -30,7 +30,7 @@ using namespace sofa::linearalgebra;
 
 // dont try to compile if floating point is float
 #ifdef SOFA_FLOAT
-SOFA_PRAGMA_MESSAGE("SparseCholeskySolver does support float as scalar.")
+SOFA_PRAGMA_WARNING("SparseCholeskySolver does support float as scalar.")
 #else // SOFA_DOUBLE
 int SparseCholeskySolverClass =
     core::RegisterObject(

@@ -174,7 +174,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
                 loadMatrixWithCSparse(M);
 #else
                 msg_error() << "solverName is empty, but is required to load matrix.";
-                d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
 #endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
             }
