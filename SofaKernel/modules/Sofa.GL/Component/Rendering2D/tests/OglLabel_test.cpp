@@ -56,6 +56,7 @@ public:
     void SetUp() override
     {
         sofa::simulation::setSimulation(new DAGSimulation());
+        sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering2D");
     }
 
     void checkExcludingAttributes()
