@@ -142,7 +142,7 @@ protected:
     const VecElement *m_indexedElements;
 
 public:
-    Data<Real> d_poissonRatio; ///< Potion Ratio
+    Data<Real> d_poissonRatio; ///< Poisson's Ratio
     Data<Real> d_youngModulus; ///< Young Modulus
     Data<Real> d_radius; ///< radius of the section
     Data<Real> d_radiusInner; ///< inner radius of the section for hollow beams
