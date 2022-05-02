@@ -26,7 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/mass/UniformMass.h>
 
 namespace sofa::component::constraint::lagrangian::correction
 {

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/topology/container/dynamic/MultilevelHexahedronSetTopologyContainer.h>
 
-#include <SofaNonUniformFem/MultilevelHexahedronSetTopologyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

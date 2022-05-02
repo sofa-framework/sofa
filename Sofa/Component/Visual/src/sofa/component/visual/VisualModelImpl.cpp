@@ -22,7 +22,7 @@
 #include <sofa/component/visual/VisualModelImpl.h>
 
 #include <sofa/core/topology/TopologyData.inl>
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -1455,7 +1455,7 @@ void VisualModelImpl::computePositions()
 
 void VisualModelImpl::computeMesh()
 {
-    using sofa::component::topology::SparseGridTopology;
+    using sofa::component::topology::container::grid::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
 
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
