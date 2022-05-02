@@ -70,7 +70,9 @@ protected:
     SingleLink<FillReducingOrdering<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_mstate;
     SingleLink<FillReducingOrdering<DataTypes>, core::topology::BaseMeshTopology,           BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
-    Data<sofa::helper::OptionsGroup> d_orderingMethod; ///< Ordering method. AMD means Approximate minimum degree.
+    Data<sofa::helper::OptionsGroup> d_orderingMethod; ///< Ordering method.
+                                                       ///< nestedDissection is the multilevel nested dissection algorithm implemented in the METIS library
+                                                       ///< approximateMinimumDegree is the approximate minimum degree algorithm implemented in the Eigen library.
 
     /// Output vector of indices mapping the reordered vertices to the initial list
     Data< sofa::type::vector<idx_t> > d_permutation;
