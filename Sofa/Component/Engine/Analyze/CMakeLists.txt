@@ -30,11 +30,11 @@ set(SOURCE_FILES
     ${SOFACOMPONENTENGINEANALYZE_SOURCE_DIR}/ShapeMatching.cpp
 )
 
-sofa_find_package(SofaSimulationCore REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Dynamic)
 
 sofa_create_package_with_targets(
