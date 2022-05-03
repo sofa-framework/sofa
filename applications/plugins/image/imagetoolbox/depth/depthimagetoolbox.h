@@ -550,14 +550,14 @@ public:
             //MeshDataImageToolBox::Index3 v1(q[0],q[1],q[2]);
             //MeshDataImageToolBox::Index3  v2(q[0],q[2],q[3]);
 
-            MeshDataImageToolBox::Index3 v1(q[2],q[1],q[0]);
-            MeshDataImageToolBox::Index3  v2(q[3],q[2],q[0]);
+            MeshDataImageToolBox::Index3 tmpv1(q[2],q[1],q[0]);
+            MeshDataImageToolBox::Index3  tmpv2(q[3],q[2],q[0]);
 
-            outM.push_back(v1);
-            outM.push_back(v2);
+            outM.push_back(tmpv1);
+            outM.push_back(tmpv2);
 
-//            std::cout << "tri "<<v1 << std::endl;
-//            std::cout << "tri "<<v2 << std::endl;
+//            std::cout << "tri "<<tmpv1 << std::endl;
+//            std::cout << "tri "<<tmpv2 << std::endl;
         }
 
         for(unsigned int i=0;i<layer.grid2.size();i++)
