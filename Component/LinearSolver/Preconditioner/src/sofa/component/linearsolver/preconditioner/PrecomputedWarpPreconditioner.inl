@@ -40,7 +40,7 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
 #include <sofa/component/linearsolver/direct/SparseCholeskySolver.inl>
 #endif
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -170,13 +170,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
             msg_info() << "Precompute : " << fname << " compliance.";
             if (solverName.getValue().empty())
             {
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
                 loadMatrixWithCSparse(M);
 #else
                 msg_error() << "solverName is empty, but is required to load matrix.";
                 this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
-#endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
+#endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
             }
             else
                 loadMatrixWithSolver();
@@ -206,7 +206,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     }
 }
 
-#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
@@ -261,7 +261,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
     tmpStr << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
     msg_info() << tmpStr.str();
 }
-#endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && not defined(SOFA_FLOAT)
+#endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
 
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
