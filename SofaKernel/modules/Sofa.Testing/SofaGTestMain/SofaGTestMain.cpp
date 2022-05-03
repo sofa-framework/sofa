@@ -6,7 +6,7 @@
 
 #include <gtest/gtest.h>
 
-int main(int argc, char **argv)
+SOFA_EXPORT_DYNAMIC_LIBRARY int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
 
