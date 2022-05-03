@@ -39,17 +39,7 @@ using type::Quat;
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
-    : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
-    , m_indexedElements(nullptr)
-    , d_poissonRatio(initData(&d_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
-    , d_youngModulus(initData(&d_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
-    , d_radius(initData(&d_radius,(Real)0.1,"radius","radius of the section"))
-    , d_radiusInner(initData(&d_radiusInner,(Real)0.0,"radiusInner","inner radius of the section for hollow beams"))
-    , d_listSegment(initData(&d_listSegment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
-    , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , m_partialListSegment(false)
-    , m_updateStiffnessMatrix(true)
-    , m_assembling(false)
+    : BeamFEMForceField(0.49, 5000, 0.1, 0.)
 {
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
@@ -59,7 +49,7 @@ template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
     : m_beamsData(initData(&m_beamsData, "beamsData", "Internal element data"))
     , m_indexedElements(nullptr)
-    , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
+    , d_poissonRatio(initData(&d_poissonRatio,(Real)poissonRatio,"poissonRatio","Poisson's Ratio"))
     , d_youngModulus(initData(&d_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
     , d_radius(initData(&d_radius,(Real)radius,"radius","radius of the section"))
     , d_radiusInner(initData(&d_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
