@@ -19,68 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscExtra/initSofaMiscExtra.h>
+#pragma once
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/engine/generate/MeshTetraStuffing.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MeshTetraStuffing.h")
 
-namespace sofa::component
+namespace sofa::component::misc
 {
+    using MeshTetraStuffing = sofa::component::engine::generate::MeshTetraStuffing;
 
-void initSofaMiscExtra()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaMiscExtra") << "SofaMiscExtra is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Generate instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Generate");
-
-        first = false;
-    }
-}
-
-extern "C" {
-    SOFA_SOFAMISCEXTRA_API void initExternalModule();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleName();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleVersion();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleLicense();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleDescription();
-    SOFA_SOFAMISCEXTRA_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaMiscExtra();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAMISCEXTRA_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Misc Extra.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::misc

@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMiscExtra LANGUAGES CXX)
 
-sofa_find_package(SofaMiscTopology REQUIRED)
-sofa_find_package(SofaMeshCollision REQUIRED)
-sofa_find_package(SofaGeneralMeshCollision REQUIRED)
-sofa_find_package(SofaTopologyMapping REQUIRED)
-
 set(SOFAMISCEXTRA_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -17,15 +12,13 @@ set(SOURCE_FILES
     ${SOFAMISCEXTRA_SRC}/initSofaMiscExtra.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAMISCEXTRA_SRC}/MeshTetraStuffing.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAMISCEXTRA_SRC}/MeshTetraStuffing.cpp
-    )
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaMiscTopology SofaTopologyMapping)
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Generate instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Engine.Generate REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Generate)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
