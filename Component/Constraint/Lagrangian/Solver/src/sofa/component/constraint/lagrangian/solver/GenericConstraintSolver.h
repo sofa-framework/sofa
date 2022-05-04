@@ -38,16 +38,16 @@ class GenericConstraintSolver;
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
-    sofa::linearalgebra::FullVector<double> _d;
+    sofa::linearalgebra::FullVector<SReal> _d;
     std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
     bool scaleTolerance, allVerified, unbuilt;
-    double sor;
-    double sceneTime;
-    double currentError;
+    SReal sor;
+    SReal sceneTime;
+    SReal currentError;
     int currentIterations;
 
     // For unbuilt version :
-    sofa::linearalgebra::SparseMatrix<double> Wdiag;
+    sofa::linearalgebra::SparseMatrix<SReal> Wdiag;
     std::list<unsigned int> constraints_sequence;
     bool change_sequence;
 
@@ -64,10 +64,10 @@ public:
 
     void clear(int nbConstraints) override;
     void freeConstraintResolutions();
-    void solveTimed(double tol, int maxIt, double timeout) override;
+    void solveTimed(SReal tol, int maxIt, SReal timeout) override;
 
-    void gaussSeidel(double timeout=0, GenericConstraintSolver* solver = nullptr);
-    void unbuiltGaussSeidel(double timeout=0, GenericConstraintSolver* solver = nullptr);
+    void gaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
+    void unbuiltGaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
 
     int getNumConstraints();
     int getNumConstraintGroups();
@@ -90,7 +90,7 @@ public:
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    void rebuildSystem(double massFactor, double forceFactor) override;
+    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
@@ -99,25 +99,25 @@ public:
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
-    Data<double> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
-    Data<double> sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<SReal> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
+    Data<SReal> sor; ///< Successive Over Relaxation parameter (0-2)
     Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
     Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
     Data<bool> unbuilt; ///< Compliance is not fully built
     Data<bool> d_multithreading; ///< Compliances built concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
-    Data<std::map < std::string, sofa::type::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
-    Data<std::map < std::string, sofa::type::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-    Data<std::map < std::string, sofa::type::vector<double> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
-    Data<std::map < std::string, sofa::type::vector<double> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::type::vector<SReal> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
 
     Data<int> currentNumConstraints; ///< OUTPUT: current number of constraints
     Data<int> currentNumConstraintGroups; ///< OUTPUT: current number of constraints
     Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
-    Data<double> currentError; ///< OUTPUT: current error
+    Data<SReal> currentError; ///< OUTPUT: current error
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
-    Data<type::vector< double >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
+    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
     sofa::core::MultiVecDerivId getLambda() const override;
@@ -161,7 +161,7 @@ private:
 
     private:
         core::behavior::BaseConstraintCorrection* cc { nullptr };
-        sofa::linearalgebra::LPtrFullMatrix<double> W;
+        sofa::linearalgebra::LPtrFullMatrix<SReal> W;
         core::ConstraintParams cparams;
         friend class GenericConstraintSolver;
     };

@@ -253,7 +253,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
         }
 
-        sofa::linearalgebra::SparseMatrix<double>* Wdiag = &current_cp->Wdiag;
+        sofa::linearalgebra::SparseMatrix<SReal>* Wdiag = &current_cp->Wdiag;
         Wdiag->resize(numConstraints, numConstraints);
 
         // for each contact, the constraint corrections that are involved with the contact are memorized
@@ -285,7 +285,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             if (!foundCC)
                 msg_error() << "WARNING: no constraintCorrection found for constraint" << c_id ;
 
-            double** w =  current_cp->getW();
+            SReal** w =  current_cp->getW();
             for(unsigned int m = c_id; m < c_id + l; m++)
                 for(unsigned int n = c_id; n < c_id + l; n++)
                     w[m][n] = Wdiag->element(m, n);
@@ -356,7 +356,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     return true;
 }
 
-void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
+void GenericConstraintSolver::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
     for (auto* cc : constraintCorrections)
     {
@@ -365,7 +365,7 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
     }
 }
 
-void printLCP(std::ostream& file, double *q, double **M, double *f, int dim, bool printMatrix = true)
+void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool printMatrix = true)
 {
     file.precision(9);
     // affichage de la matrice du LCP
@@ -439,7 +439,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
     if(d_computeConstraintForces.getValue())
     {
-        WriteOnlyAccessor<Data<type::vector<double>>> constraints = d_constraintForces;
+        WriteOnlyAccessor<Data<type::vector<SReal>>> constraints = d_constraintForces;
         constraints.resize(current_cp->getDimension());
         for(int i=0; i<current_cp->getDimension(); i++)
         {
@@ -620,9 +620,9 @@ int GenericConstraintProblem::getNumConstraintGroups()
     return n;
 }
 
-void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
+void GenericConstraintProblem::solveTimed(SReal tol, int maxIt, SReal timeout)
 {
-    double tempTol = tolerance;
+    SReal tempTol = tolerance;
     int tempMaxIt = maxIterations;
 
     tolerance = tol;
@@ -635,7 +635,7 @@ void GenericConstraintProblem::solveTimed(double tol, int maxIt, double timeout)
 }
 
 // Debug is only available when called directly by the solver (not in haptic thread)
-void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolver* solver)
+void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolver* solver)
 {
     if(!dimension)
     {
@@ -644,22 +644,22 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         return;
     }
 
-    double t0 = (double)sofa::helper::system::thread::CTime::getTime() ;
-    double timeScale = 1.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
+    SReal t0 = (SReal)sofa::helper::system::thread::CTime::getTime() ;
+    SReal timeScale = 1.0 / (SReal)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-    double *dfree = getDfree();
-    double *force = getF();
-    double **w = getW();
-    double tol = tolerance;
+    SReal *dfree = getDfree();
+    SReal *force = getF();
+    SReal **w = getW();
+    SReal tol = tolerance;
 
-    double *d = _d.ptr();
+    SReal *d = _d.ptr();
 
     int i, j, k, l, nb;
 
-    double error=0.0;
+    SReal error=0.0;
 
     bool convergence = false;
-    sofa::type::vector<double> tempForces;
+    sofa::type::vector<SReal> tempForces;
     if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
@@ -682,9 +682,9 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     }
 
     bool showGraphs = false;
-    sofa::type::vector<double>* graph_residuals = nullptr;
-    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
-    sofa::type::vector<double> tabErrors;
+    sofa::type::vector<SReal>* graph_residuals = nullptr;
+    std::map < std::string, sofa::type::vector<SReal> > *graph_forces = nullptr, *graph_violations = nullptr;
+    sofa::type::vector<SReal> tabErrors;
 
     if(solver)
     {
@@ -722,7 +722,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
             
-            std::vector<double> errF(&force[j], &force[j+nb]);
+            std::vector<SReal> errF(&force[j], &force[j+nb]);
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
@@ -734,15 +734,15 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
             constraintsResolutions[j]->resolution(j, w, d, force, dfree);
 
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-            double contraintError = 0.0;
+            SReal contraintError = 0.0;
             if(nb > 1)
             {
                 for(l=0; l<nb; l++)
                 {
-                    double lineError = 0.0;
+                    SReal lineError = 0.0;
                     for (int m=0; m<nb; m++)
                     {
-                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
                         lineError += dofError * dofError;
                     }
                     lineError = sqrt(lineError);
@@ -780,10 +780,10 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 std::ostringstream oss;
                 oss << "f" << j;
 
-                sofa::type::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                sofa::type::vector<SReal>& graph_force = (*graph_forces)[oss.str()];
                 graph_force.push_back(force[j]);
 
-                sofa::type::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                sofa::type::vector<SReal>& graph_violation = (*graph_violations)[oss.str()];
                 graph_violation.push_back(d[j]);
             }
 
@@ -796,8 +796,8 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 force[j] = sor * force[j] + (1-sor) * tempForces[j];
         }
 
-        double t1 = (double)sofa::helper::system::thread::CTime::getTime();
-        double dt = (t1 - t0)*timeScale;
+        SReal t1 = (SReal)sofa::helper::system::thread::CTime::getTime();
+        SReal dt = (t1 - t0)*timeScale;
 
         if(timeout && dt > timeout)
         {
@@ -844,7 +844,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     {
         solver->graphErrors.endEdit();
 
-        sofa::type::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<SReal>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(j=0; j<dimension; )
@@ -867,7 +867,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 }
 
 
-void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstraintSolver* solver)
+void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstraintSolver* solver)
 {
     if(!dimension)
     {
@@ -876,22 +876,22 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         return;
     }
 
-    double t0 = (double)sofa::helper::system::thread::CTime::getTime();
-    double timeScale = 1.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
+    SReal t0 = (SReal)sofa::helper::system::thread::CTime::getTime();
+    SReal timeScale = 1.0 / (SReal)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-    double *dfree = getDfree();
-    double *force = getF();
-    double **w = getW();
-    double tol = tolerance;
+    SReal *dfree = getDfree();
+    SReal *force = getF();
+    SReal **w = getW();
+    SReal tol = tolerance;
 
-    double *d = _d.ptr();
+    SReal *d = _d.ptr();
 
     int iter, nb;
 
-    double error=0.0;
+    SReal error=0.0;
 
     bool convergence = false;
-    sofa::type::vector<double> tempForces;
+    sofa::type::vector<SReal> tempForces;
     if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
@@ -910,13 +910,13 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             constraintsResolutions[i]->init(i, w, force);
             i += constraintsResolutions[i]->getNbLines();
         }
-        memset(force, 0, dimension * sizeof(double));	// Erase previous forces for the time being
+        memset(force, 0, dimension * sizeof(SReal));	// Erase previous forces for the time being
     }
 
     bool showGraphs = false;
-    sofa::type::vector<double>* graph_residuals = nullptr;
-    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
-    sofa::type::vector<double> tabErrors;
+    sofa::type::vector<SReal>* graph_residuals = nullptr;
+    std::map < std::string, sofa::type::vector<SReal> > *graph_forces = nullptr, *graph_violations = nullptr;
+    sofa::type::vector<SReal> tabErrors;
 
     if(solver)
     {
@@ -953,7 +953,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
-            std::vector<double> errF(&force[j], &force[j+nb]);
+            std::vector<SReal> errF(&force[j], &force[j+nb]);
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d
@@ -967,15 +967,15 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             constraintsResolutions[j]->resolution(j, w, d, force, dfree);
 
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-            double contraintError = 0.0;
+            SReal contraintError = 0.0;
             if(nb > 1)
             {
                 for(int l=0; l<nb; l++)
                 {
-                    double lineError = 0.0;
+                    SReal lineError = 0.0;
                     for (int m=0; m<nb; m++)
                     {
-                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
                         lineError += dofError * dofError;
                     }
                     lineError = sqrt(lineError);
@@ -1010,7 +1010,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
             if(update)
             {
-                std::vector<double> tempF (&force[j], &force[j+nb]);
+                std::vector<SReal> tempF (&force[j], &force[j+nb]);
                 for(int l=0; l<nb; l++)
                 {
                     force[j+l] -= errF[l]; // DForce
@@ -1034,10 +1034,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                 std::ostringstream oss;
                 oss << "f" << j;
 
-                sofa::type::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                sofa::type::vector<SReal>& graph_force = (*graph_forces)[oss.str()];
                 graph_force.push_back(force[j]);
 
-                sofa::type::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                sofa::type::vector<SReal>& graph_violation = (*graph_violations)[oss.str()];
                 graph_violation.push_back(d[j]);
             }
 
@@ -1051,8 +1051,8 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         }
         if(timeout)
         {
-            double t1 = (double)sofa::helper::system::thread::CTime::getTime();
-            double dt = (t1 - t0)*timeScale;
+            SReal t1 = (SReal)sofa::helper::system::thread::CTime::getTime();
+            SReal dt = (t1 - t0)*timeScale;
 
             if(dt > timeout)
             {
@@ -1097,7 +1097,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     {
         solver->graphErrors.endEdit();
 
-        sofa::type::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<SReal>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(int j=0; j<dimension; )

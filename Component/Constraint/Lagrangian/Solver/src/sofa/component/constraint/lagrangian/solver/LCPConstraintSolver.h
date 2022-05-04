@@ -42,9 +42,9 @@ namespace sofa::component::constraint::lagrangian::solver
 class LCPConstraintProblem : public ConstraintProblem
 {
 public:
-    double mu;
+    SReal mu;
 
-    void solveTimed(double tolerance, int maxIt, double timeout) override;
+    void solveTimed(SReal tolerance, int maxIt, SReal timeout) override;
 };
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API LCPConstraintSolver : public ConstraintSolverImpl
@@ -81,11 +81,11 @@ public:
     Data<bool> displayDebug; ///< Display debug information.
     Data<bool> initial_guess; ///< activate LCP results history to improve its resolution performances.
     Data<bool> build_lcp; ///< LCP is not fully built to increase performance in some case.
-    Data<double> tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
+    Data<SReal> tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
-    Data<double> mu; ///< Friction coefficient
-    Data<double> minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
-    Data<double> maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
+    Data<SReal> mu; ///< Friction coefficient
+    Data<SReal> minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
+    Data<SReal> maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
     Data<bool> multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
     Data<int> multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
     Data<int> merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
@@ -94,10 +94,10 @@ public:
 
     Data < std::set<int> > constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
 
-    Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
 
     Data<int> showLevels; ///< Number of constraint levels to display
-    Data<double> showCellWidth; ///< Distance between each constraint cells
+    Data<SReal> showCellWidth; ///< Distance between each constraint cells
     Data<type::Vector3> showTranslation; ///< Position of the first cell
     Data<type::Vector3> showLevelTranslation; ///< Translation between levels
 
@@ -113,39 +113,39 @@ private:
     void keepContactForcesValue();
 
     unsigned int _numConstraints;
-    double _mu;
+    SReal _mu;
 
     /// for built lcp ///
     void build_LCP();
     LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.
     LCPConstraintProblem *lcp, *last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
-    sofa::linearalgebra::LPtrFullMatrix<double>  *_W;
+    sofa::linearalgebra::LPtrFullMatrix<SReal>  *_W;
 
     /// multi-grid approach ///
     void MultigridConstraintsMerge();
     void MultigridConstraintsMerge_Compliance();
     void MultigridConstraintsMerge_Spatial();
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
-    sofa::linearalgebra::LPtrFullMatrix<double>  _Wcoarse;
+    sofa::linearalgebra::LPtrFullMatrix<SReal>  _Wcoarse;
 
     std::vector< std::vector< int > > hierarchy_contact_group;
     std::vector< std::vector< int > > hierarchy_constraint_group;
-    std::vector< std::vector< double > > hierarchy_constraint_group_fact;
+    std::vector< std::vector< SReal > > hierarchy_constraint_group_fact;
     std::vector< unsigned int > hierarchy_num_group;
 
 
     /// common built-unbuilt
     sofa::core::objectmodel::BaseContext *context;
-    sofa::linearalgebra::FullVector<double> *_dFree, *_result;
+    sofa::linearalgebra::FullVector<SReal> *_dFree, *_result;
     ///
 
     /// for unbuilt lcp ///
     void build_problem_info();
-    int lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
-    int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
-    int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
+    int lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
+    int nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
+    int gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals = nullptr);
 
-    sofa::linearalgebra::SparseMatrix<double> *_Wdiag;
+    sofa::linearalgebra::SparseMatrix<SReal> *_Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 
@@ -169,7 +169,7 @@ private:
     };
 
     std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
-    type::vector< double > _previousForces;
+    type::vector< SReal > _previousForces;
 
     type::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
     type::vector< VecPersistentID > hierarchy_constraintIds;
@@ -179,9 +179,9 @@ private:
 
     // for gaussseidel_unbuilt
     type::vector< helper::LocalBlock33 > unbuilt_W33;
-    type::vector< double > unbuilt_d;
+    type::vector< SReal > unbuilt_d;
 
-    type::vector< double > unbuilt_W11;
+    type::vector< SReal > unbuilt_W11;
 
     bool isActive;
 };

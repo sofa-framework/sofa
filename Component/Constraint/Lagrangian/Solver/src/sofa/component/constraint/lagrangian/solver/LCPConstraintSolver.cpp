@@ -48,7 +48,7 @@ using sofa::core::VecId;
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-void LCPConstraintProblem::solveTimed(double tolerance, int maxIt, double timeout)
+void LCPConstraintProblem::solveTimed(SReal tolerance, int maxIt, SReal timeout)
 {
     helper::nlcp_gaussseidelTimed(dimension, getDfree(), getW(), getF(), mu, tolerance, maxIt, true, timeout);
 }
@@ -97,15 +97,15 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
 
-    std::map < std::string, sofa::type::vector<double> >& graph = *f_graph.beginEdit();
+    std::map < std::string, sofa::type::vector<SReal> >& graph = *f_graph.beginEdit();
 
     if (build_lcp.getValue())
     {
 
-        double _tol = tol.getValue();
+        SReal _tol = tol.getValue();
         int _maxIt = maxIt.getValue();
-        double _minW = minW.getValue();
-        double _maxF = maxF.getValue();
+        SReal _minW = minW.getValue();
+        SReal _maxF = maxF.getValue();
 
         if (_mu > 0.0)
         {
@@ -117,11 +117,11 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
                 MultigridConstraintsMerge();
                 sofa::helper::AdvancedTimer::stepEnd  ("ConstraintsMerge");
 
-                sofa::type::vector<double>& graph_residuals = graph["Error"];
+                sofa::type::vector<SReal>& graph_residuals = graph["Error"];
                 graph_residuals.clear();
-                sofa::type::vector<double>& graph_violations = graph["Violation"];
+                sofa::type::vector<SReal>& graph_violations = graph["Violation"];
                 graph_violations.clear();
-                sofa::type::vector<double>& graph_levels = graph["Level"];
+                sofa::type::vector<SReal>& graph_levels = graph["Level"];
                 graph_levels.clear();
 
                 sofa::helper::AdvancedTimer::stepBegin("NLCP MultiGrid");
@@ -132,9 +132,9 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
             }
             else
             {
-                sofa::type::vector<double>& graph_error = graph["Error"];
+                sofa::type::vector<SReal>& graph_error = graph["Error"];
                 graph_error.clear();
-                sofa::type::vector<double>& graph_violations = graph["Violation"];
+                sofa::type::vector<SReal>& graph_violations = graph["Violation"];
                 graph_violations.clear();
                 sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel");
                 helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
@@ -144,7 +144,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         }
         else
         {
-            sofa::type::vector<double>& graph_error = graph["Error"];
+            sofa::type::vector<SReal>& graph_error = graph["Error"];
             graph_error.clear();
             sofa::helper::AdvancedTimer::stepBegin("LCP GaussSeidel");
             helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, _minW, _maxF, &graph_error);
@@ -155,7 +155,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
     else
     {
 
-        sofa::type::vector<double>& graph_error = graph["Error"];
+        sofa::type::vector<SReal>& graph_error = graph["Error"];
         graph_error.clear();
         sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
         gaussseidel_unbuilt(_dFree->ptr(), _result->ptr(), &graph_error);
@@ -167,7 +167,7 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
 
             _result->resize(_numConstraints);
 
-            double _tol = tol.getValue();
+            SReal _tol = tol.getValue();
             int _maxIt = maxIt.getValue();
 
             build_LCP();
@@ -237,7 +237,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     constraintGroups.endEdit();
 
     f_graph.setWidget("graph");
-    _Wdiag = new sofa::linearalgebra::SparseMatrix<double>();
+    _Wdiag = new sofa::linearalgebra::SparseMatrix<SReal>();
 
     tol.setRequired(true);
     maxIt.setRequired(true);
@@ -398,7 +398,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
-    double criterion=0.0;
+    SReal criterion=0.0;
     int numContacts = _numConstraints/3;
 
     hierarchy_contact_group.resize(1);
@@ -408,7 +408,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
     std::vector<int> group_lead;
     std::vector<int>& contact_group = hierarchy_contact_group[0];
     std::vector<int>& constraint_group = hierarchy_constraint_group[0];
-    std::vector<double>& constraint_group_fact = hierarchy_constraint_group_fact[0];
+    std::vector<SReal>& constraint_group_fact = hierarchy_constraint_group_fact[0];
     unsigned int& num_group = hierarchy_num_group[0];
     contact_group.clear();
     contact_group.resize(numContacts);
@@ -472,7 +472,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     {
         std::vector<int>& contact_group = hierarchy_contact_group[level-1];
         std::vector<int>& constraint_group = hierarchy_constraint_group[level-1];
-        std::vector<double>& constraint_group_fact = hierarchy_constraint_group_fact[level-1];
+        std::vector<SReal>& constraint_group_fact = hierarchy_constraint_group_fact[level-1];
         unsigned int& num_group = hierarchy_num_group[level-1];
 
         contact_group.clear();
@@ -570,11 +570,11 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                     ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
                     ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
                     ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
-                    double dotNN   = dirCoarseN  * dirFineN;
-                    double dotT1T1 = dirCoarseT1 * dirFineT1;
-                    double dotT2T2 = dirCoarseT2 * dirFineT2;
-                    double dotT2T1 = dirCoarseT2 * dirFineT1;
-                    double dotT1T2 = dirCoarseT1 * dirFineT2;
+                    SReal dotNN   = dirCoarseN  * dirFineN;
+                    SReal dotT1T1 = dirCoarseT1 * dirFineT1;
+                    SReal dotT2T2 = dirCoarseT2 * dirFineT2;
+                    SReal dotT2T1 = dirCoarseT2 * dirFineT1;
+                    SReal dotT1T2 = dirCoarseT1 * dirFineT2;
                     dirCoarseN  += dirFineN  * ((dotNN < 0) ? -area : area);
                     if (fabs(dotT1T1) + fabs(dotT2T2) > fabs(dotT1T2) + fabs(dotT2T1))
                     {
@@ -631,7 +631,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
             ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
             ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
             ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
-            double dotNN   = dirCoarseN  * dirFineN;
+            SReal dotNN   = dirCoarseN  * dirFineN;
             if (dotNN < 0)
             {
                 // constraint direction is flipped, so relative velocities for friction are reversed
@@ -639,10 +639,10 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                 dirFineT2 = -dirFineT2;
             }
 
-            double dotT1T1 = dirCoarseT1 * dirFineT1;
-            double dotT2T2 = dirCoarseT2 * dirFineT2;
-            double dotT2T1 = dirCoarseT2 * dirFineT1;
-            double dotT1T2 = dirCoarseT1 * dirFineT2;
+            SReal dotT1T1 = dirCoarseT1 * dirFineT1;
+            SReal dotT2T2 = dirCoarseT2 * dirFineT2;
+            SReal dotT2T1 = dirCoarseT2 * dirFineT1;
+            SReal dotT1T2 = dirCoarseT1 * dirFineT2;
             constraint_group[idFine+0] = idCoarse+0;  constraint_group_fact[idFine+0] = 1.0;
 
             if (fabs(dotT1T1) + fabs(dotT2T2) > fabs(dotT1T2) + fabs(dotT2T1))
@@ -822,7 +822,7 @@ void LCPConstraintSolver::keepContactForcesValue()
 }
 
 
-int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals)
+int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals)
 {
     if(!_numConstraints)
         return 0;
@@ -846,9 +846,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     int it,c1;
 
     // data for iterative procedure
-    double _tol = tol.getValue();
+    SReal _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
-    double _mu = mu.getValue();
+    SReal _mu = mu.getValue();
 
     /// each constraintCorrection has an internal force vector that is set to "0"
 
@@ -931,7 +931,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     // memory allocation of vector d
     unbuilt_d.resize(_numConstraints);
-    double *d = &(unbuilt_d[0]);
+    SReal *d = &(unbuilt_d[0]);
 
     linkConstraintTimer.reset();
     auto buildDiagonalTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_diagonal");
@@ -972,7 +972,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     helper::LocalBlock33 *W33 = &(unbuilt_W33[0]); //new helper::LocalBlock33[numContacts];
     for (c1=0; c1<numContacts; c1++)
     {
-        double w[6];
+        SReal w[6];
         w[0] = _Wdiag->element(3*c1  , 3*c1  );
         w[1] = _Wdiag->element(3*c1  , 3*c1+1);
         w[2] = _Wdiag->element(3*c1  , 3*c1+2);
@@ -989,8 +989,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     helper::ScopedAdvancedTimer gaussSeidelTimer("GAUSS_SEIDEL");
 
-    double error = 0;
-    double dn, dt, ds, fn, ft, fs, fn0;
+    SReal error = 0;
+    SReal dn, dt, ds, fn, ft, fs, fn0;
 
     for (it=0; it<_maxIt; it++)
     {
@@ -1082,7 +1082,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     return 0;
 }
 
-int LCPConstraintSolver::gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals)
+int LCPConstraintSolver::gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals)
 {
     if (_mu == 0.0)
         return lcp_gaussseidel_unbuilt(dfree, f, residuals);
@@ -1091,7 +1091,7 @@ int LCPConstraintSolver::gaussseidel_unbuilt(double *dfree, double *f, std::vect
 
 
 
-int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* /*residuals*/)
+int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* /*residuals*/)
 {
     auto buildConstraintsTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_constraints");
 
@@ -1105,7 +1105,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     int it,c1;
 
     // data for iterative procedure
-    double _tol = tol.getValue();
+    SReal _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
 
     // indirection of the sequence of contact
@@ -1177,7 +1177,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     }
 
     unbuilt_d.resize(_numConstraints);
-    double *d = &(unbuilt_d[0]);
+    SReal *d = &(unbuilt_d[0]);
 
     linkConstraintsTimer.reset();
     auto buildDiagonalTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_diagonal");
@@ -1203,7 +1203,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     }
 
     unbuilt_W11.resize(numContacts);
-    double *W11 = &(unbuilt_W11[0]);
+    SReal *W11 = &(unbuilt_W11[0]);
     for (c1=0; c1<numContacts; c1++)
     {
         W11[c1] = _Wdiag->element(c1, c1);
@@ -1212,8 +1212,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     buildDiagonalTimer.reset();
     sofa::helper::ScopedAdvancedTimer gaussSeidelTimer("GAUSS_SEIDEL");
 
-    double error = 0;
-    double dn, fn, fn0;
+    SReal error = 0;
+    SReal dn, fn, fn0;
 
     for (it=0; it<_maxIt; it++)
     {
@@ -1313,7 +1313,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     unsigned int showLevels = (unsigned int) this->showLevels.getValue();
     if (showLevels > hierarchy_constraintBlockInfo.size()) showLevels = hierarchy_constraintBlockInfo.size();
     if (!showLevels) return;
-    double showCellWidth = this->showCellWidth.getValue();
+    SReal showCellWidth = this->showCellWidth.getValue();
     type::Vector3 showTranslation = this->showTranslation.getValue();
     type::Vector3 showLevelTranslation = this->showLevelTranslation.getValue();
 
@@ -1372,7 +1372,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
 
                 type::Vector3 centerFine = showTranslation + showLevelTranslation*level;
                 for (int i=0; i<3; ++i) centerFine[i] += ((posFine[i]+0.5)*coordFact + coord0) * showCellWidth;
-                double radius = sqrt(area*0.5);
+                SReal radius = sqrt(area*0.5);
 
                 unsigned int colid = (level * 12 + ((int)level < merge_local_levels ? (cb % 2) : 0)) % 72;
                 color.i = (int) colors[colid + 0];
