@@ -1350,9 +1350,9 @@ void TetrahedronFEMForceField<DataTypes>::init()
     }
 
     const Real& poissonRatio = _poissonRatio.getValue();
-    if (poissonRatio<0 || poissonRatio>=0.5)
+    if (poissonRatio < 0 || poissonRatio >= 0.5)
     {
-        msg_warning() << "FEM Poisson Ratio in Hooke's law should be in [0,0.5[.";
+        msg_warning() << "FEM Poisson's Ratio in Hooke's law should be in [0,0.5[.";
     }
 
     if (_updateStiffness.getValue() || isComputeVonMisesStressMethodSet())
