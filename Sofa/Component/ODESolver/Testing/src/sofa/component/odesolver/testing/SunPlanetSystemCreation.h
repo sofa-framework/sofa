@@ -25,7 +25,7 @@
 
 #include <sofa/testing/NumericTest.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaMiscForceField/LennardJonesForceField.h>
@@ -34,7 +34,7 @@
 namespace sofa::component::odesolver::testing
 {
 
-typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
+typedef component::statecontainer::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
 typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
 typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
 

@@ -30,8 +30,8 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
-#include <SofaBaseMechanics/MechanicalObject.h>
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -57,7 +57,7 @@ struct EulerExplicitDynamic_test : public component::odesolver::testing::ODESolv
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Position and velocity array
     vector<double> positionsArray;
