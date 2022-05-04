@@ -91,6 +91,7 @@ FileRepository PluginRepository(
     {
         Utils::getSofaPathTo("plugins"),
         Utils::getSofaPathTo("lib"),
+        Utils::getSofaPathTo("external_directories"),
     }
 );
 #endif
