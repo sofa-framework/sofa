@@ -10,7 +10,7 @@
 
 ## What is SOFA
 
-SOFA is an open source framework targeted at real-time physics simulation, with an emphasis on medical simulation and robotics.  
+SOFA is an open source framework targeted at interactive physics simulation, with an emphasis on medical simulation and robotics.  
 It is mainly intended for the research community to help foster newer algorithms, but can also be used as an efficient prototyping tool.  
 SOFA's advanced software architecture allows:  
 - the creation of complex and evolving simulations by combining new algorithms with existing algorithms 
