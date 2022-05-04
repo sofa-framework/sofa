@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
-#define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
+#pragma once
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -138,7 +137,6 @@ public :
     SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolverImpl,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager));
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector, TThreadManager> Inherit;
 
-public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef TThreadManager ThreadManager;
@@ -146,11 +144,11 @@ public:
 
 protected :
 
-    Data<bool> d_usePrecomputedSymbolicDecomposition ;
-    Data<bool> d_applyPermutation ;
+    Data<bool> d_precomputeSymbolicDecomposition; ///< If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step.
+    Data<bool> d_applyPermutation; ///< If true the solver will apply a fill-reducing permutation to the matrix of the system.
 
     SparseLDLSolverImpl() : Inherit() 
-    , d_usePrecomputedSymbolicDecomposition(initData(&d_usePrecomputedSymbolicDecomposition, true ,"usePrecomputedSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
+    , d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
     , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
     {}
 
@@ -243,7 +241,7 @@ protected :
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
-        if (data->new_factorization_needed  || !d_usePrecomputedSymbolicDecomposition.getValue() )
+        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() )
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("symbolic_factorization");
             msg_info() << "Recomputing new factorization" ;
@@ -297,7 +295,7 @@ protected :
 
         // split the bloc diag in data->Bdiag
 
-        if (data->new_factorization_needed  || !d_usePrecomputedSymbolicDecomposition.getValue() ) {
+        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() ) {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
@@ -333,5 +331,3 @@ protected : //the following variables are used during the factorization they can
 };
 
 } // namespace sofa::component::linearsolver::direct
-
-#endif
