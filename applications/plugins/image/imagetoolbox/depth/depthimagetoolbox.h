@@ -564,16 +564,16 @@ public:
         {
             MeshDataImageToolBox::Index4  &q = layer.grid2[i];
 
-            MeshDataImageToolBox::Index3  v1(q[0],q[1],q[2]);
-            MeshDataImageToolBox::Index3  v2(q[0],q[2],q[3]);
+            MeshDataImageToolBox::Index3  tmpv1(q[0],q[1],q[2]);
+            MeshDataImageToolBox::Index3  tmpv2(q[0],q[2],q[3]);
             //MeshDataImageToolBox::Index3  v1(q[2],q[1],q[0]);
             //MeshDataImageToolBox::Index3  v2(q[3],q[2],q[0]);
 
-            outM.push_back(v1);
-            outM.push_back(v2);
+            outM.push_back(tmpv1);
+            outM.push_back(tmpv2);
 
-//            std::cout << "tri "<<v1 << std::endl;
-//            std::cout << "tri "<<v2 << std::endl;
+//            std::cout << "tri "<<tmpv1 << std::endl;
+//            std::cout << "tri "<<tmpv2 << std::endl;
         }
 /*
         for(unsigned int j=0;j<reso.y();j++)
@@ -652,14 +652,14 @@ public:
 
             for(int j=0;j<slices;j++)
             {
-                MeshDataImageToolBox::Index8  v1(q[0]+j,q[1]+j,q[2]+j,q[3]+j,q[0]+j+1,q[1]+j+1,q[2]+j+1,q[3]+j+1);
+                MeshDataImageToolBox::Index8  tmpv1(q[0]+j,q[1]+j,q[2]+j,q[3]+j,q[0]+j+1,q[1]+j+1,q[2]+j+1,q[3]+j+1);
 
                 layer.hexaIndexOfSlice[j].push_back(outH.size());
-                outH.push_back(v1);
+                outH.push_back(tmpv1);
 
 
 
-                //std::cout << "hexahedra "<<v1 << std::endl;
+                //std::cout << "hexahedra "<<tmpv1 << std::endl;
             }
         }
 
@@ -670,11 +670,11 @@ public:
         {
             MeshDataImageToolBox::Index8  &q = layer.hexas[i];
 
-            MeshDataImageToolBox::Index4 v1(q[0],q[1],q[3],q[4]);
-            MeshDataImageToolBox::Index4 v2(q[3],q[1],q[4],q[6]);
-            MeshDataImageToolBox::Index4 v3(q[4],q[5],q[6],q[1]);
-            MeshDataImageToolBox::Index4 v4(q[3],q[1],q[2],q[6]);
-            MeshDataImageToolBox::Index4 v5(q[7],q[3],q[6],q[4]);
+            MeshDataImageToolBox::Index4 tmpv1(q[0],q[1],q[3],q[4]);
+            MeshDataImageToolBox::Index4 tmpv2(q[3],q[1],q[4],q[6]);
+            MeshDataImageToolBox::Index4 tmpv3(q[4],q[5],q[6],q[1]);
+            MeshDataImageToolBox::Index4 tmpv4(q[3],q[1],q[2],q[6]);
+            MeshDataImageToolBox::Index4 tmpv5(q[7],q[3],q[6],q[4]);
 
             uint ss = outT.size();
             uint sl = i%slices;
@@ -683,17 +683,17 @@ public:
             layer.tetraIndexOfSlice[sl].push_back(ss+2);
             layer.tetraIndexOfSlice[sl].push_back(ss+3);
             layer.tetraIndexOfSlice[sl].push_back(ss+4);
-            outT.push_back(v1);
-            outT.push_back(v2);
-            outT.push_back(v3);
-            outT.push_back(v4);
-            outT.push_back(v5);
+            outT.push_back(tmpv1);
+            outT.push_back(tmpv2);
+            outT.push_back(tmpv3);
+            outT.push_back(tmpv4);
+            outT.push_back(tmpv5);
 
-            //std::cout << "tet " << v1 << std::endl;
-            //std::cout << "tet " << v2 << std::endl;
-            //std::cout << "tet " << v3 << std::endl;
-            //std::cout << "tet " << v4 << std::endl;
-            //std::cout << "tet " << v5 << std::endl;
+            //std::cout << "tet " << tmpv1 << std::endl;
+            //std::cout << "tet " << tmpv2 << std::endl;
+            //std::cout << "tet " << tmpv3 << std::endl;
+            //std::cout << "tet " << tmpv4 << std::endl;
+            //std::cout << "tet " << tmpv5 << std::endl;
         }
 
         return true;
@@ -876,13 +876,13 @@ public:
         for(unsigned int i=0;i<layers.size();i++)
         {
             Layer &l=layers[i];
-            std::ostringstream values;
+            std::ostringstream tmpvalues;
 
-            values << "layer: " <<l.name << " # " << l.base << " # " << l.layer1<< " ";
-            writeOffset(values, l.offset1,l.typeOffset1);
-            values << " # " << l.layer2 << " ";
-            writeOffset(values,l.offset2,l.typeOffset2);
-            file << values.str() << "\n";
+            tmpvalues << "layer: " <<l.name << " # " << l.base << " # " << l.layer1<< " ";
+            writeOffset(tmpvalues, l.offset1,l.typeOffset1);
+            tmpvalues << " # " << l.layer2 << " ";
+            writeOffset(tmpvalues,l.offset2,l.typeOffset2);
+            file << tmpvalues.str() << "\n";
         }
         return true;
     }
