@@ -24,14 +24,15 @@
 #include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
 #include <CollisionOBBCapsule/detection/intersection/MeshIntTool.h>
 
+#include <sofa/component/collision/geometry/TriangleModel.h>
+
 #include <SofaSimulationGraph/DAGNode.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
+#include <sofa/component/collision/testing/MeshPrimitiveCreator.h>
 #include "OBBCapsPrimitiveCreator.h"
-#include <SofaMeshCollision_test/MeshPrimitiveCreator.h>
 
 using namespace sofa::defaulttype;
 
@@ -82,7 +83,7 @@ struct TestTriOBB : public ::testing::Test{
     bool vertexEdge();
 };
 
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
 typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 
 sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr TestSphereOBB::makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
@@ -835,11 +836,11 @@ bool TestTriOBB::faceFace(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -865,11 +866,11 @@ bool TestTriOBB::faceVertex_out(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(-1.01,0,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -900,11 +901,11 @@ bool TestTriOBB::faceVertex_out2(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(-1.01,0,-1.01),angles,order,Vec3(0,0,10),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -935,11 +936,11 @@ bool TestTriOBB::faceEdge(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -965,11 +966,11 @@ bool TestTriOBB::faceVertex(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,2),Vec3(0,2,2),Vec3(0,0,0.01),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,2),Vec3(0,2,2),Vec3(0,0,0.01),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -1002,11 +1003,11 @@ bool TestTriOBB::edgeFace(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -1039,11 +1040,11 @@ bool TestTriOBB::edgeEdge(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -1076,11 +1077,11 @@ bool TestTriOBB::edgeEdge2(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -1112,11 +1113,11 @@ bool TestTriOBB::edgeVertex(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -1149,11 +1150,11 @@ bool TestTriOBB::vertexFace(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -1186,11 +1187,11 @@ bool TestTriOBB::vertexEdge(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -1223,11 +1224,11 @@ bool TestTriOBB::vertexVertex(){
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
     collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
-    int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
+    int tri_flg = sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
 
     collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::Triangle tri(trimodel.get(),0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
