@@ -30,8 +30,8 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
-#include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -64,7 +64,7 @@ struct RungeKutta4ExplicitSolverDynamic_test : public component::odesolver::test
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Position, velocity and acceleration array
     vector<double> positionsArray;

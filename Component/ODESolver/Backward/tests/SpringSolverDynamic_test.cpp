@@ -28,7 +28,7 @@ using sofa::testing::NumericTest;
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -51,7 +51,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Root of the scene graph
     simulation::Node::SPtr root;

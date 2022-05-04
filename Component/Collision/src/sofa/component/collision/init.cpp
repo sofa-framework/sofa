@@ -41,7 +41,7 @@ void initExternalModule()
         // force dependencies at compile-time
         sofa::component::collision::geometry::init();
         sofa::component::collision::detection::init();
-	sofa::component::collision::response::init();
+        sofa::component::collision::response::init();
 
         first = false;
     }

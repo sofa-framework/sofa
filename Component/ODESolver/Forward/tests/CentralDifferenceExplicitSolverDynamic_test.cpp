@@ -29,8 +29,8 @@ using sofa::testing::BaseSimulationTest;
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types>;
 
 namespace sofa {
 
@@ -54,7 +54,7 @@ struct CentralDifferenceExplicitSolverDynamic_test : public component::odesolver
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Position, velocity and acceleration array
     vector<double> positionsArray;

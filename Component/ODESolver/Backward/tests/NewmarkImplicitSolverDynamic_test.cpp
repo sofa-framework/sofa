@@ -32,8 +32,8 @@ using sofa::testing::NumericTest;
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
-#include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -59,7 +59,7 @@ struct NewmarkImplicitDynamic_test : public component::odesolver::testing::ODESo
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Position and velocity array
     vector<double> positionsArray;
