@@ -48,6 +48,14 @@
 #include <sofa/core/Mapping.inl>
 #include <fstream>
 
+namespace  sofa::component::collision
+{
+    template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
+    template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
+}
+
 namespace sofa::component::userinteraction::performer
 {
 
@@ -56,10 +64,7 @@ using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::mapper;
 
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
+
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
