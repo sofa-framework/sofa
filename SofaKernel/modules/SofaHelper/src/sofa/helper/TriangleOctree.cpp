@@ -40,11 +40,11 @@ TriangleOctree::~TriangleOctree()
 
 void TriangleOctree::draw (sofa::helper::visual::DrawTool* drawTool)
 {
-    type::Vector3 center;
+    type::Vec3 center;
     if ( objects.size ())
     {
         center =
-            (type::Vector3 (x, y, z) + type::Vector3 (size / 2, size / 2, size / 2));
+            (type::Vec3 (x, y, z) + type::Vec3 (size / 2, size / 2, size / 2));
         drawTool->pushMatrix();
         drawTool->translate((float)center[0], (float)center[1], (float)center[2]);
         drawTool->setPolygonMode(0, false);
@@ -60,8 +60,8 @@ void TriangleOctree::draw (sofa::helper::visual::DrawTool* drawTool)
     }
 }
 
-void TriangleOctree::insert (double _x, double _y, double _z,
-        double inc, int t)
+void TriangleOctree::insert (SReal _x, SReal _y, SReal _z,
+        SReal inc, int t)
 {
     if (inc >= size)
     {
@@ -69,7 +69,7 @@ void TriangleOctree::insert (double _x, double _y, double _z,
     }
     else
     {
-        double size2 = size / 2;
+        SReal size2 = size / 2;
         int dx = (_x >= (x + size2)) ? 1 : 0;
         int dy = (_y >= (y + size2)) ? 1 : 0;
         int dz = (_z >= (z + size2)) ? 1 : 0;
@@ -88,7 +88,7 @@ void TriangleOctree::insert (double _x, double _y, double _z,
 }
 
 inline
-unsigned int choose_next (double x, double y, double z,
+unsigned int choose_next (SReal x, SReal y, SReal z,
         unsigned int a, unsigned int b,
         unsigned int c)
 {
@@ -109,13 +109,13 @@ unsigned int choose_next (double x, double y, double z,
 }
 
 int TriangleOctree::nearestTriangle (int minIndex,
-        const type::Vector3 & origin,
-        const type::Vector3 & direction, traceResult &result)
+        const type::Vec3 & origin,
+        const type::Vec3 & direction, traceResult &result)
 {
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     //Triangle t1 (tm, minIndex);
     TriangleOctreeRoot::Tri t1 = (*tm->octreeTriangles)[minIndex];
-    double minDist;
+    SReal minDist;
     SReal t, u, v;
     if (sofa::geometry::Triangle::rayIntersection(pos[t1[0]], pos[t1[1]], pos[t1[2]], origin, direction, t, u, v))
     {
@@ -160,12 +160,12 @@ int TriangleOctree::nearestTriangle (int minIndex,
         pointR=t3[0];
     if(pointR!=-1)
     {
-        double cosAng=dot(direction,t3.n());
+        SReal cosAng=dot(direction,t3.n());
 
         for(unsigned int i=0; i<tm->pTri[pointR].size(); i++)
         {
             Triangle t2(tm,tm->pTri[pointR][i]);
-            double cosAng2=dot(direction,t2.n());
+            SReal cosAng2=dot(direction,t2.n());
             if(cosAng2>cosAng)
             {
                 cosAng=cosAng2;
@@ -178,11 +178,11 @@ int TriangleOctree::nearestTriangle (int minIndex,
     return minIndex;
 }
 
-int TriangleOctree::trace (const type::Vector3 & origin,
-        const type::Vector3 & direction, double tx0,
-        double ty0, double tz0, double tx1,
-        double ty1, double tz1, unsigned int a,
-        unsigned int b,type::Vector3 &origin1,type::Vector3 &direction1,traceResult &result)
+int TriangleOctree::trace (const type::Vec3 & origin,
+        const type::Vec3 & direction, SReal tx0,
+        SReal ty0, SReal tz0, SReal tx1,
+        SReal ty1, SReal tz1, unsigned int a,
+        unsigned int b,type::Vec3 &origin1,type::Vec3 &direction1,traceResult &result)
 {
     if (tx1 < 0.0 || ty1 < 0.0 || tz1 < 0.0)
         return -1;
@@ -199,15 +199,15 @@ int TriangleOctree::trace (const type::Vector3 & origin,
         }
     }
 
-    const double &x0 = x;
-    const double &y0 = y;
-    const double &z0 = z;
-    const double &x1 = x + size;
-    const double &y1 = y + size;
-    const double &z1 = z + size;
-    const double INF = 1e9;
+    const SReal &x0 = x;
+    const SReal &y0 = y;
+    const SReal &z0 = z;
+    const SReal &x1 = x + size;
+    const SReal &y1 = y + size;
+    const SReal &z1 = z + size;
+    const SReal INF = 1e9;
 
-    double txm=0, tym=0, tzm=0;
+    SReal txm=0, tym=0, tzm=0;
 
     switch (b)
     {
@@ -406,14 +406,14 @@ int TriangleOctree::trace (const type::Vector3 & origin,
 }
 
 
-int TriangleOctree::trace (type::Vector3 origin, type::Vector3 direction,traceResult &result)
+int TriangleOctree::trace (type::Vec3 origin, type::Vec3 direction,traceResult &result)
 {
     unsigned int a = 0;
     unsigned int b = 0;
-    //const double EPSILON = 1e-8;
-    const double EPSILON = 0;
-    type::Vector3 origin1=origin;
-    type::Vector3 direction1=direction;
+    //const SReal EPSILON = 1e-8;
+    const SReal EPSILON = 0;
+    type::Vec3 origin1=origin;
+    type::Vec3 direction1=direction;
 
     if (direction[0] == 0.0)
     {
@@ -450,12 +450,12 @@ int TriangleOctree::trace (type::Vector3 origin, type::Vector3 direction,traceRe
         direction[2] = -direction[2];
         a |= 1;
     }
-    double tx0 = (-CUBE_SIZE - origin[0]) / direction[0];
-    double tx1 = (CUBE_SIZE - origin[0]) / direction[0];
-    double ty0 = (-CUBE_SIZE - origin[1]) / direction[1];
-    double ty1 = (CUBE_SIZE - origin[1]) / direction[1];
-    double tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
-    double tz1 = (CUBE_SIZE - origin[2]) / direction[2];
+    SReal tx0 = (-CUBE_SIZE - origin[0]) / direction[0];
+    SReal tx1 = (CUBE_SIZE - origin[0]) / direction[0];
+    SReal ty0 = (-CUBE_SIZE - origin[1]) / direction[1];
+    SReal ty1 = (CUBE_SIZE - origin[1]) / direction[1];
+    SReal tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
+    SReal tz1 = (CUBE_SIZE - origin[2]) / direction[2];
     if (std::max({ tx0, ty0, tz0 }) < std::min({ tx1, ty1, tz1 }))
         return trace (origin, direction, tx0, ty0, tz0, tx1, ty1, tz1, a, b,origin1,direction1,result);
     return -1;
@@ -463,16 +463,16 @@ int TriangleOctree::trace (type::Vector3 origin, type::Vector3 direction,traceRe
 }
 
 
-void TriangleOctree::allTriangles (const type::Vector3 & /*origin*/,
-        const type::Vector3 & /*direction*/,
+void TriangleOctree::allTriangles (const type::Vec3 & /*origin*/,
+        const type::Vec3 & /*direction*/,
         std::set<int>& results)
 {
     for (unsigned int i = 0; i < objects.size (); i++)
         results.insert(objects[i]);
 }
 
-void TriangleOctree::allTriangles (const type::Vector3 & origin,
-        const type::Vector3 & direction,
+void TriangleOctree::allTriangles (const type::Vec3 & origin,
+        const type::Vec3 & direction,
         type::vector<traceResult>& results)
 {
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
@@ -493,11 +493,11 @@ void TriangleOctree::allTriangles (const type::Vector3 & origin,
 }
 
 template<class Res>
-void TriangleOctree::traceAll (const type::Vector3 & origin,
-        const type::Vector3 & direction, double tx0,
-        double ty0, double tz0, double tx1,
-        double ty1, double tz1, unsigned int a,
-        unsigned int b,type::Vector3 &origin1,type::Vector3 &direction1, Res& results)
+void TriangleOctree::traceAll (const type::Vec3 & origin,
+        const type::Vec3 & direction, SReal tx0,
+        SReal ty0, SReal tz0, SReal tx1,
+        SReal ty1, SReal tz1, unsigned int a,
+        unsigned int b,type::Vec3 &origin1,type::Vec3 &direction1, Res& results)
 {
     if (tx1 < 0.0 || ty1 < 0.0 || tz1 < 0.0)
         return;
@@ -508,15 +508,15 @@ void TriangleOctree::traceAll (const type::Vector3 & origin,
         return;
     }
 
-    const double &x0 = x;
-    const double &y0 = y;
-    const double &z0 = z;
-    const double &x1 = x + size;
-    const double &y1 = y + size;
-    const double &z1 = z + size;
-    const double INF = 1e9;
+    const SReal &x0 = x;
+    const SReal &y0 = y;
+    const SReal &z0 = z;
+    const SReal &x1 = x + size;
+    const SReal &y1 = y + size;
+    const SReal &z1 = z + size;
+    const SReal INF = 1e9;
 
-    double txm=0, tym=0, tzm=0;
+    SReal txm=0, tym=0, tzm=0;
 
     switch (b)
     {
@@ -688,25 +688,25 @@ void TriangleOctree::traceAll (const type::Vector3 & origin,
     }
 }
 
-void TriangleOctree::traceAll(type::Vector3 origin, type::Vector3 direction, type::vector<traceResult>& results)
+void TriangleOctree::traceAll(type::Vec3 origin, type::Vec3 direction, type::vector<traceResult>& results)
 {
     traceAllStart(origin, direction, results);
 }
 
-void TriangleOctree::traceAllCandidates(type::Vector3 origin, type::Vector3 direction, std::set<int>& results)
+void TriangleOctree::traceAllCandidates(type::Vec3 origin, type::Vec3 direction, std::set<int>& results)
 {
     traceAllStart(origin, direction, results);
 }
 
 template<class Res>
-void TriangleOctree::traceAllStart(type::Vector3 origin, type::Vector3 direction, Res& results)
+void TriangleOctree::traceAllStart(type::Vec3 origin, type::Vec3 direction, Res& results)
 {
     unsigned int a = 0;
     unsigned int b = 0;
-    //const double EPSILON = 1e-8;
-    const double EPSILON = 0;
-    type::Vector3 origin1=origin;
-    type::Vector3 direction1=direction;
+    //const SReal EPSILON = 1e-8;
+    const SReal EPSILON = 0;
+    type::Vec3 origin1=origin;
+    type::Vec3 direction1=direction;
 
     if (direction[0] == 0.0)
     {
@@ -743,19 +743,19 @@ void TriangleOctree::traceAllStart(type::Vector3 origin, type::Vector3 direction
         direction[2] = -direction[2];
         a |= 1;
     }
-    double tx0 = (-CUBE_SIZE - origin[0]) / direction[0];
-    double tx1 = (CUBE_SIZE - origin[0]) / direction[0];
-    double ty0 = (-CUBE_SIZE - origin[1]) / direction[1];
-    double ty1 = (CUBE_SIZE - origin[1]) / direction[1];
-    double tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
-    double tz1 = (CUBE_SIZE - origin[2]) / direction[2];
+    SReal tx0 = (-CUBE_SIZE - origin[0]) / direction[0];
+    SReal tx1 = (CUBE_SIZE - origin[0]) / direction[0];
+    SReal ty0 = (-CUBE_SIZE - origin[1]) / direction[1];
+    SReal ty1 = (CUBE_SIZE - origin[1]) / direction[1];
+    SReal tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
+    SReal tz1 = (CUBE_SIZE - origin[2]) / direction[2];
     if (std::max({ tx0, ty0, tz0 }) < std::min({ tx1, ty1, tz1 }))
         traceAll (origin, direction, tx0, ty0, tz0, tx1, ty1, tz1, a, b,origin1,direction1,results);
 }
 
 
-void TriangleOctree::bbAllTriangles(const type::Vector3 & bbmin,
-        const type::Vector3 & bbmax,
+void TriangleOctree::bbAllTriangles(const type::Vec3 & bbmin,
+        const type::Vec3 & bbmax,
         std::set<int>& results)
 {
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
@@ -763,11 +763,11 @@ void TriangleOctree::bbAllTriangles(const type::Vector3 & bbmin,
     for (unsigned int i = 0; i < objects.size (); i++)
     {
         int t = objects[i];
-        type::Vector3 tmin = pos[tri[t][0]];
-        type::Vector3 tmax = tmin;
+        type::Vec3 tmin = pos[tri[t][0]];
+        type::Vec3 tmax = tmin;
         for (int j=1; j<3; ++j)
         {
-            type::Vector3 p = pos[tri[t][j]];
+            type::Vec3 p = pos[tri[t][j]];
             for (int c=0; c<3; ++c)
                     if (p[c] < tmin[c]) tmin[c] = p[c]; else if (p[c] > tmax[c]) tmax[c] = p[c];
         }
@@ -781,9 +781,9 @@ void TriangleOctree::bbAllTriangles(const type::Vector3 & bbmin,
 }
 
 template<class Res>
-void TriangleOctree::bbAll (const type::Vector3 & bbmin, const type::Vector3 & bbmax, Res& results)
+void TriangleOctree::bbAll (const type::Vec3 & bbmin, const type::Vec3 & bbmax, Res& results)
 {
-    type::Vector3 c(x+size/2,y+size/2,z+size/2);
+    type::Vec3 c(x+size/2,y+size/2,z+size/2);
     bbAllTriangles (bbmin, bbmax, results);
     if (is_leaf)
     {
@@ -804,7 +804,7 @@ void TriangleOctree::bbAll (const type::Vector3 & bbmin, const type::Vector3 & b
             }
 }
 
-void TriangleOctree::bboxAllCandidates(type::Vector3 bbmin, type::Vector3 bbmax, std::set<int>& results)
+void TriangleOctree::bboxAllCandidates(type::Vec3 bbmin, type::Vec3 bbmax, std::set<int>& results)
 {
     bbAll(bbmin, bbmax, results);
 }
@@ -836,33 +836,33 @@ void TriangleOctreeRoot::buildOctree()
     }
 }
 
-int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, type::Vector3 /*v*/)
+int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, type::Vec3 /*v*/)
 {
-    type::Vector3 corner (-cubeSize, -cubeSize, -cubeSize);
+    type::Vec3 corner (-cubeSize, -cubeSize, -cubeSize);
 
-    double bb[6];
-    double bbsize;
+    SReal bb[6];
+    SReal bbsize;
     calcTriangleAABB(tId, bb, bbsize);
 
     // computes the depth of the bounding box in a octree
-    int d1 = (int)((log10( (double) CUBE_SIZE * 2/ bbsize ) / log10( (double)2) ));
+    int d1 = (int)((log10( (SReal) CUBE_SIZE * 2/ bbsize ) / log10( (SReal)2) ));
     // computes the size of the octree box that can store the bounding box
     int divs = (1 << (d1));
-    double inc = (double) (2 * CUBE_SIZE) / divs;
+    SReal inc = (SReal) (2 * CUBE_SIZE) / divs;
     if (bb[0] >= -CUBE_SIZE && bb[2] >= -CUBE_SIZE && bb[4] >= -CUBE_SIZE
         && bb[1] <= CUBE_SIZE && bb[3] <= CUBE_SIZE && bb[5] <= CUBE_SIZE)
-        for (double x1 =
+        for (SReal x1 =
                 (((int)((bb[0] + CUBE_SIZE) / inc)) * inc - CUBE_SIZE);
                 x1 <= bb[1]; x1 += inc)
         {
 
-            for (double y1 =
+            for (SReal y1 =
                     ((int)((bb[2] + CUBE_SIZE) / inc)) * inc - CUBE_SIZE;
                     y1 <= bb[3]; y1 += inc)
             {
 
 
-                for (double z1 =
+                for (SReal z1 =
                         ((int)((bb[4] + CUBE_SIZE) / inc)) * inc - CUBE_SIZE;
                         z1 <= bb[5]; z1 += inc)
                 {
@@ -875,7 +875,7 @@ int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, type::Vector3 /*v*/)
 
 }
 
-void TriangleOctreeRoot::calcTriangleAABB(int tId, double* bb, double& size)
+void TriangleOctreeRoot::calcTriangleAABB(int tId, SReal* bb, SReal& size)
 {
     Tri t = (*octreeTriangles)[tId];
     Coord p1 = (*octreePos)[t[0]];
