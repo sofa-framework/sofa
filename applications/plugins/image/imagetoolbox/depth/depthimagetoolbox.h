@@ -238,10 +238,10 @@ public:
                         def=projection;
                     }
 
-                    for(unsigned int i=0;i<3;i++)
+                    for(unsigned int kk=0; kk < 3; kk++)
                     {
-                        double d = (projection-c[i]).norm();
-                        if(d<minDistanceProjPos)
+                        double d = (projection-c[kk]).norm();
+                        if (d < minDistanceProjPos)
                         {
                             minDistanceProjPos = d;
                             def=projection;
