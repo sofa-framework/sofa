@@ -36,7 +36,6 @@ SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
     d_typePermutationOptions.setSelectedItem(0); // default None
     d_typePermutation.setValue(d_typePermutationOptions);
- 
 }
 
 template<class TMatrix, class TVector>
@@ -47,48 +46,35 @@ SparseCholeskySolver<TMatrix,TVector>::~SparseCholeskySolver()
 }
 
 template<class TMatrix, class TVector>
-void SparseCholeskySolver<TMatrix,TVector>::solveT( Vector& x, Vector& b)
+void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 {
-    int n = A.n;
+    const int n = A.n;
 
     sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-    
+
     switch( d_typePermutation.getValue().getSelectedId() )
     {
-        case 0://None->identity
-            cs_ipvec (n, S->Pinv,  (double*)b.ptr() , (double*) tmp.data() );	//x = P*b , permutation on rows
-            cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
-            cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*) x.ptr() );	 //used here to copy, Pinv = Id
-            break;
-    
-        case 1://SuiteSparse
-            
-            cs_ipvec (n, S->Pinv,  (double*)b.ptr() , (double*) tmp.data() );	//x = P*b , permutation on rows
-            cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
-            cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
-            break;
+    case 0://None->identity
+    case 1://SuiteSparse
 
-        case 2://METIS
+        cs_ipvec (n, S->Pinv,  (double*)b.ptr() , tmp.data() );	//x = P*b , permutation on rows
+        cs_lsolve (N->L, tmp.data() );			//x = L\x
+        cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
+        cs_pvec (n, S->Pinv, tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
+        break;
 
-            cs_ipvec (n, perm.data(),  (double*)b.ptr() , tmp.data() );	//x = P*b , permutation on rows
-            cs_lsolve (N->L, tmp.data() );			//x = L\x
-            cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
-            cs_pvec (n, perm.data() , tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
-            break;
+    case 2://METIS
 
-        default:
-            break;
+        cs_ipvec (n, perm.data(),  (double*)b.ptr() , tmp.data() );	//x = P*b , permutation on rows
+        cs_lsolve (N->L, tmp.data() );			//x = L\x
+        cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
+        cs_pvec (n, perm.data() , tmp.data() , (double*)x.ptr() );	 //x = P'*x , permutation on columns
+        break;
+
+    default:
+        break;
 
     }
-}
-
-
-template<class TMatrix, class TVector>
-void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
-{
-    solveT(z ,r );
 
 }
 
@@ -108,7 +94,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     A.n = M.colBSize();					// number of columns
     A.p = A_p;							// column pointers (size n+1) or col indices (size nzmax)
     A.i = A_i;							// row indices, size nzmax
-    A.x = (double*) &(A_x[0]);				// numerical values, size nzmax
+    A.x = &(A_x[0]);				// numerical values, size nzmax
     A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &A );
     tmp.resize(A.n);
@@ -122,28 +108,11 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         {
             case 0:
             default:// None->identity 
-                if ( notSameShape)
-                {
-                    if (S) 
-                    {
-                        cs_sfree(S);
-                    }
-                    S = cs_schol (&A, -1) ;// SuiteSparse does not compute permutation 
-                }
-                N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
+                suiteSparseFactorization(false);
                 break;
 
             case 1:// SuiteSparse
-                
-                if( notSameShape )  
-                { 
-                    if (S) 
-                    {
-                        cs_sfree(S);
-                    }
-                    S = cs_schol (&A, 0) ; // SuiteSparse compute permutation for Cholesky factorization
-                }
-                N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
+                suiteSparseFactorization(true);
                 break;
 
             case 2:// METIS
@@ -186,6 +155,21 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         }
     }
 
+}
+
+template <class TMatrix, class TVector>
+void SparseCholeskySolver<TMatrix, TVector>::suiteSparseFactorization(bool applyPermutation)
+{
+    if( notSameShape )
+    {
+        if (S)
+        {
+            cs_sfree(S);
+        }
+        const auto order = applyPermutation ? 0 : -1;
+        S = cs_schol (&A, order);
+    }
+    N = cs_chol (&A, S) ;		// numeric Cholesky factorization
 }
 
 template<class TMatrix, class TVector>

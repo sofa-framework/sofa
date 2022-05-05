@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_REAL_DEFINITION
 #include <sofa/type/vector_Real.h>
 #include <sofa/type/vector_T.inl>
 

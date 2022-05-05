@@ -23,12 +23,12 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<CollisionOBBCapsule/response/contact/OBBContactMapper.h>)
-#include <CollisionOBBCapsule/response/contact/OBBContactMapper.h>
+#if __has_include(<CollisionOBBCapsule/response/mapper/OBBContactMapper.h>)
+#include <CollisionOBBCapsule/response/mapper/OBBContactMapper.h>
 #define COLLISIONOBBCAPSULE_OBBCONTACTMAPPER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/response/contact/OBBContactMapper.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/response/mapper/OBBContactMapper.h")
 
 #else
-#error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/response/contact/OBBContactMapper.h> instead of this one."
+#error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/response/mapper/OBBContactMapper.h> instead of this one."
 #endif

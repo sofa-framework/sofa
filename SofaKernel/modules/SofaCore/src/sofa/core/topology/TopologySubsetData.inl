@@ -94,7 +94,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     data.resize(size + nbElements);
     
     // Call for specific callback if handler has been set
-    if (this->m_topologyHandler)
+    if (this->p_onCreationCallback)
     {
         value_type t;
         for (std::size_t i = 0; i < nbElements; ++i)
@@ -104,21 +104,11 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
                 const sofa::type::vector< Index > empty_vecint;
                 const sofa::type::vector< SReal > empty_vecdouble;
 
-                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
-
-                if (this->p_onCreationCallback)
-                {
-                    this->p_onCreationCallback(Index(size + i), t, TopologyElementType(), empty_vecint, empty_vecdouble);
-                }
-
+                this->p_onCreationCallback(Index(size + i), t, TopologyElementType(), empty_vecint, empty_vecdouble);
             }
-            else {
-                this->m_topologyHandler->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
-                
-                if (this->p_onCreationCallback)
-                {
-                    this->p_onCreationCallback(Index(size + i), t, TopologyElementType(), ancestors[i], coefs[i]);
-                }
+            else 
+            {
+                this->p_onCreationCallback(Index(size + i), t, TopologyElementType(), ancestors[i], coefs[i]);
             }
         }
     }
@@ -177,11 +167,6 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::type::ve
         idElem = this->indexOfElement(idRemove);
         if (idElem != sofa::InvalidID) // index in the map, need to update the subsetData
         {
-            if (this->m_topologyHandler)
-            {
-                this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
-            }
-
             if (this->p_onDestructionCallback)
             {
                 this->p_onDestructionCallback(idElem, data[idElem]);

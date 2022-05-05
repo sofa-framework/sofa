@@ -24,6 +24,7 @@
 
 #include <sofa/helper/cast.h>
 
+#include <SofaGraphComponent/MouseButtonSetting.h>
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <SofaGraphComponent/FixPickedParticleButtonSetting.h>

@@ -1,9 +1,0 @@
-class BaseForceField
-!!!186160.cpp!!!	addMBKdx(in dfId : MultiVecDerivId, in mparams : MechanicalParams) : void
-    if (mparams->kFactor() != 0.0 || mparams->bFactor() != 0.0)
-	addDForce(dfId, mparams);
-!!!186672.cpp!!!	addMBKToMatrix(in matrix : MultiMatrixAccessor, in mparams : MechanicalParams) : void
-    if (mparams->kFactor() != 0.0)
-        addKToMatrix(matrix, mparams);
-    if (mparams->bFactor() != 0.0)
-        addBToMatrix(matrix, mparams);

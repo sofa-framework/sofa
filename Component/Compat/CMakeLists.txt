@@ -43,6 +43,12 @@ include(Sofa.Component.Collision.Detection.Algorithm.cmake)
 include(Sofa.Component.Collision.Detection.Intersection.cmake)
 include(Sofa.Component.Collision.Response.Mapper.cmake)
 include(Sofa.Component.Collision.Response.Contact.cmake)
+include(Sofa.Component.Setting.cmake)
+include(Sofa.Component.Controller.cmake)
+include(Sofa.Component.Engine.Analyze.cmake)
+include(Sofa.Component.Engine.Generate.cmake)
+include(Sofa.Component.Engine.Select.cmake)
+include(Sofa.Component.Engine.Transform.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

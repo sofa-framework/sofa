@@ -6,17 +6,12 @@ set(SOFACONSTRAINT_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFACONSTRAINT_SRC}/config.h.in
     ${SOFACONSTRAINT_SRC}/initSofaConstraint.h
+    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.h
+    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.inl
     )
 
 set(SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/initSofaConstraint.cpp
-    )
-
-list(APPEND HEADER_FILES
-    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.h
-    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.inl
-    )
-list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.cpp
     )
 
