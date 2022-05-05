@@ -611,7 +611,7 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
         points.push_back ( p );        
         gravityCenter += x[indices[i]];
     }
-    vparams->drawTool()->drawSpheres(points, 0.01, sofa::type::RGBAColor::yellow());
+    vparams->drawTool()->drawSpheres(points, 0.01f, sofa::type::RGBAColor::yellow());
     
     {
         gravityCenter /= indices.size();

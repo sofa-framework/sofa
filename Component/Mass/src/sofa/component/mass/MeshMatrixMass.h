@@ -149,7 +149,8 @@ public:
         m_massTopologyType = t;
     }
 
-    int getMassCount() {
+    auto getMassCount()
+    {
         return d_vertexMass.getValue().size();
     }
 
