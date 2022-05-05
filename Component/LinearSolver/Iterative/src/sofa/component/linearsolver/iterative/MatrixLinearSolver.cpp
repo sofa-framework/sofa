@@ -173,6 +173,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< Com
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< DiagonalMatrix<double>, FullVector<double>, NoThreadManager >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< DiagonalMatrix<float>, FullVector<float>, NoThreadManager >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< BlockDiagonalMatrix<3,double>, FullVector<double>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< BlockDiagonalMatrix<3,float>, FullVector<float>, NoThreadManager >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< RotationMatrix<double>, FullVector<double>, NoThreadManager >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< RotationMatrix<float>, FullVector<float>, NoThreadManager >;
 

@@ -52,7 +52,7 @@ public:
 
     typedef sofa::topology::Triangle Tri;
     typedef sofa::type::vector<sofa::topology::Triangle> SeqTriangles;
-    typedef sofa::type::Vector3 Coord;
+    typedef sofa::type::Vec3 Coord;
     typedef sofa::type::vector<sofa::type::Vec3> VecCoord;
     /// the triangles used as input to construct the octree
     const SeqTriangles* octreeTriangles;
@@ -76,9 +76,9 @@ public:
 
 protected:
     /// used to add a triangle  to the octree
-    int fillOctree(int t, int d = 0, type::Vector3 v = { 0, 0, 0 });
+    int fillOctree(int t, int d = 0, type::Vec3 v = { 0, 0, 0 });
     /// used to compute the Bounding Box for each triangle
-    void calcTriangleAABB(int t, double* bb, double& size);
+    void calcTriangleAABB(int t, SReal* bb, SReal& size);
 };
 
 class SOFA_HELPER_API TriangleOctree
@@ -91,7 +91,7 @@ public:
     public:
         traceResult():tid(-1),t(0),u(0),v(0) {}
         int tid;
-        double t,u,v;
+        SReal t,u,v;
         bool operator == (const traceResult& r) const { return tid == r.tid && t == r.t && u == r.u && v == r.v; }
         bool operator != (const traceResult& r) const { return tid != r.tid || t != r.t || u != r.u || v != r.v; }
         bool operator < (const traceResult& r) const { return t < r.t; }
@@ -100,10 +100,10 @@ public:
         bool operator >= (const traceResult& r) const { return t >= r.t; }
     };
 
-    double x, y, z;
+    SReal x, y, z;
     bool visited;
 
-    double size;
+    SReal size;
     bool val;
     bool is_leaf;
     bool internal;
@@ -113,7 +113,7 @@ public:
 
     ~TriangleOctree ();
     /*the default cube has xmin=-CUBE_SIZE xmax=CUBE_SIZE, ymin=-CUBE_SIZE, ymax=CUBE_SIZE, zmin=-CUBE_SIZE,zmax=CUBE_SIZE*/
-    TriangleOctree (TriangleOctreeRoot * _tm, double _x = (double)-CUBE_SIZE, double _y = (double)-CUBE_SIZE, double _z =(double) -CUBE_SIZE, double _size = 2 * CUBE_SIZE)
+    TriangleOctree (TriangleOctreeRoot * _tm, SReal _x = (SReal)-CUBE_SIZE, SReal _y = (SReal)-CUBE_SIZE, SReal _z =(SReal) -CUBE_SIZE, SReal _size = 2 * CUBE_SIZE)
         : x (_x), y (_y), z (_z), size (_size)
         , tm(_tm)
     {
@@ -129,48 +129,48 @@ public:
     void draw(const sofa::core::visual::VisualParams* vparams) = delete;
 
     /// Find the nearest triangle intersecting the given ray, or -1 of not found
-    int trace (type::Vector3 origin, type::Vector3 direction, traceResult &result);
+    int trace (type::Vec3 origin, type::Vec3 direction, traceResult &result);
 
     /// Find all triangles intersecting the given ray
-    void traceAll (type::Vector3 origin, type::Vector3 direction, type::vector<traceResult>& results);
+    void traceAll (type::Vec3 origin, type::Vec3 direction, type::vector<traceResult>& results);
 
     /// Find all triangles intersecting the given ray
-    void traceAllCandidates(type::Vector3 origin, type::Vector3 direction, std::set<int>& results);
+    void traceAllCandidates(type::Vec3 origin, type::Vec3 direction, std::set<int>& results);
 
     /// Find all triangles intersecting the given ray
-    void bboxAllCandidates(type::Vector3 bbmin, type::Vector3 bbmax, std::set<int>& results);
+    void bboxAllCandidates(type::Vec3 bbmin, type::Vec3 bbmax, std::set<int>& results);
 
     friend class TriangleOctreeRoot;
 
 protected:
-    int trace (const type::Vector3 & origin, const type::Vector3 & direction,
-            double tx0, double ty0, double tz0, double tx1, double ty1,
-            double tz1, unsigned int a, unsigned int b,type::Vector3 &origin1,type::Vector3 &direction1, traceResult &result);
+    int trace (const type::Vec3 & origin, const type::Vec3 & direction,
+            SReal tx0, SReal ty0, SReal tz0, SReal tx1, SReal ty1,
+            SReal tz1, unsigned int a, unsigned int b,type::Vec3 &origin1,type::Vec3 &direction1, traceResult &result);
 
     template<class Res>
-    void traceAllStart (type::Vector3 origin, type::Vector3 direction, Res& results);
+    void traceAllStart (type::Vec3 origin, type::Vec3 direction, Res& results);
 
     template<class Res>
-    void traceAll (const type::Vector3 & origin, const type::Vector3 & direction,
-            double tx0, double ty0, double tz0, double tx1, double ty1,
-            double tz1, unsigned int a, unsigned int b,type::Vector3 &origin1,type::Vector3 &direction1, Res& results);
+    void traceAll (const type::Vec3 & origin, const type::Vec3 & direction,
+            SReal tx0, SReal ty0, SReal tz0, SReal tx1, SReal ty1,
+            SReal tz1, unsigned int a, unsigned int b,type::Vec3 &origin1,type::Vec3 &direction1, Res& results);
 
     template<class Res>
-    void bbAll (const type::Vector3 & bbmin, const type::Vector3 & bbmax, Res& results);
+    void bbAll (const type::Vec3 & bbmin, const type::Vec3 & bbmax, Res& results);
 
-    int nearestTriangle (int minIndex, const type::Vector3 & origin,
-            const type::Vector3 & direction,traceResult &result);
+    int nearestTriangle (int minIndex, const type::Vec3 & origin,
+            const type::Vec3 & direction,traceResult &result);
 
-    void allTriangles (const type::Vector3 & origin,
-            const type::Vector3 & direction, type::vector<traceResult>& results);
+    void allTriangles (const type::Vec3 & origin,
+            const type::Vec3 & direction, type::vector<traceResult>& results);
 
-    void allTriangles (const type::Vector3 & origin,
-            const type::Vector3 & direction, std::set<int>& results);
+    void allTriangles (const type::Vec3 & origin,
+            const type::Vec3 & direction, std::set<int>& results);
 
-    void bbAllTriangles (const type::Vector3 & bbmin,
-            const type::Vector3 & bbmax, std::set<int>& results);
+    void bbAllTriangles (const type::Vec3 & bbmin,
+            const type::Vec3 & bbmax, std::set<int>& results);
 
-    void insert (double _x, double _y, double _z, double _inc, int t);
+    void insert (SReal _x, SReal _y, SReal _z, SReal _inc, int t);
 
 };
 

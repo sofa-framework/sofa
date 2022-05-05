@@ -30,7 +30,7 @@ namespace sofa::linearalgebra
 {
 
 /// Simple full matrix container
-template<std::size_t LC, typename T = double>
+template<std::size_t LC, typename T = SReal>
 class BlockDiagonalMatrix : public linearalgebra::BaseMatrix
 {
 public:
@@ -42,7 +42,7 @@ public:
     enum { BSIZE = LC };
 
     typedef BlockDiagonalMatrix<LC,T> Expr;
-    typedef BlockDiagonalMatrix<LC,double> matrix_type;
+    typedef BlockDiagonalMatrix<LC,T> matrix_type;
     enum { category = MATRIX_BAND };
     enum { operand = 1 };
 
@@ -243,8 +243,8 @@ public:
         mul(res, v);
         return res;
     }
-
-    friend std::ostream& operator << (std::ostream& out, const BlockDiagonalMatrix<LC>& v )
+    
+    friend std::ostream& operator << (std::ostream& out, const BlockDiagonalMatrix<LC, T>& v )
     {
         out << "[";
         for (Index i=0; i<(Index)v.data.size(); i++) out << " " << v.data[i];

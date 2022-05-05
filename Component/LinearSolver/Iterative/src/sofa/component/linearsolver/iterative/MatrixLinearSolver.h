@@ -455,6 +455,7 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolv
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::DiagonalMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::DiagonalMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::BlockDiagonalMatrix<3,double>, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::BlockDiagonalMatrix<3,float>, linearalgebra::FullVector<float>, NoThreadManager >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::RotationMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::RotationMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
 #endif
