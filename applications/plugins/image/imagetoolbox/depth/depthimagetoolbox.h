@@ -1219,9 +1219,9 @@ public:
         saveSCN_grid(out, meshs.veclayer[index].grid2,name);
     }
 
-    void saveSCN_grid(QTextStream &out, MeshDataImageToolBox::VecIndex4 &grid, QString &name)
+    void saveSCN_grid(QTextStream &out, MeshDataImageToolBox::VecIndex4 &grid, QString &meshName)
     {
-        out << " <Mesh name=\"" << name << "\"";
+        out << " <Mesh name=\"" << meshName << "\"";
         saveSCN_position(out);
         saveSCN_indexQuad(out,grid);
         out << "/> \n";
