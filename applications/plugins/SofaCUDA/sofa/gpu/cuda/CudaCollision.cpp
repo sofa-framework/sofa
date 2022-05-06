@@ -93,7 +93,6 @@ namespace sofa::gpu::cuda
 
 using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
-using namespace sofa::component::userinteraction::performer;
 
 
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
