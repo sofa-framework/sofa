@@ -39,7 +39,7 @@ template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3f1Types 
 
 namespace sofa::gpu::cuda
 {
-using namespace sofa::component::mapping;
+using namespace sofa::component::mapping::linear;
 
 int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
