@@ -48,7 +48,7 @@
 #include <sofa/core/Mapping.inl>
 #include <fstream>
 
-namespace sofa::component::userinteraction::performer
+namespace sofa::component::collision
 {
 
 using namespace sofa::gpu::cuda;
@@ -85,7 +85,7 @@ using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types
 int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
 
-} //namespace sofa::component::collision
+} // sofa::component::collision
 
 
 namespace sofa::gpu::cuda
