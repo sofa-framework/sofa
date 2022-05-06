@@ -37,22 +37,22 @@ namespace sofa::component::constraint::lagrangian::solver
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintProblem
 {
 public:
-    sofa::linearalgebra::LPtrFullMatrix<double> W;
-    sofa::linearalgebra::FullVector<double> dFree, f;
+    sofa::linearalgebra::LPtrFullMatrix<SReal> W;
+    sofa::linearalgebra::FullVector<SReal> dFree, f;
 
     ConstraintProblem();
     virtual ~ConstraintProblem();
 
-    double tolerance;
+    SReal tolerance;
     int maxIterations;
 
     virtual void clear(int nbConstraints);
     int getDimension()	{ return dimension; }
-    double** getW()		{ return W.lptr(); }
-    double* getDfree()	{ return dFree.ptr(); }
-    double* getF()		{ return f.ptr(); }
+    SReal** getW()		{ return W.lptr(); }
+    SReal* getDfree()	{ return dFree.ptr(); }
+    SReal* getF()		{ return f.ptr(); }
 
-    virtual void solveTimed(double tolerance, int maxIt, double timeout) = 0;
+    virtual void solveTimed(SReal tolerance, int maxIt, SReal timeout) = 0;
 
     unsigned int getProblemId();
 
