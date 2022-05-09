@@ -38,68 +38,6 @@ void rotz(double angle,Vec3 & x,Vec3 & y,Vec3 & z){
     x = rot.rotate(x);y = rot.rotate(y);z = rot.rotate(z);
 }
 
-
-sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father){
-    //creating node containing OBBModel
-    sofa::simulation::Node::SPtr obb = father->createChild("obb");
-
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
-
-    //editing DOF related to the OBBCollisionModel<sofa::defaulttype::Rigid3Types> to be created, size is 1 because it contains just one OBB
-    obbDOF->resize(1);
-    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
-    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
-
-    //we create a frame that we will rotate like it is specified by the parameters angles and order
-    Vec3 x(1,0,0);
-    Vec3 y(0,1,0);
-    Vec3 z(0,0,1);
-
-    //creating an array of functions which are the rotation so as to perform the rotations in a for loop
-    typedef void (*rot)(double,Vec3&,Vec3&,Vec3&);
-    rot rotations[3];
-    rotations[0] = &rotx;
-    rotations[1] = &roty;
-    rotations[2] = &rotz;
-
-    //performing the rotations of the frame x,y,z
-    for(int i = 0 ; i < 3 ; ++i)
-        (*rotations[order[i]])(angles[order[i]],x,y,z);
-
-
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = Rigid3Types::Coord(p, Quat<SReal>::createQuaterFromFrame(x,y,z));
-
-    dpositions.endEdit();
-
-    //Editting the velocity of the OBB
-    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
-
-    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
-    velocities[0] = v;
-    dvelocities.endEdit();
-
-
-    obb->addObject(obbDOF);
-
-    //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>>();
-    obb->addObject(obbCollisionModel);
-
-    //editting the OBBModel
-    obbCollisionModel->init();
-    Data<sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord> & dVecCoord = obbCollisionModel->writeExtents();
-    sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord & vecCoord = *(dVecCoord.beginEdit());
-
-    vecCoord[0] = extents;
-
-    dVecCoord.endEdit();
-
-    return obbCollisionModel;
-}
-
-
 sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::simulation::Node::SPtr &father){
     //creating node containing TriangleModel
     sofa::simulation::Node::SPtr tri = father->createChild("tri");
@@ -149,59 +87,6 @@ sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>
 
     return triCollisionModel;
 }
-
-
-sofa::component::collision::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeCap(const Vec3 & p0,const Vec3 & p1,double radius,const Vec3 & v,
-                                                                   sofa::simulation::Node::SPtr & father){
-    //creating node containing OBBModel
-    sofa::simulation::Node::SPtr cap = father->createChild("cap");
-
-    //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject3::SPtr capDOF = New<MechanicalObject3>();
-
-    //editing DOF related to the OBBCollisionModel<sofa::defaulttype::Rigid3Types> to be created, size is 1 because it contains just one OBB
-    capDOF->resize(2);
-    Data<MechanicalObject3::VecCoord> & dpositions = *capDOF->write( sofa::core::VecId::position() );
-    MechanicalObject3::VecCoord & positions = *dpositions.beginEdit();
-
-    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = p0;
-    positions[1] = p1;
-
-    dpositions.endEdit();
-
-    //Editting the velocity of the OBB
-    Data<MechanicalObject3::VecDeriv> & dvelocities = *capDOF->write( sofa::core::VecId::velocity() );
-
-    MechanicalObject3::VecDeriv & velocities = *dvelocities.beginEdit();
-    velocities[0] = v;
-    velocities[1] = v;
-    dvelocities.endEdit();
-
-    cap->addObject(capDOF);
-
-    //creating a topology necessary for capsule
-    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
-    bmt->addEdge(0,1);
-    cap->addObject(bmt);
-
-    //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    sofa::component::collision::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capCollisionModel = New<sofa::component::collision::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>();
-    cap->addObject(capCollisionModel);
-
-
-    //editting the OBBModel
-    capCollisionModel->init();
-    Data<sofa::component::collision::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::VecReal> & dVecReal = capCollisionModel->writeRadii();
-    sofa::component::collision::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::VecReal & vecReal = *(dVecReal.beginEdit());
-
-    vecReal[0] = radius;
-
-    dVecReal.endEdit();
-
-    return capCollisionModel;
-}
-
 
 sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3 & p,SReal radius,const Vec3 &v,const double *angles,const int *order,
                                                                             sofa::simulation::Node::SPtr & father){

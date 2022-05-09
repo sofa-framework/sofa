@@ -6,17 +6,12 @@ set(SOFACONSTRAINT_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFACONSTRAINT_SRC}/config.h.in
     ${SOFACONSTRAINT_SRC}/initSofaConstraint.h
+    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.h
+    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.inl
     )
 
 set(SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/initSofaConstraint.cpp
-    )
-
-list(APPEND HEADER_FILES
-    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.h
-    ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.inl
-    )
-list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.cpp
     )
 
@@ -54,11 +49,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
 )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFACONSTRAINT_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFACONSTRAINT_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()

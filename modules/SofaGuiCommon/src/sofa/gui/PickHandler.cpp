@@ -28,7 +28,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Pipeline.h>
 
-#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/component/setting/MouseButtonSetting.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisitor;
@@ -38,8 +38,6 @@ using sofa::simulation::mechanicalvisitor::MechanicalPickParticlesVisitor;
 
 #include <iostream>
 #include <limits>
-
-using namespace sofa::component::collision;
 
 namespace sofa::gui
 {
@@ -120,7 +118,7 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
     mouseContainer->init();
     mouseCollision->init();
 
-    typedef component::collision::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
+    typedef sofa::component::collision::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
     const MouseFactory *factory = MouseFactory::getInstance();
     for (MouseFactory::const_iterator it = factory->begin(); it != factory->end(); ++it)
     {

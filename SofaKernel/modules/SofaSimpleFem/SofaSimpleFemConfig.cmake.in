@@ -9,6 +9,8 @@ if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
+find_package(SofaBaseTopology QUIET REQUIRED)
+find_package(SofaBaseLinearSolver QUIET REQUIRED)
 find_package(Sofa.Component.Diffusion QUIET REQUIRED)
 find_package(Sofa.Component.SolidMechanics.FEM.Elastic QUIET REQUIRED)
 

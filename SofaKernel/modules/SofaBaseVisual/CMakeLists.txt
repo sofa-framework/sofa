@@ -6,12 +6,10 @@ set(SOFABASEVISUAL_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASEVISUAL_SRC}/config.h.in
     ${SOFABASEVISUAL_SRC}/initSofaBaseVisual.h
-    ${SOFABASEVISUAL_SRC}/BackgroundSetting.h
 )
 
 set(SOURCE_FILES
     ${SOFABASEVISUAL_SRC}/initSofaBaseVisual.cpp
-    ${SOFABASEVISUAL_SRC}/BackgroundSetting.cpp
 )
 
 sofa_find_package(Sofa.SimulationCore REQUIRED)
@@ -19,11 +17,13 @@ sofa_find_package(Sofa.SimulationCore REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Visual instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. You may use Sofa.Component.Visual and Sofa.Component.Setting instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Visual REQUIRED)
+sofa_find_package(Sofa.Component.Setting REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Visual)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Setting)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -32,11 +32,3 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFABASEVISUAL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFABASEVISUAL_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()

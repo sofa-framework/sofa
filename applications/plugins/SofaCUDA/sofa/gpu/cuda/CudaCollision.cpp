@@ -48,22 +48,29 @@
 #include <sofa/core/Mapping.inl>
 #include <fstream>
 
-namespace sofa::component::collision
+namespace  sofa::component::collision
+{
+    template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
+    template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
+    template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
+#endif
+}
+
+namespace sofa::component::userinteraction::performer
 {
 
 using namespace sofa::gpu::cuda;
+using namespace sofa::component::collision;
+using namespace sofa::component::collision::geometry;
+using namespace sofa::component::collision::response::mapper;
 
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
-#endif
 
 response::mapper::ContactMapperCreator< response::mapper::ContactMapper<geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("PenalityContactForceField", true);
 
@@ -79,7 +86,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePe
 
 using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types>;
 
-int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<TriangleCollisionModel<gpu::cuda::Vec3Types>>);
+int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
 
 } //namespace sofa::component::collision
@@ -88,16 +95,17 @@ int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<Tri
 namespace sofa::gpu::cuda
 {
 
+using namespace sofa::component::collision;
+using namespace sofa::component::collision::geometry;
+using namespace sofa::component::userinteraction::performer;
+
 
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
-        .add< component::collision::MouseInteractor<CudaVec3fTypes> >()
+        .add< MouseInteractor<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::MouseInteractor<CudaVec3dTypes> >()
+        .add< MouseInteractor<CudaVec3dTypes> >()
 #endif
         ;
-
-
-using namespace sofa::component::collision;
 
 class CudaProximityIntersection : public sofa::component::collision::NewProximityIntersection
 {
@@ -113,7 +121,7 @@ public:
         RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
         intersectors.add<RayCollisionModel,        CudaSphereCollisionModel,   RayDiscreteIntersection>(rayIntersector);
         MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
-        intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
+        intersectors.add<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
     }
 
 };

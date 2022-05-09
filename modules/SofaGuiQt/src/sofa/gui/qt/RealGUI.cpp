@@ -1375,7 +1375,7 @@ void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::View
 
 //------------------------------------
 
-void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
+void RealGUI::setMouseButtonConfiguration(sofa::component::setting::MouseButtonSetting *button)
 {
     m_sofaMouseManager->updateOperation(button);
 }

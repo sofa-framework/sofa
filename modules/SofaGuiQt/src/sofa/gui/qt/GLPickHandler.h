@@ -29,19 +29,10 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/gl/FrameBufferObject.h>
 
-// TODO: fwd decl
-#include <SofaUserInteraction/RayModel.h>
-
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
-    class ComponentMouseInteraction;
-} // namespace sofa::component::collision
-
-namespace sofa::component::configurationsetting
-{
-    class MouseButtonSetting;
-} // sofa::component::configurationsetting
-
+    class RayCollisionModel;
+} // namespace sofa::component::collision::model
 
 namespace sofa::gui
 {
@@ -49,7 +40,7 @@ namespace sofa::gui
 class SOFA_SOFAGUIQT_API GLPickHandler : public PickHandler
 {
     typedef PickHandler Inherit;
-    typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
+    typedef sofa::component::collision::model::RayCollisionModel MouseCollisionModel;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
 
 public:
