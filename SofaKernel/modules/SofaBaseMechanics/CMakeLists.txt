@@ -10,7 +10,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ${SOFABASEMECHANICS_SRC}/initSofaBaseMechanics.cpp
-
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
