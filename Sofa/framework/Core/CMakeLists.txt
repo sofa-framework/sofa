@@ -47,6 +47,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseInteractionConstraint.h
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
+    ${SRC_ROOT}/behavior/BaseLinearSolver.h
     ${SRC_ROOT}/behavior/BaseMass.h
     ${SRC_ROOT}/behavior/BaseMechanicalState.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
@@ -200,6 +201,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
+    ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
     ${SRC_ROOT}/behavior/BaseMass.cpp
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
