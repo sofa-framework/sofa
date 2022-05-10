@@ -19,6 +19,7 @@ ignore "Components/linearsolver/FEMBAR_SVDLinearSolver.scn"
 
 # [Slow] The scene compares the use of a fill-in reducing strategy compared to not using it
 iterations "examples/Components/engine/FillReducingOrdering.scn" "2"
+timeout "examples/Components/engine/FillReducingOrdering.scn" "60"
 
 # [Slow] Big, long, PrecomputedConstraintCorrection in this scene:
 iterations "Components/animationloop/FreeMotionAnimationLoop.scn" "10"
