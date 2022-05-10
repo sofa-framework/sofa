@@ -4,10 +4,10 @@ project(SofaSimulation)
 set(SOFASIMULATION_MODULES
     SofaSimulationCommon
     SofaSimulationGraph
-    )
+)
 
-foreach(MODULE ${SOFASIMULATION_MODULES})
-    add_subdirectory(../modules/${MODULE} ${CMAKE_CURRENT_BINARY_DIR}/${MODULE})
+foreach(MODULEDIR ${SOFASIMULATION_MODULES})
+    add_subdirectory(../modules/${MODULEDIR} ${CMAKE_CURRENT_BINARY_DIR}/${MODULEDIR})
     set_target_properties(${MODULE} PROPERTIES FOLDER SofaSimulation)
 endforeach()
 

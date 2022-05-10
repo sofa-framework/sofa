@@ -29,7 +29,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/gl/template.h>
 #include <sofa/type/Vec.h>
-#include <SofaBaseVisual/BackgroundSetting.h>
+#include <sofa/component/setting/BackgroundSetting.h>
 
 namespace sofa::gl::component::rendering2d
 {
