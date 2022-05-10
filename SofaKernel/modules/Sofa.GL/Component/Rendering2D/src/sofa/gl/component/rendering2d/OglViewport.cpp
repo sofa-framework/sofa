@@ -28,7 +28,7 @@
 #include <sofa/gl/template.h>
 #include <sofa/type/fixed_array.h>
 #include <sofa/gl/glu.h>
-#include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/component/visual/VisualStyle.h>
 
 namespace sofa::gl::component::rendering2d
 {

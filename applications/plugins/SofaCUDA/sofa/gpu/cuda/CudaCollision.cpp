@@ -49,6 +49,21 @@
 #include <sofa/core/Mapping.inl>
 #include <fstream>
 
+namespace  sofa::component::collision
+{
+    template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
+    template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
+    template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
+#endif
+}
+
 namespace sofa::component::userinteraction::performer
 {
 
@@ -58,17 +73,6 @@ using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::mapper;
 using namespace sofa::gui::component::performer;
 
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
-#endif
 
 response::mapper::ContactMapperCreator< response::mapper::ContactMapper<geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("PenalityContactForceField", true);
 
