@@ -84,8 +84,6 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework)
-
 sofang_add_component_subdirectory(Component ${PROJECT_NAME}.Component)
 
 # Tests

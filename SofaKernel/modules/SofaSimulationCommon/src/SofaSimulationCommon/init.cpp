@@ -21,59 +21,12 @@
 ******************************************************************************/
 #include <SofaSimulationCommon/init.h>
 
-#include <sofa/core/init.h>
-#include <sofa/helper/init.h>
-#include <sofa/simulation/init.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/simulation/Node.inl>
-#include <SofaSimulationCommon/xml/NodeElement.h>
-
-namespace sofa::simulation::common
+namespace sofasimulationcommon
 {
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-//create method of Node called if the user wants the default node. The object created will depend on the simulation currently in use.
-SOFA_SOFASIMULATIONCOMMON_API sofa::helper::Creator<xml::NodeElement::Factory, Node> NodeClass("default");
-
-SOFA_SOFASIMULATIONCOMMON_API void init()
+void init()
 {
-    if (!s_initialized)
-    {
-        sofa::simulation::core::init();
-        s_initialized = true;
-    }
+    sofa::simulation::common::init();
 }
 
-SOFA_SOFASIMULATIONCOMMON_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_SOFASIMULATIONCOMMON_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::simulation::core::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_SOFASIMULATIONCOMMON_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (simulation::common::isInitialized() && !simulation::common::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaSimulationCommon", "sofa::simulation::common::cleanup()");
-    }
-} check;
-
-} // namespace sofa::simulation::common
+} // namespace sofasimulationcommon
