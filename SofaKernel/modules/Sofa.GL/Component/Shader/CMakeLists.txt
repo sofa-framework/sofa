@@ -48,12 +48,12 @@ set(SOURCE_FILES
     ${SOFAGLCOMPONENTONSHADER_SOURCE_DIR}/VisualManagerSecondaryPass.cpp
 )
 
-sofa_find_package(SofaSimulationCore REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.GL REQUIRED)
 sofa_find_package(Sofa.GL.Component.Rendering3D REQUIRED) # for OglModel
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore Sofa.GL Sofa.GL.Component.Rendering3D)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.GL Sofa.GL.Component.Rendering3D)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -62,3 +62,11 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_GL_COMPONENT_SHADER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_GL_COMPONENT_SHADER_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

@@ -22,23 +22,13 @@
 #pragma once
 #include <SofaSimulationCommon/config.h>
 
-namespace sofa::simulation::common
+#include <sofa/simulation/common/init.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/common/init.h")
+
+namespace sofasimulationcommon
 {
 
-/// @brief Initialize the SofaSimulationCommon library, as well as its
-/// dependencies: SofaCore, SofaDefaultType, SofaHelper.
 SOFA_SOFASIMULATIONCOMMON_API void init();
 
-/// @brief Return true if and only if the SofaSimulationCommon library has been
-/// initialized.
-SOFA_SOFASIMULATIONCOMMON_API bool isInitialized();
-
-/// @brief Clean up the resources used by the SofaSimulationCommon library, as
-/// well as its dependencies: SofaCore, SofaDefaultType, SofaHelper.
-SOFA_SOFASIMULATIONCOMMON_API void cleanup();
-
-/// @brief Return true if and only if the SofaSimulationCommon library has been
-/// cleaned up.
-SOFA_SOFASIMULATIONCOMMON_API bool isCleanedUp();
-
-} // namespace sofa::simulation::common
+} // namespace sofasimulationcommon
