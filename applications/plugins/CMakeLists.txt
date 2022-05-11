@@ -8,6 +8,8 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     add_subdirectory(SofaTest)
 endif()
 
+sofa_add_plugin(CollisionOBBCapsule CollisionOBBCapsule)
+
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.

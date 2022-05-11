@@ -34,8 +34,15 @@ void initSofaGeneralEngine()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaEngine") << "SofaGeneralEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Analyze, Sofa.Component.Engine.Generate, Sofa.Component.Engine.Select and Sofa.Component.Engine.Transform instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Analyze");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Generate");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Select");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Transform");
+
 #if SOFAGENERALENGINE_HAVE_SOFA_GL == 1
-        // msg_deprecated("SofaGeneralEngine") << "SofaGeneralEngine is deprecated;. It will be removed at v23.06. Use Sofa.GL.Component.Engine if you need TextureInterpolation.";
+        // msg_deprecated("SofaGeneralEngine") << "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Engine");
 #endif // SOFAGENERALENGINE_HAVE_SOFA_GL == 1

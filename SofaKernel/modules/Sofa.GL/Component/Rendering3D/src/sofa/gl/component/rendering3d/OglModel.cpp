@@ -39,12 +39,15 @@ using sofa::type::Material;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
+namespace // anonymous
+{
+    void glVertex3v(const float* d) { glVertex3fv(d); }
+    void glVertex3v(const double* d) { glVertex3dv(d); }
+
+}
+
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
     .add< OglModel >();
-
-template<class T>
-const T* getData(const sofa::type::vector<T>& v) { return &v[0]; }
-
 
 OglModel::OglModel()
     : blendTransparency(initData(&blendTransparency, true, "blendTranslucency", "Blend transparent parts"))
@@ -195,7 +198,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	    uintptr_t pt = (vertices.size()*sizeof(vertices[0]))
                     + (vnormals.size()*sizeof(vnormals[0]));
-        glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(pt));
+        glTexCoordPointer(2, glTypeReal(), 0, reinterpret_cast<void*>(pt));
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     }
@@ -334,30 +337,6 @@ void OglModel::drawGroups(bool transparent)
     }
 }
 
-
-void glVertex3v(const float* d){ glVertex3fv(d); }
-void glVertex3v(const double* d){ glVertex3dv(d); }
-
-template<class T>
-GLuint glType(){ return GL_FLOAT; }
-
-template<>
-GLuint glType<double>(){ return GL_DOUBLE; }
-
-template<>
-GLuint glType<float>(){ return GL_FLOAT; }
-
-template<class InType, class OutType>
-void copyVector(const InType& src, OutType& dst)
-{
-    unsigned int i=0;
-    for(auto& item : src)
-    {
-        dst[i].set(item);
-        ++i;
-    }
-}
-
 void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
     if (!vparams->displayFlags().getShowVisualModels())
@@ -380,16 +359,14 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-
     glEnable(GL_LIGHTING);
 
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
 
-    /// Force the data to be of float type before sending to opengl...
-    GLuint datatype = GL_FLOAT;
-    GLuint vertexdatasize = sizeof(verticesTmpBuffer[0]);
-    GLuint normaldatasize = sizeof(normalsTmpBuffer[0]);
+    constexpr GLuint datatype = glTypeReal();
+    constexpr GLuint vertexdatasize = sizeof(Coord);
+    constexpr GLuint normaldatasize = sizeof(Deriv);
 
     GLulong vertexArrayByteSize = vertices.size() * vertexdatasize;
     GLulong normalArrayByteSize = vnormals.size() * normaldatasize;
@@ -399,7 +376,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glVertexPointer(3, datatype, 0, nullptr);
     glNormalPointer(datatype, 0, reinterpret_cast<void*>(vertexArrayByteSize));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -412,22 +388,22 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             tex->bind();
         }
 
-        size_t textureArrayByteSize = vtexcoords.size()*sizeof(vtexcoords[0]);
+        size_t textureArrayByteSize = vtexcoords.size()*sizeof(TexCoord);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glTexCoordPointer(2, GL_FLOAT, 0, reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize ));
+        glTexCoordPointer(2, datatype, 0, reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize ));
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         if (hasTangents)
         {
-            size_t tangentArrayByteSize = vtangents.size()*sizeof(vtangents[0]);
+            size_t tangentArrayByteSize = vtangents.size()*sizeof(Coord);
 
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(3, GL_DOUBLE, 0,
+            glTexCoordPointer(3, datatype, 0,
                               reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize + textureArrayByteSize));
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -435,7 +411,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(3, GL_DOUBLE, 0,
+            glTexCoordPointer(3, datatype, 0,
                               reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize
                               + textureArrayByteSize + tangentArrayByteSize));
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -730,11 +706,11 @@ void OglModel::initTextures()
     }
     else
     {
-        if (!textures.empty())
+        for (auto* texture : textures)
         {
-            for (unsigned int i = 0 ; i < textures.size() ; i++)
+            if (texture)
             {
-                textures[i]->init();
+                texture->init();
             }
         }
     }
@@ -780,17 +756,17 @@ void OglModel::initVertexBuffer()
     const VecCoord& vbitangents= this->getVbitangents();
     bool hasTangents = vtangents.size() && vbitangents.size();
 
-    positionsBufferSize = (vertices.size()*sizeof(Vec3f));
-    normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
+    positionsBufferSize = (vertices.size()*sizeof(Coord));
+    normalsBufferSize = (vnormals.size()*sizeof(Deriv));
 
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
-        textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
+        textureCoordsBufferSize = vtexcoords.size() * sizeof(TexCoord);
 
         if (hasTangents)
         {
-            tangentsBufferSize = vtangents.size() * sizeof(vtangents[0]);
-            bitangentsBufferSize = vbitangents.size() * sizeof(vbitangents[0]);
+            tangentsBufferSize = vtangents.size() * sizeof(Coord);
+            bitangentsBufferSize = vbitangents.size() * sizeof(Coord);
         }
     }
 
@@ -856,55 +832,35 @@ void OglModel::updateVertexBuffer()
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    const void* positionBuffer = vertices.data();
-    const void* normalBuffer = vnormals.data();
-
-
-    verticesTmpBuffer.resize( vertices.size() );
-    normalsTmpBuffer.resize( vnormals.size() );
-
-    copyVector(vertices, verticesTmpBuffer);
-    copyVector(vnormals, normalsTmpBuffer);
-
-    positionsBufferSize = (vertices.size()*sizeof(Vec3f));
-    normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
-    positionBuffer = verticesTmpBuffer.data();
-    normalBuffer = normalsTmpBuffer.data();
-
-    if (tex || putOnlyTexCoords.getValue() || !textures.empty())
-    {
-        textureCoordsBufferSize = (vtexcoords.size() * sizeof(vtexcoords[0]));
-
-        if (hasTangents)
-        {
-            tangentsBufferSize = (vtangents.size() * sizeof(vtangents[0]));
-            bitangentsBufferSize = (vbitangents.size() * sizeof(vbitangents[0]));
-        }
-    }
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     //Positions
     glBufferSubData(GL_ARRAY_BUFFER,
                     0,
                     positionsBufferSize,
-                    positionBuffer);
+                    vertices.data());
 
     //Normals
     glBufferSubData(GL_ARRAY_BUFFER,
                     positionsBufferSize,
                     normalsBufferSize,
-                    normalBuffer);
+                    vnormals.data());
 
     //Texture coords
     if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
     {
+        textureCoordsBufferSize = (vtexcoords.size() * sizeof(vtexcoords[0]));
+
         glBufferSubData(GL_ARRAY_BUFFER,
                         positionsBufferSize + normalsBufferSize,
                         textureCoordsBufferSize,
-                        getData(vtexcoords));
+                        vtexcoords.data());
 
         if (hasTangents)
         {
+            tangentsBufferSize = (vtangents.size() * sizeof(vtangents[0]));
+            bitangentsBufferSize = (vbitangents.size() * sizeof(vbitangents[0]));
+
             glBufferSubData(GL_ARRAY_BUFFER,
                             positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
                             tangentsBufferSize,

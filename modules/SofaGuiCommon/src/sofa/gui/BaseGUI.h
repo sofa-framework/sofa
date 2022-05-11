@@ -27,12 +27,8 @@
 #include <sofa/type/Vec.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa::component::configurationsetting
-{
-    class ViewerSetting;
-    class MouseButtonSetting;
-
-} // namespace sofa::component::configurationsetting
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
 
 namespace sofa::gui
 {
@@ -85,7 +81,7 @@ public:
     virtual void registerViewer(BaseViewer* /*viewer*/) {}
     virtual bool saveScreenshot(const std::string& filename, int compression_level =-1);
 
-    virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting* /*button*/) {}
+    virtual void setMouseButtonConfiguration(sofa::component::setting::MouseButtonSetting* /*button*/) {}
     /// @}
 
     /// @name methods to communicate with the GUI
