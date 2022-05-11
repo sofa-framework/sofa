@@ -49,7 +49,6 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
     , d_useSymmetricAssembly(initData(&d_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
-    , m_assembling(false)
 {
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
@@ -68,7 +67,6 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , l_topology(initLink("topology", "link to the topology container"))
     , m_partialListSegment(false)
     , m_updateStiffnessMatrix(true)
-    , m_assembling(false)
 {
     d_poissonRatio.setRequired(true);
     d_youngModulus.setReadOnly(true);
@@ -741,12 +739,6 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::setUpdateStiffnessMatrix(bool val)
 {
     this->m_updateStiffnessMatrix = val;
-}
-
-template<class DataTypes>
-void BeamFEMForceField<DataTypes>::setComputeGlobalMatrix(bool val)
-{
-    this->m_assembling= val;
 }
 
 template<class DataTypes>
