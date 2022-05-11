@@ -146,6 +146,7 @@ protected :
 
     Data<bool> d_precomputeSymbolicDecomposition; ///< If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step.
     Data<bool> d_applyPermutation; ///< If true the solver will apply a fill-reducing permutation to the matrix of the system.
+    Data<int> d_L_nnz; ///< Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.
 
     SparseLDLSolverImpl() : Inherit()
     , d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
