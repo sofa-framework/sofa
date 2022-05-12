@@ -49,7 +49,7 @@
 #include <sofa/core/Mapping.inl>
 #include <fstream>
 
-namespace  sofa::component::collision
+namespace sofa::gui::component::performer
 {
     template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
     template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
@@ -62,16 +62,11 @@ namespace  sofa::component::collision
     template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
     template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
 #endif
-}
-
-namespace sofa::component::userinteraction::performer
-{
 
 using namespace sofa::gpu::cuda;
 using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::mapper;
-using namespace sofa::gui::component::performer;
 
 
 response::mapper::ContactMapperCreator< response::mapper::ContactMapper<geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("PenalityContactForceField", true);
@@ -91,7 +86,7 @@ using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types
 int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
 
-} //namespace sofa::component::collision
+} // namespace sofa::gui::component::performer
 
 
 namespace sofa::gpu::cuda
@@ -99,7 +94,7 @@ namespace sofa::gpu::cuda
 
 using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
-using namespace sofa::component::userinteraction::performer;
+using namespace sofa::gui::component::performer;
 
 
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
