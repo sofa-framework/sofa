@@ -21,58 +21,65 @@
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::helper
 {
 
-TagFactory::TagFactory()
+class TagList
 {
-    tagsList.emplace_back("0"); // ID 0 == "0" or empty string
-    // Add standard tags
-    tagsList.emplace_back("Visual");
-}
+protected:
+    /// the list of the tag names. the Ids are the indices in the vector
+    type::vector<std::string> m_tagsList;
 
-unsigned int TagFactory::getID(const std::string& name)
+public:
+    TagList() = default;
+    explicit TagList(type::vector<std::string> tagsList) : m_tagsList(std::move(tagsList)) {}
+
+    std::size_t getID(const std::string& name);
+    std::string getName(std::size_t id);
+};
+
+std::size_t TagList::getID(const std::string& name)
 {
     if (name.empty()) return 0;
 
-    TagFactory * tagfac = TagFactory::getInstance();
-    std::lock_guard lockit(tagfac->m_mutex);
-
-    auto it = tagfac->tagsList.begin();
-    unsigned int i=0;
-
-    while(it != tagfac->tagsList.end() && *it != name)
+    const auto it = std::find(m_tagsList.begin(), m_tagsList.end(), name);
+    if (it != m_tagsList.end())
     {
-        ++it;
-        i++;
+        return std::distance(m_tagsList.begin(), it);
     }
 
-    if (it != tagfac->tagsList.end())
-        return i;
-
-#ifndef NDEBUG
-        msg_info("TagFactory") << "creating new tag " << i << ": " <<name;
-#endif
-
-    tagfac->tagsList.push_back(name);
-    return i;
+    m_tagsList.push_back(name);
+    return m_tagsList.size() - 1;
 }
 
-std::string TagFactory::getName(const unsigned int id)
+std::string TagList::getName(const std::size_t id)
 {
-    TagFactory * tagfac = TagFactory::getInstance();
-    std::lock_guard lockit(tagfac->m_mutex);
-
-    if( id < tagfac->tagsList.size() )
-        return tagfac->tagsList[id];
+    if( id < m_tagsList.size() )
+        return m_tagsList[id];
     return "";
 }
 
-TagFactory* TagFactory::getInstance()
+
+std::mutex TagFactory::s_mutex;
+
+std::size_t TagFactory::getID(const std::string& name)
 {
-    static TagFactory instance;
-    return &instance;
+    std::lock_guard lock(s_mutex);
+    return getTagList()->getID(name);
+}
+
+std::string TagFactory::getName(const std::size_t id)
+{
+    std::lock_guard lock(s_mutex);
+    return getTagList()->getName(id);
+}
+
+TagList* TagFactory::getTagList()
+{
+    static TagList tagList { {"0", "Visual"} };
+    return &tagList;
 }
 } // namespace sofa::helper
 

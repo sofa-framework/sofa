@@ -20,45 +20,40 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#pragma once
 
 #include <mutex>
 #include <string>
-#include <sofa/type/vector.h>
 #include <sofa/helper/config.h>
 
 namespace sofa::helper
 {
 
+class TagList;
+
 /**
  * The TagFactory class manages the tags list shared by all the components and visitors.
  * It allows to define subsets to process by specific visitors
  * The user only gives strings to define the subsets, and an id is given back and is used to do the tests of belonging
- * The id is the index of the string in the "tagsList" vector
+ * The id is the index of the string in the "m_tagsList" vector
  */
-
 class SOFA_HELPER_API TagFactory
 {
-protected:
+private:
 
-    /// the list of the tag names. the Ids are the indices in the vector
-    sofa::type::vector<std::string> tagsList;
+    static TagList* getTagList();
 
-    TagFactory();
-
-    std::mutex m_mutex;
+    static std::mutex s_mutex;
 
 public:
 
     /// @return : the Id corresponding to the name of the tag given in parameter
     /// If the name isn't found in the list, it is added to it and return the new id.
-    static unsigned int getID(const std::string& name);
+    static std::size_t getID(const std::string& name);
 
     /// return the name corresponding to the id in parameter
-    static std::string getName(unsigned int id);
+    static std::string getName(std::size_t id);
 
-    /// return the instance of the factory. Creates it if doesn't exist yet.
-    static TagFactory* getInstance();
+    TagFactory() = delete;
 };
 
 } // namespace sofa::helper
