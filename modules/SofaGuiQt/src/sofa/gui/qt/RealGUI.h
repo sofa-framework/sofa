@@ -170,17 +170,17 @@ public:
 
 protected:
     /// create a viewer by default, otherwise you have to manage your own viewer
-    bool mCreateViewersOpt;
-    bool mIsEmbeddedViewer;
+    bool m_createViewersOpt;
+    bool m_isEmbeddedViewer;
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
     std::ostringstream m_dumpVisitorStream;
     bool m_exportGnuplot;
-    bool _animationOBJ;
-    int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
+    bool m_animateOBJ;
+    int m_animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
     bool m_fullScreen;
-    BaseViewer* mViewer;
+    BaseViewer* m_viewer;
     // Clock before the last simulation step (or zero if the
     // simulation hasn't run yet).
     clock_t m_clockBeforeLastStep;
@@ -198,11 +198,11 @@ protected:
     QTimer* timerIdle;
     WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
-    SofaPluginManager* pluginManager_dialog;
+    SofaPluginManager* pluginManagerDialog;
     QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
 
-    std::string simulation_name;
-    std::string gnuplot_directory;
+    std::string simulationName;
+    std::string gnuplotDirectory;
     std::string pathDumpVisitor;
 
     /// Keep track of log files that have been modified since the GUI started
@@ -211,14 +211,14 @@ protected:
     bool m_enableInteraction {false};
 private:
     //currently unused: scale is experimental
-    float object_Scale[2];
-    bool saveReloadFile;
+    float m_objectScale[2];
+    bool m_saveReloadFile;
     DisplayFlagsDataWidget*  displayFlag  {nullptr};
 #if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
     DocBrowser*              m_docbrowser {nullptr};
 #endif
-    bool animationState;
-    int frameCounter;
+    bool m_animationState;
+    int m_frameCounter;
     unsigned int m_viewerMSAANbSampling;
 //-----------------DATAS MEMBER------------------------}
 
@@ -301,7 +301,7 @@ protected:
     /// Our viewer is a QObject SofaViewer
     void isEmbeddedViewer(bool _onOff)
     {
-        mIsEmbeddedViewer = _onOff;
+        m_isEmbeddedViewer = _onOff;
     }
 
     virtual int exitApplication(unsigned int _retcode = 0)
@@ -338,11 +338,11 @@ private:
     void createAdvancedTimerProfilerWindow();
 
 public slots:
-    virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
-    virtual void ActivateNode(sofa::simulation::Node* , bool );
+    virtual void newRootNode(sofa::simulation::Node* root, const char* path);
+    virtual void activateNode(sofa::simulation::Node* , bool );
     virtual void setSleepingNode(sofa::simulation::Node*, bool);
     virtual void fileSaveAs(sofa::simulation::Node *node);
-    virtual void LockAnimation(bool);
+    virtual void lockAnimation(bool);
     virtual void fileRecentlyOpened(QAction * action);
     virtual void playpauseGUI(bool value);
     virtual void interactionGUI(bool value);
@@ -355,7 +355,7 @@ public slots:
     virtual void resetScene();
     virtual void screenshot();
     virtual void showhideElements();
-    virtual void Update();
+    virtual void update();
     virtual void updateBackgroundColour();
     virtual void updateBackgroundImage();
 
