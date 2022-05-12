@@ -23,7 +23,7 @@
 #include <SceneCreator/config.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
@@ -33,7 +33,7 @@ using sofa::defaulttype::Vec3Types ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 using sofa::simpleapi::str ;
 using sofa::simpleapi::createObject ;
 using sofa::simpleapi::createChild ;

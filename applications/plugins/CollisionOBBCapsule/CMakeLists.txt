@@ -64,11 +64,9 @@ set(SOURCE_FILES
     )
 
 find_package(Sofa.Component.Collision REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

@@ -166,9 +166,9 @@ add_subdirectory(extlibs)
 add_subdirectory(Sofa)
 
 # Deprecated (hollow) modules
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
+#add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
+#add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
+#add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 
 # SOFA-NG Plugins
 option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
@@ -181,8 +181,9 @@ add_subdirectory(Sofa/GUI)
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
-add_subdirectory(modules)
+# add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
+# add_subdirectory(modules)
+
 
 # This is all the applications GUI stuff. As there is a dependency to this one
 # In scene creator ...it is located here.
@@ -200,7 +201,7 @@ if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
 endif()
 ## Customized collections
 # SofaComponentAll is a convenient collection to get all Sofa features
-add_subdirectory(applications/collections)
+# add_subdirectory(applications/collections)
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
