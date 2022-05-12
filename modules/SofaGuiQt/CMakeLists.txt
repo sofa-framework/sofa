@@ -125,6 +125,7 @@ endif()
 set(SRC_ROOT src/sofa/gui/qt)
 
 set(MOC_HEADER_FILES
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/AboutSOFADialog.h    
     ${SRC_ROOT}/AddObject.h
     ${SRC_ROOT}/DataFilenameWidget.h

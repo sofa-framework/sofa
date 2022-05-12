@@ -19,37 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "AboutSOFADialog.h"
-#include <sofa/gui/BaseGUI.h>
-
-#include <QPushButton>
-#include <QDesktopServices>
-#include <QUrl>
-
-#include <sofa/helper/system/FileRepository.h>
-using sofa::helper::system::DataRepository;
+#pragma once
+#include <sofa/gui/qt/config.h>
 
 namespace sofa::gui::qt
 {
 
-AboutSOFADialog::AboutSOFADialog(QWidget *parent)
-    : QDialog(parent)
-{
-    setupUi(this);
-    connect(buttonOk, &QPushButton::clicked, this, &AboutSOFADialog::clickSupportUs);
+class QSofaListView;
 
-    std::string file = "icons/AboutSOFA.png";
-    if (DataRepository.findFile(file))
-    {
-        QPixmap pix(QPixmap::fromImage(QImage(DataRepository.getFile ( file ).c_str())));
-        label_2->setPixmap(pix);
-    }
 }
-
-void AboutSOFADialog::clickSupportUs()
-{
-    QDesktopServices::openUrl(QUrl("https://www.sofa-framework.org/consortium/support-us/"));
-}
-
-
-} // namespace sofa::gui::qt

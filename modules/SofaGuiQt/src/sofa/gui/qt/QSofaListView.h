@@ -101,6 +101,9 @@ public:
 
     void expandPathFrom(const std::vector<std::string>& pathes);
     void getExpandedNodes(std::vector<std::string>&);
+
+    void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
+
 public Q_SLOTS:
     void Export();
     void CloseAllDialogs();
@@ -141,7 +144,6 @@ protected Q_SLOTS:
     void ActivateNode();
     void PutNodeToSleep();
     void WakeUpNode();
-    void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
 
     void updateMatchingObjectmodel(QTreeWidgetItem* item, int);
     void updateMatchingObjectmodel(QTreeWidgetItem* item);
