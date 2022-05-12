@@ -19,43 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_TAGFACTORY_H
-#define SOFA_HELPER_TAGFACTORY_H
+#pragma once
+#pragma once
 
-#include <vector>
+#include <mutex>
 #include <string>
-
+#include <sofa/type/vector.h>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /**
-the TagFactory class class manage the tags list shared all the components and visitors.
-It allows to define subsets to process by specific visitors
-The user only gives strings to define the subsets, and an id is given back and is used to do the tests of belonging
-The id is the index of the string in the "tagsList" vector
-*/
+ * The TagFactory class manages the tags list shared by all the components and visitors.
+ * It allows to define subsets to process by specific visitors
+ * The user only gives strings to define the subsets, and an id is given back and is used to do the tests of belonging
+ * The id is the index of the string in the "tagsList" vector
+ */
 
 class SOFA_HELPER_API TagFactory
 {
 protected:
 
     /// the list of the tag names. the Ids are the indices in the vector
-    std::vector<std::string> tagsList;
+    sofa::type::vector<std::string> tagsList;
 
     TagFactory();
 
+    std::mutex m_mutex;
+
 public:
 
-    /**
-    @return : the Id corresponding to the name of the tag given in parameter
-    If the name isn't found in the list, it is added to it and return the new id.
-    */
-    static unsigned int getID(std::string name);
+    /// @return : the Id corresponding to the name of the tag given in parameter
+    /// If the name isn't found in the list, it is added to it and return the new id.
+    static unsigned int getID(const std::string& name);
 
     /// return the name corresponding to the id in parameter
     static std::string getName(unsigned int id);
@@ -64,12 +61,6 @@ public:
     static TagFactory* getInstance();
 };
 
-/// TODO: Rename to TagRegistry, as this is closer to a registry than a factory
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::helper
 
 

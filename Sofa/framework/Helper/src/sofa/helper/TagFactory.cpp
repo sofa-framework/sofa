@@ -22,50 +22,51 @@
 #include <sofa/helper/TagFactory.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 TagFactory::TagFactory()
 {
-    tagsList.push_back(std::string("0")); // ID 0 == "0" or empty string
+    tagsList.emplace_back("0"); // ID 0 == "0" or empty string
     // Add standard tags
-    tagsList.push_back(std::string("Visual"));
+    tagsList.emplace_back("Visual");
 }
 
-unsigned int TagFactory::getID(std::string name)
+unsigned int TagFactory::getID(const std::string& name)
 {
     if (name.empty()) return 0;
+
     TagFactory * tagfac = TagFactory::getInstance();
-    std::vector<std::string>::iterator it = tagfac->tagsList.begin();
+    std::lock_guard lockit(tagfac->m_mutex);
+
+    auto it = tagfac->tagsList.begin();
     unsigned int i=0;
 
-    while(it != tagfac->tagsList.end() && (*it)!= name)
+    while(it != tagfac->tagsList.end() && *it != name)
     {
         ++it;
         i++;
     }
 
-    if (it!=tagfac->tagsList.end())
+    if (it != tagfac->tagsList.end())
         return i;
-    else
-    {
+
 #ifndef NDEBUG
-        msg_info("TagFactory") <<"creating new tag "<<i<<": "<<name;
+        msg_info("TagFactory") << "creating new tag " << i << ": " <<name;
 #endif
-        tagfac->tagsList.push_back(name);
-        return i;
-    }
+
+    tagfac->tagsList.push_back(name);
+    return i;
 }
 
-std::string TagFactory::getName(unsigned int id)
+std::string TagFactory::getName(const unsigned int id)
 {
-    if( id < getInstance()->tagsList.size() )
-        return getInstance()->tagsList[id];
-    else
-        return "";
+    TagFactory * tagfac = TagFactory::getInstance();
+    std::lock_guard lockit(tagfac->m_mutex);
+
+    if( id < tagfac->tagsList.size() )
+        return tagfac->tagsList[id];
+    return "";
 }
 
 TagFactory* TagFactory::getInstance()
@@ -73,9 +74,5 @@ TagFactory* TagFactory::getInstance()
     static TagFactory instance;
     return &instance;
 }
-
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
