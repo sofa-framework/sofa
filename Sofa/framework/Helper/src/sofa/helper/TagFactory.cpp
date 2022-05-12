@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
-#include <sofa/helper/logging/Messaging.h>
 #include <sofa/type/vector.h>
+#include <mutex>
 
 namespace sofa::helper
 {
@@ -62,7 +62,7 @@ std::string TagList::getName(const std::size_t id)
 }
 
 
-std::mutex TagFactory::s_mutex;
+std::mutex s_mutex;
 
 std::size_t TagFactory::getID(const std::string& name)
 {

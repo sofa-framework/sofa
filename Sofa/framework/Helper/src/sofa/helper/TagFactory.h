@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <mutex>
 #include <string>
 #include <sofa/helper/config.h>
 
@@ -42,15 +41,13 @@ private:
 
     static TagList* getTagList();
 
-    static std::mutex s_mutex;
-
 public:
 
     /// @return : the Id corresponding to the name of the tag given in parameter
     /// If the name isn't found in the list, it is added to it and return the new id.
     static std::size_t getID(const std::string& name);
 
-    /// return the name corresponding to the id in parameter
+    /// @return the name corresponding to the id in parameter
     static std::string getName(std::size_t id);
 
     TagFactory() = delete;
