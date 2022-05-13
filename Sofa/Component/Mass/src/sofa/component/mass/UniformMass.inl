@@ -179,7 +179,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         d_indices.createTopologyHandler(meshTopology);
-        d_indices.supportNewElements(true);
+        d_indices.supportNewTopologyElements(true);
 
         // Need to create a call back to assign index of new point into the topologySubsetData. Deletion is automatically handle.
         d_indices.setCreationCallback([this](Index dataIndex, Index& valueIndex,
