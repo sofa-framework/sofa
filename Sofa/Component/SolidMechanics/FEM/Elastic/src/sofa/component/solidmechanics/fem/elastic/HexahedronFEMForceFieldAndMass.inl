@@ -258,31 +258,10 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalP
     // need to built the big global mass matrix and to inverse it...
 }
 
-
-template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
-{
-    if(mparams)
-    {
-        VecDeriv& v = *d_v.beginEdit();
-        SReal dt = sofa::core::mechanicalparams::dt(mparams);
-        for (unsigned int i=0; i<_particleMasses.size(); i++)
-        {
-            v[i] +=this->getContext()->getGravity()*dt;
-        }
-        d_v.beginEdit();
-    }
-}
-
-
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     HexahedronFEMForceFieldT::addForce(mparams, f,x,v);
-
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if (this->m_separateGravity.getValue())
-        return;
 
     helper::WriteAccessor< DataVecDeriv > _f = f;
     for (unsigned int i=0; i<_particleMasses.size(); i++)

@@ -77,13 +77,20 @@ public:
     virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
 
-    /// Mass forces (gravity) often have null derivative
-    void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
+    /// Mass does not generate any force
+    void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+
+    /// Mass does not generate any force derivative
+    void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & df, const DataVecDeriv & dx ) override;
+
+    /// Appart from the potential energy due to the gravitational acceleration, no energy comes from the mass itself
+    SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
+
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
     ///
-    /// This method computes
+    /// This method from the ForceField API computes
     /// $ df += mFactor M dx + bFactor B dx + kFactor K dx $
     /// For masses, it calls both addMdx and addDForce (which is often empty).
     ///
@@ -92,20 +99,25 @@ public:
     /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) override;
 
+
+    ///                         $ f = M g $
+    ///
+    /// This method computes the external force due to the gravitational acceleration
+    /// addGravitationalForce(const MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) method implemented by the component.
+    virtual void addGravitationalForce( const MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) const = 0;
+
+    ///                         $ e = M g x $
+    ///
+    /// This method retrieves the positions vector and call the internal
+    /// getGravitationalPotentialEnergy(const MechanicalParams*, const VecCoord&) method implemented by the component.
+    virtual SReal getGravitationalPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const = 0;
+
     ///                         $ e = 1/2  v^t M v $
     ///
     /// This method retrieves the velocity vector and call the internal
     /// getKineticEnergy(const MechanicalParams*, const DataVecDeriv&) method implemented by the component.
     SReal getKineticEnergy( const MechanicalParams* mparams) const override;
     virtual SReal getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
-
-    ///                         $ e = M g x $
-    ///
-    /// This method retrieves the positions vector and call the internal
-    /// getPotentialEnergy(const MechanicalParams*, const VecCoord&) method implemented by the component.
-    SReal getPotentialEnergy( const MechanicalParams* mparams) const override;
-    SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
-
 
     ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
     /// linearMomentum = Mv, angularMomentum_particle = cross(x,linearMomentum), angularMomentum_body = cross(x,linearMomentum)+Iw
@@ -143,11 +155,6 @@ public:
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
     void exportGnuplot(const MechanicalParams* mparams, SReal time) override;
-
-    /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
-    void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId /*vid*/) override;
-    virtual void addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */);
-
 
     /// recover the mass of an element
     SReal getElementMass(sofa::Index) const override;

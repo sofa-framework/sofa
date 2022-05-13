@@ -107,10 +107,6 @@ protected:
                      const sofa::core::behavior::MultiVecDeriv& acc,
                      SReal dt) const;
 
-    /// Gravity times time step size is added to the velocity for some masses
-    /// v += g * dt
-    static void addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v);
-
     /// Assemble the force vector (right-hand side of the equation)
     static void computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f);
 

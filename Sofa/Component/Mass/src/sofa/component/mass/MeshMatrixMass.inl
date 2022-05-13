@@ -2062,11 +2062,6 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::accFromF(const core::Mechanica
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& , const DataVecDeriv& )
 {
-
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if(this->m_separateGravity.getValue())
-        return ;
-
     helper::WriteAccessor< DataVecDeriv > f = vf;
 
     const auto &vertexMass= d_vertexMass.getValue();
@@ -2114,20 +2109,15 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getKineticEnergy( const core:
 
 
 template <class DataTypes, class GeometricalTypes>
-SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
+SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx, const Deriv& gravity) const
 {
     const auto &vertexMass= d_vertexMass.getValue();
 
     helper::ReadAccessor< DataVecCoord > x = vx;
-
     SReal e = 0;
-    // gravity
-    type::Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
     for (unsigned int i=0; i<x.size(); i++)
-        e -= dot(theGravity,x[i])*vertexMass[i] * m_massLumpingCoeff;
+        e -= dot(gravity,x[i])*vertexMass[i] * m_massLumpingCoeff;
 
     return e;
 }
@@ -2139,30 +2129,6 @@ type::Vector6 MeshMatrixMass<DataTypes, GeometricalTypes>::getMomentum ( const c
 {
     return type::Vector6();
 }
-
-
-
-template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
-{
-    if(this->mstate && mparams)
-    {
-        VecDeriv& v = *d_v.beginEdit();
-
-        // gravity
-        type::Vec3d g ( this->getContext()->getGravity() );
-        Deriv theGravity;
-        DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * (typename DataTypes::Real(sofa::core::mechanicalparams::dt(mparams)));
-
-        for (unsigned int i=0; i<v.size(); i++)
-            v[i] += hg;
-        d_v.endEdit();
-    }
-
-}
-
-
 
 
 template <class DataTypes, class GeometricalTypes>

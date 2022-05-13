@@ -94,21 +94,16 @@ public:
         return 0.0;
     }
 
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    SReal getGravitationalPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const override
     {
-        msg_warning() << "Method getPotentialEnergy not implemented yet.";
-        return 0.0;
-    }
-
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/) const override
-    {
-        msg_warning() << "Method getPotentialEnergy not implemented yet.";
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(x);
+        SOFA_UNUSED(gravity);
+        msg_warning() << "Method getGravitationalPotentialEnergy not implemented yet.";
         return 0.0;
     }
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
-
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
     SReal getElementMass(Index index) const override;
     // visual model

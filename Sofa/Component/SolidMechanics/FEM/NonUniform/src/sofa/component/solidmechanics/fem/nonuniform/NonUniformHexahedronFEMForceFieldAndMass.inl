@@ -449,30 +449,6 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(const core::MechanicalP
 }
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
-{
-    if(d_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addGravityToV(mparams, d_v);
-    else
-    {
-        if(mparams)
-        {
-            VecDeriv& v = *d_v.beginEdit();
-
-            const SReal* g = this->getContext()->getGravity().ptr();
-            Deriv theGravity;
-            T::set( theGravity, (Real)g[0], (Real)g[1], (Real)g[2]);
-            Deriv hg = theGravity * (sofa::core::mechanicalparams::dt(mparams));
-            for (unsigned int i=0; i<v.size(); i++)
-            {
-                v[i] += hg;
-            }
-            d_v.endEdit();
-        }
-    }
-}
-
-template<class T>
 void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     if(d_useMass.getValue())

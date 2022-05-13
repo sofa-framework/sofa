@@ -260,16 +260,6 @@ void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* 
     }
 }
 
-void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
-{
-    sofa::helper::ScopedAdvancedTimer timer("addSeparateGravity");
-
-    /// Calls the "addGravityToV" method of every BaseMass objects found in the current
-    /// context tree, if the BaseMass object has the m_separateGravity flag set to true.
-    /// The method "addGravityToV" usually performs v += dt * g
-    mop->addSeparateGravity(dt, v);
-}
-
 void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
 {
     sofa::helper::ScopedAdvancedTimer timer("ComputeForce");

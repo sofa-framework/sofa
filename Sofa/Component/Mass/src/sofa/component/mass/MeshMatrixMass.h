@@ -207,11 +207,9 @@ public:
 
     SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
 
-    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getGravitationalPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x, const Deriv& gravity) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
     type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
-
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
     bool isDiagonal() const override { return isLumped(); }
 

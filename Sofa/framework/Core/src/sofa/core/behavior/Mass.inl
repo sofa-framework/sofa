@@ -75,20 +75,29 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv
     msg_warning() << "Method accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented.";
 }
 
+template<class DataTypes>
+void Mass<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv & df, const DataVecDeriv & dx)
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(df);
+    SOFA_UNUSED(dx);
+}
 
 template<class DataTypes>
-void Mass<DataTypes>::addDForce(const MechanicalParams*
-                                #ifndef NDEBUG
-                                mparams
-                                #endif
-                                ,
-                                DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
+void Mass<DataTypes>::addForce(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
-#ifndef NDEBUG
-    // @TODO Remove
-    // Hack to disable warning message
-    sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-#endif
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(f);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
+}
+
+template<class DataTypes>
+SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x) const
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    return 0.0;
 }
 
 template<class DataTypes>
@@ -115,23 +124,6 @@ SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, con
     msg_warning() << "Method getKineticEnergy(const MechanicalParams*, const DataVecDeriv& ) not implemented.";
     return 0.0;
 }
-
-
-template<class DataTypes>
-SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
-{
-    if (this->mstate)
-        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate));
-    return 0.0;
-}
-
-template<class DataTypes>
-SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
-{
-    msg_warning() << "Method getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented.";
-    return 0.0;
-}
-
 
 template<class DataTypes>
 type::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
@@ -177,27 +169,6 @@ void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid)
-{
-    if(this->mstate)
-    {
-        DataVecDeriv& v = *vid[this->mstate.get()].write();
-        addGravityToV(mparams, v);
-    }
-}
-
-template<class DataTypes>
-void Mass<DataTypes>::addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */)
-{
-    static int i=0;
-    if (i < 10) {
-        msg_warning() << "Method addGravityToV with Scalar not implemented";
-        i++;
-    }
-}
-
-
-template<class DataTypes>
 void Mass<DataTypes>::initGnuplot(const std::string path)
 {
     if (!this->getName().empty())
@@ -215,9 +186,9 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
     if (m_gnuplotFileEnergy!=nullptr)
     {
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams)
-                               <<"\t"<< this->getPotentialEnergy(mparams)
-                              <<"\t"<< this->getPotentialEnergy(mparams)
-                                +this->getKineticEnergy(mparams)<< std::endl;
+//                               <<"\t"<< this->getGravitationalPotentialEnergy(mparams)
+//                              <<"\t"<< this->getGravitationalPotentialEnergy(mparams)
+//                                +this->getKineticEnergy(mparams)<< std::endl;
     }
 }
 

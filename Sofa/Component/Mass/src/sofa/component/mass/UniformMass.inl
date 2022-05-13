@@ -424,38 +424,9 @@ void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect,
     SOFA_UNUSED(offset);
 }
 
-
-template <class DataTypes>
-void UniformMass<DataTypes>::addGravityToV(const MechanicalParams* mparams,
-                                                     DataVecDeriv& d_v)
-{
-    if (mparams)
-    {
-        VecDeriv& v = *d_v.beginEdit();
-
-        const SReal* g = getContext()->getGravity().ptr();
-        Deriv theGravity;
-        DataTypes::set ( theGravity, g[0], g[1], g[2] );
-        Deriv hg = theGravity * Real(sofa::core::mechanicalparams::dt(mparams));
-
-        dmsg_info()<< " addGravityToV hg = "<<theGravity<<"*"<<sofa::core::mechanicalparams::dt(mparams)<<"="<<hg ;
-
-        for ( unsigned int i=0; i<v.size(); i++ )
-        {
-            v[i] += hg;
-        }
-
-        d_v.endEdit();
-    }
-}
-
 template <class DataTypes>
 void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ )
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if ( this->m_separateGravity.getValue() )
-        return;
-
     helper::WriteAccessor<DataVecDeriv> f = vf;
 
     // weight
@@ -471,12 +442,7 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
 
 
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
-
-    // add weight and inertia force
-    if (this->m_separateGravity.getValue()) for ( unsigned int i=0; i<indices.size(); i++ )
-    {
-    }
-    else for ( unsigned int i=0; i<indices.size(); i++ )
+    for ( unsigned int i=0; i<indices.size(); i++ )
     {
         f[indices[i]] += mg;
     }
@@ -501,8 +467,9 @@ SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
 }
 
 template <class DataTypes>
-SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* params,
-                                                             const DataVecCoord& d_x  ) const
+SReal UniformMass<DataTypes>::getGravitationalPotentialEnergy ( const MechanicalParams* params,
+                                                                const DataVecCoord& d_x,
+                                                                const Deriv& gravity) const
 {
     SOFA_UNUSED(params);
     ReadAccessor<DataVecCoord> x = d_x;
@@ -510,10 +477,6 @@ SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* param
 
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
-
-    Vec3d g( getContext()->getGravity());
-    Deriv gravity;
-    DataTypes::set(gravity, g[0], g[1], g[2]);
 
     Deriv mg = gravity * m;
 

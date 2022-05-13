@@ -589,19 +589,16 @@ SReal DiagonalMass<DataTypes, GeometricalTypes>::getKineticEnergy( const core::M
 }
 
 template <class DataTypes, class GeometricalTypes>
-SReal DiagonalMass<DataTypes, GeometricalTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+SReal DiagonalMass<DataTypes, GeometricalTypes>::getGravitationalPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x, const Deriv& gravity ) const
 {
 
     const MassVector &masses= d_vertexMass.getValue();
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
-    // gravity
-    type::Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        e -= type::dot(theGravity, _x[i]) * masses[i];
+        e -= type::dot(gravity, _x[i]) * masses[i];
     }
     return e;
 }
@@ -1369,48 +1366,19 @@ void DiagonalMass<DataTypes, GeometricalTypes>::doUpdateInternal()
     printMass();
 }
 
-
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
+void DiagonalMass<DataTypes, GeometricalTypes>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
 {
-    if(mparams)
-    {
-        VecDeriv& v = *d_v.beginEdit();
-        // gravity
-        sofa::type::Vec3d g ( this->getContext()->getGravity() );
-        Deriv theGravity;
-        DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * typename DataTypes::Real(sofa::core::mechanicalparams::dt(mparams));
-
-        for (unsigned int i=0; i<v.size(); i++)
-        {
-            v[i] += hg;
-        }
-        d_v.endEdit();
-    }
-}
-
-
-template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& , const DataVecDeriv& )
-{
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if(this->m_separateGravity.getValue())
-        return;
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
 
     const MassVector &masses= d_vertexMass.getValue();
     helper::WriteOnlyAccessor< DataVecDeriv > _f = f;
 
-    // gravity
-    sofa::type::Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
-
-
     // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        _f[i] += theGravity*masses[i];
+        _f[i] += gravity*masses[i];
     }
 }
 

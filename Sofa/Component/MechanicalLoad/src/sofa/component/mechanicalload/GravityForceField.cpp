@@ -19,22 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_GRAVITYFORCEFIELD_CPP
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h>
+#include <sofa/component/mechanicalload/GravityForceField.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::component::mechanicalload
 {
 
-Visitor::Result MechanicalAddSeparateGravityVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
-{
-    if( mass->m_separateGravity.getValue() )
-    {
-        //<TO REMOVE>
-        mass->addGravityToV(this->mparams, res);
-    }
-    return RESULT_CONTINUE;
-}
+using namespace sofa::defaulttype;
 
-}
+
+int GravityForceFieldClass = core::RegisterObject("Gravity as an external force in the world coordinate system")
+        .add< GravityForceField<Vec3Types> >()
+        .add< GravityForceField<Vec2Types> >()
+        .add< GravityForceField<Vec1Types> >()
+        .add< GravityForceField<Vec6Types> >()
+        .add< GravityForceField<Rigid3Types> >()
+        .add< GravityForceField<Rigid2Types> >()
+
+        ;
+template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec3Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec2Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec1Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec6Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Rigid3Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Rigid2Types>;
+
+
+} // namespace sofa::component::mechanicalload

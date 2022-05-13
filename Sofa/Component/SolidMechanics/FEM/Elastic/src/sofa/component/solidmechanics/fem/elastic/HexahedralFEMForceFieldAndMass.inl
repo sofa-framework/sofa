@@ -402,31 +402,9 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalP
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
-{
-    if(mparams)
-    {
-        VecDeriv& v = *d_v.beginEdit();
-
-        SReal _dt = sofa::core::mechanicalparams::dt(mparams);
-
-        for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
-        {
-            v[i] +=this->getContext()->getGravity()*_dt;
-        }
-        d_v.beginEdit();
-    }
-}
-
-
-template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     HexahedralFEMForceFieldT::addForce(mparams, f,x,v);
-
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if (this->m_separateGravity.getValue())
-        return;
 
     helper::WriteAccessor< DataVecDeriv > _f = f;
     for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
