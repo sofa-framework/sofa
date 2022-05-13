@@ -22,6 +22,7 @@
 #include <sofa/helper/TagFactory.h>
 #include <sofa/type/vector.h>
 #include <mutex>
+#include <algorithm>
 
 namespace sofa::helper
 {
