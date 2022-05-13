@@ -19,17 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/BaseLinearSolver.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa::core::behavior
 {
 
-LinearSolver::LinearSolver()
-    : frozen(false)
-{}
+bool BaseLinearSolver::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addLinearSolver(this);
+    Inherit1::insertInNode(node);
+    return true;
+}
 
-LinearSolver::~LinearSolver()
-{}
+bool BaseLinearSolver::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeLinearSolver(this);
+    Inherit1::removeInNode(node);
+    return true;
+}
 
-} // namespace sofa::core::behavior
-
+} //namespace sofa::core::behavior
