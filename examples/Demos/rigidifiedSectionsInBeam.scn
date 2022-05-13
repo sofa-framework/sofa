@@ -31,7 +31,6 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="Sofa.Simulation.Core"/> <!-- Needed to use components [DefaultAnimationLoop DefaultVisualManagerLoop RequiredPlugin] -->
 
     <DefaultAnimationLoop/>
     <DefaultVisualManagerLoop/>

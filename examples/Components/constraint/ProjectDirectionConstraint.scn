@@ -12,7 +12,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer EdgeSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Triangle2EdgeTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-    <RequiredPlugin name="Sofa.Simulation.Core"/> <!-- Needed to use components [DefaultAnimationLoop DefaultVisualManagerLoop RequiredPlugin] -->
     <VisualStyle displayFlags="hideVisualModels showBehavior" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
