@@ -27,8 +27,6 @@
 namespace sofa::helper
 {
 
-class TagList;
-
 /**
  * The TagFactory class manages the tags list shared by all the components and visitors.
  * It allows to define subsets to process by specific visitors
@@ -37,10 +35,6 @@ class TagList;
  */
 class SOFA_HELPER_API TagFactory
 {
-private:
-
-    static TagList* getTagList();
-
 public:
 
     /// @return : the Id corresponding to the name of the tag given in parameter

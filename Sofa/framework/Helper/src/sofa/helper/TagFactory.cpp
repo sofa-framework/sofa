@@ -61,25 +61,23 @@ std::string TagList::getName(const std::size_t id)
     return "";
 }
 
+// Mutex used to restrict the usage of the tag list in a multi-threaded context. Usable only in this translation unit
+std::mutex kMutex;
 
-std::mutex s_mutex;
+// Global tag list. Usable only in this translation unit
+TagList kTagList { {"0", "Visual"} };
 
 std::size_t TagFactory::getID(const std::string& name)
 {
-    std::lock_guard lock(s_mutex);
-    return getTagList()->getID(name);
+    std::lock_guard lock(kMutex);
+    return kTagList.getID(name);
 }
 
 std::string TagFactory::getName(const std::size_t id)
 {
-    std::lock_guard lock(s_mutex);
-    return getTagList()->getName(id);
+    std::lock_guard lock(kMutex);
+    return kTagList.getName(id);
 }
 
-TagList* TagFactory::getTagList()
-{
-    static TagList tagList { {"0", "Visual"} };
-    return &tagList;
-}
 } // namespace sofa::helper
 
