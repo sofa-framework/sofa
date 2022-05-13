@@ -16,6 +16,9 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
 
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [NormEngine] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [ValuesFromIndices] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [DifferenceEngine] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
@@ -28,6 +31,7 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Simulation.Core"/> <!-- Needed to use components [DefaultAnimationLoop DefaultVisualManagerLoop RequiredPlugin] -->
 
     <DefaultAnimationLoop/>
     <DefaultVisualManagerLoop/>
