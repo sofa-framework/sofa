@@ -116,12 +116,26 @@ void PluginManager::readFromIniFile(const std::string& path)
 void PluginManager::writeToIniFile(const std::string& path)
 {
     std::ofstream outstream(path.c_str());
-    PluginIterator iter;
-    for( iter = m_pluginMap.begin(); iter!=m_pluginMap.end(); ++iter)
+    for( const auto& [pluginPath, _] : m_pluginMap)
     {
-        const std::string& pluginPath = (iter->first);
-        outstream << pluginPath << " ";
-        outstream << getPlugin(pluginPath)->getModuleVersion() << "\n";
+        if (const auto* plugin = getPlugin(pluginPath))
+        {
+            outstream << pluginPath;
+            if (const char* moduleVersion = plugin->getModuleVersion())
+            {
+                outstream << " " << moduleVersion;
+            }
+            else
+            {
+                msg_error("PluginManager") << "The module '" << pluginPath << "' did not provide a module version";
+                outstream << " <missingModuleVersion>";
+            }
+            outstream << "\n";
+        }
+        else
+        {
+            msg_error("PluginManager") << "Cannot find a valid plugin from path '" << pluginPath << "'";
+        }
     }
     outstream.close();
 }
