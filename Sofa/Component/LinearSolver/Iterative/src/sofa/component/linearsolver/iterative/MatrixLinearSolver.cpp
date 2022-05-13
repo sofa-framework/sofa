@@ -154,27 +154,16 @@ linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScattere
 using namespace sofa::linearalgebra;
 
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< FullMatrix<double>, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< FullMatrix<float>, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< SparseMatrix<double>, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< SparseMatrix<float>, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,double> >, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,float> >, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,float> >, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,double> >, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,float> >, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,double> >, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,float> >, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,double> >, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,float> >, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< DiagonalMatrix<double>, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< DiagonalMatrix<float>, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< BlockDiagonalMatrix<3,double>, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< BlockDiagonalMatrix<3,float>, FullVector<float>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< RotationMatrix<double>, FullVector<double>, NoThreadManager >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< RotationMatrix<float>, FullVector<float>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< FullMatrix<SReal>, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< SparseMatrix<SReal>, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,SReal> >, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< DiagonalMatrix<SReal>, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< BlockDiagonalMatrix<3,SReal>, FullVector<SReal>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< RotationMatrix<SReal>, FullVector<SReal>, NoThreadManager >;
 
 } // namespace sofa::component::linearsolver
