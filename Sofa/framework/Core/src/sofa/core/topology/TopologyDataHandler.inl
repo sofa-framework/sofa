@@ -46,7 +46,7 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
-
+    SOFA_UNUSED(defaultValue);
 }
 
 

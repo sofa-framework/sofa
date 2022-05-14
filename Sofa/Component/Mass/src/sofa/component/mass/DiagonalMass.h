@@ -303,7 +303,7 @@ public:
 
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
-    void addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) override;
+    void addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) override; ///< Mg force in a lumped gravity field
 
     SReal getGravitationalPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
@@ -349,8 +349,8 @@ public:
 
 private:
     template <class T>
-    SReal getPotentialEnergyRigidImpl( const core::MechanicalParams* mparams,
-                                       const DataVecCoord& x) const ;
+    SReal getGravitationalPotentialEnergyRigidImpl( const core::MechanicalParams* mparams,
+                                       const DataVecCoord& x, const Deriv& g) const ;
 
     template <class T>
     void drawRigid3dImpl(const core::visual::VisualParams* vparams) ;
@@ -375,9 +375,9 @@ private:
 
 // Specialization for rigids
 template <>
-SReal DiagonalMass<defaulttype::Rigid3Types>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+SReal DiagonalMass<defaulttype::Rigid3Types>::getGravitationalPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& g) const;
 template <>
-SReal DiagonalMass<defaulttype::Rigid2Types>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+SReal DiagonalMass<defaulttype::Rigid2Types>::getGravitationalPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& g) const;
 template <>
 void DiagonalMass<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 template <>

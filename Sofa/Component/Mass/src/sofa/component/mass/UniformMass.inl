@@ -425,22 +425,18 @@ void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect,
 }
 
 template <class DataTypes>
-void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ )
+void UniformMass<DataTypes>::addGravitationalForce ( const core::MechanicalParams* mparams, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
 {
-    helper::WriteAccessor<DataVecDeriv> f = vf;
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
 
     // weight
-    const SReal* g = getContext()->getGravity().ptr();
-    Deriv theGravity;
-    DataTypes::set
-    ( theGravity, g[0], g[1], g[2] );
     const MassType& m = d_vertexMass.getValue();
-    Deriv mg = theGravity * m;
+    Deriv mg = gravity * m;
+    dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<gravity<<" = "<<mg;
 
-    dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
-
-
-
+    helper::WriteAccessor<DataVecDeriv> f = vf;
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     for ( unsigned int i=0; i<indices.size(); i++ )
     {

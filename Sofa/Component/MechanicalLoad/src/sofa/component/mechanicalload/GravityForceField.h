@@ -69,7 +69,7 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
     /// Set the gravitational acceleration
-    void setGravitationalAcceleration(const Real grav);
+    void setGravitationalAcceleration(const Deriv grav);
 
 protected:
     GravityForceField();

@@ -69,8 +69,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
     SReal startTime = this->getTime();
 
-    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
-
     //First step
     dmsg_info() << "RK4 Step 1";
 

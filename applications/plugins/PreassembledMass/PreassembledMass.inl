@@ -146,10 +146,10 @@ double PreassembledMass< DataTypes >::getKineticEnergy( const core::MechanicalPa
 }
 
 template < class DataTypes >
-double PreassembledMass< DataTypes >::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x ) const
+double PreassembledMass< DataTypes >::getGravitationalPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity ) const
 {
     serr<<SOFA_CLASS_METHOD<<"not implemented!\n";
-    return core::behavior::Mass< DataTypes >::getPotentialEnergy( mparams, x );
+    return core::behavior::Mass< DataTypes >::getGravitationalPotentialEnergy( mparams, x, gravity );
 
 //    const VecCoord& _x = x.getValue();
 
@@ -170,48 +170,21 @@ double PreassembledMass< DataTypes >::getPotentialEnergy( const core::Mechanical
 
 
 
-template < class DataTypes >
-void PreassembledMass< DataTypes >::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
-{
-    if(mparams)
-    {
-        VecDeriv& v = *d_v.beginEdit();
-
-        // gravity
-        Vec3 g ( this->getContext()->getGravity() * (sofa::core::mechanicalparams::dt(mparams)) );
-        Deriv theGravity;
-        DataTypes::set ( theGravity, g[0], g[1], g[2]);
-        Deriv hg = theGravity * (sofa::core::mechanicalparams::dt(mparams));
-
-        // add weight force
-        for (unsigned int i=0; i<v.size(); i++)
-        {
-            v[i] += hg;
-        }
-        d_v.endEdit();
-    }
-}
-
 
 template < class DataTypes >
-void PreassembledMass< DataTypes >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+void PreassembledMass< DataTypes >::addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
-    if(this->m_separateGravity.getValue()) return;
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
 
     VecDeriv& _f = *f.beginEdit();
-
-    // gravity
-    Vec3 g ( this->getContext()->getGravity() );
-//    Deriv theGravity;
-//    DataTypes::set( theGravity, g[0], g[1], g[2] );
-    // add weight
-//    d_massMatrix.template addMul_by_line<Real,VecDeriv,Deriv>( _f, theGravity );
 
     //TODO optimize this!!!
     VecDeriv gravities(_f.size());
     for(size_t i=0 ; i<_f.size() ; ++i )
-        DataTypes::set( gravities[i], g[0], g[1], g[2] );
+        gravities[i] = gravity;
+
     d_massMatrix.getValue().addMult( _f, gravities );
 
     f.endEdit();

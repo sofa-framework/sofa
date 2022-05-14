@@ -73,7 +73,6 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 
     acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
-    addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
 
     SReal nbNonDiagonalMasses = 0;

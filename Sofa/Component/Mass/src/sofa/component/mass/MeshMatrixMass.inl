@@ -2060,20 +2060,18 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::accFromF(const core::Mechanica
 
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& , const DataVecDeriv& )
+void MeshMatrixMass<DataTypes, GeometricalTypes>::addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity )
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
+
     helper::WriteAccessor< DataVecDeriv > f = vf;
-
     const auto &vertexMass= d_vertexMass.getValue();
-
-    // gravity
-    type::Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
     // add weight and inertia force
     for (unsigned int i=0; i<f.size(); ++i)
-        f[i] += theGravity * vertexMass[i] * m_massLumpingCoeff;
+        f[i] += gravity * vertexMass[i] * m_massLumpingCoeff;
 }
 
 
@@ -2109,8 +2107,10 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getKineticEnergy( const core:
 
 
 template <class DataTypes, class GeometricalTypes>
-SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx, const Deriv& gravity) const
+SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getGravitationalPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& vx, const Deriv& gravity) const
 {
+    SOFA_UNUSED(mparams);
+
     const auto &vertexMass= d_vertexMass.getValue();
 
     helper::ReadAccessor< DataVecCoord > x = vx;

@@ -375,17 +375,16 @@ Vector6 UniformMass<Vec3Types>::getMomentumVec3DImpl ( const MechanicalParams*,
 
 template <class VecTypes>
 template <class T>
-SReal UniformMass<VecTypes>::getPotentialEnergyRigidImpl(const core::MechanicalParams* mparams,
-                                                                    const DataVecCoord& p_x) const
+SReal UniformMass<VecTypes>::getGravitationalPotentialEnergyRigidImpl(const core::MechanicalParams* mparams,
+                                                                    const DataVecCoord& p_x, const Deriv& g) const
 {
     SOFA_UNUSED(mparams) ;
     SReal e = 0;
     ReadAccessor< DataVecCoord > x = p_x;
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
-    typename Coord::Pos g ( getContext()->getGravity() );
     for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*d_vertexMass.getValue().mass*x[indices[i]].getCenter();
+        e -= getVCenter(g) * d_vertexMass.getValue().mass * x[indices[i]].getCenter();
 
     return e;
 }
@@ -455,17 +454,17 @@ void UniformMass<Rigid2Types>::draw(const VisualParams* vparams)
 }
 
 template <> SOFA_COMPONENT_MASS_API
-SReal UniformMass<Rigid3Types>::getPotentialEnergy( const MechanicalParams* params,
-                                                                 const DataVecCoord& d_x ) const
+SReal UniformMass<Rigid3Types>::getGravitationalPotentialEnergy( const MechanicalParams* params,
+                                                                 const DataVecCoord& d_x, const Deriv& g ) const
 {
-    return getPotentialEnergyRigidImpl<Rigid3Types>(params, d_x) ;
+    return getGravitationalPotentialEnergyRigidImpl<Rigid3Types>(params, d_x, g) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-SReal UniformMass<Rigid2Types>::getPotentialEnergy( const MechanicalParams* params,
-                                                                 const DataVecCoord& vx ) const
+SReal UniformMass<Rigid2Types>::getGravitationalPotentialEnergy( const MechanicalParams* params,
+                                                                 const DataVecCoord& vx, const Deriv& g ) const
 {
-    return getPotentialEnergyRigidImpl<Rigid2Types>(params, vx) ;
+    return getGravitationalPotentialEnergyRigidImpl<Rigid2Types>(params, vx, g) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API

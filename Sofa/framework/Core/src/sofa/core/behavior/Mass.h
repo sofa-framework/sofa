@@ -78,10 +78,10 @@ public:
 
 
     /// Mass does not generate any force
-    void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addForce(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Mass does not generate any force derivative
-    void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & df, const DataVecDeriv & dx ) override;
+    void addDForce(const MechanicalParams* mparams, DataVecDeriv & df, const DataVecDeriv & dx ) override;
 
     /// Appart from the potential energy due to the gravitational acceleration, no energy comes from the mass itself
     SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
@@ -104,7 +104,7 @@ public:
     ///
     /// This method computes the external force due to the gravitational acceleration
     /// addGravitationalForce(const MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) method implemented by the component.
-    virtual void addGravitationalForce( const MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) const = 0;
+    virtual void addGravitationalForce( const MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) = 0;
 
     ///                         $ e = M g x $
     ///

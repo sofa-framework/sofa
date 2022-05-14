@@ -86,13 +86,15 @@ public:
 
      void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
-     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+     void addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) override;
 
     SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& /*v*/ ) const override ///< vMv/2 using dof->getV() override
     {
         msg_warning() << "HexahedronFEMForceFieldAndMass::getKineticEnergy() not implemented" << msgendl;
         return 0.0;
     }
+
+    SReal getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x  ) const override;
 
     SReal getGravitationalPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const override
     {
@@ -103,6 +105,7 @@ public:
         return 0.0;
     }
 
+    void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f,const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
     SReal getElementMass(Index index) const override;
@@ -129,7 +132,6 @@ protected :
 
     MassVector _particleMasses; ///< masses per particle in order to compute gravity
     type::vector<Coord> _lumpedMasses; ///< masses per particle computed by lumping mass matrices
-
 
 };
 

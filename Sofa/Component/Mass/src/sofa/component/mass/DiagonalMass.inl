@@ -589,8 +589,9 @@ SReal DiagonalMass<DataTypes, GeometricalTypes>::getKineticEnergy( const core::M
 }
 
 template <class DataTypes, class GeometricalTypes>
-SReal DiagonalMass<DataTypes, GeometricalTypes>::getGravitationalPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x, const Deriv& gravity ) const
+SReal DiagonalMass<DataTypes, GeometricalTypes>::getGravitationalPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity ) const
 {
+    SOFA_UNUSED(mparams);
 
     const MassVector &masses= d_vertexMass.getValue();
     helper::ReadAccessor< DataVecCoord > _x = x;
@@ -1367,8 +1368,9 @@ void DiagonalMass<DataTypes, GeometricalTypes>::doUpdateInternal()
 }
 
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
+void DiagonalMass<DataTypes, GeometricalTypes>::addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
 {
+    SOFA_UNUSED(mparams);
     SOFA_UNUSED(x);
     SOFA_UNUSED(v);
 

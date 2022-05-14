@@ -96,10 +96,9 @@ public:
     // -- Mass interface (employed only if d_massOnIndependents==true)
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
-    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    void addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity);
     double getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const;
-    double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
+    double getGravitationalPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const;
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
 

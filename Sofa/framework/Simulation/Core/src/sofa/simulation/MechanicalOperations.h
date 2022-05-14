@@ -84,8 +84,10 @@ public:
     void addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) velocity $
     void addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true);
-    /// Add dt*Gravity to the velocity
-    void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::VecDerivId::velocity() );
+
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#29XX)", "v22.12", "Removing the separate gravity API.")
+    void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::VecDerivId::velocity() ) = delete;
 
     void computeContactForce(core::MultiVecDerivId result);
     void computeContactDf(core::MultiVecDerivId df);

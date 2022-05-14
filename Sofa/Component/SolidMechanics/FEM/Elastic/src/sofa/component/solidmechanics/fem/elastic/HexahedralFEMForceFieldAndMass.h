@@ -84,7 +84,7 @@ public:
 
      void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
-     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+     void addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) override;
 
     SReal getGravitationalPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const override
     {
@@ -101,6 +101,9 @@ public:
         return 0;
     }
 
+    SReal getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x  ) const override;
+
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f,const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
     void draw(const core::visual::VisualParams* vparams) override;

@@ -402,18 +402,23 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalP
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
 {
-    HexahedralFEMForceFieldT::addForce(mparams, f,x,v);
-
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
     helper::WriteAccessor< DataVecDeriv > _f = f;
     for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
     {
-        _f[i] += this->getContext()->getGravity()*_particleMasses.getValue()[i];
+        _f[i] += gravity * _particleMasses.getValue()[i];
     }
 }
 
-
+template<class DataTypes>
+void HexahedralFEMForceFieldAndMass<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f,const DataVecCoord& x, const DataVecDeriv& v)
+{
+    HexahedralFEMForceFieldT::addForce(mparams, f, x, v);
+}
 
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
@@ -421,6 +426,11 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
     HexahedralFEMForceFieldT::addDForce(mparams, df, dx);
 }
 
+template<class DataTypes>
+SReal HexahedralFEMForceFieldAndMass<DataTypes>::getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
+{
+    HexahedralFEMForceFieldT::getPotentialEnergy(mparams, x);
+}
 
 template<class DataTypes>
 SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(sofa::Index /*index*/) const

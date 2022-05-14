@@ -57,8 +57,6 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
     SReal startTime = this->getTime();
 
-    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
-
     // Compute state derivative. vel is the derivative of pos
     mop.computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
 

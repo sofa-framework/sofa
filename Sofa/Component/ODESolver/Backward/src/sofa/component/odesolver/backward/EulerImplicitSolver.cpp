@@ -272,8 +272,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     }
 #endif
 
-    mop.addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to add G separately from the other forces to v
-
     if (f_velocityDamping.getValue()!=0.0)
         newVel *= exp(-h*f_velocityDamping.getValue());
 

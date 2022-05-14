@@ -39,21 +39,17 @@ using namespace sofa::defaulttype;
 
 template <class RigidTypes, class GeometricalTypes>
 template <class T>
-SReal DiagonalMass<RigidTypes, GeometricalTypes>::getPotentialEnergyRigidImpl( const MechanicalParams* mparams,
-                                                                        const DataVecCoord& x) const
+SReal DiagonalMass<RigidTypes, GeometricalTypes>::getGravitationalPotentialEnergyRigidImpl( const MechanicalParams* mparams,
+                                                                        const DataVecCoord& x, const Deriv& g) const
 {
     SOFA_UNUSED(mparams) ;
     SReal e = 0;
     const MassVector &masses= d_vertexMass.getValue();
     const VecCoord& _x = x.getValue();
 
-    // gravity
-    Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    RigidTypes::set( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<_x.size(); i++)
     {
-        e -= getVCenter(theGravity) * masses[i].mass * _x[i].getCenter();
+        e -= getVCenter(g) * masses[i].mass * _x[i].getCenter();
     }
     return e;
 }
@@ -266,17 +262,17 @@ type::Vector6 DiagonalMass<Vec3Types, GeometricalTypes>::getMomentumVec3Impl( co
 
 
 template <>
-SReal DiagonalMass<Rigid3Types>::getPotentialEnergy( const MechanicalParams* mparams,
-                                                                   const DataVecCoord& x) const
+SReal DiagonalMass<Rigid3Types>::getGravitationalPotentialEnergy( const MechanicalParams* mparams,
+                                                                   const DataVecCoord& x, const Deriv& g) const
 {
-    return getPotentialEnergyRigidImpl<Rigid3Types>(mparams, x) ;
+    return getGravitationalPotentialEnergyRigidImpl<Rigid3Types>(mparams, x, g) ;
 }
 
 template <>
-SReal DiagonalMass<Rigid2Types>::getPotentialEnergy( const MechanicalParams* mparams,
-                                                                   const DataVecCoord& x) const
+SReal DiagonalMass<Rigid2Types>::getGravitationalPotentialEnergy( const MechanicalParams* mparams,
+                                                                   const DataVecCoord& x, const Deriv& g) const
 {
-    return getPotentialEnergyRigidImpl<Rigid2Types>(mparams, x) ;
+    return getGravitationalPotentialEnergyRigidImpl<Rigid2Types>(mparams, x, g) ;
 }
 
 template <>

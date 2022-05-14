@@ -46,7 +46,9 @@ void GravityForceField<DataTypes>::init()
     if (l_mass.empty())
     {
         msg_info() << "link to the mass should be set to ensure right behavior. First mass found in current context will be used.";
-        l_mass.set(this->getContext()->getMass());
+        sofa::core::behavior::Mass<DataTypes>* p_mass;
+        this->getContext()->get(p_mass);
+        l_mass.set(p_mass);
     }
 
     // temprory pointer to the mass
@@ -69,7 +71,7 @@ void GravityForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void GravityForceField<DataTypes>::setGravitationalAcceleration(const Real grav)
+void GravityForceField<DataTypes>::setGravitationalAcceleration(const Deriv grav)
 {
     d_gravitationalAcceleration.setValue(grav);
 }
@@ -79,7 +81,7 @@ template<class DataTypes>
 void GravityForceField<DataTypes>::addForce(const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x1, const DataVecDeriv& v1)
 {
     sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get();
-    _mass->addGravitationalForce(params,f,x1,v1);
+    _mass->addGravitationalForce(params,f,x1,v1,d_gravitationalAcceleration.getValue());
 }
 
 

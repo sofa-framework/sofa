@@ -133,10 +133,11 @@ public:
 
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
-    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+
+    void addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) override; ///< Mg force in a uniform gravity field
+    SReal getGravitationalPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
     SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
-    SReal getGravitationalPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const override;   ///< Mgx potential in a uniform gravity field, null at origin
     type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addMDxToVector(linearalgebra::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
@@ -179,8 +180,8 @@ private:
     void drawVec6Impl(const core::visual::VisualParams* vparams) ;
 
     template<class T>
-    SReal getPotentialEnergyRigidImpl(const core::MechanicalParams* mparams,
-                                      const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getGravitationalPotentialEnergyRigidImpl(const core::MechanicalParams* mparams,
+                                      const DataVecCoord& x, const Deriv& g) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
 
 
@@ -214,9 +215,9 @@ void UniformMass<defaulttype::Rigid3Types>::draw(const core::visual::VisualParam
 template <>
 void UniformMass<defaulttype::Rigid2Types>::draw(const core::visual::VisualParams* vparams);
 template <>
-SReal UniformMass<defaulttype::Rigid3Types>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid3Types>::getGravitationalPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x, const Deriv& g ) const;
 template <>
-SReal UniformMass<defaulttype::Rigid2Types>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid2Types>::getGravitationalPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x, const Deriv& g ) const;
 template <>
 void UniformMass<defaulttype::Vec6Types>::draw(const core::visual::VisualParams* vparams);
 

@@ -165,7 +165,6 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
 #endif
 
-    mop.addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to add G separately from the other forces to v.
     if (d_velocityDamping.getValue()!=0.0)
         newVel *= exp(-h*d_velocityDamping.getValue());
 

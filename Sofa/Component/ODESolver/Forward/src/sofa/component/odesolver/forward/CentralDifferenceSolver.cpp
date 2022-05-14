@@ -87,8 +87,6 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
 
     const SReal r = f_rayleighMass.getValue();
 
-    mop.addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
-
     //projectVelocity(vel);                  // initial velocities are projected to the constrained space
 
     // compute the current force

@@ -451,22 +451,21 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(const core::MechanicalP
 template<class T>
 void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
-    if(d_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addForce(mparams, f,x,v);
-    else
+    HexahedronFEMForceFieldAndMassT::addForce(mparams, f,x,v);
+}
+
+template<class T>
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravitationalForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
+
+    helper::WriteAccessor<DataVecDeriv> _f = f;
+
+    for (unsigned int i=0; i<_f.size(); i++)
     {
-        HexahedronFEMForceFieldT::addForce(mparams, f,x,v);
-
-        helper::WriteAccessor<DataVecDeriv> _f = f;
-
-        const SReal* g = this->getContext()->getGravity().ptr();
-        Deriv theGravity;
-        T::set( theGravity, g[0], g[1], g[2]);
-
-        for (unsigned int i=0; i<_f.size(); i++)
-        {
-            _f[i] += theGravity * this->_particleMasses[i];
-        }
+        _f[i] += gravity * this->_particleMasses[i];
     }
 }
 

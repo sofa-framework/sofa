@@ -42,7 +42,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBKdxVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeContactForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
@@ -319,16 +318,6 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b, S
     /* useV = true */
     executeVisitor( MechanicalAddMBKdxVisitor(&mparams, df, accumulate) );
     mparams.setDx(dx);
-}
-
-
-
-/// Add dt*Gravity to the velocity
-void MechanicalOperations::addSeparateGravity(SReal dt, core::MultiVecDerivId result)
-{
-    mparams.setDt(dt);
-    setV(result);
-    executeVisitor( MechanicalAddSeparateGravityVisitor(&mparams, result) );
 }
 
 void MechanicalOperations::computeContactForce(core::MultiVecDerivId result)

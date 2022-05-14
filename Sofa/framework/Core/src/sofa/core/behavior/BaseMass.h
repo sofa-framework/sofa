@@ -75,6 +75,12 @@ public:
     /// @}
 
 
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#29XX)", "v22.12", "Removing the separate gravity API.")
+    virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) = delete;
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#29XX)", "v22.12", "Removing the separate gravity API.")
+    DeprecatedAndRemoved m_separateGravity;
+
+
     /// @name Matrix operations
     /// @{
 

@@ -185,10 +185,7 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 {
     if (m_gnuplotFileEnergy!=nullptr)
     {
-        (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams)
-//                               <<"\t"<< this->getGravitationalPotentialEnergy(mparams)
-//                              <<"\t"<< this->getGravitationalPotentialEnergy(mparams)
-//                                +this->getKineticEnergy(mparams)<< std::endl;
+        (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams) << "\t" << 0.0 << "\t" << this->getKineticEnergy(mparams)<< std::endl;
     }
 }
 
