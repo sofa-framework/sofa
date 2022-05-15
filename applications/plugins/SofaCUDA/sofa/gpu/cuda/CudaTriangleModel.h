@@ -22,8 +22,8 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/TriangleModel.inl>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.inl>
 
 namespace sofa::gpu::cuda
 {
@@ -31,9 +31,9 @@ namespace sofa::gpu::cuda
 SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaTriangleCollisionModel")
 CudaDeprecatedAndRemoved CudaTriangleModel;
 
-using CudaTriangleCollisionModel = sofa::component::collision::TriangleCollisionModel<CudaVec3Types>;
-using CudaTriangleCollisionModelf1 = sofa::component::collision::TriangleCollisionModel<CudaVec3f1Types>;
+using CudaTriangleCollisionModel = sofa::component::collision::geometry::TriangleCollisionModel<CudaVec3Types>;
+using CudaTriangleCollisionModelf1 = sofa::component::collision::geometry::TriangleCollisionModel<CudaVec3f1Types>;
 
-using CudaTriangle = sofa::component::collision::TTriangle<CudaVec3fTypes>;
+using CudaTriangle = sofa::component::collision::geometry::TTriangle<CudaVec3fTypes>;
 
 } // namespace sofa::gpu::cuda
