@@ -19,6 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_GPU_CUDA_CUDALINEMODEL_CPP
+#define SOFA_GPU_CUDA_CUDALINEMODEL_CPP
+
 #include <sofa/gpu/cuda/CudaLineModel.h>
 #include <sofa/component/collision/geometry/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -49,3 +52,5 @@ const int LineModelCudaClass = core::RegisterObject("Supports GPU-side computati
         ;
 
 } // namespace sofa::gpu::cuda
+
+#endif  // SOFA_GPU_CUDA_CUDALINEMODEL_CPP

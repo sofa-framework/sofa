@@ -38,7 +38,7 @@ using CudaSphere = sofa::component::collision::geometry::TSphere<CudaVec3fTypes>
 namespace sofa::component::collision::geometry
 {
 
-#if  !defined(SOFA_BUILD_GPU_CUDA)
+#if !defined(SOFA_GPU_CUDA_CUDASPHEREMODEL_CPP)
 extern template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
 extern template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
