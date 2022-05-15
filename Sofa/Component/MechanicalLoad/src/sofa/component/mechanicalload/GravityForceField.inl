@@ -71,7 +71,7 @@ void GravityForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void GravityForceField<DataTypes>::setGravitationalAcceleration(const Deriv grav)
+void GravityForceField<DataTypes>::setGravitationalAcceleration(const DPos grav)
 {
     d_gravitationalAcceleration.setValue(grav);
 }
@@ -81,7 +81,9 @@ template<class DataTypes>
 void GravityForceField<DataTypes>::addForce(const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x1, const DataVecDeriv& v1)
 {
     sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get();
-    _mass->addGravitationalForce(params,f,x1,v1,d_gravitationalAcceleration.getValue());
+    Deriv gravity;
+    DataTypes::setDPos(gravity, d_gravitationalAcceleration.getValue());
+    _mass->addGravitationalForce(params,f,x1,v1,gravity);
 }
 
 
@@ -89,7 +91,9 @@ template <class DataTypes>
 SReal GravityForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const
 {
     sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get();
-    return _mass->getGravitationalPotentialEnergy(params, x, d_gravitationalAcceleration.getValue());
+    Deriv gravity;
+    DataTypes::setDPos(gravity, d_gravitationalAcceleration.getValue());
+    return _mass->getGravitationalPotentialEnergy(params, x, gravity);
 }
 
 

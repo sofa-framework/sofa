@@ -43,11 +43,12 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::DPos DPos;
     typedef typename Coord::value_type Real;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< Deriv > d_gravitationalAcceleration; ///< Value corresponding to the gravitational acceleration
+    Data< DPos > d_gravitationalAcceleration; ///< Value corresponding to the gravitational acceleration
     SingleLink<GravityForceField<DataTypes>, sofa::core::behavior::Mass<DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_mass; ///< Link to be set to the mass in the component graph
 
     /// Init function
@@ -69,7 +70,7 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
     /// Set the gravitational acceleration
-    void setGravitationalAcceleration(const Deriv grav);
+    void setGravitationalAcceleration(const DPos grav);
 
 protected:
     GravityForceField();
