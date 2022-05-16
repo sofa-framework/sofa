@@ -21,8 +21,9 @@ install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ 
 ###################################
 
 sofa_find_package(SofaValidation QUIET)
-sofa_find_package(SofaGui REQUIRED)
-sofa_find_package(SofaGraphComponent REQUIRED)
+
+sofa_find_package(Sofa.GUI.Common REQUIRED)
+sofa_find_package(Sofa.GUI.Qt QUIET)
 
 set(HEADER_FILES
     runSofaValidation.h
