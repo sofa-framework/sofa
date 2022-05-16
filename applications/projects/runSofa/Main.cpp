@@ -43,8 +43,6 @@ using sofa::simulation::Node;
 #include <SofaGraphComponent/SceneCheckerListener.h>
 using sofa::simulation::scenechecking::SceneCheckerListener;
 
-#include <SofaBase/initSofaBase.h>
-
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
@@ -69,6 +67,8 @@ using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
 using sofa::gui::BatchGUI;
+
+#include <sofa/gui/BaseGUI.h>
 using sofa::gui::BaseGUI;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
@@ -320,7 +320,6 @@ int main(int argc, char** argv)
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
-    sofa::component::initSofaBase();
 
     if (simulationType == "tree")
         msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
