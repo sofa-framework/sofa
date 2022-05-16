@@ -30,7 +30,7 @@
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
         
-        <DiagonalMass massDensity="0.2" />
+        <MeshMatrixMass lumping="1" massDensity="0.2" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="small" />
         
         <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />
@@ -49,7 +49,7 @@
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
         
-        <DiagonalMass massDensity="0.2" />
+        <MeshMatrixMass lumping="1" massDensity="0.2" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="large" />
         
         <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />
@@ -68,7 +68,7 @@
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
         
-        <DiagonalMass massDensity="0.2" />
+        <MeshMatrixMass lumping="1" massDensity="0.2" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="polar" />
         
         <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 30 6 0.1" drawBoxes="1" />

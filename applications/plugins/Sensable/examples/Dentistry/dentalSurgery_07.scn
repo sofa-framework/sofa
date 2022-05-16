@@ -30,7 +30,7 @@ Using LCP contact detection and resolution:
             <TetrahedronSetTopologyContainer name="volume" src="@volTongue" />
             <TetrahedronSetGeometryAlgorithms />
             <MechanicalObject name="mecaTongue" />
-            <DiagonalMass massDensity="1" name="computed using mass density" />
+            <MeshMatrixMass lumping="1" massDensity="1" name="computed using mass density" />
             <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.45" method="large" />
             <Node name="TongueVisualModel">
                 <MeshOBJLoader name="meshLoader_0" filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/tongue.obj" handleSeams="1" />

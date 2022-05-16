@@ -7,7 +7,7 @@
         <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" />
         <Node name="M1">
             <MechanicalObject src="@../loader" showObject="1"/>
-            <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
+            <MeshMatrixMass lumping="1" filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
         </Node>
@@ -21,7 +21,7 @@
         </Node>
         <Node name="M3">
             <MechanicalObject src="@../loader" dz="21" showObject="1"/>
-            <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
+            <MeshMatrixMass lumping="1" filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <Node name="M4">
@@ -34,7 +34,7 @@
         </Node>
         <Node name="M5">
             <MechanicalObject src="@../loader" dz="42" showObject="1"/>
-            <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
+            <MeshMatrixMass lumping="1" filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="@M1" object2="@M2/Points" />

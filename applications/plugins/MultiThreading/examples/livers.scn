@@ -20,7 +20,7 @@
       <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
       <MechanicalObject name="dofs1" src="@meshLoader" />
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <MeshMatrixMass lumping="1"  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="39" />
 	  <UncoupledConstraintCorrection name="liver1_ConstraintCorrection"/>	
@@ -52,7 +52,7 @@
       <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
       <MechanicalObject name="dofs2" src="@meshLoader" />
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <MeshMatrixMass lumping="1"  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="64" />
 	    <UncoupledConstraintCorrection name="liver2_ConstraintCorrection"/>
@@ -84,7 +84,7 @@
       <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
       <MechanicalObject name="dofs3" src="@meshLoader" />
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <MeshMatrixMass lumping="1"  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="72" />
 	  <UncoupledConstraintCorrection name="liver3_ConstraintCorrection"/>
@@ -117,7 +117,7 @@
       <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
       <MechanicalObject name="dofs4" src="@meshLoader" />
       <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <MeshMatrixMass lumping="1"  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="96" />
 	  <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/>

@@ -26,7 +26,7 @@
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint indices="0" />
         <TetrahedronFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />

@@ -28,7 +28,7 @@
         <include href="Objects/QuadSetTopology.xml" src="@meshLoader" tags=" " />
         <MechanicalObject name="Quads" />
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <!--<FixedConstraint indices="12 15" />-->
         <BoxConstraint box="0 3 0 0 3 0 3 3 0 3 3 0" />
         <Node name="T">

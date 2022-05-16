@@ -30,7 +30,7 @@
         <MechanicalObject src="@loader" name="Quads" />
         <include href="Objects/QuadSetTopology.xml" src="@loader" />
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <FixedConstraint indices="12 15" />
         <Node name="Visu">
             <OglModel name="Visual" color="yellow" />

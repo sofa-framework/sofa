@@ -33,7 +33,7 @@
             <CGLinearSolver name="CG" iterations="1000" tolerance="1.0e-10" threshold="1.0e-30" tags="heat" />
             <MechanicalObject template="Vec1d" position="@../../temperatureLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat" />
             <TetrahedronDiffusionFEMForceField template="Vec1d" name="DiffusionForceField" constantDiffusionCoefficient="1.0" tagMechanics="geom" tags="heat" topology="@../Container"/>
-            <DiagonalMass template="Vec1d,Vec3d" name="Mass" massDensity="1.0" tags="heat" topology="@../Container" geometryState="@../../gridDOFs" />
+            <MeshMatrixMass lumping="1" template="Vec1d,Vec3d" name="Mass" massDensity="1.0" tags="heat" topology="@../Container" geometryState="@../../gridDOFs" />
             <LinearMovementConstraint template="Vec1d" keyTimes="0 998 999" movements="1 1 0" indices="@../../box-dirac.indices" />
             <FixedConstraint indices="@../../box-fixed.indices" />
         </Node>

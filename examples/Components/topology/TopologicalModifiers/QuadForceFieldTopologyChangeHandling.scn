@@ -27,7 +27,7 @@
         
         <MechanicalObject src="@../grid"/>
         <include href="Objects/QuadSetTopology.xml" src="@../grid" />
-        <DiagonalMass massDensity="1.0" />
+        <MeshMatrixMass lumping="1" massDensity="1.0" />
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
         <FixedConstraint name="FixedConstraint" indices="0 19" />
         
@@ -51,7 +51,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject src="@../grid" translation="30 0 0"/>
         <include href="Objects/QuadSetTopology.xml" src="@../grid" />
-        <DiagonalMass massDensity="1.0" />
+        <MeshMatrixMass lumping="1" massDensity="1.0" />
         
         <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
         <FixedConstraint name="FixedConstraint" indices="0 19" />

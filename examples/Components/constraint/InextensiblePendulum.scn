@@ -41,7 +41,7 @@
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
         <!-- 1 g for the total mass of the wire -->
-        <DiagonalMass  name="mass" totalMass="1e-3"/>
+        <MeshMatrixMass lumping="1"  name="mass" totalMass="1e-3"/>
         <MappingGeometricStiffnessForceField mapping="@./extensionsNode/distanceMapping" />
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1d"  name="extensionsDOF" />
@@ -62,7 +62,7 @@
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
         <!-- 1 g for the total mass of the wire -->
-        <DiagonalMass  name="mass" totalMass="1e-3"/>
+        <MeshMatrixMass lumping="1"  name="mass" totalMass="1e-3"/>
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1d"  name="extensionsDOF" />
             <DistanceMapping  name="distanceMapping" />

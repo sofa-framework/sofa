@@ -27,7 +27,7 @@
         <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <MechanicalObject name="TriangularFEMForceField_dof" />
-        <DiagonalMass totalMass="1.0" />
+        <MeshMatrixMass lumping="1" totalMass="1.0" />
         <FixedConstraint indices="0 39" />
 
         <Node name="T">
@@ -56,7 +56,7 @@
         <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <MechanicalObject name="TriangularFEMForceFieldOptim_dof" />
-        <DiagonalMass totalMass="1.0" />
+        <MeshMatrixMass lumping="1" totalMass="1.0" />
         <FixedConstraint indices="0 39" />
 
         <Node name="T">
@@ -85,7 +85,7 @@
         <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
         <MechanicalObject name="TriangleFEMForceField_dof" />
-        <DiagonalMass totalMass="1.0" />
+        <MeshMatrixMass lumping="1" totalMass="1.0" />
         <FixedConstraint indices="0 39" />
 
         <Node name="T">

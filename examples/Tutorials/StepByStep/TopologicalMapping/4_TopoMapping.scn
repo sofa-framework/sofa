@@ -25,7 +25,7 @@
         <TetrahedronSetTopologyContainer name="Container" filename="mesh/cylinder.msh" tetrahedra="@loader.tetrahedra" />
         <TetrahedronSetGeometryAlgorithms  name="GeomAlgo" drawTetrahedra="0" drawColorTetrahedra="1.0 1.0 0.3 1.0" />
         <TetrahedralCorotationalFEMForceField name="FEM" method="large" poissonRatio="0.3" youngModulus="360" assembling="0" />
-        <DiagonalMass  massDensity="0.5" />
+        <MeshMatrixMass lumping="1"  massDensity="0.5" />
         <FixedPlaneConstraint  direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint  indices="0" />
         <Node name="Triangles Mesh">

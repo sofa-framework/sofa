@@ -23,7 +23,7 @@
     <MeshGmshLoader filename="mesh/cylinder_8x30x6.msh" name="loader" scale="100"/>
     <MechanicalObject src="@loader" name="Volume" />
     <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-    <DiagonalMass massDensity="0.5" />
+    <MeshMatrixMass lumping="1" massDensity="0.5" />
 	
     <BoxROI name="ROI1" box="-1 -1 -1 1 1 0.01" drawBoxes="1" />
     <FixedConstraint indices="@ROI1.indices" />

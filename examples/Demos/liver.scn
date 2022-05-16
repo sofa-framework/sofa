@@ -24,7 +24,7 @@
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
         <MechanicalObject name="dofs" src="@meshLoader" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass  name="computed using mass density" massDensity="1" />
+        <MeshMatrixMass lumping="1"  name="computed using mass density" massDensity="1" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">

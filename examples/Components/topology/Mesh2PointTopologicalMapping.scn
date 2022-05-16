@@ -24,7 +24,7 @@
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <MechanicalObject name="dofs" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
-        <DiagonalMass massDensity="1" name="computed using mass density" />
+        <MeshMatrixMass lumping="1" massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="PointSetTopology">
             <PointSetTopologyContainer name="Container2" />

@@ -39,7 +39,7 @@
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
         <MechanicalObject name="liverDofs" src="@meshLoader" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass  name="mass" massDensity="1" topology="@topo" geometryState="@liverDofs"/>
+        <MeshMatrixMass lumping="1"  name="mass" massDensity="1" topology="@topo" geometryState="@liverDofs"/>
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <PrecomputedConstraintCorrection recompute="true"/>
 

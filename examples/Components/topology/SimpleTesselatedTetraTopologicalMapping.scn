@@ -24,7 +24,7 @@
         <TetrahedronSetGeometryAlgorithms template="Vec3d" drawEdges="1" drawColorEdges="0 1 0" />
         <MechanicalObject name="dofs" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
-        <DiagonalMass massDensity="1" name="computed using mass density" />
+        <MeshMatrixMass lumping="1" massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="TetraTopology2">
             <TetrahedronSetTopologyContainer name="Container2" />

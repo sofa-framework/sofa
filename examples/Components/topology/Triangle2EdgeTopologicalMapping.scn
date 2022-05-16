@@ -25,7 +25,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.15" />
+        <MeshMatrixMass lumping="1" massDensity="0.15" />
         <FixedConstraint indices="0 1" />
         <StiffSpringForceField name="FF" />
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />

@@ -31,7 +31,7 @@
         <MechanicalObject name="dofs" />
         <BoxROI name="roi1" box="-55 -55 -55 55 55 -25" />
         <FixedConstraint name="FixedConstraint" indices="@roi1.indices" />
-        <DiagonalMass massDensity="1" name="computed using mass density" />
+        <MeshMatrixMass lumping="1" massDensity="1" name="computed using mass density" />
         <TriangleCollisionModel group="1" printLog="1" />
         <TaitSurfacePressureForceField name="Pressure" gamma="5" B="10000" injectedVolume="0" printLog="1" />
         <Node name="SubsetTopology1">

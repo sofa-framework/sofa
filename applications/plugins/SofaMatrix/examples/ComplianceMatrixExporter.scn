@@ -24,7 +24,7 @@
         <MechanicalObject name="defoDOF" template="Vec3d" showObject="1" />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
-        <DiagonalMass  name="mass" totalMass="1e-3"/>
+        <MeshMatrixMass lumping="1"  name="mass" totalMass="1e-3"/>
         <MappingGeometricStiffnessForceField mapping="@./extensionsNode/distanceMapping" />
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1d"  name="extensionsDOF" />

@@ -31,7 +31,7 @@
         <TriangleSetTopologyModifier   name="Modifier" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" drawEdges="1"/>
         
-        <DiagonalMass massDensity="0.15" />
+        <MeshMatrixMass lumping="1" massDensity="0.15" />
         <FixedConstraint indices="0 1 8 9 10 19" />
        
        

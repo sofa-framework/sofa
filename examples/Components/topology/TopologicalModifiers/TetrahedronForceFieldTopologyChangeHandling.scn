@@ -25,7 +25,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
 
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
@@ -42,7 +42,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
 
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint indices="0" />
 	<TetrahedronFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />

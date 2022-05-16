@@ -29,7 +29,7 @@
         <MechanicalObject name="Hexa" src="@meshLoader" />
         <include href="Objects/HexahedronSetTopology.xml" src="@meshLoader" drawHexa="1" />
         <HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <!-- <FixedConstraint indices="12 15 28 31" /> -->
         <BoxConstraint box="0 3 0 0 3 1 3 3 0 3 3 1" />
         <Node name="Q">

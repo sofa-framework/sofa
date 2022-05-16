@@ -24,7 +24,7 @@
         <TriangleSetTopologyContainer name="Triangle_topo" src="@loader"/>
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass template="Vec3d,double" name="mass" massDensity="1.0" />
+        <MeshMatrixMass lumping="1" template="Vec3d,double" name="mass" massDensity="1.0" />
         
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
        

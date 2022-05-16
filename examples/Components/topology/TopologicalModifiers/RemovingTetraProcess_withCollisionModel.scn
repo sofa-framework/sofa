@@ -30,7 +30,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         
-        <DiagonalMass massDensity="1.0" />
+        <MeshMatrixMass lumping="1" massDensity="1.0" />
         <FixedConstraint name="fix" indices="7 8 14 15" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <TetrahedronCollisionModel />

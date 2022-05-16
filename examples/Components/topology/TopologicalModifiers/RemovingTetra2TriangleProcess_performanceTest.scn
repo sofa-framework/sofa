@@ -32,7 +32,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <TopologicalChangeProcessor listening="1" filename="RemovingTetra2TriangleProcess_performanceTest.txt" />
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />

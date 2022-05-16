@@ -25,7 +25,7 @@
         <MechanicalObject src="@loader" name="Hexa" />
         <include href="Objects/HexahedronSetTopology.xml" src="@loader" tags=" " />
         <HexahedralFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" />
-        <DiagonalMass massDensity="0.5" />
+        <MeshMatrixMass lumping="1" massDensity="0.5" />
         <FixedConstraint indices="12 15 28 31" />
         <Node name="Q">
             <QuadSetTopologyContainer  name="Container" />

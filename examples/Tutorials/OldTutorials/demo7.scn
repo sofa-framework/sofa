@@ -21,7 +21,7 @@
         <CGLinearSolver iterations="10" threshold="1e-5" tolerance="1e-5"/>
         <Node name="M1">
             <MechanicalObject src="@../../meshLoader" dz="-21.0" />
-            <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
+            <MeshMatrixMass lumping="1" filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
             <Node name="Visu">
@@ -57,7 +57,7 @@
         </Node>
         <Node name="M3">
             <MechanicalObject src="@../../meshLoader" />
-            <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
+            <MeshMatrixMass lumping="1" filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="red" />
@@ -92,7 +92,7 @@
         </Node>
         <Node name="M5">
             <MechanicalObject src="@../../meshLoader" dz="21" />
-            <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
+            <MeshMatrixMass lumping="1" filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="cyan" />

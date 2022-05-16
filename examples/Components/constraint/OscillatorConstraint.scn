@@ -23,7 +23,7 @@
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader0" />
         <!-- Algorithms: used in DiagonalMass to compute the mass -->
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
-        <DiagonalMass massDensity="1" name="computed using mass density" />
+        <MeshMatrixMass lumping="1" massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <!-- Moving dof 15 along the X around a min pos  (2,0,0) with an amplitude of (1,0,0), 5 in pulsation, and 10 in phase -->

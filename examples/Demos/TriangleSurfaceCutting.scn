@@ -27,7 +27,7 @@
         <TriangleSetTopologyModifier   name="Modifier" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <MechanicalObject name="Mo"/>
-        <DiagonalMass massDensity="0.08" />
+        <MeshMatrixMass lumping="1" massDensity="0.08" />
         <FixedConstraint indices="617 618 57 1301 1302 49" />
         <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />

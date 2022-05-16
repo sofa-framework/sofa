@@ -27,7 +27,7 @@
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="Volume" />
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="5" />
+        <MeshMatrixMass lumping="1" massDensity="5" />
         
         <ProximityROI name="fixedROI"  centers="0 0 1 0 0 0 0 0 0.5"  radii="0.1 0.2"  N="40" drawSphere="1"  drawPoints="1" />
 		<FixedConstraint indices="@fixedROI.indices" />

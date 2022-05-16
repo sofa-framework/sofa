@@ -26,7 +26,7 @@
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
-        <DiagonalMass massDensity="0.005" />
+        <MeshMatrixMass lumping="1" massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />
         <TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />
         <Node name="VisuA">

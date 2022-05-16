@@ -25,7 +25,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.015" />
+        <MeshMatrixMass lumping="1" massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleCollisionModel />

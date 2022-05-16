@@ -26,7 +26,7 @@
         <HexahedronSetTopologyContainer name="Container" src="@grid"/>
         <HexahedronSetTopologyModifier name="Modifier" />
         
-        <DiagonalMass totalMass="50.0" />
+        <MeshMatrixMass lumping="1" totalMass="50.0" />
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         
         <FixedConstraint indices="@ROI1.indices" />
@@ -54,7 +54,7 @@
         <HexahedronSetTopologyContainer name="Container" src="@grid"/>
         <HexahedronSetTopologyModifier name="Modifier" />
 
-        <DiagonalMass totalMass="50.0" />
+        <MeshMatrixMass lumping="1" totalMass="50.0" />
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         
         <FixedConstraint indices="@ROI1.indices" />

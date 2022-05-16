@@ -29,7 +29,7 @@
         <TriangleSetTopologyContainer name="topo" src="@GmshLoader" />
         <TriangleSetTopologyModifier name="modif" />
         <TriangleSetGeometryAlgorithms name="triGeo" drawEdges="1" />
-        <DiagonalMass massDensity="0.15" />
+        <MeshMatrixMass lumping="1" massDensity="0.15" />
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
@@ -47,7 +47,7 @@
         <TetrahedronSetTopologyContainer name="topo" src="@GmshLoaderv4" />
         <TetrahedronSetTopologyModifier name="modif" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeo" />
-        <DiagonalMass massDensity="0.2" />
+        <MeshMatrixMass lumping="1" massDensity="0.2" />
         <FixedConstraint indices="0 1" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
         <TriangleCollisionModel />

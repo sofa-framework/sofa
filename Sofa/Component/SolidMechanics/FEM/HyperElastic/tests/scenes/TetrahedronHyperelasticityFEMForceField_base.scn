@@ -25,7 +25,7 @@
         <MechanicalObject name="dofs" src="@meshLoader" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 
-        <DiagonalMass  name="computed using mass density" massDensity="1" />
+        <MeshMatrixMass lumping="1"  name="computed using mass density" massDensity="1" />
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
 
 		<!-- TetrahedronHyperelasticityFEMForceField will be added by the test-->

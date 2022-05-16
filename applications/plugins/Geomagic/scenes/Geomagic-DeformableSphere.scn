@@ -48,7 +48,7 @@
         <MechanicalObject name="gridDof" position="@grid.position"/>
 		
         <TetrahedronFEMForceField name="FEM" youngModulus="80000" poissonRatio="0.45" method="large" />
-        <DiagonalMass totalMass="10.0" topology="@grid" geometryState="@gridDof"/>
+        <MeshMatrixMass lumping="1" totalMass="10.0" topology="@grid" geometryState="@gridDof"/>
         
         <BoxROI name="boxRoi1" box="-0.6 -0.6 1.4   0.6 0.6 2.6" drawBoxes="1"/>
         <FixedConstraint indices="@boxRoi1.indices" />

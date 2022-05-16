@@ -28,7 +28,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 0" createSubelements="true"/>
         <MechanicalObject name="TriangularBendingSprings" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.015" />
+        <MeshMatrixMass lumping="1" massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
@@ -46,7 +46,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
         <MechanicalObject name="TriangularBiquadratic" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.015" />
+        <MeshMatrixMass lumping="1" massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleCollisionModel />
@@ -64,7 +64,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 0" createSubelements="true"/>
         <MechanicalObject name="TriangularQuadratic" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.015" />
+        <MeshMatrixMass lumping="1" massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularQuadraticSpringsForceField name="QS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleCollisionModel />
@@ -81,7 +81,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 -1" createSubelements="true"/>
         <MechanicalObject name="TriangularFEM" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.015" />
+        <MeshMatrixMass lumping="1" massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
@@ -99,7 +99,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="0 0 -1" createSubelements="true"/>
         <MechanicalObject name="TriangularTensorMass" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.015" />
+        <MeshMatrixMass lumping="1" massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleCollisionModel />
@@ -117,7 +117,7 @@
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 -1" createSubelements="true"/>
         <MechanicalObject name="TrianglePressureForceField" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
-        <DiagonalMass massDensity="0.015" />
+        <MeshMatrixMass lumping="1" massDensity="0.015" />
         <FixedConstraint indices="0 1" />
         <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0 1 0" />
         <TriangleCollisionModel />

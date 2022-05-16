@@ -25,7 +25,7 @@
         <!-- Container for the tetrahedra-->
         <TetrahedronSetTopologyContainer name="TetraTopo" src="@../loader" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-        <DiagonalMass totalMass="60" name="diagonalMass" />
+        <MeshMatrixMass lumping="1" totalMass="60" name="diagonalMass" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         
