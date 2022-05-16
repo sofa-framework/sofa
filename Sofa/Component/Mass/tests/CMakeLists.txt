@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Component.Mass_test)
 
 set(SOURCE_FILES
-    DiagonalMass_test.cpp
     MeshMatrixMass_test.cpp
     UniformMass_test.cpp
 )
