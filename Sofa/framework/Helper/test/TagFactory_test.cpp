@@ -43,4 +43,7 @@ TEST(TagFactory_test, addTag)
     EXPECT_EQ(TagFactory::getID("foo"), 5);
     EXPECT_EQ(TagFactory::getID("bar"), 6);
     EXPECT_EQ(TagFactory::getID("foo"), 5);
+
+    EXPECT_EQ(TagFactory::getID("0")), 0);
+    EXPECT_EQ(TagFactory::getID("Visual"), 1");
 }
