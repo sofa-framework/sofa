@@ -2044,7 +2044,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::accFromF(const core::Mechanica
     if( !isLumped() )
     {
         msg_error() << "the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
-                    << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
+                    << "Please use mass lumping.";
         return;
     }
 
