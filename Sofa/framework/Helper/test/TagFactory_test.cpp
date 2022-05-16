@@ -35,6 +35,7 @@ TEST(TagFactory_test, initialization)
 
 TEST(TagFactory_test, addTag)
 {
+    // Get id of new Tags. Will be added to the list
     EXPECT_EQ(TagFactory::getID("1"), 2);
     EXPECT_EQ(TagFactory::getID("2"), 3);
     EXPECT_EQ(TagFactory::getID("4"), 4);
@@ -44,6 +45,7 @@ TEST(TagFactory_test, addTag)
     EXPECT_EQ(TagFactory::getID("bar"), 6);
     EXPECT_EQ(TagFactory::getID("foo"), 5);
 
-    EXPECT_EQ(TagFactory::getID("0")), 0);
-    EXPECT_EQ(TagFactory::getID("Visual"), 1");
+    // Get id of existing Tags
+    EXPECT_EQ(TagFactory::getID("0"), 0);
+    EXPECT_EQ(TagFactory::getID("Visual"), 1);
 }
