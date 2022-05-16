@@ -7,7 +7,7 @@ find_package(Sofa.GL.Component.Engine QUIET)
 
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Analyze, Sofa.Component.Engine.Generate, Sofa.Component.Engine.Select and Sofa.Component.Engine.Transform instead.")
+    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Analyze, Sofa.Component.Engine.Generate, Sofa.Component.Engine.Select and Sofa.Component.Engine.Transform instead.")
     if(Sofa.GL.Component.Engine_FOUND)
         message(WARNING "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.")
     endif()

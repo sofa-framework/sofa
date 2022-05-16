@@ -22,24 +22,13 @@
 #pragma once
 #include <SofaSimulationGraph/config.h>
 
-namespace sofa::simulation::graph
+#include <sofa/simulation/graph/init.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/graph/init.h")
+
+namespace sofasimulationgraph
 {
 
-/// @brief Initialize the SofaSimulationGraph library, as well as its
-/// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
 SOFA_SOFASIMULATIONGRAPH_API void init();
 
-/// @brief Return true if and only if the SofaSimulationGraph library has been
-/// initialized.
-SOFA_SOFASIMULATIONGRAPH_API bool isInitialized();
-
-/// @brief Clean up the resources used by the SofaSimulationGraph library, as
-/// well as its dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType,
-/// SofaHelper.
-SOFA_SOFASIMULATIONGRAPH_API void cleanup();
-
-/// @brief Return true if and only if the SofaSimulationGraph library has been
-/// cleaned up.
-SOFA_SOFASIMULATIONGRAPH_API bool isCleanedUp();
-
-} // namespace sofa::simulation::graph
+} // namespace sofasimulationgraph

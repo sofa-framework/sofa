@@ -15,15 +15,8 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     
     <VisualStyle displayFlags="showVisual showWireframe" />
-    <DefaultPipeline name="default0" verbose="0" />
-    <BruteForceBroadPhase/>
-    <BVHNarrowPhase/>
-    <DefaultContactManager name="default1" response="PenalityContactForceField" />
-    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager name="default2" />
 
     <Node name="SquareGravity" gravity="0 0 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
