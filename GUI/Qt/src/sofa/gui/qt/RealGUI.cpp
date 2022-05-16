@@ -332,31 +332,31 @@ RealGUI::RealGUI ( const char* viewername)
       m_sofaWindowDataGraph(nullptr),
 #endif
       simulationGraph(nullptr),
-      mCreateViewersOpt(true),
-      mIsEmbeddedViewer(true),
+      m_createViewersOpt(true),
+      m_isEmbeddedViewer(true),
       m_dumpState(false),
       m_dumpStateStream(nullptr),
       m_exportGnuplot(false),
-      _animationOBJ(false),
-      _animationOBJcounter(0),
+      m_animateOBJ(false),
+      m_animationOBJcounter(0),
       m_displayComputationTime(false),
       m_fullScreen(false),
-      mViewer(nullptr),
+      m_viewer(nullptr),
       m_clockBeforeLastStep(0),
       propertyWidget(nullptr),
       currentTab ( nullptr ),
       statWidget(nullptr),
       timerStep(nullptr),
       backgroundImage(nullptr),
-      pluginManager_dialog(nullptr),
+      pluginManagerDialog(nullptr),
       recentlyOpenedFilesManager(BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
-      saveReloadFile(false),
+      m_saveReloadFile(false),
       displayFlag(nullptr),
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
       m_docbrowser(nullptr),
 #endif
-      animationState(false),
-      frameCounter(0),
+      m_animationState(false),
+      m_frameCounter(0),
       m_viewerMSAANbSampling(1)
 {
     setupUi(this);
@@ -453,7 +453,7 @@ RealGUI::RealGUI ( const char* viewername)
     informationOnPickCallBack = InformationOnPickCallBack(this);
 
     viewerMap.clear();
-    if (mCreateViewersOpt)
+    if (m_createViewersOpt)
         createViewer(viewername, true);
 
     currentTabChanged ( tabs->currentIndex() );
@@ -873,7 +873,7 @@ void RealGUI::emitIdle()
     FileMonitor::updates(0);
 
     IdleEvent hb;
-    Node* groot = mViewer->getScene();
+    Node* groot = m_viewer->getScene();
     if (groot)
     {
         groot->propagateEvent(core::execparams::defaultInstance(), &hb);
@@ -965,9 +965,9 @@ void RealGUI::fileOpenSimu ( std::string s )
         if ( DataRepository.findFile (filename) )
         {
             filename = DataRepository.getFile ( filename );
-            simulation_name = s;
-            std::string::size_type pointSimu = simulation_name.rfind(".simu");
-            simulation_name.resize(pointSimu);
+            simulationName = s;
+            std::string::size_type pointSimu = simulationName.rfind(".simu");
+            simulationName.resize(pointSimu);
             fileOpen(filename.c_str());
 
             dtEdit->setText(QString(dT.c_str()));
@@ -989,7 +989,7 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
 
         if (!temporaryFile)
             recentlyOpenedFilesManager.openFile(filename);
-        saveReloadFile=temporaryFile;
+        m_saveReloadFile=temporaryFile;
         setTitle ( filename );
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
         m_docbrowser->loadHtml( filename );
@@ -1141,7 +1141,7 @@ void RealGUI::fileReload()
     if (s.endsWith( ".simu") )
         fileOpenSimu(s.toStdString());
     else
-        fileOpen ( s.toStdString(),saveReloadFile );
+        fileOpen ( s.toStdString(),m_saveReloadFile );
 #endif
 }
 
@@ -1180,9 +1180,9 @@ void RealGUI::editGnuplotDirectory()
     QString s = getExistingDirectory ( this, filename.empty() ?nullptr:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
-        gnuplot_directory = s.toStdString();
-        if (gnuplot_directory.at(gnuplot_directory.size()-1) != '/')
-            gnuplot_directory+="/";
+        gnuplotDirectory = s.toStdString();
+        if (gnuplotDirectory.at(gnuplotDirectory.size()-1) != '/')
+            gnuplotDirectory+="/";
         setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     }
 }
@@ -1211,8 +1211,8 @@ void RealGUI::showAbout()
 
 void RealGUI::showPluginManager()
 {
-    pluginManager_dialog->updatePluginsListView();
-    pluginManager_dialog->show();
+    pluginManagerDialog->updatePluginsListView();
+    pluginManagerDialog->show();
 }
 
 //------------------------------------
@@ -1419,7 +1419,7 @@ void RealGUI::setRecordPath(const std::string&) {}
 
 void RealGUI::setGnuplotPath(const std::string &path)
 {
-    gnuplot_directory = path;
+    gnuplotDirectory = path;
 }
 
 //------------------------------------
@@ -1430,7 +1430,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
     {
         this->updateViewerList();
         // the viewer with the key viewerName is already created
-        if( mViewer != nullptr && !viewerMap.begin()->first.compare( std::string(_viewerName) ) )
+        if( m_viewer != nullptr && !viewerMap.begin()->first.compare( std::string(_viewerName) ) )
             return;
     }
 
@@ -1458,9 +1458,9 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
 void RealGUI::registerViewer(BaseViewer* _viewer)
 {
     // Change our viewer
-    BaseViewer* old = mViewer;
-    mViewer = _viewer;
-    if(mViewer != nullptr)
+    BaseViewer* old = m_viewer;
+    m_viewer = _viewer;
+    if(m_viewer != nullptr)
         delete old;
     else
         msg_error("RealGUI")<<"when registerViewer, the viewer is nullptr";
@@ -1470,35 +1470,35 @@ void RealGUI::registerViewer(BaseViewer* _viewer)
 
 BaseViewer* RealGUI::getViewer()
 {
-    return mViewer!=nullptr ? mViewer : nullptr;
+    return m_viewer!=nullptr ? m_viewer : nullptr;
 }
 
 //------------------------------------
 
 sofa::gui::qt::viewer::SofaViewer* RealGUI::getSofaViewer()
 {
-    return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer);
+    return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(m_viewer);
 }
 
 //------------------------------------
 
 bool RealGUI::isEmbeddedViewer()
 {
-    return mIsEmbeddedViewer;
+    return m_isEmbeddedViewer;
 }
 
 //------------------------------------
 
 void RealGUI::removeViewer()
 {
-    if(mViewer != nullptr)
+    if(m_viewer != nullptr)
     {
         if(isEmbeddedViewer())
         {
             getSofaViewer()->removeViewerTab(tabs);
         }
-        delete mViewer;
-        mViewer = nullptr;
+        delete m_viewer;
+        m_viewer = nullptr;
     }
 }
 
@@ -1540,14 +1540,14 @@ void RealGUI::dropEvent(QDropEvent* event)
 
 void RealGUI::init()
 {
-    frameCounter = 0;
-    _animationOBJ = false;
-    _animationOBJcounter = 0;
+    m_frameCounter = 0;
+    m_animateOBJ = false;
+    m_animationOBJcounter = 0;
     m_dumpState = false;
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
     m_exportGnuplot = false;
-    gnuplot_directory = "";
+    gnuplotDirectory = "";
     m_fullScreen = false;
 }
 
@@ -1589,25 +1589,25 @@ void RealGUI::eventNewStep()
     static const ctime_t timeTicks = CTime::getRefTicksPerSec();
     Node* root = currentSimulation();
 
-    if ( frameCounter==0 )
+    if ( m_frameCounter==0 )
     {
         ctime_t t = CTime::getRefTime();
         for ( int i=0; i<10; i++ )
             beginTime[i] = t;
     }
 
-    ++frameCounter;
-    if ( ( frameCounter%10 ) == 0 )
+    ++m_frameCounter;
+    if ( ( m_frameCounter%10 ) == 0 )
     {
         ctime_t curtime = CTime::getRefTime();
-        int i = ( ( frameCounter/10 ) %10 );
-        double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( frameCounter<100?frameCounter:100 );
+        int i = ( ( m_frameCounter/10 ) %10 );
+        double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( m_frameCounter<100?m_frameCounter:100 );
         showFPS(fps);
 
         beginTime[i] = curtime;
     }
 
-    if ( m_displayComputationTime && ( frameCounter%100 ) == 0 && root!=nullptr )
+    if ( m_displayComputationTime && ( m_frameCounter%100 ) == 0 && root!=nullptr )
     {
         /// @TODO: use AdvancedTimer in GUI to display time statistics
     }
@@ -1641,7 +1641,7 @@ void RealGUI::eventNewTime()
     {
         double time = root->getTime();
         char buf[100];
-        sprintf ( buf, "Time: %.3g,   Steps:  %i", time, frameCounter );
+        sprintf ( buf, "Time: %.3g,   Steps:  %i", time, m_frameCounter );
         timeLabel->setText ( buf );
     }
 #endif
@@ -1686,8 +1686,8 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     case Qt::Key_P:
         // --- export to a succession of OBJ to make a video
     {
-        _animationOBJ = !_animationOBJ;
-        _animationOBJcounter = 0;
+        m_animateOBJ = !m_animateOBJ;
+        m_animationOBJcounter = 0;
         break;
     }
     case Qt::Key_Space:
@@ -1834,10 +1834,10 @@ void RealGUI::parseOptions()
 
 void RealGUI::createPluginManager()
 {
-    pluginManager_dialog = new SofaPluginManager(this);
-    pluginManager_dialog->hide();
-    this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
-    this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
+    pluginManagerDialog = new SofaPluginManager(this);
+    pluginManagerDialog->hide();
+    this->connect( pluginManagerDialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
+    this->connect( pluginManagerDialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));
 }
 
 void RealGUI::createSofaWindowDataGraph()
@@ -1912,15 +1912,15 @@ void RealGUI::createSimulationGraph()
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect ( ExpandAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( expandAll() ) );
     connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( ExpandRootNodeOnly() ) );
-    connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
-    connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
-    connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
+    connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( newRootNode(sofa::simulation::Node* , const char*) ) );
+    connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( update() ) );
+    connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( lockAnimation(bool) ) );
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
     connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
-    connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+    connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( activateNode(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestSleeping(sofa::simulation::Node*, bool) ), this, SLOT( setSleepingNode(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
-    connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
+    connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( update() ) );
     connect(simulationGraph, SIGNAL( dataModified( QString ) ), this, SLOT( appendToDataLogFile(QString ) ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
@@ -1975,7 +1975,7 @@ void RealGUI::createAdvancedTimerProfilerWindow()
 #endif
 }
 
-void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
+void RealGUI::newRootNode(sofa::simulation::Node* root, const char* path)
 {
     std::string filename(this->windowFilePath().toStdString());
     std::string message="You are about to change the root node of the scene : "  + filename +
@@ -1997,7 +1997,7 @@ void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 
 //------------------------------------
 
-void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
+void RealGUI::activateNode(sofa::simulation::Node* node, bool activate)
 {
     QSofaListView* sofalistview = (QSofaListView*)sender();
 
@@ -2026,7 +2026,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     ActivationFunctor activator( activate, sofalistview->getListener() );
     std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
     nodeToChange.clear();
-    Update();
+    update();
 
     if ( sofalistview == simulationGraph && activate )
     {
@@ -2094,16 +2094,16 @@ void RealGUI::fileSaveAs(Node *node)
 
 //------------------------------------
 
-void RealGUI::LockAnimation(bool value)
+void RealGUI::lockAnimation(bool value)
 {
     if(value)
     {
-        animationState = startButton->isChecked();
+        m_animationState = startButton->isChecked();
         playpauseGUI(false);
     }
     else
     {
-        playpauseGUI(animationState);
+        playpauseGUI(m_animationState);
     }
 }
 
@@ -2189,14 +2189,14 @@ void RealGUI::step()
     if ( m_dumpState )
         simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
     if ( m_exportGnuplot )
-        exportGnuplot(root,gnuplot_directory);
+        exportGnuplot(root,gnuplotDirectory);
 
     getViewer()->wait();
 
     eventNewStep();
     eventNewTime();
 
-    if ( _animationOBJ )
+    if ( m_animateOBJ )
     {
 #ifdef CAPTURE_PERIOD
         static int counter = 0;
@@ -2204,7 +2204,7 @@ void RealGUI::step()
 #endif
         {
             exportOBJ ( currentSimulation(), false );
-            ++_animationOBJcounter;
+            ++m_animationOBJcounter;
         }
     }
 
@@ -2248,7 +2248,7 @@ void RealGUI::resetScene()
     emit ( newScene() );
     if (root)
     {
-        frameCounter=0;
+        m_frameCounter=0;
 
         simulation::getSimulation()->reset ( root );
         eventNewTime();
@@ -2323,7 +2323,7 @@ void RealGUI::showhideElements()
 
 //------------------------------------
 
-void RealGUI::Update()
+void RealGUI::update()
 {
     if(isEmbeddedViewer())
         getSofaViewer()->getQWidget()->update();
@@ -2392,7 +2392,7 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
     std::stringstream oss;
     oss.width ( 5 );
     oss.fill ( '0' );
-    oss << _animationOBJcounter;
+    oss << m_animationOBJcounter;
 
     ofilename << '_' << ( oss.str().c_str() );
     ofilename << ".obj";
@@ -2442,9 +2442,9 @@ void RealGUI::setExportGnuplot ( bool exp )
     if ( exp && root )
     {
         sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-        InitGnuplotVisitor v(params , gnuplot_directory);
+        InitGnuplotVisitor v(params , gnuplotDirectory);
         root->execute( v );
-        exportGnuplot(root,gnuplot_directory);
+        exportGnuplot(root,gnuplotDirectory);
     }
 }
 

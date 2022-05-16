@@ -19,17 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/LinearSolver.h>
+#pragma once
+
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa::core::behavior
 {
 
-LinearSolver::LinearSolver()
-    : frozen(false)
-{}
+/**
+ *  \brief Abstract base class (as type identifier) for linear system solvers without any API
+ *
+ */
+class SOFA_CORE_API BaseLinearSolver : virtual public objectmodel::BaseObject
+{
+public:
+    SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseLinearSolver)
 
-LinearSolver::~LinearSolver()
-{}
+    bool insertInNode( objectmodel::BaseNode* node ) override;
+    bool removeInNode( objectmodel::BaseNode* node ) override;
 
-} // namespace sofa::core::behavior
+}; // class BaseLinearSolver
 
+} //namespace sofa::core::behavior
