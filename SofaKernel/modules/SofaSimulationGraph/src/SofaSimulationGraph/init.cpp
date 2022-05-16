@@ -19,53 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationGraph/config.h>
-#include <SofaSimulationCommon/init.h>
-#include <sofa/helper/init.h>
+#include <SofaSimulationGraph/init.h>
 
-namespace sofa::simulation::graph
+namespace sofasimulationgraph
 {
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_SOFASIMULATIONGRAPH_API void init()
+void init()
 {
-    if (!s_initialized)
-    {
-        sofa::simulation::common::init();
-        s_initialized = true;
-    }
+    sofa::simulation::graph::init();
 }
 
-SOFA_SOFASIMULATIONGRAPH_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_SOFASIMULATIONGRAPH_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::simulation::common::cleanup();
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_SOFASIMULATIONGRAPH_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (simulation::graph::isInitialized() && !simulation::graph::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaSimulationGraph", "sofa::simulation::graph::cleanup()");
-    }
-} check;
-
-} // namespace sofa::simulation::graph
+} // namespace sofasimulationgraph

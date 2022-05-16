@@ -33,7 +33,7 @@
 namespace sofa::gl::component::rendering2d
 {
 
-using sofa::component::configurationsetting::BackgroundSetting ;
+using sofa::component::setting::BackgroundSetting ;
 using sofa::core::objectmodel::BaseObjectDescription ;
 using sofa::type::RGBAColor ;
 
