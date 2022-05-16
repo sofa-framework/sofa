@@ -92,7 +92,7 @@ public:
         createObject(m_root, "EdgeSetGeometryAlgorithms", { {"template","Rigid3d"} });
 
         createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"}, {"radius", str(radius)}, {"youngModulus", str(youngModulus)}, {"poissonRatio", str(poissonRatio)} });
-        createObject(m_root, "UniformMass", { {"name","mass"}, {"totalMass","1.0"}, {"handleTopologicalChanges", "1" } });
+        createObject(m_root, "UniformMass", { {"name","mass"}, {"totalMass","1.0"} });
         createObject(m_root, "FixedConstraint", { {"name","fix"}, {"indices","0"} });
 
         /// Init simulation
