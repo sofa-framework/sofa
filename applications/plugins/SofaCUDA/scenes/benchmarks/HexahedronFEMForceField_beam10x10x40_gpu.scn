@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9 0" dt="0.01">
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, DiagonalMass, FixedConstraint, IdentityMapping, MechanicalObject, TetrahedronFEMForceField, TetrahedronSetGeometryAlgorithms, TriangleSetGeometryAlgorithms] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, MeshMatrixMass, FixedConstraint, IdentityMapping, MechanicalObject, TetrahedronFEMForceField, TetrahedronSetGeometryAlgorithms, TriangleSetGeometryAlgorithms] -->
     <RequiredPlugin name="SofaImplicitOdeSolver"/> <!-- Needed to use components [EulerImplicitSolver] -->
     <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping, Tetra2TriangleTopologicalMapping] -->

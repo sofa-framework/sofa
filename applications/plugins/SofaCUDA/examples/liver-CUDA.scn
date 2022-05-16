@@ -24,7 +24,7 @@
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
         <TetrahedronSetGeometryAlgorithms template="CudaVec3f" name="GeomAlgo" />
         
-        <MeshMatrixMass lumping="1" template="CudaVec3f,float" name="DiagonalMass" massDensity="1" />
+        <MeshMatrixMass lumping="1" template="CudaVec3f,float" name="MeshMatrixMass" massDensity="1" />
         <TetrahedronFEMForceField template="CudaVec3f" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
                 
         <FixedConstraint name="FixedConstraint" template="CudaVec3f" topology="@topo" indices="3 39 64" />

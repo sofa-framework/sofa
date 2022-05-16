@@ -135,9 +135,10 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         });
 
     
-    createObject(nodeVolume, "DiagonalMass", {
+    createObject(nodeVolume, "MeshMatrixMass", {
         { "name", "mass" },
-        { "massDensity", "0.01" } 
+        { "massDensity", "0.01" },
+        { "lumping", "1" }
     });
     
     createObject(nodeVolume, "BoxROI", {

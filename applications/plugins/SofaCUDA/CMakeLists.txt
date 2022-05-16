@@ -46,8 +46,6 @@ set(HEADER_FILES
 
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.h
-    sofa/gpu/cuda/CudaDiagonalMass.inl
     sofa/gpu/cuda/CudaMeshMatrixMass.h
     sofa/gpu/cuda/CudaMeshMatrixMass.inl
     sofa/gpu/cuda/CudaUniformMass.h
@@ -187,7 +185,6 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSubsetMapping.cu
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.cu
     sofa/gpu/cuda/CudaMeshMatrixMass.cu
     sofa/gpu/cuda/CudaUniformMass.cu
 

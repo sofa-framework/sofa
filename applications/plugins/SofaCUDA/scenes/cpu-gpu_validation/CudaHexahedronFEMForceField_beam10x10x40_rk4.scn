@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9 0" dt="0.002">
     <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, DiagonalMass, FixedConstraint, HexahedronFEMForceField, IdentityMapping, MechanicalObject] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, MeshMatrixMass, FixedConstraint, HexahedronFEMForceField, IdentityMapping, MechanicalObject] -->
     <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="SofaGeneralExplicitOdeSolver"/> <!-- Needed to use components [RungeKutta4Solver] -->
     <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->

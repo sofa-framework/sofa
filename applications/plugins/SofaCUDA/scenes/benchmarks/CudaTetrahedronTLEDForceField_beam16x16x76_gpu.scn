@@ -6,7 +6,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaSimpleFem"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
     <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping, Tetra2TriangleTopologicalMapping] -->
-    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, DiagonalMass, FixedConstraint, IdentityMapping, MechanicalObject, PlaneForceField, TetrahedronFEMForceField, TetrahedronSetGeometryAlgorithms, TriangleSetGeometryAlgorithms] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, MeshMatrixMass, FixedConstraint, IdentityMapping, MechanicalObject, PlaneForceField, TetrahedronFEMForceField, TetrahedronSetGeometryAlgorithms, TriangleSetGeometryAlgorithms] -->
   
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
 	
