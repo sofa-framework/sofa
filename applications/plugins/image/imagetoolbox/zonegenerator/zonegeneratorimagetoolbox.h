@@ -266,9 +266,9 @@ public:
                             {
                                 double tmpx = sam.x()-samples.x();
                                 double tmpy = sam.y()-samples.y();
-                                double distance = tmpx * tmpx + tmpy * tmpy;
+                                double tmpdistance = tmpx * tmpx + tmpy * tmpy;
 
-                                if(radius2>distance)
+                                if (radius2 > tmpdistance)
                                 {
                                     iscorrect=false;
                                 }
@@ -312,8 +312,8 @@ public:
             {
                 //std::cout << "BG " << BG[i] << std::endl;
 
-                Vec2d position(BG[i].x()/size.x(),BG[i].y()/size.y());
-                Vec2i pospixel(position.x()*dimX,position.y()*dimY);
+                Vec2d tmpposition(BG[i].x()/size.x(),BG[i].y()/size.y());
+                Vec2i pospixel(tmpposition.x()*dimX, tmpposition.y()*dimY);
                 PointData p;
                 p.position = pospixel;
                 p.last.push_back(pospixel);
