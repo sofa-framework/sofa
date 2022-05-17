@@ -12,10 +12,6 @@ message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 
-# Create alias to support compatibility, starting from v21.06
-# This alias will be deleted in v21.12
-add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)
-
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework) # IDE folder
 
 sofa_create_package_with_targets(
