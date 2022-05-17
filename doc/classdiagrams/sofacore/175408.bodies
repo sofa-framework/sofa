@@ -1,5 +1,0 @@
-class Intersection
-!!!252720.cpp!!!	isSupported(in elem1 : CollisionElementIterator, in elem2 : CollisionElementIterator) : bool
-    bool swap;
-    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel(), swap);
-    return i != NULL;

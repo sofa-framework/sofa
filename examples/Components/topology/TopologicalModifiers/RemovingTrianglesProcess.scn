@@ -16,11 +16,7 @@
     <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
-    <DefaultPipeline verbose="0" />
-    <BruteForceBroadPhase/>
-    <BVHNarrowPhase/>
-    <DefaultContactManager response="PenalityContactForceField" />
-    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5"/>

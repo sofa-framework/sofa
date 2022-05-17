@@ -76,7 +76,7 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/cmake)
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
 # Sofa.Config sets the environment (options, compiler flags, global variables)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
+add_subdirectory(Sofa/framework/Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
 
 ## Custom Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -118,22 +118,6 @@ if(UNIX)
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
-
-## Boost (1.54.0 or higher) is now mandatory.
-set(BOOST_MIN_VERSION "1.54.0")
-set(Boost_NO_BOOST_CMAKE TRUE)
-sofa_find_package(Boost ${BOOST_MIN_VERSION} QUIET)
-if(NOT Boost_FOUND)
-    if(WIN32)
-        message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.\n"
-            "Note that Boost autodetection on Windows was removed.\n"
-            "Please follow CMake documentation to find Boost on your system.\n"
-            "Hint: set BOOST_ROOT to your Boost location."
-            )
-    else()
-        message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.")
-    endif()
-endif()
 
 ### Windows config
 if(MSVC)
@@ -178,26 +162,12 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 ### Extlibs
 add_subdirectory(extlibs)
 
-### Main Sofa subdirectories
-option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders)." ON)
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    message("Using legacy headers is enabled.")
-    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
+# SOFA-NG
+add_subdirectory(Sofa)
 
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
-    add_subdirectory(Component/Compat)
-endif()
-
+# Deprecated (hollow) modules
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
-endif()
-
-# SOFA-NG Components
-add_subdirectory(Component)
-
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 
 # SOFA-NG Plugins
@@ -205,6 +175,8 @@ option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the 
 if(SOFA_WITH_OPENGL)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
 endif()
+
+add_subdirectory(GUI)
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that

@@ -1,5 +1,0 @@
-class TCollisionElementIterator
-!!!137008.cpp!!!	getInternalChildren() : std::pair<CollisionElementIterator,CollisionElementIterator>
-    return model->getInternalChildren(index);
-!!!137136.cpp!!!	getExternalChildren() : std::pair<CollisionElementIterator,CollisionElementIterator>
-    return model->getExternalChildren(index);
