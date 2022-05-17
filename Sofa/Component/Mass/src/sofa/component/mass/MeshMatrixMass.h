@@ -247,6 +247,32 @@ public:
         }
     }
 
+
+
+
+    /// Construction method called by ObjectFactory
+    template<class T>
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        msg_deprecated("DiagonalMass") << "DiagonalMass has been deprecated, please use a MeshMatrixMass with the options lumped=\"1\" instead." << msgendl
+                                       << "Please update your scene, using MeshMatrixMass will keep the same behavior.";
+
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+
+        if (context)
+        {
+            context->addObject(obj);
+        }
+
+        arg->setAttribute("type","MeshMatrixMass");
+        arg->setAttribute("lumping","true");
+        obj->parse(arg);
+
+        return obj;
+    }
+
+
+
 protected:
     /** Method to initialize @sa MassType when a new Point is created to compute mass coefficient matrix.
     * Will be set as creation callback in the PointData @sa d_vertexMass
@@ -410,6 +436,8 @@ protected:
     /// Pointer to the state owning geometrical positions, associated with the topology
     typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr m_geometryState;
 };
+
+template< class DataTypes, class  GeometricalTypes> using DiagonalMass SOFA_ATTRIBUTE_DEPRECATED("v22.12 (PR#XXXX)", "v23.06", "DiagonalMass is deprecated, it can simply be replaced with MeshMatrixMass") = MeshMatrixMass<DataTypes, GeometricalTypes>;
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
