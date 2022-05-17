@@ -19,17 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscExtra/MeshTetraStuffing.h>
+#include <sofa/component/engine/generate/MeshTetraStuffing.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/TriangleOctree.h>
 
-#include <iostream>
 #include <algorithm>
 
 #define USE_OCTREE
 
-namespace sofa::component::misc
+namespace sofa::component::engine::generate
 {
 
 using namespace sofa::defaulttype;
@@ -55,6 +54,17 @@ MeshTetraStuffing::MeshTetraStuffing()
 {
     addAlias(&outputTetrahedra,"outputTetras");
     addAlias(&bSplitTetrahedra,"splitTetras");
+
+    addInput(&inputPoints);
+    addInput(&inputTriangles);
+    addInput(&inputQuads);
+    addInput(&alphaLong);
+    addInput(&alphaShort);
+    addInput(&bSnapPoints);
+    addInput(&bSplitTetrahedra);
+
+    //addOutput(&outputPoints);
+    //addOutput(&outputTetrahedra);
 }
 
 MeshTetraStuffing::~MeshTetraStuffing()
@@ -62,6 +72,13 @@ MeshTetraStuffing::~MeshTetraStuffing()
 }
 
 void MeshTetraStuffing::init()
+{
+    //setDirtyValue();
+
+    doUpdate();
+}
+
+void MeshTetraStuffing::doUpdate()
 {
     const SeqPoints& inP = inputPoints.getValue();
     SeqTriangles inT = inputTriangles.getValue();
@@ -100,7 +117,8 @@ void MeshTetraStuffing::init()
             inTN[t] = (inP[inT[t][1]]-inP[inT[t][0]]).cross(inP[inT[t][2]]-inP[inT[t][0]]);
         }
     }
-    type::fixed_array<Point,2>& bb = *vbbox.beginEdit();
+
+    type::fixed_array<Point, 2>& bb = *vbbox.beginEdit();
     if (bb[0][0] >= bb[1][0])
     {
         bb[0] = inputBBox[0] - (inputBBox[1]-inputBBox[0])*0.01;
@@ -140,8 +158,8 @@ void MeshTetraStuffing::init()
 
     msg_info() << "Grid <"<<c0[0]<<","<<c0[1]<<","<<c0[2]<<">-<"<<c1[0]<<","<<c1[1]<<","<<c1[2]<<">";
 
-    SeqPoints& outP = *outputPoints.beginEdit();
-    SeqTetrahedra& outT = *outputTetrahedra.beginEdit();
+    auto outP = sofa::helper::getWriteOnlyAccessor(outputPoints);
+    auto outT = sofa::helper::getWriteOnlyAccessor(outputTetrahedra);
 
     outP.resize(gsize[0]*gsize[1]*gsize[2] + hsize[0]*hsize[1]*hsize[2]);
 
@@ -475,7 +493,7 @@ void MeshTetraStuffing::init()
                     {
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
-                        addTetra(outT, outP, p,p2,p4,p3, __LINE__);
+                        addTetra(outT.wref(), outP.wref(), p, p2, p4, p3, __LINE__);
                     }
                 }
                 if (y > 0)
@@ -487,7 +505,7 @@ void MeshTetraStuffing::init()
                     {
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
-                        addTetra(outT, outP, p,p2,p4,p3, __LINE__);
+                        addTetra(outT.wref(), outP.wref(), p,p2,p4,p3, __LINE__);
                     }
                 }
                 if (z > 0)
@@ -499,7 +517,7 @@ void MeshTetraStuffing::init()
                     {
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
-                        addTetra(outT, outP, p,p2,p4,p3, __LINE__);
+                        addTetra(outT.wref(), outP.wref(), p,p2,p4,p3, __LINE__);
                     }
                 }
             }
@@ -564,9 +582,6 @@ void MeshTetraStuffing::init()
     }
 
     msg_info() << "Final mesh: " << outP.size() << " points, "<<outT.size() << " tetrahedra.";
-
-    outputPoints.endEdit();
-    outputTetrahedra.endEdit();
 }
 
 void MeshTetraStuffing::addFinalTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip, int line)
@@ -927,5 +942,4 @@ void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawPoints(verticesSnaps, 4, sofa::type::RGBAColor::blue());
 }
 
-} //  sofa::component::misc
-
+} // namespace sofa::component::engine::generate
