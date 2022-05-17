@@ -21,36 +21,37 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
-#include <sofa/core/ExecParams.h>
-#include <functional>
-#include <map>
+#include <SceneChecking/config.h>
 
-#include <sofa/simulation/Visitor.h>
+#include <iostream>
+#include <string>
+#include <map>
+#include <memory>
+
+namespace sofa::simulation
+{
+    class Node;
+} // namespace sofa::simulation
 
 namespace sofa::simulation::_scenechecking_
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckerVisitor : public Visitor
+class SOFA_SCENECHECKING_API SceneCheck
 {
 public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance()) ;
-    ~SceneCheckerVisitor() override;
+    virtual ~SceneCheck() {}
 
-    void validate(Node* node) ;
-    Result processNodeTopDown(Node* node) override ;
-
-    void addCheck(SceneCheck::SPtr check) ;
-    void removeCheck(SceneCheck::SPtr check) ;
-
-private:
-    std::vector<SceneCheck::SPtr> m_checkset ;
+    typedef std::shared_ptr<SceneCheck> SPtr;
+    virtual const std::string getName() = 0;
+    virtual const std::string getDesc() = 0;
+    virtual void doInit(Node* node) { SOFA_UNUSED(node); }
+    virtual void doCheckOn(Node* node) = 0;
+    virtual void doPrintSummary() {}
 };
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using _scenechecking_::SceneCheckerVisitor;
+    using _scenechecking_::SceneCheck;
 } // namespace sofa::simulation::scenechecking

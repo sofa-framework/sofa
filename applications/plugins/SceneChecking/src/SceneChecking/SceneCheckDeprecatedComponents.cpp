@@ -19,39 +19,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SceneChecking/SceneCheckDeprecatedComponents.h>
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
 
-#include <map>
-#include <vector>
+#include <sofa/helper/ComponentChange.h>
+using sofa::helper::lifecycle::deprecatedComponents;
 
 namespace sofa::simulation::_scenechecking_
 {
-    
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckUsingAlias : public SceneCheck
+
+const std::string SceneCheckDeprecatedComponents::getName()
 {
-public:
-    SceneCheckUsingAlias();
-    virtual ~SceneCheckUsingAlias();
+    return "SceneCheckDeprecatedComponents";
+}
 
-    typedef std::shared_ptr<SceneCheckUsingAlias> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(Node* node) override { SOFA_UNUSED(node); }
-    void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
-    void doPrintSummary() override;
-
-private:
-    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
-};
-
-} // namespace sofa::simulation::_scenechecking_
-
-namespace sofa::simulation::scenechecking
+const std::string SceneCheckDeprecatedComponents::getDesc()
 {
-    using _scenechecking_::SceneCheckUsingAlias;
-} // namespace sofa::simulation::scenechecking
+    return "Check there is not deprecated components in the scenegraph";
+}
 
+void SceneCheckDeprecatedComponents::doInit(Node* node)
+{
+    SOFA_UNUSED(node);
+}
+
+void SceneCheckDeprecatedComponents::doCheckOn(Node* node)
+{
+    if (node == nullptr)
+        return;
+
+    for (auto& object : node->object )
+    {
+        if (core::Base* o = object.get())
+        {
+            if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
+            {
+                msg_deprecated(o) << this->getName() << ": "
+                    << deprecatedComponents.at(o->getClassName()).getMessage();
+            }
+        }
+    }
+}
+
+void SceneCheckDeprecatedComponents::doPrintSummary()
+{}
+
+std::shared_ptr<SceneCheckDeprecatedComponents> SceneCheckDeprecatedComponents::newSPtr()
+{
+    return std::shared_ptr<SceneCheckDeprecatedComponents>(new SceneCheckDeprecatedComponents());
+}
+
+} //namespace sofa::simulation::_scenechecking_

@@ -21,40 +21,42 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
+#include <SceneChecking/config.h>
 
-#include <map>
-#include <vector>
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/simulation/Visitor.h>
 
-namespace sofa::simulation
-{
-    class Node;
-} //namespace sofa::simulation
+#include <SceneChecking/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
 
 
 namespace sofa::simulation::_scenechecking_
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckMissingRequiredPlugin : public SceneCheck
+/// to be able to react when a scene is loaded
+class SOFA_SCENECHECKING_API SceneCheckerListener : public SceneLoader::Listener
 {
 public:
-    typedef std::shared_ptr<SceneCheckMissingRequiredPlugin> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
-    void doPrintSummary() override;
+    static SceneCheckerListener* getInstance();
+    virtual ~SceneCheckerListener() {}
 
-private:    
-    std::map<std::string, bool > m_loadedPlugins;
-    std::map<std::string, std::vector<std::string> > m_requiredPlugins;
+    virtual void rightAfterLoadingScene(NodeSPtr node) override;
+
+    // Do nothing on reload
+    virtual void rightBeforeReloadingScene() override {}
+    virtual void rightAfterReloadingScene(NodeSPtr node) override
+    {
+        SOFA_UNUSED(node);
+    }
+
+private:
+    SceneCheckerListener();
+    SceneCheckerVisitor m_sceneChecker;
 };
 
-} // namespace _scenechecking_
+} // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using _scenechecking_::SceneCheckMissingRequiredPlugin;
+using _scenechecking_::SceneCheckerListener;
 } // namespace sofa::simulation::scenechecking

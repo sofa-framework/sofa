@@ -25,14 +25,14 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <SofaBaseUtils/RequiredPlugin.h>
+#include <sofa/simulation/RequiredPlugin.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::simulation::_scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
-using sofa::component::misc::RequiredPlugin;
+using sofa::simulation::RequiredPlugin;
 using sofa::core::ObjectFactory;
 using sofa::helper::system::PluginManager;
 

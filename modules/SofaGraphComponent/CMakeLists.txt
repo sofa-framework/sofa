@@ -17,33 +17,16 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/Gravity.h
     ${SOFAGRAPHCOMPONENT_SRC}/InteractingBehaviorModel.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheck.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckMissingRequiredPlugin.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckCollisionResponse.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckAPIChange.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckUsingAlias.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerVisitor.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerListener.h
     )
 list(APPEND SOURCE_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/Gravity.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckMissingRequiredPlugin.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckCollisionResponse.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckAPIChange.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckUsingAlias.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerVisitor.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerListener.cpp
     )
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Simulation.Core SofaBaseUtils SofaBaseCollision)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SceneUtility, Sofa.Component.Setting and Sofa.GUI.Component instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SceneUtility, Sofa.Component.Setting, Sofa.GUI.Component and the plugin SceneCheck instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.SceneUtility REQUIRED)

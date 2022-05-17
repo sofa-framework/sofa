@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
+#include <SceneChecking/config.h>
+#include <SceneChecking/SceneCheck.h>
 
 #include <map>
 #include <sstream>
@@ -30,7 +30,7 @@
 namespace sofa::simulation::_scenechecking_
 {
     
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckCollisionResponse : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckCollisionResponse : public SceneCheck
 {
 public:
     virtual ~SceneCheckCollisionResponse() {}

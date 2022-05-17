@@ -19,59 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include "SceneCheckerListener.h"
 
-#include <SofaGraphComponent/config.h>
-
-#include <SofaGraphComponent/SceneCheck.h>
-
-#include <sofa/version.h>
-#include <string>
-#include <map>
-#include <vector>
-#include <functional>
-
-namespace sofa::simulation
-{
-    class Node;
-} // namespace sofa::simulation
-
-namespace sofa::core::objectmodel
-{
-    class Base;
-} // namespace sofa::core::objectmodel
+#include <sofa/simulation/Node.h>
+#include <SceneChecking/SceneCheckMissingRequiredPlugin.h>
+#include <SceneChecking/SceneCheckDuplicatedName.h>
+#include <SceneChecking/SceneCheckUsingAlias.h>
+#include <SceneChecking/SceneCheckDeprecatedComponents.h>
+#include <SceneChecking/SceneCheckCollisionResponse.h>
 
 namespace sofa::simulation::_scenechecking_
 {
 
-typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
-
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckAPIChange : public SceneCheck
+SceneCheckerListener::SceneCheckerListener()
 {
-public:
-    SceneCheckAPIChange();
-    virtual ~SceneCheckAPIChange();
+    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckDeprecatedComponents::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckCollisionResponse::newSPtr());
+}
 
-    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
-    void doPrintSummary() override;
-
-    void installDefaultChangeSets();
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
-private:
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"};
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
-};
-
-} // namespace sofa::simulation::_scenechecking_
-
-namespace sofa::simulation::scenechecking
+SceneCheckerListener* SceneCheckerListener::getInstance()
 {
-    using _scenechecking_::SceneCheckAPIChange;
-} // namespace sofa::component::scenechecking
+    static SceneCheckerListener sceneLoaderListener;
+    return &sceneLoaderListener;
+}
+
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
+{
+    if(node.get())
+        m_sceneChecker.validate(node.get());
+}
+
+
+} // nnamespace sofa::simulation::_scenechecking_

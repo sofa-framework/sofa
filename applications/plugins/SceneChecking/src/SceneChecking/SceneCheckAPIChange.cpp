@@ -30,8 +30,8 @@ using sofa::core::objectmodel::Base;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-#include <SofaGraphComponent/APIVersion.h>
-using sofa::component::APIVersion;
+#include <sofa/component/SceneUtility/APIVersion.h>
+using sofa::component::sceneutility::APIVersion;
 
 namespace sofa::simulation::_scenechecking_
 {

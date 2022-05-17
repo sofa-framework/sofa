@@ -21,23 +21,40 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
+#include <SceneChecking/config.h>
+#include <SceneChecking/SceneCheck.h>
+
+#include <map>
+#include <vector>
+
+namespace sofa::simulation
+{
+    class Node;
+} //namespace sofa::simulation
+
 
 namespace sofa::simulation::_scenechecking_
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckDeprecatedComponents : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckMissingRequiredPlugin : public SceneCheck
 {
 public:
-    virtual ~SceneCheckDeprecatedComponents() {}
-    static std::shared_ptr<SceneCheckDeprecatedComponents> newSPtr();
-
-    const std::string getName() override;
-    const std::string getDesc() override;
+    typedef std::shared_ptr<SceneCheckMissingRequiredPlugin> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
     void doInit(Node* node) override;
     void doCheckOn(Node* node) override;
     void doPrintSummary() override;
+
+private:    
+    std::map<std::string, bool > m_loadedPlugins;
+    std::map<std::string, std::vector<std::string> > m_requiredPlugins;
 };
 
-} //namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_
+
+namespace sofa::simulation::scenechecking
+{
+    using _scenechecking_::SceneCheckMissingRequiredPlugin;
+} // namespace sofa::simulation::scenechecking

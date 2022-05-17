@@ -19,37 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SceneChecking/init.h>
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
-
-#include <map>
-#include <sstream>
-
-namespace sofa::simulation::_scenechecking_
+namespace scenechecking
 {
     
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckDuplicatedName : public SceneCheck
-{
-public:
-    virtual ~SceneCheckDuplicatedName() {}
-    typedef std::shared_ptr<SceneCheckDuplicatedName> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckDuplicatedName()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
-    void doPrintSummary() override;
-
-private:
-    bool m_hasDuplicates;
-    std::stringstream m_duplicatedMsg;
-};
-
-} // namespace sofa::simulation::_scenechecking_
-
-namespace sofa::simulation::scenechecking
-{
-    using _scenechecking_::SceneCheckDuplicatedName;
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace scenechecking

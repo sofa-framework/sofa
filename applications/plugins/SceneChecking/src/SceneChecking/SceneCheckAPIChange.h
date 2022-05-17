@@ -21,42 +21,57 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <SceneChecking/config.h>
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-#include <sofa/simulation/Visitor.h>
+#include <SceneChecking/SceneCheck.h>
 
-#include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
+#include <sofa/version.h>
+#include <string>
+#include <map>
+#include <vector>
+#include <functional>
 
+namespace sofa::simulation
+{
+    class Node;
+} // namespace sofa::simulation
+
+namespace sofa::core::objectmodel
+{
+    class Base;
+} // namespace sofa::core::objectmodel
 
 namespace sofa::simulation::_scenechecking_
 {
 
-/// to be able to react when a scene is loaded
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckerListener : public SceneLoader::Listener
+typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
+
+class SOFA_SCENECHECKING_API SceneCheckAPIChange : public SceneCheck
 {
 public:
-    static SceneCheckerListener* getInstance();
-    virtual ~SceneCheckerListener() {}
+    SceneCheckAPIChange();
+    virtual ~SceneCheckAPIChange();
 
-    virtual void rightAfterLoadingScene(NodeSPtr node) override;
+    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(Node* node) override;
+    void doCheckOn(Node* node) override;
+    void doPrintSummary() override;
 
-    // Do nothing on reload
-    virtual void rightBeforeReloadingScene() override {}
-    virtual void rightAfterReloadingScene(NodeSPtr node) override
-    {
-        SOFA_UNUSED(node);
-    }
-
+    void installDefaultChangeSets();
+    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
 private:
-    SceneCheckerListener();
-    SceneCheckerVisitor m_sceneChecker;
+    std::string m_currentApiLevel;
+    std::string m_selectedApiLevel {"17.06"};
+
+    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
 };
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-using _scenechecking_::SceneCheckerListener;
-} // namespace sofa::simulation::scenechecking
+    using _scenechecking_::SceneCheckAPIChange;
+} // namespace sofa::component::scenechecking
