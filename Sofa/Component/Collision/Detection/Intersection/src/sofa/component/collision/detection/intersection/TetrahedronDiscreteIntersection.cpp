@@ -19,28 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscCollision/TetrahedronDiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/TetrahedronDiscreteIntersection.h>
 
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
-#include <iostream>
-#include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<DiscreteIntersection, TetrahedronDiscreteIntersection> TetrahedronDiscreteIntersectors("Ray");
 
@@ -175,9 +167,4 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
     return 1;
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision::detection::intersection

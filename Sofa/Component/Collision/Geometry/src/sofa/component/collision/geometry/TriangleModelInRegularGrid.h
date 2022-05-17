@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
-#include <SofaMiscCollision/config.h>
+#pragma once
+#include <sofa/component/collision/geometry/config.h>
 
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::geometry
 {
 
 
-class TriangleModelInRegularGrid : public TriangleCollisionModel<sofa::defaulttype::Vec3Types>
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleModelInRegularGrid : public TriangleCollisionModel<sofa::defaulttype::Vec3Types>
 {
 public:
     SOFA_CLASS(TriangleModelInRegularGrid, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
@@ -53,10 +46,4 @@ protected:
     ~TriangleModelInRegularGrid();
 };
 
-}
-
-}
-
-}
-
-#endif
+}  // namespace sofa::component::collision::geometry

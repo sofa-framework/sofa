@@ -19,49 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TETRAHEDRONDISCRETEINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_TETRAHEDRONDISCRETEINTERSECTION_H
-#include <SofaMiscCollision/config.h>
+#pragma once
 
-#include <sofa/core/collision/Intersection.h>
+#include <sofa/component/collision/detection/intersection/TetrahedronDiscreteIntersection.h>
 
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaMiscCollision/TetrahedronModel.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/TetrahedronDiscreteIntersection.h")
 
-namespace sofa
+namespace sofa::component::collision
 {
+    using TetrahedronDiscreteIntersection = sofa::component::collision::detection::intersection::TetrahedronDiscreteIntersection;
 
-namespace component
-{
-
-namespace collision
-{
-class SOFA_MISC_COLLISION_API TetrahedronDiscreteIntersection : public core::collision::BaseIntersector
-{
-
-    typedef DiscreteIntersection::OutputVector OutputVector;
-
-public:
-    TetrahedronDiscreteIntersection(DiscreteIntersection* object);
-
-    bool testIntersection(Tetrahedron&, Point&);
-    bool testIntersection(Ray&, Tetrahedron&);
-
-    int computeIntersection(Tetrahedron&, Point&, OutputVector*);
-    int computeIntersection(Ray&, Tetrahedron&, OutputVector*);
-
-protected:
-
-    DiscreteIntersection* intersection;
-
-};
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

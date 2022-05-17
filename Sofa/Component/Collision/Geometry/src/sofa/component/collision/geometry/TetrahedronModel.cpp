@@ -20,24 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_TETRAHEDRONCOLLISIONMODEL_CPP
-#include <SofaMiscCollision/TetrahedronModel.h>
+#include <sofa/component/collision/geometry/TetrahedronModel.h>
+
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
-#include <vector>
-#include <iostream>
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::geometry
 {
 
 using namespace sofa::type;
@@ -289,12 +280,4 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
     }
 }
 
-ContactMapperCreator< response::mapper::ContactMapper<TetrahedronCollisionModel> > TetrahedronContactMapperClass("PenalityContactForceField",true);
-
-template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision::geometry

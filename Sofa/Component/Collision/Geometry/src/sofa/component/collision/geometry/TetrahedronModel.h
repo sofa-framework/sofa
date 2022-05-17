@@ -19,19 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TETRAHEDRONCOLLISIONMODEL_H
-#define SOFA_COMPONENT_COLLISION_TETRAHEDRONCOLLISIONMODEL_H
-#include <SofaMiscCollision/config.h>
+#pragma once
+#include <sofa/component/collision/geometry/config.h>
 
-#include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <vector>
 #include <map>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::geometry
 {
 
 class TetrahedronCollisionModel;
@@ -70,7 +69,7 @@ public:
 
 };
 
-class SOFA_MISC_COLLISION_API TetrahedronCollisionModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TetrahedronCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(TetrahedronCollisionModel, core::CollisionModel);
@@ -162,32 +161,4 @@ inline type::Vec3 Tetrahedron::getDBary(const type::Vec3& v) const { return mode
 inline type::Vec3 Tetrahedron::getCoord(const type::Vec3& b) const { return model->elems[index].bary2coord*b + model->elems[index].coord0; }
 inline type::Vec3 Tetrahedron::getDCoord(const type::Vec3& b) const { return model->elems[index].bary2coord*b; }
 
-/// Mapper for TetrahedronCollisionModel
-template<class DataTypes>
-class response::mapper::ContactMapper<TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<TetrahedronCollisionModel, DataTypes>
-{
-public:
-    using Index = sofa::Index;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    Index addPoint(const Coord& P, Index index, Real&)
-    {
-        Tetrahedron t(this->model, index);
-        auto b = t.getBary(P);
-        return this->mapper->addPointInTetra(index, b.ptr());
-    }
-};
-
-#if  !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONCOLLISIONMODEL_CPP)
-extern template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
-
-#  ifdef _MSC_VER
-// Manual declaration of non-specialized members, to avoid warnings from MSVC.
-extern template SOFA_MISC_COLLISION_API void response::mapper::BarycentricContactMapper<TetrahedronCollisionModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MISC_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* response::mapper::BarycentricContactMapper<TetrahedronCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
-#  endif
-#endif
-
-} // namespace sofa::component::collision
-
-#endif
+} // namespace sofa::component::collision::geometry

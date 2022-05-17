@@ -19,19 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscCollision/config.h>
-#include <SofaConstraint/FrictionContact.inl>
-#include <SofaMiscCollision/TetrahedronModel.h>
+#include <sofa/component/collision/response/contact/config.h>
+#include <sofa/component/collision/response/contact/FrictionContact.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/TetrahedronBarycentricContactMapper.h>
+#include <sofa/component/collision/geometry/TetrahedronModel.h>
 
 using namespace sofa::core::collision;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::response::contact
 {
 
 using namespace sofa::component::collision::geometry;
@@ -48,14 +44,10 @@ Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, LineCollisi
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTrianglePenalityFrictionContactClass("FrictionContactConstraint",true);
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronPenalityFrictionContactClass("FrictionContactConstraint",true);
 
-template class SOFA_MISC_COLLISION_API response::contact::FrictionContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API response::contact::FrictionContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API response::contact::FrictionContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API response::contact::FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API response::contact::FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::FrictionContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::FrictionContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::FrictionContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API response::contact::FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel>;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+}  // namespace sofa::component::collision::response::contact
