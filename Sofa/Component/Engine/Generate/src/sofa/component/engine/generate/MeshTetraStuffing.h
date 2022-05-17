@@ -20,19 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMiscExtra/config.h>
+#include <sofa/component/engine/generate/config.h>
 
 #include <string>
 #include <sofa/type/fixed_array.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/helper/map.h>
 
-namespace sofa::component::misc
+namespace sofa::component::engine::generate
 {
 
 /**
@@ -40,7 +40,7 @@ namespace sofa::component::misc
  *
  */
 
-class SOFA_SOFAMISCEXTRA_API MeshTetraStuffing : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_ENGINE_GENERATE_API MeshTetraStuffing : public core::DataEngine
 {
 public:
     SOFA_CLASS(MeshTetraStuffing,core::objectmodel::BaseObject);
@@ -65,6 +65,8 @@ public:
     void init() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
+
+    void doUpdate() override;
 
     Data< type::fixed_array<Point,2> > vbbox; ///< BBox to restrict the volume to
     Data< Real > size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
@@ -114,4 +116,4 @@ public:
 
 };
 
-} //  sofa::component::misc
+} // namespace sofa::component::engine::generate
