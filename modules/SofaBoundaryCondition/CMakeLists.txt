@@ -15,7 +15,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseLinearSolver)
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. You may use Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
