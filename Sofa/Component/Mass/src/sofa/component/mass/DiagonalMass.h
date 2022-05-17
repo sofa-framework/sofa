@@ -40,7 +40,7 @@
 
 #define SOFA_ATTRIBUTE_DEPRECATED__DIAGONALMASS() \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v22.12 (PR#XXXX)", "v23.06 (PR#2137)", "DiagonalMass is deprecated, it can simply be replaced with MeshMatrixMass..")
+        "v22.12", "v23.06", "DiagonalMass is deprecated, it can simply be replaced with MeshMatrixMass (PR#XXXX)")
 
 
 namespace sofa::component::mass
@@ -86,12 +86,13 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType,GeometricalTypes>::VecMass VecMass;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType,GeometricalTypes>::MassVector MassVector;
 
-    void init() override;
-
     /// Construction method called by ObjectFactory
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
+//        msg_deprecated("DiagonalMass") << "DiagonalMass has been deprecated, please use a MeshMatrixMass with the options lumped=\"1\" instead." << msgendl
+//                                       << "Please update your scene, using MeshMatrixMass will keep the same behavior.";
+
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
         using TMeshMatrixMass = typename sofa::component::mass::MeshMatrixMass<DataTypes,GeometricalTypes> ;

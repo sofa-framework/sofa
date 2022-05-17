@@ -37,12 +37,6 @@ using sofa::core::objectmodel::ComponentState ;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::init()
-{
-    msg_deprecated() << "DiagonalMass has been deprecated." << msgendl
-                        "Instead, please use a MeshMatrixMass with the options lumped=\"1\" which will keep the same behavior as DiagonalMass";
-}
 
 // Register in the Factory
 int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
