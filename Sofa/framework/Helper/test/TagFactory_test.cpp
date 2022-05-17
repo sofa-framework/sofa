@@ -19,66 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/TagFactory.h>
-#include <sofa/type/vector.h>
-#include <mutex>
-#include <algorithm>
 
-namespace sofa::helper
+using sofa::helper::TagFactory;
+
+TEST(TagFactory_test, initialization)
 {
+    EXPECT_EQ(TagFactory::getName(0), "0");
+    EXPECT_EQ(TagFactory::getName(1), "Visual");
 
-class TagList
-{
-protected:
-    /// the list of the tag names. the Ids are the indices in the vector
-    type::vector<std::string> m_tagsList;
-
-public:
-    TagList() = default;
-    explicit TagList(type::vector<std::string> tagsList) : m_tagsList(std::move(tagsList)) {}
-
-    std::size_t getID(const std::string& name);
-    std::string getName(std::size_t id);
-};
-
-std::size_t TagList::getID(const std::string& name)
-{
-    if (name.empty()) return 0;
-
-    const auto it = std::find(m_tagsList.begin(), m_tagsList.end(), name);
-    if (it != m_tagsList.end())
-    {
-        return std::distance(m_tagsList.begin(), it);
-    }
-
-    m_tagsList.push_back(name);
-    return m_tagsList.size() - 1;
+    // id 14 is not yet in the tag list: an empty string is returned
+    EXPECT_EQ(TagFactory::getName(14), "");
 }
 
-std::string TagList::getName(const std::size_t id)
+TEST(TagFactory_test, addTag)
 {
-    if( id < m_tagsList.size() )
-        return m_tagsList[id];
-    return "";
+    // Get id of new Tags. Will be added to the list
+    EXPECT_EQ(TagFactory::getID("1"), 2);
+    EXPECT_EQ(TagFactory::getID("2"), 3);
+    EXPECT_EQ(TagFactory::getID("4"), 4);
+    EXPECT_EQ(TagFactory::getID("2"), 3);
+
+    EXPECT_EQ(TagFactory::getID("foo"), 5);
+    EXPECT_EQ(TagFactory::getID("bar"), 6);
+    EXPECT_EQ(TagFactory::getID("foo"), 5);
+
+    // Get id of existing Tags
+    EXPECT_EQ(TagFactory::getID("0"), 0);
+    EXPECT_EQ(TagFactory::getID("Visual"), 1);
 }
-
-// Mutex used to restrict the usage of the tag list in a multi-threaded context. Usable only in this translation unit
-std::mutex kMutex;
-
-// Global tag list. Usable only in this translation unit
-TagList kTagList { {"0", "Visual"} };
-
-std::size_t TagFactory::getID(const std::string& name)
-{
-    std::lock_guard lock(kMutex);
-    return kTagList.getID(name);
-}
-
-std::string TagFactory::getName(const std::size_t id)
-{
-    std::lock_guard lock(kMutex);
-    return kTagList.getName(id);
-}
-
-} // namespace sofa::helper
-
