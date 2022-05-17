@@ -19,36 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscCollision/TriangleModelInRegularGrid.h>
+#include <sofa/component/collision/geometry/TriangleModelInRegularGrid.h>
+
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/TriangleModel.inl>
 #include <sofa/core/topology/TopologyData.inl>
-#include <sofa/simulation/Node.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
-#include <vector>
-#include <iostream>
-
-#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/TopologicalMapping.h>
-
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::geometry
 {
 
 using namespace sofa::type;
 using namespace sofa::core::topology;
 using namespace sofa::defaulttype;
-using type::vector;
 
 int TriangleModelInRegularGridClass = core::RegisterObject ( "collision model using a triangular mesh in a regular grid, as described in BaseMeshTopology" )
         .add< TriangleModelInRegularGrid >()
@@ -156,8 +144,4 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
     }
 }
 
-}
-
-}
-
-}
+}  // namespace sofa::component::collision::geometry

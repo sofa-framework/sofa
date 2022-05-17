@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscCollision/BarycentricStickContact.inl>
-#include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaMeshCollision/IdentityContactMapper.h>
+#include <sofa/component/collision/response/contact/BarycentricStickContact.inl>
+
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/IdentityContactMapper.h>
 
 using namespace sofa::core::collision ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::response::contact
 {
 
 using namespace sofa::component::collision::geometry;
@@ -47,20 +42,15 @@ Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::d
 Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineStickContactClass("StickContactForceField",true);
 Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleStickContactClass("StickContactForceField",true);
 
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+}  // namespace sofa::component::collision::response::contact

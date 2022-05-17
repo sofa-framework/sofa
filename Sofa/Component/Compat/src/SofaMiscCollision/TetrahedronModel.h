@@ -19,29 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/RayContact.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaMiscCollision/TetrahedronModel.h>
-#include <sofa/helper/Factory.inl>
+#pragma once
 
-namespace sofa
+#include <sofa/component/collision/geometry/TetrahedronModel.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/TetrahedronModel.h")
+
+// ContactMapper templated on Tetrahedron has been set in a dedicated file
+#include <sofa/component/collision/response/mapper/TetrahedronBarycentricContactMapper.h>
+
+namespace sofa::component::collision
 {
+    using Tetrahedron = sofa::component::collision::geometry::Tetrahedron;
+    using TetrahedronCollisionModel = sofa::component::collision::geometry::TetrahedronCollisionModel; 
 
-namespace component
-{
-
-namespace collision
-{
-
-using namespace sofa::defaulttype;
-
-Creator<core::collision::Contact::Factory, RayContact<TetrahedronCollisionModel> > RayTetrahedronContactClass("RayContact",true);
-
-template class SOFA_MISC_COLLISION_API response::contact::RayContact<TetrahedronCollisionModel>;
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision
