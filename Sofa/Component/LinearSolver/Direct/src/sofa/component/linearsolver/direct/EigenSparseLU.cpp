@@ -30,7 +30,7 @@ namespace sofa::component::linearsolver::direct
     template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseLU< SReal >;
     template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenSparseLU< sofa::type::Mat<3,3,SReal> >;
 
-    int EigenSparseLUCRSClass = sofa::core::RegisterObject("Direct Linear Solver using a Sparse LDL^T factorization.")
+    int EigenSparseLUCRSClass = sofa::core::RegisterObject("Direct Linear Solver using a Sparse LU factorization.")
     .add< EigenSparseLU< SReal > >()
     .add< EigenSparseLU< sofa::type::Mat<3,3,SReal> > >()
     ;

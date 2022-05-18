@@ -81,6 +81,8 @@ protected:
     typename sofa::linearalgebra::CompressedRowSparseMatrix<Real>::VecIndex MfilteredcolsIndex;
 
     EigenDirectSparseSolver();
+
+    static constexpr unsigned int s_defaultOrderingMethod { 1 };
 };
 
 }

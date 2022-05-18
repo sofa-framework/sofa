@@ -121,11 +121,11 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>::updateSolverOderingMethod
         case 1:  m_solver.template emplace<std::variant_alternative_t<1, decltype(m_solver)> >(); break;
         case 2:  m_solver.template emplace<std::variant_alternative_t<2, decltype(m_solver)> >(); break;
         case 3:  m_solver.template emplace<std::variant_alternative_t<3, decltype(m_solver)> >(); break;
-        default: m_solver.template emplace<std::variant_alternative_t<1, decltype(m_solver)> >(); break;
+        default: m_solver.template emplace<std::variant_alternative_t<s_defaultOrderingMethod, decltype(m_solver)> >(); break;
         }
         m_selectedOrderingMethod = d_orderingMethod.getValue().getSelectedId();
         if (m_selectedOrderingMethod >= std::variant_size_v<decltype(m_solver)>)
-            m_selectedOrderingMethod = 1;
+            m_selectedOrderingMethod = s_defaultOrderingMethod;
 
         MfilteredrowBegin.clear();
         MfilteredcolsIndex.clear();
@@ -140,7 +140,7 @@ EigenDirectSparseSolver<TBlockType, EigenSolver>::EigenDirectSparseSolver()
 {
     sofa::helper::OptionsGroup d_orderingMethodOptions(4,"Natural", "AMD", "COLAMD", "Metis");
 
-    d_orderingMethodOptions.setSelectedItem(1);
+    d_orderingMethodOptions.setSelectedItem(s_defaultOrderingMethod);
     d_orderingMethod.setValue(d_orderingMethodOptions);
 }
 
