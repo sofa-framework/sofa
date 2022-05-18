@@ -587,6 +587,15 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::doAddObject(BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
+    // If an object we are trying to add already has a context, it is in an other node in the
+    // graph when need to remove it from this contexte before to insert it into the current
+    // one.
+    if(sobj->getContext() != BaseContext::getDefault())
+    {
+        Node* c = dynamic_cast<Node*>(sobj->getContext());
+        if(c)
+            c->removeObject(sobj);
+    }
     this->setObjectContext(sobj);
     if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
         object.add(sobj);
