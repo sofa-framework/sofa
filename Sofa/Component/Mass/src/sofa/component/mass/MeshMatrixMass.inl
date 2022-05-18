@@ -32,7 +32,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <numeric>
-#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::component::mass
 {
@@ -2191,10 +2190,12 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
 
     if(isLumped())
     {
-        for (unsigned int i = 0; i < sofa::helper::narrow_cast<unsigned int>(vertexMass.size()); ++i)
+        unsigned int i {};
+        for (const auto& v : vertexMass)
         {
-            calc(r.matrix, vertexMass[i] * m_massLumpingCoeff, r.offset + N * i, mFactor);
-            massTotal += vertexMass[i] * m_massLumpingCoeff;
+            calc(r.matrix, v * m_massLumpingCoeff, r.offset + N * i, mFactor);
+            massTotal += v * m_massLumpingCoeff;
+            ++i;
         }
 
         if(d_printMass.getValue() && (this->getContext()->getTime()==0.0))
@@ -2211,11 +2212,12 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
     }
     else
     {
-
-        for (unsigned int i = 0; i < sofa::helper::narrow_cast<unsigned int>(vertexMass.size()); ++i)
+        unsigned int i {};
+        for (const auto& v : vertexMass)
         {
-            calc(r.matrix, vertexMass[i], r.offset + N*i, mFactor);
-            massTotal += vertexMass[i];
+            calc(r.matrix, v, r.offset + N * i, mFactor);
+            massTotal += v;
+            ++i;
         }
 
         const auto& edges = l_topology->getEdges();
