@@ -8,7 +8,7 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     add_subdirectory(SofaTest)
 endif()
 
-sofa_add_plugin(SceneChecking SceneChecking)
+sofa_add_plugin(SceneChecking SceneChecking ON)
 
 sofa_add_plugin(CollisionOBBCapsule CollisionOBBCapsule)
 
