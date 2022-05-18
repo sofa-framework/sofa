@@ -713,19 +713,21 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::ge
     const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
     const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
-    int i {};
+    // Index of the current row. The matrix structure is composed of 3 parts: 1d elements first, then the 2d elements,
+    // and finally the 3d elements. This variable is incremented at each element, and never reinitialized, so the
+    // contributions go into the appropriate submatrix.
+    int rowId {};
+
     // 1D elements
     {
         for ( const auto& map1d : m_map1d)
         {
             const auto fx = map1d.baryCoords[0];
             const auto index = map1d.in_index;
-            {
-                const Edge& line = lines[index];
-                this->addMatrixContrib(m_matrixJ, i, line[0],  1 - fx);
-                this->addMatrixContrib(m_matrixJ, i, line[1],  fx);
-            }
-            ++i;
+            const Edge& line = lines[index];
+            this->addMatrixContrib(m_matrixJ, rowId, line[0],  1 - fx);
+            this->addMatrixContrib(m_matrixJ, rowId, line[1],  fx);
+            ++rowId;
         }
     }
     // 2D elements
@@ -739,19 +741,19 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::ge
             if ( index < c0 )
             {
                 const Triangle& triangle = triangles[index];
-                this->addMatrixContrib(m_matrixJ, i, triangle[0],  ( 1-fx-fy ));
-                this->addMatrixContrib(m_matrixJ, i, triangle[1],  fx);
-                this->addMatrixContrib(m_matrixJ, i, triangle[2],  fy);
+                this->addMatrixContrib(m_matrixJ, rowId, triangle[0],  ( 1-fx-fy ));
+                this->addMatrixContrib(m_matrixJ, rowId, triangle[1],  fx);
+                this->addMatrixContrib(m_matrixJ, rowId, triangle[2],  fy);
             }
             else
             {
                 const Quad& quad = quads[index-c0];
-                this->addMatrixContrib(m_matrixJ, i, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(m_matrixJ, i, quad[1],  ( ( fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(m_matrixJ, i, quad[3],  ( ( 1-fx ) * ( fy ) ));
-                this->addMatrixContrib(m_matrixJ, i, quad[2],  ( ( fx ) * ( fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[1],  ( ( fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[3],  ( ( 1-fx ) * ( fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[2],  ( ( fx ) * ( fy ) ));
             }
-            ++i;
+            ++rowId;
         }
     }
     // 3D elements
@@ -766,28 +768,28 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::ge
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
-                this->addMatrixContrib(m_matrixJ, i, tetra[0],  ( 1-fx-fy-fz ));
-                this->addMatrixContrib(m_matrixJ, i, tetra[1],  fx);
-                this->addMatrixContrib(m_matrixJ, i, tetra[2],  fy);
-                this->addMatrixContrib(m_matrixJ, i, tetra[3],  fz);
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[0],  ( 1-fx-fy-fz ));
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[1],  fx);
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[2],  fy);
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[3],  fz);
             }
             else
             {
                 const Hexa& cube = cubes[index-c0];
 
-                this->addMatrixContrib(m_matrixJ, i, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(m_matrixJ, i, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, i, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(m_matrixJ, i, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, i, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-                this->addMatrixContrib(m_matrixJ, i, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, i, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
-                this->addMatrixContrib(m_matrixJ, i, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
             }
-            ++i;
+            ++rowId;
         }
     }
     assert(i == m_map1d.size() + m_map2d.size() + m_map3d.size());
