@@ -28,7 +28,9 @@
 namespace sofa::component::mechanicalload
 {
 
+
 using namespace sofa::type;
+
 
 template<class DataTypes>
 GravityForceField<DataTypes>::GravityForceField()
