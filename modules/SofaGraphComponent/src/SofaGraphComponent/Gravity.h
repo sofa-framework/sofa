@@ -35,17 +35,17 @@ namespace sofa::component::contextobject
 {
 
 /** Override the default gravity */
-class SOFA_SOFAGRAPHCOMPONENT_API Gravity : public core::objectmodel::ContextObject
+class     SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Gravity class has been removed") Gravity : public core::objectmodel::ContextObject
 {
 public:
     SOFA_CLASS(Gravity, core::objectmodel::ContextObject);
 protected:
-    Gravity();
+    Gravity() = default;
 public:
-    Data<sofa::type::Vector3> f_gravity; ///< Gravity in the world coordinate system
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Gravity class has been removed")
+    DeprecatedAndRemoved f_gravity; ///< Gravity in the world coordinate system
 
-    /// Modify the context of the Node
-    void apply() override;
+    void apply() override {};
 };
 
 } // namespace sofa::component::contextobject

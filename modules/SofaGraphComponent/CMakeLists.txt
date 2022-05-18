@@ -36,7 +36,6 @@ list(APPEND SOURCE_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/FixPickedParticleButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/Gravity.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckMissingRequiredPlugin.cpp

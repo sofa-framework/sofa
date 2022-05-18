@@ -542,6 +542,11 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     /***********************/
     // REMOVED SINCE v21.12
 
+    { "Gravity", Removed("v22.06", "v22.06") },
+
+    /***********************/
+    // REMOVED SINCE v21.12
+
     { "LMDNewProximityIntersection", Removed("v21.12", "v21.12") },
     { "LocalMinDistanceFilter", Removed("v21.12", "v21.12") },
     { "LineLocalMinDistanceFilter", Removed("v21.12", "v21.12") },
