@@ -19,10 +19,10 @@
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="Torus1">
-        <Gravity gravity="0 -10 0" />
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="0" ry="90" />
+        <GravityForceField gravitationalAcceleration="0 -10 0" />
         <UniformMass totalMass="10" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
@@ -42,10 +42,10 @@
         </Node>
     </Node>
     <Node name="Torus2">
-        <Gravity gravity="0 10 0" />
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="-20" dz="0" />
+        <GravityForceField gravitationalAcceleration="0 10 0" />
         <UniformMass totalMass="10" />
         <RegularGridTopology nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
