@@ -49,8 +49,8 @@ bool DataFileNameWidget::createWidgets()
 
     layout->addWidget(openFilePath);
     layout->addWidget(openFileButton);
-    connect( openFileButton, SIGNAL( clicked() ), this, SLOT( raiseDialog() ) );
-    connect( openFilePath, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
+    connect( openFileButton, &QPushButton::clicked, this, &DataFileNameWidget::raiseDialog );
+    connect( openFilePath, &QLineEdit::textChanged, [=](const QString &){ setWidgetDirty(); } );
     return true;
 }
 
@@ -87,7 +87,6 @@ void DataFileNameWidget::raiseDialog()
 
     QString s  = getOpenFileName(this, QString(fileName.c_str()), "All (*)", "open file dialog",  "Choose a file to open" );
     std::string SofaPath = sofa::helper::system::DataRepository.getFirstPath();
-
 
     if (s.isNull() ) return;
     fileName=std::string (s.toStdString());

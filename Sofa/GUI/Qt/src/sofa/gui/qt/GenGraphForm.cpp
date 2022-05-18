@@ -48,28 +48,28 @@ GenGraphForm::GenGraphForm(QWidget *parent)
 {
     setupUi(this);
     // signals and slots connections
-    connect(browseButton, SIGNAL(clicked()), this, SLOT(doBrowse()));
-    connect(exportButton, SIGNAL(clicked()), this, SLOT(doExport()));
-    connect(displayButton, SIGNAL(clicked()), this, SLOT(doDisplay()));
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(doClose()));
-    connect(filename, SIGNAL(textChanged(const QString&)), this, SLOT(change()));
-    connect(presetFilter, SIGNAL(activated(const QString&)), this, SLOT(setFilter()));
-    connect(showNodes, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showObjects, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showBehaviorModels, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showCollisionModels, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showVisualModels, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showMappings, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showContext, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showCollisionPipeline, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showSolvers, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showMechanicalStates, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showForceFields, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showInteractionForceFields, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showConstraints, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showMass, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showTopology, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
-    connect(showMechanicalMappings, SIGNAL(toggled(bool)), this, SLOT(changeFilter()));
+    connect(browseButton, &QPushButton::clicked, this, &GenGraphForm::doBrowse);
+    connect(exportButton, &QPushButton::clicked, this,  &GenGraphForm::doExport);
+    connect(displayButton, &QPushButton::clicked, this,  &GenGraphForm::doDisplay);
+    connect(closeButton, &QPushButton::clicked, this,  &GenGraphForm::doClose);
+    connect(filename, &QLineEdit::textChanged, this, &GenGraphForm::change);
+    connect(presetFilter, QOverload<int>::of(&QComboBox::activated), [=](int){ setFilter(); });
+    connect(showNodes, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showObjects, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showBehaviorModels, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showCollisionModels, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showVisualModels, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showMappings, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showContext, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showCollisionPipeline, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showSolvers, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showMechanicalStates, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showForceFields, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showInteractionForceFields, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showConstraints, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showMass, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showTopology, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
+    connect(showMechanicalMappings, &QCheckBox::toggled, this, &GenGraphForm::changeFilter);
 
     // init preset filters
     {
@@ -456,8 +456,10 @@ void GenGraphForm::runTask()
 #else
     p->setProcessChannelMode(QProcess::ForwardedChannels);
 #endif
-    connect(p,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(taskFinished(int, QProcess::ExitStatus)));
-    connect(p,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(taskError(QProcess::ProcessError)));
+    connect(p,
+            QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this,&GenGraphForm::taskFinished);
+    connect(p,&QProcess::errorOccurred,this,&GenGraphForm::taskError);
     p->start(program, argv);
     currentTask = p;
 }
