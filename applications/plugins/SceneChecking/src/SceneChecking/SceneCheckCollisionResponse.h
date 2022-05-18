@@ -27,7 +27,7 @@
 #include <map>
 #include <sstream>
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
     
 class SOFA_SCENECHECKING_API SceneCheckCollisionResponse : public SceneCheck
@@ -38,8 +38,8 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckCollisionResponse()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
     void doPrintSummary() override;
 
 private:
@@ -47,9 +47,9 @@ private:
     std::stringstream m_message;
 };
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace scenechecking
 {
     using _scenechecking_::SceneCheckCollisionResponse;
 }

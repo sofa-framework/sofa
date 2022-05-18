@@ -27,7 +27,7 @@
 #include <map>
 #include <vector>
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
     
 class SOFA_SCENECHECKING_API SceneCheckUsingAlias : public SceneCheck
@@ -40,18 +40,18 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    void doInit(Node* node) override { SOFA_UNUSED(node); }
-    void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
+    void doInit(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
+    void doCheckOn(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
     void doPrintSummary() override;
 
 private:
     std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
 };
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace scenechecking
 {
     using _scenechecking_::SceneCheckUsingAlias;
-} // namespace sofa::simulation::scenechecking
+} // namespace scenechecking
 

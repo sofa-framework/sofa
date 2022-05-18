@@ -27,24 +27,24 @@
 #include <sofa/simulation/Visitor.h>
 
 #include <SceneChecking/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
+using scenechecking::SceneCheckerVisitor;
 
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
 /// to be able to react when a scene is loaded
-class SOFA_SCENECHECKING_API SceneCheckerListener : public SceneLoader::Listener
+class SOFA_SCENECHECKING_API SceneCheckerListener : public sofa::simulation::SceneLoader::Listener
 {
 public:
     static SceneCheckerListener* getInstance();
     virtual ~SceneCheckerListener() {}
 
-    virtual void rightAfterLoadingScene(NodeSPtr node) override;
+    virtual void rightAfterLoadingScene(sofa::simulation::NodeSPtr node) override;
 
     // Do nothing on reload
     virtual void rightBeforeReloadingScene() override {}
-    virtual void rightAfterReloadingScene(NodeSPtr node) override
+    virtual void rightAfterReloadingScene(sofa::simulation::NodeSPtr node) override
     {
         SOFA_UNUSED(node);
     }
@@ -54,9 +54,9 @@ private:
     SceneCheckerVisitor m_sceneChecker;
 };
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace scenechecking
 {
 using _scenechecking_::SceneCheckerListener;
-} // namespace sofa::simulation::scenechecking
+} // namespace scenechecking

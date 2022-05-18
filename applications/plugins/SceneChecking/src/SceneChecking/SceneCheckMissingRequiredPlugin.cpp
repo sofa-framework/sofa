@@ -28,7 +28,7 @@
 #include <sofa/simulation/RequiredPlugin.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
@@ -46,7 +46,7 @@ const std::string SceneCheckMissingRequiredPlugin::getDesc()
     return "Check for each component provided by a plugin that the corresponding <RequiredPlugin> directive is present in the scene";
 }
 
-void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
+void SceneCheckMissingRequiredPlugin::doCheckOn(sofa::simulation::Node* node)
 {
     for (const auto& object : node->object)
     {
@@ -100,9 +100,9 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
     }
 }
 
-void SceneCheckMissingRequiredPlugin::doInit(Node* node)
+void SceneCheckMissingRequiredPlugin::doInit(sofa::simulation::Node* node)
 {
-    type::vector< RequiredPlugin* > plugins;
+    sofa::type::vector< RequiredPlugin* > plugins;
     node->getTreeObjects< RequiredPlugin >(&plugins);
 
     m_requiredPlugins.clear();
@@ -117,4 +117,4 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
     }
 }
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_

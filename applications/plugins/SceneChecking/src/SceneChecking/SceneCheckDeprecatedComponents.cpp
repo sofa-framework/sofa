@@ -27,7 +27,7 @@ using sofa::simulation::Node;
 #include <sofa/helper/ComponentChange.h>
 using sofa::helper::lifecycle::deprecatedComponents;
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
 const std::string SceneCheckDeprecatedComponents::getName()
@@ -52,7 +52,7 @@ void SceneCheckDeprecatedComponents::doCheckOn(Node* node)
 
     for (auto& object : node->object )
     {
-        if (core::Base* o = object.get())
+        if (sofa::core::Base* o = object.get())
         {
             if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
             {
@@ -71,4 +71,4 @@ std::shared_ptr<SceneCheckDeprecatedComponents> SceneCheckDeprecatedComponents::
     return std::shared_ptr<SceneCheckDeprecatedComponents>(new SceneCheckDeprecatedComponents());
 }
 
-} //namespace sofa::simulation::_scenechecking_
+} //namespace _scenechecking_

@@ -29,17 +29,17 @@
 
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
-class SOFA_SCENECHECKING_API SceneCheckerVisitor : public Visitor
+class SOFA_SCENECHECKING_API SceneCheckerVisitor : public sofa::simulation::Visitor
 {
 public:
     SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance()) ;
     ~SceneCheckerVisitor() override;
 
-    void validate(Node* node) ;
-    Result processNodeTopDown(Node* node) override ;
+    void validate(sofa::simulation::Node* node) ;
+    Result processNodeTopDown(sofa::simulation::Node* node) override ;
 
     void addCheck(SceneCheck::SPtr check) ;
     void removeCheck(SceneCheck::SPtr check) ;
@@ -48,9 +48,9 @@ private:
     std::vector<SceneCheck::SPtr> m_checkset ;
 };
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace scenechecking
 {
     using _scenechecking_::SceneCheckerVisitor;
-} // namespace sofa::simulation::scenechecking
+} // namespace scenechecking

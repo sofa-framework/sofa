@@ -23,7 +23,7 @@
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
 using sofa::simulation::Node;
@@ -38,7 +38,7 @@ const std::string SceneCheckDuplicatedName::getDesc()
     return "Check there is not duplicated name in the scenegraph";
 }
 
-void SceneCheckDuplicatedName::doInit(Node* node)
+void SceneCheckDuplicatedName::doInit(sofa::simulation::Node* node)
 {
     SOFA_UNUSED(node);
     m_hasDuplicates = false;
@@ -46,7 +46,7 @@ void SceneCheckDuplicatedName::doInit(Node* node)
     m_duplicatedMsg.clear();
 }
 
-void SceneCheckDuplicatedName::doCheckOn(Node* node)
+void SceneCheckDuplicatedName::doCheckOn(sofa::simulation::Node* node)
 {
     std::map<std::string, int> duplicated;
     for (auto& object : node->object )
@@ -91,4 +91,4 @@ void SceneCheckDuplicatedName::doPrintSummary()
 }
 
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_

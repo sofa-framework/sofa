@@ -33,7 +33,7 @@ namespace sofa::simulation
 } //namespace sofa::simulation
 
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
 class SOFA_SCENECHECKING_API SceneCheckMissingRequiredPlugin : public SceneCheck
@@ -43,8 +43,8 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
     void doPrintSummary() override;
 
 private:    
@@ -54,7 +54,7 @@ private:
 
 } // namespace _scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace scenechecking
 {
     using _scenechecking_::SceneCheckMissingRequiredPlugin;
-} // namespace sofa::simulation::scenechecking
+} // namespace scenechecking

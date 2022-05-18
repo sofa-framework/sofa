@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 using sofa::core::ExecParams ;
 
@@ -51,7 +51,7 @@ void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
     m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
 }
 
-void SceneCheckerVisitor::validate(Node* node)
+void SceneCheckerVisitor::validate(sofa::simulation::Node* node)
 {
     std::stringstream tmp;
     bool first = true;
@@ -77,7 +77,7 @@ void SceneCheckerVisitor::validate(Node* node)
 }
 
 
-Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
+sofa::simulation::Visitor::Result SceneCheckerVisitor::processNodeTopDown(sofa::simulation::Node* node)
 {
     for(SceneCheck::SPtr& check : m_checkset)
     {
@@ -87,4 +87,4 @@ Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
     return RESULT_CONTINUE;
 }
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_

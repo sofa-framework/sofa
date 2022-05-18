@@ -33,7 +33,7 @@ namespace sofa::simulation
     class Node;
 } // namespace sofa::simulation
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
 class SOFA_SCENECHECKING_API SceneCheck
@@ -44,14 +44,14 @@ public:
     typedef std::shared_ptr<SceneCheck> SPtr;
     virtual const std::string getName() = 0;
     virtual const std::string getDesc() = 0;
-    virtual void doInit(Node* node) { SOFA_UNUSED(node); }
-    virtual void doCheckOn(Node* node) = 0;
+    virtual void doInit(sofa::simulation::Node* node) { SOFA_UNUSED(node); }
+    virtual void doCheckOn(sofa::simulation::Node* node) = 0;
     virtual void doPrintSummary() {}
 };
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace scenechecking
 {
     using _scenechecking_::SceneCheck;
-} // namespace sofa::simulation::scenechecking
+} // namespace scenechecking

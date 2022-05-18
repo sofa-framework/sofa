@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 
-namespace sofa::simulation::_scenechecking_
+namespace _scenechecking_
 {
 
 using sofa::simulation::Node;
@@ -54,9 +54,9 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
 
     const sofa::core::objectmodel::BaseContext* root = node->getContext()->getRootContext();
     std::vector<sofa::component::collision::response::contact::DefaultContactManager*> contactManager;
-    root->get<sofa::component::collision::response::contact::DefaultContactManager>(&contactManager, core::objectmodel::BaseContext::SearchDown);
+    root->get<sofa::component::collision::response::contact::DefaultContactManager>(&contactManager, sofa::core::objectmodel::BaseContext::SearchDown);
     m_checkDone=true;
-    const Size nbContactManager = contactManager.size();
+    const sofa::Size nbContactManager = contactManager.size();
     if( nbContactManager  > 0 )
     {
         if( nbContactManager!= 1 )
@@ -107,4 +107,4 @@ void SceneCheckCollisionResponse::doPrintSummary()
 }
 
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace _scenechecking_
