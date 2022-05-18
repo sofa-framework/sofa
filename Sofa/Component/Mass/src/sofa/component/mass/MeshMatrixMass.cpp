@@ -51,11 +51,11 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
     const auto& edges = l_topology->getEdges();
     for(size_t i=0 ; i<l_topology->getNbEdges() ; ++i )
     {
-        const auto v0 = edges[i][0];
-        const auto v1 = edges[i][1];
+        const Edge::value_type v0 = edges[i][0];
+        const Edge::value_type v1 = edges[i][1];
 
         // is it correct to share the edge mass between the 2 vertices?
-        const auto m = edgeMass[i] * 0.5;
+        const MassType m = edgeMass[i] * static_cast<MassType>(0.5);
 
         Deriv linearMomentum = v[v0] * m;
         for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
