@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 
-namespace _scenechecking_
+namespace sofa::_scenechecking_
 {
 
 using sofa::simulation::Node;
@@ -107,4 +107,4 @@ void SceneCheckCollisionResponse::doPrintSummary()
 }
 
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_

@@ -25,33 +25,31 @@
 #include <SceneChecking/SceneCheck.h>
 
 #include <map>
-#include <vector>
+#include <sstream>
 
-namespace _scenechecking_
+namespace sofa::_scenechecking_
 {
     
-class SOFA_SCENECHECKING_API SceneCheckUsingAlias : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckCollisionResponse : public SceneCheck
 {
 public:
-    SceneCheckUsingAlias();
-    virtual ~SceneCheckUsingAlias();
-
-    typedef std::shared_ptr<SceneCheckUsingAlias> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
+    virtual ~SceneCheckCollisionResponse() {}
+    typedef std::shared_ptr<SceneCheckCollisionResponse> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionResponse()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    void doInit(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
-    void doCheckOn(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
     void doPrintSummary() override;
 
 private:
-    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
+    bool m_checkDone = false;
+    std::stringstream m_message;
 };
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_
 
-namespace scenechecking
+namespace sofa::scenechecking
 {
-    using _scenechecking_::SceneCheckUsingAlias;
-} // namespace scenechecking
-
+    using _scenechecking_::SceneCheckCollisionResponse;
+}

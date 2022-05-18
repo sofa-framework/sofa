@@ -29,7 +29,7 @@
 #  define SOFA_SCENECHECKING_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace scenechecking
+namespace sofa::scenechecking
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace scenechecking
+} // namespace sofa::scenechecking

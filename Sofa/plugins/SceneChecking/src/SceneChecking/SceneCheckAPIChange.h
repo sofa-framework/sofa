@@ -23,7 +23,55 @@
 
 #include <SceneChecking/config.h>
 
-namespace scenechecking
+#include <SceneChecking/SceneCheck.h>
+
+#include <sofa/version.h>
+#include <string>
+#include <map>
+#include <vector>
+#include <functional>
+
+namespace sofa::simulation
 {
-	SOFA_SCENECHECKING_API void init();
-} // namespace scenechecking
+    class Node;
+} // namespace sofa::simulation
+
+namespace sofa::core::objectmodel
+{
+    class Base;
+} // namespace sofa::core::objectmodel
+
+namespace sofa::_scenechecking_
+{
+
+typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
+
+class SOFA_SCENECHECKING_API SceneCheckAPIChange : public SceneCheck
+{
+public:
+    SceneCheckAPIChange();
+    virtual ~SceneCheckAPIChange();
+
+    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
+
+    void installDefaultChangeSets();
+    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
+private:
+    std::string m_currentApiLevel;
+    std::string m_selectedApiLevel {"17.06"};
+
+    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
+};
+
+} // namespace sofa::_scenechecking_
+
+namespace sofa::scenechecking
+{
+    using _scenechecking_::SceneCheckAPIChange;
+} // namespace sofa::component::scenechecking

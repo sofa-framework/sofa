@@ -22,34 +22,41 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
 
-#include <map>
-#include <sstream>
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/simulation/Visitor.h>
 
-namespace _scenechecking_
+#include <SceneChecking/SceneCheckerVisitor.h>
+using sofa::scenechecking::SceneCheckerVisitor;
+
+
+namespace sofa::_scenechecking_
 {
-    
-class SOFA_SCENECHECKING_API SceneCheckCollisionResponse : public SceneCheck
+
+/// to be able to react when a scene is loaded
+class SOFA_SCENECHECKING_API SceneCheckerListener : public sofa::simulation::SceneLoader::Listener
 {
 public:
-    virtual ~SceneCheckCollisionResponse() {}
-    typedef std::shared_ptr<SceneCheckCollisionResponse> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionResponse()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(sofa::simulation::Node* node) override;
-    void doCheckOn(sofa::simulation::Node* node) override;
-    void doPrintSummary() override;
+    static SceneCheckerListener* getInstance();
+    virtual ~SceneCheckerListener() {}
+
+    virtual void rightAfterLoadingScene(sofa::simulation::NodeSPtr node) override;
+
+    // Do nothing on reload
+    virtual void rightBeforeReloadingScene() override {}
+    virtual void rightAfterReloadingScene(sofa::simulation::NodeSPtr node) override
+    {
+        SOFA_UNUSED(node);
+    }
 
 private:
-    bool m_checkDone = false;
-    std::stringstream m_message;
+    SceneCheckerListener();
+    SceneCheckerVisitor m_sceneChecker;
 };
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_
 
-namespace scenechecking
+namespace sofa::scenechecking
 {
-    using _scenechecking_::SceneCheckCollisionResponse;
-}
+using _scenechecking_::SceneCheckerListener;
+} // namespace sofa::scenechecking

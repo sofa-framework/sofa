@@ -28,7 +28,7 @@
 #include <sofa/simulation/RequiredPlugin.h>
 #include <sofa/simulation/Node.h>
 
-namespace _scenechecking_
+namespace sofa::_scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
@@ -117,4 +117,4 @@ void SceneCheckMissingRequiredPlugin::doInit(sofa::simulation::Node* node)
     }
 }
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_

@@ -41,7 +41,7 @@ using std::vector;
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SceneChecking/SceneCheckerListener.h>
-using scenechecking::SceneCheckerListener;
+using sofa::scenechecking::SceneCheckerListener;
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>

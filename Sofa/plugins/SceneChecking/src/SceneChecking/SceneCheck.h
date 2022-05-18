@@ -22,39 +22,36 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
 
+#include <iostream>
+#include <string>
 #include <map>
-#include <vector>
+#include <memory>
 
 namespace sofa::simulation
 {
     class Node;
-} //namespace sofa::simulation
+} // namespace sofa::simulation
 
-
-namespace _scenechecking_
+namespace sofa::_scenechecking_
 {
 
-class SOFA_SCENECHECKING_API SceneCheckMissingRequiredPlugin : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheck
 {
 public:
-    typedef std::shared_ptr<SceneCheckMissingRequiredPlugin> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(sofa::simulation::Node* node) override;
-    void doCheckOn(sofa::simulation::Node* node) override;
-    void doPrintSummary() override;
+    virtual ~SceneCheck() {}
 
-private:    
-    std::map<std::string, bool > m_loadedPlugins;
-    std::map<std::string, std::vector<std::string> > m_requiredPlugins;
+    typedef std::shared_ptr<SceneCheck> SPtr;
+    virtual const std::string getName() = 0;
+    virtual const std::string getDesc() = 0;
+    virtual void doInit(sofa::simulation::Node* node) { SOFA_UNUSED(node); }
+    virtual void doCheckOn(sofa::simulation::Node* node) = 0;
+    virtual void doPrintSummary() {}
 };
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_
 
-namespace scenechecking
+namespace sofa::scenechecking
 {
-    using _scenechecking_::SceneCheckMissingRequiredPlugin;
-} // namespace scenechecking
+    using _scenechecking_::SceneCheck;
+} // namespace sofa::scenechecking

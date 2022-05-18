@@ -19,39 +19,72 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include "SceneCheckerVisitor.h"
 
-#include <SceneChecking/config.h>
+#include <algorithm>
+#include <sofa/simulation/Node.h>
 
-#include <iostream>
-#include <string>
-#include <map>
-#include <memory>
-
-namespace sofa::simulation
+namespace sofa::_scenechecking_
 {
-    class Node;
-} // namespace sofa::simulation
+using sofa::core::ExecParams ;
 
-namespace _scenechecking_
+SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
 {
 
-class SOFA_SCENECHECKING_API SceneCheck
+}
+
+
+SceneCheckerVisitor::~SceneCheckerVisitor()
 {
-public:
-    virtual ~SceneCheck() {}
+}
 
-    typedef std::shared_ptr<SceneCheck> SPtr;
-    virtual const std::string getName() = 0;
-    virtual const std::string getDesc() = 0;
-    virtual void doInit(sofa::simulation::Node* node) { SOFA_UNUSED(node); }
-    virtual void doCheckOn(sofa::simulation::Node* node) = 0;
-    virtual void doPrintSummary() {}
-};
 
-} // namespace _scenechecking_
-
-namespace scenechecking
+void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
 {
-    using _scenechecking_::SceneCheck;
-} // namespace scenechecking
+    if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
+        m_checkset.push_back(check) ;
+}
+
+
+void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
+{
+    m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
+}
+
+void SceneCheckerVisitor::validate(sofa::simulation::Node* node)
+{
+    std::stringstream tmp;
+    bool first = true;
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        tmp << (first ? "" : ", ") << check->getName() ;
+        first = false;
+    }
+    msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doInit(node) ;
+    }
+
+    execute(node) ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doPrintSummary() ;
+    }
+    msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
+}
+
+
+sofa::simulation::Visitor::Result SceneCheckerVisitor::processNodeTopDown(sofa::simulation::Node* node)
+{
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doCheckOn(node) ;
+    }
+
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa::_scenechecking_

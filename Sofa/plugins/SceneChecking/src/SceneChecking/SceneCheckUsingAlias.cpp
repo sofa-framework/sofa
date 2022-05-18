@@ -26,7 +26,7 @@
 #include <sofa/helper/ComponentChange.h>
 
 
-namespace _scenechecking_
+namespace sofa::_scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
@@ -100,4 +100,4 @@ void SceneCheckUsingAlias::doPrintSummary()
     m_componentsCreatedUsingAlias.clear();
 }
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_

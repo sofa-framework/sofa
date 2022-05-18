@@ -33,7 +33,7 @@ using sofa::simulation::Node;
 #include <sofa/component/SceneUtility/APIVersion.h>
 using sofa::component::sceneutility::APIVersion;
 
-namespace _scenechecking_
+namespace sofa::_scenechecking_
 {
 
 SceneCheckAPIChange::SceneCheckAPIChange()
@@ -119,4 +119,4 @@ void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeS
     m_changesets[version].push_back(fct);
 }
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_

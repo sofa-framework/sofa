@@ -37,13 +37,13 @@
 
 namespace sofa::simulation::_scenechecking_
 {
-    using SceneCheckDeprecatedComponents = _scenechecking_::SceneCheckDeprecatedComponents;
+    using SceneCheckDeprecatedComponents = sofa::_scenechecking_::SceneCheckDeprecatedComponents;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using SceneCheckDeprecatedComponents = scenechecking::SceneCheckDeprecatedComponents;
+    using SceneCheckDeprecatedComponents = sofa::scenechecking::SceneCheckDeprecatedComponents;
 
 } // namespace sofa::simulation::_scenechecking_
 

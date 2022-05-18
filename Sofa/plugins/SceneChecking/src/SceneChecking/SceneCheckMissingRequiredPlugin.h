@@ -19,33 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SceneChecking/init.h>
+#pragma once
 
-namespace scenechecking
+#include <SceneChecking/config.h>
+#include <SceneChecking/SceneCheck.h>
+
+#include <map>
+#include <vector>
+
+namespace sofa::simulation
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+    class Node;
+} //namespace sofa::simulation
 
-void initExternalModule()
+
+namespace sofa::_scenechecking_
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
+class SOFA_SCENECHECKING_API SceneCheckMissingRequiredPlugin : public SceneCheck
 {
-    return MODULE_NAME;
-}
+public:
+    typedef std::shared_ptr<SceneCheckMissingRequiredPlugin> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-void init()
+private:    
+    std::map<std::string, bool > m_loadedPlugins;
+    std::map<std::string, std::vector<std::string> > m_requiredPlugins;
+};
+
+} // namespace sofa::_scenechecking_
+
+namespace sofa::scenechecking
 {
-    initExternalModule();
-}
-
-} // namespace scenechecking
+    using _scenechecking_::SceneCheckMissingRequiredPlugin;
+} // namespace sofa::scenechecking

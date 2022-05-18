@@ -37,13 +37,13 @@
 
 namespace sofa::simulation::_scenechecking_
 {
-    using SceneCheckDuplicatedName = _scenechecking_::SceneCheckDuplicatedName;
+    using SceneCheckDuplicatedName = sofa::_scenechecking_::SceneCheckDuplicatedName;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using SceneCheckDuplicatedName = scenechecking::SceneCheckDuplicatedName;
+    using SceneCheckDuplicatedName = sofa::scenechecking::SceneCheckDuplicatedName;
 
 } // namespace sofa::simulation::_scenechecking_
 

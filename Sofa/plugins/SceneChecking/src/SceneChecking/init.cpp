@@ -19,59 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SceneChecking/init.h>
 
-#include <SceneChecking/config.h>
-
-#include <SceneChecking/SceneCheck.h>
-
-#include <sofa/version.h>
-#include <string>
-#include <map>
-#include <vector>
-#include <functional>
-
-namespace sofa::simulation
+namespace sofa::scenechecking
 {
-    class Node;
-} // namespace sofa::simulation
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
 
-namespace sofa::core::objectmodel
+void initExternalModule()
 {
-    class Base;
-} // namespace sofa::core::objectmodel
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-namespace _scenechecking_
+const char* getModuleName()
 {
+    return MODULE_NAME;
+}
 
-typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
-
-class SOFA_SCENECHECKING_API SceneCheckAPIChange : public SceneCheck
+void init()
 {
-public:
-    SceneCheckAPIChange();
-    virtual ~SceneCheckAPIChange();
+    initExternalModule();
+}
 
-    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(sofa::simulation::Node* node) override;
-    void doCheckOn(sofa::simulation::Node* node) override;
-    void doPrintSummary() override;
-
-    void installDefaultChangeSets();
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
-private:
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"};
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
-};
-
-} // namespace _scenechecking_
-
-namespace scenechecking
-{
-    using _scenechecking_::SceneCheckAPIChange;
-} // namespace sofa::component::scenechecking
+} // namespace sofa::scenechecking

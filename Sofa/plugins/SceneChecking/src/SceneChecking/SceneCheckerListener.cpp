@@ -28,7 +28,7 @@
 #include <SceneChecking/SceneCheckDeprecatedComponents.h>
 #include <SceneChecking/SceneCheckCollisionResponse.h>
 
-namespace _scenechecking_
+namespace sofa::_scenechecking_
 {
 
 SceneCheckerListener::SceneCheckerListener()
@@ -53,4 +53,4 @@ void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr n
 }
 
 
-} // nnamespace _scenechecking_
+} // nnamespace sofa::_scenechecking_

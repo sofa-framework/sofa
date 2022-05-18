@@ -37,13 +37,13 @@
 
 namespace sofa::simulation::_scenechecking_
 {
-    using SceneCheckerVisitor = _scenechecking_::SceneCheckerVisitor;
+    using SceneCheckerVisitor = sofa::_scenechecking_::SceneCheckerVisitor;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using SceneCheckerVisitor = scenechecking::SceneCheckerVisitor;
+    using SceneCheckerVisitor = sofa::scenechecking::SceneCheckerVisitor;
 
 } // namespace sofa::simulation::_scenechecking_
 

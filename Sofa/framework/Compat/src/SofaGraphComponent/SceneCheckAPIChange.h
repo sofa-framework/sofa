@@ -37,14 +37,14 @@
 
 namespace sofa::simulation::_scenechecking_
 {
-    using SceneCheckAPIChange = _scenechecking_::SceneCheckAPIChange;
-    using ChangeSetHookFunction = _scenechecking_::ChangeSetHookFunction;
+    using SceneCheckAPIChange = sofa::_scenechecking_::SceneCheckAPIChange;
+    using ChangeSetHookFunction = sofa::_scenechecking_::ChangeSetHookFunction;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using SceneCheckAPIChange = scenechecking::SceneCheckAPIChange;
+    using SceneCheckAPIChange = sofa::scenechecking::SceneCheckAPIChange;
 
 } // namespace sofa::simulation::_scenechecking_
 

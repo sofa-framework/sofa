@@ -22,34 +22,8 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
 
-#include <map>
-#include <sstream>
-
-namespace _scenechecking_
+namespace sofa::scenechecking
 {
-    
-class SOFA_SCENECHECKING_API SceneCheckDuplicatedName : public SceneCheck
-{
-public:
-    virtual ~SceneCheckDuplicatedName() {}
-    typedef std::shared_ptr<SceneCheckDuplicatedName> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckDuplicatedName()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(sofa::simulation::Node* node) override;
-    void doCheckOn(sofa::simulation::Node* node) override;
-    void doPrintSummary() override;
-
-private:
-    bool m_hasDuplicates;
-    std::stringstream m_duplicatedMsg;
-};
-
-} // namespace _scenechecking_
-
-namespace scenechecking
-{
-    using _scenechecking_::SceneCheckDuplicatedName;
-}
+	SOFA_SCENECHECKING_API void init();
+} // namespace sofa::scenechecking

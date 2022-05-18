@@ -37,13 +37,13 @@
 
 namespace sofa::simulation::_scenechecking_
 {
-    using SceneCheckMissingRequiredPlugin = _scenechecking_::SceneCheckMissingRequiredPlugin;
+    using SceneCheckMissingRequiredPlugin = sofa::_scenechecking_::SceneCheckMissingRequiredPlugin;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using SceneCheckMissingRequiredPlugin = scenechecking::SceneCheckMissingRequiredPlugin;
+    using SceneCheckMissingRequiredPlugin = sofa::scenechecking::SceneCheckMissingRequiredPlugin;
 
 } // namespace sofa::simulation::_scenechecking_
 

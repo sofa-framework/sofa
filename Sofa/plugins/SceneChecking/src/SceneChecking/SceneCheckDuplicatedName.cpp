@@ -19,56 +19,76 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SceneChecking/SceneCheckDeprecatedComponents.h>
+#include "SceneCheckDuplicatedName.h"
 
 #include <sofa/simulation/Node.h>
+
+namespace sofa::_scenechecking_
+{
+
 using sofa::simulation::Node;
 
-#include <sofa/helper/ComponentChange.h>
-using sofa::helper::lifecycle::deprecatedComponents;
-
-namespace _scenechecking_
+const std::string SceneCheckDuplicatedName::getName()
 {
-
-const std::string SceneCheckDeprecatedComponents::getName()
-{
-    return "SceneCheckDeprecatedComponents";
+    return "SceneCheckDuplicatedName";
 }
 
-const std::string SceneCheckDeprecatedComponents::getDesc()
+const std::string SceneCheckDuplicatedName::getDesc()
 {
-    return "Check there is not deprecated components in the scenegraph";
+    return "Check there is not duplicated name in the scenegraph";
 }
 
-void SceneCheckDeprecatedComponents::doInit(Node* node)
+void SceneCheckDuplicatedName::doInit(sofa::simulation::Node* node)
 {
     SOFA_UNUSED(node);
+    m_hasDuplicates = false;
+    m_duplicatedMsg.str("");
+    m_duplicatedMsg.clear();
 }
 
-void SceneCheckDeprecatedComponents::doCheckOn(Node* node)
+void SceneCheckDuplicatedName::doCheckOn(sofa::simulation::Node* node)
 {
-    if (node == nullptr)
-        return;
-
+    std::map<std::string, int> duplicated;
     for (auto& object : node->object )
     {
-        if (sofa::core::Base* o = object.get())
+        if( duplicated.find(object->getName()) == duplicated.end() )
+            duplicated[object->getName()] = 0;
+        duplicated[object->getName()]++;
+    }
+
+    for (auto& child : node->child )
+    {
+        if( duplicated.find(child->getName()) == duplicated.end() )
+            duplicated[child->getName()] = 0;
+        duplicated[child->getName()]++;
+    }
+
+    std::stringstream tmp;
+    for(auto& p : duplicated)
+    {
+        if(p.second!=1)
         {
-            if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
-            {
-                msg_deprecated(o) << this->getName() << ": "
-                    << deprecatedComponents.at(o->getClassName()).getMessage();
-            }
+            tmp << "'" << p.first << "', ";
         }
+    }
+
+    if(!tmp.str().empty())
+    {
+        m_hasDuplicates = true;
+        m_duplicatedMsg << "- Found duplicated names [" << tmp.str() << "] in node '"<<  node->getPathName() << "'" << msgendl;
     }
 }
 
-void SceneCheckDeprecatedComponents::doPrintSummary()
-{}
-
-std::shared_ptr<SceneCheckDeprecatedComponents> SceneCheckDeprecatedComponents::newSPtr()
+void SceneCheckDuplicatedName::doPrintSummary()
 {
-    return std::shared_ptr<SceneCheckDeprecatedComponents>(new SceneCheckDeprecatedComponents());
+    if(m_hasDuplicates)
+    {
+        msg_warning(this->getName()) << msgendl
+                                     << m_duplicatedMsg.str()
+                                     << "Nodes with similar names at the same level in your scene can "
+                                        "crash certain operations, please rename them";
+    }
 }
 
-} //namespace _scenechecking_
+
+} // namespace sofa::_scenechecking_
