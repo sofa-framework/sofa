@@ -23,6 +23,9 @@
 
 #include <sofa/core/behavior/MultiVec.h>
 
+// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+#include "GravityForceField.h"
+
 namespace sofa::core::behavior
 {
 
@@ -124,6 +127,27 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
+
+    // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+    template<class T>
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+
+        const sofa::core::objectmodel::BaseContext::Vec3& gravity = context->getGravity();
+        SReal gravityNorm = gravity.norm();
+        if(gravityNorm!=0.0)
+        {
+            sofa::Size dim = context->getMechanicalState()->getDerivDimension();
+//            GravityForceField<DataTypes>::SPtr gravityFF = sofa::core::objectmodel::New<GravityForceField<DataTypes>>(root);
+//            gravityFF->setName(root->getNameHelper().resolveName(gravityFF->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
+//            context->addObject(gravityFF,sofa::core::objectmodel::TypeOfInsertion::AtEnd);
+        }
+
+        return obj;
+    }
 };
 
 } // namespace sofa::core::behavior

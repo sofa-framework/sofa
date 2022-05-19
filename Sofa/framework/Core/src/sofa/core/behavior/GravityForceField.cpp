@@ -42,12 +42,12 @@ int GravityForceFieldClass = core::RegisterObject("Gravity as an external force 
         .add< GravityForceField<Rigid2Types> >()
 
         ;
-template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec3Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec2Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec1Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Vec6Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Rigid3Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<Rigid2Types>;
+template class SOFA_CORE_API GravityForceField<Vec3Types>;
+template class SOFA_CORE_API GravityForceField<Vec2Types>;
+template class SOFA_CORE_API GravityForceField<Vec1Types>;
+template class SOFA_CORE_API GravityForceField<Vec6Types>;
+template class SOFA_CORE_API GravityForceField<Rigid3Types>;
+template class SOFA_CORE_API GravityForceField<Rigid2Types>;
 
 
 } // namespace sofa::component::mechanicalload

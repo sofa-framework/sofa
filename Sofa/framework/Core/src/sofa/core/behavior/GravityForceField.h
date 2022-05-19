@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/mechanicalload/config.h>
+//#include <sofa/component/mechanicalload/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/Mass.h>
@@ -78,12 +78,12 @@ protected:
 
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_GRAVITYFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<sofa::defaulttype::Vec6Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<sofa::defaulttype::Rigid3Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API GravityForceField<sofa::defaulttype::Rigid2Types>;
+extern template class SOFA_CORE_API GravityForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_CORE_API GravityForceField<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_CORE_API GravityForceField<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_CORE_API GravityForceField<sofa::defaulttype::Vec6Types>;
+extern template class SOFA_CORE_API GravityForceField<sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_CORE_API GravityForceField<sofa::defaulttype::Rigid2Types>;
 #endif
 
 } // namespace sofa::component::mechanicalload
