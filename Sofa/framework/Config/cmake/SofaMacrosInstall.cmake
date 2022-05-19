@@ -207,7 +207,21 @@ macro(sofa_create_package)
     if(ARG_RELOCATABLE)
         sofa_set_project_install_relocatable(${package_install_dir} ${CMAKE_CURRENT_BINARY_DIR} ${ARG_RELOCATABLE})
     endif()
+    
+   
+    install(TARGETS ${ARGV5} EXPORT ${ARGV5})
+    export(EXPORT ${ARGV5} FILE "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Targets.cmake")
 
+    #Make sure the include directory exist, if not the target won't be include    
+    foreach(DIR ${ARG_INCLUDE_SOURCE_DIR})
+            get_filename_component(FULL_INCLUDE_DIR "${DIR}" REALPATH BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+            
+            if(${FULL_INCLUDE_DIR} MATCHES ${CMAKE_CURRENT_SOURCE_DIR})
+                    file(MAKE_DIRECTORY ${FULL_INCLUDE_DIR})
+            endif()
+    endforeach()
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include/${ARG_PACKAGE_NAME})
+    
     sofa_install_git_infos(${ARG_PACKAGE_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro()
 
