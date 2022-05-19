@@ -85,7 +85,7 @@ public :
         if (templateString.empty())
         {
             const std::string header = "SparseLDLSolver(" + std::string(arg->getAttribute("name", "")) + ")";
-            msg_warning(header) << "Template is empty\n"
+            msg_info(header) << "Template is empty\n"
                                 << "By default " << helper::NameDecoder::getClassName<T>() << " uses blocks with a single double (to handle all cases of simulations).\n"
                                 << "If you are using only 3D DOFs, you may consider using blocks of Matrix3 to speedup the calculations.\n"
                                 << "If it is the case, add " << "template=\"CompressedRowSparseMatrixMat3x3d\" " << "to this object in your scene\n"
