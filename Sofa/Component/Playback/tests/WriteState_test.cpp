@@ -27,7 +27,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>

@@ -30,8 +30,8 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
@@ -49,7 +49,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 {
     typedef _MultiMapping Mapping;
     typedef typename Mapping::In In;
-    typedef component::container::MechanicalObject<In> InDOFs;
+    typedef component::statecontainer::MechanicalObject<In> InDOFs;
     typedef typename InDOFs::Real  Real;
     typedef typename InDOFs::Deriv  InDeriv;
     typedef typename InDOFs::VecCoord  InVecCoord;
@@ -62,7 +62,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     typedef Data<InVecDeriv> InDataVecDeriv;
 
     typedef typename Mapping::Out Out;
-    typedef component::container::MechanicalObject<Out> OutDOFs;
+    typedef component::statecontainer::MechanicalObject<Out> OutDOFs;
     typedef typename OutDOFs::Coord     OutCoord;
     typedef typename OutDOFs::Deriv     OutDeriv;
     typedef typename OutDOFs::VecCoord  OutVecCoord;

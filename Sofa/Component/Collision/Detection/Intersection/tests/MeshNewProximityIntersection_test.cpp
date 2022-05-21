@@ -22,8 +22,8 @@
 
 #include <gtest/gtest.h>
 
-#include <SofaMeshCollision/MeshNewProximityIntersection.h>
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
@@ -36,7 +36,7 @@ namespace sofa{
     {
         typedef sofa::type::Vector3 Vec3;
         typedef sofa::type::Vector2 Vec2;
-        typedef sofa::component::collision::MeshNewProximityIntersection ProximityIntersection;
+        typedef sofa::component::collision::detection::intersection::MeshNewProximityIntersection ProximityIntersection;
 
         MeshNewProximityIntersectionTest(){
         }
