@@ -311,7 +311,8 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 # SOFA-NG: make everybody be able to use Sofa.Component.Compat
-if(TARGET Sofa.Component.Compat)
+sofa_find_package(Sofa.Component.Compat QUIET)
+if(SOFA_CORE_HAVE_SOFA_COMPONENT_COMPAT)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Compat)
 endif()
 

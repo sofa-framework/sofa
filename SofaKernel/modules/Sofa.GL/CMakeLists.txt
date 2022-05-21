@@ -6,7 +6,7 @@ set(SOFAGLSRC_ROOT "src/sofa/gl")
 sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)
 sofa_find_package(GLEW BOTH_SCOPES REQUIRED)
 sofa_find_package(Sofa.Helper REQUIRED)
-sofa_find_package(Sofa.Defaulttype REQUIRED)
+sofa_find_package(Sofa.DefaultType REQUIRED)
 
 set(HEADER_FILES
     ${SOFAGLSRC_ROOT}/config.h.in

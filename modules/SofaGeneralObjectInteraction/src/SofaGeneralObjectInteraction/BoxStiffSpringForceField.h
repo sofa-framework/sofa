@@ -21,10 +21,10 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralObjectInteraction/config.h>
-#include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/simulation/Node.h>
-#include <SofaEngine/BoxROI.h>
-#include <SofaGeneralEngine/NearestPointROI.h>
+#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/engine/select/NearestPointROI.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -57,10 +57,10 @@ public:
         context->findLinkDest(mstate1, object1, nullptr);
         context->findLinkDest(mstate2, object2, nullptr);
 
-        sofa::type::fixed_array<typename engine::BoxROI<DataTypes>::SPtr, 2> boxes;
+        sofa::type::fixed_array<typename engine::select::BoxROI<DataTypes>::SPtr, 2> boxes;
         for (const auto* mstate : {mstate1, mstate2})
         {
-            auto boxROI = sofa::core::objectmodel::New<engine::BoxROI<DataTypes> >();
+            auto boxROI = sofa::core::objectmodel::New<engine::select::BoxROI<DataTypes> >();
             const std::size_t id = mstate != mstate1;
             boxes[id] = boxROI;
             boxROI->setName("box_" + mstate->getName());
@@ -76,7 +76,7 @@ public:
             }
         }
 
-        auto np = sofa::core::objectmodel::New<sofa::component::engine::NearestPointROI<DataTypes> >(mstate1, mstate2);
+        auto np = sofa::core::objectmodel::New<sofa::component::engine::select::NearestPointROI<DataTypes> >(mstate1, mstate2);
         np->f_radius.setValue(std::numeric_limits<typename DataTypes::Real>::max());
         np->setName(helper::NameDecoder::shortName(np->getClassName()));
         if (context)
@@ -87,7 +87,7 @@ public:
         np->d_inputIndices1.setParent(&boxes[0]->d_indices);
         np->d_inputIndices2.setParent(&boxes[1]->d_indices);
 
-        auto springs = sofa::core::objectmodel::New<sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> >(mstate1, mstate2);
+        auto springs = sofa::core::objectmodel::New<sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes> >(mstate1, mstate2);
         springs->d_indices1.setParent(&np->f_indices1);
         springs->d_indices2.setParent(&np->f_indices2);
         springs->d_lengths.setParent(&np->d_distances);

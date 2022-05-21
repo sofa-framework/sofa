@@ -181,8 +181,8 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
     message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 
-    add_subdirectory(framework/Compat)
-    add_subdirectory(Component/Compat)
+    add_subdirectory(Sofa/framework/Compat)
+    add_subdirectory(Sofa/Component/Compat)
 
     # Deprecated (hollow) framework and component modules
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
