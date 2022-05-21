@@ -29,17 +29,13 @@ list(APPEND SOURCE_FILES
     AffinePatch_test.cpp
     )
 
-sofa_find_package(SofaFramework REQUIRED)
-sofa_find_package(SofaMiscForceField REQUIRED)
-sofa_find_package(SofaMiscMapping REQUIRED)
-sofa_find_package(SofaMiscFem REQUIRED)
-sofa_find_package(SofaMiscCollision REQUIRED)
-sofa_find_package(SofaComponentAll REQUIRED)
+sofa_find_package(Sofa.Framework REQUIRED)
+sofa_find_package(Sofa.Component REQUIRED)
 sofa_find_package(SceneCreator REQUIRED)
 sofa_find_package(Sofa.Testing REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentAll SofaMiscForceField SofaMiscMapping SofaMiscFem SofaMiscCollision Sofa.Testing)
+target_link_libraries(${PROJECT_NAME} SceneCreator Sofa.Framework Sofa.Component Sofa.Testing)
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(
