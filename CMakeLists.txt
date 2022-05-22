@@ -162,7 +162,19 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 ### Extlibs
 add_subdirectory(extlibs)
 
-### SOFA
+
+### Compatibility
+option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
+
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    message("Using legacy headers is enabled.")
+    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
+
+    add_subdirectory(Sofa/framework/Compat)
+    add_subdirectory(Sofa/Component/Compat)
+endif()
+
+### SOFA (framework and components)
 add_subdirectory(Sofa)
 
 option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
@@ -178,16 +190,12 @@ add_subdirectory(SofaGui)
 option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
 
 if(SOFA_ENABLE_LEGACY_HEADERS)
-    message("Using legacy headers is enabled.")
-    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
-
-    add_subdirectory(Sofa/framework/Compat)
-    add_subdirectory(Sofa/Component/Compat)
-
     # Deprecated (hollow) framework and component modules
+    # some modules still contains (maybe useful) components still not in Sofa/
+    # TODO: finally empty those remnants
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase) 
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
     add_subdirectory(modules)
 

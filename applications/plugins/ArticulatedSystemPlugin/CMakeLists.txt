@@ -29,11 +29,12 @@ set(SOURCE_FILES
     )
 
 find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.Controller REQUIRED)
 
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Core)
+target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Core Sofa.Component.Controller)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
