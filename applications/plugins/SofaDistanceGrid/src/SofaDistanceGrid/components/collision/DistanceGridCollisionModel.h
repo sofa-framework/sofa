@@ -550,7 +550,7 @@ public:
         {
             //TODO(dmarchal):2017-05-26 This comment may become a conditional code.
             // add velocity visualization
-            /*        sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
+            /*        sofa::component::visual::DrawV* visu = new sofa::component::visual::DrawV;
                     this->child->addObject(visu);
                     visu->useAlpha.setValue(true);
                     visu->vscale.setValue(this->model->getContext()->getDt());
