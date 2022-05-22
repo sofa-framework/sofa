@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaHaptics LANGUAGES CXX)
 
-sofa_find_package(SofaConstraint REQUIRED)
-
 set(HEADER_FILES
     src/SofaHaptics/config.h
     src/SofaHaptics/initSofaHaptics.h
@@ -26,8 +24,12 @@ set(EXTRA_FILES
     README.md
     )
 
+find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Solver)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

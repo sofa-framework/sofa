@@ -185,6 +185,9 @@ endif()
 add_subdirectory(Sofa/GUI)
 # SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
 add_subdirectory(SofaGui)
+# SofaValidation and SofaHaptics are not converted yet
+sofa_add_plugin(modules/SofaHaptics SofaHaptics ON)
+sofa_add_plugin(modules/SofaValidation SofaValidation ON)
 
 ### Compatibility
 option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
