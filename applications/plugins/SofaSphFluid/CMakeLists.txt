@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaSphFluid VERSION 1.0)
 
-sofa_find_package(SofaBase REQUIRED)
-sofa_find_package(SofaMeshCollision REQUIRED)
-sofa_find_package(SofaOpenglVisual QUIET)
+#sofa_find_package(SofaBase REQUIRED)
+#sofa_find_package(SofaMeshCollision REQUIRED)
+#sofa_find_package(SofaOpenglVisual QUIET)
 sofa_find_package(Sofa.GL QUIET)
  
 set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/config.h.in
     ${PLUGIN_SPH_SRC_DIR}/ParticleSink.h
-	${PLUGIN_SPH_SRC_DIR}/ParticleSink.inl
+    ${PLUGIN_SPH_SRC_DIR}/ParticleSink.inl
     ${PLUGIN_SPH_SRC_DIR}/ParticleSource.h
 	${PLUGIN_SPH_SRC_DIR}/ParticleSource.inl
     ${PLUGIN_SPH_SRC_DIR}/ParticlesRepulsionForceField.h
@@ -58,7 +58,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SPH_FLUID")
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics SofaMeshCollision)
+# target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics SofaMeshCollision)
 
 if(SofaOpenglVisual_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)

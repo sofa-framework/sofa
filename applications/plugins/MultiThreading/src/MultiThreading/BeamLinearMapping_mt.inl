@@ -59,13 +59,13 @@ namespace mapping
     {
         simulation::TaskScheduler::getInstance()->init();
         
-        BeamLinearMapping< TIn, TOut>::init();
+        linear::BeamLinearMapping< TIn, TOut>::init();
     }
     
     template <class TIn, class TOut>
     void BeamLinearMapping_mt< TIn, TOut>::bwdInit()
     {
-        BeamLinearMapping< TIn, TOut>::bwdInit();
+        linear::BeamLinearMapping< TIn, TOut>::bwdInit();
     }
     
     
@@ -156,7 +156,7 @@ namespace mapping
         else
         {
             
-            BeamLinearMapping<TIn,TOut>::apply( mparams, _out, _in );
+            linear::BeamLinearMapping<TIn,TOut>::apply( mparams, _out, _in );
             
         }
         
@@ -247,7 +247,7 @@ namespace mapping
         else
         {
             
-            BeamLinearMapping<TIn,TOut>::applyJ( params, _out, _in );
+            linear::BeamLinearMapping<TIn,TOut>::applyJ( params, _out, _in );
             
         }
         
@@ -334,7 +334,7 @@ namespace mapping
         else
         {
             
-            BeamLinearMapping<TIn,TOut>::applyJT( mparams, _out, _in );
+            linear::BeamLinearMapping<TIn,TOut>::applyJT( mparams, _out, _in );
             
         }
         

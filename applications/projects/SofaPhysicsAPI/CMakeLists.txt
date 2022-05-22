@@ -23,54 +23,16 @@ set(SOURCE_FILES
     # main.cpp
 )
 
-find_package(SofaGui REQUIRED)
-
-# Are all these modules (formerly SofaGeneral) necessary?
-find_package(SofaBoundaryCondition REQUIRED)
-find_package(SofaConstraint REQUIRED)
-find_package(SofaGeneralAnimationLoop REQUIRED)
-find_package(SofaGeneralDeformable REQUIRED)
-find_package(SofaGeneralEngine REQUIRED)
-find_package(SofaGeneralExplicitOdeSolver REQUIRED)
-find_package(SofaGeneralImplicitOdeSolver REQUIRED)
-find_package(SofaGeneralLinearSolver REQUIRED)
-find_package(SofaGeneralLoader REQUIRED)
-find_package(SofaGeneralMeshCollision REQUIRED)
-find_package(SofaGeneralObjectInteraction REQUIRED)
-find_package(SofaGeneralRigid REQUIRED)
-find_package(SofaGeneralSimpleFem REQUIRED)
-find_package(SofaGeneralTopology REQUIRED)
-find_package(SofaGeneralVisual REQUIRED)
-find_package(SofaGraphComponent REQUIRED)
-find_package(SofaTopologyMapping REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-
-find_package(SceneCreator REQUIRED)
-find_package(SofaValidation REQUIRED)
-sofa_find_package(SofaSimulationCommon REQUIRED)
+find_package(Sofa.Simulation.Common REQUIRED)
+sofa_find_package(Sofa.Component REQUIRED)
+sofa_find_package(Sofa.GUI.Common REQUIRED)
+sofa_find_package(SceneCreator REQUIRED)
+sofa_find_package(SofaValidation REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGui SceneCreator SofaValidation SofaSimulationCommon)
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    SofaBoundaryCondition
-    SofaConstraint
-    SofaGeneralAnimationLoop
-    SofaGeneralDeformable
-    SofaGeneralEngine
-    SofaGeneralExplicitOdeSolver
-    SofaGeneralImplicitOdeSolver
-    SofaGeneralLinearSolver
-    SofaGeneralLoader
-    SofaGeneralMeshCollision
-    SofaGeneralObjectInteraction
-    SofaGeneralRigid
-    SofaGeneralSimpleFem
-    SofaGeneralTopology
-    SofaGeneralVisual
-    SofaGraphComponent
-    SofaTopologyMapping
-    SofaUserInteraction
-    )
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common Sofa.GUI.Common SceneCreator SofaValidation)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPHYSICSAPI_VERSION})
 
 ## Install rules and CMake package configurations files

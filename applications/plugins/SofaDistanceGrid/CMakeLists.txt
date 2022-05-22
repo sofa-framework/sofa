@@ -53,15 +53,14 @@ set(EXTRA_FILES
     )
 
 
-sofa_find_package(MiniFlowVR QUIET)
-find_package(SofaMeshCollision REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaMiscCollision REQUIRED)
+find_package(MiniFlowVR QUIET)
+sofa_find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Component.Collision REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision)
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
