@@ -9,7 +9,7 @@ if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
-find_package(Sofa.SimulationCore QUIET REQUIRED)
+find_package(Sofa.Simulation.Core QUIET REQUIRED)
 find_package(Sofa.Component.Visual QUIET REQUIRED)
 find_package(Sofa.Component.Setting QUIET REQUIRED)
 
