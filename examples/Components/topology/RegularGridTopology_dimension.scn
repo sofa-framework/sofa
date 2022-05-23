@@ -29,7 +29,7 @@
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-30 -10 -10" computeHexaList="0"/>
         <MechanicalObject template="Vec3d" name="Hexa" />
         <UniformMass template="Vec3d,double" name="default25" vertexMass="10" />
-        <HexahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="500" assembling="0" />
+        <HexahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="500" />
         <BoxROI template="Vec3d" name="box_roi" box="-31 9 -11 -9 11 11" indices="0" drawSize="0" />
         <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
 
