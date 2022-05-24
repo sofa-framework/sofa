@@ -389,30 +389,6 @@ SReal UniformMass<VecTypes>::getGravitationalPotentialEnergyRigidImpl(const core
     return e;
 }
 
-template <class VecTypes>
-template <class T>
-void UniformMass<VecTypes>::addMDxToVectorVecImpl(linearalgebra::BaseVector *resVect,
-                                                     const VecDeriv* dx,
-                                                     SReal mFact,
-                                                     unsigned int& offset)
-{
-    unsigned int derivDim = (unsigned)Deriv::size();
-    double m = d_vertexMass.getValue();
-
-    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
-
-    const SReal* g = getContext()->getGravity().ptr();
-
-    for (unsigned int i=0; i<indices.size(); i++)
-        for (unsigned int j=0; j<derivDim; j++)
-        {
-            if (dx != nullptr)
-                resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j] * (*dx)[indices[i]][0]);
-            else
-                resVect->add(offset + indices[i] * derivDim + j, mFact * m * g[j]);
-        }
-}
-
 
 template<> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3Types>::constructor_message()
@@ -471,15 +447,6 @@ template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Vec6Types>::draw(const core::visual::VisualParams* vparams)
 {
     drawVec6Impl<Vec6Types>(vparams) ;
-}
-
-template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Vec3Types>::addMDxToVector(linearalgebra::BaseVector *resVect,
-                                                     const VecDeriv* dx,
-                                                     SReal mFact,
-                                                     unsigned int& offset)
-{
-    addMDxToVectorVecImpl<Vec3Types>(resVect, dx,mFact,offset) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API

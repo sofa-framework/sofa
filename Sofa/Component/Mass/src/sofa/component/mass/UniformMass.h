@@ -140,6 +140,7 @@ public:
     SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
     type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#29XX)", "v22.12", "Removing the addMDxToVector function related to the gravity")
     void addMDxToVector(linearalgebra::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override; /// Add Mass contribution to global Matrix assembling
@@ -196,12 +197,6 @@ private:
 
     template <class T>
     void loadFromFileRigidImpl(const std::string& filename) ;
-
-    template <class T>
-    void addMDxToVectorVecImpl(linearalgebra::BaseVector *resVect,
-                               const VecDeriv* dx,
-                               SReal mFact,
-                               unsigned int& offset);
 
 };
 

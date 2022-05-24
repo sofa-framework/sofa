@@ -411,19 +411,6 @@ void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
         a[indices[i]] = f[indices[i]] / m;
 }
 
-
-template <class DataTypes>
-void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect,
-                                                        const VecDeriv* dx,
-                                                        SReal mFact,
-                                                        unsigned int& offset )
-{
-    SOFA_UNUSED(resVect);
-    SOFA_UNUSED(dx);
-    SOFA_UNUSED(mFact);
-    SOFA_UNUSED(offset);
-}
-
 template <class DataTypes>
 void UniformMass<DataTypes>::addGravitationalForce ( const core::MechanicalParams* mparams, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
 {
