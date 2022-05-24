@@ -25,12 +25,12 @@ set(SOURCE_FILES
 
 find_package(Sofa.Simulation.Common REQUIRED)
 sofa_find_package(Sofa.Component REQUIRED)
-sofa_find_package(Sofa.GUI.Common REQUIRED)
+sofa_find_package(SofaGui REQUIRED)
 sofa_find_package(SceneCreator REQUIRED)
 sofa_find_package(SofaValidation REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common Sofa.GUI.Common SceneCreator SofaValidation)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common SofaGui SceneCreator SofaValidation)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPHYSICSAPI_VERSION})

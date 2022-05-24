@@ -25,7 +25,7 @@
 #include <Geomagic/config.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 
 //force feedback
 #include <SofaHaptics/ForceFeedback.h>

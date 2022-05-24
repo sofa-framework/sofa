@@ -31,7 +31,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/gl/DrawToolGL.h>
-#include <SofaBaseVisual/InteractiveCamera.h>
+#include <sofa/component/visual/InteractiveCamera.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/simulation/Node.h>
 
@@ -87,7 +87,7 @@ protected:
     sofa::simulation::Simulation* m_Simulation;
     sofa::simulation::Node::SPtr m_RootNode;
     std::string sceneFileName;
-    sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
+    sofa::component::visual::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
 
