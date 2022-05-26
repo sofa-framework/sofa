@@ -16,6 +16,3 @@ add_subdirectory(framework)
 
 ### Component
 add_subdirectory(Component)
-
-### Plugins
-add_subdirectory(plugins)
