@@ -21,7 +21,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_GRAVITYFORCEFIELD_CPP
 
-#include <sofa/component/mechanicalload/GravityForceField.inl>
+// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+//#include <sofa/component/mechanicalload/GravityForceField.inl> // TO UNCOMMENT
+#include "GravityForceField.inl" // TO REMOVE
+
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -42,12 +45,12 @@ int GravityForceFieldClass = core::RegisterObject("Gravity as an external force 
         .add< GravityForceField<Rigid2Types> >()
 
         ;
+
 template class SOFA_CORE_API GravityForceField<Vec3Types>;
 template class SOFA_CORE_API GravityForceField<Vec2Types>;
 template class SOFA_CORE_API GravityForceField<Vec1Types>;
 template class SOFA_CORE_API GravityForceField<Vec6Types>;
 template class SOFA_CORE_API GravityForceField<Rigid3Types>;
 template class SOFA_CORE_API GravityForceField<Rigid2Types>;
-
 
 } // namespace sofa::component::mechanicalload

@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-//#include <sofa/component/mechanicalload/config.h>
-
+// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+//#include <sofa/component/mechanicalload/config.h> // TO UNCOMMENT
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/type/Vec.h>
