@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
 
-// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
 #include <sofa/core/ObjectFactory.h> // TO REMOVE
 
 namespace sofa::core::behavior
@@ -172,7 +172,7 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); BaseForceField::removeInNode(node); return true; }
 
 
-    // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+    // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
