@@ -34,6 +34,7 @@
 namespace sofa::component::linearsolver::direct
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::linearsolver::direct
 
 #cmakedefine01 SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS

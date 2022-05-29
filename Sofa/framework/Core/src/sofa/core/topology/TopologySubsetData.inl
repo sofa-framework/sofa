@@ -34,7 +34,6 @@ namespace sofa::core::topology
 template <typename TopologyElementType, typename VecT>
 TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
     : sofa::core::topology::TopologyData< TopologyElementType, VecT >(data)
-    , m_isConcerned(false)
 {
 
 }
@@ -82,50 +81,57 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
     const sofa::type::vector<sofa::type::vector<SReal> >& coefs)
 {
-    if (!this->getSparseDataStatus()) {
-        this->m_lastElementIndex += nbElements;
-        return;
-    }
+    sofa::type::vector< TopologyElementType > elems; 
+    elems.resize(nbElements);
 
-    // Using default values
-    container_type& data = *(this->beginEdit());
-
-    Size size = data.size();
-    data.resize(size + nbElements);
-    
-    // Call for specific callback if handler has been set
-    if (this->p_onCreationCallback)
-    {
-        value_type t;
-        for (std::size_t i = 0; i < nbElements; ++i)
-        {
-            if (ancestors.empty() || coefs.empty())
-            {
-                const sofa::type::vector< Index > empty_vecint;
-                const sofa::type::vector< SReal > empty_vecdouble;
-
-                this->p_onCreationCallback(Index(size + i), t, TopologyElementType(), empty_vecint, empty_vecdouble);
-            }
-            else 
-            {
-                this->p_onCreationCallback(Index(size + i), t, TopologyElementType(), ancestors[i], coefs[i]);
-            }
-        }
-    }
-    this->endEdit();
-
-    // update map if needed
-    addPostProcess(nbElements);
+    return this->add(nbElements, elems, ancestors, coefs);    
 }
 
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
-    const sofa::type::vector< TopologyElementType >&,
+    const sofa::type::vector< TopologyElementType >& elems,
     const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
     const sofa::type::vector<sofa::type::vector<SReal> >& coefs)
 {
-    this->add(nbElements, ancestors, coefs);
+    // Track TopologyData last index before applying changes. special case if id is invalid == start with empty buffer
+    int LastDataId = (this->m_lastElementIndex == sofa::InvalidID) ? -1 : int(this->m_lastElementIndex);
+
+    // if no new element are added to this subset. Just update the lastElementIndex for future deletion
+    if (!this->isNewTopologyElementsSupported())
+    {
+        this->m_lastElementIndex = Index(LastDataId + nbElements);
+        return;
+    }
+
+    helper::WriteOnlyAccessor<Data<container_type> > data = this;
+
+    // first resize the subsetData. value will be applied in the loop using callbacks
+    Size size = data.size();
+    data.resize(size + nbElements);
+    
+
+    if (this->p_onCreationCallback)
+    {
+        for (std::size_t i = 0; i < nbElements; ++i)
+        {
+            Index id = Index(size + i);
+            value_type& t = data[id];
+            
+            // update map if needed
+            addPostProcess(LastDataId + i + 1);
+
+            this->p_onCreationCallback(id, t, elems[i], 
+                (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
+                (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i]);
+
+        }
+    }
+    else
+    {
+        this->m_lastElementIndex = Index(LastDataId + nbElements);
+    }
+
 }
 
 
@@ -136,9 +142,10 @@ void TopologySubsetData <TopologyElementType, VecT>::add(const sofa::type::vecto
     const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
-    SOFA_UNUSED(elems);
     SOFA_UNUSED(ancestorElems);
-    this->add(index.size(), ancestors, coefs);
+
+    const sofa::Size nbElements = index.size();
+    this->add(nbElements, elems, ancestors, coefs);
 }
 
 
@@ -154,51 +161,39 @@ void TopologySubsetData <TopologyElementType, VecT>::move(const sofa::type::vect
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::type::vector<Index>& index)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data<container_type> > data = this;
     
-    unsigned int cptDone = 0;
-    Index last = data.size() - 1;
-
-    // check for each element remove if it concern this subsetData
-    for (Index idRemove : index)
+    // check for each element index to remove if it concern this subsetData
+    for (Index elemId : index)
     {
-        Index idElem = sofa::InvalidID;
+        // Check if this element is inside the subset map
+        Index dataId = this->indexOfElement(elemId);
         
-        idElem = this->indexOfElement(idRemove);
-        if (idElem != sofa::InvalidID) // index in the map, need to update the subsetData
+        if (dataId != sofa::InvalidID) // index in the map, need to update the subsetData
         {
+            // if in the map, apply callback if set
             if (this->p_onDestructionCallback)
             {
-                this->p_onDestructionCallback(idElem, data[idElem]);
+                this->p_onDestructionCallback(dataId, data[dataId]);
             }
 
-            this->swap(idElem, last);
-            cptDone++;
-            if (last == 0)
-                break;
-            else
-                --last;
+            // Like in topological change, will swap before poping back
+            Index lastDataId = data.size() - 1;
+            this->swap(dataId, lastDataId);
+
+            // Remove last subsetData element and update the map
+            data.resize(lastDataId);
+            removePostProcess(lastDataId);
         }
 
-        // need to check if lastIndex in the map        
-        idElem = this->indexOfElement(this->m_lastElementIndex);
-        if (idElem != sofa::InvalidID)
+        // Need to check if last element index is in the map. If yes need to replace that value to follow topological changes
+        dataId = this->indexOfElement(this->m_lastElementIndex);
+        if (dataId != sofa::InvalidID)
         {
-            updateLastIndex(idElem, idRemove);
+            updateLastIndex(dataId, elemId);
         }
         this->m_lastElementIndex--;
     }
-
-    if (cptDone != 0)
-    {
-        sofa::Size nbElements = 0;
-        if (cptDone < data.size()) {
-            nbElements = data.size() - cptDone;
-        }
-        data.resize(nbElements);
-        removePostProcess(nbElements);
-    }
-    this->endEdit();
 }
 
 template <typename TopologyElementType, typename VecT>
@@ -240,13 +235,10 @@ void TopologySubsetData <TopologyElementType, VecT>::removePostProcess(sofa::Siz
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologySubsetData <TopologyElementType, VecT>::addPostProcess(sofa::Size nbElements)
+void TopologySubsetData<TopologyElementType, VecT>::addPostProcess(sofa::Index dataLastId)
 {
-    for (unsigned int i = 0; i < nbElements; ++i)
-    {
-        this->m_lastElementIndex++;
-        m_map2Elements.push_back(this->m_lastElementIndex);
-    }
+    this->m_lastElementIndex = dataLastId;
+    m_map2Elements.push_back(dataLastId);
 }
 
 

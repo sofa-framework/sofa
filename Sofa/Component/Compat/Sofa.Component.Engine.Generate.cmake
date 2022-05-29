@@ -1,4 +1,5 @@
 set(SOFAGENERALENGINE_SRC src/SofaGeneralEngine)
+set(SOFAMISCEXTRA_SRC src/SofaMiscExtra)
 
 list(APPEND HEADER_FILES
     ${SOFAGENERALENGINE_SRC}/GroupFilterYoungModulus.h
@@ -39,4 +40,5 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALENGINE_SRC}/Spiral.inl
     ${SOFAGENERALENGINE_SRC}/GenerateRigidMass.h
     ${SOFAGENERALENGINE_SRC}/GenerateRigidMass.inl
+    ${SOFAMISCEXTRA_SRC}/MeshTetraStuffing.h
 )

@@ -1637,8 +1637,16 @@ public:
     void recalc()
     {
         inertiaMassMatrix = inertiaMatrix * mass;
-        invInertiaMatrix = 1/(inertiaMatrix);
-        invInertiaMassMatrix = 1/(inertiaMassMatrix);
+        if (inertiaMatrix == 0.)
+        {
+            throw std::runtime_error("Attempt to divide by zero");
+        }
+        invInertiaMatrix = 1. / inertiaMatrix;
+        if (inertiaMassMatrix == 0.)
+        {
+            throw std::runtime_error("Attempt to divide by zero");
+        }
+        invInertiaMassMatrix = 1. / inertiaMassMatrix;
     }
     inline friend std::ostream& operator << (std::ostream& out, const RigidMass<2,Real>& m )
     {

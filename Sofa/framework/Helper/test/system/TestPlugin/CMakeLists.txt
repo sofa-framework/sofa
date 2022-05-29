@@ -15,7 +15,7 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} Sofa.Core Sofa.DefaultType)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

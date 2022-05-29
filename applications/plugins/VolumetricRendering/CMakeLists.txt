@@ -20,7 +20,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} Sofa.Helper SofaOpenglVisual)
 
 # Add the include DIR from OpenHaptics to target
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")
