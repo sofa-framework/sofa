@@ -540,7 +540,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     //{ "UniformMass", Pluginized("v20.12", "SofaBaseMechanics") },
 
     /***********************/
-    // REMOVED SINCE v21.12
+    // REMOVED SINCE v22.06
 
     { "Gravity", Removed("v22.06", "v22.06") },
 
