@@ -25,6 +25,9 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
 
+// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+#include <sofa/core/ObjectFactory.h> // TO REMOVE
+
 namespace sofa::core::behavior
 {
 
@@ -168,6 +171,56 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }
     bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); BaseForceField::removeInNode(node); return true; }
 
+
+    // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+    template<class T>
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+
+        const sofa::core::objectmodel::BaseContext::Vec3& gravity = context->getRootContext()->getGravity();
+        SReal gravityNorm = gravity.norm();
+        if(gravityNorm!=0.0)
+        {
+            bool savePLog = context->f_printLog.getValue();
+            context->f_printLog.setValue(true);
+            msg_info(context) << "A gravity seem to apply in the node \"" << context->getName() << "\" using the deprecated gravity mechanism (read more in PR#XXXX)." << msgendl
+                               << "A GravityForceField is automatically added in the node \"" << context->getName() << "\".";
+            context->f_printLog.setValue(savePLog);
+
+            const sofa::Size dim = context->getMechanicalState()->getDerivDimension();
+            const std::string templated = context->getMechanicalState()->getTemplateName();
+            std::string gravity_string;
+
+            if(dim == 1)
+                gravity_string = std::to_string(gravity[0]);
+            else if(dim == 2)
+                gravity_string = std::to_string(gravity[0])+" "+std::to_string(gravity[1]);
+            else
+                gravity_string = std::to_string(gravity[0])+" "+std::to_string(gravity[1])+" "+std::to_string(gravity[2]);
+
+
+            sofa::core::objectmodel::BaseObjectDescription desc("GravityForceField","GravityForceField");
+            desc.setAttribute("template", templated);
+            desc.setAttribute("gravitationalAcceleration", gravity_string);
+
+            /// Create the object.
+            BaseObject::SPtr obj = sofa::core::ObjectFactory::getInstance()->createObject(context, &desc);
+            if (obj==nullptr)
+            {
+                std::stringstream msg;
+                msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
+                for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
+                    msg << " " << *it << msgendl ;
+                msg_error(context) << msg.str() ;
+                return nullptr;
+            }
+        }
+
+        return obj;
+    }
 };
 
 
