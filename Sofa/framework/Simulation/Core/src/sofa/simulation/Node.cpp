@@ -169,6 +169,17 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
         objDesc.setAttribute("displayFlags", oldFlags);
         sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
     }
+
+    // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#XXXX)", "v22.12", "Transition removing gravity and introducing GravityForceField")
+    const char* gravityStr = arg->getAttribute("gravity", nullptr);
+    if (gravityStr != nullptr)
+    {
+        msg_warning() << "A \"gravity\" data has been detected in the context of your node \"" << name << "\": this data is DEPRECATED since PR#XXXX." << msgendl
+                       "Note that the gravity should now be applied using a GravityForceField for each object." << msgendl
+                       "To remove this warning:" << msgendl
+                       "     - remove the \"gravity\" data from all nodes" << msgendl
+                       "     - add a GravityForceField with the data \"gravitationalAcceleration\" for each object undergoing the gravity";
+    }
 }
 
 /// Initialize the components of this node and all the nodes which depend on it.
