@@ -120,7 +120,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_IMAGE")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaBase SofaGeneralVisual CImgPlugin)
+target_link_libraries(${PROJECT_NAME} Sofa.Core SofaBase SofaGeneralVisual CImgPlugin)
 
 
 if(Sofa.GL_FOUND)

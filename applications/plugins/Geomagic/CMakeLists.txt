@@ -31,7 +31,7 @@ set(README_FILES README.txt)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction SofaHaptics SofaLoader SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} Sofa.Helper SofaUserInteraction SofaHaptics SofaLoader SofaOpenglVisual)
 if(OPENHAPTICS_FOUND)
     target_link_libraries(${PROJECT_NAME} ${OPENHAPTICS_LIBRARIES})    
     target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")
