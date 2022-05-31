@@ -24,6 +24,9 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
+// This backward compatibility will be removed at v23.06
+#define SOFAGENERALENGINE_HAVE_SOFA_GL @SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE@
+
 #define SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE @SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE@
 
 #define SOFAGENERALENGINE_VERSION @PROJECT_VERSION@
