@@ -136,8 +136,6 @@ public:
         return in;
     }
 
-    const sofa::type::vector<PointID>& getPoints() const;
-
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 
 protected:
@@ -157,10 +155,8 @@ protected:
     bool m_pointTopologyDirty = false;
 
 private:
-    
     Data<Size> nbPoints; ///< Number of points
 
-    Data<sofa::type::vector<PointID> > points; ///< List of point indices
 };
 
 } //namespace sofa::component::topology::container::dynamic
