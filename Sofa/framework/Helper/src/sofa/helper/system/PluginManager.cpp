@@ -241,6 +241,18 @@ void PluginManager::removeOnPluginLoadedCallback(const std::string& key)
     m_onPluginLoadedCallbacks.erase(key);
 }
 
+std::string PluginManager::GetPluginNameFromPath(const std::string& pluginPath)
+{
+    const auto filename = sofa::helper::system::SetDirectory::GetFileName(pluginPath.c_str());
+    const std::string::size_type pos = filename.find_last_of("." + DynamicLibrary::extension);
+    if (pos != std::string::npos)
+    {
+        return filename.substr(0,pos);
+    }
+
+    return sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());;
+}
+
 bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
 {
     std::string pluginPath = findPlugin(pluginName, suffix, ignoreCase, recursive);
@@ -304,7 +316,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     {
         // check if a plugin with a same name but a different path is loaded
         // problematic case per se but at least we can warn the user
-        const auto& pluginName = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
+        const auto& pluginName = GetPluginNameFromPath(pluginPath);
         for (auto& k : m_pluginMap)
         {
             if (pluginName == k.second.getModuleName())
@@ -465,7 +477,7 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
         pluginPath = plugin;
 
         // argument is a path but we need to check if it was not already loaded with a different path
-        const auto& pluginName = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
+        const auto& pluginName = GetPluginNameFromPath(pluginPath);
         for (const auto& [loadedPath, loadedPlugin] : m_pluginMap)
         {
             if (pluginName == loadedPlugin.getModuleName() && pluginPath != loadedPath)

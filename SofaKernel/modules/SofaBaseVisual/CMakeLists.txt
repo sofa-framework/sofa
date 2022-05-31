@@ -12,10 +12,10 @@ set(SOURCE_FILES
     ${SOFABASEVISUAL_SRC}/initSofaBaseVisual.cpp
 )
 
-sofa_find_package(Sofa.SimulationCore REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 
 message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. You may use Sofa.Component.Visual and Sofa.Component.Setting instead.")
 

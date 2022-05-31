@@ -3,6 +3,7 @@ set(SOFAMESHCOLLISION_SRC src/SofaMeshCollision)
 set(SOFACONSTRAINT_SRC src/SofaConstraint)
 set(SOFAGENERALMESHCOLLISION_SRC src/SofaGeneralMeshCollision)
 set(SOFAUSERINTERACTION_SRC src/SofaUserInteraction)
+set(SOFAMISCCOLLISION_SRC src/SofaMiscCollision)
 
 list(APPEND HEADER_FILES
     ${SOFABASECOLLISION_SRC}/BaseProximityIntersection.h
@@ -19,4 +20,5 @@ list(APPEND HEADER_FILES
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.h
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.inl
     ${SOFAUSERINTERACTION_SRC}/RayNewProximityIntersection.h
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronDiscreteIntersection.h
 )

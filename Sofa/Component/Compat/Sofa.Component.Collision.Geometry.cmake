@@ -2,6 +2,7 @@ set(SOFABASECOLLISION_SRC src/SofaBaseCollision)
 set(SOFAMESHCOLLISION_SRC src/SofaMeshCollision)
 set(SOFAUSERINTERACTION_SRC src/SofaUserInteraction)
 set(SOFAGENERALMESHCOLLISION_SRC src/SofaGeneralMeshCollision)
+set(SOFAMISCCOLLISION_SRC src/SofaMiscCollision)
 
 list(APPEND HEADER_FILES
     ${SOFABASECOLLISION_SRC}/fwd.h
@@ -25,4 +26,6 @@ list(APPEND HEADER_FILES
     ${SOFAUSERINTERACTION_SRC}/RayModel.h
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctree.h
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.h
+    ${SOFAMISCCOLLISION_SRC}/TetrahedronModel.h
+    ${SOFAMISCCOLLISION_SRC}/TriangleModelInRegularGrid.h
 )

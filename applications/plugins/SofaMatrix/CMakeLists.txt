@@ -3,16 +3,18 @@ project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 
 
 sofa_find_package(Sofa.Core REQUIRED)
-sofa_find_package(SofaConstraint REQUIRED)
-sofa_find_package(SofaSparseSolver REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
+sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 sofa_find_package(SofaGuiQt REQUIRED QUIET)
 
 set(SOFA_MODULES
-    SofaConstraint
-    SofaSparseSolver
+    Sofa.Component.Constraint.Lagrangian.Solver
+    Sofa.Component.LinearSolver.Direct
     Sofa.Core
     CImgPlugin
+    Eigen3::Eigen
 )
 
 set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
