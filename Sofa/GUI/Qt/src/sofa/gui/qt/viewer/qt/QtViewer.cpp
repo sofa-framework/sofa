@@ -156,11 +156,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     backgroundColour[1] = 1.0f;
     backgroundColour[2] = 1.0f;
 
-    // setup OpenGL mode for the window
-    //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
-    timerAnimate = new QTimer(this);
-    //connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
-
     _video = false;
     m_bShowAxis = false;
     _background = 0;
@@ -188,7 +183,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
-    connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
+    connect( &captureTimer, &QTimer::timeout, this, &QtViewer::captureEvent );
 }
 
 // ---------------------------------------------------------
