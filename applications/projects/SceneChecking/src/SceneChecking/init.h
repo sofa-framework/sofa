@@ -19,38 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckerListener.h"
+#pragma once
 
-#include <sofa/simulation/Node.h>
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-#include <SofaGraphComponent/SceneCheckUsingAlias.h>
-#include <SofaGraphComponent/SceneCheckDeprecatedComponents.h>
-#include <SofaGraphComponent/SceneCheckCollisionResponse.h>
+#include <SceneChecking/config.h>
 
-namespace sofa::simulation::_scenechecking_
+namespace sofa::scenechecking
 {
-
-SceneCheckerListener::SceneCheckerListener()
-{
-    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckDeprecatedComponents::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckCollisionResponse::newSPtr());
-}
-
-SceneCheckerListener* SceneCheckerListener::getInstance()
-{
-    static SceneCheckerListener sceneLoaderListener;
-    return &sceneLoaderListener;
-}
-
-void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
-{
-    if(node.get())
-        m_sceneChecker.validate(node.get());
-}
-
-
-} // nnamespace sofa::simulation::_scenechecking_
+	SOFA_SCENECHECKING_API void init();
+} // namespace sofa::scenechecking

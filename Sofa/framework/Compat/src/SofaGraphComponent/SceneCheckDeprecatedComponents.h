@@ -21,42 +21,32 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/config.h>
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-#include <sofa/simulation/Visitor.h>
+#if __has_include(<SceneChecking/SceneCheckDeprecatedComponents.h>)
+#include <SceneChecking/SceneCheckDeprecatedComponents.h>
+#define SCENECHECKING_SCENECHECKDEPRECATEDCOMPONENTS
 
-#include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckDeprecatedComponents.h")
 
+#else
+#error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckDeprecatedComponents.h> instead of this file."
+#endif
+
+#ifdef SCENECHECKING_SCENECHECKDEPRECATEDCOMPONENTS
 
 namespace sofa::simulation::_scenechecking_
 {
-
-/// to be able to react when a scene is loaded
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckerListener : public SceneLoader::Listener
-{
-public:
-    static SceneCheckerListener* getInstance();
-    virtual ~SceneCheckerListener() {}
-
-    virtual void rightAfterLoadingScene(NodeSPtr node) override;
-
-    // Do nothing on reload
-    virtual void rightBeforeReloadingScene() override {}
-    virtual void rightAfterReloadingScene(NodeSPtr node) override
-    {
-        SOFA_UNUSED(node);
-    }
-
-private:
-    SceneCheckerListener();
-    SceneCheckerVisitor m_sceneChecker;
-};
+    using SceneCheckDeprecatedComponents = sofa::_scenechecking_::SceneCheckDeprecatedComponents;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-using _scenechecking_::SceneCheckerListener;
-} // namespace sofa::simulation::scenechecking
+    using SceneCheckDeprecatedComponents = sofa::scenechecking::SceneCheckDeprecatedComponents;
+
+} // namespace sofa::simulation::_scenechecking_
+
+#endif // SCENECHECKING_SCENECHECKDEPRECATEDCOMPONENTS
+
+#undef SCENECHECKING_SCENECHECKDEPRECATEDCOMPONENTS

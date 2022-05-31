@@ -19,72 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckerVisitor.h"
+#pragma once
 
-#include <algorithm>
-#include <sofa/simulation/Node.h>
+#include <sofa/config.h>
+
+#if __has_include(<SceneChecking/SceneCheckAPIChange.h>)
+#include <SceneChecking/SceneCheckAPIChange.h>
+#define SCENECHECKING_SCENECHECKAPICHANGE
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckAPIChange.h")
+
+#else
+#error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckAPIChange.h> instead of this file."
+#endif
+
+#ifdef SCENECHECKING_SCENECHECKAPICHANGE
 
 namespace sofa::simulation::_scenechecking_
 {
-using sofa::core::ExecParams ;
-
-SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
-{
-
-}
-
-
-SceneCheckerVisitor::~SceneCheckerVisitor()
-{
-}
-
-
-void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
-{
-    if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
-        m_checkset.push_back(check) ;
-}
-
-
-void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
-{
-    m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
-}
-
-void SceneCheckerVisitor::validate(Node* node)
-{
-    std::stringstream tmp;
-    bool first = true;
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        tmp << (first ? "" : ", ") << check->getName() ;
-        first = false;
-    }
-    msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
-
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        check->doInit(node) ;
-    }
-
-    execute(node) ;
-
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        check->doPrintSummary() ;
-    }
-    msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
-}
-
-
-Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
-{
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        check->doCheckOn(node) ;
-    }
-
-    return RESULT_CONTINUE;
-}
+    using SceneCheckAPIChange = sofa::_scenechecking_::SceneCheckAPIChange;
+    using ChangeSetHookFunction = sofa::_scenechecking_::ChangeSetHookFunction;
 
 } // namespace sofa::simulation::_scenechecking_
+
+namespace sofa::simulation::scenechecking
+{
+    using SceneCheckAPIChange = sofa::scenechecking::SceneCheckAPIChange;
+
+} // namespace sofa::simulation::_scenechecking_
+
+#endif // SCENECHECKING_SCENECHECKAPICHANGE
+
+#undef SCENECHECKING_SCENECHECKAPICHANGE
+

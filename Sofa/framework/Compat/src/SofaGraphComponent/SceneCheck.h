@@ -21,36 +21,32 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
-#include <sofa/core/ExecParams.h>
-#include <functional>
-#include <map>
+#include <sofa/config.h>
 
-#include <sofa/simulation/Visitor.h>
+#if __has_include(<SceneChecking/SceneCheck.h>)
+#include <SceneChecking/SceneCheck.h>
+#define SCENECHECKING_SCENECHECK
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheck.h")
+
+#else
+#error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheck.h> instead of this file."
+#endif
+
+#ifdef SCENECHECKING_SCENECHECK
 
 namespace sofa::simulation::_scenechecking_
 {
-
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckerVisitor : public Visitor
-{
-public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance()) ;
-    ~SceneCheckerVisitor() override;
-
-    void validate(Node* node) ;
-    Result processNodeTopDown(Node* node) override ;
-
-    void addCheck(SceneCheck::SPtr check) ;
-    void removeCheck(SceneCheck::SPtr check) ;
-
-private:
-    std::vector<SceneCheck::SPtr> m_checkset ;
-};
+    using SceneCheck = sofa::_scenechecking_::SceneCheck;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using _scenechecking_::SceneCheckerVisitor;
-} // namespace sofa::simulation::scenechecking
+    using SceneCheck = sofa::scenechecking::SceneCheck;
+
+} // namespace sofa::simulation::_scenechecking_
+
+#endif // SCENECHECKING_SCENECHECK
+
+#undef SCENECHECKING_SCENECHECK

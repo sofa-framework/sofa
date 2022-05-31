@@ -21,40 +21,36 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
-
+#include <SceneChecking/config.h>
+#include <SceneChecking/SceneCheck.h>
+#include <sofa/core/ExecParams.h>
+#include <functional>
 #include <map>
-#include <vector>
 
-namespace sofa::simulation
-{
-    class Node;
-} //namespace sofa::simulation
+#include <sofa/simulation/Visitor.h>
 
-
-namespace sofa::simulation::_scenechecking_
+namespace sofa::_scenechecking_
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckMissingRequiredPlugin : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckerVisitor : public sofa::simulation::Visitor
 {
 public:
-    typedef std::shared_ptr<SceneCheckMissingRequiredPlugin> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
-    void doPrintSummary() override;
+    SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance()) ;
+    ~SceneCheckerVisitor() override;
 
-private:    
-    std::map<std::string, bool > m_loadedPlugins;
-    std::map<std::string, std::vector<std::string> > m_requiredPlugins;
+    void validate(sofa::simulation::Node* node) ;
+    Result processNodeTopDown(sofa::simulation::Node* node) override ;
+
+    void addCheck(SceneCheck::SPtr check) ;
+    void removeCheck(SceneCheck::SPtr check) ;
+
+private:
+    std::vector<SceneCheck::SPtr> m_checkset ;
 };
 
-} // namespace _scenechecking_
+} // namespace sofa::_scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace sofa::scenechecking
 {
-    using _scenechecking_::SceneCheckMissingRequiredPlugin;
-} // namespace sofa::simulation::scenechecking
+    using _scenechecking_::SceneCheckerVisitor;
+} // namespace sofa::scenechecking

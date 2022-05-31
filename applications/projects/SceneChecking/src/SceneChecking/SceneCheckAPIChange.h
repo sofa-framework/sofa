@@ -21,37 +21,57 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
+#include <SceneChecking/config.h>
 
+#include <SceneChecking/SceneCheck.h>
+
+#include <sofa/version.h>
+#include <string>
 #include <map>
 #include <vector>
+#include <functional>
 
-namespace sofa::simulation::_scenechecking_
+namespace sofa::simulation
 {
-    
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckUsingAlias : public SceneCheck
+    class Node;
+} // namespace sofa::simulation
+
+namespace sofa::core::objectmodel
+{
+    class Base;
+} // namespace sofa::core::objectmodel
+
+namespace sofa::_scenechecking_
+{
+
+typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
+
+class SOFA_SCENECHECKING_API SceneCheckAPIChange : public SceneCheck
 {
 public:
-    SceneCheckUsingAlias();
-    virtual ~SceneCheckUsingAlias();
+    SceneCheckAPIChange();
+    virtual ~SceneCheckAPIChange();
 
-    typedef std::shared_ptr<SceneCheckUsingAlias> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
+    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    void doInit(Node* node) override { SOFA_UNUSED(node); }
-    void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
     void doPrintSummary() override;
 
+    void installDefaultChangeSets();
+    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
 private:
-    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
+    std::string m_currentApiLevel;
+    std::string m_selectedApiLevel {"17.06"};
+
+    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
 };
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace sofa::_scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace sofa::scenechecking
 {
-    using _scenechecking_::SceneCheckUsingAlias;
-} // namespace sofa::simulation::scenechecking
-
+    using _scenechecking_::SceneCheckAPIChange;
+} // namespace sofa::component::scenechecking

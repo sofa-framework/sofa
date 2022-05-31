@@ -19,25 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include "SceneCheckerListener.h"
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
+#include <sofa/simulation/Node.h>
+#include <SceneChecking/SceneCheckMissingRequiredPlugin.h>
+#include <SceneChecking/SceneCheckDuplicatedName.h>
+#include <SceneChecking/SceneCheckUsingAlias.h>
+#include <SceneChecking/SceneCheckDeprecatedComponents.h>
+#include <SceneChecking/SceneCheckCollisionResponse.h>
 
-namespace sofa::simulation::_scenechecking_
+namespace sofa::_scenechecking_
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckDeprecatedComponents : public SceneCheck
+SceneCheckerListener::SceneCheckerListener()
 {
-public:
-    virtual ~SceneCheckDeprecatedComponents() {}
-    static std::shared_ptr<SceneCheckDeprecatedComponents> newSPtr();
+    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckDeprecatedComponents::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckCollisionResponse::newSPtr());
+}
 
-    const std::string getName() override;
-    const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
-    void doPrintSummary() override;
-};
+SceneCheckerListener* SceneCheckerListener::getInstance()
+{
+    static SceneCheckerListener sceneLoaderListener;
+    return &sceneLoaderListener;
+}
 
-} //namespace sofa::simulation::_scenechecking_
+void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
+{
+    if(node.get())
+        m_sceneChecker.validate(node.get());
+}
+
+
+} // nnamespace sofa::_scenechecking_
