@@ -20,18 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaBoundaryCondition_test/config.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mass/UniformMass.h>
 #include <SceneCreator/SceneCreator.h>
-#include <SofaBoundaryCondition/ConstantForceField.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/mechanicalload/ConstantForceField.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
@@ -44,7 +43,7 @@ using namespace modeling;
 using core::objectmodel::New;
 
 template<typename DataTypes>
-void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<DataTypes>& /*dofs*/)
+void createUniformMass(simulation::Node::SPtr node, component::statecontainer::MechanicalObject<DataTypes>& /*dofs*/)
 {
     node->addObject(New<component::mass::UniformMass<DataTypes> >());
 }
@@ -53,9 +52,9 @@ template <typename _DataTypes>
 struct FixedConstraint_test : public BaseTest
 {
     typedef _DataTypes DataTypes;
-    typedef component::projectiveconstraintset::FixedConstraint<DataTypes> FixedConstraint;
-    typedef component::forcefield::ConstantForceField<DataTypes> ForceField;
-    typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef component::constraint::projective::FixedConstraint<DataTypes> FixedConstraint;
+    typedef component::mechanicalload::ConstantForceField<DataTypes> ForceField;
+    typedef component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
 
     typedef typename MechanicalObject::VecCoord  VecCoord;
@@ -79,9 +78,7 @@ struct FixedConstraint_test : public BaseTest
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vector3(0,0,0) );
 
-#if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
-        simpleapi::createObject(root , "RequiredPlugin", {{"name", "SofaSparseSolver"}}) ;
-#endif
+        simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.LinearSolver.Direct"}}) ;
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test", integrationScheme);
 
@@ -165,8 +162,8 @@ struct FixedConstraint_test : public BaseTest
         dofs->resize(nbrDofs);
         
         /// Add PointSetTopology
-        auto tCon = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyContainer>();
-        auto tMod = sofa::core::objectmodel::New<sofa::component::topology::PointSetTopologyModifier>();
+        auto tCon = sofa::core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyContainer>();
+        auto tMod = sofa::core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyModifier>();
         tCon->setNbPoints(nbrDofs);
         node->addObject(tCon);
         node->addObject(tMod);
@@ -261,13 +258,11 @@ TYPED_TEST( FixedConstraint_test , testValueExplicit )
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
-#if SOFABOUNDARYCONDITION_TEST_HAVE_SOFASPARSESOLVER
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8, std::string("Implicit_SparseLDL")) );
 }
-#endif
 
 TYPED_TEST(FixedConstraint_test, testTopologicalChanges)
 {

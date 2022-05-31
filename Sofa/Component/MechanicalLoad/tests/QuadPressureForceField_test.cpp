@@ -21,9 +21,9 @@
 ******************************************************************************/
 
 //Force field
-#include <SofaBoundaryCondition/QuadPressureForceField.h>
+#include <sofa/component/mechanicalload/QuadPressureForceField.h>
 
-#include <SofaSimpleFem_test/ForceFieldTestCreation.h>
+#include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 
 
 namespace sofa {
@@ -47,7 +47,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
     VecCoord x;
     VecDeriv v,f;
 
-    QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFABOUNDARYCONDITION_TEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
+    QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFA_COMPONENT_MECHANICALLOAD_TEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
     {
         // potential energy is not implemented and won't be tested
         this->flags &= ~Inherited::TEST_POTENTIAL_ENERGY;
@@ -106,7 +106,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 
 // Types to instantiate.
 typedef ::testing::Types<
-    component::forcefield::QuadPressureForceField<defaulttype::Vec3Types>
+    component::mechanicalload::QuadPressureForceField<defaulttype::Vec3Types>
 > TestTypes;
 
 

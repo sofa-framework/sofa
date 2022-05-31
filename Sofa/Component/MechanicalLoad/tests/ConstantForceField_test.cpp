@@ -39,7 +39,7 @@ using sofa::testing::NumericTest;
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
@@ -47,11 +47,11 @@ using sofa::simulation::Node ;
 #include <sofa/defaulttype/RigidTypes.h>
 using namespace sofa::defaulttype;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-using sofa::component::container::MechanicalObject ;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using sofa::component::statecontainer::MechanicalObject ;
 
-#include <SofaBoundaryCondition/ConstantForceField.h>
-using sofa::component::forcefield::ConstantForceField ;
+#include <sofa/component/mechanicalload/ConstantForceField.h>
+using sofa::component::mechanicalload::ConstantForceField ;
 using sofa::core::execparams::defaultInstance; 
 
 template <typename TDataType, typename TMassType>

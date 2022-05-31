@@ -24,11 +24,11 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
+#include <sofa/component/constraint/projective/SkeletalMotionConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -55,9 +55,9 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
     typedef typename DataTypes::CRot CRot;
     typedef typename Coord::value_type Real;
 
-    typedef projectiveconstraintset::SkeletalMotionConstraint<DataTypes> SkeletalMotionConstraint;
-    typedef projectiveconstraintset::SkeletonJoint<DataTypes> SkeletonJoint;
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef constraint::projective::SkeletalMotionConstraint<DataTypes> SkeletalMotionConstraint;
+    typedef constraint::projective::SkeletonJoint<DataTypes> SkeletonJoint;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests

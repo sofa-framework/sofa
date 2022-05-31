@@ -21,9 +21,9 @@
 ******************************************************************************/
 
 //Force field
-#include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaSimpleFem_test/ForceFieldTestCreation.h>
+#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
 
+#include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 
 namespace sofa {
 
@@ -46,7 +46,7 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
     VecCoord x;
     VecDeriv v,f;
 
-    TrianglePressureForceField_test(): Inherited::ForceField_test(std::string(SOFABOUNDARYCONDITION_TEST_SCENES_DIR) + "/" + "TrianglePressureForceField.scn")
+    TrianglePressureForceField_test(): Inherited::ForceField_test(std::string(SOFA_COMPONENT_MECHANICALLOAD_TEST_SCENES_DIR) + "/" + "TrianglePressureForceField.scn")
     {
         // potential energy is not implemented and won't be tested
         this->flags &= ~Inherited::TEST_POTENTIAL_ENERGY;
@@ -104,7 +104,7 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
 
 // Types to instantiate.
 typedef ::testing::Types<
-    component::forcefield::TrianglePressureForceField<defaulttype::Vec3Types>
+    component::mechanicalload::TrianglePressureForceField<defaulttype::Vec3Types>
 > TestTypes;
 
 

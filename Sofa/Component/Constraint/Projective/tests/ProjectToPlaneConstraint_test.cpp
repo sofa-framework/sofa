@@ -24,13 +24,14 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
+#include <sofa/component/constraint/projective/ProjectToPlaneConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
+
 
 
 namespace sofa {
@@ -39,11 +40,11 @@ using namespace defaulttype;
 
 
 
-/**  Test suite for ProjectToLineConstraint.
+/**  Test suite for ProjectToPlaneConstraint.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
+struct ProjectToPlaneConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -52,10 +53,10 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
-    typedef projectiveconstraintset::ProjectToLineConstraint<DataTypes> ProjectToLineConstraint;
-    typedef typename ProjectToLineConstraint::Indices Indices;
-    typedef component::topology::PointSetTopologyContainer PointSetTopologyContainer;
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef constraint::projective::ProjectToPlaneConstraint<DataTypes> ProjectToPlaneConstraint;
+    typedef typename ProjectToPlaneConstraint::Indices Indices;
+    typedef component::topology::container::dynamic::PointSetTopologyContainer PointSetTopologyContainer;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
@@ -63,11 +64,11 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
     unsigned numNodes;                         ///< number of particles used for the test
     Indices indices;                           ///< indices of the nodes to project
     CPos origin;                               ///< origin of the plane to project to
-    CPos direction;                            ///< direction of the line to project to
-    typename ProjectToLineConstraint::SPtr projection;
+    CPos normal;                               ///< normal of the plane to project to
+    typename ProjectToPlaneConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
-    /// Create the context for the tests.
+    /// Create the context for the matrix tests.
     void SetUp() override
     {
 //        if( sofa::simulation::getSimulation()==nullptr )
@@ -82,7 +83,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
         dofs = core::objectmodel::New<MechanicalObject>();
         root->addObject(dofs);
 
-        projection = core::objectmodel::New<ProjectToLineConstraint>();
+        projection = core::objectmodel::New<ProjectToPlaneConstraint>();
         root->addObject(projection);
 
         /// Set the values
@@ -92,8 +93,8 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
 
         origin = CPos(0,0,0);
         projection->f_origin.setValue(origin);
-        direction = CPos(1,1,1);
-        projection->f_direction.setValue(direction);
+        normal = CPos(1,1,1);
+        projection->f_normal.setValue(normal);
 
     }
 
@@ -145,8 +146,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
        {
            if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
-              Real scal = crossprod*crossprod; // null if x is on the line
+              Real scal = (x[i]-origin)*normal; // null if x is in the plane
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
@@ -180,10 +180,9 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
        typename Indices::const_iterator it = indices.begin(); // must be sorted
        for(unsigned i=0; i<numNodes; i++ )
        {
-          if ((it!=indices.end()) && ( i==*it ))  // constrained particle
+           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos crossprod = v[i].cross(direction); // should be parallel
-              Real scal = crossprod.norm(); // null if v is ok
+              Real scal = v[i]*normal; // null if v is in the plane
               if( !this->isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
@@ -221,9 +220,9 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_SUITE(ProjectToLineConstraint_test, DataTypes);
+TYPED_TEST_SUITE(ProjectToPlaneConstraint_test, DataTypes);
 // first test case
-TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
+TYPED_TEST( ProjectToPlaneConstraint_test , oneConstrainedParticle )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
@@ -231,7 +230,7 @@ TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 // next test case
-TYPED_TEST( ProjectToLineConstraint_test , allParticlesConstrained )
+TYPED_TEST( ProjectToPlaneConstraint_test , allParticlesConstrained )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
@@ -241,4 +240,5 @@ TYPED_TEST( ProjectToLineConstraint_test , allParticlesConstrained )
 
 
 } // namespace sofa
+
 

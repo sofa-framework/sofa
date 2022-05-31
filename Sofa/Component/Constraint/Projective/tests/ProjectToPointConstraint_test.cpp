@@ -24,11 +24,11 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBoundaryCondition/ProjectToPointConstraint.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
+#include <sofa/component/constraint/projective/ProjectToPointConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -54,10 +54,10 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
-    typedef projectiveconstraintset::ProjectToPointConstraint<DataTypes> ProjectToPointConstraint;
+    typedef constraint::projective::ProjectToPointConstraint<DataTypes> ProjectToPointConstraint;
     typedef typename ProjectToPointConstraint::SetIndexArray Indices;
-    typedef component::topology::PointSetTopologyContainer PointSetTopologyContainer;
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef component::topology::container::dynamic::PointSetTopologyContainer PointSetTopologyContainer;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests

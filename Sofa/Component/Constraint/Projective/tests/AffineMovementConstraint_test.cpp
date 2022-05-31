@@ -24,15 +24,15 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaDeformable/MeshSpringForceField.h>
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
+#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/RandomGenerator.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaBaseTopology_test/RegularGridNodeCreation.h>
+#include <sofa/component/topology/testing/RegularGridNodeCreation.h>
 
 
 using namespace sofa::type;
@@ -51,8 +51,8 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
-    typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename component::interactionforcefield::MeshSpringForceField<DataTypes> MeshSpringForceField;
+    typedef component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename component::solidmechanics::spring::MeshSpringForceField<DataTypes> MeshSpringForceField;
 
     /// Root of the scene graph
     simulation::Node::SPtr root;

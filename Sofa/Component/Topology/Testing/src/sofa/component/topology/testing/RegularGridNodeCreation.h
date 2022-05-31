@@ -22,12 +22,12 @@
 
 #include <sofa/simulation/Node.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaGeneralEngine/PairBoxRoi.h>
-#include <SofaEngine/BoxROI.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/engine/select/PairBoxRoi.h>
+#include <sofa/component/engine/select/BoxROI.h>
 
 
 namespace sofa
@@ -40,7 +40,7 @@ template<class T>
 struct PatchTestStruct
 {
     simulation::Node::SPtr SquareNode;
-    typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
+    typename component::constraint::projective::AffineMovementConstraint<T>::SPtr affineConstraint;
     typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
 };
 
@@ -63,11 +63,11 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     typedef typename DataTypes::Real Real;
     typedef typename component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename sofa::component::mass::UniformMass <DataTypes> UniformMass;
-    typedef component::topology::RegularGridTopology RegularGridTopology;
-    typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
-    typedef typename sofa::component::engine::PairBoxROI<DataTypes> PairBoxRoi;
-    typedef typename component::projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
-    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+    typedef component::topology::container::grid::RegularGridTopology RegularGridTopology;
+    typedef typename component::engine::select::BoxROI<DataTypes> BoxRoi;
+    typedef typename sofa::component::engine::select::PairBoxROI<DataTypes> PairBoxRoi;
+    typedef typename component::constraint::projective::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
+    typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     // Root node
     root->setGravity({ 0,0,0 });
@@ -78,7 +78,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     simulation::Node::SPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
-    component::odesolver::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");

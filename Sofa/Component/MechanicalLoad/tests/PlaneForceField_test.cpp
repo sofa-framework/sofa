@@ -23,7 +23,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
@@ -33,19 +33,18 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
 using sofa::core::execparams::defaultInstance; 
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-
-#include <SofaBoundaryCondition/PlaneForceField.h>
+#include <sofa/component/mechanicalload/PlaneForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/component/mass/UniformMass.h>
 
-#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
+#include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
 
 #include <map>
 
@@ -67,16 +66,16 @@ using std::pair;
 
 using sofa::component::linearsolver::GraphScatteredMatrix ;
 using sofa::component::linearsolver::GraphScatteredVector ;
-using sofa::component::linearsolver::CGLinearSolver ;
+using sofa::component::linearsolver::iterative::CGLinearSolver ;
 
 using sofa::simulation::graph::DAGSimulation ;
 
 using sofa::component::mass::UniformMass ;
-using sofa::component::forcefield::PlaneForceField ;
+using sofa::component::mechanicalload::PlaneForceField ;
 
-using sofa::component::container::MechanicalObject ;
+using sofa::component::statecontainer::MechanicalObject ;
 
-using sofa::component::odesolver::EulerImplicitSolver ;
+using sofa::component::odesolver::backward::EulerImplicitSolver ;
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple

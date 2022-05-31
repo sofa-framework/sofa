@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
@@ -20,103 +19,104 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaBoundaryCondition/PointConstraint.h>
+#include <sofa/component/constraint/projective/PartialFixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mass/UniformMass.h>
 #include <SceneCreator/SceneCreator.h>
-#include <SofaBoundaryCondition/ConstantForceField.h>
+#include <sofa/component/mechanicalload/ConstantForceField.h>
 
 
 namespace sofa{
 namespace {
 using namespace modeling;
+using namespace core::objectmodel;
 
 template<typename DataTypes>
-void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<DataTypes>& /*dofs*/)
+void createUniformMass(simulation::Node::SPtr node, component::statecontainer::MechanicalObject<DataTypes>& /*dofs*/)
 {
-    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<DataTypes> >());
+    node->addObject(New<component::mass::UniformMass<DataTypes> >());
 }
 
 template <typename _DataTypes>
-struct PointConstraint_test : public BaseSimulationTest
+struct PartialFixedConstraint_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
-    typedef component::projectiveconstraintset::PointConstraint<DataTypes> PointConstraint;
-    typedef component::forcefield::ConstantForceField<DataTypes> ForceField;
-    typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename DataTypes::Real  Real;
+
+    typedef component::constraint::projective::PartialFixedConstraint<DataTypes> PartialFixedConstraint;
+    typedef component::mechanicalload::ConstantForceField<DataTypes> ForceField;
+    typedef component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     typedef typename MechanicalObject::VecCoord  VecCoord;
     typedef typename MechanicalObject::Coord  Coord;
     typedef typename MechanicalObject::VecDeriv  VecDeriv;
     typedef typename MechanicalObject::Deriv  Deriv;
-    typedef typename DataTypes::Real  Real;
     typedef sofa::type::fixed_array<bool,Deriv::total_size> VecBool;
 
-    bool test(double epsilon)
+    bool test(double epsilon, const std::string &integrationScheme )
     {
-        //Init
+        typename sofa::component::statecontainer::MechanicalObject<DataTypes>::SPtr  mstate;
 
-        simulation::Simulation* simulation;
+        /// Scene initialization
+        sofa::simulation::Simulation* simulation;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-        Deriv force;
-        for(unsigned i=0; i<force.size(); i++)
-            force[i]=50;
-
-        /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vector3(0,0,0) );
+        simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitSolver", integrationScheme);
 
-        simulation::Node::SPtr node = createEulerSolverNode(root,"test");
+        mstate = New<sofa::component::statecontainer::MechanicalObject<DataTypes> >();
+        mstate->resize(1);
+        node->addObject(mstate);
+        createUniformMass<DataTypes>(node, *mstate.get());
 
-        typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
-        dofs->resize(2);
+        Deriv force;
+        size_t sizeD = force.size();
+        for(unsigned i=0; i<sizeD; i++)
+        {
+            force[i]=10;
+        }
 
-        createUniformMass<DataTypes>(node, *dofs.get());
+        VecBool fixed;
+        for(unsigned i=0; i<sizeD; i++)
+        {
+            fixed[i]=false;
+        }
 
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
         forceField->setForce( 0, force );
-
-        typename PointConstraint::SPtr constraint = addNew<PointConstraint>(node);
-
+        typename PartialFixedConstraint::SPtr constraint = addNew<PartialFixedConstraint>(node);
 
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
-        unsigned int dofsNbr = dofs->getSize();
-        type::vector<unsigned int> fixed_indices;
-
-        for(unsigned i=0; i<dofsNbr; i++)
+        for(unsigned i=0; i<sizeD; i++)
         {
-            fixed_indices.push_back(i);
-        }
+            fixed[i] = true;
+            constraint->d_fixedDirections.setValue(fixed);
 
-        constraint->f_indices.setValue(fixed_indices);
-        for(unsigned i=0; i<dofsNbr; i++)
-        {
             // Perform one time step
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
 
             // Check if the particle moved in a fixed direction
-            typename MechanicalObject::ReadVecDeriv readV = dofs->readVelocities();
-            for (unsigned int j = 0; j < readV[i].size(); ++j) {
-                if( readV[i][j]>epsilon )
-                {
-                    ADD_FAILURE() << "Error: non null velocity in direction " << j << std::endl;
-                    return false;
-                }
+            typename MechanicalObject::ReadVecDeriv readV = mstate->readVelocities();
+            if( readV[0][i] > epsilon )
+            {
+                ADD_FAILURE() << "position (index " << i << ") changed, fixed direction did not work" << std::endl;
+                return false;
             }
 
             sofa::simulation::getSimulation()->reset(root.get());
+            fixed[i] = false;
         }
 
+        simulation::getSimulation()->unload(root);
         return true;
     }
 };
@@ -124,24 +124,29 @@ struct PointConstraint_test : public BaseSimulationTest
 // Define the list of DataTypes to instanciate
 using ::testing::Types;
 typedef Types<
-    defaulttype::Vec3Types
+    defaulttype::Vec1Types,
+    defaulttype::Vec2Types,
+    defaulttype::Vec3Types,
+    defaulttype::Vec6Types,
+    defaulttype::Rigid2Types,
+    defaulttype::Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_SUITE(PointConstraint_test, DataTypes);
-// first test case
-TYPED_TEST( PointConstraint_test , testValue )
+TYPED_TEST_SUITE(PartialFixedConstraint_test, DataTypes);
+
+// test cases
+TYPED_TEST( PartialFixedConstraint_test , testContraintExplicit )
 {
     EXPECT_MSG_NOEMIT(Error) ;
-    EXPECT_TRUE(  this->test(1e-8) );
+    EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
+}
+
+TYPED_TEST( PartialFixedConstraint_test , testContraintImplicit )
+{
+    EXPECT_MSG_NOEMIT(Error) ;
+    EXPECT_TRUE(  this->test(1e-8, std::string("Implicit")) );
 }
 
 }// namespace
 }// namespace sofa
-
-
-
-
-
-
-
