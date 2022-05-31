@@ -24,6 +24,7 @@
 #include "RealGUI.h"
 #include "FileManagement.h"
 
+#include "QSofaListView.h"
 #include <iostream>
 #include <sstream>
 
@@ -40,12 +41,12 @@
 namespace sofa::gui::qt
 {
 
-  AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent, bool , Qt::WindowFlags ): list_object(list_object_)
+AddObject::AddObject( std::vector< std::string > *list_object_,
+                      QSofaListView* parent, bool , Qt::WindowFlags ): list_object(list_object_)
 {
     setupUi(this);
     //At the creation of the dialog window, we enable the custom object
     custom->setChecked(true);
-
 
     //Creation of the list of radio button corresponding to the preset objects: they are specified in the sofa/scenes/object.txt file
     if (list_object != nullptr)
@@ -86,9 +87,10 @@ namespace sofa::gui::qt
     openFilePath->setText(nullptr);
 
     //Make the connection between this widget and the parent
-    connect( this, SIGNAL(loadObject(std::string, double, double, double, double, double, double,double)), parent, SLOT(loadObject(std::string, double, double, double,double, double, double, double)));
+    connect( this, &AddObject::loadObject, parent, &QSofaListView::loadObject);
+
     //For tje Modifications of the state of the radio buttons
-    connect( buttonGroup, SIGNAL( clicked(bool) ), this, SLOT (buttonUpdate(bool)));
+    connect( buttonGroup, &QGroupBox::clicked, this, &AddObject::buttonUpdate);
 }
 
 //**************************************************************************************

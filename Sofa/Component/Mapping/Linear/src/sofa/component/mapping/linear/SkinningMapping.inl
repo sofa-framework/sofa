@@ -366,7 +366,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
             for ( unsigned int m=0 ; m<nbref && m_weights[i][m]>0.; m++ )
             {
-                colorVector.push_back( sofa::type::RGBAColor( m_weights[i][m],m_weights[i][m],0,1 ));
+                colorVector.emplace_back( m_weights[i][m],m_weights[i][m], 0.f, 1.f );
                 vertices.push_back(sofa::type::Vector3( xfrom[index[i][m]].getCenter() ));
                 vertices.push_back(sofa::type::Vector3( xto[i] ));
             }

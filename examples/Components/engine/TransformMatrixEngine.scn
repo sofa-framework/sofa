@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node name="Root">
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [InvertTransformMatrixEngine RotateTransformMatrixEngine ScaleTransformMatrixEngine TranslateTransformMatrixEngine] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->

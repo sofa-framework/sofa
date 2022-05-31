@@ -1,5 +1,6 @@
 <Node name="root">
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglFloat4Variable OglFloatVariable OglIntVariable OglShader OglShaderDefineMacro OglTexture] -->
 	<Node name="oglModels">
     <OglShader fragFilename="shaders/generalRenderingShader.frag" vertFilename="shaders/generalRenderingShader.vert" />
     <OglShaderDefineMacro id="PERLIN_NOISE_COLOR" />

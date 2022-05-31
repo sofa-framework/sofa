@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
+sofa_add_application(SceneChecking SceneChecking ON)
 sofa_add_application(Modeler Modeler OFF)
 
 sofa_add_application(getDeprecatedComponents getDeprecatedComponents OFF)
