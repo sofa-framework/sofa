@@ -79,6 +79,7 @@ struct FixedConstraint_test : public BaseTest
         root->setGravity( type::Vector3(0,0,0) );
 
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.LinearSolver.Direct"}}) ;
+        simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.ODESolver.Backward"}}) ;
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test", integrationScheme);
 
