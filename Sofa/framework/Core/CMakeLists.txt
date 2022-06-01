@@ -119,6 +119,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
     ${SRC_ROOT}/objectmodel/BaseObject.h
+    ${SRC_ROOT}/objectmodel/BasePrefab.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
@@ -245,6 +246,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
     ${SRC_ROOT}/objectmodel/BaseObject.cpp
+    ${SRC_ROOT}/objectmodel/BasePrefab.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
