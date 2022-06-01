@@ -148,10 +148,7 @@ if(MultiThreading_FOUND)
 endif()
 
 if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(image_test)
-    endif()
+    add_subdirectory(image_test)
 endif()
 
 if(Sofa.GUI.Qt_FOUND)
