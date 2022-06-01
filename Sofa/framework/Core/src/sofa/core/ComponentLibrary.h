@@ -54,7 +54,8 @@ public:
     const std::string& getDescription()              const { return description;}
     const std::string& getCategory()                 const { return categoryName;}
     const std::vector< std::string >& getTemplates() const { return templateName;}
-    const ClassEntry::SPtr  getEntry()               const { return entry;}
+    const ClassEntry::SPtr getEntry()                const { return entry;}
+    const std::string& getDocString() const { return docstring; }
 
 protected:
     //--------------------------------------------
@@ -63,6 +64,7 @@ protected:
     std::vector< std::string > templateName;
     std::string description;
     std::string categoryName;
+    std::string docstring;
     ClassEntry::SPtr entry;
 };
 }

@@ -28,6 +28,8 @@
 #include "QDataDescriptionWidget.h"
 #include "QTabulationModifyObject.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/SofaLibrary.h>
+using sofa::core::ObjectInfoRegistry;
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
@@ -165,7 +167,6 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
         addData(component, group, data);
     }
 
-
     // add links
     const sofa::core::objectmodel::Base::VecLink& links = base->getLinks();
     for(sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it != links.end(); ++it)
@@ -185,6 +186,8 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
         // finally, add the data
         addLink(component, group, link);
     }
+
+    std::cout << "MINCE EEE " << std::endl;
 
     // add info
     {
@@ -372,6 +375,13 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
 
     // Class
     core::ObjectFactory::ClassEntry entry = core::ObjectFactory::getInstance()->getEntry(base->getClassName());
+
+    auto objectInfo = ObjectInfoRegistry::getObjectInfo(base->getClassName());
+    std::cout << "I have this object Info "  << std::endl;
+    if(objectInfo)
+    {
+        std::cout << "I have this object Info " << objectInfo->getDescription() << std::endl;
+    }
     if(!entry.creatorMap.empty())
     {
         QTreeWidgetItem *classItem = new QTreeWidgetItem(groupItem);

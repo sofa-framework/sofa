@@ -76,8 +76,6 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         std::pair< IteratorInventory,IteratorInventory > rangeCategory;
         rangeCategory = inventory.equal_range(categoryName);
 
-
-
         const unsigned int numComponentInCategory = (unsigned int)inventory.count(categoryName);
         CategoryLibrary *category = createCategory(categoryName,numComponentInCategory);
 
@@ -111,8 +109,7 @@ void SofaLibrary::addCategory(CategoryLibrary *category)
     categories.push_back(category);
 }
 
-
-std::string SofaLibrary::getComponentDescription( const std::string &componentName ) const
+std::string SofaLibrary::getComponentDescription( const std::string &componentName )
 {
     const ComponentLibrary *component = getComponent(componentName);
     if (component) return component->getDescription();
@@ -138,7 +135,10 @@ const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentN
         const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
         for (std::size_t comp=0; comp<components.size(); ++comp)
         {
-            if (componentName == components[comp]->getName()) return components[comp];
+            if (componentName == components[comp]->getName())
+            {
+                return components[comp];
+            }
         }
     }
     return nullptr;
@@ -152,6 +152,51 @@ void SofaLibrary::clear()
     }
     categories.clear();
 }
+
+class SofaLibraryCache : public SofaLibrary
+{
+public:
+    ComponentLibrary* getComponent(const std::string& componentName)
+    {
+        auto componentLocation = m_componentsInfo.find(componentName);
+        if( componentLocation != m_componentsInfo.end() )
+        {
+            int categoryIndex = std::get<0>(componentLocation->second);
+            int componentIndex = std::get<1>(componentLocation->second);
+            return categories[categoryIndex]->getComponents()[componentIndex];
+        }
+
+        for (std::size_t cat=0; cat<categories.size(); ++cat)
+        {
+            //For each category, look at all the components if one has the name wanted
+            const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
+            for (std::size_t comp=0; comp<components.size(); ++comp)
+            {
+                if (componentName == components[comp]->getName())
+                {
+                    m_componentsInfo[componentName] = std::tuple<size_t,size_t>(cat, comp);
+                    return components[comp];
+                }
+            }
+            std::cout << "HELLO WORLD" << std::endl;
+        }
+        return nullptr;
+    }
+};
+
+SofaLibraryCache* s_library;
+const ComponentLibrary* ObjectInfoRegistry::getObjectInfo(const std::string& objectName)
+{
+    if(!s_library)
+    {
+        s_library = new SofaLibraryCache();
+        s_library->build();
+    }
+    std::cout << "HELLO WORLD" << std::endl;
+
+    return s_library->getComponent(objectName);
+}
+
 
 }
 }

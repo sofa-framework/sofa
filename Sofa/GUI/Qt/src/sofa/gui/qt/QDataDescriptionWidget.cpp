@@ -28,7 +28,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-
+#include <sofa/core/SofaLibrary.h>
+using sofa::core::ObjectInfoRegistry;
 
 namespace sofa::gui::qt
 {
@@ -129,8 +130,6 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         }
         tabLayout->addWidget( box );
     }
-
-
 
     //Extra description
     std::vector<sofa::core::objectmodel::BaseData*> selecteddatum ;

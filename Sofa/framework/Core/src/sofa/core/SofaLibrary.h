@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
+#pragma once
 
 #include "CategoryLibrary.h"
 
-
-namespace sofa
+namespace sofa::core
 {
-
-namespace core
-{
-
 
 /**
  *  \brief An Generic Library
@@ -50,7 +44,7 @@ public:
     virtual void build(const std::vector< std::string >& examples=std::vector< std::string >());
     virtual void clear();
 
-    std::string getComponentDescription( const std::string &componentName) const;
+    std::string getComponentDescription( const std::string &componentName);
 
     const VecCategory& getCategories() const {return categories;};
 
@@ -60,7 +54,8 @@ public:
 
 protected:
     virtual CategoryLibrary *createCategory(const std::string &category,
-                                            unsigned int /* numCategory */) {
+                                            unsigned int /* numCategory */)
+    {
         return new CategoryLibrary(category);
     }
     virtual void addCategory(CategoryLibrary *);
@@ -68,11 +63,17 @@ protected:
 
     VecCategory categories;
     std::vector< std::string > exampleFiles;
-    unsigned int numComponents;
 
+    std::map<std::string, std::tuple<size_t, size_t>> m_componentsInfo;
+
+    unsigned int numComponents;
+};
+
+class ObjectInfoRegistry
+{
+public:
+    static const ComponentLibrary* getObjectInfo(const std::string& objectName);
 };
 
 }
-}
 
-#endif

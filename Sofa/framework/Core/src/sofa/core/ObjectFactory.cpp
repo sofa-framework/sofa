@@ -589,6 +589,9 @@ RegisterObject::operator int()
     {
         ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
         reg.description += entry.description;
+
+        std::cout << "Hello world: " << entry.className << std::endl;
+
         reg.authors += entry.authors;
         reg.license += entry.license;
         if (!entry.defaultTemplate.empty())

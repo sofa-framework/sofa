@@ -39,7 +39,7 @@ std::string caseInsensitive(const std::string &text)
 //-------------------------------------------------------------------------------------------------------
 ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::string &categoryN, ClassEntry::SPtr e, const std::vector< std::string > &exampleFiles):  name(componentN), categoryName(categoryN),entry(e)
 {
-
+    docstring = entry->description;
     description  = std::string("<H2>")  + entry->className + std::string(": ");
 
     std::vector< std::string > possiblePaths;
