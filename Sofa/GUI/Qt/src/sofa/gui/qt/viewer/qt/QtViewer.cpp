@@ -87,7 +87,7 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(static_cast<int>(nbMSAASamples));
     }
 
-    if(!SOFAGUI_ENABLE_NATIVE_MENU)
+    if(!SOFA_GUI_QT_ENABLE_VSYNC)
     {
         f.setSwapInterval(0); // disable vertical refresh sync
     }
