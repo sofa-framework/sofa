@@ -5,7 +5,7 @@
 set(SOFASIMULATION_MODULES @SOFASIMULATION_MODULES@)
 
 message(DEPRECATION
-    " @PROJECT_NAME@ is deprecated.\n"
+    " @PROJECT_NAME@ is deprecated. It will be removed in v23.06.\n"
     " You must now explicitely find (find_package) and link (target_link_library) the modules you need within: \n"
     " ${SOFASIMULATION_MODULES}"
 )
