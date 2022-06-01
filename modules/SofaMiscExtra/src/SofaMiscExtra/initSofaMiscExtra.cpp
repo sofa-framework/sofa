@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaMiscExtra/initSofaMiscExtra.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,10 @@ void initSofaMiscExtra()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaMiscExtra") << "SofaMiscExtra is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Generate instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Generate");
+
         first = false;
     }
 }

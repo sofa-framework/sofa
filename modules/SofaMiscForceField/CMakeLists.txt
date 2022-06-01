@@ -12,13 +12,9 @@ set(SOURCE_FILES
     ${SOFAMISCFORCEFIELD_SRC}/initSofaMiscForceField.cpp
     )
 
-sofa_find_package(SofaFramework REQUIRED) # SofaHelper
-sofa_find_package(SofaBaseMechanics REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics)
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mass and Sofa.Component.SolidMechanics.Spring instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Mass and Sofa.Component.SolidMechanics.Spring instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Mass REQUIRED)

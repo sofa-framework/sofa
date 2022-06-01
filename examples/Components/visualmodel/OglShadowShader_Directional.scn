@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <Node 	 name="root"  dt="0.02"  >
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaBaseVisual"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [DirectionalLight LightManager OglShadowShader] -->
 
 	<BackgroundSetting color="0.5 0.5 0.5" />
 	<MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj"  translation="0 0 -5"  scale3d="0.3 0.3 0.3" handleSeams="1" />

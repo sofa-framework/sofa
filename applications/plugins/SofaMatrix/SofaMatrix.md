@@ -62,7 +62,7 @@ Qt widget.
 
 #### Link to Linear Solver
 
-GlobalSystemMatrixImage must have a link to a linear solver (a component inhereting from `sofa::core::behavior::LinearSolver`).
+GlobalSystemMatrixImage must have a link to a linear solver (a component inheriting from `sofa::core::behavior::LinearSolver`).
 
 The link can be explicit. Example:
 ```xml
@@ -80,3 +80,19 @@ A use case is available in the examples folder.
 #### Screenshot
 
 ![GlobalSystemMatrixImage](doc/GlobalSystemMatrixImage.png)
+
+
+### FillReducingOrdering
+
+This component reorders the degrees of freedom in a mesh in order to reduce fill-in in sparse matrix factorization.
+Two methods of reordering are available:
+1) Metis
+2) Approximate minimum degree (AMD) from Eigen
+
+The example `FillReducingOrdering.scn` shows how to use this component.
+In this simulation, the same object is simulated twice:
+1) No reordering method is applied
+2) A reordering method is applied
+
+It can be observed that the number of non-zero values in the matrix decomposition is about 80% lower when the vertices are reordered.
+It results to a faster matrix system resolution.

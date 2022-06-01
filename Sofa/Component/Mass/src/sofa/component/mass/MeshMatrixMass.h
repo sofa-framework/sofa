@@ -148,7 +148,8 @@ public:
         m_massTopologyType = t;
     }
 
-    int getMassCount() {
+    std::size_t getMassCount() const
+    {
         return d_vertexMass.getValue().size();
     }
 

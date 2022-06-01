@@ -7,6 +7,7 @@ set(SOURCE_FILES
     KdTree_test.cpp
     NameDecoder_test.cpp
     narrow_cast_test.cpp
+    TagFactory_test.cpp
     Utils_test.cpp
     io/MeshOBJ_test.cpp
     io/XspLoader_test.cpp

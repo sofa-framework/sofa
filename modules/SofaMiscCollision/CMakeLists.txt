@@ -27,30 +27,16 @@ set(EXTRA_FILES
     )
 
 list(APPEND HEADER_FILES
-    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.h
-    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.inl
     ${SOFAMISCCOLLISION_SRC}/DefaultCollisionGroupManager.h
     ${SOFAMISCCOLLISION_SRC}/RayTriangleVisitor.h
-    ${SOFAMISCCOLLISION_SRC}/RuleBasedContactManager.h
     ${SOFAMISCCOLLISION_SRC}/SolverMerger.h
-    ${SOFAMISCCOLLISION_SRC}/TetrahedronDiscreteIntersection.h
-    ${SOFAMISCCOLLISION_SRC}/TetrahedronModel.h
-    ${SOFAMISCCOLLISION_SRC}/TriangleModelInRegularGrid.h
 )
 
 list(APPEND SOURCE_FILES
-    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.cpp
+
     ${SOFAMISCCOLLISION_SRC}/DefaultCollisionGroupManager.cpp
     ${SOFAMISCCOLLISION_SRC}/RayTriangleVisitor.cpp
-    ${SOFAMISCCOLLISION_SRC}/RuleBasedContactManager.cpp
-    ${SOFAMISCCOLLISION_SRC}/DefaultCollisionGroupManager.cpp
     ${SOFAMISCCOLLISION_SRC}/SolverMerger.cpp
-    ${SOFAMISCCOLLISION_SRC}/TetrahedronBarycentricPenalityContact.cpp
-    ${SOFAMISCCOLLISION_SRC}/TetrahedronDiscreteIntersection.cpp
-    ${SOFAMISCCOLLISION_SRC}/TetrahedronFrictionContact.cpp
-    ${SOFAMISCCOLLISION_SRC}/TetrahedronModel.cpp
-    ${SOFAMISCCOLLISION_SRC}/TetrahedronRayContact.cpp
-    ${SOFAMISCCOLLISION_SRC}/TriangleModelInRegularGrid.cpp
 
 )
 
@@ -58,17 +44,17 @@ message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaBaseCollision SofaBaseMechanics)
-if(SofaSphFluid_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaSphFluid)
-endif()
-if(SofaDistanceGrid_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDistanceGrid)
-endif()
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection and Sofa.Component.Collision.Response.Contact instead.
+    Moreover, OBB and Capsule-related components have been moved into the external plugin CollisionOBBCapsule.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Geometry)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Intersection)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Contact)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
