@@ -40,8 +40,8 @@ using std::vector;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
-#include <SofaGraphComponent/SceneCheckerListener.h>
-using sofa::simulation::scenechecking::SceneCheckerListener;
+#include <SceneChecking/SceneCheckerListener.h>
+using sofa::scenechecking::SceneCheckerListener;
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>

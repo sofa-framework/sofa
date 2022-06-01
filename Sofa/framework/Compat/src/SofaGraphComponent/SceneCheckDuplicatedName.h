@@ -21,37 +21,32 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/config.h>
 
-#include <iostream>
-#include <string>
-#include <map>
-#include <memory>
+#if __has_include(<SceneChecking/SceneCheckDuplicatedName.h>)
+#include <SceneChecking/SceneCheckDuplicatedName.h>
+#define SCENECHECKING_SCENECHECKDUPLICATEDNAME
 
-namespace sofa::simulation
-{
-    class Node;
-} // namespace sofa::simulation
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckDuplicatedName.h")
+
+#else
+#error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckDuplicatedName.h> instead of this file."
+#endif
+
+#ifdef SCENECHECKING_SCENECHECKDUPLICATEDNAME
 
 namespace sofa::simulation::_scenechecking_
 {
-
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheck
-{
-public:
-    virtual ~SceneCheck() {}
-
-    typedef std::shared_ptr<SceneCheck> SPtr;
-    virtual const std::string getName() = 0;
-    virtual const std::string getDesc() = 0;
-    virtual void doInit(Node* node) { SOFA_UNUSED(node); }
-    virtual void doCheckOn(Node* node) = 0;
-    virtual void doPrintSummary() {}
-};
+    using SceneCheckDuplicatedName = sofa::_scenechecking_::SceneCheckDuplicatedName;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using _scenechecking_::SceneCheck;
-} // namespace sofa::simulation::scenechecking
+    using SceneCheckDuplicatedName = sofa::scenechecking::SceneCheckDuplicatedName;
+
+} // namespace sofa::simulation::_scenechecking_
+
+#endif // SCENECHECKING_SCENECHECKDUPLICATEDNAME
+
+#undef SCENECHECKING_SCENECHECKDUPLICATEDNAME

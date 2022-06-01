@@ -3,6 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
+find_package(Sofa.Simulation.Core QUIET REQUIRED)
 find_package(Sofa.GL QUIET REQUIRED)
 find_package(Sofa.GL.Component.Rendering3D QUIET REQUIRED)
 

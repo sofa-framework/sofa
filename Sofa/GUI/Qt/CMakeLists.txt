@@ -155,6 +155,7 @@ set(MOC_HEADER_FILES
     )
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/qt.conf.h
     ${SRC_ROOT}/FileManagement.h

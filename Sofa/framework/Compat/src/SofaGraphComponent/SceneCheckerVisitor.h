@@ -21,57 +21,32 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/config.h>
 
-#include <SofaGraphComponent/SceneCheck.h>
+#if __has_include(<SceneChecking/SceneCheckerVisitor.h>)
+#include <SceneChecking/SceneCheckerVisitor.h>
+#define SCENECHECKING_SCENECHECKERVISITOR
 
-#include <sofa/version.h>
-#include <string>
-#include <map>
-#include <vector>
-#include <functional>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckerVisitor.h")
 
-namespace sofa::simulation
-{
-    class Node;
-} // namespace sofa::simulation
+#else
+#error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckerVisitor.h> instead of this file."
+#endif
 
-namespace sofa::core::objectmodel
-{
-    class Base;
-} // namespace sofa::core::objectmodel
+#ifdef SCENECHECKING_SCENECHECKERVISITOR
 
 namespace sofa::simulation::_scenechecking_
 {
-
-typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
-
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckAPIChange : public SceneCheck
-{
-public:
-    SceneCheckAPIChange();
-    virtual ~SceneCheckAPIChange();
-
-    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
-    virtual const std::string getName() override;
-    virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
-    void doPrintSummary() override;
-
-    void installDefaultChangeSets();
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
-private:
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"};
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
-};
+    using SceneCheckerVisitor = sofa::_scenechecking_::SceneCheckerVisitor;
 
 } // namespace sofa::simulation::_scenechecking_
 
 namespace sofa::simulation::scenechecking
 {
-    using _scenechecking_::SceneCheckAPIChange;
-} // namespace sofa::component::scenechecking
+    using SceneCheckerVisitor = sofa::scenechecking::SceneCheckerVisitor;
+
+} // namespace sofa::simulation::_scenechecking_
+
+#endif // SCENECHECKING_SCENECHECKERVISITOR
+
+#undef SCENECHECKING_SCENECHECKERVISITOR

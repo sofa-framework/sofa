@@ -30,10 +30,10 @@ using sofa::core::objectmodel::Base;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-#include <SofaGraphComponent/APIVersion.h>
-using sofa::component::APIVersion;
+#include <sofa/component/sceneutility/APIVersion.h>
+using sofa::component::sceneutility::APIVersion;
 
-namespace sofa::simulation::_scenechecking_
+namespace sofa::_scenechecking_
 {
 
 SceneCheckAPIChange::SceneCheckAPIChange()
@@ -56,7 +56,7 @@ const std::string SceneCheckAPIChange::getDesc()
     return "Check for each component that the behavior have not changed since reference version of sofa.";
 }
 
-void SceneCheckAPIChange::doInit(Node* node)
+void SceneCheckAPIChange::doInit(sofa::simulation::Node* node)
 {
     std::stringstream version;
     version << SOFA_VERSION / 10000 << "." << SOFA_VERSION / 100 % 100;
@@ -81,7 +81,7 @@ void SceneCheckAPIChange::doPrintSummary()
 {
 }
 
-void SceneCheckAPIChange::doCheckOn(Node* node)
+void SceneCheckAPIChange::doCheckOn(sofa::simulation::Node* node)
 {
     if(node==nullptr)
         return;
@@ -119,4 +119,4 @@ void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeS
     m_changesets[version].push_back(fct);
 }
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace sofa::_scenechecking_

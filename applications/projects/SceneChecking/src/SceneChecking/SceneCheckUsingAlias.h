@@ -21,35 +21,37 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
-#include <SofaGraphComponent/SceneCheck.h>
+#include <SceneChecking/config.h>
+#include <SceneChecking/SceneCheck.h>
 
 #include <map>
-#include <sstream>
+#include <vector>
 
-namespace sofa::simulation::_scenechecking_
+namespace sofa::_scenechecking_
 {
     
-class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckDuplicatedName : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckUsingAlias : public SceneCheck
 {
 public:
-    virtual ~SceneCheckDuplicatedName() {}
-    typedef std::shared_ptr<SceneCheckDuplicatedName> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckDuplicatedName()); }
+    SceneCheckUsingAlias();
+    virtual ~SceneCheckUsingAlias();
+
+    typedef std::shared_ptr<SceneCheckUsingAlias> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    void doInit(Node* node) override;
-    void doCheckOn(Node* node) override;
+    void doInit(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
+    void doCheckOn(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
     void doPrintSummary() override;
 
 private:
-    bool m_hasDuplicates;
-    std::stringstream m_duplicatedMsg;
+    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
 };
 
-} // namespace sofa::simulation::_scenechecking_
+} // namespace sofa::_scenechecking_
 
-namespace sofa::simulation::scenechecking
+namespace sofa::scenechecking
 {
-    using _scenechecking_::SceneCheckDuplicatedName;
-}
+    using _scenechecking_::SceneCheckUsingAlias;
+} // namespace sofa::scenechecking
+

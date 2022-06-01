@@ -7,8 +7,11 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-find_package(Sofa.GUI.Common REQUIRED)
-find_package(Sofa.GUI.Batch REQUIRED)
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.GUI.Common and Sofa.GUI.Batch instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.GUI.Common REQUIRED)
+sofa_find_package(Sofa.GUI.Batch REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.Common)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.Batch)
 

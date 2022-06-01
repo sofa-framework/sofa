@@ -74,8 +74,8 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     gnuplotLayout->addWidget(findGNUPLOTFile);
     generalLayout->addWidget(gnuplotExport);
 
-    connect(exportGNUPLOTButton, SIGNAL(clicked()), this, SLOT(exportGNUPlot()));
-    connect(findGNUPLOTFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
+    connect(exportGNUPLOTButton, &QPushButton::clicked, this, &GraphOptionWidget::exportGNUPlot);
+    connect(findGNUPLOTFile, &QPushButton::clicked, this, &GraphOptionWidget::openFindFileDialog);
 
     QWidget *imageExport=new QWidget(this);
     QHBoxLayout* imageLayout = new QHBoxLayout(imageExport);
@@ -98,8 +98,8 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     imageLayout->addWidget(findImageFile);
     generalLayout->addWidget(imageExport);
 
-    connect(exportImageButton, SIGNAL(clicked()), this, SLOT(exportImage()));
-    connect(findImageFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
+    connect(exportImageButton, &QPushButton::clicked, this, &GraphOptionWidget::exportImage);
+    connect(findImageFile, &QPushButton::clicked, this, &GraphOptionWidget::openFindFileDialog);
 
     generalLayout->addWidget(checkBox);
 
