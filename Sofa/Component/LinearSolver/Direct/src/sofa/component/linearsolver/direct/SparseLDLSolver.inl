@@ -92,6 +92,12 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 template <class TMatrix, class TVector, class TThreadManager>
 bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data)
 {
+    /*
+    J*Minv*J = J*(L*D*L^t)^-1 * J^t
+             = J*(L^t)^-1*D^-1*L^-1*J^t
+             = J*(L^t)^-1*D^-1*(J*L^-1)^t
+             = (L^-1 *J^t)^t * D^-1 * (L^-1*J^t )
+    */
     if (J->rowSize()==0) return true;
 
     Jlocal2global.clear();
@@ -107,13 +113,14 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
 
 
-    JLinv.clear();
-    JLinv.resize(J->rowSize(), data->n);
-    JLinvDinv.resize(J->rowSize(), data->n);
+    JLTinv.clear();
+    JLTinv.resize(J->rowSize(), data->n);
+    JLTinvDinv.resize(J->rowSize(), data->n);
 
+    // copy J into JLTinv
     unsigned int localRow = 0;
     for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit, ++localRow) {
-        Real* line = JLinv[localRow];
+        Real* line = JLTinv[localRow];
         for (auto it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
             int col = data->invperm[it->first];
             double val = it->second;
@@ -122,14 +129,15 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         }
     }
 
-    //Solve the lower triangular system
+    //Compute JLtinv line by line ( row(JLTinv) = col(LinvJt) = Linv*col(Jt) = Linv*row(J)  )
     for (unsigned c = 0; c < JlocalRowSize; c++) {
-        Real* line = JLinv[c];
+        Real* line = JLTinv[c]; // line of JLTinv <-> column of LinvJt
 
+        // Solve the triangular system
         for (int j=0; j<data->n; j++) {
-            for (int p = data->LT_colptr[j] ; p<data->LT_colptr[j+1] ; p++) {
-                int col = data->LT_rowind[p];
-                double val = data->LT_values[p];
+            for (int p = data->L_colptr[j] ; p<data->L_colptr[j+1] ; p++) {
+                int col = data->L_rowind[p];
+                double val = data->L_values[p];
                 line[j] -= val * line[col];
             }
         }
@@ -137,18 +145,18 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
     //apply diagonal
     for (unsigned j = 0; j < JlocalRowSize; j++) {
-        Real* lineD = JLinv[j];
-        Real* lineM = JLinvDinv[j];
+        Real* lineD = JLTinv[j];
+        Real* lineM = JLTinvDinv[j];
         for (unsigned i = 0; i < (unsigned)data->n; i++) {
             lineM[i] = lineD[i] * data->invD[i];
         }
     }
 
     for (unsigned j = 0; j < JlocalRowSize; j++) {
-        Real* lineJ = JLinvDinv[j];
+        Real* lineJ = JLTinvDinv[j];
         int globalRowJ = Jlocal2global[j];
         for (unsigned i = j; i < JlocalRowSize; i++) {
-            Real* lineI = JLinv[i];
+            Real* lineI = JLTinv[i];
             int globalRowI = Jlocal2global[i];
 
             double acc = 0.0;
