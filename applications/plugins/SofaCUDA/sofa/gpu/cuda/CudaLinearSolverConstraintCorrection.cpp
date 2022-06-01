@@ -22,10 +22,9 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintCorrection.inl>
-#include <SofaConstraint/LinearSolverConstraintCorrection.h>
-#include <SofaConstraint/LinearSolverConstraintCorrection.inl>
+#include <sofa/component/constraint/lagrangian/correction/LinearSolverConstraintCorrection.inl>
 
-namespace sofa::component::constraintset
+namespace sofa::component::constraint::lagrangian::correction
 {
 using namespace sofa::gpu::cuda;
 

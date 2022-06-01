@@ -22,21 +22,24 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintCorrection.inl>
-#include <SofaConstraint/PrecomputedConstraintCorrection.h>
-#include <SofaConstraint/PrecomputedConstraintCorrection.inl>
+#include <sofa/component/constraint/lagrangian/correction/PrecomputedConstraintCorrection.inl>
 
-
-namespace sofa::component::constraintset
+namespace sofa::component::constraint::lagrangian::correction
 {
 using namespace sofa::gpu::cuda;
 
 template class SOFA_GPU_CUDA_API PrecomputedConstraintCorrection< CudaVec3fTypes >;
 template class SOFA_GPU_CUDA_API PrecomputedConstraintCorrection< CudaVec3f1Types >;
 
-int CudaPrecomputedConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
-.add< PrecomputedConstraintCorrection< CudaVec3fTypes > >()
-.add< PrecomputedConstraintCorrection< CudaVec3f1Types > >()
-;
+} // namespace sofa::component::constraint::lagrangian::correction
 
+namespace sofa::gpu::cuda
+{
+    using namespace sofa::component::constraint::lagrangian::correction;
 
-} // namespace sofa::component::constraintset
+const int CudaPrecomputedConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
+    .add< PrecomputedConstraintCorrection< CudaVec3fTypes > >()
+    .add< PrecomputedConstraintCorrection< CudaVec3f1Types > >()
+    ;
+
+} // namespace sofa::gpu::cuda
