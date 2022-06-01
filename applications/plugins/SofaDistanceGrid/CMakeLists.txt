@@ -74,10 +74,7 @@ else()
 endif()
 
 if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(SofaDistanceGrid_test)
-    endif()
+    add_subdirectory(SofaDistanceGrid_test)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
