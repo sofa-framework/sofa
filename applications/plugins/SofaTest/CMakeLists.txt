@@ -14,19 +14,14 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     BroadPhase_test.h
     DataEngine_test.h
+    ForceField_test.h
+    PrimitiveCreation.h
     Elasticity_test.h
     Elasticity_test.inl
-    ForceField_test.h
-    Mapping_test.h
-    MultiMapping_test.h
-    Multi2Mapping_test.h
-    PrimitiveCreation.h
     )
 list(APPEND SOURCE_FILES
-    Elasticity_test.cpp
     PrimitiveCreation.cpp
-    LinearElasticity_test.cpp
-    AffinePatch_test.cpp
+    Elasticity_test.cpp
     )
 
 sofa_find_package(SofaFramework REQUIRED)

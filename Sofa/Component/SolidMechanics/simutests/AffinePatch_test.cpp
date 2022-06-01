@@ -19,25 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseSimulationTest.h>
+#include <sofa/testing/NumericTest.h>
 
-#include <SofaTest/Elasticity_test.h>
 #include <sofa/type/Quat.h>
-
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 // Including constraint, force and mass
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaDeformable/MeshSpringForceField.h>
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <SceneCreator/SceneCreator.h>
+
+#include <sofa/component/topology/testing/RegularGridNodeCreation.h>
 
 namespace sofa {
 
@@ -50,7 +52,7 @@ using namespace modeling;
 An affine movement (rotation and translation) is applied to the borders of a mesh. Test if the points inside have the same affine movement.*/
 
 template <typename _DataTypes>
-struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
+struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::testing::NumericTest<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::CPos CPos;
@@ -59,10 +61,10 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename component::interactionforcefield::MeshSpringForceField<DataTypes> MeshSpringForceField;
-    typedef typename component::forcefield::TetrahedronFEMForceField<DataTypes> TetraForceField;
+    typedef constraint::projective::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename component::solidmechanics::spring::MeshSpringForceField<DataTypes> MeshSpringForceField;
+    typedef typename component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes> TetraForceField;
     typedef type::Quat<SReal> Quat;
     typedef type::Vector3 Vec3;
 
@@ -91,7 +93,7 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
     void createScene2DRegularGrid(bool randomRotation = true, bool randomTranslation=true)
     {
         // Create a scene with a regular grid
-        patchStruct = this->createRegularGridScene(
+        patchStruct = sofa::createRegularGridScene<DataTypes>(
                         root,  // attached to the root node
                         Vec<3,SReal>(0,0,0), // Start point of regular grid
                         Vec<3,SReal>(1,1,0), // End point of regular grid
@@ -139,7 +141,7 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
     void createScene3DRegularGrid(bool randomRotation = true, bool randomTranslation=true)
     {
         // Create a scene with a regular grid
-        patchStruct = this->createRegularGridScene(
+        patchStruct = sofa::createRegularGridScene<DataTypes>(
                         root,  // attached to the root node
                         Vec<3,SReal>(0,0,0), // Start point of regular grid
                         Vec<3,SReal>(1,1,1), // End point of regular grid
@@ -255,7 +257,7 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
                 succeed = false;
                 ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl
                     << "difference = " <<(finalPos[i]-x[i]).norm() << std::endl <<"rotation = " << testedRotation << std::endl << " translation = " << testedTranslation << std::endl
-                    << "Failed seed number =" << BaseSofa_test::seed;
+                    << "Failed seed number =" << sofa::testing::NumericTest<typename _DataTypes::Real>::seed;
 
             }
         }

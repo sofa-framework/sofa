@@ -19,21 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+#include <sofa/testing/NumericTest.h>
+
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
-#include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.h>
-#include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaGeneralEngine/PairBoxRoi.h>
-#include <SofaImplicitOdeSolver/StaticSolver.h>
-#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/engine/generate/GenerateCylinder.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
+#include <sofa/component/odesolver/backward/StaticSolver.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
+#include <sofa/component/constraint/projective/ProjectToLineConstraint.h>
 
 namespace sofa {
 
@@ -50,13 +58,122 @@ const size_t sizeYoungModulusArray = sizeof(youngModulusArray)/sizeof(youngModul
 const double poissonRatioArray[] = {0.0,0.3,0.49};
 const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
 
+/// Structure which contains the nodes and the pointers useful for the cylindertraction test
+template<class T>
+struct CylinderTractionStruct
+{
+    simulation::Node::SPtr root;
+    typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
+    typename component::mechanicalload::TrianglePressureForceField<T>::SPtr forceField;
+};
+
+template <typename DataTypes>
+CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
+        int resolutionCircumferential,
+        int resolutionRadial,
+        int resolutionHeight,
+        int maxIter)
+{
+    // Definitions
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Real Real;
+    typedef typename component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename component::engine::select::BoxROI<DataTypes> BoxRoi;
+    typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+    typename simulation::Node::SPtr root;
+    CylinderTractionStruct<DataTypes> tractionStruct;
+
+    // Root node
+    root = sofa::simulation::getSimulation()->createNewGraph("root");
+    tractionStruct.root=root;
+
+    root->setGravity( Coord(0,0,0) );
+    root->setAnimate(false);
+    root->setDt(0.05);
+
+
+    // GenerateCylinder object
+    typename sofa::component::engine::generate::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::generate::GenerateCylinder<DataTypes> >(root,"cylinder");
+    eng->f_radius=0.2;
+    eng->f_height=1.0;
+    eng->f_resolutionCircumferential=resolutionCircumferential;
+    eng->f_resolutionRadial=resolutionRadial;
+    eng->f_resolutionHeight=resolutionHeight;
+    // TetrahedronSetTopologyContainer object
+    typename sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer>(root,"Container1");
+    sofa::modeling::setDataLink(&eng->f_tetrahedra,&container1->d_tetrahedron);
+    sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&container1->d_initPoints);
+    container1->d_createTriangleArray=true;
+    // TetrahedronSetGeometryAlgorithms object
+    typename sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
+
+    // CGLinearSolver
+    typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
+    cgLinearSolver->d_maxIter.setValue(maxIter);
+    cgLinearSolver->d_tolerance.setValue(1e-9);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
+    // StaticSolver
+    typename component::odesolver::backward::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::backward::StaticSolver>(root,"StaticSolver");
+    // mechanicalObject object
+    typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
+    sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
+    tractionStruct.dofs=meca1;
+    // MeshMatrixMass
+    typename sofa::component::mass::MeshMatrixMass<DataTypes>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes> >(root,"BezierMass");
+    sofa::type::vector< Real > massDensity;
+    massDensity.clear();
+    massDensity.resize(1);
+    massDensity[0] = 1.0;
+    mass->d_massDensity.setValue(massDensity);
+    mass->d_lumping=false;
+    /// box fixed
+    type::vector< type::Vec<6,Real> > vecBox;
+    type::Vec<6,Real> box;
+    box[0]= -0.01;box[1]= -0.01;box[2]= -0.01;box[3]= 0.01;box[4]= 0.01;box[5]= 0.01;
+    vecBox.push_back(box);
+    typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
+    boxRoi1->d_alignedBoxes.setValue(vecBox);
+    boxRoi1->d_strict.setValue(false);
+    // FixedConstraint
+    typename component::constraint::projective::FixedConstraint<DataTypes>::SPtr fc=
+        modeling::addNew<typename component::constraint::projective::FixedConstraint<DataTypes> >(root);
+    sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->d_indices);
+    // FixedPlaneConstraint
+    typename component::constraint::projective::FixedPlaneConstraint<DataTypes>::SPtr fpc=
+            modeling::addNew<typename component::constraint::projective::FixedPlaneConstraint<DataTypes> >(root);
+    fpc->d_dmin= -0.01;
+    fpc->d_dmax= 0.01;
+    fpc->d_direction=Coord(0,0,1);
+    /// box pressure
+    box[0]= -0.2;box[1]= -0.2;box[2]= 0.99;box[3]= 0.2;box[4]= 0.2;box[5]= 1.01;
+    vecBox[0]=box;
+    typename BoxRoi::SPtr boxRoi2 = modeling::addNew<BoxRoi>(root,"boxRoiPressure");
+    boxRoi2->d_alignedBoxes.setValue(vecBox);
+    boxRoi2->d_computeTriangles=true;
+    boxRoi2->d_strict.setValue(false);
+    /// TrianglePressureForceField
+    typename component::mechanicalload::TrianglePressureForceField<DataTypes>::SPtr tpff=
+            modeling::addNew<typename component::mechanicalload::TrianglePressureForceField<DataTypes> >(root);
+    tractionStruct.forceField=tpff;
+    sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
+    // ProjectToLineConstraint
+    typename component::constraint::projective::ProjectToLineConstraint<DataTypes>::SPtr ptlc=
+            modeling::addNew<typename component::constraint::projective::ProjectToLineConstraint<DataTypes> >(root);
+    ptlc->f_direction=Coord(1,0,0);
+    ptlc->f_origin=Coord(0,0,0);
+    sofa::type::vector<sofa::Index> vArray;
+    vArray.push_back(resolutionCircumferential*(resolutionRadial-1)+1);
+    ptlc->f_indices.setValue(vArray);
+
+    return tractionStruct;
+}
 
 /**  Test force fields implementing linear elasticity on tetrahedral mesh.
 Implement traction applied on the top part of a cylinder and test that the deformation
 is simply related with the Young Modulus and Poisson Ratio of the isotropc linear elastic material */
 
 template <typename _DataTypes>
-struct LinearElasticity_test : public Elasticity_test<_DataTypes>
+struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::testing::NumericTest<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -64,8 +181,8 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef typename container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename sofa::component::forcefield::TetrahedralTensorMassForceField<DataTypes> TetrahedralTensorMassForceField;
+    typedef typename statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<DataTypes> TetrahedralTensorMassForceField;
     typedef typename sofa::core::behavior::ForceField<DataTypes>::SPtr ForceFieldSPtr;
     typedef ForceFieldSPtr (LinearElasticity_test<_DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     /// Simulation
@@ -74,6 +191,7 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
     CylinderTractionStruct<DataTypes> tractionStruct;
     /// index of the vertex used to compute the compute the deformation
     size_t vIndex;
+
 
     // Create the context for the scene
     void SetUp()
@@ -85,7 +203,7 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
         size_t  resolutionHeight=7;
         size_t maxIteration=3000; // maximum iteration for the CG.
 
-        tractionStruct= this->createCylinderTractionScene(resolutionCircumferential,resolutionRadial,
+        tractionStruct= createCylinderTractionScene<_DataTypes>(resolutionCircumferential,resolutionRadial,
             resolutionHeight,maxIteration);
         /// take the vertex at mid height and on the surface of the cylinder
         vIndex=(resolutionCircumferential*(resolutionRadial-1)+1)*resolutionHeight/2;
@@ -101,7 +219,7 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
     ForceFieldSPtr addTetrahedralCorotationalFEMLinearElastic(simulation::Node::SPtr root,
         double youngModulus,double poissonRatio)
     {
-        typename sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes>::SPtr ff=addNew<sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes> >(root);
+        typename sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes>::SPtr ff=addNew<sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes> >(root);
         ff->setYoungModulus(youngModulus);
         ff->setPoissonRatio(poissonRatio);
         ff->setMethod(0); // small method
