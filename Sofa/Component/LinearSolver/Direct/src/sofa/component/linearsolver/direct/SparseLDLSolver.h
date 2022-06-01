@@ -99,7 +99,7 @@ protected :
     SparseLDLSolver();
 
     type::vector<int> Jlocal2global;
-    sofa::linearalgebra::FullMatrix<Real> JLinvDinv, JLinv;
+    sofa::linearalgebra::FullMatrix<Real> JLTinvDinv, JLTinv;
     sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
 
     bool factorize(Matrix& M, InvertData * invertData);
