@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASPHEREMODEL_CPP
 #define SOFA_GPU_CUDA_CUDASPHEREMODEL_CPP
 
 #include <sofa/gpu/cuda/CudaSphereModel.h>
@@ -54,4 +53,3 @@ const int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computa
 
 } // namespace sofa::gpu::cuda
 
-#endif  // SOFA_GPU_CUDA_CUDASPHEREMODEL_CPP
