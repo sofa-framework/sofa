@@ -131,7 +131,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
     //Compute JLtinv line by line ( row(JLTinv) = col(LinvJt) = Linv*col(Jt) = Linv*row(J)  )
     for (unsigned c = 0; c < JlocalRowSize; c++) {
-        Real* line = JLTinv[c]; // line of JLTinv <-> column of LinvJt
+        Real* line = JLTinv[c];
 
         // Solve the triangular system
         for (int j=0; j<data->n; j++) {
@@ -152,6 +152,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         }
     }
 
+//compute the marix product JLtinvDinv*(JLtinv)^t and project the data
     for (unsigned j = 0; j < JlocalRowSize; j++) {
         Real* lineJ = JLTinvDinv[j];
         int globalRowJ = Jlocal2global[j];
