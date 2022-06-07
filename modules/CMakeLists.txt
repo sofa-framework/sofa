@@ -24,8 +24,6 @@ sofa_add_plugin(SofaExporter SofaExporter ON)
 
 sofa_add_plugin(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_plugin(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
-#sofa_add_plugin(SofaHaptics SofaHaptics ON)
-#sofa_add_plugin(SofaValidation SofaValidation ON)
 
 sofa_add_plugin(SofaDenseSolver SofaDenseSolver ON)
 
