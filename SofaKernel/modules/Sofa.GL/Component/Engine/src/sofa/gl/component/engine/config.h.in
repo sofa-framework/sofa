@@ -37,8 +37,12 @@
 #ifndef SOFAGENERALENGINE_HAVE_SOFA_GL
 #define SOFAGENERALENGINE_HAVE_SOFA_GL 1
 #endif
+#ifndef SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE
+#define SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE 1
+#endif
 
 namespace sofa::gl::component::engine
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::gl::component::engine

@@ -38,8 +38,9 @@ void IdentityMultiMapping<TIn, TOut>::init()
 
     Inherit::init();
 
-    unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
-    static const unsigned N = std::min<unsigned>(Nin, Nout);
+    static constexpr auto Nin = TIn::deriv_total_size;
+    static constexpr auto Nout = TOut::deriv_total_size;
+    static constexpr auto N = std::min(Nin, Nout);
 
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
@@ -53,20 +54,20 @@ void IdentityMultiMapping<TIn, TOut>::init()
 
         EigenMatrix& J = *static_cast<EigenMatrix*>(baseMatrices[i]);
 
-        size_t n = this->fromModels[i]->getSize();
+        const auto n = this->fromModels[i]->getSize();
 
         J.resize( Nout*outSize, Nin*n ); // each
 
         J.compressedMatrix.reserve( n*N );
 
-        for( size_t i=0 ; i<n ; ++i )
+        for( size_t j=0 ; j<n ; ++j )
         {
             for(unsigned r = 0; r < N; ++r)
             {
-                const unsigned row = Nout * (offset+i) + r;
+                const unsigned row = Nout * (offset+j) + r;
                 J.compressedMatrix.startVec( row );
-                const unsigned col = Nin * i + r;
-                J.compressedMatrix.insertBack( row, col ) = (OutReal)1;
+                const unsigned col = Nin * j + r;
+                J.compressedMatrix.insertBack( row, col ) = static_cast<OutReal>(1);
             }
         }
         J.compressedMatrix.finalize();

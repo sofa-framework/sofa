@@ -303,7 +303,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
-    message("Adding precompiled header for SofaCore")
+    message("Adding precompiled header for Sofa.Core")
     target_precompile_headers(${PROJECT_NAME} PUBLIC ${SRC_ROOT}/objectmodel/BaseObject.h ${SRC_ROOT}/objectmodel/Data.h)
 endif()
 

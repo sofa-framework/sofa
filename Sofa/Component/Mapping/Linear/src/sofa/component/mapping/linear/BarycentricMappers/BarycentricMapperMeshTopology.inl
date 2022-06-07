@@ -713,85 +713,87 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::ge
     const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
     const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
+    // Index of the current row. The matrix structure is composed of 3 parts: 1d elements first, then the 2d elements,
+    // and finally the 3d elements. This variable is incremented at each element, and never reinitialized, so the
+    // contributions go into the appropriate submatrix.
+    int rowId {};
 
     // 1D elements
     {
-        for ( size_t i=0; i<m_map1d.size(); i++ )
+        for ( const auto& map1d : m_map1d)
         {
-            const size_t out = i;
-            const Real fx = ( Real ) m_map1d[i].baryCoords[0];
-            size_t index = m_map1d[i].in_index;
-            {
-                const Edge& line = lines[index];
-                this->addMatrixContrib(m_matrixJ, out, line[0],  ( 1-fx ));
-                this->addMatrixContrib(m_matrixJ, out, line[1],  fx);
-            }
+            const auto fx = map1d.baryCoords[0];
+            const auto index = map1d.in_index;
+            const Edge& line = lines[index];
+            this->addMatrixContrib(m_matrixJ, rowId, line[0],  1 - fx);
+            this->addMatrixContrib(m_matrixJ, rowId, line[1],  fx);
+            ++rowId;
         }
     }
     // 2D elements
     {
-        const size_t i0 = m_map1d.size();
         const size_t c0 = triangles.size();
-        for ( size_t i=0; i<m_map2d.size(); i++ )
+        for ( const auto& map2d : m_map2d)
         {
-            const size_t out = i+i0;
-            const Real fx = ( Real ) m_map2d[i].baryCoords[0];
-            const Real fy = ( Real ) m_map2d[i].baryCoords[1];
-            size_t index = m_map2d[i].in_index;
-            if ( index<c0 )
+            const Real fx = map2d.baryCoords[0];
+            const Real fy = map2d.baryCoords[1];
+            const size_t index = map2d.in_index;
+            if ( index < c0 )
             {
                 const Triangle& triangle = triangles[index];
-                this->addMatrixContrib(m_matrixJ, out, triangle[0],  ( 1-fx-fy ));
-                this->addMatrixContrib(m_matrixJ, out, triangle[1],  fx);
-                this->addMatrixContrib(m_matrixJ, out, triangle[2],  fy);
+                this->addMatrixContrib(m_matrixJ, rowId, triangle[0],  ( 1-fx-fy ));
+                this->addMatrixContrib(m_matrixJ, rowId, triangle[1],  fx);
+                this->addMatrixContrib(m_matrixJ, rowId, triangle[2],  fy);
             }
             else
             {
                 const Quad& quad = quads[index-c0];
-                this->addMatrixContrib(m_matrixJ, out, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(m_matrixJ, out, quad[1],  ( ( fx ) * ( 1-fy ) ));
-                this->addMatrixContrib(m_matrixJ, out, quad[3],  ( ( 1-fx ) * ( fy ) ));
-                this->addMatrixContrib(m_matrixJ, out, quad[2],  ( ( fx ) * ( fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[0],  ( ( 1-fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[1],  ( ( fx ) * ( 1-fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[3],  ( ( 1-fx ) * ( fy ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, quad[2],  ( ( fx ) * ( fy ) ));
             }
+            ++rowId;
         }
     }
     // 3D elements
     {
-        const size_t i0 = m_map1d.size() + m_map2d.size();
         const size_t c0 = tetrahedra.size();
-        for ( size_t i=0; i<m_map3d.size(); i++ )
+        for ( const auto& map3d : m_map3d)
         {
-            const size_t out = i+i0;
-            const Real fx = ( Real ) m_map3d[i].baryCoords[0];
-            const Real fy = ( Real ) m_map3d[i].baryCoords[1];
-            const Real fz = ( Real ) m_map3d[i].baryCoords[2];
-            size_t index = m_map3d[i].in_index;
+            const Real fx = map3d.baryCoords[0];
+            const Real fy = map3d.baryCoords[1];
+            const Real fz = map3d.baryCoords[2];
+            const size_t index = map3d.in_index;
             if ( index<c0 )
             {
                 const Tetra& tetra = tetrahedra[index];
-                this->addMatrixContrib(m_matrixJ, out, tetra[0],  ( 1-fx-fy-fz ));
-                this->addMatrixContrib(m_matrixJ, out, tetra[1],  fx);
-                this->addMatrixContrib(m_matrixJ, out, tetra[2],  fy);
-                this->addMatrixContrib(m_matrixJ, out, tetra[3],  fz);
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[0],  ( 1-fx-fy-fz ));
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[1],  fx);
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[2],  fy);
+                this->addMatrixContrib(m_matrixJ, rowId, tetra[3],  fz);
             }
             else
             {
                 const Hexa& cube = cubes[index-c0];
 
-                this->addMatrixContrib(m_matrixJ, out, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, out, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, out, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
 
-                this->addMatrixContrib(m_matrixJ, out, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
-                this->addMatrixContrib(m_matrixJ, out, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
+                this->addMatrixContrib(m_matrixJ, rowId, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
             }
+            ++rowId;
         }
     }
+    assert(static_cast<std::size_t>(rowId) == m_map1d.size() + m_map2d.size() + m_map3d.size());
+
     m_matrixJ->compress();
     m_updateJ = false;
     return m_matrixJ;

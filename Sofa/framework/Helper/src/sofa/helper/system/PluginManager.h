@@ -209,6 +209,8 @@ public:
     void addOnPluginLoadedCallback(const std::string& key, std::function<void(const std::string&, const Plugin&)> callback);
     void removeOnPluginLoadedCallback(const std::string& key);
 
+    static std::string GetPluginNameFromPath(const std::string& pluginPath);
+
 private:
     PluginManager();
     ~PluginManager();

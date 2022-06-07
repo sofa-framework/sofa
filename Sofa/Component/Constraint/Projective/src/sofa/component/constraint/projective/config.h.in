@@ -34,6 +34,7 @@
 namespace sofa::component::constraint::projective
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::constraint::projective
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_PROJECTIVE
