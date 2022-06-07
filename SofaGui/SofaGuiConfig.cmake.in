@@ -6,9 +6,9 @@
 set(SOFAGUI_HAVE_SOFAHEADLESSRECORDER @SOFAGUI_HAVE_SOFAHEADLESSRECORDER@)
 set(SOFAGUI_HAVE_SOFAGUIQT @SOFAGUI_HAVE_SOFAGUIQT@)
 
-find_package(Sofa.GUI.Component REQUIRED)
-find_package(Sofa.GUI.Common REQUIRED)
-find_package(Sofa.GUI.Batch REQUIRED)
+find_package(Sofa.GUI.Component QUIET REQUIRED)
+find_package(Sofa.GUI.Common QUIET REQUIRED)
+find_package(Sofa.GUI.Batch QUIET REQUIRED)
 
 if(SOFAGUI_HAVE_SOFAGUIQT)
     find_package(Sofa.GUI.Qt QUIET REQUIRED)
