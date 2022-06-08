@@ -94,10 +94,9 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     graphListener_ = new GraphListenerQListView(this);
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this,SIGNAL(customContextMenuRequested(const QPoint&)) ,this,SLOT(RunSofaRightClicked(const QPoint&)) );
-    connect(this,SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int )), this, SLOT(RunSofaDoubleClicked(QTreeWidgetItem*, int)) );
-    connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int) ), this, SLOT(updateMatchingObjectmodel(QTreeWidgetItem*, int)) );
-
+    connect(this, &QSofaListView::customContextMenuRequested ,this, &QSofaListView::RunSofaRightClicked);
+    connect(this, &QSofaListView::itemDoubleClicked, this, &QSofaListView::RunSofaDoubleClicked);
+    connect(this, &QSofaListView::itemClicked, this, [&](QTreeWidgetItem *item, int){ updateMatchingObjectmodel(item); });
 }
 
 QSofaListView::~QSofaListView()
@@ -608,11 +607,11 @@ void QSofaListView::Modify()
 
         map_modifyDialogOpened.insert( std::make_pair ( current_Id_modifyDialog, currentItem()) );
         map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModifyObject));
-        connect ( dialogModifyObject, SIGNAL( objectUpdated() ), this, SIGNAL( Updated() ));
-        connect ( this, SIGNAL( Close() ), dialogModifyObject, SLOT( closeNow() ) );
-        connect ( dialogModifyObject, SIGNAL( dialogClosed(void *) ) , this, SLOT( modifyUnlock(void *)));
-        connect ( dialogModifyObject, SIGNAL( nodeNameModification(simulation::Node*) ) , this, SLOT( nodeNameModification(simulation::Node*) ));
-        connect ( dialogModifyObject, SIGNAL( dataModified(QString) ), this, SIGNAL( dataModified(QString) ) );
+        connect ( dialogModifyObject, &ModifyObject::objectUpdated, this, &QSofaListView::Updated );
+        connect ( this, &QSofaListView::Close, dialogModifyObject, &ModifyObject::closeNow );
+        connect ( dialogModifyObject, &ModifyObject::dialogClosed, this, &QSofaListView::modifyUnlock );
+        connect ( dialogModifyObject, &ModifyObject::nodeNameModification, this, &QSofaListView::nodeNameModification );
+        connect ( dialogModifyObject, &ModifyObject::dataModified, this, &QSofaListView::dataModified );
         dialogModifyObject->show();
         dialogModifyObject->raise();
 
