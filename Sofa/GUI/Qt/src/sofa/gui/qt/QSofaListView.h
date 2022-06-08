@@ -102,7 +102,7 @@ public:
     void expandPathFrom(const std::vector<std::string>& pathes);
     void getExpandedNodes(std::vector<std::string>&);
 
-    void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
+    void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale ) = delete;
 
 public Q_SLOTS:
     void Export();
@@ -131,7 +131,6 @@ protected Q_SLOTS:
     void collapseNode();
     void expandNode();
     void modifyUnlock(void* Id);
-    void RaiseAddObject();
     void RemoveNode();
     void Modify();
     void HideDatas();

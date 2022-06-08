@@ -22,7 +22,6 @@
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
 #include "GraphListenerQListView.h"
-#include "AddObject.h"
 #include "ModifyObject.h"
 #include "GenGraphForm.h"
 #include "RealGUI.h"
@@ -76,10 +75,6 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
         }
         end.close();
     }
-
-    //Creation of the file dialog
-    AddObjectDialog_ = new AddObject ( &list_object, this );
-    AddObjectDialog_->hide();
 
     this->setColumnCount(2);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -437,7 +432,6 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
 
         if ( attribute_ == SIMULATION)
         {
-            act = contextMenu->addAction("Add Node", this,SLOT(RaiseAddObject()));
             act = contextMenu->addAction("Remove Node", this,SLOT(RemoveNode()));
             //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
             if ( !isNodeErasable ( object_.ptr.Node ) )
@@ -545,18 +539,7 @@ void QSofaListView::exportOBJ()
         emit Lock(false);
     }
 }
-void QSofaListView::RaiseAddObject()
-{
-    emit Lock(true);
-    assert(AddObjectDialog_);
 
-    std::string path( (dynamic_cast<RealGUI*>(QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
-    AddObjectDialog_->setPath ( path );
-    AddObjectDialog_->show();
-    AddObjectDialog_->raise();
-    emit Lock(false);
-
-}
 void QSofaListView::RemoveNode()
 {
     if( object_.type == typeNode)
