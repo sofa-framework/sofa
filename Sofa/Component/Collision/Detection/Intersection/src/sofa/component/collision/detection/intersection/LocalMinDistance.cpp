@@ -199,6 +199,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
             beta  < 1e-15  || beta  > (1.0-1e-15) )
             return 0;
     }
+    else
     {
         // lines are parallel,
         // the alpha/beta parameters are set to 0.5 so the collision
@@ -213,7 +214,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     Q = e2.p1() + CD * beta;
     PQ = Q-P;
 
-    // If we are above
+    // If the geometric distance between P and Q is higher than the alarm distance/
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
