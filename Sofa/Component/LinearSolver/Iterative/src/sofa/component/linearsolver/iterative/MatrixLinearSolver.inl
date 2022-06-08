@@ -34,6 +34,9 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVi
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
 
+#include <sofa/simulation/TaskScheduler.h>
+#include<sofa/component/linearsolver/iterative/LinearSolverTask.h>
+
 namespace sofa::component::linearsolver
 {
 
@@ -240,8 +243,52 @@ void MatrixLinearSolver<Matrix,Vector>::invertSystem()
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact)
 {
+    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+
+    if (taskScheduler->getThreadCount() < 1)
+    {
+        taskScheduler->init(0);
+        msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+    }
+    else
+    {
+        msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+    }
+
+    std::vector< LinearSolverTask<Matrix,Vector> > taskList;
+    taskList.reserve( J->rowSize() );
+    sofa::simulation::CpuTask::Status status;
+
+    //std::vector<Vector> RHlist(J->rowSize());
+    //JMatrixType RHlist;
+    //RHlist.resize(J->rowSize(),J->colSize());
+    //std::vector<SReal> RHlist(J->colSize(),J->rowSize());
+    //std::vector< SReal > *RHlist = new std::vector<SReal>[J->rowSize()];
+    //for(int i=0; i<J->colSize(); i++) RHlist[i].resize(J->colSize());
+    //sofa::type::vector<SReal> RHlist(J->colSize(),J->rowSize()); 
+
+    //sofa::type::vector<SReal> *RHlist = (sofa::type::vector<SReal> *) malloc(sizeof(sofa::type::vector<SReal> *)*J->rowSize()*J->colSize());
+    sofa::type::vector<SReal> *RHlist = new sofa::type::vector<SReal>[J->rowSize()];
+    for(int i=0;i<J->rowSize();i++) //RHlist[i] = new  sofa::type::vector<SReal>(J->colSize());
+    RHlist[i].resize(J->colSize());
+
+
+    for(int i=0;i<J->colSize();i++)
+    {
+        for(int j=0;j<J->rowSize();j++)
+        {
+                RHlist[j][i] = J->element(i,j) ; //copy Jt
+        }
+    }
+
     for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
     {
+        //RHlist[row][0]=1;
+        taskList.emplace_back(&status , J , this , row , RHlist[row] );
+        //taskList.emplace_back(&status);
+        taskScheduler->addTask( &(taskList.back()) );
+
+        /*
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
         for (typename JMatrixType::Index i=0; i<J->colSize(); i++) linearSystem.systemRHVector->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
 
@@ -271,8 +318,10 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             dmsg_error() << "addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
             return false;
         }
+        */
+       taskScheduler->workUntilDone(&status);
     }
-
+    delete[] RHlist;
     return true;
 }
 

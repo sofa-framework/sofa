@@ -167,9 +167,15 @@ template<class Matrix, class Vector, class ThreadManager = NoThreadManager>
 class MatrixLinearSolver;
 
 template<class Matrix, class Vector>
+class LinearSolverTask;
+
+template<class Matrix, class Vector>
 class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>
 {
 public:
+
+    friend class LinearSolverTask<Matrix,Vector>;
+
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(MatrixLinearSolver,Matrix,Vector,NoThreadManager), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
 
     typedef BaseMatrixLinearSolver<Matrix, Vector> Inherit;
