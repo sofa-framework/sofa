@@ -126,7 +126,10 @@ protected:
                 {
                     size_t oldSize = outputValues.size();
                     outputValues.resize(ind+1);
-                    for (size_t kk=oldSize ; kk <ind+1 ; kk++) outputValues[kk] = defaultValue;
+                    for (size_t kk=oldSize ; kk <ind+1 ; kk++) 
+                    {
+                        outputValues[kk] = defaultValue;
+                    }
                 }
                 outputValues[ind] = value;
             }
