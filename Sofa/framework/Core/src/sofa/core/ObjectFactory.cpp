@@ -107,6 +107,20 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
     registry[name] = previous;
 }
 
+void ObjectFactory::getEntriesFor(const std::string& name, std::vector<ClassEntry::SPtr>& result) const
+{
+    result.clear();
+    for (const auto& r : registry)
+    {
+        ClassEntry::SPtr entry = r.second;
+        // Push the entry only if it is not an alias
+        if (entry->className == name)
+        {
+            result.push_back(entry);
+        }
+    }
+}
+
 
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
@@ -589,8 +603,6 @@ RegisterObject::operator int()
     {
         ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
         reg.description += entry.description;
-
-        std::cout << "Hello world: " << entry.className << std::endl;
 
         reg.authors += entry.authors;
         reg.license += entry.license;

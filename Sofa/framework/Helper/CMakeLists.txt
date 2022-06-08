@@ -17,6 +17,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/AdvancedTimer.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
+    ${SRC_ROOT}/CodeModel.h
     ${SRC_ROOT}/ColorMap.h
     ${SRC_ROOT}/ComponentChange.h
     ${SRC_ROOT}/Factory.h
@@ -118,6 +119,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/AdvancedTimer.cpp
     ${SRC_ROOT}/BackTrace.cpp
+    ${SRC_ROOT}/CodeModel.cpp
     ${SRC_ROOT}/ColorMap.cpp
     ${SRC_ROOT}/ComponentChange.cpp
     ${SRC_ROOT}/Factory.cpp

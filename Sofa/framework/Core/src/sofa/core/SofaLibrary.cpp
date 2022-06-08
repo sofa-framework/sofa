@@ -29,6 +29,65 @@ namespace sofa
 namespace core
 {
 
+void SofaLibrary::build(const std::string &componentName)
+{
+    std::vector<ClassEntry::SPtr> entries;
+    sofa::core::ObjectFactory::getInstance()->getEntriesFor(componentName, entries);
+
+    //Set of categories found in the Object Factory
+    std::set< std::string > mainCategories;
+    //Data containing all the entries for a given category
+    std::multimap< std::string, ClassEntry::SPtr> inventory;
+
+    for(ClassEntry::SPtr entry : entries)
+    {
+        //Insert Template specification
+        ObjectFactory::CreatorMap::iterator creatorEntry = entry->creatorMap.begin();
+        if (creatorEntry !=entry->creatorMap.end())
+        {
+            const objectmodel::BaseClass* baseClass = creatorEntry->second->getClass();
+            std::vector<std::string> categories;
+            CategoryLibrary::getCategories(baseClass, categories);
+            for (std::vector<std::string>::iterator it = categories.begin(); it != categories.end(); ++it)
+            {
+                mainCategories.insert((*it));
+                inventory.insert(std::make_pair((*it), entry));
+            }
+        }
+    }
+    //-----------------------------------------------------------------------
+    //Using the inventory, Add each component to the Sofa Library
+    //-----------------------------------------------------------------------
+    std::set< std::string >::iterator itCategory;
+    typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
+
+    //We add the components category by category
+    for (itCategory = mainCategories.begin(); itCategory != mainCategories.end(); ++itCategory)
+    {
+        const std::string& categoryName = *itCategory;
+        IteratorInventory itComponent;
+
+        std::pair< IteratorInventory,IteratorInventory > rangeCategory;
+        rangeCategory = inventory.equal_range(categoryName);
+
+        const unsigned int numComponentInCategory = (unsigned int)inventory.count(categoryName);
+        CategoryLibrary *category = createCategory(categoryName,numComponentInCategory);
+
+        //Process all the component of the current category, and add them to the group
+        for (itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
+        {
+            ClassEntry::SPtr entry2 = itComponent->second;
+            const std::string &componentName=entry2->className;
+
+            //Add the component to the category
+            category->addComponent(componentName, entry2, exampleFiles);
+        }
+        category->endConstruction();
+        addCategory(category);
+    }
+    computeNumComponents();
+}
+
 //Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
 void SofaLibrary::build( const std::vector< std::string >& examples)
 {
@@ -158,6 +217,8 @@ class SofaLibraryCache : public SofaLibrary
 public:
     ComponentLibrary* getComponent(const std::string& componentName)
     {
+        // Do a sub-linear search if the component with this given name is available in the library's cache.
+        // If this is the case then we return component enty.
         auto componentLocation = m_componentsInfo.find(componentName);
         if( componentLocation != m_componentsInfo.end() )
         {
@@ -166,6 +227,8 @@ public:
             return categories[categoryIndex]->getComponents()[componentIndex];
         }
 
+        // Do a linear search to find the component in the sofa component library.
+        // If it exists, the cache is initialized for future access and the component is returned.
         for (std::size_t cat=0; cat<categories.size(); ++cat)
         {
             //For each category, look at all the components if one has the name wanted
@@ -178,22 +241,23 @@ public:
                     return components[comp];
                 }
             }
-            std::cout << "HELLO WORLD" << std::endl;
         }
+
+        msg_error("SofaLibrary") << "Loading of description for " << componentName;
+        build(componentName);
+
         return nullptr;
     }
 };
 
-SofaLibraryCache* s_library;
+SofaLibraryCache* s_library=nullptr;
 const ComponentLibrary* ObjectInfoRegistry::getObjectInfo(const std::string& objectName)
 {
     if(!s_library)
     {
         s_library = new SofaLibraryCache();
-        s_library->build();
+        //s_library->build();
     }
-    std::cout << "HELLO WORLD" << std::endl;
-
     return s_library->getComponent(objectName);
 }
 

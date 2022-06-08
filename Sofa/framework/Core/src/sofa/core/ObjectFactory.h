@@ -136,6 +136,8 @@ public:
     template<class BaseClass>
     std::string listClassesDerivedFrom(const std::string& separator = ", ") const;
 
+    void getEntriesFor(const std::string& name, std::vector<ClassEntry::SPtr>& result) const;
+
     /// Add an alias name for an already registered class
     ///
     /// \param name     name of the new alias
@@ -221,6 +223,7 @@ void ObjectFactory::getEntriesDerivedFrom(std::vector<ClassEntry::SPtr>& result)
         }
     }
 }
+
 
 template<class BaseClass>
 std::string ObjectFactory::listClassesDerivedFrom(const std::string& separator) const

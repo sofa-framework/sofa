@@ -19,56 +19,69 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/helper/CodeModel.h>
+#include <vector>
+#include <iostream>
+#include <map>
 
 namespace sofa::helper
 {
 
-const std::string getClassDocumentation(const std::string& objectName)
+class CodeModelEntry
 {
-    std::string description = CodeModelInstance::getDescription(objectName);
-    return description;
+public:
+    std::map<std::string, std::string> rdf;
+
+    const std::string& get(const std::string& key) const
+    {
+        return rdf.at(key);
+    }
+};
+
+class CodeModel
+{
+    std::map<std::string, int> nameToEntryIndex;
+    std::vector<CodeModelEntry> entries;
+
+public:
+    const CodeModelEntry* getEntry(const std::string& s)
+    {
+        auto r = nameToEntryIndex.find(s);
+        if(r==nameToEntryIndex.end())
+        {
+            return nullptr;
+        }
+        return &entries[r->second];
+    }
+
+    const CodeModelEntry* loadCodeEntry(const std::string& componentFullName)
+    {
+        std::cout << "Loading documentation for " << componentFullName << std::endl;
+
+        return nullptr;
+    }
+};
+
+CodeModel& getCodeModel()
+{
+    static CodeModel model;
+    return model;
 }
 
-}
-
-namespace sofa
+const std::string CodeModelInstance::getDescription(const std::string& componentFullName)
 {
+    const CodeModelEntry* entry = getCodeModel().getEntry(componentFullName);
+    if(!entry)
+        entry = getCodeModel().loadCodeEntry(componentFullName);
 
-namespace core
-{
+    if(!entry)
+    {
+        std::cout << "There is really no code model for this component. " << componentFullName << " .. use the object factory ? " << std::endl;
+        return "";
+    }
 
-namespace objectmodel
-{
-
-BaseClass* DeprecatedBaseClass::GetSingleton()
-{
-    static DeprecatedBaseClass dpc;
-    return &dpc;
-}
-
-
-BaseClass::BaseClass()
-{
-}
-
-BaseClass::~BaseClass()
-{
-}
-
-DeprecatedBaseClass::DeprecatedBaseClass()
-{
-    namespaceName= "DeprecatedBaseClass::namespace";
-    className = "DeprecatedBaseClass::classname";
-    templateName = "DeprecatedBaseClass::templatename";
-    shortName = "DeprecatedBaseClass::shortname";
+    return entry->get("description");
 }
 
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
+} /// namespace sofa::helper

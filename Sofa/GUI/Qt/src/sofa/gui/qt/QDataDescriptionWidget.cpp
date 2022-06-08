@@ -96,7 +96,8 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
 
 
     //Class description
-    core::ObjectFactory::ClassEntry entry = core::ObjectFactory::getInstance()->getEntry(object->getClassName());
+    const sofa::core::objectmodel::BaseClass* info = object->getClass();
+    core::ObjectFactory::ClassEntry entry = sofa::core::ObjectFactory::getInstance()->getEntry(object->getClassName());
     if (! entry.creatorMap.empty())
     {
         QGroupBox *box = new QGroupBox(this);
@@ -106,11 +107,13 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         box->setTitle(QString("Class"));
 
         int nextRow = 0;
-        if (!entry.description.empty() && entry.description != std::string("TODO"))
+        if (info->getDescription().empty())
         {
-            addRow(boxLayout, "Description", entry.description, nextRow, 20);
-            nextRow++;
+            msg_warning(object) << "Missing description. Please update sofa code." ;
         }
+        addRow(boxLayout, "Description", info->getDescription(), nextRow, 20);
+        nextRow++;
+
         core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
         if (it != entry.creatorMap.end() && *it->second->getTarget())
         {

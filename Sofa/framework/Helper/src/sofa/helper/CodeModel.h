@@ -19,56 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/helper/CodeModel.h>
+#pragma once
+#include <string>
 
 namespace sofa::helper
 {
 
-const std::string getClassDocumentation(const std::string& objectName)
+class CodeModelInstance
 {
-    std::string description = CodeModelInstance::getDescription(objectName);
-    return description;
-}
+public:
+    static const std::string getDescription(const std::string& componentFullName);
+};
 
-}
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
-{
-
-BaseClass* DeprecatedBaseClass::GetSingleton()
-{
-    static DeprecatedBaseClass dpc;
-    return &dpc;
-}
-
-
-BaseClass::BaseClass()
-{
-}
-
-BaseClass::~BaseClass()
-{
-}
-
-DeprecatedBaseClass::DeprecatedBaseClass()
-{
-    namespaceName= "DeprecatedBaseClass::namespace";
-    className = "DeprecatedBaseClass::classname";
-    templateName = "DeprecatedBaseClass::templatename";
-    shortName = "DeprecatedBaseClass::shortname";
-}
-
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
+} /// namespace sofa::helper

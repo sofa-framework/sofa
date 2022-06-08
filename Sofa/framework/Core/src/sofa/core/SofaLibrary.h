@@ -43,6 +43,7 @@ public:
 
     virtual void build(const std::vector< std::string >& examples=std::vector< std::string >());
     virtual void clear();
+    void build(const std::string& componentName);
 
     std::string getComponentDescription( const std::string &componentName);
 

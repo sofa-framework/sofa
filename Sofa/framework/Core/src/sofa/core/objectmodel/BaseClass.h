@@ -27,6 +27,11 @@
 #include <sofa/core/objectmodel/SPtr.h>
 #include <map>
 
+namespace sofa::helper
+{
+const std::string getClassDocumentation(const std::string&);
+}
+
 namespace sofa
 {
 
@@ -57,7 +62,7 @@ public:
 
 
     /// @todo the names could be hashed for faster comparisons
-
+    mutable std::string description;
     std::string namespaceName;
     std::string typeName;
     std::string className;
@@ -94,6 +99,15 @@ public:
     bool operator!=(const BaseClass& c) const
     {
         return !((*this)==c);
+    }
+
+    const std::string& getDescription() const
+    {
+        if(description.empty())
+        {
+            description = sofa::helper::getClassDocumentation(typeName) ;
+        }
+        return description;
     }
 
     virtual Base* dynamicCast(Base* obj) const = 0;
