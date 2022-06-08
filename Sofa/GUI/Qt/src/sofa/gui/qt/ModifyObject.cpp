@@ -507,17 +507,20 @@ void ModifyObject::updateValues()
                 {
                     // then do some dirty hack to change the value
                     if (!transformation->isDefaultValues())
+                    {
                         transformation->applyTransformation(node);
+                    }
                     transformation->setDefaultValues();
                 }
-                // call the reinit function on the node OMG
+                // call the reinit function on the node
                 node->reinit(sofa::core::execparams::defaultInstance());
             }
             else if (object)                 //< if the selected is an object
             {
                 object->reinit();            //< we need to fully re-initialize the object to be sure it is ok.
             }
-            else {
+            else 
+            {
                 throw std::runtime_error("Invalid type, only Node and BaseObject are supported. "
                                          "This is a BUG, please report to https://github.com/sofa-framework/sofa/issues");
             }
