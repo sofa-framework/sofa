@@ -81,6 +81,31 @@ class SOFA_GUI_QT_API QSofaListView : public QTreeWidget
 {
     Q_OBJECT
 public:
+    class LockContextManager
+    {
+    public:
+        QSofaListView* self{nullptr};
+        bool state{true};
+
+        LockContextManager(QSofaListView* view, bool isLocked)
+        {
+            self = view;
+            state = view->isLocked();
+            if(isLocked)
+                view->lock();
+            else
+                view->unLock();
+        }
+
+        ~LockContextManager()
+        {
+            if(state)
+                self->lock();
+            else
+                self->unLock();
+        }
+    };
+
     QSofaListView(const SofaListViewAttribute& attribute,
             QWidget* parent = nullptr,
             const char* name = nullptr,
@@ -162,8 +187,6 @@ protected Q_SLOTS:
     void RaiseAddObject();
     void RemoveNode();
     void Modify();
-    void HideDatas();
-    void ShowDatas();
     void openInEditor();
     void openInstanciation();
     void openImplementation();

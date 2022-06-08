@@ -350,19 +350,11 @@ RealGUI::RealGUI ( const char* viewername)
       recentlyOpenedFilesManager(BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
       m_saveReloadFile(false),
       displayFlag(nullptr),
-<<<<<<< HEAD:modules/SofaGuiQt/src/sofa/gui/qt/RealGUI.cpp
-      #if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
-      m_docbrowser(nullptr),
-      #endif
-      animationState(false),
-      frameCounter(0),
-=======
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
       m_docbrowser(nullptr),
 #endif
       m_animationState(false),
       m_frameCounter(0),
->>>>>>> upstream/master:Sofa/GUI/Qt/src/sofa/gui/qt/RealGUI.cpp
       m_viewerMSAANbSampling(1)
 {
     setupUi(this);
@@ -1920,21 +1912,14 @@ void RealGUI::createSimulationGraph()
 
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect ( ExpandAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( expandAll() ) );
-<<<<<<< HEAD:modules/SofaGuiQt/src/sofa/gui/qt/RealGUI.cpp
-    connect ( CollapseAllButton, SIGNAL ( clicked() ), this, SLOT ( toggleRefreshOfSceneGraph() ) );
+    connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( ExpandRootNodeOnly() ) );
     connect ( sceneGraphRefreshToggleButton, &QPushButton::clicked , this, &RealGUI::onSceneGraphRefreshButtonClicked );
     connect(simulationGraph, &QSofaListView::dirtynessChanged, this, &RealGUI::sceneGraphViewDirtynessChanged);
     connect(simulationGraph, &QSofaListView::lockingChanged, this, &RealGUI::sceneGraphViewLockingChanged);
 
-    connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
-    connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
-    connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
-=======
-    connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( ExpandRootNodeOnly() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( newRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( lockAnimation(bool) ) );
->>>>>>> upstream/master:Sofa/GUI/Qt/src/sofa/gui/qt/RealGUI.cpp
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
     connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( activateNode(sofa::simulation::Node*, bool) ) );
@@ -1952,11 +1937,17 @@ void RealGUI::createSimulationGraph()
 void RealGUI::sceneGraphViewDirtynessChanged(bool isDirty)
 {
     if(isDirty)
+    {
         sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-dirty"));
+    }
     else if(simulationGraph->isLocked())
+    {
         sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-locked"));
+    }
     else
+    {
         sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-unlocked"));
+    }
 }
 
 // This slot is called when the sceneGraph view has been locked/unlocked.
@@ -1965,29 +1956,31 @@ void RealGUI::sceneGraphViewDirtynessChanged(bool isDirty)
 void RealGUI::sceneGraphViewLockingChanged(bool isLocked)
 {
     if(isLocked)
+    {
         sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-locked"));
+    }
     else
+    {
         sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-unlocked"));
+    }
 }
 
 // The scenegraph update button has tree states
-// State 0: UnLocked (all the changes on the graph are immediately taken into account)
-// State 1: Locked (the changes on the graph are not done but the simulationGraph is set to dirty if
+// State 0: unLocked (all the changes on the graph are immediately taken into account)
+// State 1: locked (the changes on the graph are not done but the simulationGraph is set to dirty if
 //          there is some changes on the graph A click on the buttont load to UnLock the graph (go to state 1).
-// State 2: Dirty, in that state the button reflect the fact that the scenegraphi view has changed but not displayed
+// State 2: dirty, in that state the button reflect the fact that the scenegraphi view has changed but not displayed
 //          a click on the button, refresh the graph view but don't change the Lock/Unlock state
 void RealGUI::onSceneGraphRefreshButtonClicked()
 {
-    if( simulationGraph->isDirty() )
-    {
-        simulationGraph->update();
-        return;
-    }
-
     if(simulationGraph->isLocked())
+    {
         simulationGraph->unLock();
+    }
     else
+    {
         simulationGraph->lock();
+    }
 }
 
 void RealGUI::createPropertyWidget()
@@ -2420,9 +2413,9 @@ void RealGUI::clear()
 {
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
-        recorder->Clear(currentSimulation());
+        recorder->setRoot(currentSimulation());
 #endif
-    simulationGraph->Clear(currentSimulation());
+    simulationGraph->setRoot(currentSimulation());
     statWidget->CreateStats(currentSimulation());
 }
 
