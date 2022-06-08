@@ -29,7 +29,7 @@
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/MutationListener.h>
-
+#include <sofa/gui/qt/QSofaListView.h>
 
 namespace sofa::gui::qt
 {
@@ -42,15 +42,13 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool, bool,bool);
 class SOFA_SOFAGUIQT_API GraphListenerQListView : public MutationListener
 {
 public:
-    //Q3ListView* widget;
-    QTreeWidget* widget;
-    bool frozen;
+    QSofaListView* widget;
     std::map<core::objectmodel::Base*, QTreeWidgetItem* > items;
     std::map<core::objectmodel::BaseData*, QTreeWidgetItem* > datas;
     std::multimap<QTreeWidgetItem *, QTreeWidgetItem*> nodeWithMultipleParents;
 
-    GraphListenerQListView(QTreeWidget* w)
-        : widget(w), frozen(false)
+    GraphListenerQListView(QSofaListView* w)
+        : widget(w)
     {
     }
 
@@ -67,14 +65,10 @@ public:
     virtual void sleepChanged(Node* node) override;
     virtual void addDatas(core::objectmodel::BaseObject* parent);
     virtual void removeDatas(core::objectmodel::BaseObject* parent);
-    virtual void freeze(Node* groot);
-    virtual void unfreeze(Node* groot);
     core::objectmodel::Base* findObject(const QTreeWidgetItem* item);
     core::objectmodel::BaseData* findData(const QTreeWidgetItem* item);
 
-
     inline static QColor nameColor { 120, 120, 120};
-
 };
 
 } // namespace sofa::gui::qt

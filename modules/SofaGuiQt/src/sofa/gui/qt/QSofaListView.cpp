@@ -49,9 +49,9 @@ namespace sofa::gui::qt
 {
 
 QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
-        QWidget* parent,
-        const char* name,
-        Qt::WindowFlags f):
+                             QWidget* parent,
+                             const char* name,
+                             Qt::WindowFlags f):
     QTreeWidget(parent),
     graphListener_(nullptr),
     AddObjectDialog_(nullptr),
@@ -109,6 +109,7 @@ QSofaListView::~QSofaListView()
     delete graphListener_;
 }
 
+
 void QSofaListView::Clear(Node* rootNode)
 {
     if(graphListener_ != nullptr)
@@ -123,13 +124,12 @@ void QSofaListView::Clear(Node* rootNode)
     this->setSortingEnabled(false);
 
     rootNode->addListener(graphListener_);
-    graphListener_->onBeginAddChild ( nullptr, rootNode );
-    graphListener_->freeze ( rootNode );
-    std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
+    update();
 
+    std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
     for (graph_iterator = graphListener_->items.begin();
-            graph_iterator != graphListener_->items.end();
-            ++graph_iterator)
+         graph_iterator != graphListener_->items.end();
+         ++graph_iterator)
     {
         Node* node = dynamic_cast< Node* >(graph_iterator->first);
         if (node!=nullptr && !node->isActive())
@@ -278,6 +278,88 @@ void QSofaListView::expandNode(QTreeWidgetItem* item)
     emit Lock(false);
 }
 
+void QSofaListView::setViewToDirty()
+{
+    assert(!m_isLocked && "The widget cannot be dirty of it is not locked");
+
+    if(m_isDirty)
+        return;
+
+    m_isDirty = true;
+    emit dirtynessChanged(m_isDirty);
+}
+
+bool QSofaListView::isDirty()
+{
+    return m_isDirty;
+}
+
+bool QSofaListView::isLocked()
+{
+    return m_isLocked;
+}
+
+void QSofaListView::lock()
+{
+    m_isLocked = true;
+    emit lockingChanged(m_isLocked);
+}
+
+void QSofaListView::unLock()
+{
+    m_isLocked = false;
+    update();
+    emit lockingChanged(m_isLocked);
+}
+
+void QSofaListView::setRoot(Node* root)
+{
+    if(!root)
+        return;
+
+    bool lockStatus = m_isLocked;
+    m_isLocked=false;
+    graphListener_->onBeginAddChild(nullptr, root);
+    m_isLocked=lockStatus;
+    m_isDirty=false;
+
+    emit dirtynessChanged(m_isDirty);
+}
+
+bool QSofaListView::updateInternal(bool dirtyness, sofa::simulation::Node *rootNode)
+{
+    if(!dirtyness)
+        return dirtyness;
+
+    if(!rootNode)
+        return false;
+    {
+        bool lockStatus = m_isLocked;
+        m_isLocked=false;
+        graphListener_->onBeginAddChild(nullptr, groot);
+        m_isLocked=lockStatus;
+    }
+}
+
+void QSofaListView::update()
+{
+    if(!m_isDirty)
+        return;
+
+    m_isDirty=false;
+
+    if(!graphListener_ || !this->topLevelItem(0))
+    {
+        emit dirtynessChanged(m_isDirty);
+        return;
+    }
+
+    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
+
+
+    emit dirtynessChanged(m_isDirty);
+}
+
 void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item, int)
 {
     updateMatchingObjectmodel(item);
@@ -320,6 +402,7 @@ void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item)
 
     addInPropertyWidget(item, true);
 }
+
 void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
 {
     if(!item)
@@ -337,24 +420,27 @@ void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
     }
 }
 
-void QSofaListView::Freeze()
-{
-    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
-    graphListener_->freeze(groot);
-}
+//void QSofaListView::Freeze()
+//{
+    //Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
+    //graphListener_->unfreeze(groot);
+    //return;
+    //graphListener_->freeze(groot);
+//}
 
-void QSofaListView::Unfreeze()
-{
-    if(!graphListener_)
-        return;
-    if(!graphListener_->findObject(this->topLevelItem(0)))
-        return;
+//void QSofaListView::Unfreeze()
+//{
+//    return;
+//    if(!graphListener_)
+//        return;
+//    if(!graphListener_->findObject(this->topLevelItem(0)))
+//        return;
 
-    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
-    if(!groot)
-        return;
-    graphListener_->unfreeze(groot);
-}
+//    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
+//    if(!groot)
+//        return;
+//    graphListener_->unfreeze(groot);
+//}
 
 void QSofaListView::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -656,9 +742,9 @@ void QSofaListView::HideDatas()
     if( object_.type == typeObject )
     {
         emit Lock(true);
-        Unfreeze();
+        unLock();
         graphListener_->removeDatas(object_.ptr.Object);
-        Freeze();
+        lock();
         emit Lock(false);
     }
 }
@@ -740,9 +826,9 @@ void QSofaListView::ShowDatas()
     if ( object_.type == typeObject )
     {
         emit Lock(true);
-        Unfreeze();
+        unLock();
         graphListener_->addDatas(object_.ptr.Object);
-        Freeze();
+        lock();
         emit Lock(false);
     }
 }
@@ -803,7 +889,7 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
     if ( currentItem() == nullptr )
     {
         for ( std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = graphListener_->items.begin() ;
-                it != graphListener_->items.end() ; ++ it )
+              it != graphListener_->items.end() ; ++ it )
         {
             if ( ( *it ).second->parent() == nullptr ) //Root node position
             {
@@ -814,9 +900,6 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
         }
         assert(object_.ptr.Node != nullptr);
     }
-
-    //We allow unlock the graph to make all the changes now
-    graphListener_->unfreeze ( object_.ptr.Node );
 
     //Loading of the xml file
     simulation::xml::BaseElement* xml = simulation::xml::loadFromFile ( path.c_str() );
@@ -853,7 +936,6 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
             emit NodeAdded();
         }
     }
-    graphListener_->freeze(object_.ptr.Node);
     transformObject ( new_node, dx, dy, dz, rx,ry,rz,scale );
     emit Lock(false);
     object_.ptr.Node =  nullptr;

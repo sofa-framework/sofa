@@ -336,13 +336,14 @@ QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
     return new QTreeWidgetItem(parent, parent->child(parent->childCount()-1));
 }
 
-
-
 /*****************************************************************************************************************/
 void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
 {
-    if (frozen)
+    if (widget->isLocked())
+    {
+        widget->setViewToDirty();
         return;
+    }
     if (items.count(child))
     {
         QTreeWidgetItem* item = items[child];
@@ -388,7 +389,6 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
                     // this is one more parent, the first child item must be displayed as a multinode
                     {
                         item->setIcon(0, QIcon(pixMultiNode));
-                        //                    item->setText(0, QString("MultiNode ") + item->text(0) );
                     }
                 }
             }
@@ -430,7 +430,6 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
 void GraphListenerQListView::onBeginRemoveChild(Node* parent, Node* child)
 {
     SOFA_UNUSED(parent);
-
     for (Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
         onBeginRemoveObject(child, it->get());
     for (Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
@@ -447,7 +446,11 @@ void GraphListenerQListView::onBeginRemoveChild(Node* parent, Node* child)
 /*****************************************************************************************************************/
 void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::BaseObject* object)
 {
-    if (frozen) return;
+    if(widget->isLocked())
+    {
+        widget->setViewToDirty();
+        return;
+    }
     if (items.count(object))
     {
         QTreeWidgetItem* item = items[object];
@@ -505,7 +508,6 @@ void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::B
 void GraphListenerQListView::onBeginRemoveObject(Node* parent, core::objectmodel::BaseObject* object)
 {
     SOFA_UNUSED(parent);
-
     for (BaseObject::SPtr slave : object->getSlaves())
         onBeginRemoveSlave(object, slave.get());
 
@@ -520,7 +522,11 @@ void GraphListenerQListView::onBeginRemoveObject(Node* parent, core::objectmodel
 /*****************************************************************************************************************/
 void GraphListenerQListView::onBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
-    if (frozen) return;
+    if(widget->isLocked())
+    {
+        widget->setViewToDirty();
+        return;
+    }
     if (items.count(slave))
     {
         QTreeWidgetItem* item = items[slave];
@@ -575,11 +581,11 @@ void GraphListenerQListView::onBeginAddSlave(core::objectmodel::BaseObject* mast
 /*****************************************************************************************************************/
 void GraphListenerQListView::onBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave)
 {
+    SOFA_UNUSED(master);
     const core::objectmodel::BaseObject::VecSlaves& slaves = slave->getSlaves();
     for (unsigned int i=0; i<slaves.size(); ++i)
         onBeginRemoveSlave(slave, slaves[i].get());
 
-    SOFA_UNUSED(master);
     if (items.count(slave))
     {
         delete items[slave];
@@ -597,22 +603,6 @@ void GraphListenerQListView::sleepChanged(Node* node)
         if (pix)
             item->setIcon(0, QIcon(*pix));
     }
-}
-
-/*****************************************************************************************************************/
-void GraphListenerQListView::freeze(Node* groot)
-{
-    if (!items.count(groot)) return;
-    frozen = true;
-}
-
-
-/*****************************************************************************************************************/
-void GraphListenerQListView::unfreeze(Node* groot)
-{
-    if (!items.count(groot)) return;
-    frozen = false;
-    onBeginAddChild(nullptr, groot);
 }
 
 /*****************************************************************************************************************/
@@ -663,10 +653,14 @@ core::objectmodel::BaseData* GraphListenerQListView::findData(const QTreeWidgetI
 /*****************************************************************************************************************/
 void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
 {
+    if (widget->isLocked())
+    {
+        widget->setViewToDirty();
+        return;
+    }
 
     BaseData* data = nullptr;
     std::string name;
-    if (frozen) return;
 
     if( items.count(parent) )
     {
@@ -688,7 +682,12 @@ void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
 /*****************************************************************************************************************/
 void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *parent)
 {
-    if (frozen) return;
+    if (widget->isLocked())
+    {
+        widget->setViewToDirty();
+        return;
+    }
+
     QTreeWidgetItem* new_item;
     std::string name;
     BaseData* data = nullptr;

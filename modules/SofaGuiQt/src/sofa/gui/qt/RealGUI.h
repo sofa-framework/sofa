@@ -404,6 +404,15 @@ protected slots:
     /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void updateViewerList();
 
+    /// Update the scenegraph and activate the automatic refresh.
+    virtual void onSceneGraphRefreshButtonClicked();
+
+    /// Update the SceneGraph update button to reflect the dirtyness status.
+    virtual void sceneGraphViewDirtynessChanged(bool isDirty);
+
+    /// Update the SceneGraph update button to reflect the locking status.
+    virtual void sceneGraphViewLockingChanged(bool isLocked);
+
     void propertyDockMoved(Qt::DockWidgetArea a);
 
     void appendToDataLogFile(QString);
