@@ -43,4 +43,5 @@
 namespace sofa::component::odesolver::forward
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::odesolver::forward

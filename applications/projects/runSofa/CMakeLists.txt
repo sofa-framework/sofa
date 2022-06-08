@@ -21,8 +21,10 @@ install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ 
 ###################################
 
 sofa_find_package(SofaValidation QUIET)
-sofa_find_package(SofaGui REQUIRED)
-sofa_find_package(SofaGraphComponent REQUIRED)
+
+sofa_find_package(Sofa.GUI.Common REQUIRED)
+sofa_find_package(Sofa.GUI.Qt QUIET)
+sofa_find_package(SceneChecking REQUIRED)
 
 set(HEADER_FILES
     runSofaValidation.h
@@ -61,6 +63,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAM
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGui)
 target_link_libraries(${PROJECT_NAME} SofaGraphComponent)
+target_link_libraries(${PROJECT_NAME} SceneChecking)
 
 if(SofaValidation_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaValidation)

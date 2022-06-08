@@ -1095,7 +1095,7 @@ endmacro()
 # set(SOURCES_FILES  initExamplePlugin.cpp myComponent.cpp )
 # set(HEADER_FILES   initExamplePlugin.h myComponent.h )
 # add_library( ${PROJECT_NAME} SHARED ${SOURCE_FILES})
-# target_link_libraries(${PROJECT_NAME} SofaCore)
+# target_link_libraries(${PROJECT_NAME} Sofa.Core)
 # sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "sofa/custom/install/dir" INCLUDE_SOURCE_DIR src )
 #
 function(sofa_generate_package)

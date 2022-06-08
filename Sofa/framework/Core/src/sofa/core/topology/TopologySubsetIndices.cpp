@@ -67,9 +67,9 @@ void TopologySubsetIndices::removePostProcess(sofa::Size nbElements)
 }
 
 
-void TopologySubsetIndices::addPostProcess(sofa::Size nbElements)
+void TopologySubsetIndices::addPostProcess(sofa::Index dataLastId)
 {
-    this->m_lastElementIndex += nbElements;
+    this->m_lastElementIndex = dataLastId;
 }
 
 void TopologySubsetIndices::updateLastIndex(Index posLastIndex, Index newGlobalId)

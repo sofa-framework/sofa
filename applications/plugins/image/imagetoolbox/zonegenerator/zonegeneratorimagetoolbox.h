@@ -264,9 +264,9 @@ public:
 
                             if(sam.x()!=0 && sam.y()!=0)
                             {
-                                double x = sam.x()-samples.x();
-                                double y = sam.y()-samples.y();
-                                double distance = x*x+y*y;
+                                double tmpx = sam.x()-samples.x();
+                                double tmpy = sam.y()-samples.y();
+                                double distance = tmpx * tmpx + tmpy * tmpy;
 
                                 if(radius2>distance)
                                 {

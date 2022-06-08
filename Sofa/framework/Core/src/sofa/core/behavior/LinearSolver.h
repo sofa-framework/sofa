@@ -21,32 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/BaseLinearSolver.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior
 {
-
-
-/**
- *  \brief Abstract base class (as type identifier) for linear system solvers without any API
- *
- */
-class SOFA_CORE_API BaseLinearSolver : virtual public objectmodel::BaseObject
-{
-public:
-    SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseLinearSolver)
-
-    bool insertInNode( objectmodel::BaseNode* node ) override;
-    bool removeInNode( objectmodel::BaseNode* node ) override;
-
-}; // class BaseLinearSolver
-
-
-
 
 /**
  *  \brief Abstract interface for linear system solvers

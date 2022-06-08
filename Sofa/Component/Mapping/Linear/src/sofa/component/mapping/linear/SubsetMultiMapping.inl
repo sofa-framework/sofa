@@ -33,13 +33,14 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
 {
     assert( indexPairs.getValue().size()%2==0 );
-    const unsigned indexPairSize = indexPairs.getValue().size()/2;
+    const auto indexPairSize = indexPairs.getValue().size()/2;
 
     this->toModels[0]->resize( indexPairSize );
 
     Inherit::init();
 
-    unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
+    static constexpr auto Nin = TIn::deriv_total_size;
+    static constexpr auto Nout = TOut::deriv_total_size;
 
 
     for( unsigned i=0; i<baseMatrices.size(); i++ )
