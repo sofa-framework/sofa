@@ -160,7 +160,9 @@ protected:
     void getExpandedNodes(QTreeWidgetItem* item, std::vector<std::string>&) ;
     void collapseNode(QTreeWidgetItem* item);
     void expandNode(QTreeWidgetItem* item);
-    void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale );
+
+    void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale ) = delete;
+
     bool isNodeErasable( core::objectmodel::BaseNode* node);
 
     std::list<core::objectmodel::BaseNode*> collectNodesToChange(core::objectmodel::BaseNode* node);
