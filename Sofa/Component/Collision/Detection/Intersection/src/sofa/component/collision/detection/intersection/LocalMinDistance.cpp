@@ -186,7 +186,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     double alpha = 0.5;
     double beta = 0.5;
 
-    // If line are not parallel
+    // If lines are not parallel
     if (det < -1.0e-30 || det > 1.0e-30)
     {
         // compute the parametric coordinates along the line
