@@ -186,7 +186,7 @@ public:
         {
             bool savePLog = context->f_printLog.getValue();
             context->f_printLog.setValue(true);
-            msg_info(context) << "A gravity seem to apply in the node \"" << context->getName() << "\" using the deprecated gravity mechanism (read more in PR#XXXX)." << msgendl
+            msg_info(context) << "A gravity seem to apply in the node \"" << context->getName() << "\" using the deprecated gravity mechanism (read more in PR#2988)." << msgendl
                                << "A GravityForceField is automatically added in the node \"" << context->getName() << "\".";
             context->f_printLog.setValue(savePLog);
 
