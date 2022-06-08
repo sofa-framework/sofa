@@ -52,6 +52,9 @@ using namespace sofa::core::objectmodel;
 
 namespace sofa::gui::qt
 {
+
+
+
 //***********************************************************************************************************
 
 static const int iconWidth=8;
@@ -322,6 +325,35 @@ void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
         item->setIcon(0, QIcon(*pix));
 }
 
+ObjectStateListener::ObjectStateListener(
+        QTreeWidgetItem* item_,
+        sofa::core::objectmodel::Base* object_) : item(item_), object(object_)
+{
+    object->d_messageLogCount.addOutput(this);
+}
+
+ObjectStateListener::~ObjectStateListener()
+{
+    object->d_messageLogCount.delOutput(this);
+}
+
+void ObjectStateListener::update() {}
+void ObjectStateListener::notifyEndEdit()
+{
+    setMessageIconFrom(item, object.get());
+}
+
+
+GraphListenerQListView::~GraphListenerQListView()
+{
+    for(auto item : items)
+    {
+        delete items[item.first];
+    }
+    items.clear();
+    listeners.clear();
+}
+
 /*****************************************************************************************************************/
 QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 {
@@ -419,7 +451,11 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
 
         item->setExpanded(true);
         items[child] = item;
+
+        // Add a listener to connect changes on the component state with its graphical view.
+        listeners[child] = std::make_unique<ObjectStateListener>(item, child);
     }
+
     for (BaseObject::SPtr obj : child->object)
         onBeginAddObject(child, obj.get());
     for (Node::SPtr node : child->child)
@@ -440,6 +476,7 @@ void GraphListenerQListView::onBeginRemoveChild(Node* parent, Node* child)
     {
         delete items[child];
         items.erase(child);
+        listeners.erase(child);
     }
 }
 
@@ -495,6 +532,7 @@ void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::B
         setMessageIconFrom(item, object);
 
         items[object] = item;
+        listeners[object] = std::make_unique<ObjectStateListener>(item, object);
     }
     for (BaseObject::SPtr slave : object->getSlaves())
         onBeginAddSlave(object, slave.get());
@@ -513,6 +551,7 @@ void GraphListenerQListView::onBeginRemoveObject(Node* parent, core::objectmodel
     {
         delete items[object];
         items.erase(object);
+        listeners.erase(object);
     }
 }
 
