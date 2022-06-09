@@ -28,6 +28,7 @@ namespace sofa::component
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
 }
 
 void initExternalModule()
@@ -42,6 +43,11 @@ void initExternalModule()
 const char* getModuleName()
 {
     return MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
 }
 
 void init()

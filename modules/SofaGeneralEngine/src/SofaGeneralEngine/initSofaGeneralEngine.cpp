@@ -41,11 +41,11 @@ void initSofaGeneralEngine()
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Select");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Transform");
 
-#if SOFAGENERALENGINE_HAVE_SOFA_GL == 1
+#if SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE == 1
         // msg_deprecated("SofaGeneralEngine") << "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Engine");
-#endif // SOFAGENERALENGINE_HAVE_SOFA_GL == 1
+#endif // SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE == 1
         first = false;
     }
 }

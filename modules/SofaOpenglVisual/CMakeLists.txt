@@ -15,7 +15,7 @@ set(EXTRA_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} is deprecated. It will be removed at v23.06. Use Sofa.GL.Component.Rendering2D, Sofa.GL.Component.Rendering3D and Sofa.GL.Component.Shader instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.GL.Component.Rendering2D, Sofa.GL.Component.Rendering3D and Sofa.GL.Component.Shader instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.GL.Component.Rendering2D REQUIRED)

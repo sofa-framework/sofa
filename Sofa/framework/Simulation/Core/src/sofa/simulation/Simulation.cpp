@@ -443,8 +443,17 @@ Node::SPtr Simulation::load ( const std::string& filename, bool reload, const st
 
     if (loader) return loader->load(filename, reload, sceneArgs);
 
-    // unable to load file
-    msg_error() << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename.c_str())<<") not handled";
+    const std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    if (extension == "py" || extension == "py3"
+        || extension == "pyscn" || extension == "py3scn") //special case for Python extensions
+    {
+        msg_error() << "Cannot load file '" << filename << "': extension (" << extension << ") is only supported if the"
+            " plugin SofaPython3 is loaded. SofaPython3 must be loaded first before being able to load the file.";
+    }
+    else
+    {
+        msg_error() << "Cannot load file '" << filename << "': extension (" << extension << ") not supported";
+    }
     return nullptr;
 }
 

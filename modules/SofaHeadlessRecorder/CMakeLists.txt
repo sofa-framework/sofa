@@ -7,7 +7,10 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-find_package(Sofa.GUI.HeadlessRecorder REQUIRED)
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.GUI.HeadlessRecorder instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.GUI.HeadlessRecorder REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.HeadlessRecorder)
 
 sofa_create_package_with_targets(

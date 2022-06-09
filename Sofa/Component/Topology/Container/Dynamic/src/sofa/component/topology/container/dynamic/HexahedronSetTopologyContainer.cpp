@@ -31,7 +31,7 @@ namespace sofa::component::topology::container::dynamic
 using namespace std;
 using namespace sofa::defaulttype;
 using sofa::core::topology::edgesInHexahedronArray;
-using sofa::core::topology::quadsInHexahedronArray;
+using sofa::core::topology::quadsOrientationInHexahedronArray;
 using sofa::core::topology::verticesInHexahedronArray;
 
 int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set topology container")
@@ -589,10 +589,10 @@ HexahedronSetTopologyContainer::Edge HexahedronSetTopologyContainer::getLocalEdg
 HexahedronSetTopologyContainer::Quad HexahedronSetTopologyContainer::getLocalQuadsInHexahedron (const QuadID i) const
 {
     assert(i<6);
-    return Quad (quadsInHexahedronArray[i][0],
-            quadsInHexahedronArray[i][1],
-            quadsInHexahedronArray[i][2],
-            quadsInHexahedronArray[i][3]);
+    return Quad (quadsOrientationInHexahedronArray[i][0],
+        quadsOrientationInHexahedronArray[i][1],
+        quadsOrientationInHexahedronArray[i][2],
+        quadsOrientationInHexahedronArray[i][3]);
 }
 
  unsigned int HexahedronSetTopologyContainer::getLocalIndexFromBinaryIndex(const HexahedronBinaryIndex bi) const
