@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTriangleModel.h>
-#include <SofaMeshCollision/TriangleModel.inl>
+#include <sofa/component/collision/geometry/TriangleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry

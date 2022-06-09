@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBoundaryCondition/ConstantForceField.inl>
+#include <sofa/component/mechanicalload/ConstantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/gpu/cuda/CudaTypes.h>

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaEulerianFluid VERSION 1.0)
 
-find_package(SofaFramework REQUIRED)
+find_package(Sofa.Core REQUIRED)
 find_package(Sofa.GL REQUIRED)
 
 set(HEADER_FILES

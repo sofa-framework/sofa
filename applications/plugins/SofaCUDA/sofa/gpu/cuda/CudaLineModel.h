@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaMeshCollision/LineModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
 
 namespace sofa::gpu::cuda
 {
@@ -30,9 +30,9 @@ namespace sofa::gpu::cuda
 SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaLineCollisionModel")
 CudaDeprecatedAndRemoved CudaLineModel;
 
-using CudaLineCollisionModel = sofa::component::collision::LineCollisionModel<CudaVec3Types>;
-using CudaLineCollisionModelf1 = sofa::component::collision::LineCollisionModel<CudaVec3f1Types>;
+using CudaLineCollisionModel = sofa::component::collision::geometry::LineCollisionModel<CudaVec3Types>;
+using CudaLineCollisionModelf1 = sofa::component::collision::geometry::LineCollisionModel<CudaVec3f1Types>;
 
-using CudaLine = sofa::component::collision::TLine<CudaVec3fTypes>;
+using CudaLine = sofa::component::collision::geometry::TLine<CudaVec3fTypes>;
 
 } // namespace sofa::gpu::cuda
