@@ -113,7 +113,7 @@ TEST(Node_test, addObjectPreservingContext)
     ASSERT_EQ(child1->getObject(A->getName()), nullptr); // not in child1 anymore
     ASSERT_NE(child2->getObject(A->getName()), nullptr); // but in child2
 
-    // check that the pathname reflect the change
+    // check that the pathname reflects the change
     ASSERT_NE(A->getPathName(), "/root/child2/A");
     ASSERT_NE(B->getPathName(), "/root/child1/B");
 
