@@ -268,24 +268,28 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     //sofa::type::vector<SReal> RHlist(J->colSize(),J->rowSize()); 
 
     //sofa::type::vector<SReal> *RHlist = (sofa::type::vector<SReal> *) malloc(sizeof(sofa::type::vector<SReal> *)*J->rowSize()*J->colSize());
-    sofa::type::vector<SReal> *RHlist = new sofa::type::vector<SReal>[J->rowSize()];
-    for(int i=0;i<J->rowSize();i++) //RHlist[i] = new  sofa::type::vector<SReal>(J->colSize());
-    RHlist[i].resize(J->colSize());
 
+    //sofa::type::vector< Vector > *listRH = new sofa::type::vector< Vector >[J->rowSize()];
+    //for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
+    
+    sofa::type::vector< Vector  > listRH(J->rowSize()) ;
+    for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
+
+    sofa::type::vector< Vector  > listLH(J->rowSize());
+    for(int i=0;i<J->rowSize();i++) listLH[i].resize(J->rowSize());
 
     for(int i=0;i<J->colSize();i++)
     {
         for(int j=0;j<J->rowSize();j++)
         {
-                RHlist[j][i] = J->element(i,j) ; //copy Jt
+                listRH[j][i] = J->element(i,j) ; //copy Jt
         }
     }
 
-    for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+    // one task per column
+    for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
     {
-        //RHlist[row][0]=1;
-        taskList.emplace_back(&status , J , this , row , RHlist[row] );
-        //taskList.emplace_back(&status);
+        taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
         taskScheduler->addTask( &(taskList.back()) );
 
         /*
@@ -321,7 +325,34 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         */
        taskScheduler->workUntilDone(&status);
     }
-    delete[] RHlist;
+
+    // STEP 3 : project the result using matrix J
+    if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
+    {
+        for (typename JMatrixType::Index row=0; row<J->colSize(); row++)
+        {
+            for(int col=0;col<J->rowSize();col++)
+            {
+                double acc = 0.0;
+                for(int k=0;k<J->rowSize();k++)
+                {
+                    acc += J->element(row,k)*listRH[col][k];
+                }
+                result->add(row,col,acc*fact);
+            }
+
+        }
+    }
+    else
+    {
+        dmsg_error() << "addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
+        return false;
+    }
+    
+
+
+    listRH.clear();
+    listLH.clear();
     return true;
 }
 

@@ -150,6 +150,10 @@ linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScattere
 template<>
 linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector() { return nullptr; }
 
+template<>
+bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::addJMInvJtLocal(GraphScatteredMatrix * /*M*/ ,ResMatrixType * result,const JMatrixType * J, SReal fact){ return true; }
+
+
 // Force template instantiation
 using namespace sofa::linearalgebra;
 

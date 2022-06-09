@@ -41,16 +41,21 @@ class LinearSolverTask: public sofa::simulation::CpuTask
 
 public:
 
-    Vector *specificThreadRHVector;
-    std::vector<SReal> m_taskRH;
-    MatrixLinearSolver<Matrix,Vector> *m_solver;
-    const JMatrixType * m_J;
     int m_row;
+    Vector  *m_taskRH;
+    Vector  *m_taskLH;
+    const JMatrixType * m_J;
+    MatrixLinearSolver<Matrix,Vector> *m_solver;
+    
 
     LinearSolverTask(sofa::simulation::CpuTask::Status *status);
-    LinearSolverTask(sofa::simulation::CpuTask::Status *status,const JMatrixType * J
+    LinearSolverTask(int row
+                    ,Vector  *taskRH
+                    ,Vector  *taskLH
+                    ,sofa::simulation::CpuTask::Status *status
+                    ,const JMatrixType * J
                     ,MatrixLinearSolver<Matrix,Vector> *solver
-                    ,int row,std::vector<SReal> taskRH );
+                     );
     ~LinearSolverTask() override = default;
     sofa::simulation::Task::MemoryAlloc run() final;  
 };
@@ -69,9 +74,12 @@ class LinearSolverTask<GraphScatteredVector,GraphScatteredVector>:public sofa::s
 
     LinearSolverTask(sofa::simulation::CpuTask::Status *status):sofa::simulation::CpuTask(status){};
 
-    LinearSolverTask(sofa::simulation::CpuTask::Status *status,const JMatrixType * J
-                    ,MatrixLinearSolver<GraphScatteredVector,GraphScatteredVector> *solver
-                    ,int row,std::vector<SReal> taskRH )
+    LinearSolverTask(int row
+                    ,GraphScatteredVector *taskRH 
+                    ,GraphScatteredVector *taskLH 
+                    ,sofa::simulation::CpuTask::Status *status
+                    ,const JMatrixType * J
+                    ,MatrixLinearSolver<GraphScatteredVector,GraphScatteredVector> *solver)
                     :sofa::simulation::CpuTask(status){};
     ~LinearSolverTask() ;
     sofa::simulation::Task::MemoryAlloc run(){return {};} ;
@@ -85,35 +93,41 @@ LinearSolverTask<Matrix,Vector>::LinearSolverTask(sofa::simulation::CpuTask::Sta
 {}
 
 template<class Matrix, class Vector>
-LinearSolverTask<Matrix,Vector>::LinearSolverTask(sofa::simulation::CpuTask::Status *status,const JMatrixType * J
-                    ,MatrixLinearSolver<Matrix,Vector> *solver,int row,std::vector<SReal> taskRH )
+LinearSolverTask<Matrix,Vector>::LinearSolverTask(
+    int row
+    ,Vector *taskRH 
+    ,Vector *taskLH 
+    ,sofa::simulation::CpuTask::Status *status,const JMatrixType * J
+    ,MatrixLinearSolver<Matrix,Vector> *solver)
 :sofa::simulation::CpuTask(status)
-,m_J(J)
-,m_solver(solver)
 ,m_row(row)
 ,m_taskRH(taskRH)
+,m_taskLH(taskLH)
+,m_J(J)
+,m_solver(solver)
 {}
 
 
 
 template<class Matrix, class Vector>
 sofa::simulation::Task::MemoryAlloc LinearSolverTask<Matrix,Vector>::run(){
-    //std::cout<< m_taskRH[0] << std::endl;
 
-    //for (typename JMatrixType::Index i=0; i<m_J->colSize(); i++) m_taskRH[i]= m_J->element(m_row, i);
-   // m_taskRH[0] = 1;
-
+/*
     for(int i=0; i<m_J->colSize(); i++){
         std::cout<<m_taskRH[i] << ' ';
     }
     std::cout << std::endl;
+*/
 
-//std::cout<< "called" << std::endl;
-//std::cout << m_J->element(0,0) << std::endl;
-//std::cout << m_J->colSize() <<  /* ' ' << specificThreadRHVector->size() <<*/ std::endl;
-//for(int i=0; i<m_J->colSize();i++) std::cout<< m_J->element(0,i)<<' ';
-//std::cout<<std::endl;
-//std::cout << m_row << std::endl;
+m_solver->solve(*(m_solver->linearSystem.systemMatrix), *m_taskLH, *m_taskRH );
+
+/*
+for(int i=0; i<m_J->rowSize(); i++){
+        std::cout<<m_taskLH[i] << ' ';
+    }
+    std::cout << std::endl;
+*/
+
 return simulation::Task::Stack;
 };
 } // namespace sofa::component::linearsolver
