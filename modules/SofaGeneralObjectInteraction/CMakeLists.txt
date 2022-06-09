@@ -23,17 +23,7 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.cpp
     )
 
-if (SOFA_ENABLE_LEGACY_HEADERS)
-    sofa_find_package(SofaDeformable REQUIRED)
-    sofa_find_package(SofaEngine REQUIRED)
-    sofa_find_package(SofaGeneralEngine REQUIRED)
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-if (SOFA_ENABLE_LEGACY_HEADERS)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable SofaEngine SofaGeneralEngine)
-endif()
 
 message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring and Sofa.Component.Constraint.Projective instead.")
 
