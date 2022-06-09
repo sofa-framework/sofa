@@ -116,6 +116,14 @@ TEST(Node_test, addObjectPreservingContext)
     // check that the pathname reflect the change
     ASSERT_NE(A->getPathName(), "/root/child2/A");
     ASSERT_NE(B->getPathName(), "/root/child1/B");
+
+    // check that the linkpath returned is reflecting the changes
+    ASSERT_EQ(A->name.getLinkPath(), "@/child2/A.name");
+    ASSERT_EQ(B->name.getLinkPath(), "@/child1/B.name");
+
+    // check that the linkpath returned for links is reflecting the changes
+    ASSERT_EQ(A->findLink("context")->getLinkedPath(), "@./");
+    ASSERT_EQ(B->findLink("context")->getLinkedPath(), "@./");
 }
 
 
