@@ -123,8 +123,8 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
 
     const double det = type::determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    double alpha;
+    double beta;
 
     if (det < -1.0e-30 || det > 1.0e-30)
     {
