@@ -106,6 +106,24 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         useRestMState = true;
     }
 
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize topological changes support
+        d_points.createTopologyHandler(_topology);
+    }
+    else
+    {
+        msg_info() << "Can not find the topology, won't be able to handle topological changes";
+    }
+
     recomputeIndices();
 
     BaseMechanicalState* state = this->getContext()->getMechanicalState();
@@ -183,14 +201,14 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     m_indices.clear();
     m_ext_indices.clear();
 
-    for (sofa::Index i = 0; i < d_points.getValue().size(); i++)
+    for (const sofa::Index i : d_points.getValue())
     {
-        m_indices.push_back(d_points.getValue()[i]);
+        m_indices.push_back(i);
     }
 
-    for (sofa::Index i = 0; i < d_external_points.getValue().size(); i++)
+    for (const sofa::Index i : d_external_points.getValue())
     {
-        m_ext_indices.push_back(d_external_points.getValue()[i]);
+        m_ext_indices.push_back(i);
     }
 
     if (m_indices.empty())
@@ -214,9 +232,9 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
         }
         else
         {
-            for (sofa::Index i = 0; i < m_indices.size(); i++)
+            for (const sofa::Index i : m_indices)
             {
-                m_ext_indices.push_back(m_indices[i]);
+                m_ext_indices.push_back(i);
             }
         }
     }
@@ -254,7 +272,7 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
 }
 
 template<class DataTypes>
-bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension)
+bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const SetIndexArray &indices, const sofa::Size dimension)
 {
     for (sofa::Index i = 0; i < indices.size(); i++)
     {
@@ -364,8 +382,8 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
     ReadAccessor< DataVecCoord > p  = this->mstate->read(VecCoordId::position());
 
-    const VecIndex& indices = m_indices;
-    const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
+    const SetIndexArray& indices = m_indices;
+    const SetIndexArray& ext_indices = (useRestMState ? m_ext_indices : m_indices);
 
     std::vector<Vector3> vertices;
 
