@@ -105,7 +105,7 @@ protected:
 
     void doUpdate() override
     {
-        size_t nb = nbROIs.getValue();
+        const unsigned int nb = nbROIs.getValue();
         f_indices.resize(nb);
         f_value.resize(nb);
         if(!nb) return;
