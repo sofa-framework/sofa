@@ -499,17 +499,28 @@ void ModifyObject::updateValues()
         core::objectmodel::BaseObject* object = sofa::core::castTo<core::objectmodel::BaseObject*>(basenode);
         if(dialogFlags_.REINIT_FLAG)
         {
-            if (node && transformation)
+            // if the selected object is a node
+            if (node)
             {
-                if (!transformation->isDefaultValues())
-                    transformation->applyTransformation(node);
-                transformation->setDefaultValues();
+                // and there is a transformation widget associated
+                if(transformation)
+                {
+                    // then do some dirty hack to change the value
+                    if (!transformation->isDefaultValues())
+                    {
+                        transformation->applyTransformation(node);
+                    }
+                    transformation->setDefaultValues();
+                }
+                // call the reinit function on the node
                 node->reinit(sofa::core::execparams::defaultInstance());
             }
-            else if (object){
-                object->reinit();
+            else if (object)                 //< if the selected is an object
+            {
+                object->reinit();            //< we need to fully re-initialize the object to be sure it is ok.
             }
-            else {
+            else 
+            {
                 throw std::runtime_error("Invalid type, only Node and BaseObject are supported. "
                                          "This is a BUG, please report to https://github.com/sofa-framework/sofa/issues");
             }
