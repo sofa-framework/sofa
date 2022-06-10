@@ -76,28 +76,48 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(sofa::simulation::Node* node)
     }
 }
 
-void SceneCheckMissingRequiredPlugin::doPrintSummary()
+void SceneCheckMissingRequiredPlugin::doPrintSummary(std::string sceneExtension)
 {
     if(!m_requiredPlugins.empty())
     {
         const std::string indent { "  "};
-        std::stringstream tmp;
-        for(const auto& kv : m_requiredPlugins)
-        {
-            tmp << indent << "<RequiredPlugin name=\""<<kv.first<<"\"/> <!-- Needed to use components [";
-            if (!kv.second.empty())
-            {
-                std::copy(kv.second.begin(), kv.second.end() - 1, std::ostream_iterator<std::string>(tmp, ", "));
-                tmp << kv.second.back();
-            }
-            tmp <<"] -->" << msgendl;
-        }
+        std::stringstream stream;
+
+        if (sceneExtension == "xml" || sceneExtension == "scn")
+            getSummaryXML(stream);
+        else
+            getSummaryPython(stream);
+
         msg_warning(this->getName())
                 << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl
                 << indent << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
-                << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the beginning of your scene (if it is a .scn): " << msgendl
-                << tmp.str();
+                << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the beginning of your scene: " << msgendl
+                << stream.str();
     }
+}
+
+void SceneCheckMissingRequiredPlugin::getSummaryXML(std::stringstream& stream)
+{
+    const std::string indent { "  "};
+    for(const auto& kv : m_requiredPlugins)
+    {
+        stream << indent << "<RequiredPlugin name=\""<<kv.first<<"\"/> <!-- Needed to use components [";
+        if (!kv.second.empty())
+        {
+            std::copy(kv.second.begin(), kv.second.end() - 1, std::ostream_iterator<std::string>(stream, ", "));
+            stream << kv.second.back();
+        }
+        stream <<"] -->" << msgendl;
+    }
+}
+
+void SceneCheckMissingRequiredPlugin::getSummaryPython(std::stringstream &stream)
+{
+    const std::string indent { "  "};
+    stream << indent << "rootnode.addObject('RequiredPlugin', pluginName=[";
+    for(const auto& kv : m_requiredPlugins)
+        stream << "\"" << kv.first << "\", ";
+    stream <<"])" << msgendl;
 }
 
 void SceneCheckMissingRequiredPlugin::doInit(sofa::simulation::Node* node)

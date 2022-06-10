@@ -440,7 +440,10 @@ int main(int argc, char** argv)
     // Create and register the SceneCheckerListener before scene loading
     if(!noSceneCheck)
     {
-        sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
+        SceneCheckerListener* sceneCheckerListener = SceneCheckerListener::getInstance();
+        std::string ext = sofa::helper::system::SetDirectory::GetExtension(fileName.c_str());
+        sceneCheckerListener->setSceneExtension(ext);
+        sofa::simulation::SceneLoader::addListener( sceneCheckerListener );
     }
 
     const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();

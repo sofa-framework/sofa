@@ -42,7 +42,7 @@ public:
     virtual const std::string getDesc() override;
     void doInit(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
     void doCheckOn(sofa::simulation::Node* node) override { SOFA_UNUSED(node); }
-    void doPrintSummary() override;
+    void doPrintSummary(std::string sceneExtension) override;
 
 private:
     std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;

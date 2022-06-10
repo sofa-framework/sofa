@@ -43,9 +43,11 @@ public:
 
     void addCheck(SceneCheck::SPtr check) ;
     void removeCheck(SceneCheck::SPtr check) ;
+    void setSceneExtension(std::string sceneExtension) {m_sceneExtension=sceneExtension;}
 
 private:
     std::vector<SceneCheck::SPtr> m_checkset ;
+    std::string m_sceneExtension ;
 };
 
 } // namespace sofa::_scenechecking_

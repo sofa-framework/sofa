@@ -46,7 +46,7 @@ public:
     virtual const std::string getDesc() = 0;
     virtual void doInit(sofa::simulation::Node* node) { SOFA_UNUSED(node); }
     virtual void doCheckOn(sofa::simulation::Node* node) = 0;
-    virtual void doPrintSummary() {}
+    virtual void doPrintSummary(std::string sceneExtension) { SOFA_UNUSED(sceneExtension); }
 };
 
 } // namespace sofa::_scenechecking_

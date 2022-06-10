@@ -63,8 +63,10 @@ void SceneCheckDeprecatedComponents::doCheckOn(Node* node)
     }
 }
 
-void SceneCheckDeprecatedComponents::doPrintSummary()
-{}
+void SceneCheckDeprecatedComponents::doPrintSummary(std::string sceneExtension)
+{
+    SOFA_UNUSED(sceneExtension);
+}
 
 std::shared_ptr<SceneCheckDeprecatedComponents> SceneCheckDeprecatedComponents::newSPtr()
 {

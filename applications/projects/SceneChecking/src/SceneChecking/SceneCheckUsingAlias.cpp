@@ -61,8 +61,10 @@ const std::string SceneCheckUsingAlias::getDesc()
     return "Check if a Component has been created using an Alias.";
 }
 
-void SceneCheckUsingAlias::doPrintSummary()
+void SceneCheckUsingAlias::doPrintSummary(std::string sceneExtension)
 {
+    SOFA_UNUSED(sceneExtension);
+
     if ( this->m_componentsCreatedUsingAlias.empty() )
     {
         return;

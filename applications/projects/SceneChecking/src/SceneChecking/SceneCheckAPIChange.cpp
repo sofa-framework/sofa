@@ -77,8 +77,9 @@ void SceneCheckAPIChange::doInit(sofa::simulation::Node* node)
     }
 }
 
-void SceneCheckAPIChange::doPrintSummary()
+void SceneCheckAPIChange::doPrintSummary(std::string sceneExtension)
 {
+    SOFA_UNUSED(sceneExtension);
 }
 
 void SceneCheckAPIChange::doCheckOn(sofa::simulation::Node* node)

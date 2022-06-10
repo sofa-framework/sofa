@@ -45,11 +45,14 @@ public:
     virtual const std::string getDesc() override;
     void doInit(sofa::simulation::Node* node) override;
     void doCheckOn(sofa::simulation::Node* node) override;
-    void doPrintSummary() override;
+    void doPrintSummary(std::string sceneExtension) override;
 
 private:    
     std::map<std::string, bool > m_loadedPlugins;
     std::map<std::string, std::vector<std::string> > m_requiredPlugins;
+
+    void getSummaryXML(std::stringstream &stream);
+    void getSummaryPython(std::stringstream& stream);
 };
 
 } // namespace sofa::_scenechecking_

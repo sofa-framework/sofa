@@ -71,7 +71,7 @@ void SceneCheckerVisitor::validate(sofa::simulation::Node* node)
 
     for(SceneCheck::SPtr& check : m_checkset)
     {
-        check->doPrintSummary() ;
+        check->doPrintSummary(m_sceneExtension) ;
     }
     msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
 }

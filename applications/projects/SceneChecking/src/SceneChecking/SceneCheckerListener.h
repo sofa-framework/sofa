@@ -49,6 +49,8 @@ public:
         SOFA_UNUSED(node);
     }
 
+    void setSceneExtension(std::string sceneExtension) {m_sceneChecker.setSceneExtension(sceneExtension);}
+
 private:
     SceneCheckerListener();
     SceneCheckerVisitor m_sceneChecker;

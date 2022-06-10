@@ -98,8 +98,9 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
     }
 }
 
-void SceneCheckCollisionResponse::doPrintSummary()
+void SceneCheckCollisionResponse::doPrintSummary(std::string sceneExtension)
 {
+    SOFA_UNUSED(sceneExtension);
     if(m_checkDone && m_message.str()!= "")
     {
         msg_warning(this->getName()) << m_message.str();

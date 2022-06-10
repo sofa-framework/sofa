@@ -40,7 +40,7 @@ public:
     virtual const std::string getDesc() override;
     void doInit(sofa::simulation::Node* node) override;
     void doCheckOn(sofa::simulation::Node* node) override;
-    void doPrintSummary() override;
+    void doPrintSummary(std::string sceneExtension) override;
 
 private:
     bool m_hasDuplicates;

@@ -79,8 +79,9 @@ void SceneCheckDuplicatedName::doCheckOn(sofa::simulation::Node* node)
     }
 }
 
-void SceneCheckDuplicatedName::doPrintSummary()
+void SceneCheckDuplicatedName::doPrintSummary(std::string sceneExtension)
 {
+    SOFA_UNUSED(sceneExtension);
     if(m_hasDuplicates)
     {
         msg_warning(this->getName()) << msgendl
