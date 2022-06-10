@@ -16,6 +16,7 @@ Components/collision/RuleBasedContactManager.scn 100 1e-4 0 1
 Components/constraint/BilateralInteractionConstraint.scn 100 1e-4 0 1
 Components/constraint/FixedConstraint.scn 100 1e-4 0 1
 Components/constraint/FrictionContact.scn 100 1e-4 0 1
+Components/constraint/PendulumRegression.scn 50 1e-4 0 1
 Components/forcefield/BeamFEMForceField.scn 100 1e-4 0 1
 Components/forcefield/FastTriangularBendingSprings.scn 100 1e-4 0 1
 Components/forcefield/HexahedronFEMForceField.scn 300 1e-4 0 1
