@@ -792,7 +792,7 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::ge
             ++rowId;
         }
     }
-    assert(i == m_map1d.size() + m_map2d.size() + m_map3d.size());
+    assert(static_cast<std::size_t>(rowId) == m_map1d.size() + m_map2d.size() + m_map3d.size());
 
     m_matrixJ->compress();
     m_updateJ = false;

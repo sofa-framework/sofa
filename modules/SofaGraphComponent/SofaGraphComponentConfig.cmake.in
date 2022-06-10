@@ -5,7 +5,7 @@
 
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SceneUtility, Sofa.Component.Setting and Sofa.GUI.Component instead.")
+    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility, Sofa.Component.Setting and Sofa.GUI.Component instead.")
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 

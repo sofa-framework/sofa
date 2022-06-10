@@ -24,32 +24,28 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/simulation/Node.h>
 
-#include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::scenechecking::SceneCheckerVisitor;
+#include <SceneChecking/SceneCheckerVisitor.h>
+using sofa::scenechecking::SceneCheckerVisitor;
 
-#include <SofaGraphComponent/SceneCheck.h>
-using sofa::simulation::scenechecking::SceneCheck;
+#include <SceneChecking/SceneCheck.h>
+using sofa::scenechecking::SceneCheck;
 
-#include <SofaGraphComponent/SceneCheckAPIChange.h>
-using sofa::simulation::scenechecking::SceneCheckAPIChange;
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
-#include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenechecking::SceneCheckUsingAlias;
+#include <SceneChecking/SceneCheckAPIChange.h>
+using sofa::scenechecking::SceneCheckAPIChange;
+#include <SceneChecking/SceneCheckMissingRequiredPlugin.h>
+using sofa::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SceneChecking/SceneCheckDuplicatedName.h>
+using sofa::scenechecking::SceneCheckDuplicatedName;
+#include <SceneChecking/SceneCheckUsingAlias.h>
+using sofa::scenechecking::SceneCheckUsingAlias;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
 using sofa::simulation::Node;
-using sofa::core::execparams::defaultInstance; 
-
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaMeshCollision/initSofaMeshCollision.h>
+using sofa::core::execparams::defaultInstance;
 
 /////////////////////// COMPONENT DEFINITION & DECLARATION /////////////////////////////////////////
 /// This component is only for testing the APIVersion system.
@@ -61,6 +57,9 @@ using sofa::core::objectmodel::Base;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 using sofa::core::ExecParams;
+
+#include <sofa/simulation/graph/SimpleApi.h>
+
 class ComponentDeprecated : public BaseObject
 {
 public:
@@ -79,9 +78,6 @@ struct SceneChecker_test : public BaseSimulationTest
 {
     void SetUp() override
     {
-        sofa::component::initSofaBaseUtils();
-        sofa::component::initSofaBaseMechanics();
-        sofa::component::initSofaMeshCollision();
     }
 
     void checkRequiredPlugin(bool missing)
@@ -124,8 +120,7 @@ struct SceneChecker_test : public BaseSimulationTest
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
-              << "    <RequiredPlugin name='SofaOpenglVisual'/>                   \n"
-              << "    <RequiredPlugin name='SofaGraphComponent'/>                 \n"
+              << "    <RequiredPlugin name='Sofa.GL.Component'/>                   \n"
               << "    <Node name='nodeCheck'>                                     \n"
               << "      <Node name='nodeA' />                                     \n"
               << "      <Node name='nodeA' />                                     \n"
@@ -182,7 +177,7 @@ struct SceneChecker_test : public BaseSimulationTest
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
-              << "      <RequiredPlugin name='SofaGraphComponent'/>               \n"
+              << "      <RequiredPlugin name='Sofa.Component.SceneUtility'/>      \n"
               << "      <APIVersion level='"<< lvl <<"'/>                         \n"
               << "      <ComponentDeprecated />                                   \n"
               << "</Node>                                                         \n";
@@ -222,7 +217,8 @@ struct SceneChecker_test : public BaseSimulationTest
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
-              << "    <RequiredPlugin name='SofaGraphComponent'/>                 \n"
+              << "    <RequiredPlugin name='Sofa.Component.StateContainer'/>      \n"
+              << "    <RequiredPlugin name='Sofa.Component.Topology.Container.Constant'/>      \n"
               << "    <MechanicalObject template='Vec3d' />                       \n"
               << "    <" << componentName << "/>                                  \n"
               << "</Node>                                                         \n";

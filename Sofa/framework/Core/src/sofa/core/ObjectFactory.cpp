@@ -208,9 +208,10 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if(it == registry.end())
         {
             arg->logError("The object is not in the factory.");
-            if( uncreatableComponents.find(classname) != uncreatableComponents.end() )
+            auto uuncreatableComponent = uncreatableComponents.find(classname);
+            if( uuncreatableComponent != uncreatableComponents.end() )
             {
-                arg->logError( uncreatableComponents.at(classname).getMessage() );
+                arg->logError( uuncreatableComponent->second.getMessage() );
             }
         }
         else
@@ -301,7 +302,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
     }
     else if (creators.size() > 1)
-    {	// There were multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
+    {    // There were multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
         std::string w = "Template '" + templatename + std::string("' incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
         for(unsigned int i = 0; i < creators.size(); ++i)
             w += std::string("\n\t* ") + creators[i].first;
