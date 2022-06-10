@@ -119,17 +119,11 @@ protected:
             helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices[j];
             const Real& value = f_value[j]->getValue();
 
-            for(size_t i=0 ; i<indices.size() ; i++)
+            for (const Index ind : indices)
             {
-                Index ind = indices[i];
                 if (ind >= outputValues.size())
                 {
-                    size_t oldSize = outputValues.size();
-                    outputValues.resize(ind+1);
-                    for (size_t kk = oldSize ; kk < ind+1 ; kk++) 
-                    {
-                        outputValues[kk] = defaultValue;
-                    }
+                    outputValues.wref().resize(ind+1, defaultValue);
                 }
                 outputValues[ind] = value;
             }
