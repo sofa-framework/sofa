@@ -60,33 +60,6 @@ public:
     sofa::simulation::Task::MemoryAlloc run() final;  
 };
 
-
-template<>
-class LinearSolverTask<GraphScatteredVector,GraphScatteredVector>:public sofa::simulation::CpuTask
-{
-    typedef typename MatrixLinearSolverInternalData<GraphScatteredVector>::JMatrixType JMatrixType;
-
-    GraphScatteredVector *specificThreadRHVector;
-    MatrixLinearSolver<GraphScatteredVector,GraphScatteredVector> *m_solver;
-    const JMatrixType * m_J;
-    int m_row;
-
-
-    LinearSolverTask(sofa::simulation::CpuTask::Status *status):sofa::simulation::CpuTask(status){};
-
-    LinearSolverTask(int row
-                    ,GraphScatteredVector *taskRH 
-                    ,GraphScatteredVector *taskLH 
-                    ,sofa::simulation::CpuTask::Status *status
-                    ,const JMatrixType * J
-                    ,MatrixLinearSolver<GraphScatteredVector,GraphScatteredVector> *solver)
-                    :sofa::simulation::CpuTask(status){};
-    ~LinearSolverTask() ;
-    sofa::simulation::Task::MemoryAlloc run(){return {};} ;
-    
-}; // dummy class for the compiler, must not be used
-
-
 template<class Matrix, class Vector>
 LinearSolverTask<Matrix,Vector>::LinearSolverTask(sofa::simulation::CpuTask::Status *status)
 :sofa::simulation::CpuTask(status)
@@ -107,8 +80,6 @@ LinearSolverTask<Matrix,Vector>::LinearSolverTask(
 ,m_solver(solver)
 {}
 
-
-
 template<class Matrix, class Vector>
 sofa::simulation::Task::MemoryAlloc LinearSolverTask<Matrix,Vector>::run(){
 
@@ -119,7 +90,7 @@ sofa::simulation::Task::MemoryAlloc LinearSolverTask<Matrix,Vector>::run(){
     std::cout << std::endl;
 */
 
-m_solver->solve(*(m_solver->linearSystem.systemMatrix), *m_taskLH, *m_taskRH );
+m_solver->solve( *((*m_solver).linearSystem.systemMatrix), *m_taskLH, *m_taskRH );
 
 /*
 for(int i=0; i<m_J->rowSize(); i++){
