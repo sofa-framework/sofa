@@ -114,9 +114,16 @@ void SceneCheckMissingRequiredPlugin::getSummaryXML(std::stringstream& stream)
 void SceneCheckMissingRequiredPlugin::getSummaryPython(std::stringstream &stream)
 {
     const std::string indent { "  "};
-    stream << indent << "rootnode.addObject('RequiredPlugin', pluginName=[";
-    for(const auto& kv : m_requiredPlugins)
-        stream << "\"" << kv.first << "\", ";
+    stream << indent << "rootnode.addObject('RequiredPlugin', pluginName=[" << msgendl;
+    for(const auto& kv : m_requiredPlugins){
+        stream << "\"" << kv.first << "\",  # Needed to use components ";
+        if (!kv.second.empty())
+        {
+            std::copy(kv.second.begin(), kv.second.end() - 1, std::ostream_iterator<std::string>(stream, ", "));
+            stream << kv.second.back();
+        }
+        stream << msgendl;
+    }
     stream <<"])" << msgendl;
 }
 
