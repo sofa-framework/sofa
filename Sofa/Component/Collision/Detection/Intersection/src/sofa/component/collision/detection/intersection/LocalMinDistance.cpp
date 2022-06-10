@@ -123,8 +123,8 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
 
     const double det = type::determinant(A);
 
-    double alpha;
-    double beta;
+    double alpha = 0.5;
+    double beta = 0.5;
 
     if (det < -1.0e-30 || det > 1.0e-30)
     {
@@ -183,8 +183,8 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     b[1] = -CD*AC;
     const double det = type::determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    double alpha;
+    double beta;
 
     // If lines are not parallel
     if (det < -1.0e-30 || det > 1.0e-30)
