@@ -33,8 +33,8 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 #include <sofa/type/RGBAColor.h>
 #include <vector>
 #include <iterator>
@@ -88,7 +88,7 @@ public:
     SingleLink<ParticleSink<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 private:
-    sofa::core::sptr<sofa::component::topology::PointSetTopologyModifier> m_topoModifier;
+    sofa::core::sptr<sofa::component::topology::container::dynamic::PointSetTopologyModifier> m_topoModifier;
 
 protected:
     ParticleSink();
