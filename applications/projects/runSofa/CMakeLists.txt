@@ -20,7 +20,7 @@ configure_file(${_defaultConfigPluginFilePath} ${PROJECT_BINARY_DIR}/${_defaultC
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 ###################################
 
-sofa_find_package(SofaValidation QUIET)
+sofa_find_package(Sofa.Component.Playback QUIET)
 
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 sofa_find_package(Sofa.GUI.Common REQUIRED)
@@ -34,7 +34,7 @@ set(SOURCE_FILES
     Main.cpp
     )
 
-if(SofaValidation_FOUND)
+if(Sofa.Component.Playback_FOUND)
     list(APPEND SOURCE_FILES runSofaValidation.cpp)
 else()
     list(APPEND SOURCE_FILES runSofaNoValidation.cpp)
@@ -65,10 +65,10 @@ target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Graph)
 target_link_libraries(${PROJECT_NAME} SofaGui)
 target_link_libraries(${PROJECT_NAME} SceneChecking)
 
-if(SofaValidation_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaValidation)
+if(Sofa.Component.Playback_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.Component.Playback)
 else()
-    message(WARNING "runSofa: SofaValidation not found, disabling validation feature.")
+    message(WARNING "runSofa: Sofa.Component.Playback not found, disabling validation feature.")
 endif()
 
 if(SOFA_BUILD_TESTS)
