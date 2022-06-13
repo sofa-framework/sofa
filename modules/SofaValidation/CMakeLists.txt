@@ -6,8 +6,6 @@ set(SOFAVALIDATION_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFAVALIDATION_SRC}/config.h.in
     ${SOFAVALIDATION_SRC}/initSofaValidation.h
-    ${SOFAVALIDATION_SRC}/CompareState.h
-    ${SOFAVALIDATION_SRC}/CompareTopology.h
     ${SOFAVALIDATION_SRC}/DataController.h
     ${SOFAVALIDATION_SRC}/DataMonitor.h
     ${SOFAVALIDATION_SRC}/DevAngleCollisionMonitor.h
@@ -28,8 +26,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ${SOFAVALIDATION_SRC}/initSofaValidation.cpp
-    ${SOFAVALIDATION_SRC}/CompareState.cpp
-    ${SOFAVALIDATION_SRC}/CompareTopology.cpp
     ${SOFAVALIDATION_SRC}/DataController.cpp
     ${SOFAVALIDATION_SRC}/DataMonitor.cpp
     ${SOFAVALIDATION_SRC}/DevAngleCollisionMonitor.cpp
@@ -47,6 +43,12 @@ sofa_find_package(Sofa.Component.Playback REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common Sofa.Component.Collision Sofa.Component.Playback)
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. For CompareState and CompareTopology, use Sofa.Component.Playback instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Playback REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Playback)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

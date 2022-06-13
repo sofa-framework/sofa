@@ -19,70 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaValidation/initSofaValidation.h>
+#pragma once
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/playback/CompareTopology.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/CompareTopology.h")
 
-namespace sofa::component
+namespace sofa::component::misc
 {
+    using CompareTopology = sofa::component::playback::CompareTopology;
+    using CompareTopologyCreator = sofa::component::playback::CompareTopologyCreator;
+    using CompareTopologyResult = sofa::component::playback::CompareTopologyResult;
 
-
-void initSofaValidation()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaValidation") << "SofaValidation is deprecated. It will be removed at v23.06. For CompareState and CompareTopology, use Sofa.Component.Playback instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Playback");
-
-        first = false;
-    }
-}
-
-extern "C" {
-    SOFA_SOFAVALIDATION_API void initExternalModule();
-    SOFA_SOFAVALIDATION_API const char* getModuleName();
-    SOFA_SOFAVALIDATION_API const char* getModuleVersion();
-    SOFA_SOFAVALIDATION_API const char* getModuleLicense();
-    SOFA_SOFAVALIDATION_API const char* getModuleDescription();
-    SOFA_SOFAVALIDATION_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaValidation();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAVALIDATION_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains utilities used for validation purpose.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
-
+} // namespace sofa::component::misc
