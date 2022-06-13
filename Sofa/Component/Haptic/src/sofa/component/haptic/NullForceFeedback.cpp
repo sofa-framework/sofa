@@ -19,17 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaHaptics/NullForceFeedback.h>
+#include <sofa/component/haptic/NullForceFeedback.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-using namespace std;
-
-namespace sofa
-{
-namespace component
-{
-namespace controller
+namespace sofa::component::haptic
 {
 
 void NullForceFeedback::init()
@@ -50,6 +44,4 @@ void NullForceFeedback::computeWrench(const sofa::defaulttype::SolidTypes<SReal>
 int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
         .add< NullForceFeedback >();
 
-} // namespace controller
-} // namespace component
-} // namespace sofa
+} // namespace sofa::component::haptic

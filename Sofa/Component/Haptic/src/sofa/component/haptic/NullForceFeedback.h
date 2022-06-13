@@ -19,62 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_FORCEFEEDBACK_H
-#include "config.h"
+#pragma once
 
-#include <sofa/simulation/fwd.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/haptic/config.h>
 
-namespace sofa
+#include <sofa/component/haptic/ForceFeedback.h>
+
+namespace sofa::component::haptic
 {
 
-namespace component
-{
 
-namespace controller
+/// @brief Null force feedback for haptic feedback device
+class SOFA_COMPONENT_HAPTIC_API NullForceFeedback : public ForceFeedback
 {
-
-/// Base class implementing forcefeedback as a force field
-class SOFA_SOFAHAPTICS_API ForceFeedback : public virtual core::behavior::BaseController
-{
-
 public:
-    SOFA_ABSTRACT_CLASS(ForceFeedback,core::behavior::BaseController);
-    Data<bool> d_activate; ///< boolean to activate or deactivate the forcefeedback
-    Data<int> d_indice; ///< Tool indice in the OmniDriver
-
-    simulation::Node *context;
-
+    SOFA_CLASS(NullForceFeedback,ForceFeedback);
     void init() override;
 
-    virtual void computeForce(SReal x, SReal y, SReal z,
-                              SReal u, SReal v, SReal w,
-                              SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
-
-    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &,
-                               const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &,
-                               sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
-
-    virtual void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition);
-    virtual bool isEnabled();
-
-    /// Abstract method to lock or unlock the force feedback computation. To be implemented by child class if needed
-    virtual void setLock(bool value)
-    {
-        SOFA_UNUSED(value);
-    }
-
-protected:
-    ForceFeedback();
+    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override;
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::haptic

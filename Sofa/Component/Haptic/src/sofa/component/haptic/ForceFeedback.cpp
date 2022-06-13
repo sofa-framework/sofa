@@ -19,69 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaHaptics/initSofaHaptics.h>
+#include <sofa/component/haptic/ForceFeedback.h>
+#include <sofa/simulation/Node.h>
 
-#include <sofa/helper/system/PluginManager.h>
-
-namespace sofa
+namespace sofa::component::haptic
 {
 
-namespace component
+ForceFeedback::ForceFeedback():
+    d_activate(initData(&d_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , d_indice(initData(&d_indice, 0, "indice", "Tool indice in the OmniDriver"))
 {
-
-
-void initSofaHaptics()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaHaptics") << "SofaHaptics is deprecated. It will be removed at v23.06. Use Sofa.Component.Haptic instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Haptic");
-
-        first = false;
-    }
 }
 
-extern "C" {
-SOFA_SOFAHAPTICS_API void initExternalModule();
-SOFA_SOFAHAPTICS_API const char* getModuleName();
-SOFA_SOFAHAPTICS_API const char* getModuleVersion();
-SOFA_SOFAHAPTICS_API const char* getModuleLicense();
-SOFA_SOFAHAPTICS_API const char* getModuleDescription();
-SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+void ForceFeedback::init()
 {
-    initSofaHaptics();
+    context = sofa::simulation::node::getNodeFrom(getContext());
 }
 
-const char* getModuleName()
+void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
 {
-    return "SofaHaptics";
+    SOFA_UNUSED(referencePosition);
 }
 
-const char* getModuleVersion()
-{
-    return "1.0";
+bool ForceFeedback::isEnabled() {
+    return this->getContext()->isActive();
 }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This module contains the base infrastructure for haptics rendering in Sofa.";
-}
-
-const char* getModuleComponentList()
-{
-    return "NullForceFeedback LCPForceFeedback";
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::haptic

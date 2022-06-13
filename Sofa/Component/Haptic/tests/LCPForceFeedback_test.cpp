@@ -25,7 +25,7 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaHaptics/LCPForceFeedback.h>
+#include <sofa/component/haptic/LCPForceFeedback.h>
 #include <thread>
 #include <sofa/simulation/Node.h>
 
@@ -41,7 +41,8 @@ class LCPForceFeedback_test : public sofa::testing::BaseTest
 {
 public:
     typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3Types> MecaRig;
-    typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::Rigid3Types> LCPRig;
+    typedef sofa::component::haptic::LCPForceFeedback<sofa::defaulttype::Rigid3Types> LCPRig;
+
     typedef typename MecaRig::Coord    Coord;
     typedef typename MecaRig::VecCoord VecCoord;
     typedef typename MecaRig::Deriv Deriv;
@@ -133,12 +134,11 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
 
 void LCPForceFeedback_test::loadTestScene(const std::string& filename)
 {
-
     simulation::Simulation* simu;
     sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
 
     /// Load the scene
-    std::string sceneFilename = std::string(SOFAHAPTICS_TEST_SCENES_DIR) + "/" + filename;
+    std::string sceneFilename = std::string(SOFA_COMPONENT_HAPTIC_TEST_SCENES_DIR) + "/" + filename;
     m_root = simu->createNewGraph("root");    
     m_root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
 

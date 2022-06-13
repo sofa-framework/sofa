@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
-#define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
+#pragma once
 
-#include <SofaHaptics/LCPForceFeedback.h>
+#include <sofa/component/haptic/LCPForceFeedback.h>
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
@@ -117,13 +116,7 @@ double computeDot<sofa::defaulttype::Rigid3Types>(const sofa::defaulttype::Rigid
 
 } // anonymous namespace
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::haptic
 {
 
 template <class DataTypes>
@@ -345,7 +338,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     if (!mState)
         return;
 
-        sofa::component::constraint::lagrangian::solver::ConstraintProblem* new_cp = constraintSolver->getConstraintProblem();
+    sofa::component::constraint::lagrangian::solver::ConstraintProblem* new_cp = constraintSolver->getConstraintProblem();
 
     if (!new_cp)
         return;
@@ -405,7 +398,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
 
 
 //
-// Those functions are here for compatibility with the sofa::component::controller::Forcefeedback scheme
+// Those functions are here for compatibility with the Forcefeedback scheme
 //
 
 template <typename DataTypes>
@@ -426,20 +419,14 @@ void LCPForceFeedback<DataTypes>::computeWrench(const sofa::defaulttype::SolidTy
 
 
 template <>
-void SOFA_SOFAHAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz);
+void SOFA_COMPONENT_HAPTIC_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz);
 
 template <>
-void SOFA_SOFAHAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
+void SOFA_COMPONENT_HAPTIC_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
         const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/,
         sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world );
 
 
 
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
+} // namespace sofa::component::haptic

@@ -19,69 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaHaptics/initSofaHaptics.h>
+#pragma once
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/haptic/config.h>
+#include <sofa/component/haptic/ForceFeedback.h>
+#include <sofa/simulation/fwd.h>
 
-namespace sofa
+namespace sofa::component::haptic
 {
 
-namespace component
+template<class TDataTypes>
+class SOFA_COMPONENT_HAPTIC_API MechanicalStateForceFeedback : public ForceFeedback
 {
 
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),ForceFeedback);
 
-void initSofaHaptics()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaHaptics") << "SofaHaptics is deprecated. It will be removed at v23.06. Use Sofa.Component.Haptic instead.";
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Haptic");
+public:
+    virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
 
-        first = false;
-    }
-}
+    void init() override {context = sofa::simulation::node::getNodeFrom(getContext());}
+    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
+    void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {}
 
-extern "C" {
-SOFA_SOFAHAPTICS_API void initExternalModule();
-SOFA_SOFAHAPTICS_API const char* getModuleName();
-SOFA_SOFAHAPTICS_API const char* getModuleVersion();
-SOFA_SOFAHAPTICS_API const char* getModuleLicense();
-SOFA_SOFAHAPTICS_API const char* getModuleDescription();
-SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
-}
+protected:
+    MechanicalStateForceFeedback(void) {}
+};
 
-void initExternalModule()
-{
-    initSofaHaptics();
-}
-
-const char* getModuleName()
-{
-    return "SofaHaptics";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This module contains the base infrastructure for haptics rendering in Sofa.";
-}
-
-const char* getModuleComponentList()
-{
-    return "NullForceFeedback LCPForceFeedback";
-}
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::haptic
