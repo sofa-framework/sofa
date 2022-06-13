@@ -385,7 +385,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
         }
 
         std::getline(file, cmd);
-        if (cmd != "$EndNodes")
+        if (cmd.substr(0, 9) != "$EndNodes")
         {
             msg_error("MeshGmsh") << "'$EndNodes' expected, found '" << cmd << "'";
             return false;
@@ -395,7 +395,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
         // --- Parsing the $Elements section --- //
 
         std::getline(file, cmd);
-        if (cmd != "$Elements")
+        if (cmd.substr(0, 9) != "$Elements")
         {
             msg_error("MeshGmsh") << "'$Elements' expected, found '" << cmd << "'";
             return false;
