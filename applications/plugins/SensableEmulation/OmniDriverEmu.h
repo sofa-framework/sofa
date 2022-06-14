@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 
 #include <sofa/component/controller/Controller.h>
+#include <sofa/component/haptic/ForceFeedback.h>
 #include <sofa/gl/component/rendering3d/OglModel.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
@@ -48,8 +49,6 @@ namespace simulation { class Node; }
 
 namespace controller
 {
-
-class ForceFeedback;
 
 /** Holds data retrieved from HDAPI. */
 typedef struct
