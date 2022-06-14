@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralObjectInteraction/config.h>
+#include <sofa/component/mechanicalload/config.h>
 
 #include <sofa/core/behavior/MixedInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -29,7 +29,7 @@
 
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::mechanicalload
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -171,4 +171,4 @@ extern template class InteractionEllipsoidForceField<defaulttype::Vec3Types, def
 
 #endif
 
-} //namespace sofa::component::interactionforcefield
+} // namespace sofa::component::mechanicalload

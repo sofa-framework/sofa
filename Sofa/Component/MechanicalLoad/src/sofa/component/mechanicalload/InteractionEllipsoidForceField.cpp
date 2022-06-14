@@ -20,20 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP
-#include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.inl>
+#include <sofa/component/mechanicalload/InteractionEllipsoidForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::mechanicalload
 {
 
 using namespace sofa::defaulttype;
 
-int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
+int InteractionEllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
         .add< InteractionEllipsoidForceField<Vec3Types, Rigid3Types> >()
         ;
 
-template class SOFA_SOFAGENERALOBJECTINTERACTION_API InteractionEllipsoidForceField<Vec3Types, Rigid3Types>;
+template class SOFA_COMPONENT_MECHANICALLOAD_API InteractionEllipsoidForceField<Vec3Types, Rigid3Types>;
 
-} //namespace sofa::component::interactionforcefield
+} // namespace sofa::component::mechanicalload
