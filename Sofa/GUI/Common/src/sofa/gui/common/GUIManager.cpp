@@ -235,11 +235,15 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
             msg_error("GUIManager") << "GUI '"<<valid_guiname<<"' creation failed." ;
             return 1;
         }
-        //Save this GUI type as the last used GUI
-        const std::string lastGuiFilePath = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
-        std::ofstream out(lastGuiFilePath.c_str(),std::ios::out);
-        out << valid_guiname << std::endl;
-        out.close();
+
+        if (currentGUI->saveAsDefaultGUI())
+        {
+            //Save this GUI type as the last used GUI
+            const std::string lastGuiFilePath = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
+            std::ofstream out(lastGuiFilePath.c_str(),std::ios::out);
+            out << valid_guiname << std::endl;
+            out.close();
+        }
     }
     return 0;
 }
