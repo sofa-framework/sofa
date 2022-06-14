@@ -212,7 +212,6 @@ struct FixedConstraint_test : public BaseTest
         typename MechanicalObject::ReadVecCoord readX = dofs->readPositions();
 
         /// check info before topological changes
-        EXPECT_EQ(tCon->getPoints().size(), nbrDofs);
         EXPECT_EQ(readX[0][0], 0);
         EXPECT_EQ(readX[1][0], 1);
         EXPECT_EQ(readX[2][0], 2);
@@ -225,7 +224,6 @@ struct FixedConstraint_test : public BaseTest
         nbrDofs -= sofa::Size(indicesRemove.size());
 
         /// new positions are now: {id[4], id[1]}  because remove use swap + pop_back
-        EXPECT_EQ(tCon->getPoints().size(), nbrDofs);
         EXPECT_NEAR(readX[0][0], 5.32231, 1e-4);
         EXPECT_NEAR(readX[1][0], 1.0, 1e-4);
 
