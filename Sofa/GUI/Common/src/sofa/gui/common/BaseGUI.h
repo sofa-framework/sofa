@@ -110,7 +110,7 @@ public:
     /// If the function returns true: when the GUI is created, its name will be saved so that it will be created when
     /// no GUI is specified. If the function returns false, the GUI name is not saved, and the last one will be used
     /// when no GUI is specified.
-    virtual bool saveAsDefaultGUI() const { return true; }
+    virtual bool canBeDefaultGUI() const { return true; }
 
 protected:
     BaseGUI();

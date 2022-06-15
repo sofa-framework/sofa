@@ -236,7 +236,7 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
             return 1;
         }
 
-        if (currentGUI->saveAsDefaultGUI())
+        if (currentGUI->canBeDefaultGUI())
         {
             //Save this GUI type as the last used GUI
             const std::string lastGuiFilePath = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
