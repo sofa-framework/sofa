@@ -228,7 +228,7 @@ bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsert
     // one.
     if(obj->getContext() != BaseContext::getDefault())
     {
-        msg_error() << "Object '" << obj->getName() << "' alread has a node ("<< obj->getPathName() << "). Please remove it from this node before adding it to a new one.";
+        msg_error() << "Object '" << obj->getName() << "' already has a node ("<< obj->getPathName() << "). Please remove it from this node before adding it to a new one.";
         return false;
     }
 
