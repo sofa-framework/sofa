@@ -87,7 +87,7 @@ TEST(Node_test, addObjectAtFront)
     ASSERT_EQ(b->getObjects()[1]->getName(), "A");
 }
 
-TEST(Node_test, addObjectPreservingContext)
+TEST(Node_test, addObjectPreventingSharedContext)
 {
     sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
 
@@ -108,22 +108,18 @@ TEST(Node_test, addObjectPreservingContext)
     ASSERT_NE(A->getPathName(), "/root/child1/A");
     ASSERT_NE(B->getPathName(), "/root/child1/B");
 
-    // add the created object into the node named 'child1'
-    child2->addObject(A);
-    ASSERT_EQ(child1->getObject(A->getName()), nullptr); // not in child1 anymore
-    ASSERT_NE(child2->getObject(A->getName()), nullptr); // but in child2
+    // try to add the object into a new context
+    {
+        EXPECT_MSG_EMIT(Error);
+        child2->addObject(A);
+    }
 
-    // check that the pathname reflects the change
-    ASSERT_NE(A->getPathName(), "/root/child2/A");
-    ASSERT_NE(B->getPathName(), "/root/child1/B");
+    // try to add the object into a new context
+    {
+        EXPECT_MSG_NOEMIT(Error);
+        child2->moveObject(A);
+    }
 
-    // check that the linkpath returned is reflecting the changes
-    ASSERT_EQ(A->name.getLinkPath(), "@/child2/A.name");
-    ASSERT_EQ(B->name.getLinkPath(), "@/child1/B.name");
-
-    // check that the linkpath returned for links is reflecting the changes
-    ASSERT_EQ(A->findLink("context")->getLinkedPath(), "@./");
-    ASSERT_EQ(B->findLink("context")->getLinkedPath(), "@./");
 }
 
 
