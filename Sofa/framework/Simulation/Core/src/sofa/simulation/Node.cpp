@@ -223,6 +223,15 @@ void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
+    // If an object we are trying to add already has a context, it is in another node in the
+    // graph: we need to remove it from this context before to insert it into the current
+    // one.
+    if(obj->getContext() != BaseContext::getDefault())
+    {
+        msg_error() << "Object '" << obj->getName() << "' already has a node ("<< obj->getPathName() << "). Please remove it from this node before adding it to a new one.";
+        return false;
+    }
+
     notifyBeginAddObject(this, obj);
     bool ret = doAddObject(obj, insertionLocation);
     notifyEndAddObject(this, obj);
