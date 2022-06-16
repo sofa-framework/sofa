@@ -183,30 +183,38 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     b[1] = -CD*AC;
     const double det = type::determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    double alpha;
+    double beta;
 
+    // If lines are not parallel
     if (det < -1.0e-30 || det > 1.0e-30)
     {
+        // compute the parametric coordinates along the line
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+
+        // if parameters are outside of ]0,1[ then there is no intersection
+        // the intersection is outside of the edge supporting point.
         if (alpha < 1e-15 || alpha > (1.0-1e-15) ||
             beta  < 1e-15  || beta  > (1.0-1e-15) )
             return 0;
     }
     else
     {
-        // several possibilities :
-        // -one point in common (auto-collision) => return false !
-        // -no point in common but line are // => we can continue to test
-        msg_warning() <<"Determinant is null";
+        // lines are parallel,
+        // the alpha/beta parameters are set to 0.5 so the collision
+        // output is in the middle of the line
+        alpha = 0.5;
+        beta = 0.5;
     }
+
 
     Vector3 P,Q,PQ;
     P = e1.p1() + AB * alpha;
     Q = e2.p1() + CD * beta;
     PQ = Q-P;
 
+    // If the geometric distance between P and Q is higher than the alarm distance/
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 

@@ -88,7 +88,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.Component)
 target_link_libraries(${PROJECT_NAME} PUBLIC cxxopts)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSOFAGUICOMMON_ROOT}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/SofaGuiCommon/SofaGuiCommon/compat>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}/${PROJECT_NAME}/compat>")
 source_group("compat" FILES ${COMPAT_HEADER_FILES} )
 
 if(Sofa.GL_FOUND)

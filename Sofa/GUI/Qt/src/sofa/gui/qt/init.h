@@ -20,12 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <sofa/gui/qt/config.h>
 
 namespace sofa::gui::qt
 {
-
     void SOFA_GUI_QT_API init();
-
 } // namespace sofa::gui::qt

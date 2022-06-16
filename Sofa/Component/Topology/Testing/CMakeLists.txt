@@ -5,6 +5,7 @@ project(Sofa.Component.Topology.Testing)
 set(SOFACOMPONENTODESOLVERTESTING_SRC "src/sofa/component/topology/testing")
 
 set(HEADER_FILES
+    ${SOFACOMPONENTODESOLVERTESTING_SRC}/RegularGridNodeCreation.h
     ${SOFACOMPONENTODESOLVERTESTING_SRC}/fake_TopologyScene.h
 )
 

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/qt/config.h>
+#include <sofa/gui/qt/fwd.h>
 
 #include <ui_DialogAddObject.h>
 #include <vector>
@@ -31,10 +32,10 @@ namespace sofa::gui::qt
 class AddObject : public QDialog, public Ui_DialogAddObject
 {
     Q_OBJECT
+
 public:
-
-    AddObject( std::vector<std::string> *list_object_, QWidget* parent, bool  modal= false, Qt::WindowFlags f = Qt::WindowType::Widget );
-
+    AddObject( std::vector<std::string> *list_object_, QSofaListView* parent,
+               bool  modal= false, Qt::WindowFlags f = Qt::WindowType::Widget );
 
     void setPath(const std::string path);
 

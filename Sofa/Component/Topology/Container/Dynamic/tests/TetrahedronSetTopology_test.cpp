@@ -68,8 +68,7 @@ bool TetrahedronSetTopology_test::testEmptyContainer()
 
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), 0);
     EXPECT_EQ(topoCon->getNbPoints(), 0);
-    EXPECT_EQ(topoCon->getPoints().size(), 0);
-
+    
     return true;
 }
 
@@ -359,8 +358,6 @@ bool TetrahedronSetTopology_test::testVertexBuffers()
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
     EXPECT_EQ(topoCon->getNbPoints(), nbrVertex); //TODO: check why 0 and not 20
-    EXPECT_EQ(topoCon->getPoints().size(), nbrVertex);
-
 
     // check TetrahedraAroundVertex buffer access
     EXPECT_EQ(elemAroundVertices.size(), nbrVertex);
