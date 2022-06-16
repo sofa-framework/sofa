@@ -72,7 +72,7 @@ public:
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API LineCollisionModel : public core::CollisionModel
+class LineCollisionModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);

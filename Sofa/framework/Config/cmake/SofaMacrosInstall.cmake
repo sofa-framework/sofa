@@ -424,6 +424,14 @@ macro(sofa_auto_set_target_include_directories)
             set(target ${aliased_target})
         endif()
 
+        get_target_property(target_sources ${target} SOURCES)
+        list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
+        if(NOT target_sources)
+            # target has no header
+            # setting include directories is not needed
+            continue()
+        endif()
+
         # Set target include directories (if not already set manually)
         set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..") # default but bad practice
         if(ARG_INCLUDE_SOURCE_DIR)

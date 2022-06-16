@@ -222,7 +222,7 @@ static std::string computeSofaPathPrefix()
     char* pathVar = getenv("SOFA_ROOT");
     if (pathVar != nullptr && FileSystem::exists(pathVar))
     {
-        return std::string(pathVar);
+        return FileSystem::convertBackSlashesToSlashes(pathVar);
     }
     else {
         const std::string exePath = Utils::getExecutablePath();

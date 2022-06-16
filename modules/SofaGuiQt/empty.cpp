@@ -25,7 +25,7 @@
 
 namespace sofa::gui::qt
 {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() 
+    void SOFA_EXPORT_DYNAMIC_LIBRARY exportSymbol()
     {
         sofa::gui::qt::init();
     }

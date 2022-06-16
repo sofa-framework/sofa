@@ -30,7 +30,7 @@ sofa_find_package(SofaGeneralEngine REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable SofaEngine SofaGeneralEngine)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SolidMechanics.Spring and Sofa.Component.Constraint.Projective instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring and Sofa.Component.Constraint.Projective instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
