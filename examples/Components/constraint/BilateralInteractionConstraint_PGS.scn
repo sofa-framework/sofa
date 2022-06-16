@@ -21,8 +21,9 @@
     <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     
     <VisualStyle displayFlags="showForceFields" />
+    <DefaultVisualManagerLoop />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>
+    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" NLCP_solver="PGS" unbuilt="0"/>
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
