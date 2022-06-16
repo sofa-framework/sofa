@@ -96,7 +96,7 @@ Remember that:
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
 
 
-<figure><img src="https://www.sofa-framework.org/wp-content/uploads/2022/06/GitHub-PR-review-workflow.png" alt="PullRequestProcess" style="width:75%"><figcaption align = "center"><b>Workflow of a PR review</b></figcaption></figure>
+<center><figure><img src="https://www.sofa-framework.org/wp-content/uploads/2022/06/GitHub-PR-review-workflow.png" alt="PullRequestProcess" style="width:75%"><figcaption align = "center"><b>Workflow of a PR review</b></figcaption></figure></center>
 
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).
 
