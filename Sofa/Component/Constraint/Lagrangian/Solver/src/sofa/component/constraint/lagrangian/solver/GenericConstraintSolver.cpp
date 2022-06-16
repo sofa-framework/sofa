@@ -69,13 +69,14 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 }
 
 GenericConstraintSolver::GenericConstraintSolver()
-    : maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    : d_NLCP_solver( initData(&d_NLCP_solver, "NLCP_solver", "Solver used for the NLCP problem: \"PGS\" for Projected Gauss Seidel or  \"NNCG\" for Non-smooth Non-linear Conjugate Gradient"))
+    , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
     , scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
-    , schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection", "Apply new scheme where compliance is progressively corrected"))
-    , unbuilt(initData(&unbuilt, false, "unbuilt", "Compliance is not fully built"))
+    , unbuilt(initData(&unbuilt, false, "unbuilt", "Compliance is not fully built  (for the PGS solver only)"))
+    , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NNCG solver only)"))
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , computeGraphs(initData(&computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
     , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
@@ -94,6 +95,10 @@ GenericConstraintSolver::GenericConstraintSolver()
     , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {
+    sofa::helper::OptionsGroup m_newoptiongroup(2,"PGS","NNCG");
+    m_newoptiongroup.setSelectedItem("PGS");
+    d_NLCP_solver.setValue(m_newoptiongroup);
+
     addAlias(&maxIt, "maxIt");
 
     graphErrors.setWidget("graph");
@@ -157,7 +162,25 @@ void GenericConstraintSolver::init()
     }
 
     if(d_multithreading.getValue())
+    {
         simulation::TaskScheduler::getInstance()->init();
+    }
+
+    if(d_newtonIterations.isSet())
+    {
+        if (d_NLCP_solver.getValue().getSelectedId() == 0) // PGS
+        {
+            msg_warning() << "data \"newtonIterations\" is not taken into account when using the PGS solver";
+        }
+    }
+
+    if(unbuilt.isSet())
+    {
+        if (d_NLCP_solver.getValue().getSelectedId() == 1) // NNCG
+        {
+            msg_warning() << "data \"unbuilt\" is not taken into account when using the NNCG solver";
+        }
+    }
 }
 
 void GenericConstraintSolver::cleanup()
@@ -404,24 +427,33 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     current_cp->sor = sor.getValue();
     current_cp->unbuilt = unbuilt.getValue();
 
-    if (unbuilt.getValue())
+    // Projective Gauss Seidel method
+    if (d_NLCP_solver.getValue().getSelectedId() == 0)
     {
-        sofa::helper::ScopedAdvancedTimer unbuiltGaussSeidelTimer("ConstraintsUnbuiltGaussSeidel");
-        current_cp->unbuiltGaussSeidel(0, this);
+        if (unbuilt.getValue())
+        {
+            sofa::helper::ScopedAdvancedTimer unbuiltGaussSeidelTimer("ConstraintsUnbuiltGaussSeidel");
+            current_cp->unbuiltGaussSeidel(0, this);
+        }
+        else
+        {
+            if (notMuted())
+            {
+                std::stringstream tmp;
+                tmp << "---> Before Resolution" << msgendl  ;
+                printLCP(tmp, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
+
+                msg_info() << tmp.str() ;
+            }
+
+            sofa::helper::ScopedAdvancedTimer gaussSeidelTimer("ConstraintsGaussSeidel");
+            current_cp->gaussSeidel(0, this);
+        }
     }
+    // Non-smooth Non-linear Conjugate Gradient method
     else
     {
-        if (notMuted())
-        {
-            std::stringstream tmp;
-            tmp << "---> Before Resolution" << msgendl  ;
-            printLCP(tmp, current_cp->getDfree(), current_cp->getW(), current_cp->getF(), current_cp->getDimension(), true);
-
-            msg_info() << tmp.str() ;
-        }
-
-        sofa::helper::ScopedAdvancedTimer gaussSeidelTimer("ConstraintsGaussSeidel");
-        current_cp->gaussSeidel(0, this);
+        current_cp->NNCG(this, d_newtonIterations.getValue());
     }
 
     this->currentError.setValue(current_cp->currentError);
@@ -1117,6 +1149,222 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
         solver->graphForces.endEdit();
     }
+}
+
+void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterationNewton)
+{
+    if(!solver)
+        return;
+    int dimension = getDimension();
+    int maxIterations = iterationNewton;
+
+    if(!dimension)
+    {
+        currentError = 0.0;
+        currentIterations = 0;
+        return;
+    }
+
+
+    lam.clear();
+    lam.resize(dimension);
+    deltaF.clear();
+    deltaF.resize(dimension);
+    deltaF_new.clear();
+    deltaF_new.resize(dimension);
+    p.clear();
+    p.resize(dimension);
+
+
+    double *dfree = getDfree();
+    double *force = getF();
+    double **w = getW();
+    double tol = tolerance;
+
+    double *d = _d.ptr();
+
+    int i, j, k, l, nb;
+
+    double error=0.0;
+
+    bool convergence = false;
+    sofa::type::vector<double> tempForces;
+    if(sor != 1.0) tempForces.resize(dimension);
+
+    if(scaleTolerance && !allVerified)
+        tol *= dimension;
+
+
+    for(i=0; i<dimension; )
+    {
+        if(!constraintsResolutions[i])
+        {
+            msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+
+            dimension = i;
+            break;
+        }
+        constraintsResolutions[i]->init(i, w, force);
+        i += constraintsResolutions[i]->getNbLines();
+    }
+
+    bool showGraphs = false;
+    sofa::type::vector<double>* graph_residuals = nullptr;
+    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
+    sofa::type::vector<double> tabErrors;
+
+    tabErrors.resize(dimension);
+
+    {
+        //peform one iteration of PGS
+        for(j=0; j<dimension; j++){
+            lam[j] = force[j];
+        }
+
+        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
+        {
+            // 1. nbLines provide the dimension of the constraint
+            nb = constraintsResolutions[j]->getNbLines();
+
+            // 2. for each line we compute the actual value of d
+            //    (a)d is set to dfree
+            std::copy_n(&dfree[j], nb, &d[j]);
+
+            //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
+            for (k = 0; k < dimension; k++)
+                for (l = 0; l < nb; l++)
+                    d[j + l] += w[j + l][k] * force[k];
+
+            // 3. the specific resolution of the constraint(s) is called
+            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
+
+            j += nb;
+        }
+
+        for(j=0; j<dimension; j++){
+            deltaF[j] = -(force[j] - lam[j]);
+            p[j] = - deltaF[j];
+        }
+
+
+
+    }
+
+
+
+    for(i=1; i<maxIterations; i++)
+    {
+        bool constraintsAreVerified = true;
+
+        for(j=0; j<dimension; j++){
+            lam[j] = force[j];
+        }
+
+        error=0.0;
+        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
+        {
+            //1. nbLines provide the dimension of the constraint
+            nb = constraintsResolutions[j]->getNbLines();
+
+            //2. for each line we compute the actual value of d
+            //   (a)d is set to dfree
+
+            std::vector<double> errF(&force[j], &force[j+nb]);
+            std::copy_n(&dfree[j], nb, &d[j]);
+
+            //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
+            for(k=0; k<dimension; k++)
+                for(l=0; l<nb; l++)
+                    d[j+l] += w[j+l][k] * force[k];
+
+            //3. the specific resolution of the constraint(s) is called
+            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
+
+            //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
+            double contraintError = 0.0;
+            if(nb > 1)
+            {
+                for(l=0; l<nb; l++)
+                {
+                    double lineError = 0.0;
+                    for (int m=0; m<nb; m++)
+                    {
+                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        lineError += dofError * dofError;
+                    }
+                    lineError = sqrt(lineError);
+                    if(lineError > tol)
+                        constraintsAreVerified = false;
+
+                    contraintError += lineError;
+                }
+            }
+            else
+            {
+                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
+                if(contraintError > tol)
+                    constraintsAreVerified = false;
+            }
+
+            if(constraintsResolutions[j]->getTolerance())
+            {
+                if(contraintError > constraintsResolutions[j]->getTolerance())
+                    constraintsAreVerified = false;
+                contraintError *= tol / constraintsResolutions[j]->getTolerance();
+            }
+
+            error += contraintError;
+
+            j += nb;
+        }
+
+        if(allVerified)
+        {
+            if(constraintsAreVerified)
+            {
+                convergence = true;
+                break;
+            }
+        }
+        else if(error < tol) // do not stop at the first iteration (that is used for initial guess computation)
+        {
+            convergence = true;
+            break;
+        }
+
+
+        //NNCG update
+        for(j=0; j<dimension; j++){
+            deltaF_new[j] = -(force[j] - lam[j]);
+        }
+        double beta = deltaF_new.dot(deltaF_new) / deltaF.dot(deltaF);
+        deltaF.eq(deltaF_new, 1);
+        if(beta > 1){
+            p.clear();
+            p.resize(dimension);
+        }else{
+            for(j=0; j<dimension; j++){
+                force[j] += beta*p[j];
+                p[j] = beta*p[j] - deltaF[j];
+            }
+        }
+    }
+
+    currentError = error;
+    currentIterations = i+1;
+
+    if(!convergence)
+    {
+        msg_info("GenericConstraintSolver") << "No convergence : error = " << error ;
+    }
+    else
+    {
+        msg_info("GenericConstraintSolver") << "Convergence after " << i+1 << " iterations " ;
+    }
+
+    for(i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
+        constraintsResolutions[i]->store(i, force, convergence);
+
 }
 
 sofa::core::MultiVecDerivId GenericConstraintSolver::getLambda()  const

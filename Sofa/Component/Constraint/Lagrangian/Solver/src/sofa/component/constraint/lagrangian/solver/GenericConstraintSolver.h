@@ -29,6 +29,7 @@
 #include <sofa/helper/map.h>
 
 #include <sofa/simulation/CpuTask.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -68,9 +69,18 @@ public:
 
     void gaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
     void unbuiltGaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
+    void NNCG(GenericConstraintSolver* solver = nullptr, int iterationNewton = 1);
 
     int getNumConstraints();
     int getNumConstraintGroups();
+
+protected:
+protected:
+    sofa::linearalgebra::FullVector<double> lam;
+    sofa::linearalgebra::FullVector<double> deltaF;
+    sofa::linearalgebra::FullVector<double> deltaF_new;
+    sofa::linearalgebra::FullVector<double> p;
+
 };
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintSolver : public ConstraintSolverImpl
@@ -98,13 +108,15 @@ public:
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
+    Data< sofa::helper::OptionsGroup > d_NLCP_solver;
+
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> sor; ///< Successive Over Relaxation parameter (0-2)
     Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
-    Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
-    Data<bool> unbuilt; ///< Compliance is not fully built
+    Data<bool> unbuilt; ///< Compliance is not fully built  (for the PGS solver only)
+    Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NNCG solver only)
     Data<bool> d_multithreading; ///< Compliances built concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > graphErrors; ///< Sum of the constraints' errors at each iteration
@@ -119,6 +131,9 @@ public:
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
+
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data schemeCorrection was unused therefore removed.")
+    DeprecatedAndRemoved schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
 
     sofa::core::MultiVecDerivId getLambda() const override;
     sofa::core::MultiVecDerivId getDx() const override;
