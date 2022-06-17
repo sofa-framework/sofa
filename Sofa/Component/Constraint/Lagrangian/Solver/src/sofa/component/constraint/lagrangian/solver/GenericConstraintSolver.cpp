@@ -1228,11 +1228,13 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //    (b) contribution of forces are added to d
-            if( force[k] != 0)
+            for (k = 0; k < dimension; k++)
             {
-                for (k = 0; k < dimension; k++)
+                if( force[k] != 0)
+                {
                     for (l = 0; l < nb; l++)
                         d[j + l] += w[j + l][k] * force[k];
+                }
             }
 
             // 3. the specific resolution of the constraint(s) is called
@@ -1270,11 +1272,13 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d
-            if( force[k] != 0)
+            for (k = 0; k < dimension; k++)
             {
-                for(k=0; k<dimension; k++)
-                    for(l=0; l<nb; l++)
-                        d[j+l] += w[j+l][k] * force[k];
+                if( force[k] != 0)
+                {
+                    for (l = 0; l < nb; l++)
+                        d[j + l] += w[j + l][k] * force[k];
+                }
             }
 
             //3. the specific resolution of the constraint(s) is called
