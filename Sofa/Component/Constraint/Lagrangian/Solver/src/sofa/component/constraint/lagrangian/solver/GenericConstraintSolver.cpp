@@ -1155,7 +1155,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
 {
     if(!solver)
         return;
-    int dimension = getDimension();
+    const int dimension = getDimension();
     int maxIterations = iterationNewton;
 
     if(!dimension)
