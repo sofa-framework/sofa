@@ -1212,9 +1212,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
 
     {
         // peform one iteration of PGS
-        for(j=0; j<dimension; j++){
-            lam[j] = force[j];
-        }
+        std::copy(force, force + dimension, std::begin(lam));
 
         for(j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
