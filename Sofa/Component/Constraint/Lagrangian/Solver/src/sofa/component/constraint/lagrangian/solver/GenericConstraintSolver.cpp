@@ -1208,9 +1208,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
         i += constraintsResolutions[i]->getNbLines();
     }
 
-    sofa::type::vector<double> tabErrors;
-
-    tabErrors.resize(dimension);
+    sofa::type::vector<double> tabErrors(dimension);
 
     {
         // peform one iteration of PGS
