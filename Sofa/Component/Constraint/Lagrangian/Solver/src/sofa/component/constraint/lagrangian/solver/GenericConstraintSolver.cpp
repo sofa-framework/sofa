@@ -69,14 +69,14 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 }
 
 GenericConstraintSolver::GenericConstraintSolver()
-    : d_NLCP_solver( initData(&d_NLCP_solver, "NLCP_solver", "Solver used for the NLCP problem: \"PGS\" for Projected Gauss Seidel or  \"NNCG\" for Non-smooth Non-linear Conjugate Gradient"))
+    : d_nonLinearComplementaryProblemSolver( initData(&d_nonLinearComplementaryProblemSolver, "nonLinearComplementaryProblemSolver", "Solver used for the NLCP problem: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
     , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
     , scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
-    , unbuilt(initData(&unbuilt, false, "unbuilt", "Compliance is not fully built  (for the PGS solver only)"))
-    , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NNCG solver only)"))
+    , unbuilt(initData(&unbuilt, false, "unbuilt", "Compliance is not fully built  (for the ProjectedGaussSeidel solver only)"))
+    , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , computeGraphs(initData(&computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
     , graphErrors( initData(&graphErrors,"graphErrors","Sum of the constraints' errors at each iteration"))
@@ -95,9 +95,9 @@ GenericConstraintSolver::GenericConstraintSolver()
     , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {
-    sofa::helper::OptionsGroup m_newoptiongroup(2,"PGS","NNCG");
-    m_newoptiongroup.setSelectedItem("PGS");
-    d_NLCP_solver.setValue(m_newoptiongroup);
+    sofa::helper::OptionsGroup m_newoptiongroup(2,"ProjectedGaussSeidel","NonsmoothNonlinearConjugateGradient");
+    m_newoptiongroup.setSelectedItem("ProjectedGaussSeidel");
+    d_nonLinearComplementaryProblemSolver.setValue(m_newoptiongroup);
 
     addAlias(&maxIt, "maxIt");
 
@@ -168,17 +168,17 @@ void GenericConstraintSolver::init()
 
     if(d_newtonIterations.isSet())
     {
-        if (d_NLCP_solver.getValue().getSelectedId() == 0) // PGS
+        if (d_nonLinearComplementaryProblemSolver.getValue().getSelectedId() == 0) // ProjectedGaussSeidel
         {
-            msg_warning() << "data \"newtonIterations\" is not taken into account when using the PGS solver";
+            msg_warning() << "data \"newtonIterations\" is not taken into account when using the ProjectedGaussSeidel solver";
         }
     }
 
     if(unbuilt.isSet())
     {
-        if (d_NLCP_solver.getValue().getSelectedId() == 1) // NNCG
+        if (d_nonLinearComplementaryProblemSolver.getValue().getSelectedId() == 1) // NNCG
         {
-            msg_warning() << "data \"unbuilt\" is not taken into account when using the NNCG solver";
+            msg_warning() << "data \"unbuilt\" is not taken into account when using the NonsmoothNonlinearConjugateGradient solver";
         }
     }
 }
@@ -428,7 +428,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     current_cp->unbuilt = unbuilt.getValue();
 
     // Projective Gauss Seidel method
-    if (d_NLCP_solver.getValue().getSelectedId() == 0)
+    if (d_nonLinearComplementaryProblemSolver.getValue().getSelectedId() == 0)
     {
         if (unbuilt.getValue())
         {
@@ -1166,55 +1166,54 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     }
 
 
-    lam.clear();
-    lam.resize(dimension);
-    deltaF.clear();
-    deltaF.resize(dimension);
-    deltaF_new.clear();
-    deltaF_new.resize(dimension);
-    p.clear();
-    p.resize(dimension);
+    m_lam.clear();
+    m_lam.resize(dimension);
+    m_deltaF.clear();
+    m_deltaF.resize(dimension);
+    m_deltaF_new.clear();
+    m_deltaF_new.resize(dimension);
+    m_p.clear();
+    m_p.resize(dimension);
 
 
-    double *dfree = getDfree();
-    double *force = getF();
-    double **w = getW();
-    double tol = tolerance;
+    SReal *dfree = getDfree();
+    SReal *force = getF();
+    SReal **w = getW();
+    SReal tol = tolerance;
 
-    double *d = _d.ptr();
+    SReal *d = _d.ptr();
 
-    int i, j, k, l, nb;
+    int nb;
 
-    double error=0.0;
+    SReal error = 0.0;
 
     bool convergence = false;
-    sofa::type::vector<double> tempForces;
+    sofa::type::vector<SReal> tempForces;
     if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
+    {
         tol *= dimension;
+    }
 
-
-    for(i=0; i<dimension; )
+    for(int i=0; i<dimension; )
     {
         if(!constraintsResolutions[i])
         {
             msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
-
-            dimension = i;
             break;
         }
         constraintsResolutions[i]->init(i, w, force);
         i += constraintsResolutions[i]->getNbLines();
     }
 
-    sofa::type::vector<double> tabErrors(dimension);
+    sofa::type::vector<SReal> tabErrors(dimension);
 
     {
-        // peform one iteration of PGS
-        std::copy(force, force + dimension, std::begin(lam));
+        // peform one iteration of ProjectedGaussSeidel
+        std::copy(force, force + dimension, std::begin(m_lam));
 
-        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
+        for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             // 1. nbLines provide the dimension of the constraint
             nb = constraintsResolutions[j]->getNbLines();
@@ -1224,11 +1223,11 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //    (b) contribution of forces are added to d
-            for (k = 0; k < dimension; k++)
+            for (int k = 0; k < dimension; ++k)
             {
                 if( force[k] != 0)
                 {
-                    for (l = 0; l < nb; l++)
+                    for (int l = 0; l < nb; l++)
                         d[j + l] += w[j + l][k] * force[k];
                 }
             }
@@ -1239,24 +1238,28 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             j += nb;
         }
 
-        for(j=0; j<dimension; j++){
-            deltaF[j] = -(force[j] - lam[j]);
-            p[j] = - deltaF[j];
+        for(int j=0; j<dimension; j++)
+        {
+            m_deltaF[j] = -(force[j] - m_lam[j]);
+            m_p[j] = - m_deltaF[j];
         }
     }
 
 
 
-    for(i=1; i<maxIterations; i++)
+    int iterCount = 0;
+    for(int i=1; i<maxIterations; i++)
     {
+        iterCount ++;
         bool constraintsAreVerified = true;
 
-        for(j=0; j<dimension; j++){
-            lam[j] = force[j];
+        for(int j=0; j<dimension; j++)
+        {
+            m_lam[j] = force[j];
         }
 
         error=0.0;
-        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
+        for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             //1. nbLines provide the dimension of the constraint
             nb = constraintsResolutions[j]->getNbLines();
@@ -1264,15 +1267,15 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
 
-            std::vector<double> errF(&force[j], &force[j+nb]);
+            std::vector<SReal> errF(&force[j], &force[j+nb]);
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d
-            for (k = 0; k < dimension; k++)
+            for (int k = 0; k < dimension; ++k)
             {
                 if( force[k] != 0)
                 {
-                    for (l = 0; l < nb; l++)
+                    for (int l = 0; l < nb; l++)
                         d[j + l] += w[j + l][k] * force[k];
                 }
             }
@@ -1281,15 +1284,15 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             constraintsResolutions[j]->resolution(j, w, d, force, dfree);
 
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-            double contraintError = 0.0;
+            SReal contraintError = 0.0;
             if(nb > 1)
             {
-                for(l=0; l<nb; l++)
+                for(int l=0; l<nb; l++)
                 {
-                    double lineError = 0.0;
+                    SReal lineError = 0.0;
                     for (int m=0; m<nb; m++)
                     {
-                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
                         lineError += dofError * dofError;
                     }
                     lineError = sqrt(lineError);
@@ -1334,24 +1337,31 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
 
 
         // NNCG update with the correction p
-        for(j=0; j<dimension; j++){
-            deltaF_new[j] = -(force[j] - lam[j]);
+        for(int j=0; j<dimension; j++)
+        {
+            m_deltaF_new[j] = -(force[j] - m_lam[j]);
         }
-        double beta = deltaF_new.dot(deltaF_new) / deltaF.dot(deltaF);
-        deltaF.eq(deltaF_new, 1);
-        if(beta > 1){
-            p.clear();
-            p.resize(dimension);
-        }else{
-            for(j=0; j<dimension; j++){
-                force[j] += beta*p[j];
-                p[j] = beta*p[j] - deltaF[j];
+
+        SReal beta = m_deltaF_new.dot(m_deltaF_new) / m_deltaF.dot(m_deltaF);
+        m_deltaF.eq(m_deltaF_new, 1);
+
+        if(beta > 1)
+        {
+            m_p.clear();
+            m_p.resize(dimension);
+        }
+        else
+        {
+            for(int j=0; j<dimension; j++)
+            {
+                force[j] += beta*m_p[j];
+                m_p[j] = beta*m_p[j] - m_deltaF[j];
             }
         }
     }
 
     currentError = error;
-    currentIterations = i+1;
+    currentIterations = iterCount+1;
 
     if(!convergence)
     {
@@ -1359,10 +1369,10 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     }
     else
     {
-        msg_info("GenericConstraintSolver") << "Convergence after " << i+1 << " iterations " ;
+        msg_info("GenericConstraintSolver") << "Convergence after " << iterCount+1 << " iterations " ;
     }
 
-    for(i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
+    for(int i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
         constraintsResolutions[i]->store(i, force, convergence);
 
 }

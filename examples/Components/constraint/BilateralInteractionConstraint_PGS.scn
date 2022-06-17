@@ -23,7 +23,7 @@
     <VisualStyle displayFlags="showForceFields" />
     <DefaultVisualManagerLoop />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" NLCP_solver="PGS" unbuilt="0"/>
+    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" nonLinearComplementaryProblemSolver="ProjectedGaussSeidel" unbuilt="0"/>
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

@@ -80,10 +80,10 @@ public:
     int getNumConstraintGroups();
 
 protected:
-    sofa::linearalgebra::FullVector<double> lam;
-    sofa::linearalgebra::FullVector<double> deltaF;
-    sofa::linearalgebra::FullVector<double> deltaF_new;
-    sofa::linearalgebra::FullVector<double> p;
+    sofa::linearalgebra::FullVector<double> m_lam;
+    sofa::linearalgebra::FullVector<double> m_deltaF;
+    sofa::linearalgebra::FullVector<double> m_deltaF_new;
+    sofa::linearalgebra::FullVector<double> m_p;
 
 };
 
@@ -112,7 +112,7 @@ public:
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-    Data< sofa::helper::OptionsGroup > d_NLCP_solver;
+    Data< sofa::helper::OptionsGroup > d_nonLinearComplementaryProblemSolver; ///< Solver used for the NLCP problem: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
 
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
