@@ -24,19 +24,17 @@
 #include <sofa/core/collision/Contact.h>
 using sofa::core::collision::Contact ;
 
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
-#include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
+#include <sofa/component/collision/response/mapper/IdentityContactMapper.inl>
 
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
-#include <SofaMeshCollision/IdentityContactMapper.h>
-
-#include <SofaConstraint/FrictionContact.inl>
-
-#include <SofaMiscCollision/BarycentricStickContact.inl>
+#include <sofa/component/collision/response/contact/FrictionContact.inl>
+#include <sofa/component/collision/response/contact/BarycentricStickContact.inl>
 
 #include "components/collision/DistanceGridCollisionModel.h"
 #include "components/collision/FFDDistanceGridDiscreteIntersection.h"
@@ -57,6 +55,8 @@ int registerDistanceGridCollisionModel()
     return 0;
 }
 
+using namespace sofa::component::collision::response::contact;
+using namespace sofa::component::collision::geometry;
 
 ///////////////////////////////// BARYCENTRICSTICK /////////////////////////////////////////////////
 Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridStickContactClass("StickContactForceField", true);

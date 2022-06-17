@@ -22,8 +22,8 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 #define SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 
-#include <SofaUserInteraction/Controller.h>
-#include <SofaOpenglVisual/OglModel.h>
+#include <sofa/component/controller/Controller.h>
+#include <sofa/gl/component/rendering3d/OglModel.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -34,15 +34,17 @@
 #include <thread>
 #include <SensableEmulation/config.h>
 
+namespace sofa::gl::component::rendering3d
+{
+    class OglModel;
 
-namespace sofa
+} // namespace sofa::gl::component::rendering3d
+
+namespace sofa::component
 {
 
 namespace simulation { class Node; }
 
-namespace component
-{
-namespace visualModel { class OglModel; }
 
 namespace controller
 {
@@ -153,7 +155,7 @@ private:
 
     void copyDeviceDataCallback(OmniData *pUserData);
     void stopCallback(OmniData *pUserData);
-    component::visualmodel::OglModel::SPtr visu_base, visu_end;
+    gl::component::rendering3d::OglModel::SPtr visu_base, visu_end;
     bool noDevice;
 
     bool moveOmniBase;
@@ -169,8 +171,6 @@ private:
 
 } // namespace controller
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component
 
 #endif // SOFA_COMPONENT_CONTROLLER_OMNIEMU_H

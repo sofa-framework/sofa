@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaValidation/config.h>
 
-#include <SofaGeneralLoader/ReadTopology.h>
+#include <sofa/component/playback/ReadTopology.h>
 #include <sofa/simulation/Visitor.h>
 
 #include <fstream>
@@ -33,10 +33,10 @@ namespace sofa::component::misc
 
 /** Compare Topology vectors from file at each timestep
 */
-class SOFA_SOFAVALIDATION_API CompareTopology: public ReadTopology
+class SOFA_SOFAVALIDATION_API CompareTopology: public playback::ReadTopology
 {
 public:
-    SOFA_CLASS(CompareTopology,ReadTopology);
+    SOFA_CLASS(CompareTopology, playback::ReadTopology);
 protected:
     /** Default constructor
     */

@@ -22,7 +22,7 @@
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

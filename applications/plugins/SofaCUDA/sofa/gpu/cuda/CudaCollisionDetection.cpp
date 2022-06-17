@@ -32,6 +32,7 @@ namespace cuda
 {
 
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::geometry;
 
 extern "C"
 {

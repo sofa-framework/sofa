@@ -27,8 +27,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
 
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
 #include <zlib.h>
@@ -179,7 +178,7 @@ public:
 
     std::vector<type::Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
     {
-        sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeo;
+        sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeo;
         topology->getContext()->get(triangleGeo);
 
         coordinates.clear();

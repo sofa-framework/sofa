@@ -75,28 +75,28 @@ bool MaterialDataWidget::createWidgets()
     layout->addLayout(grid);
 
 
-    connect(_nameEdit, SIGNAL( textChanged( const QString & ) ), this , SLOT( setWidgetDirty() ) );
-    connect(_shininessEdit, SIGNAL( textChanged( const QString & ) ), this , SLOT( setWidgetDirty() ) );
+    connect(_nameEdit, &QLineEdit::textChanged, this , [=](const QString &){ setWidgetDirty(true); });
+    connect(_shininessEdit, &QLineEdit::textChanged, this , [=](const QString &){ setWidgetDirty(true); });
 
-    connect(_ambientCheckBox, SIGNAL( toggled( bool ) ), this , SLOT( setWidgetDirty() ) );
-    connect(_ambientCheckBox, SIGNAL( toggled( bool ) ), _ambientPicker , SLOT( setEnabled(bool ) ) );
+    connect(_ambientCheckBox, &QCheckBox::toggled, this , &MaterialDataWidget::setWidgetDirty);
+    connect(_ambientCheckBox, &QCheckBox::toggled, _ambientPicker , &MaterialDataWidget::setEnabled);
 
-    connect(_emissiveCheckBox, SIGNAL( toggled( bool ) ), this , SLOT( setWidgetDirty() ) );
-    connect(_emissiveCheckBox, SIGNAL( toggled( bool ) ), _emissivePicker, SLOT( setEnabled(bool) ) );
+    connect(_emissiveCheckBox, &QCheckBox::toggled, this , &MaterialDataWidget::setWidgetDirty);
+    connect(_emissiveCheckBox, &QCheckBox::toggled, _emissivePicker, &MaterialDataWidget::setEnabled);
 
-    connect(_specularCheckBox, SIGNAL( toggled( bool ) ), this , SLOT( setWidgetDirty() ) );
-    connect(_specularCheckBox, SIGNAL( toggled( bool ) ), _specularPicker, SLOT( setEnabled(bool) ) );
+    connect(_specularCheckBox, &QCheckBox::toggled, this , &MaterialDataWidget::setWidgetDirty);
+    connect(_specularCheckBox, &QCheckBox::toggled, _specularPicker, &MaterialDataWidget::setEnabled);
 
-    connect(_diffuseCheckBox, SIGNAL( toggled( bool ) ), this , SLOT( setWidgetDirty() ) );
-    connect(_diffuseCheckBox, SIGNAL( toggled( bool ) ), _diffusePicker, SLOT( setEnabled(bool) ) );
+    connect(_diffuseCheckBox, &QCheckBox::toggled, this , &MaterialDataWidget::setWidgetDirty);
+    connect(_diffuseCheckBox, &QCheckBox::toggled, _diffusePicker, &MaterialDataWidget::setEnabled);
 
-    connect(_shininessCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( setWidgetDirty() ) );
-    connect(_shininessCheckBox, SIGNAL( toggled( bool ) ), _shininessEdit, SLOT( setEnabled(bool) ) );
+    connect(_shininessCheckBox, &QCheckBox::toggled, this, &MaterialDataWidget::setWidgetDirty);
+    connect(_shininessCheckBox, &QCheckBox::toggled, _shininessEdit, &MaterialDataWidget::setEnabled);
 
-    connect(_ambientPicker, SIGNAL( hasChanged() ), this, SLOT( setWidgetDirty() ) );
-    connect(_emissivePicker, SIGNAL( hasChanged() ), this, SLOT( setWidgetDirty() ) );
-    connect(_specularPicker, SIGNAL( hasChanged() ), this, SLOT( setWidgetDirty() ) );
-    connect(_diffusePicker, SIGNAL( hasChanged() ), this, SLOT( setWidgetDirty() ) );
+    connect(_ambientPicker, &QRGBAColorPicker::hasChanged, this, [=](){ setWidgetDirty(true); });
+    connect(_emissivePicker, &QRGBAColorPicker::hasChanged, this, [=](){ setWidgetDirty(true); });
+    connect(_specularPicker, &QRGBAColorPicker::hasChanged, this, [=](){ setWidgetDirty(true); });
+    connect(_diffusePicker, &QRGBAColorPicker::hasChanged, this, [=](){ setWidgetDirty(true); });
 
     readFromData();
 
@@ -177,8 +177,8 @@ bool VectorMaterialDataWidget::createWidgets()
     layout->addWidget(_comboBox);
     layout->addWidget(_materialDataWidget);
 
-    connect( _comboBox, SIGNAL(activated(int)  ), this, SLOT( changeMaterial( int) ) );
-    connect( _materialDataWidget, SIGNAL( WidgetDirty(bool) ) ,this, SLOT( setWidgetDirty(bool) ) );
+    connect( _comboBox, QOverload<int>::of(&QComboBox::activated), this, &VectorMaterialDataWidget::changeMaterial );
+    connect( _materialDataWidget, &MaterialDataWidget::WidgetDirty, this, &VectorMaterialDataWidget::setWidgetDirty );
 
     readFromData();
 

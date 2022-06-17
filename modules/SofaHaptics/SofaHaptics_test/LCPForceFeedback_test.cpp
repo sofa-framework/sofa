@@ -21,12 +21,10 @@
 ******************************************************************************/
 
 #include <sofa/testing/BaseTest.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <thread>
 #include <sofa/simulation/Node.h>
@@ -42,7 +40,7 @@ using namespace sofa::helper::system::thread;
 class LCPForceFeedback_test : public sofa::testing::BaseTest
 {
 public:
-    typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MecaRig;
+    typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3Types> MecaRig;
     typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::Rigid3Types> LCPRig;
     typedef typename MecaRig::Coord    Coord;
     typedef typename MecaRig::VecCoord VecCoord;
@@ -135,9 +133,7 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
 
 void LCPForceFeedback_test::loadTestScene(const std::string& filename)
 {
-    sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
-    sofa::component::initSofaBaseCollision(); // needed to instanciate RequiredPlugin
-    
+
     simulation::Simulation* simu;
     sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
 

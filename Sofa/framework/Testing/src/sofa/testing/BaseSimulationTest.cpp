@@ -28,8 +28,8 @@ using sofa::core::execparams::defaultInstance;
 using sofa::simulation::SceneLoaderFactory ;
 using sofa::simulation::SceneLoader ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/helper/system/PluginManager.h>

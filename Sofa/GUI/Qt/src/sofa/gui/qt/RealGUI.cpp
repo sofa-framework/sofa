@@ -62,7 +62,7 @@
 #include "viewer/SofaViewer.h"
 
 #include <sofa/gui/common/BaseViewer.h>
-#include <SofaSimulationCommon/xml/XML.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -278,7 +278,7 @@ void RealGUI::InitApplication( RealGUI* _gui)
     QString pathIcon=(DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
     application->setWindowIcon(QIcon(pathIcon));
 
-    if(SOFAGUI_ENABLE_NATIVE_MENU)
+    if(SOFA_GUI_QT_ENABLE_NATIVE_MENU)
     {
         // Use the OS'native menu instead of the Qt one
         _gui->menubar->setNativeMenuBar(true);

@@ -1,12 +1,33 @@
-//#include "stdafx.h"
-#include "PrimitiveCreation.h"
-#include <SofaBaseMechanics/MechanicalObject.h>
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
+#include "PrimitiveCreation.h"
+#include <sofa/component/statecontainer/MechanicalObject.h>
+
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 using sofa::core::objectmodel::New;
-using sofa::component::container::MechanicalObject;
+using sofa::component::statecontainer::MechanicalObject;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
@@ -38,7 +59,7 @@ void rotz(double angle,Vec3 & x,Vec3 & y,Vec3 & z){
     x = rot.rotate(x);y = rot.rotate(y);z = rot.rotate(z);
 }
 
-sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::simulation::Node::SPtr &father){
+sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::simulation::Node::SPtr &father){
     //creating node containing TriangleModel
     sofa::simulation::Node::SPtr tri = father->createChild("tri");
 
@@ -70,7 +91,7 @@ sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>
     tri->addObject(triDOF);
 
     //creating a topology necessary for capsule
-    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
+    sofa::component::topology::container::constant::MeshTopology::SPtr bmt = New<sofa::component::topology::container::constant::MeshTopology>();
     bmt->addTriangle(0,1,2);
     bmt->addEdge(0,1);
     bmt->addEdge(1,2);
@@ -78,7 +99,7 @@ sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>
     tri->addObject(bmt);
 
     //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr triCollisionModel = New<sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr triCollisionModel = New<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
     tri->addObject(triCollisionModel);
 
 
@@ -88,7 +109,7 @@ sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>
     return triCollisionModel;
 }
 
-sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3 & p,SReal radius,const Vec3 &v,const double *angles,const int *order,
+sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3 & p,SReal radius,const Vec3 &v,const double *angles,const int *order,
                                                                             sofa::simulation::Node::SPtr & father){
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr sphere = father->createChild("sphere");
@@ -134,12 +155,12 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>>();
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>>();
     sphere->addObject(sphereCollisionModel);
 
     //editing the RigidSphereModel
     sphereCollisionModel->init();
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
 
     vecRad[0] = radius;
 
@@ -149,7 +170,7 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>
 }
 
 
-sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::Node::SPtr & father){
+sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::Node::SPtr & father){
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr sphere = father->createChild("sphere");
 
@@ -177,12 +198,12 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
     sphere->addObject(sphereCollisionModel);
 
     //editting the RigidSphereModel
     sphereCollisionModel->init();
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
 
     vecRad[0] = radius;
 

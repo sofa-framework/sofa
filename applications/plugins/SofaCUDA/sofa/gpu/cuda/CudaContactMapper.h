@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaMeshCollision/SubsetContactMapper.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaPointModel.h>
 #include <sofa/gpu/cuda/CudaSphereModel.h>

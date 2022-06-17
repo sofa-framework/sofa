@@ -54,6 +54,7 @@ template<class DataTypes>
 void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f,
               const DataVecCoord& p, const DataVecDeriv& v)
 {
+    using namespace sofa::component::solidmechanics::fem::elastic;
     if (this->method != HexahedronFEMForceField<DataTypes>::LARGE)
     {
         static bool firstTime = true;

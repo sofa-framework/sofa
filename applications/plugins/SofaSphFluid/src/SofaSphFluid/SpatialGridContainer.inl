@@ -26,12 +26,12 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #if SOFASPHFLUID_HAVE_SOFA_GL == 1
 #include <sofa/gl/gl.h>
@@ -739,7 +739,7 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
         msg_info() << tmp.str() ;
     }
 
-    sofa::component::topology::PointSetTopologyModifier* pointMod;
+    sofa::component::topology::container::dynamic::PointSetTopologyModifier* pointMod;
     this->getContext()->get(pointMod);
 
     if (pointMod)
@@ -750,7 +750,7 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
     }
     else
     {
-        MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate);
+        statecontainer::MechanicalObject<DataTypes>* object = dynamic_cast<statecontainer::MechanicalObject<DataTypes>*>(this->mstate);
         if (object != nullptr)
         {
             msg_info() << "sortPoints(): renumber using MechanicalObject." ;

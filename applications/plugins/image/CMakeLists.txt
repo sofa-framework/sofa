@@ -4,12 +4,13 @@ project(image VERSION 0.1)
 set(PLUGIN_IMAGE_COMPILE_SET "standard" CACHE STRING "Set of image type to compile. Values are: none, standard (default), full.")
 set_property(CACHE PLUGIN_IMAGE_COMPILE_SET PROPERTY STRINGS none standard full)
 
-find_package(SofaBase REQUIRED)
-find_package(SofaGeneralVisual REQUIRED)
+find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Component.Visual REQUIRED)
+#find_package(SofaGeneralVisual REQUIRED)
+sofa_find_package(CImgPlugin REQUIRED)
 
 sofa_find_package(Sofa.GL QUIET)
-sofa_find_package(SofaGuiQt QUIET)
-sofa_find_package(CImgPlugin REQUIRED)
+sofa_find_package(Sofa.GUI.Qt QUIET)
 sofa_find_package(SofaPython QUIET)
 sofa_find_package(MultiThreading QUIET)
 sofa_find_package(ZLIB)
@@ -120,8 +121,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_IMAGE")
-target_link_libraries(${PROJECT_NAME} Sofa.Core SofaBase SofaGeneralVisual CImgPlugin)
-
+target_link_libraries(${PROJECT_NAME} Sofa.Core CImgPlugin Sofa.Component.Visual)
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)    
@@ -154,7 +154,7 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-if(SofaGuiQt_FOUND)
+if(Sofa.GUI.Qt_FOUND)
     add_subdirectory(image_gui)
 endif()
 

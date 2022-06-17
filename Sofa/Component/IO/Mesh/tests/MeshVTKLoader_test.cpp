@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SofaLoader/MeshVTKLoader.h"
-#include "SofaLoader/BaseVTKReader.h"
-using sofa::component::loader::MeshVTKLoader ;
+#include <sofa/component/io/mesh/MeshVTKLoader.h>
+#include <sofa/component/io/mesh/BaseVTKReader.h>
+using sofa::component::io::mesh::MeshVTKLoader ;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
@@ -40,9 +40,9 @@ namespace meshvtkloader_test
 struct MeshVTKLoaderTest : public BaseTest,
                            public MeshVTKLoader
 {
-    using BaseVTKDataIO = component::loader::BaseVTKReader::BaseVTKDataIO;
+    using BaseVTKDataIO = component::io::mesh::BaseVTKReader::BaseVTKDataIO;
     template<typename T>
-    using VTKDataIO = component::loader::BaseVTKReader::VTKDataIO<T>;
+    using VTKDataIO = component::io::mesh::BaseVTKReader::VTKDataIO<T>;
 
     MeshVTKLoaderTest()
     {}

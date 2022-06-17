@@ -87,7 +87,7 @@ QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(static_cast<int>(nbMSAASamples));
     }
 
-    if(!SOFAGUI_ENABLE_NATIVE_MENU)
+    if(!SOFA_GUI_QT_ENABLE_VSYNC)
     {
         f.setSwapInterval(0); // disable vertical refresh sync
     }
@@ -156,11 +156,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     backgroundColour[1] = 1.0f;
     backgroundColour[2] = 1.0f;
 
-    // setup OpenGL mode for the window
-    //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
-    timerAnimate = new QTimer(this);
-    //connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
-
     _video = false;
     m_bShowAxis = false;
     _background = 0;
@@ -188,7 +183,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
-    connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
+    connect( &captureTimer, &QTimer::timeout, this, &QtViewer::captureEvent );
 }
 
 // ---------------------------------------------------------
@@ -759,8 +754,8 @@ void QtViewer::drawScene(void)
     int height = _H;
     bool stereo = currentCamera->getStereoEnabled();
     bool twopass = stereo;
-    sofa::component::visualmodel::BaseCamera::StereoMode smode = currentCamera->getStereoMode();
-    sofa::component::visualmodel::BaseCamera::StereoStrategy sStrat = currentCamera->getStereoStrategy();
+    sofa::component::visual::BaseCamera::StereoMode smode = currentCamera->getStereoMode();
+    sofa::component::visual::BaseCamera::StereoStrategy sStrat = currentCamera->getStereoStrategy();
     double sShift = currentCamera->getStereoShift();
     bool stencil = false;
     bool viewport = false;
@@ -770,29 +765,29 @@ void QtViewer::drawScene(void)
     {
         if(stereo)
         {
-            if (smode == sofa::component::visualmodel::BaseCamera::STEREO_AUTO)
+            if (smode == sofa::component::visual::BaseCamera::STEREO_AUTO)
         {
             // auto-detect stereo mode
-            static int prevsmode = sofa::component::visualmodel::BaseCamera::STEREO_AUTO;
+            static int prevsmode = sofa::component::visual::BaseCamera::STEREO_AUTO;
             if ((_W <= 1280 && _H == 1470) || (_W <= 1920 && _H == 2205))
             {
                 // standard HDMI 1.4 stereo frame packing format
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING;
+                smode = sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Frame Packing" << std::endl;
             }
             else if (_W >= 2 * _H)
             {
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE;
+                smode = sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side" << std::endl;
             }
             else if (_H > _W)
             {
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM;
+                smode = sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Top Bottom" << std::endl;
             }
             else
             {
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED;
+                smode = sofa::component::visual::BaseCamera::STEREO_INTERLACED;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Interlaced" << std::endl;
                 //smode = STEREO_SYDE_BY_SIDE_HALF;
                 //if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side Half" << std::endl;
@@ -801,43 +796,43 @@ void QtViewer::drawScene(void)
         }
             switch (smode)
             {
-            case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
+            case sofa::component::visual::BaseCamera::STEREO_INTERLACED:
             {
                 stencil = true;
                 glEnable(GL_STENCIL_TEST);
                 MakeStencilMask();
                 break;
             }
-            case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
-            case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
+            case sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE:
+            case sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
             {
                 width /= 2;
                 viewport = true;
                 vpleft = sofa::type::make_array(0,0,width,height);
                 vpright = sofa::type::make_array(_W-width,0,width,height);
-                if (smode == sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF)
+                if (smode == sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE_HALF)
                     width = _W; // keep the original ratio for camera
                 break;
             }
-            case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
-            case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
-            case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
+            case sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING:
+            case sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM:
+            case sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM_HALF:
             {
-                if (smode == sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING && _H == 1470) // 720p format
+                if (smode == sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING && _H == 1470) // 720p format
                     height = 720;
-                else if (smode == sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING && _H == 2205) // 1080p format
+                else if (smode == sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING && _H == 2205) // 1080p format
                     height = 1080;
                 else // other resolutions
                     height /= 2;
                 viewport = true;
                 vpleft = sofa::type::make_array(0,0,width,height);
                 vpright = sofa::type::make_array(0,_H-height,width,height);
-                if (smode == sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF)
+                if (smode == sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM_HALF)
                     height = _H; // keep the original ratio for camera
                 break;
             }
-            case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
-            case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
+            case sofa::component::visual::BaseCamera::STEREO_AUTO:
+            case sofa::component::visual::BaseCamera::STEREO_NONE:
             default:
                 twopass = false;
                 break;
@@ -881,11 +876,11 @@ void QtViewer::drawScene(void)
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            if(sStrat == sofa::component::visualmodel::BaseCamera::PARALLEL)
+            if(sStrat == sofa::component::visual::BaseCamera::PARALLEL)
             {
                 glTranslated(sShift/2,0,0);
             }
-            else if(sStrat == sofa::component::visualmodel::BaseCamera::TOEDIN)
+            else if(sStrat == sofa::component::visual::BaseCamera::TOEDIN)
             {
                 double distance = currentCamera ? currentCamera->getDistance() : 10*sShift;
                 double angle = atan2(sShift,distance)*180.0/M_PI;
@@ -901,7 +896,7 @@ void QtViewer::drawScene(void)
 
     if (_renderingMode == GL_RENDER)
     {
-        currentCamera->setCurrentSide(sofa::component::visualmodel::BaseCamera::LEFT);
+        currentCamera->setCurrentSide(sofa::component::visual::BaseCamera::LEFT);
         DisplayOBJs();
     }
     if(supportStereo)
@@ -933,12 +928,12 @@ void QtViewer::drawScene(void)
         glPushMatrix();
         glLoadIdentity();
 
-        if(sStrat == sofa::component::visualmodel::BaseCamera::PARALLEL) {glTranslated(-sShift/2,0,0);}
+        if(sStrat == sofa::component::visual::BaseCamera::PARALLEL) {glTranslated(-sShift/2,0,0);}
 
         glMultMatrixd(mat);
         if (_renderingMode == GL_RENDER)
         {
-            currentCamera->setCurrentSide(sofa::component::visualmodel::BaseCamera::RIGHT);
+            currentCamera->setCurrentSide(sofa::component::visual::BaseCamera::RIGHT);
             DisplayOBJs();
         }
         if (stereo)
