@@ -73,19 +73,34 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     linearsolvers.clear();
 
     std::stringstream tmp ;
-    if (solverNames.size() == 0)
+    if (solverNames.empty())
     {
-        linearsolvers.push_back(c->get<sofa::core::behavior::LinearSolver>());
+        sofa::core::behavior::LinearSolver* s = nullptr;
+        c->get(s);
+        if(s)
+        {
+            if (s->getTemplateName() == "GraphScattered")
+                msg_warning() << "Can not use the solver " << s->getName() << " because it is templated on GraphScatteredType";
+            else
+                linearsolvers.push_back(s);
+        }
     }
-
     else
     {
-        for (unsigned int i=0; i<solverNames.size(); ++i)
+        for(unsigned int i=0; i<solverNames.size(); ++i)
         {
             sofa::core::behavior::LinearSolver* s = nullptr;
             c->get(s, solverNames[i]);
-            if (s) linearsolvers.push_back(s);
-            else tmp << "- searching for solver \'" << solverNames[i] << "\' but cannot find it upward in the scene graph." << msgendl ;
+
+            if(s)
+            {
+                if (s->getTemplateName() == "GraphScattered")
+                    msg_warning() << "Can not use the solver " << solverNames[i] << " because it is templated on GraphScatteredType";
+                else
+                    linearsolvers.push_back(s);
+            } 
+            else
+                msg_warning() << "Solver \"" << solverNames[i] << "\" not found.";
         }
     }
 
