@@ -34,6 +34,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <thread>
 #include <SensableEmulation/config.h>
+#include <sofa/simulation/fwd.h>
 
 namespace sofa::gl::component::rendering3d
 {
@@ -41,13 +42,12 @@ namespace sofa::gl::component::rendering3d
 
 } // namespace sofa::gl::component::rendering3d
 
-namespace sofa::component
+namespace sofa::component::haptic
 {
+    class ForceFeedback;
+}
 
-namespace simulation { class Node; }
-
-
-namespace controller
+namespace sofa::component::controller
 {
 
 /** Holds data retrieved from HDAPI. */
@@ -63,7 +63,7 @@ typedef struct
 
 typedef struct
 {
-    type::vector<ForceFeedback*> forceFeedbacks;
+    type::vector<haptic::ForceFeedback*> forceFeedbacks;
     int forceFeedbackIndice;
     simulation::Node *context;
 
@@ -124,7 +124,7 @@ public:
     void draw(const core::visual::VisualParams*) override;
 
     int initDevice(OmniData& data);
-    void setForceFeedbacks(type::vector<ForceFeedback*> ffs);
+    void setForceFeedbacks(type::vector<haptic::ForceFeedback*> ffs);
 
     void setDataValue();
 
@@ -168,8 +168,6 @@ private:
 };
 
 
-} // namespace controller
-
-} // namespace sofa::component
+} // namespace sofa::component::controller
 
 #endif // SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
