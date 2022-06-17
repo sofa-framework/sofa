@@ -67,8 +67,13 @@ public:
     void freeConstraintResolutions();
     void solveTimed(SReal tol, int maxIt, SReal timeout) override;
 
+    /// Projective Gauss Seidel method building the compliance matrix
     void gaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
+    /// Projective Gauss Seidel unbuilt method
     void unbuiltGaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
+    /// Method from:
+    /// A nonsmooth nonlinear conjugate gradient method for interactive contact force problems
+    /// - 2010, Silcowitz, Morten and Niebe, Sarah and Erleben, Kenny
     void NNCG(GenericConstraintSolver* solver = nullptr, int iterationNewton = 1);
 
     int getNumConstraints();

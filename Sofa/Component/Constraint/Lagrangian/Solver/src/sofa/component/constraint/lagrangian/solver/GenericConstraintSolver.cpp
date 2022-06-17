@@ -1208,15 +1208,12 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
         i += constraintsResolutions[i]->getNbLines();
     }
 
-    bool showGraphs = false;
-    sofa::type::vector<double>* graph_residuals = nullptr;
-    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
     sofa::type::vector<double> tabErrors;
 
     tabErrors.resize(dimension);
 
     {
-        //peform one iteration of PGS
+        // peform one iteration of PGS
         for(j=0; j<dimension; j++){
             lam[j] = force[j];
         }
@@ -1230,10 +1227,13 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             //    (a)d is set to dfree
             std::copy_n(&dfree[j], nb, &d[j]);
 
-            //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
-            for (k = 0; k < dimension; k++)
-                for (l = 0; l < nb; l++)
-                    d[j + l] += w[j + l][k] * force[k];
+            //    (b) contribution of forces are added to d
+            if( force[k] != 0)
+            {
+                for (k = 0; k < dimension; k++)
+                    for (l = 0; l < nb; l++)
+                        d[j + l] += w[j + l][k] * force[k];
+            }
 
             // 3. the specific resolution of the constraint(s) is called
             constraintsResolutions[j]->resolution(j, w, d, force, dfree);
@@ -1245,9 +1245,6 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             deltaF[j] = -(force[j] - lam[j]);
             p[j] = - deltaF[j];
         }
-
-
-
     }
 
 
@@ -1272,10 +1269,13 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             std::vector<double> errF(&force[j], &force[j+nb]);
             std::copy_n(&dfree[j], nb, &d[j]);
 
-            //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
-            for(k=0; k<dimension; k++)
-                for(l=0; l<nb; l++)
-                    d[j+l] += w[j+l][k] * force[k];
+            //   (b) contribution of forces are added to d
+            if( force[k] != 0)
+            {
+                for(k=0; k<dimension; k++)
+                    for(l=0; l<nb; l++)
+                        d[j+l] += w[j+l][k] * force[k];
+            }
 
             //3. the specific resolution of the constraint(s) is called
             constraintsResolutions[j]->resolution(j, w, d, force, dfree);
@@ -1333,7 +1333,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
         }
 
 
-        //NNCG update
+        // NNCG update with the correction p
         for(j=0; j<dimension; j++){
             deltaF_new[j] = -(force[j] - lam[j]);
         }
