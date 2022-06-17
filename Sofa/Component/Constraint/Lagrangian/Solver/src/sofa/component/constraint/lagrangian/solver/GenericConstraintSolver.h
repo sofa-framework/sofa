@@ -80,7 +80,6 @@ public:
     int getNumConstraintGroups();
 
 protected:
-protected:
     sofa::linearalgebra::FullVector<double> lam;
     sofa::linearalgebra::FullVector<double> deltaF;
     sofa::linearalgebra::FullVector<double> deltaF_new;
