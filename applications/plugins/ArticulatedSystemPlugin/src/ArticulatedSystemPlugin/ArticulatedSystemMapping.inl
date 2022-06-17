@@ -40,12 +40,14 @@ ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
     , l_container(initLink("container", "Path to ArticulatedHierarchyContainer."))
     , d_indexFromRoot(initData(&d_indexFromRoot, (unsigned int)0, "indexInput2", "Corresponding index if the base of the articulated system is attached to input2. Default is last index."))
 {
-
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
 }
 
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 {
+    if(this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Valid)
+        return;
 
     if(this->getFromModels1().empty())
     {
@@ -91,12 +93,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
             m_fromRootModel == nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
     
     Inherit::init();
-    /*
-    OutVecDeriv& vto = m_toModel->read(core::ConstVecDerivId::velocity())->getValue();
-    InVecDeriv& vfrom = m_fromModel->read(core::ConstVecDerivId::velocity())->getValue();
-    applyJT(vfrom, vto);
-    */
-
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template <class TIn, class TInRoot, class TOut>

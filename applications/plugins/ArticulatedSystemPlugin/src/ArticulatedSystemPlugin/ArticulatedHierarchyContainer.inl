@@ -38,6 +38,7 @@ Articulation::Articulation():
     articulationIndex(initData(&articulationIndex, (int) 0, "articulationIndex", "Articulation index"))
 {
     this->addAlias(&axis, "rotationAxis");
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
 }
 
 ArticulationCenter::ArticulationCenter():
@@ -48,6 +49,7 @@ ArticulationCenter::ArticulationCenter():
     posOnChild(initData(&posOnChild, "posOnChild", "Child position of the articulation center")),
     articulationProcess(initData(&articulationProcess, (int) 0, "articulationProcess", " 0 - (default) hierarchy between articulations (euler angles)\n 1- ( on Parent) no hierarchy - axis are attached to the parent\n 2- (attached on Child) no hierarchy - axis are attached to the child"))
 {
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
 }
 
 ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(int index)
@@ -91,6 +93,7 @@ ArticulatedHierarchyContainer::ArticulatedHierarchyContainer():
     chargedFromFile = false;
     numOfFrames = 0;
     dtbvh = 0.0;
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
 }
 
 
@@ -207,6 +210,10 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 
 void ArticulatedHierarchyContainer::init ()
 {
+    if(d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     simulation::Node* context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 
     std::string file = filename.getFullPath();
