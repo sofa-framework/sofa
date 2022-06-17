@@ -109,17 +109,11 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        if(SCENECREATOR_HAVE_SOFASPARSESOLVER)
-        {
-            simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
-                                                                  {"rayleighStiffness","0.01"},
-                                                                  {"rayleighMass", "1.0"}}) ;
+        simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
+                                                                {"rayleighStiffness","0.01"},
+                                                                {"rayleighMass", "1.0"}}) ;
 
-            simpleapi::createObject(node, "SparseLDLSolver", {{"name","Sparse LDL Solver"}});
-            return node;
-        }
-
-        msg_error("SceneCreator") << "Unable to create a scene because this verson of sofa has not been compiled with SparseLDLSolver. " ;
+        simpleapi::createObject(node, "SparseLDLSolver", {{"name","Sparse LDL Solver"}});
         return node;
     }
 
