@@ -24,16 +24,18 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
-#include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.h>
-#include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaGeneralEngine/PairBoxRoi.h>
-#include <SofaImplicitOdeSolver/StaticSolver.h>
-#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
+
+#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
+
+#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/component/engine/select/PairBoxRoi.h>
+#include <sofa/component/odesolver/backward/StaticSolver.h>
+#include <sofa/component/constraint/projective/ProjectToLineConstraint.h>
 
 namespace sofa {
 
@@ -64,8 +66,8 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef typename container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename sofa::component::forcefield::TetrahedralTensorMassForceField<DataTypes> TetrahedralTensorMassForceField;
+    typedef typename statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<DataTypes> TetrahedralTensorMassForceField;
     typedef typename sofa::core::behavior::ForceField<DataTypes>::SPtr ForceFieldSPtr;
     typedef ForceFieldSPtr (LinearElasticity_test<_DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     /// Simulation
@@ -101,7 +103,7 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
     ForceFieldSPtr addTetrahedralCorotationalFEMLinearElastic(simulation::Node::SPtr root,
         double youngModulus,double poissonRatio)
     {
-        typename sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes>::SPtr ff=addNew<sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes> >(root);
+        typename sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes>::SPtr ff = addNew<sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes> >(root);
         ff->setYoungModulus(youngModulus);
         ff->setPoissonRatio(poissonRatio);
         ff->setMethod(0); // small method

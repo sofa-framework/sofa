@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 #include <sofa/testing/NumericTest.h>
 #include <sofa/simulation/Node.h>

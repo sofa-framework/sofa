@@ -21,11 +21,9 @@
 ******************************************************************************/
 #include <sofa/testing/BaseTest.h>
 #include <sofa/simulation/Node.h>
-#include <SofaImplicitOdeSolver/StaticSolver.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationGraph/SimpleApi.h>
-
-#include <SofaBaseUtils/initSofaBaseUtils.h>
+#include <sofa/component/odesolver/backward/StaticSolver.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 #include <vector>
 #include <algorithm>
@@ -35,7 +33,7 @@ using namespace sofa::simpleapi;
 using namespace sofa::helper::logging;
 
 using sofa::simulation::graph::DAGSimulation;
-using sofa::component::odesolver::StaticSolver;
+using sofa::component::odesolver::backward::StaticSolver;
 
 static constexpr SReal poissonRatio = 0;
 static constexpr SReal youngModulus = 3000;
@@ -55,15 +53,13 @@ class StaticSolverTest : public sofa::testing::BaseTest
 public:
     void onSetUp() override {
 
-        sofa::component::initSofaBaseUtils();
-
         if (! getSimulation()) {
             setSimulation(new DAGSimulation()) ;
         }
 
         root = getSimulation()->createNewNode("root");
 
-        createObject(root, "RequiredPlugin", {{"pluginName", "SofaBoundaryCondition SofaEngine SofaMiscFem SofaImplicitOdeSolver SofaSparseSolver SofaTopologyMapping"}});
+        createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});
         createObject(root, "RegularGridTopology", {{"name", "grid"}, {"min", "-7.5 -7.5 0"}, {"max", "7.5 7.5 80"}, {"n", "3 3 9"}});
         auto s = createObject(root, "StaticSolver", {{"newton_iterations", "10"}});
         createObject(root, "SparseLDLSolver");

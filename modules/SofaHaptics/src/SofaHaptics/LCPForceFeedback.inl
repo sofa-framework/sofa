@@ -24,7 +24,7 @@
 
 #include <SofaHaptics/LCPForceFeedback.h>
 
-#include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
 #include <sofa/simulation/AnimateEndEvent.h>
 
@@ -237,7 +237,7 @@ bool LCPForceFeedback<DataTypes>::updateConstraintProblem()
 
     bool changed = (prevId != mCurBufferId);
 
-    component::constraintset::ConstraintProblem* cp = mCP[mCurBufferId];
+    sofa::component::constraint::lagrangian::solver::ConstraintProblem* cp = mCP[mCurBufferId];
 
     if(!cp)
     {
@@ -262,7 +262,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 
     const MatrixDeriv& constraints = mConstraints[mCurBufferId];
     VecCoord &val = mVal[mCurBufferId];
-    component::constraintset::ConstraintProblem* cp = mCP[mCurBufferId];
+    sofa::component::constraint::lagrangian::solver::ConstraintProblem* cp = mCP[mCurBufferId];
 
     if(!cp)
     {
@@ -345,7 +345,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     if (!mState)
         return;
 
-    component::constraintset::ConstraintProblem* new_cp = constraintSolver->getConstraintProblem();
+        sofa::component::constraint::lagrangian::solver::ConstraintProblem* new_cp = constraintSolver->getConstraintProblem();
 
     if (!new_cp)
         return;

@@ -30,9 +30,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/Event.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-
-
 namespace sofa
 {
 	namespace core

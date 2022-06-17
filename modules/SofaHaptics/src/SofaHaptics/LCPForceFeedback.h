@@ -28,7 +28,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <mutex>
 
-#include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
 namespace sofa
 {
@@ -124,13 +124,13 @@ protected:
     VecCoord mVal[3];
     MatrixDeriv mConstraints[3];
     std::vector<int> mId_buf[3];
-    component::constraintset::ConstraintProblem* mCP[3];
+    component::constraint::lagrangian::solver::ConstraintProblem* mCP[3];
 
     unsigned char mNextBufferId; // Next buffer id to be use
     unsigned char mCurBufferId; // Current buffer id in use
     bool mIsCuBufferInUse; // Is current buffer currently in use right now
 
-    sofa::component::constraintset::ConstraintSolverImpl* constraintSolver;
+    sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl* constraintSolver;
 
     /// timer: verifies the time rates of the haptic loop
     helper::system::thread::CTime *_timer;

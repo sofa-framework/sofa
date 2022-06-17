@@ -23,7 +23,7 @@
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic//TetrahedronSetTopologyContainer.h>
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 
 using sofa::testing::BaseSimulationTest;

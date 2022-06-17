@@ -26,14 +26,14 @@
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 // Including constraint, force and mass
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaDeformable/MeshSpringForceField.h>
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -59,10 +59,10 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef projectiveconstraintset::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename component::interactionforcefield::MeshSpringForceField<DataTypes> MeshSpringForceField;
-    typedef typename component::forcefield::TetrahedronFEMForceField<DataTypes> TetraForceField;
+    typedef constraint::projective::AffineMovementConstraint<DataTypes> AffineMovementConstraint;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename component::solidmechanics::spring::MeshSpringForceField<DataTypes> MeshSpringForceField;
+    typedef typename component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes> TetraForceField;
     typedef type::Quat<SReal> Quat;
     typedef type::Vector3 Vec3;
 

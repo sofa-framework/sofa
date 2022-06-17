@@ -62,7 +62,7 @@
 #include "viewer/SofaViewer.h"
 
 #include <sofa/gui/common/BaseViewer.h>
-#include <SofaSimulationCommon/xml/XML.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>

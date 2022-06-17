@@ -34,7 +34,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
-#include <SofaBaseMechanics/MassType.h>
+#include <sofa/component/mass/MassType.h>
 #include <iostream>
 
 namespace sofa

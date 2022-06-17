@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaLinearMovementConstraint.h"
-#include <SofaBoundaryCondition/LinearMovementConstraint.inl>
+#include <sofa/component/constraint/projective/LinearMovementConstraint.inl>
 
 namespace sofa::gpu::cuda
 {
