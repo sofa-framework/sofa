@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaFixedConstraint.h"
-#include <SofaBoundaryCondition/FixedConstraint.inl>
+#include <sofa/component/constraint/projective/FixedConstraint.inl>
 
 namespace sofa::gpu::cuda
 {

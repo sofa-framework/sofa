@@ -24,8 +24,8 @@
 #include <SofaMiscCollision/config.h>
 
 #include <sofa/simulation/Visitor.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa
@@ -55,8 +55,8 @@ public:
 
     // generic
     RayTriangleVisitor(const core::ExecParams* params = core::execparams::defaultInstance());
-    virtual void processTriangleModel(simulation::Node* node, component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* obj);
-    virtual void processVisualModel(simulation::Node* node, component::visualmodel::VisualModelImpl* obj);
+    virtual void processTriangleModel(simulation::Node* node, component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* obj);
+    virtual void processVisualModel(simulation::Node* node, component::visual::VisualModelImpl* obj);
     Result processNodeTopDown(simulation::Node* node) override;
     bool isThreadSafe() const override { return true; }
     const char* getCategoryName() const override { return "animate"; }

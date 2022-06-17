@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.Component LANGUAGES CXX)
 
-# force Compat if already not activated
-if(NOT TARGET Sofa.Component.Compat)
-	add_subdirectory(Compat)
-endif()
-
 set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
 set(SOFACOMPONENT_DIRS ODESolver IO Playback SceneUtility Topology Visual LinearSolver Mass Diffusion Mapping SolidMechanics StateContainer Constraint AnimationLoop MechanicalLoad Collision Setting Controller Engine)

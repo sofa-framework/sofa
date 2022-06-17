@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>

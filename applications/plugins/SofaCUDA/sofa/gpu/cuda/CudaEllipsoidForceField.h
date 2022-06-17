@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaTypes.h"
-#include <SofaBoundaryCondition/EllipsoidForceField.h>
+#include <sofa/component/mechanicalload/EllipsoidForceField.h>
 
 namespace sofa::gpu::cuda
 {

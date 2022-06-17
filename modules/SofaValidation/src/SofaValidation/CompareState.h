@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaValidation/config.h>
 
-#include <SofaGeneralLoader/ReadState.h>
+#include <sofa/component/playback/ReadState.h>
 #include <sofa/simulation/Visitor.h>
 
 #include <fstream>
@@ -33,10 +33,10 @@ namespace sofa::component::misc
 
 /** Compare State vectors from file at each timestep
 */
-class SOFA_SOFAVALIDATION_API CompareState: public ReadState
+class SOFA_SOFAVALIDATION_API CompareState: public playback::ReadState
 {
 public:
-    SOFA_CLASS(CompareState,ReadState);
+    SOFA_CLASS(CompareState,playback::ReadState);
 protected:
     /** Default constructor
     */

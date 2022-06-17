@@ -25,14 +25,14 @@
 #define SOFA_STANDARDTEST_ForceField_test_H
 
 #include "Sofa_test.h"
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SceneCreator/SceneUtils.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/behavior/BaseForceField.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
@@ -67,7 +67,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef component::container::MechanicalObject<DataTypes> DOF;
+    typedef component::statecontainer::MechanicalObject<DataTypes> DOF;
 
     /// @name Scene elements
     /// {

@@ -23,7 +23,7 @@
 #include <sofa/gl/component/rendering3d/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>

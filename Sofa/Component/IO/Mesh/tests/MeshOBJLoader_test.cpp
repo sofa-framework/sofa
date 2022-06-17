@@ -23,12 +23,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/testing/BaseTest.h>
 
-#include <SofaLoader/MeshOBJLoader.h>
+#include <sofa/component/io/mesh/MeshOBJLoader.h>
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
-using namespace sofa::component::loader;
+using namespace sofa::component::io::mesh;
 
 namespace sofa
 {

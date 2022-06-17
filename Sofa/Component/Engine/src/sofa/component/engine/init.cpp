@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/engine/config.h>
+#include <sofa/component/engine/init.h>
 
 #include <sofa/component/engine/analyze/init.h>
 #include <sofa/component/engine/generate/init.h>

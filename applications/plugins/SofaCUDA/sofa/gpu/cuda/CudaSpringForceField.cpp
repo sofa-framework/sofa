@@ -23,8 +23,9 @@
 #include "CudaSpringForceField.inl"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
+
+#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
 
 namespace sofa::core::behavior
 {

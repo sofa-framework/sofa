@@ -29,7 +29,7 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationCommon/init.h>
+#include <sofa/simulation/common/init.h>
 
 #include <fstream>
 

@@ -39,7 +39,7 @@ using sofa::type::Vector3;
 using sofa::type::Vec3u;
 using sofa::core::objectmodel::New;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation;
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;

@@ -120,10 +120,10 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::defaulttype
 Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::defaulttype::RigidCoord<3,float> > > > DWClass_vectorRigidCoord3f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > DWClass_vectorRigidCoord3d("default",true);
 
-Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::interactionforcefield::LinearSpring<float> > > > DWClass_vectorLinearSpringf("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::interactionforcefield::LinearSpring<double> > > > DWClass_vectorLinearSpringd("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::solidmechanics::spring::LinearSpring<float> > > > DWClass_vectorLinearSpringf("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::solidmechanics::spring::LinearSpring<double> > > > DWClass_vectorLinearSpringd("default",true);
 
-Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::interactionforcefield::JointSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorJointSpring3f("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::interactionforcefield::GearSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorGearSpring3f("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::solidmechanics::spring::JointSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorJointSpring3f("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<sofa::component::solidmechanics::spring::GearSpring<sofa::defaulttype::Rigid3Types> > > > DWClass_vectorGearSpring3f("default",true);
 
 } //namespace sofa::gui::qt

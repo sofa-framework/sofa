@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/BarycentricPenalityContact.inl>
-#include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 
 #include "DistanceGridCollisionModel.h"
 
@@ -39,6 +39,8 @@ namespace collision
 {
 
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::response::contact;
+using namespace sofa::component::collision::geometry;
 
 Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridContactClass("PenalityContactForceField", true);
 Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridPointContactClass("PenalityContactForceField", true);

@@ -31,14 +31,14 @@ using sofa::testing::BaseTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::execparams::defaultInstance; 
 
@@ -48,7 +48,7 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 namespace sofa {
 
