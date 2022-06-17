@@ -77,6 +77,7 @@ UniformMass<DataTypes>::UniformMass()
     , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
 }
 
 template <class DataTypes>
@@ -122,6 +123,9 @@ void UniformMass<DataTypes>::setTotalMass ( SReal m )
 template <class DataTypes>
 void UniformMass<DataTypes>::init()
 {
+    if( this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Valid )
+        return;
+
     initDefaultImpl();
 }
 
@@ -151,8 +155,8 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
     //If localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
-        && d_localRange.getValue()[1] > 0
-        && d_localRange.getValue()[1] + 1 < int(mstate->getSize()))
+            && d_localRange.getValue()[1] > 0
+            && d_localRange.getValue()[1] + 1 < int(mstate->getSize()))
     {
         indices.clear();
         for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
@@ -183,9 +187,9 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
         // Need to create a call back to assign index of new point into the topologySubsetData. Deletion is automatically handle.
         d_indices.setCreationCallback([](Index dataIndex, Index& valueIndex,
-            const core::topology::BaseMeshTopology::Point& point,
-            const sofa::type::vector< Index >& ancestors,
-            const sofa::type::vector< SReal >& coefs)
+                                      const core::topology::BaseMeshTopology::Point& point,
+                                      const sofa::type::vector< Index >& ancestors,
+                                      const sofa::type::vector< SReal >& coefs)
         {
             SOFA_UNUSED(point);
             SOFA_UNUSED(ancestors);
@@ -394,9 +398,9 @@ void UniformMass<DataTypes>::updateMassOnResize(sofa::Size newSize)
 // -- Mass interface
 template <class DataTypes>
 void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
-                                                DataVecDeriv& vres,
-                                                const DataVecDeriv& vdx,
-                                                SReal factor)
+                                      DataVecDeriv& vres,
+                                      const DataVecDeriv& vdx,
+                                      SReal factor)
 {
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
@@ -414,8 +418,8 @@ void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
 
 template <class DataTypes>
 void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
-                                                  DataVecDeriv& va,
-                                                  const DataVecDeriv& vf )
+                                        DataVecDeriv& va,
+                                        const DataVecDeriv& vf )
 {
     WriteOnlyAccessor<DataVecDeriv> a = va;
     ReadAccessor<DataVecDeriv> f = vf;
@@ -430,9 +434,9 @@ void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
 
 template <class DataTypes>
 void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect,
-                                                        const VecDeriv* dx,
-                                                        SReal mFact,
-                                                        unsigned int& offset )
+                                              const VecDeriv* dx,
+                                              SReal mFact,
+                                              unsigned int& offset )
 {
     SOFA_UNUSED(resVect);
     SOFA_UNUSED(dx);
@@ -443,7 +447,7 @@ void UniformMass<DataTypes>::addMDxToVector ( BaseVector * resVect,
 
 template <class DataTypes>
 void UniformMass<DataTypes>::addGravityToV(const MechanicalParams* mparams,
-                                                     DataVecDeriv& d_v)
+                                           DataVecDeriv& d_v)
 {
     if (mparams)
     {
@@ -478,7 +482,7 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
     const SReal* g = getContext()->getGravity().ptr();
     Deriv theGravity;
     DataTypes::set
-    ( theGravity, g[0], g[1], g[2] );
+            ( theGravity, g[0], g[1], g[2] );
     const MassType& m = d_vertexMass.getValue();
     Deriv mg = theGravity * m;
 
@@ -500,7 +504,7 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
 
 template <class DataTypes>
 SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
-                                                           const DataVecDeriv& d_v  ) const
+                                                 const DataVecDeriv& d_v  ) const
 {
     SOFA_UNUSED(params);
 
@@ -518,7 +522,7 @@ SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
 
 template <class DataTypes>
 SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* params,
-                                                             const DataVecCoord& d_x  ) const
+                                                   const DataVecCoord& d_x  ) const
 {
     SOFA_UNUSED(params);
     ReadAccessor<DataVecCoord> x = d_x;
@@ -544,8 +548,8 @@ SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* param
 template <class DataTypes>
 type::Vector6
 UniformMass<DataTypes>::getMomentum ( const core::MechanicalParams* params,
-                                                const DataVecCoord& d_x,
-                                                const DataVecDeriv& d_v  ) const
+                                      const DataVecCoord& d_x,
+                                      const DataVecDeriv& d_v  ) const
 {
     SOFA_UNUSED(params);
     SOFA_UNUSED(d_x);
@@ -561,7 +565,7 @@ UniformMass<DataTypes>::getMomentum ( const core::MechanicalParams* params,
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes>
 void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
-                                                     const MultiMatrixAccessor* matrix)
+                                           const MultiMatrixAccessor* matrix)
 {
     const MassType& m = d_vertexMass.getValue();
 
@@ -589,7 +593,7 @@ SReal UniformMass<DataTypes>::getElementMass (sofa::Index ) const
 
 template <class DataTypes>
 void UniformMass<DataTypes>::getElementMass (sofa::Index  index ,
-                                                        BaseMatrix *m ) const
+                                             BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);
 
@@ -624,7 +628,7 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
         sofa::type::Vector3 p;
         p = DataTypes::getCPos(x[indices[i]]);
 
-        points.push_back ( p );        
+        points.push_back ( p );
         gravityCenter += x[indices[i]];
     }
     vparams->drawTool()->drawSpheres(points, 0.01f, sofa::type::RGBAColor::yellow());
