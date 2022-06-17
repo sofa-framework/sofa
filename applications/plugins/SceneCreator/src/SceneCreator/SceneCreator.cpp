@@ -79,8 +79,6 @@ Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
                                 {"name", "Contact Manager"},
                                 {"response", responseType}
                             });
-
-    simpleapi::createObject(root, "DefaultCollisionGroupManager", {{"name", "Collision Group Manager"}});
     return root;
 }
 
