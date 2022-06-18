@@ -59,6 +59,7 @@ public:
     void SetUp() override
     {
         importPlugin("Sofa.Component");
+        importPlugin("Sofa.GL.Component.Rendering3D");
     }
 
     bool createCubeFailed();
