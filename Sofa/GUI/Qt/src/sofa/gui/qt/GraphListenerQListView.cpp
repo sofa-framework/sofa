@@ -346,11 +346,16 @@ void ObjectStateListener::notifyEndEdit()
 
 GraphListenerQListView::~GraphListenerQListView()
 {
-    for(auto item : items)
+    for(auto [key,item] : items)
     {
-        delete items[item.first];
+        delete item;
     }
     items.clear();
+
+    for(auto [key, listener] : listeners)
+    {
+        delete listener;
+    }
     listeners.clear();
 }
 
@@ -453,7 +458,7 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
         items[child] = item;
 
         // Add a listener to connect changes on the component state with its graphical view.
-        listeners[child] = std::make_unique<ObjectStateListener>(item, child);
+        listeners[child] = new ObjectStateListener(item, child);
     }
 
     for (BaseObject::SPtr obj : child->object)
@@ -532,7 +537,7 @@ void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::B
         setMessageIconFrom(item, object);
 
         items[object] = item;
-        listeners[object] = std::make_unique<ObjectStateListener>(item, object);
+        listeners[object] = new ObjectStateListener(item, object);
     }
     for (BaseObject::SPtr slave : object->getSlaves())
         onBeginAddSlave(object, slave.get());
