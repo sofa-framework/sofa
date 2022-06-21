@@ -36,7 +36,7 @@ namespace sofa::gpu::cuda
     ;
 }
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
     using namespace sofa::gpu::cuda;
 
@@ -46,4 +46,4 @@ namespace sofa::component::mapping
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;
 
 
-}//namespace sofa::component::mapping::linear
+} // namespace sofa::component::mapping::linear
