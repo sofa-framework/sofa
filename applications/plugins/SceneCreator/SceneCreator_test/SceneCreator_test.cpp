@@ -58,7 +58,8 @@ class SceneCreator_test : public BaseSimulationTest
 public:
     void SetUp() override
     {
-        importPlugin("SofaComponentAll");
+        importPlugin("Sofa.Component");
+        importPlugin("Sofa.GL.Component.Rendering3D");
     }
 
     bool createCubeFailed();

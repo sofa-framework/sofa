@@ -28,8 +28,5 @@ sofa_create_package_with_targets(
     )
 
 if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(SofaCarving_test)
-    endif()
+    add_subdirectory(SofaCarving_test)
 endif()

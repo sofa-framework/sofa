@@ -72,10 +72,7 @@ else()
 endif()
 
 if(SOFA_BUILD_TESTS)
-    sofa_find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(runSofa_test)
-    endif()
+    add_subdirectory(runSofa_test)
 endif()
 
 # Create build and install versions of .ini file for resources finding
