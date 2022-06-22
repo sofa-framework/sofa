@@ -317,7 +317,7 @@ typename SolidTypes<R>::Transform SolidTypes<R>::Transform::inversed() const
 }
 
 template<class R>
-void SolidTypes<R>::Transform::writeOpenGlMatrix( GLdouble *m ) const
+void SolidTypes<R>::Transform::writeOpenGlMatrix( double *m ) const
 {
     orientation_.writeOpenGlMatrix(m);
     Vec t = getOrigin();
