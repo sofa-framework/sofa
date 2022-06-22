@@ -107,7 +107,7 @@
      cnbr_t *mynbrs; \
      \
      if (myrinfo->inbr == -1) { \
-       myrinfo->inbr  = cnbrpoolGetNext(ctrl, adjlen+1); \
+       myrinfo->inbr  = cnbrpoolGetNext(ctrl, adjlen); \
        myrinfo->nnbrs = 0; \
      } \
      ASSERT(CheckRInfo(ctrl, myrinfo)); \

@@ -8,7 +8,7 @@
  * Started 10/2/97
  * George
  *
- * $Id: rename.h 13933 2013-03-29 22:20:46Z karypis $
+ * $Id: rename.h 20398 2016-11-22 17:17:12Z karypis $
  *
  */
 
@@ -38,10 +38,9 @@
 #define Match_2Hop                      libmetis__Match_2Hop
 #define Match_2HopAny                   libmetis__Match_2HopAny
 #define Match_2HopAll                   libmetis__Match_2HopAll
+#define Match_JC                        libmetis__Match_JC
 #define PrintCGraphStats                libmetis__PrintCGraphStats
 #define CreateCoarseGraph		libmetis__CreateCoarseGraph
-#define CreateCoarseGraphNoMask		libmetis__CreateCoarseGraphNoMask
-#define CreateCoarseGraphPerm		libmetis__CreateCoarseGraphPerm
 #define SetupCoarseGraph		libmetis__SetupCoarseGraph
 #define ReAdjustMemory			libmetis__ReAdjustMemory
 
@@ -94,8 +93,11 @@
 #define SetupSplitGraph                 libmetis__SetupSplitGraph
 #define CreateGraph                     libmetis__CreateGraph
 #define InitGraph                       libmetis__InitGraph
+#define FreeSData                       libmetis__FreeSData
 #define FreeRData                       libmetis__FreeRData
 #define FreeGraph                       libmetis__FreeGraph
+#define graph_WriteToDisk               libmetis__graph_WriteToDisk
+#define graph_ReadFromDisk              libmetis__graph_ReadFromDisk
 
 /* initpart.c */
 #define Init2WayPartition		libmetis__Init2WayPartition

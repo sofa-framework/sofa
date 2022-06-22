@@ -553,7 +553,7 @@ void MoveGroupContigForCut(ctrl_t *ctrl, graph_t *graph, idx_t to, idx_t gid,
 
     myrinfo = graph->ckrinfo+i;
     if (myrinfo->inbr == -1) {
-      myrinfo->inbr = cnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]+1);
+      myrinfo->inbr = cnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]);
       myrinfo->nnbrs = 0;
     }
     mynbrs = ctrl->cnbrpool + myrinfo->inbr; 
@@ -619,7 +619,7 @@ void MoveGroupContigForVol(ctrl_t *ctrl, graph_t *graph, idx_t to, idx_t gid,
 
     myrinfo = graph->vkrinfo+i;
     if (myrinfo->inbr == -1) {
-      myrinfo->inbr = vnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]+1);
+      myrinfo->inbr = vnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]);
       myrinfo->nnbrs = 0;
     }
     mynbrs = ctrl->vnbrpool + myrinfo->inbr; 

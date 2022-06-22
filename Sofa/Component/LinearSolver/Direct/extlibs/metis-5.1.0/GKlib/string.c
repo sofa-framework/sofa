@@ -9,9 +9,14 @@ of standard functions (but with enhanced functionality).
 
 \date Started 11/1/99
 \author George
-\version $Id: string.c 10711 2011-08-31 22:23:04Z karypis $
+\version $Id: string.c 14330 2013-05-18 12:15:15Z karypis $
 */
 /************************************************************************/
+
+/* the following is for strptime() */
+#define _XOPEN_SOURCE
+#include <time.h>
+#undef _XOPEN_SOURCE
 
 #include <GKlib.h>
 
@@ -36,8 +41,7 @@ It tries to provide a functionality similar to Perl's \b tr// function.
 /************************************************************************/
 char *gk_strchr_replace(char *str, char *fromlist, char *tolist)
 {
-  gk_idx_t i, j, k; 
-  size_t len, fromlen, tolen;
+  ssize_t i, j, k, len, fromlen, tolen;
 
   len     = strlen(str);
   fromlen = strlen(fromlist);
@@ -94,9 +98,8 @@ based substitution function.
 int gk_strstr_replace(char *str, char *pattern, char *replacement, char *options,
       char **new_str)
 {
-  gk_idx_t i; 
+  ssize_t i, len, rlen, nlen, offset, noffset;
   int j, rc, flags, global, nmatches;
-  size_t len, rlen, nlen, offset, noffset;
   regex_t re;
   regmatch_t matches[10];
 
@@ -253,8 +256,7 @@ This is a distructive operation as it modifies the string.
 /*************************************************************************/
 char *gk_strtprune(char *str, char *rmlist)
 {
-  gk_idx_t i, j;
-  size_t len;
+  ssize_t i, j, len;
 
   len = strlen(rmlist);
 
@@ -290,8 +292,7 @@ This is a distructive operation as it modifies the string.
 /*************************************************************************/
 char *gk_strhprune(char *str, char *rmlist)
 {
-  gk_idx_t i, j;
-  size_t len;
+  ssize_t i, j, len;
 
   len = strlen(rmlist);
 
@@ -503,7 +504,7 @@ time_t gk_str2time(char *str)
 
   memset(&time, '\0', sizeof(time));
   
-  if (!strptime(str, "%m/%d/%Y %H:%M:%S", &time))
+  if (strptime(str, "%m/%d/%Y %H:%M:%S", &time) == NULL)
     return -1;
 
   rtime = mktime(&time);

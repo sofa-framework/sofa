@@ -22,13 +22,13 @@
 
 
 #include <metis.h>
-#include <rename.h>
-#include <gklib_defs.h>
+#include "rename.h"
+#include "gklib_defs.h"
 
-#include <defs.h>
-#include <struct.h>
-#include <macros.h>
-#include <proto.h>
+#include "defs.h"
+#include "struct.h"
+#include "macros.h"
+#include "proto.h"
 
 
 #if defined(COMPILER_MSC)

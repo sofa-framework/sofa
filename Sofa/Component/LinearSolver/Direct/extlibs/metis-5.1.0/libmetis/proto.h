@@ -8,7 +8,7 @@
  * Started 10/19/95
  * George
  *
- * $Id: proto.h 13933 2013-03-29 22:20:46Z karypis $
+ * $Id: proto.h 20398 2016-11-22 17:17:12Z karypis $
  *
  */
 
@@ -47,14 +47,11 @@ idx_t Match_2HopAny(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
           idx_t cnvtxs, size_t *r_nunmatched, size_t maxdegree);
 idx_t Match_2HopAll(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
           idx_t cnvtxs, size_t *r_nunmatched, size_t maxdegree);
+idx_t Match_JC(ctrl_t *ctrl, graph_t *graph);
 void PrintCGraphStats(ctrl_t *ctrl, graph_t *graph);
 void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs, 
          idx_t *match);
-void CreateCoarseGraphNoMask(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs, 
-         idx_t *match);
-void CreateCoarseGraphPerm(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs, 
-         idx_t *match, idx_t *perm);
-graph_t *SetupCoarseGraph(graph_t *graph, idx_t cnvtxs, idx_t dovsize);
+graph_t *SetupCoarseGraph(graph_t *graph, idx_t cnvtxs, int dovsize);
 void ReAdjustMemory(ctrl_t *ctrl, graph_t *graph, graph_t *cgraph);
 
 
@@ -124,8 +121,11 @@ void SetupGraph_label(graph_t *graph);
 graph_t *SetupSplitGraph(graph_t *graph, idx_t snvtxs, idx_t snedges);
 graph_t *CreateGraph(void);
 void InitGraph(graph_t *graph);
+void FreeSData(graph_t *graph);
 void FreeRData(graph_t *graph);
 void FreeGraph(graph_t **graph);
+void graph_WriteToDisk(ctrl_t *ctrl, graph_t *graph);
+void graph_ReadFromDisk(ctrl_t *ctrl, graph_t *graph);
 
 
 /* initpart.c */
@@ -142,6 +142,9 @@ void GrowBisectionNode2(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t nip
 /* kmetis.c */
 idx_t MlevelKWayPartitioning(ctrl_t *ctrl, graph_t *graph, idx_t *part);
 void InitKWayPartitioning(ctrl_t *ctrl, graph_t *graph);
+idx_t BlockKWayPartitioning(ctrl_t *ctrl, graph_t *graph, idx_t *part);
+idx_t GrowMultisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where);
+void BalanceAndRefineLP(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where);
 
 
 /* kwayfm.c */
@@ -161,6 +164,8 @@ void KWayVolUpdate(ctrl_t *ctrl, graph_t *graph, idx_t v, idx_t from,
          idx_t to, ipq_t *queue, idx_t *vstatus, idx_t *r_nupd, idx_t *updptr,
          idx_t *updind, idx_t bndtype, idx_t *vmarker, idx_t *pmarker,
          idx_t *modind);
+void Greedy_KWayEdgeStats(ctrl_t *ctrl, graph_t *graph);
+void Greedy_KWayEdgeCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter);
 
 
 /* kwayrefine.c */
@@ -331,7 +336,7 @@ int metis_rcode(int sigrval);
 
 /* wspace.c */
 void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph);
-void AllocateRefinementWorkSpace(ctrl_t *ctrl, idx_t nbrpoolsize);
+void AllocateRefinementWorkSpace(ctrl_t *ctrl, idx_t nbrpoolsize_max, idx_t nbrpoolsize);
 void FreeWorkSpace(ctrl_t *ctrl);
 void *wspacemalloc(ctrl_t *ctrl, size_t nbytes);
 void wspacepush(ctrl_t *ctrl);

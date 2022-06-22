@@ -4,15 +4,14 @@
 
 \date   Started 3/28/07
 \author George
-\version\verbatim $Id: gk_mksort.h 10711 2011-08-31 22:23:04Z karypis $ \endverbatim
+\version\verbatim $Id: gk_mksort.h 21051 2017-05-25 04:36:14Z karypis $ \endverbatim
 */
 
 
 #ifndef _GK_MKSORT_H_
 #define _GK_MKSORT_H_
 
-/* $Id: gk_mksort.h 10711 2011-08-31 22:23:04Z karypis $
- * Adopted from GNU glibc by Mjt.
+/* Adopted from GNU glibc by Mjt.
  * See stdlib/qsort.c in glibc */
 
 /* Copyright (C) 1991, 1992, 1996, 1997, 1999 Free Software Foundation, Inc.
@@ -105,9 +104,8 @@
 /* Swap two items pointed to by A and B using temporary buffer t. */
 #define _GKQSORT_SWAP(a, b, t) ((void)((t = *a), (*a = *b), (*b = t)))
 
-/* Discontinue quicksort algorithm when partition gets below this size.
-   This particular magic number was chosen to work best on a Sun 4/260. */
-#define _GKQSORT_MAX_THRESH 4
+/* Discontinue quicksort algorithm when partition gets below this size. */
+#define _GKQSORT_MAX_THRESH 8
 
 /* The next 4 #defines implement a very fast in-line stack abstraction. */
 #define _GKQSORT_STACK_SIZE	    (8 * sizeof(size_t))
@@ -123,7 +121,7 @@
   const size_t _elems = (GKQSORT_NELT);					\
   GKQSORT_TYPE _hold;							\
 									\
-  if (_elems == 0)                                                      \
+  if (_elems < 1)                                                      \
     return;                                                             \
                                                                         \
   /* Don't declare two variables of type GKQSORT_TYPE in a single	\

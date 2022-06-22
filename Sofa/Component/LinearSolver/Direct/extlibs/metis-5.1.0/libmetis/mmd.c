@@ -16,7 +16,7 @@
  * The meaning of invperm, and perm vectors is different from that
  * in genqmd_ of SparsPak
  *
- * $Id: mmd.c 5993 2009-01-07 02:09:57Z karypis $
+ * $Id: mmd.c 22385 2019-06-03 22:08:48Z karypis $
  */
 
 #include "metislib.h"
@@ -316,7 +316,11 @@ idx_t  mmdint(idx_t neqns, idx_t *xadj, idx_t *adjncy, idx_t *head, idx_t *forwa
 
     /* initialize the degree doubly linked lists. */
     for ( node = 1; node <= neqns; node++ ) {
-        ndeg = xadj[node+1] - xadj[node]/* + 1*/;   /* george */
+        // The following is something that Olaf Schenk identified as potentially a
+        // bug that I introduced in the original code. For now, I reverted back
+        // to the original code until I have some time to check.
+        // ndeg = xadj[node+1] - xadj[node]/* + 1*/;   /* george */
+        ndeg = xadj[node+1] - xadj[node] + 1;
         if (ndeg == 0)
           ndeg = 1;
         fnode = head[ndeg];

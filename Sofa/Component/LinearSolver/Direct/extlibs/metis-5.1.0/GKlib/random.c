@@ -5,7 +5,7 @@
 
 \date   Started 5/17/2007
 \author George
-\version\verbatim $Id: random.c 11793 2012-04-04 21:03:02Z karypis $ \endverbatim
+\version\verbatim $Id: random.c 18796 2015-06-02 11:39:45Z karypis $ \endverbatim
 */
 
 #include <GKlib.h>
@@ -16,10 +16,12 @@
 /*************************************************************************/
 GK_MKRANDOM(gk_c,   size_t, char)
 GK_MKRANDOM(gk_i,   size_t, int)
+GK_MKRANDOM(gk_i32, size_t, int32_t)
 GK_MKRANDOM(gk_f,   size_t, float)
 GK_MKRANDOM(gk_d,   size_t, double)
 GK_MKRANDOM(gk_idx, size_t, gk_idx_t)
 GK_MKRANDOM(gk_z,   size_t, ssize_t)
+GK_MKRANDOM(gk_zu,  size_t, size_t)
 
 
 

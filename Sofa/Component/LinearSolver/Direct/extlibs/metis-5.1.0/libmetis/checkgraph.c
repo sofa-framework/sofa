@@ -43,12 +43,11 @@ int CheckGraph(graph_t *graph, int numflag, int verbose)
   adjncy = graph->adjncy;
   adjwgt = graph->adjwgt;
 
-  ASSERT(adjwgt != NULL);
-
   htable = ismalloc(nvtxs, 0, "htable");
 
   minedge = maxedge = adjncy[0];
-  minewgt = maxewgt = adjwgt[0];
+  if (adjwgt) 
+    minewgt = maxewgt = adjwgt[0];
 
   for (i=0; i<nvtxs; i++) {
     for (j=xadj[i]; j<xadj[i+1]; j++) {
@@ -56,8 +55,10 @@ int CheckGraph(graph_t *graph, int numflag, int verbose)
 
       minedge = (k < minedge) ? k : minedge;
       maxedge = (k > maxedge) ? k : maxedge;
-      minewgt = (adjwgt[j] < minewgt) ? adjwgt[j] : minewgt;
-      maxewgt = (adjwgt[j] > maxewgt) ? adjwgt[j] : maxewgt;
+      if (adjwgt) {
+        minewgt = (adjwgt[j] < minewgt) ? adjwgt[j] : minewgt;
+        maxewgt = (adjwgt[j] > maxewgt) ? adjwgt[j] : maxewgt;
+      }
 
       if (i == k) {
         if (verbose)
@@ -68,14 +69,16 @@ int CheckGraph(graph_t *graph, int numflag, int verbose)
       else {
         for (l=xadj[k]; l<xadj[k+1]; l++) {
           if (adjncy[l] == i) {
-            if (adjwgt[l] != adjwgt[j]) {
-              if (verbose) 
-                printf("Edges (u:%"PRIDX" v:%"PRIDX" wgt:%"PRIDX") and "
-                       "(v:%"PRIDX" u:%"PRIDX" wgt:%"PRIDX") "
-                       "do not have the same weight!\n", 
-                       i+numflag, k+numflag, adjwgt[j],
-                       k+numflag, i+numflag, adjwgt[l]);
-              err++;
+            if (adjwgt) {
+              if (adjwgt[l] != adjwgt[j]) {
+                if (verbose) 
+                  printf("Edges (u:%"PRIDX" v:%"PRIDX" wgt:%"PRIDX") and "
+                         "(v:%"PRIDX" u:%"PRIDX" wgt:%"PRIDX") "
+                         "do not have the same weight!\n", 
+                         i+numflag, k+numflag, adjwgt[j],
+                         k+numflag, i+numflag, adjwgt[l]);
+                err++;
+              }
             }
             break;
           }

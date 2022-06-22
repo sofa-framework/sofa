@@ -8,7 +8,7 @@
  * Started 9/29/97
  * George
  *
- * $Id: meshpart.c 13931 2013-03-29 16:48:48Z karypis $
+ * $Id: meshpart.c 17513 2014-08-05 16:20:50Z dominique $
  *
  */
 
@@ -237,7 +237,7 @@ void InduceRowPartFromColumnPart(idx_t nrows, idx_t *rowptr, idx_t *rowind,
       ASSERT(nnbrs > 0);
 
       /* assign it first to the domain with most things in common */
-      rpart[i] = nbrdom[iargmax(nnbrs, nbrwgt)];
+      rpart[i] = nbrdom[iargmax(nnbrs, nbrwgt,1)];
 
       /* if overweight, assign it to the light domain */
       if (pwgts[rpart[i]] > itpwgts[rpart[i]]) {

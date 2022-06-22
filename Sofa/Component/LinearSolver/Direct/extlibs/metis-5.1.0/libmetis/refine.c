@@ -5,7 +5,7 @@
 \date   Started 7/24/1997
 \author George  
 \author Copyright 1997-2009, Regents of the University of Minnesota 
-\version\verbatim $Id: refine.c 10513 2011-07-07 22:06:03Z karypis $ \endverbatim
+\version\verbatim $Id: refine.c 14362 2013-05-21 21:35:23Z karypis $ \endverbatim
 */
 
 #include "metislib.h"
@@ -37,6 +37,8 @@ void Refine2Way(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, real_t *tpwgts)
       break;
 
     graph = graph->finer;
+    graph_ReadFromDisk(ctrl, graph);
+
     IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->ProjectTmr));
     Project2WayPartition(ctrl, graph);
     IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->ProjectTmr));
@@ -146,8 +148,11 @@ void Project2WayPartition(ctrl_t *ctrl, graph_t *graph)
   idx_t *cwhere, *cbndptr;
   idx_t *id, *ed;
   graph_t *cgraph;
+  int dropedges;
 
   Allocate2WayPartitionMemory(ctrl, graph);
+
+  dropedges = ctrl->dropedges;
 
   cgraph  = graph->coarser;
   cwhere  = cgraph->where;
@@ -171,7 +176,7 @@ void Project2WayPartition(ctrl_t *ctrl, graph_t *graph)
   for (i=0; i<nvtxs; i++) {
     j = cmap[i];
     where[i] = cwhere[j];
-    cmap[i]  = cbndptr[j];
+    cmap[i]  = (dropedges ? 0 : cbndptr[j]);
   }
 
   /* Compute the refinement information of the nodes */
@@ -199,7 +204,7 @@ void Project2WayPartition(ctrl_t *ctrl, graph_t *graph)
     if (ted > 0 || istart == iend) 
       BNDInsert(nbnd, bndind, bndptr, i);
   }
-  graph->mincut = cgraph->mincut;
+  graph->mincut = (dropedges ? ComputeCut(graph, where) : cgraph->mincut);
   graph->nbnd   = nbnd;
 
   /* copy pwgts */

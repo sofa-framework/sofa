@@ -349,7 +349,7 @@ void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     /* partition by spliting the queues randomly */
     for (ii=0; ii<nvtxs; ii++) {
       i        = perm[ii];
-      qnum     = iargmax(ncon, vwgt+i*ncon);
+      qnum     = iargmax(ncon, vwgt+i*ncon,1);
       where[i] = (counts[qnum]++)%2;
     }
 

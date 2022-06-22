@@ -10,7 +10,7 @@ these routines where defined.
 
 \date   Started 4/4/07
 \author George
-\version\verbatim $Id: sort.c 10796 2011-09-23 21:33:09Z karypis $ \endverbatim
+\version\verbatim $Id: sort.c 21050 2017-05-25 03:53:58Z karypis $ \endverbatim
 */
 
 #include <GKlib.h>
@@ -57,6 +57,94 @@ void gk_isortd(size_t n, int *base)
 {
 #define int_gt(a, b) ((*a) > (*b))
   GK_MKQSORT(int, base, n, int_gt);
+#undef int_gt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in increasing order */
+/*************************************************************************/
+void gk_i32sorti(size_t n, int32_t *base)
+{
+#define int_lt(a, b) ((*a) < (*b))
+  GK_MKQSORT(int32_t, base, n, int_lt);
+#undef int_lt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in decreasing order */
+/*************************************************************************/
+void gk_i32sortd(size_t n, int32_t *base)
+{
+#define int_gt(a, b) ((*a) > (*b))
+  GK_MKQSORT(int32_t, base, n, int_gt);
+#undef int_gt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in increasing order */
+/*************************************************************************/
+void gk_i64sorti(size_t n, int64_t *base)
+{
+#define int_lt(a, b) ((*a) < (*b))
+  GK_MKQSORT(int64_t, base, n, int_lt);
+#undef int_lt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in increasing order */
+/*************************************************************************/
+void gk_ui32sorti(size_t n, uint32_t *base)
+{
+#define int_lt(a, b) ((*a) < (*b))
+  GK_MKQSORT(uint32_t, base, n, int_lt);
+#undef int_lt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in decreasing order */
+/*************************************************************************/
+void gk_ui32sortd(size_t n, uint32_t *base)
+{
+#define int_gt(a, b) ((*a) > (*b))
+  GK_MKQSORT(uint32_t, base, n, int_gt);
+#undef int_gt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in increasing order */
+/*************************************************************************/
+void gk_ui64sorti(size_t n, uint64_t *base)
+{
+#define int_lt(a, b) ((*a) < (*b))
+  GK_MKQSORT(uint64_t, base, n, int_lt);
+#undef int_lt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in decreasing order */
+/*************************************************************************/
+void gk_ui64sortd(size_t n, uint64_t *base)
+{
+#define int_gt(a, b) ((*a) > (*b))
+  GK_MKQSORT(uint64_t, base, n, int_gt);
+#undef int_gt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of integers in decreasing order */
+/*************************************************************************/
+void gk_i64sortd(size_t n, int64_t *base)
+{
+#define int_gt(a, b) ((*a) > (*b))
+  GK_MKQSORT(int64_t, base, n, int_gt);
 #undef int_gt
 }
 
@@ -236,6 +324,28 @@ void gk_zkvsortd(size_t n, gk_zkv_t *base)
 #define zkey_gt(a, b) ((a)->key > (b)->key)
   GK_MKQSORT(gk_zkv_t, base, n, zkey_gt);
 #undef zkey_gt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of gk_zukv_t in increasing order */
+/*************************************************************************/
+void gk_zukvsorti(size_t n, gk_zukv_t *base)
+{
+#define zukey_lt(a, b) ((a)->key < (b)->key)
+  GK_MKQSORT(gk_zukv_t, base, n, zukey_lt);
+#undef zukey_lt
+}
+
+
+/*************************************************************************/
+/*! Sorts an array of gk_zukv_t in decreasing order */
+/*************************************************************************/
+void gk_zukvsortd(size_t n, gk_zukv_t *base)
+{
+#define zukey_gt(a, b) ((a)->key > (b)->key)
+  GK_MKQSORT(gk_zukv_t, base, n, zukey_gt);
+#undef zukey_gt
 }
 
 

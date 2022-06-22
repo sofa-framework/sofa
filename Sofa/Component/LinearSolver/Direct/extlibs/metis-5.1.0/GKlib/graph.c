@@ -4,7 +4,7 @@
  * \brief Various routines with dealing with sparse graphs 
  *
  * \author George Karypis
- * \version\verbatim $Id: graph.c 13328 2012-12-31 14:57:40Z karypis $ \endverbatim
+ * \version\verbatim $Id: graph.c 22415 2019-09-05 16:55:00Z karypis $ \endverbatim
  */
 
 #include <GKlib.h>
@@ -75,21 +75,24 @@ void gk_graph_FreeContents(gk_graph_t *graph)
 /*! Reads a sparse graph from the supplied file 
     \param filename is the file that stores the data.
     \param format is the graph format. The supported values are:
-           GK_GRAPH_FMT_METIS.
+           GK_GRAPH_FMT_METIS, GK_GRAPH_FMT_IJV.
+    \param hasvals is 1 if the input file has values
+    \param numbering is 1 if the input file numbering starts from one
     \param isfewgts is 1 if the edge-weights should be read as floats
     \param isfvwgts is 1 if the vertex-weights should be read as floats
     \param isfvsizes is 1 if the vertex-sizes should be read as floats
     \returns the graph that was read.
 */
 /**************************************************************************/
-gk_graph_t *gk_graph_Read(char *filename, int format, int isfewgts, 
-                int isfvwgts, int isfvsizes)
+gk_graph_t *gk_graph_Read(char *filename, int format, int hasvals, 
+                int numbering, int isfewgts, int isfvwgts, int isfvsizes)
 {
   ssize_t i, k, l;
   size_t nfields, nvtxs, nedges, fmt, ncon, lnlen;
-  int32_t ival;
-  float fval;
-  int readsizes=0, readwgts=0, readvals=0, numbering=0;
+  ssize_t *xadj;
+  int32_t ival, *iinds=NULL, *jinds=NULL, *ivals=NULL, *adjncy, *iadjwgt;
+  float fval, *fvals=NULL, *fadjwgt;
+  int readsizes=0, readwgts=0, readvals=0;
   char *line=NULL, *head, *tail, fmtstr[256];
   FILE *fpin=NULL;
   gk_graph_t *graph=NULL;
@@ -98,169 +101,262 @@ gk_graph_t *gk_graph_Read(char *filename, int format, int isfewgts,
   if (!gk_fexists(filename)) 
     gk_errexit(SIGERR, "File %s does not exist!\n", filename);
 
-  if (format == GK_GRAPH_FMT_METIS) {
-    fpin = gk_fopen(filename, "r", "gk_graph_Read: fpin");
-    do {
-      if (gk_getline(&line, &lnlen, fpin) <= 0)
-        gk_errexit(SIGERR, "Premature end of input file: file:%s\n", filename);
-    } while (line[0] == '%');
+  switch (format) {
+    case GK_GRAPH_FMT_METIS:
+      fpin = gk_fopen(filename, "r", "gk_graph_Read: fpin");
+      do {
+        if (gk_getline(&line, &lnlen, fpin) <= 0)
+          gk_errexit(SIGERR, "Premature end of input file: file:%s\n", filename);
+      } while (line[0] == '%');
 
-    fmt = ncon = 0;
-    nfields = sscanf(line, "%zu %zu %zu %zu", &nvtxs, &nedges, &fmt, &ncon);
-    if (nfields < 2)
-      gk_errexit(SIGERR, "Header line must contain at least 2 integers (#vtxs and #edges).\n");
+      fmt = ncon = 0;
+      nfields = sscanf(line, "%zu %zu %zu %zu", &nvtxs, &nedges, &fmt, &ncon);
+      if (nfields < 2)
+        gk_errexit(SIGERR, "Header line must contain at least 2 integers (#vtxs and #edges).\n");
 
-    nedges *= 2;
+      nedges *= 2;
 
-    if (fmt > 111)
-      gk_errexit(SIGERR, "Cannot read this type of file format [fmt=%zu]!\n", fmt);
+      if (fmt > 111)
+        gk_errexit(SIGERR, "Cannot read this type of file format [fmt=%zu]!\n", fmt);
 
-    sprintf(fmtstr, "%03zu", fmt%1000);
-    readsizes = (fmtstr[0] == '1');
-    readwgts  = (fmtstr[1] == '1');
-    readvals  = (fmtstr[2] == '1');
-    numbering = 1;
-    ncon      = (ncon == 0 ? 1 : ncon);
-  }
-  else {
-    gk_errexit(SIGERR, "Unrecognized format: %d\n", format);
-  }
+      sprintf(fmtstr, "%03zu", fmt%1000);
+      readsizes = (fmtstr[0] == '1');
+      readwgts  = (fmtstr[1] == '1');
+      readvals  = (fmtstr[2] == '1');
+      numbering = 1;
+      ncon      = (ncon == 0 ? 1 : ncon);
 
-  graph = gk_graph_Create();
-
-  graph->nvtxs = nvtxs;
-
-  graph->xadj   = gk_zmalloc(nvtxs+1, "gk_graph_Read: xadj");
-  graph->adjncy = gk_i32malloc(nedges, "gk_graph_Read: adjncy");
-  if (readvals) {
-    if (isfewgts)
-      graph->fadjwgt = gk_fmalloc(nedges, "gk_graph_Read: fadjwgt");
-    else
-      graph->iadjwgt = gk_i32malloc(nedges, "gk_graph_Read: iadjwgt");
-  }
-
-  if (readsizes) {
-    if (isfvsizes)
-      graph->fvsizes = gk_fmalloc(nvtxs, "gk_graph_Read: fvsizes");
-    else
-      graph->ivsizes = gk_i32malloc(nvtxs, "gk_graph_Read: ivsizes");
-  }
-
-  if (readwgts) {
-    if (isfvwgts)
-      graph->fvwgts = gk_fmalloc(nvtxs*ncon, "gk_graph_Read: fvwgts");
-    else
-      graph->ivwgts = gk_i32malloc(nvtxs*ncon, "gk_graph_Read: ivwgts");
-  }
-
-
-  /*----------------------------------------------------------------------
-   * Read the sparse graph file
-   *---------------------------------------------------------------------*/
-  numbering = (numbering ? - 1 : 0);
-  for (graph->xadj[0]=0, k=0, i=0; i<nvtxs; i++) {
-    do {
-      if (gk_getline(&line, &lnlen, fpin) == -1)
-        gk_errexit(SIGERR, "Pregraphure end of input file: file while reading row %d\n", i);
-    } while (line[0] == '%');
-
-    head = line;
-    tail = NULL;
-
-    /* Read vertex sizes */
-    if (readsizes) {
-      if (isfvsizes) {
-#ifdef __MSC__
-        graph->fvsizes[i] = (float)strtod(head, &tail);
-#else
-        graph->fvsizes[i] = strtof(head, &tail);
-#endif
-        if (tail == head)
-          gk_errexit(SIGERR, "The line for vertex %zd does not have size information\n", i+1);
-        if (graph->fvsizes[i] < 0)
-          gk_errexit(SIGERR, "The size for vertex %zd must be >= 0\n", i+1);
-      }
-      else {
-        graph->ivsizes[i] = strtol(head, &tail, 0);
-        if (tail == head)
-          gk_errexit(SIGERR, "The line for vertex %zd does not have size information\n", i+1);
-        if (graph->ivsizes[i] < 0)
-          gk_errexit(SIGERR, "The size for vertex %zd must be >= 0\n", i+1);
-      }
-      head = tail;
-    }
-
-    /* Read vertex weights */
-    if (readwgts) {
-      for (l=0; l<ncon; l++) {
-        if (isfvwgts) {
-#ifdef __MSC__
-          graph->fvwgts[i*ncon+l] = (float)strtod(head, &tail);
-#else
-          graph->fvwgts[i*ncon+l] = strtof(head, &tail);
-#endif
-          if (tail == head)
-            gk_errexit(SIGERR, "The line for vertex %zd does not have enough weights "
-                    "for the %d constraints.\n", i+1, ncon);
-          if (graph->fvwgts[i*ncon+l] < 0)
-            gk_errexit(SIGERR, "The weight vertex %zd and constraint %zd must be >= 0\n", i+1, l);
-        }
-        else {
-          graph->ivwgts[i*ncon+l] = strtol(head, &tail, 0);
-          if (tail == head)
-            gk_errexit(SIGERR, "The line for vertex %zd does not have enough weights "
-                    "for the %d constraints.\n", i+1, ncon);
-          if (graph->ivwgts[i*ncon+l] < 0)
-            gk_errexit(SIGERR, "The weight vertex %zd and constraint %zd must be >= 0\n", i+1, l);
-        }
-        head = tail;
-      }
-    }
-
-   
-    /* Read the rest of the row */
-    while (1) {
-      ival = (int)strtol(head, &tail, 0);
-      if (tail == head) 
-        break;
-      head = tail;
-      
-      if ((graph->adjncy[k] = ival + numbering) < 0)
-        gk_errexit(SIGERR, "Error: Invalid column number %d at row %zd.\n", ival, i);
-
+      graph = gk_graph_Create();
+    
+      graph->nvtxs = nvtxs;
+    
+      graph->xadj   = gk_zmalloc(nvtxs+1, "gk_graph_Read: xadj");
+      graph->adjncy = gk_i32malloc(nedges, "gk_graph_Read: adjncy");
       if (readvals) {
-        if (isfewgts) {
+        if (isfewgts)
+          graph->fadjwgt = gk_fmalloc(nedges, "gk_graph_Read: fadjwgt");
+        else
+          graph->iadjwgt = gk_i32malloc(nedges, "gk_graph_Read: iadjwgt");
+      }
+    
+      if (readsizes) {
+        if (isfvsizes)
+          graph->fvsizes = gk_fmalloc(nvtxs, "gk_graph_Read: fvsizes");
+        else
+          graph->ivsizes = gk_i32malloc(nvtxs, "gk_graph_Read: ivsizes");
+      }
+    
+      if (readwgts) {
+        if (isfvwgts)
+          graph->fvwgts = gk_fmalloc(nvtxs*ncon, "gk_graph_Read: fvwgts");
+        else
+          graph->ivwgts = gk_i32malloc(nvtxs*ncon, "gk_graph_Read: ivwgts");
+      }
+    
+    
+      /*----------------------------------------------------------------------
+       * Read the sparse graph file
+       *---------------------------------------------------------------------*/
+      numbering = (numbering ? - 1 : 0);
+      for (graph->xadj[0]=0, k=0, i=0; i<nvtxs; i++) {
+        do {
+          if (gk_getline(&line, &lnlen, fpin) == -1)
+            gk_errexit(SIGERR, "Pregraphure end of input file: file while reading row %d\n", i);
+        } while (line[0] == '%');
+    
+        head = line;
+        tail = NULL;
+    
+        /* Read vertex sizes */
+        if (readsizes) {
+          if (isfvsizes) {
 #ifdef __MSC__
-          fval = (float)strtod(head, &tail);
+            graph->fvsizes[i] = (float)strtod(head, &tail);
 #else
-    	  fval = strtof(head, &tail);
+            graph->fvsizes[i] = strtof(head, &tail);
 #endif
-          if (tail == head)
-            gk_errexit(SIGERR, "Value could not be found for edge! Vertex:%zd, NNZ:%zd\n", i, k);
+            if (tail == head)
+              gk_errexit(SIGERR, "The line for vertex %zd does not have size information\n", i+1);
+            if (graph->fvsizes[i] < 0)
+              gk_errexit(SIGERR, "The size for vertex %zd must be >= 0\n", i+1);
+          }
+          else {
+            graph->ivsizes[i] = strtol(head, &tail, 0);
+            if (tail == head)
+              gk_errexit(SIGERR, "The line for vertex %zd does not have size information\n", i+1);
+            if (graph->ivsizes[i] < 0)
+              gk_errexit(SIGERR, "The size for vertex %zd must be >= 0\n", i+1);
+          }
+          head = tail;
+        }
+    
+        /* Read vertex weights */
+        if (readwgts) {
+          for (l=0; l<ncon; l++) {
+            if (isfvwgts) {
+#ifdef __MSC__
+              graph->fvwgts[i*ncon+l] = (float)strtod(head, &tail);
+#else
+              graph->fvwgts[i*ncon+l] = strtof(head, &tail);
+#endif
+              if (tail == head)
+                gk_errexit(SIGERR, "The line for vertex %zd does not have enough weights "
+                        "for the %d constraints.\n", i+1, ncon);
+              if (graph->fvwgts[i*ncon+l] < 0)
+                gk_errexit(SIGERR, "The weight vertex %zd and constraint %zd must be >= 0\n", i+1, l);
+            }
+            else {
+              graph->ivwgts[i*ncon+l] = strtol(head, &tail, 0);
+              if (tail == head)
+                gk_errexit(SIGERR, "The line for vertex %zd does not have enough weights "
+                        "for the %d constraints.\n", i+1, ncon);
+              if (graph->ivwgts[i*ncon+l] < 0)
+                gk_errexit(SIGERR, "The weight vertex %zd and constraint %zd must be >= 0\n", i+1, l);
+            }
+            head = tail;
+          }
+        }
+    
+       
+        /* Read the rest of the row */
+        while (1) {
+          ival = (int)strtol(head, &tail, 0);
+          if (tail == head) 
+            break;
+          head = tail;
+          
+          if ((graph->adjncy[k] = ival + numbering) < 0)
+            gk_errexit(SIGERR, "Error: Invalid column number %d at row %zd.\n", ival, i);
+    
+          if (readvals) {
+            if (isfewgts) {
+#ifdef __MSC__
+              fval = (float)strtod(head, &tail);
+#else
+        	  fval = strtof(head, &tail);
+#endif
+              if (tail == head)
+                gk_errexit(SIGERR, "Value could not be found for edge! Vertex:%zd, NNZ:%zd\n", i, k);
+    
+              graph->fadjwgt[k] = fval;
+            }
+            else {
+        	  ival = strtol(head, &tail, 0);
+              if (tail == head)
+                gk_errexit(SIGERR, "Value could not be found for edge! Vertex:%zd, NNZ:%zd\n", i, k);
+    
+              graph->iadjwgt[k] = ival;
+            }
+            head = tail;
+          }
+          k++;
+        }
+        graph->xadj[i+1] = k;
+      }
+    
+      if (k != nedges)
+        gk_errexit(SIGERR, "gk_graph_Read: Something wrong with the number of edges in "
+                           "the input file. nedges=%zd, Actualnedges=%zd.\n", nedges, k);
+    
+      gk_fclose(fpin);
+  
+      gk_free((void **)&line, LTERM);
 
-          graph->fadjwgt[k] = fval;
+      break;
+
+    case GK_GRAPH_FMT_IJV:
+    case GK_GRAPH_FMT_HIJV:
+      gk_getfilestats(filename, &nvtxs, &nedges, NULL, NULL);
+
+      if (format == GK_GRAPH_FMT_HIJV) { /* remove the #rows/#cols values and row */
+        nedges -= 2; 
+        nvtxs  -= 1;
+      }
+
+      if (hasvals == 1 && 3*nvtxs != nedges)
+        gk_errexit(SIGERR, "Error: The number of numbers (%zd %d) in the input file is not a multiple of 3.\n", nedges, hasvals);
+      if (hasvals == 0 && 2*nvtxs != nedges)
+        gk_errexit(SIGERR, "Error: The number of numbers (%zd %d) in the input file is not a multiple of 2.\n", nedges, hasvals);
+
+      nedges = nvtxs;
+      numbering = (numbering ? -1 : 0);
+
+      /* read the data into three arrays */
+      iinds = gk_i32malloc(nedges, "iinds");
+      jinds = gk_i32malloc(nedges, "jinds");
+      if (hasvals) {
+        if (isfewgts)
+          fvals = gk_fmalloc(nedges, "fvals");
+        else
+          ivals = gk_i32malloc(nedges, "ivals");
+      }
+
+      fpin = gk_fopen(filename, "r", "gk_graph_Read: fpin");
+
+      if (format == GK_GRAPH_FMT_HIJV) { /* read and ignore the #rows/#cols values */
+        if (fscanf(fpin, "%"SCNd64" %"SCNd64, &i, &i) != 2)
+          gk_errexit(SIGERR, "Error: Failed to read the header line.\n");
+      }
+
+      for (nvtxs=0, i=0; i<nedges; i++) {
+        if (hasvals) {
+          if (isfewgts) {
+            if (fscanf(fpin, "%"PRId32" %"PRId32" %f", &iinds[i], &jinds[i], &fvals[i]) != 3)
+              gk_errexit(SIGERR, "Error: Failed to read (i, j, val) for nedge: %zd.\n", i);
+          }
+          else {
+            if (fscanf(fpin, "%"PRId32" %"PRId32" %"PRId32, &iinds[i], &jinds[i], &ivals[i]) != 3)
+              gk_errexit(SIGERR, "Error: Failed to read (i, j, val) for nedge: %zd.\n", i);
+          }
         }
         else {
-    	  ival = strtol(head, &tail, 0);
-          if (tail == head)
-            gk_errexit(SIGERR, "Value could not be found for edge! Vertex:%zd, NNZ:%zd\n", i, k);
-
-          graph->iadjwgt[k] = ival;
+          if (fscanf(fpin, "%"PRId32" %"PRId32, &iinds[i], &jinds[i]) != 2)
+            gk_errexit(SIGERR, "Error: Failed to read (i, j) value for nedge: %zd.\n", i);
         }
-        head = tail;
+        iinds[i] += numbering;
+        jinds[i] += numbering;
+
+        if (nvtxs < iinds[i])
+          nvtxs = iinds[i];
+        if (nvtxs < jinds[i])
+          nvtxs = jinds[i];
       }
-      k++;
-    }
-    graph->xadj[i+1] = k;
+      gk_fclose(fpin);
+
+      /* convert (i, j, v) into a graph format */
+      graph = gk_graph_Create();
+      graph->nvtxs  = ++nvtxs;
+      xadj   = graph->xadj   = gk_zsmalloc(nvtxs+1, 0, "xadj");
+      adjncy = graph->adjncy = gk_i32malloc(nedges, "adjncy");
+      if (hasvals) {
+        if (isfewgts)
+          fadjwgt = graph->fadjwgt = gk_fmalloc(nedges, "fadjwgt");
+        else
+          iadjwgt = graph->iadjwgt = gk_i32malloc(nedges, "iadjwgt");
+      }
+
+      for (i=0; i<nedges; i++)
+        xadj[iinds[i]]++;
+      MAKECSR(i, nvtxs, xadj);
+
+      for (i=0; i<nedges; i++) {
+        adjncy[xadj[iinds[i]]] = jinds[i];
+        if (hasvals) {
+          if (isfewgts)
+            fadjwgt[xadj[iinds[i]]] = fvals[i];
+          else
+            iadjwgt[xadj[iinds[i]]] = ivals[i];
+        }
+        xadj[iinds[i]]++;
+      }
+      SHIFTCSR(i, nvtxs, xadj);
+
+      gk_free((void **)&iinds, &jinds, &fvals, &ivals, LTERM);
+      break;
+
+    default:
+      gk_errexit(SIGERR, "Unrecognized format: %d\n", format);
   }
-
-  if (k != nedges)
-    gk_errexit(SIGERR, "gk_graph_Read: Something wrong with the number of edges in "
-                       "the input file. nedges=%zd, Actualnedges=%zd.\n", nedges, k);
-
-  gk_fclose(fpin);
-
-  gk_free((void **)&line, LTERM);
 
   return graph;
 }
@@ -270,18 +366,17 @@ gk_graph_t *gk_graph_Read(char *filename, int format, int isfewgts,
 /*! Writes a graph into a file.
     \param graph is the graph to be written,
     \param filename is the name of the output file.
-    \param format is one of GK_GRAPH_FMT_METIS specifying
-           the format of the output file.
+    \param format specifies the format of the output file.
+    \param numbering is either 0 or 1, indicating if the first vertex 
+           will be numbered 0 or 1. Some formats ignore this.
 */
 /**************************************************************************/
-void gk_graph_Write(gk_graph_t *graph, char *filename, int format)
+void gk_graph_Write(gk_graph_t *graph, char *filename, int format, int numbering)
 {
-  ssize_t i, j;
+  int32_t i;
+  ssize_t j;
   int hasvwgts, hasvsizes, hasewgts;
   FILE *fpout;
-
-  if (format != GK_GRAPH_FMT_METIS)
-    gk_errexit(SIGERR, "Unknown file format. %d\n", format);
 
   if (filename)
     fpout = gk_fopen(filename, "w", "gk_graph_Write: fpout");
@@ -293,39 +388,64 @@ void gk_graph_Write(gk_graph_t *graph, char *filename, int format)
   hasvwgts  = (graph->ivwgts || graph->fvwgts);
   hasvsizes = (graph->ivsizes || graph->fvsizes);
 
-  /* write the header line */
-  fprintf(fpout, "%d %zd", graph->nvtxs, graph->xadj[graph->nvtxs]/2);
-  if (hasvwgts || hasvsizes || hasewgts) 
-    fprintf(fpout, " %d%d%d", hasvsizes, hasvwgts, hasewgts);
-  fprintf(fpout, "\n");
-
-
-  for (i=0; i<graph->nvtxs; i++) {
-    if (hasvsizes) {
-      if (graph->ivsizes)
-        fprintf(fpout, " %d", graph->ivsizes[i]);
-      else
-        fprintf(fpout, " %f", graph->fvsizes[i]);
-    }
-
-    if (hasvwgts) {
-      if (graph->ivwgts)
-        fprintf(fpout, " %d", graph->ivwgts[i]);
-      else
-        fprintf(fpout, " %f", graph->fvwgts[i]);
-    }
-
-    for (j=graph->xadj[i]; j<graph->xadj[i+1]; j++) {
-      fprintf(fpout, " %d", graph->adjncy[j]+1);
-      if (hasewgts) {
-        if (graph->iadjwgt)
-          fprintf(fpout, " %d", graph->iadjwgt[j]);
-        else 
-          fprintf(fpout, " %f", graph->fadjwgt[j]);
+  switch (format) {
+    case GK_GRAPH_FMT_METIS:
+      /* write the header line */
+      fprintf(fpout, "%d %zd", graph->nvtxs, graph->xadj[graph->nvtxs]/2);
+      if (hasvwgts || hasvsizes || hasewgts) 
+        fprintf(fpout, " %d%d%d", hasvsizes, hasvwgts, hasewgts);
+      fprintf(fpout, "\n");
+    
+    
+      for (i=0; i<graph->nvtxs; i++) {
+        if (hasvsizes) {
+          if (graph->ivsizes)
+            fprintf(fpout, " %d", graph->ivsizes[i]);
+          else
+            fprintf(fpout, " %f", graph->fvsizes[i]);
+        }
+    
+        if (hasvwgts) {
+          if (graph->ivwgts)
+            fprintf(fpout, " %d", graph->ivwgts[i]);
+          else
+            fprintf(fpout, " %f", graph->fvwgts[i]);
+        }
+    
+        for (j=graph->xadj[i]; j<graph->xadj[i+1]; j++) {
+          fprintf(fpout, " %d", graph->adjncy[j]+1);
+          if (hasewgts) {
+            if (graph->iadjwgt)
+              fprintf(fpout, " %d", graph->iadjwgt[j]);
+            else 
+              fprintf(fpout, " %f", graph->fadjwgt[j]);
+          }
+        }
+        fprintf(fpout, "\n");
       }
-    }
-    fprintf(fpout, "\n");
+      break;
+
+    case GK_GRAPH_FMT_IJV:
+      for (i=0; i<graph->nvtxs; i++) {
+        for (j=graph->xadj[i]; j<graph->xadj[i+1]; j++) {
+          fprintf(fpout, "%d %d ", i+numbering, graph->adjncy[j]+numbering);
+          if (hasewgts) {
+            if (graph->iadjwgt)
+              fprintf(fpout, " %d\n", graph->iadjwgt[j]);
+            else 
+              fprintf(fpout, " %f\n", graph->fadjwgt[j]);
+          }
+          else {
+            fprintf(fpout, " 1\n");
+          }
+        }
+      }
+      break;
+
+    default:
+      gk_errexit(SIGERR, "Unknown file format. %d\n", format);
   }
+
   if (filename)
     gk_fclose(fpout);
 }
@@ -375,6 +495,71 @@ gk_graph_t *gk_graph_Dup(gk_graph_t *graph)
   if (graph->fadjwgt)
     ngraph->fadjwgt = gk_fcopy(graph->xadj[graph->nvtxs], graph->fadjwgt, 
                             gk_fmalloc(graph->xadj[graph->nvtxs], "gk_graph_Dup: fadjwgt"));
+
+  return ngraph;
+}
+
+
+/*************************************************************************/
+/*! Returns the transpose of a graph.
+    \param graph is the graph to be transposed.
+    \returns the newly created copy of the graph.
+*/
+/**************************************************************************/
+gk_graph_t *gk_graph_Transpose(gk_graph_t *graph)
+{
+  int32_t vi, vj;
+  ssize_t ei;
+
+  gk_graph_t *ngraph;
+
+  ngraph = gk_graph_Create();
+
+  ngraph->nvtxs  = graph->nvtxs;
+  ngraph->xadj   = gk_zsmalloc(graph->nvtxs+1, 0, "gk_graph_Transpose: xadj");
+  ngraph->adjncy = gk_i32malloc(graph->xadj[graph->nvtxs], "gk_graph_Transpose: adjncy");
+
+  if (graph->iadjwgt)
+    ngraph->iadjwgt = gk_i32malloc(graph->xadj[graph->nvtxs], "gk_graph_Transpose: iadjwgt");
+  if (graph->fadjwgt)
+    ngraph->fadjwgt = gk_fmalloc(graph->xadj[graph->nvtxs], "gk_graph_Transpose: fadjwgt");
+
+  for (vi=0; vi<graph->nvtxs; vi++) {
+    for (ei=graph->xadj[vi]; ei<graph->xadj[vi+1]; ei++)
+      ngraph->xadj[graph->adjncy[ei]]++;
+  }
+  MAKECSR(vi, ngraph->nvtxs, ngraph->xadj);
+
+  for (vi=0; vi<graph->nvtxs; vi++) {
+    for (ei=graph->xadj[vi]; ei<graph->xadj[vi+1]; ei++) {
+      vj = graph->adjncy[ei];
+      ngraph->adjncy[ngraph->xadj[vj]] = vi;
+      if (ngraph->iadjwgt)
+        ngraph->iadjwgt[ngraph->xadj[vj]] = graph->iadjwgt[ei];
+      if (ngraph->fadjwgt)
+        ngraph->fadjwgt[ngraph->xadj[vj]] = graph->fadjwgt[ei];
+      ngraph->xadj[vj]++;
+    }
+  }
+  SHIFTCSR(vi, ngraph->nvtxs, ngraph->xadj);
+
+  /* copy vertex attributes */
+  if (graph->ivwgts)
+    ngraph->ivwgts = gk_i32copy(graph->nvtxs, graph->ivwgts, 
+                            gk_i32malloc(graph->nvtxs, "gk_graph_Transpose: ivwgts"));
+  if (graph->ivsizes)
+    ngraph->ivsizes = gk_i32copy(graph->nvtxs, graph->ivsizes, 
+                            gk_i32malloc(graph->nvtxs, "gk_graph_Transpose: ivsizes"));
+  if (graph->vlabels)
+    ngraph->vlabels = gk_i32copy(graph->nvtxs, graph->vlabels, 
+                            gk_i32malloc(graph->nvtxs, "gk_graph_Transpose: ivlabels"));
+  if (graph->fvwgts)
+    ngraph->fvwgts = gk_fcopy(graph->nvtxs, graph->fvwgts, 
+                            gk_fmalloc(graph->nvtxs, "gk_graph_Transpose: fvwgts"));
+  if (graph->fvsizes)
+    ngraph->fvsizes = gk_fcopy(graph->nvtxs, graph->fvsizes, 
+                            gk_fmalloc(graph->nvtxs, "gk_graph_Transpose: fvsizes"));
+
 
   return ngraph;
 }
@@ -574,7 +759,7 @@ int gk_graph_FindComponents(gk_graph_t *graph, int32_t *cptr, int32_t *cind)
   ssize_t i, ii, j, jj, k, nvtxs, first, last, ntodo, ncmps;
   ssize_t *xadj;
   int32_t *adjncy, *pos, *todo;
-  int32_t mustfree_ccsr=0, mustfree_where=0;
+  int32_t mustfree_ccsr=0;
 
   nvtxs  = graph->nvtxs;
   xadj   = graph->xadj;
@@ -603,36 +788,42 @@ int gk_graph_FindComponents(gk_graph_t *graph, int32_t *cptr, int32_t *cind)
   first = last = 0;  /* Point to the first and last vertices that have been touched
                         but not explored. 
                         These vertices are stored in cind[first]...cind[last-1]. */
-  while (ntodo > 0) {
+  while (1) {
     if (first == last) { /* Find another starting vertex */
       cptr[++ncmps] = first;  /* Mark the end of the current CC */
 
-      ASSERT(pos[todo[0]] != -1);
-      i = todo[0];
+      if (ntodo > 0) {
+        /* put the first vertex in the todo list as the start of the new CC */
+        GKASSERT(pos[todo[0]] != -1);
+        cind[last++] = todo[0];
 
-      cind[last++] = i;
-      pos[i] = -1;
+        pos[todo[0]] = -1;
+        todo[0] = todo[--ntodo];
+        pos[todo[0]] = 0;
+      }
+      else {
+        break;
+      }
     }
 
     i = cind[first++];  /* Get the first visited but unexplored vertex */
-
-    /* Remove i from the todo list and put the last item in the todo 
-       list at the position that i was so that the todo list will be
-       consequtive. The pos[] array is updated accordingly to keep track
-       the location of the vertices in the todo[] list. */
-    k = pos[i];
-    j = todo[k] = todo[--ntodo];
-    pos[j] = k;
 
     for (j=xadj[i]; j<xadj[i+1]; j++) {
       k = adjncy[j];
       if (pos[k] != -1) {
         cind[last++] = k;
+
+        /* Remove k from the todo list and put the last item in the todo
+           list at the position that k was so that the todo list will be
+           consequtive. The pos[] array is updated accordingly to keep track
+           the location of the vertices in the todo[] list. */
+        todo[pos[k]] = todo[--ntodo];
+        pos[todo[pos[k]]] = pos[k];
         pos[k] = -1;
       }
     }
   }
-  cptr[++ncmps] = first;
+  GKASSERT(first == nvtxs);
 
   if (mustfree_ccsr)
     gk_free((void **)&cptr, &cind, LTERM);
@@ -690,7 +881,7 @@ void gk_graph_ComputeBFSOrdering(gk_graph_t *graph, int v, int32_t **r_perm,
   pos[0] = cot[0] = v;
   pos[v] = cot[v] = 0;
 
-  /* Find the connected componends induced by the partition */
+  /* compute a BFS ordering from the seed vertex */
   first = last = 0;
   while (first < nvtxs) {
     if (first == last) { /* Find another starting vertex */
@@ -703,9 +894,9 @@ void gk_graph_ComputeBFSOrdering(gk_graph_t *graph, int v, int32_t **r_perm,
     i = cot[first++];  /* the ++ advances the explored vertices */
     for (j=xadj[i]; j<xadj[i+1]; j++) {
       k = adjncy[j];
-      /* if a node has already been visited, its perm[] will be -1 */
+      /* if a node has already been visited, its pos[] will be -1 */
       if (pos[k] != -1) {
-        /* pos[k] is the location within iperm of where k resides (it is in the 'todo' part); 
+        /* pos[k] is the location within cot[] where k resides (it is in the 'todo' part); 
            It is placed in that location cot[last] (end of OPEN list) that we 
            are about to overwrite and update pos[cot[last]] to reflect that. */
         cot[pos[k]]    = cot[last]; /* put the head of the todo list to 
@@ -889,7 +1080,8 @@ void gk_graph_ComputeBestFOrdering(gk_graph_t *graph, int v, int type,
 {
   ssize_t j, jj, *xadj;
   int i, k, u, nvtxs, nopen, ntodo;
-  int32_t *adjncy, *perm, *degrees, *wdegrees, *sod, *level, *ot, *pos;
+  int32_t *adjncy, *perm, *degrees, *sod, *level, *ot, *pos;
+  int64_t *wdegrees;
   gk_i32pq_t *queue;
 
   if (graph->nvtxs <= 0)
@@ -903,7 +1095,7 @@ void gk_graph_ComputeBestFOrdering(gk_graph_t *graph, int v, int type,
   degrees = gk_i32smalloc(nvtxs, 0, "gk_graph_ComputeBestFOrdering: degrees");
 
   /* the weighted degree of the vertices in the closed list for type==3 */
-  wdegrees = gk_i32smalloc(nvtxs, 0, "gk_graph_ComputeBestFOrdering: wdegrees");
+  wdegrees = gk_i64smalloc(nvtxs, 0, "gk_graph_ComputeBestFOrdering: wdegrees");
 
   /* the sum of differences for type==4 */
   sod = gk_i32smalloc(nvtxs, 0, "gk_graph_ComputeBestFOrdering: sod");
@@ -994,7 +1186,7 @@ void gk_graph_ComputeBestFOrdering(gk_graph_t *graph, int v, int type,
 
           case 3: /* Sum of orders in closed list */
             wdegrees[u] += i;
-            gk_i32pqUpdate(queue, u, wdegrees[u]);
+            gk_i32pqUpdate(queue, u, (int32_t)sqrt(wdegrees[u]));
             break;
 
           case 4: /* Sum of order-differences */
@@ -1185,9 +1377,6 @@ void gk_graph_SingleSourceShortestPaths(gk_graph_t *graph, int v, void **r_sps)
 }
 
 
-
-#ifdef XXX
-
 /*************************************************************************/
 /*! Sorts the adjacency lists in increasing vertex order
     \param graph the graph itself,
@@ -1195,73 +1384,250 @@ void gk_graph_SingleSourceShortestPaths(gk_graph_t *graph, int v, void **r_sps)
 /**************************************************************************/
 void gk_graph_SortAdjacencies(gk_graph_t *graph)
 {
-  int n, nn=0;
-  ssize_t *ptr;
-  int *ind;
-  float *val;
+  int32_t nvtxs, nn=0;
+  ssize_t *xadj;
+  int32_t *adjncy;
+  int32_t *iadjwgt;
+  float *fadjwgt;
 
-  switch (what) {
-    case GK_CSR_ROW:
-      if (!graph->rowptr)
-        gk_errexit(SIGERR, "Row-based view of the graphrix does not exists.\n");
+  nvtxs   = graph->nvtxs;
+  xadj    = graph->xadj;
+  adjncy  = graph->adjncy;
+  iadjwgt = graph->iadjwgt;
+  fadjwgt = graph->fadjwgt;
 
-      n   = graph->nrows;
-      ptr = graph->rowptr;
-      ind = graph->rowind;
-      val = graph->rowval;
-      break;
-
-    case GK_CSR_COL:
-      if (!graph->colptr)
-        gk_errexit(SIGERR, "Column-based view of the graphrix does not exists.\n");
-
-      n   = graph->ncols;
-      ptr = graph->colptr;
-      ind = graph->colind;
-      val = graph->colval;
-      break;
-
-    default:
-      gk_errexit(SIGERR, "Invalid index type of %d.\n", what);
-      return;
-  }
-
-  #pragma omp parallel if (n > 100)
+  #pragma omp parallel if (nvtxs > 100)
   {
     ssize_t i, j, k;
     gk_ikv_t *cand;
-    float *tval;
+    int32_t *itwgts=NULL;
+    float *ftwgts=NULL;
 
     #pragma omp single
-    for (i=0; i<n; i++) 
-      nn = gk_max(nn, ptr[i+1]-ptr[i]);
+    for (i=0; i<nvtxs; i++) 
+      nn = gk_max(nn, xadj[i+1]-xadj[i]);
   
-    cand = gk_ikvmalloc(nn, "gk_graph_SortIndices: cand");
-    tval = gk_fmalloc(nn, "gk_graph_SortIndices: tval");
+    cand   = gk_ikvmalloc(nn, "gk_graph_SortIndices: cand");
+    if (iadjwgt)
+      itwgts = gk_i32malloc(nn, "gk_graph_SortIndices: itwgts");
+    if (fadjwgt)
+      ftwgts = gk_fmalloc(nn, "gk_graph_SortIndices: ftwgts");
   
     #pragma omp for schedule(static)
-    for (i=0; i<n; i++) {
-      for (k=0, j=ptr[i]; j<ptr[i+1]; j++) {
-        if (j > ptr[i] && ind[j] < ind[j-1])
+    for (i=0; i<nvtxs; i++) {
+      for (k=0, j=xadj[i]; j<xadj[i+1]; j++) {
+        if (j > xadj[i] && adjncy[j] < adjncy[j-1])
           k = 1; /* an inversion */
-        cand[j-ptr[i]].val = j-ptr[i];
-        cand[j-ptr[i]].key = ind[j];
-        tval[j-ptr[i]]     = val[j];
+        cand[j-xadj[i]].val = (int32_t)(j-xadj[i]);
+        cand[j-xadj[i]].key = adjncy[j];
+        if (itwgts)
+          itwgts[j-xadj[i]] = iadjwgt[j];
+        if (ftwgts)
+          ftwgts[j-xadj[i]] = fadjwgt[j];
       }
       if (k) {
-        gk_ikvsorti(ptr[i+1]-ptr[i], cand);
-        for (j=ptr[i]; j<ptr[i+1]; j++) {
-          ind[j] = cand[j-ptr[i]].key;
-          val[j] = tval[cand[j-ptr[i]].val];
+        gk_ikvsorti(xadj[i+1]-xadj[i], cand);
+        for (j=xadj[i]; j<xadj[i+1]; j++) {
+          adjncy[j] = cand[j-xadj[i]].key;
+          if (itwgts)
+            iadjwgt[j] = itwgts[cand[j-xadj[i]].val];
+          if (ftwgts)
+            fadjwgt[j] = ftwgts[cand[j-xadj[i]].val];
         }
       }
     }
 
-    gk_free((void **)&cand, &tval, LTERM);
+    gk_free((void **)&cand, &itwgts, &ftwgts, LTERM);
   }
-
 }
 
+
+/*************************************************************************/
+/*! Returns a symmetric version of a graph. The symmetric version
+    is constructed by applying an A op A^T operation, where op is one of
+    GK_GRAPH_SYM_SUM, GK_GRAPH_SYM_MIN, GK_GRAPH_SYM_MAX, GK_GRAPH_SYM_AVG.
+   
+    \param mat the matrix to be symmetrized,
+    \param op indicates the operation to be performed. The possible values are
+           GK_GRAPH_SYM_SUM, GK_GRAPH_SYM_MIN, GK_GRAPH_SYM_MAX, and GK_GRAPH_SYM_AVG.
+
+    \returns the symmetrized matrix consisting only of its row-based structure. 
+          The input matrix is not modified. 
+
+TODO: Need to deal with all vertex attributes that are currently do not get
+      copied over.
+*/
+/**************************************************************************/
+gk_graph_t *gk_graph_MakeSymmetric(gk_graph_t *graph, int op)
+{
+  ssize_t i, j, k, nnz;
+  int nrows, nadj, hasvals;
+  ssize_t *rowptr, *colptr, *nrowptr;
+  int *rowind, *colind, *nrowind, *marker, *ids;
+  float *rowval=NULL, *colval=NULL, *nrowval=NULL, *wgts=NULL;
+  int32_t *irowval=NULL, *icolval=NULL, *nirowval=NULL, *iwgts=NULL;
+  gk_graph_t *ngraph;
+
+  hasvals = (graph->iadjwgt != NULL || graph->fadjwgt != NULL);
+
+  nrows  = graph->nvtxs;
+  rowptr = graph->xadj;
+  rowind = graph->adjncy;
+  if (hasvals) {
+    irowval = graph->iadjwgt;
+     rowval = graph->fadjwgt;
+  }
+
+  /* create the column view for efficient processing */
+  colptr = gk_zsmalloc(nrows+1, 0, "colptr");
+  colind = gk_i32malloc(rowptr[nrows], "colind");
+  if (hasvals) {
+    if (rowval)
+      colval = gk_fmalloc(rowptr[nrows], "colval");
+    if (irowval)
+      icolval = gk_i32malloc(rowptr[nrows], "icolval");
+  }
+
+  for (i=0; i<nrows; i++) {
+    for (j=rowptr[i]; j<rowptr[i+1]; j++) 
+      colptr[rowind[j]]++;
+  }
+  MAKECSR(i, nrows, colptr);
+
+  for (i=0; i<nrows; i++) {
+    for (j=rowptr[i]; j<rowptr[i+1]; j++) {
+      colind[colptr[rowind[j]]] = i;
+      if (hasvals) {
+        if (rowval)
+          colval[colptr[rowind[j]]] = rowval[j];
+        if (irowval)
+          icolval[colptr[rowind[j]]] = irowval[j];
+      }
+      colptr[rowind[j]]++;
+    }
+  }
+  SHIFTCSR(i, nrows, colptr);
+
+
+  ngraph = gk_graph_Create();
+  ngraph->nvtxs = graph->nvtxs;
+
+  nrowptr = ngraph->xadj = gk_zmalloc(nrows+1, "gk_csr_MakeSymmetric: nrowptr");
+  nrowind = ngraph->adjncy = gk_imalloc(2*rowptr[nrows], "gk_csr_MakeSymmetric: nrowind");
+  if (hasvals) {
+    if (rowval)
+      nrowval = graph->fadjwgt = gk_fmalloc(2*rowptr[nrows], "gk_csr_MakeSymmetric: nrowval");
+    if (irowval)
+      nirowval = graph->iadjwgt = gk_i32malloc(2*rowptr[nrows], "gk_csr_MakeSymmetric: nrowval");
+  }
+
+  marker = gk_ismalloc(nrows, -1, "marker");
+  ids    = gk_imalloc(nrows, "ids");
+  if (hasvals) {
+    if (rowval)
+      wgts = gk_fmalloc(nrows, "wgts");
+    if (irowval)
+      iwgts = gk_i32malloc(nrows, "wgts");
+  }
+
+  nrowptr[0] = nnz = 0;
+  for (i=0; i<nrows; i++) {
+    nadj = 0;
+    /* out-edges */
+    for (j=rowptr[i]; j<rowptr[i+1]; j++) {
+      ids[nadj] = rowind[j]; 
+      if (wgts)
+        wgts[nadj] = (op == GK_CSR_SYM_AVG ? 0.5*rowval[j] : rowval[j]);
+      if (iwgts)
+        iwgts[nadj] = (op == GK_CSR_SYM_AVG ? 0.5*irowval[j] : irowval[j]);
+      marker[rowind[j]] = nadj++;
+    }
+
+    /* in-edges */
+    for (j=colptr[i]; j<colptr[i+1]; j++) {
+      if (marker[colind[j]] == -1) {
+        if (op != GK_CSR_SYM_MIN) {
+          ids[nadj] = colind[j]; 
+          if (wgts) 
+            wgts[nadj] = (op == GK_CSR_SYM_AVG ? 0.5*colval[j] : colval[j]);
+          if (iwgts) 
+            iwgts[nadj] = (op == GK_CSR_SYM_AVG ? 0.5*icolval[j] : icolval[j]);
+          nadj++;
+        }
+      }
+      else {
+        if (wgts) {
+          switch (op) {
+            case GK_CSR_SYM_MAX:
+              wgts[marker[colind[j]]] = gk_max(colval[j], wgts[marker[colind[j]]]);
+              break;
+            case GK_CSR_SYM_MIN:
+              wgts[marker[colind[j]]] = gk_min(colval[j], wgts[marker[colind[j]]]);
+              break;
+            case GK_CSR_SYM_SUM:
+              wgts[marker[colind[j]]] += colval[j];
+              break;
+            case GK_CSR_SYM_AVG:
+              wgts[marker[colind[j]]] = 0.5*(wgts[marker[colind[j]]] + colval[j]);
+              break;
+            default:
+              errexit("Unsupported op for MakeSymmetric!\n");
+          }
+        }
+        if (iwgts) {
+          switch (op) {
+            case GK_CSR_SYM_MAX:
+              iwgts[marker[colind[j]]] = gk_max(icolval[j], iwgts[marker[colind[j]]]);
+              break;
+            case GK_CSR_SYM_MIN:
+              iwgts[marker[colind[j]]] = gk_min(icolval[j], iwgts[marker[colind[j]]]);
+              break;
+            case GK_CSR_SYM_SUM:
+              iwgts[marker[colind[j]]] += icolval[j];
+              break;
+            case GK_CSR_SYM_AVG:
+              iwgts[marker[colind[j]]] = 0.5*(wgts[marker[colind[j]]] + icolval[j]);
+              break;
+            default:
+              errexit("Unsupported op for MakeSymmetric!\n");
+          }
+        }
+        marker[colind[j]] = -1;
+      }
+    }
+
+    /* go over out edges again to resolve any edges that were not found in the in
+     * edges */
+    for (j=rowptr[i]; j<rowptr[i+1]; j++) {
+      if (marker[rowind[j]] != -1) {
+        if (op == GK_CSR_SYM_MIN)
+          ids[marker[rowind[j]]] = -1;
+        marker[rowind[j]] = -1;
+      }
+    }
+
+    /* put the non '-1' entries in ids[] into i's row */
+    for (j=0; j<nadj; j++) {
+      if (ids[j] != -1) {
+        nrowind[nnz] = ids[j];
+        if (wgts)
+          nrowval[nnz] = wgts[j];
+        if (iwgts)
+          nirowval[nnz] = iwgts[j];
+        nnz++;
+      }
+    }
+    nrowptr[i+1] = nnz;
+  }
+
+  gk_free((void **)&colptr, &colind, &colval, &icolval, &marker, &ids, &wgts, &iwgts, LTERM);
+
+  return ngraph;
+}
+
+
+
+#ifdef XXX
 
 /*************************************************************************/
 /*! Returns a subgraphrix containing a certain set of rows.

@@ -7,7 +7,7 @@ the filesystem in a portable way.
 
 \date Started 4/10/95
 \author George
-\version\verbatim $Id: fs.c 10711 2011-08-31 22:23:04Z karypis $ \endverbatim
+\version\verbatim $Id: fs.c 14332 2013-05-18 12:22:57Z karypis $ \endverbatim
 */
 
 
@@ -52,14 +52,14 @@ were any errors in stat'ing the file, -1 is returned.
       63 bits (which I guess is okay for now).
 */
 /**************************************************************************/
-intmax_t gk_getfsize(char *filename)
+ssize_t gk_getfsize(char *filename)
 {
   struct stat status;
 
-  if (stat(filename, &status) == -1)
+  if (stat(filename, &status) == -1) 
     return -1;
 
-  return (intmax_t)(status.st_size);
+  return (size_t)(status.st_size);
 }
 
 
@@ -81,13 +81,13 @@ void gk_getfilestats(char *fname, size_t *r_nlines, size_t *r_ntokens,
 {
   size_t nlines=0, ntokens=0, max_nlntokens=0, nbytes=0, oldntokens=0, nread;
   int intoken=0;
-  char buffer[2049], *cptr;
+  char buffer[4097], *cptr;
   FILE *fpin;
 
   fpin = gk_fopen(fname, "r", "gk_GetFileStats");
 
   while (!feof(fpin)) {
-    nread = fread(buffer, sizeof(char), 2048, fpin);
+    nread = fread(buffer, sizeof(char), 4096, fpin);
     nbytes += nread;
 
     buffer[nread] = '\0';  /* There is space for this one */

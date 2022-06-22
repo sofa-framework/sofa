@@ -4,7 +4,7 @@
 
 \date   Started 3/27/2007
 \author George
-\version\verbatim $Id: gk_defs.h 12732 2012-09-24 20:54:50Z karypis $ \endverbatim
+\version\verbatim $Id: gk_defs.h 22039 2018-05-26 16:34:48Z karypis $ \endverbatim
 */
 
 #ifndef _GK_DEFS_H_
@@ -41,6 +41,7 @@
 /* CSR-related defines */
 #define GK_CSR_ROW      1
 #define GK_CSR_COL      2
+#define GK_CSR_ROWCOL   3
 
 #define GK_CSR_MAXTF    1
 #define GK_CSR_SQRT     2
@@ -53,17 +54,34 @@
 #define GK_CSR_IDF2     9
 #define GK_CSR_MAXTF2   10
 
-#define GK_CSR_COS      1
-#define GK_CSR_JAC      2
-#define GK_CSR_MIN      3
-#define GK_CSR_AMIN     4
+#define GK_CSR_DOTP     1
+#define GK_CSR_COS      2
+#define GK_CSR_JAC      3
+#define GK_CSR_MIN      4
+#define GK_CSR_AMIN     5
 
+#define GK_CSR_FMT_AUTO         2
 #define GK_CSR_FMT_CLUTO        1
 #define GK_CSR_FMT_CSR          2
 #define GK_CSR_FMT_METIS        3
 #define GK_CSR_FMT_BINROW       4
 #define GK_CSR_FMT_BINCOL       5
+#define GK_CSR_FMT_IJV          6
+#define GK_CSR_FMT_BIJV         7
+
+#define GK_CSR_SYM_SUM          1
+#define GK_CSR_SYM_MIN          2
+#define GK_CSR_SYM_MAX          3
+#define GK_CSR_SYM_AVG          4
+
 
 #define GK_GRAPH_FMT_METIS      1
+#define GK_GRAPH_FMT_IJV        2
+#define GK_GRAPH_FMT_HIJV       3
+
+#define GK_GRAPH_SYM_SUM        1
+#define GK_GRAPH_SYM_MIN        2
+#define GK_GRAPH_SYM_MAX        3
+#define GK_GRAPH_SYM_AVG        4
 
 #endif

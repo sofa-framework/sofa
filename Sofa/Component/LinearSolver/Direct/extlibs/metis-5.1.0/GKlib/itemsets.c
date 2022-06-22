@@ -7,7 +7,7 @@
  *
  * \date 6/13/2008
  * \author George Karypis
- * \version\verbatim $Id: itemsets.c 11075 2011-11-11 22:31:52Z karypis $ \endverbatim
+ * \version\verbatim $Id: itemsets.c 19240 2015-10-22 12:41:19Z karypis $ \endverbatim
  */
 
 #include <GKlib.h>
@@ -58,7 +58,7 @@ void gk_find_frequent_itemsets(int ntrans, ssize_t *tranptr, int *tranind,
   /* Create the matrix */
   mat = gk_csr_Create();
   mat->nrows  = ntrans;
-  mat->ncols  = tranind[gk_iargmax(tranptr[ntrans], tranind)]+1;
+  mat->ncols  = tranind[gk_iargmax(tranptr[ntrans], tranind, 1)]+1;
   mat->rowptr = gk_zcopy(ntrans+1, tranptr, gk_zmalloc(ntrans+1, "gk_find_frequent_itemsets: mat.rowptr"));
   mat->rowind = gk_icopy(tranptr[ntrans], tranind, gk_imalloc(tranptr[ntrans], "gk_find_frequent_itemsets: mat.rowind"));
   mat->colids = gk_iincset(mat->ncols, 0, gk_imalloc(mat->ncols, "gk_find_frequent_itemsets: mat.colids"));
@@ -119,10 +119,10 @@ void itemsets_find_frequent_itemsets(isparams_t *params, gk_csr_t *mat,
 /******************************************************************************/
 /*! This function projects a matrix w.r.t. to a particular column. 
     It performs the following steps:
-    - Determines the length of each column that is remaining
-    - Sorts the columns in increasing length
+    - Determines the length of each column that is remaining.
+    - Sorts the columns in increasing length.
     - Creates a column-based version of the matrix with the proper
-      column ordering and renamed rowids.
+      column ordering.
  */
 /*******************************************************************************/
 gk_csr_t *itemsets_project_matrix(isparams_t *params, gk_csr_t *mat, int cid)

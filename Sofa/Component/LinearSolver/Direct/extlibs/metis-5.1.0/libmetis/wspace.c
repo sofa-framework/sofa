@@ -40,8 +40,9 @@ void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph)
 /*************************************************************************/
 /*! This function allocates refinement-specific memory for the workspace */
 /*************************************************************************/
-void AllocateRefinementWorkSpace(ctrl_t *ctrl, idx_t nbrpoolsize)
+void AllocateRefinementWorkSpace(ctrl_t *ctrl, idx_t nbrpoolsize_max, idx_t nbrpoolsize)
 {
+  ctrl->nbrpoolsize_max = nbrpoolsize_max;
   ctrl->nbrpoolsize     = nbrpoolsize;
   ctrl->nbrpoolcpos     = 0;
   ctrl->nbrpoolreallocs = 0;
@@ -89,8 +90,9 @@ void FreeWorkSpace(ctrl_t *ctrl)
              ctrl->nbrpoolreallocs));
 
   gk_free((void **)&ctrl->cnbrpool, &ctrl->vnbrpool, LTERM);
-  ctrl->nbrpoolsize = 0;
-  ctrl->nbrpoolcpos = 0;
+  ctrl->nbrpoolsize_max = 0;
+  ctrl->nbrpoolsize     = 0;
+  ctrl->nbrpoolcpos     = 0;
 
   if (ctrl->minconn) {
     iFreeMatrix(&(ctrl->adids),  ctrl->nparts, INIT_MAXNAD);
@@ -171,10 +173,12 @@ void cnbrpoolReset(ctrl_t *ctrl)
 /*************************************************************************/
 idx_t cnbrpoolGetNext(ctrl_t *ctrl, idx_t nnbrs)
 {
+  nnbrs = gk_min(ctrl->nparts, nnbrs);
   ctrl->nbrpoolcpos += nnbrs;
 
   if (ctrl->nbrpoolcpos > ctrl->nbrpoolsize) {
     ctrl->nbrpoolsize += gk_max(10*nnbrs, ctrl->nbrpoolsize/2);
+    ctrl->nbrpoolsize = gk_min(ctrl->nbrpoolsize, ctrl->nbrpoolsize_max);
 
     ctrl->cnbrpool = (cnbr_t *)gk_realloc(ctrl->cnbrpool,  
                           ctrl->nbrpoolsize*sizeof(cnbr_t), "cnbrpoolGet: cnbrpool");
@@ -199,10 +203,12 @@ void vnbrpoolReset(ctrl_t *ctrl)
 /*************************************************************************/
 idx_t vnbrpoolGetNext(ctrl_t *ctrl, idx_t nnbrs)
 {
+  nnbrs = gk_min(ctrl->nparts, nnbrs);
   ctrl->nbrpoolcpos += nnbrs;
 
   if (ctrl->nbrpoolcpos > ctrl->nbrpoolsize) {
     ctrl->nbrpoolsize += gk_max(10*nnbrs, ctrl->nbrpoolsize/2);
+    ctrl->nbrpoolsize = gk_min(ctrl->nbrpoolsize, ctrl->nbrpoolsize_max);
 
     ctrl->vnbrpool = (vnbr_t *)gk_realloc(ctrl->vnbrpool,  
                           ctrl->nbrpoolsize*sizeof(vnbr_t), "vnbrpoolGet: vnbrpool");

@@ -4,7 +4,7 @@
 
 \date   Started 3/27/2007
 \author George
-\version\verbatim $Id: gk_macros.h 10711 2011-08-31 22:23:04Z karypis $ \endverbatim
+\version\verbatim $Id: gk_macros.h 15048 2013-08-31 19:38:14Z karypis $ \endverbatim
 */
 
 #ifndef _GK_MACROS_H_
@@ -22,6 +22,7 @@
 
 #define ONEOVERRANDMAX (1.0/(RAND_MAX+1.0))
 #define RandomInRange(u) ((int) (ONEOVERRANDMAX*(u)*rand()))
+#define RandomInRange_r(s, u) ((int) (ONEOVERRANDMAX*(u)*rand_r(s)))
 
 #define gk_abs(x) ((x) >= 0 ? (x) : -(x))
 
@@ -109,6 +110,12 @@
               __LINE__, __FILE__);                               \
     }
 
+#define GKWARN(expr)                                          \
+    if (!(expr)) {                                               \
+        printf("***ASSERTION failed on line %d of file %s: " #expr "\n", \
+              __LINE__, __FILE__);                               \
+    }
+
 #define GKCUASSERTP(expr,msg)                                          \
     if (!(expr)) {                                               \
         printf("***ASSERTION failed on line %d of file %s: " #expr "\n", \
@@ -116,6 +123,15 @@
         printf msg ; \
         printf("\n"); \
     }
+
+#define GKWARNP(expr,msg)                                          \
+    if (!(expr)) {                                               \
+        printf("***ASSERTION failed on line %d of file %s: " #expr "\n", \
+              __LINE__, __FILE__);                               \
+        printf msg ; \
+        printf("\n"); \
+    }
+
 
 /*-------------------------------------------------------------
  * Program Assertions

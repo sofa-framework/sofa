@@ -56,7 +56,7 @@ idx_t ComputeVolume(graph_t *graph, idx_t *where)
   adjncy = graph->adjncy;
   vsize  = graph->vsize;
 
-  nparts = where[iargmax(nvtxs, where)]+1;
+  nparts = where[iargmax(nvtxs, where,1)]+1;
   marker = ismalloc(nparts, -1, "ComputeVolume: marker");
 
   totalv = 0;
@@ -104,9 +104,9 @@ idx_t ComputeMaxCut(graph_t *graph, idx_t nparts, idx_t *where)
     }
   }
 
-  maxcut = cuts[iargmax(nparts, cuts)];
+  maxcut = cuts[iargmax(nparts, cuts,1)];
 
-  printf("%zu => %"PRIDX"\n", iargmax(nparts, cuts), maxcut);
+  printf("%zu => %"PRIDX"\n", iargmax(nparts, cuts,1), maxcut);
 
   gk_free((void **)&cuts, LTERM);
 
@@ -233,6 +233,9 @@ idx_t CheckRInfo(ctrl_t *ctrl, ckrinfo_t *rinfo)
 {
   idx_t i, j;
   cnbr_t *nbrs;
+
+  ASSERT(ctrl->nbrpoolcpos >= 0);
+  ASSERT(rinfo->nnbrs < ctrl->nparts);
 
   nbrs = ctrl->cnbrpool + rinfo->inbr;
 

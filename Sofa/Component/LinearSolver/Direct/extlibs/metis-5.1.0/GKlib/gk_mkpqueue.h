@@ -4,7 +4,7 @@
 
 \date   Started 4/09/07
 \author George
-\version\verbatim $Id: gk_mkpqueue.h 13005 2012-10-23 22:34:36Z karypis $ \endverbatim
+\version\verbatim $Id: gk_mkpqueue.h 21742 2018-01-26 16:59:15Z karypis $ \endverbatim
 */
 
 
@@ -45,8 +45,8 @@ void FPRFX ## Init(PQT *queue, size_t maxnodes)\
 /**************************************************************************/\
 void FPRFX ## Reset(PQT *queue)\
 {\
-  gk_idx_t i;\
-  gk_idx_t *locator=queue->locator;\
+  ssize_t i;\
+  ssize_t *locator=queue->locator;\
   KVT *heap=queue->heap;\
 \
   for (i=queue->nnodes-1; i>=0; i--)\
@@ -92,8 +92,8 @@ size_t FPRFX ## Length(PQT *queue)\
 /**************************************************************************/\
 int FPRFX ## Insert(PQT *queue, VT node, KT key)\
 {\
-  gk_idx_t i, j;\
-  gk_idx_t *locator=queue->locator;\
+  ssize_t i, j;\
+  ssize_t *locator=queue->locator;\
   KVT *heap=queue->heap;\
 \
   ASSERT2(FPRFX ## CheckHeap(queue));\
@@ -127,9 +127,10 @@ int FPRFX ## Insert(PQT *queue, VT node, KT key)\
 /**************************************************************************/\
 int FPRFX ## Delete(PQT *queue, VT node)\
 {\
-  gk_idx_t i, j, nnodes;\
+  ssize_t i, j;\
+  size_t nnodes;\
   KT newkey, oldkey;\
-  gk_idx_t *locator=queue->locator;\
+  ssize_t *locator=queue->locator;\
   KVT *heap=queue->heap;\
 \
   ASSERT(locator[node] != -1);\
@@ -194,12 +195,14 @@ int FPRFX ## Delete(PQT *queue, VT node)\
 /**************************************************************************/\
 void FPRFX ## Update(PQT *queue, VT node, KT newkey)\
 {\
-  gk_idx_t i, j, nnodes;\
+  ssize_t i, j;\
+  size_t nnodes;\
   KT oldkey;\
-  gk_idx_t *locator=queue->locator;\
+  ssize_t *locator=queue->locator;\
   KVT *heap=queue->heap;\
 \
   oldkey = heap[locator[node]].key;\
+  if (!KEY_LT(newkey, oldkey) && !KEY_LT(oldkey, newkey)) return;\
 \
   ASSERT(locator[node] != -1);\
   ASSERT(heap[locator[node]].val == node);\
@@ -256,8 +259,8 @@ void FPRFX ## Update(PQT *queue, VT node, KT newkey)\
 /**************************************************************************/\
 VT FPRFX ## GetTop(PQT *queue)\
 {\
-  gk_idx_t i, j;\
-  gk_idx_t *locator;\
+  ssize_t i, j;\
+  ssize_t *locator;\
   KVT *heap;\
   VT vtx, node;\
   KT key;\
@@ -332,7 +335,7 @@ KT FPRFX ## SeeTopKey(PQT *queue)\
 /**************************************************************************/\
 KT FPRFX ## SeeKey(PQT *queue, VT node)\
 {\
-  gk_idx_t *locator;\
+  ssize_t *locator;\
   KVT *heap;\
 \
   heap    = queue->heap;\
@@ -350,7 +353,7 @@ KT FPRFX ## SeeKey(PQT *queue, VT node)\
 /*\
 VT FPRFX ## SeeConstraintTop(PQT *queue, KT maxwgt, KT *wgts)\
 {\
-  gk_idx_t i;\
+  ssize_t i;\
 \
   if (queue->nnodes == 0)\
     return -1;\
@@ -380,9 +383,9 @@ VT FPRFX ## SeeConstraintTop(PQT *queue, KT maxwgt, KT *wgts)\
 /**************************************************************************/\
 int FPRFX ## CheckHeap(PQT *queue)\
 {\
-  gk_idx_t i, j;\
+  ssize_t i, j;\
   size_t nnodes;\
-  gk_idx_t *locator;\
+  ssize_t *locator;\
   KVT *heap;\
 \
   heap    = queue->heap;\

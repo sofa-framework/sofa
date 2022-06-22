@@ -4,7 +4,7 @@
 
 \date   Started 3/27/2007
 \author George
-\version\verbatim $Id: gk_arch.h 10711 2011-08-31 22:23:04Z karypis $ \endverbatim
+\version\verbatim $Id: gk_arch.h 21637 2018-01-03 22:37:24Z karypis $ \endverbatim
 */
 
 #ifndef _GK_ARCH_H_
@@ -32,9 +32,10 @@
 
 
 #ifdef __MSC__ 
-  #include "ms_stdint.h"
-  #include "ms_inttypes.h"
-  #include "ms_stat.h"
+  #include "gk_ms_stdint.h"
+  #include "gk_ms_inttypes.h"
+  #include "gk_ms_stat.h"
+  #include "win32/adapt.h"
 #else
 #ifndef SUNOS
   #include <stdint.h>
@@ -43,6 +44,7 @@
   #include <sys/types.h>
   #include <sys/resource.h>
   #include <sys/time.h>
+  #include <unistd.h>
 #endif
 
 
@@ -57,5 +59,6 @@ typedef ptrdiff_t ssize_t;
 #ifdef SUNOS
 #define PTRDIFF_MAX  INT64_MAX
 #endif
+
 
 #endif

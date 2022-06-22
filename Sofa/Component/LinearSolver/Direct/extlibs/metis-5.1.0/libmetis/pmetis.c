@@ -106,7 +106,6 @@ int METIS_PartGraphRecursive(idx_t *nvtxs, idx_t *ncon, idx_t *xadj,
   if ((sigrval = gk_sigcatch()) != 0) 
     goto SIGTHROW;
 
-
   /* set up the run parameters */
   ctrl = SetupCtrl(METIS_OP_PMETIS, options, *ncon, *nparts, tpwgts, ubvec);
   if (!ctrl) {

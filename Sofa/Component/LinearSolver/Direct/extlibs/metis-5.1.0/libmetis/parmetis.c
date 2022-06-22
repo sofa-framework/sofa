@@ -156,7 +156,8 @@ void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order,
 
 
 /*************************************************************************/
-/*! This function bisects a graph by computing a vertex separator */
+/*! This function bisects a graph by computing a vertex separator 
+*/
 /**************************************************************************/
 int METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
            idx_t *vwgt, idx_t *options, idx_t *r_sepsize, idx_t *part) 
@@ -719,5 +720,98 @@ void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph,
   rpqDestroy(queues[1]);
 
   WCOREPOP;
+}
+
+
+/*************************************************************************/
+/*! This function computes a cache-friendly permutation of each partition.
+    The resulting permutation is retuned in old2new, which is a vector of 
+    size nvtxs such for vertex i, old2new[i] is its new vertex number. 
+*/
+/**************************************************************************/
+int METIS_CacheFriendlyReordering(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, 
+           idx_t *part, idx_t *old2new) 
+{
+  idx_t i, j, k, first, last, lastlevel, maxdegree, nparts;
+  idx_t *cot, *pos, *pwgts;
+  ikv_t *levels;
+
+  InitRandom(123);
+
+  /* This array ([C]losed[O]pen[T]odo => cot) serves three purposes.
+     Positions from [0...first) is the current iperm[] vector of the explored vertices;
+     Positions from [first...last) is the OPEN list (i.e., visited vertices);
+     Positions from [last...nvtxs) is the todo list. */
+  cot = iincset(nvtxs, 0, imalloc(nvtxs, "METIS_CacheFriendlyReordering: cor"));
+
+  /* This array will function like pos + touched of the CC method */
+  pos = iincset(nvtxs, 0, imalloc(nvtxs, "METIS_CacheFriendlyReordering: pos"));
+
+  /* pick a random starting vertex */
+  i = irandInRange(nvtxs);
+  pos[0] = cot[0] = i;
+  pos[i] = cot[i] = 0;
+
+  /* compute a BFS ordering */
+  first = last = 0;
+  lastlevel = 0;
+  maxdegree = 0;
+  while (first < nvtxs) {
+    if (first == last) { /* Find another starting vertex */
+      k = cot[last];
+      ASSERT(pos[k] >= 0);
+      pos[k] = --lastlevel; /* mark node as being visited by assigning its current level (-ve) */
+      last++;
+    }
+
+    i = cot[first++];
+    maxdegree = (maxdegree < xadj[i+1]-xadj[i] ? xadj[i+1]-xadj[i] : maxdegree);
+    for (j=xadj[i]; j<xadj[i+1]; j++) {
+      k = adjncy[j];
+      /* if a node has been already been visited, its pos[] will be -1 */
+      if (pos[k] >= 0) {
+        /* pos[k] is the location within cot of where k resides (it is in the 'todo' part); 
+           put in that location cot[last] that we are about to overwrite 
+           and update pos[cot[last]] to reflect that. */
+        cot[pos[k]]    = cot[last];
+        pos[cot[last]] = pos[k];
+
+        cot[last++] = k;  /* put node at the end of the "queue" */
+        pos[k]      = pos[i]-1; /* mark node as being visited by assigning to next level */
+        lastlevel   = pos[k]; /* for correctly advancing the levels in case of disconnected graphs */
+      }
+    }
+  }
+//  printf("lastlevel: %d\n", (int)-lastlevel);
+
+  /* sort based on decreasing level and decreasing degree (RCM) */
+  levels = ikvmalloc(nvtxs, "METIS_CacheFriendlyReordering: levels");
+  maxdegree++;
+  for (i=0; i<nvtxs; i++) {
+    levels[i].val = i;
+    levels[i].key = -pos[i]*maxdegree + xadj[i+1]-xadj[i];
+  }
+  ikvsortd(nvtxs, levels); 
+
+  /* figure out the partitions */
+  nparts = imax(nvtxs, part, 1)+1;
+  pwgts  = ismalloc(nparts+1, 0, "METIS_CacheFriendlyReordering: pwgts");
+
+  for (i=0; i<nvtxs; i++) 
+    pwgts[part[i]]++;
+  MAKECSR(i, nparts, pwgts);
+
+  for (i=0; i<nvtxs; i++) 
+    old2new[levels[i].val] = pwgts[part[levels[i].val]]++;
+
+#ifdef XXX
+  for (i=0; i<nvtxs; i++)
+    for (j=xadj[i]; j<xadj[i+1]; j++)
+      printf("COO: %d %d\n", (int)old2new[i], (int)old2new[adjncy[j]]);
+#endif 
+
+  gk_free((void **)&cot, &pos, &levels, &pwgts, LTERM);
+
+  return METIS_OK;
 }
 

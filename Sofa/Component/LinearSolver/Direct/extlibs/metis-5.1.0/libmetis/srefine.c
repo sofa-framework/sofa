@@ -8,7 +8,7 @@
  * Started 8/1/97
  * George
  *
- * $Id: srefine.c 10515 2011-07-08 15:46:18Z karypis $
+ * $Id: srefine.c 14362 2013-05-21 21:35:23Z karypis $
  *
  */
 
@@ -31,6 +31,8 @@ void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
   else {
     do {
       graph = graph->finer;
+
+      graph_ReadFromDisk(ctrl, graph);
 
       IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->ProjectTmr));
       Project2WayNodePartition(ctrl, graph);

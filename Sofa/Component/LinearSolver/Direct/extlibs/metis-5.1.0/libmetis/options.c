@@ -5,7 +5,7 @@
   \date   Started 5/12/2011
   \author George  
   \author Copyright 1997-2011, Regents of the University of Minnesota 
-  \version\verbatim $Id: options.c 13901 2013-03-24 16:17:03Z karypis $ \endverbatim
+  \version\verbatim $Id: options.c 17717 2014-10-03 19:09:31Z dominique $ \endverbatim
   */
 
 #include "metislib.h"
@@ -23,6 +23,8 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   ctrl = (ctrl_t *)gk_malloc(sizeof(ctrl_t), "SetupCtrl: ctrl");
   
   memset((void *)ctrl, 0, sizeof(ctrl_t));
+
+  ctrl->pid = getpid();
 
   switch (optype) {
     case METIS_OP_PMETIS:
@@ -47,8 +49,9 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
 
     case METIS_OP_KMETIS:
       ctrl->objtype = GETOPTION(options, METIS_OPTION_OBJTYPE, METIS_OBJTYPE_CUT);
-      ctrl->iptype  = METIS_IPTYPE_METISRB;
+      ctrl->iptype  = GETOPTION(options, METIS_OPTION_IPTYPE,  METIS_IPTYPE_METISRB);
       ctrl->rtype   = METIS_RTYPE_GREEDY;
+      ctrl->nIparts = GETOPTION(options, METIS_OPTION_NIPARTS, -1);
       ctrl->ncuts   = GETOPTION(options, METIS_OPTION_NCUTS,   1);
       ctrl->niter   = GETOPTION(options, METIS_OPTION_NITER,   10);
       ctrl->ufactor = GETOPTION(options, METIS_OPTION_UFACTOR, KMETIS_DEFAULT_UFACTOR);
@@ -76,11 +79,13 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   }
 
   /* common options */
-  ctrl->ctype   = GETOPTION(options, METIS_OPTION_CTYPE, METIS_CTYPE_SHEM);
-  ctrl->no2hop  = GETOPTION(options, METIS_OPTION_NO2HOP, 0);
-  ctrl->seed    = GETOPTION(options, METIS_OPTION_SEED, -1);
-  ctrl->dbglvl  = GETOPTION(options, METIS_OPTION_DBGLVL, 0);
-  ctrl->numflag = GETOPTION(options, METIS_OPTION_NUMBERING, 0);
+  ctrl->ctype     = GETOPTION(options, METIS_OPTION_CTYPE, METIS_CTYPE_SHEM);
+  ctrl->no2hop    = GETOPTION(options, METIS_OPTION_NO2HOP, 0);
+  ctrl->ondisk    = GETOPTION(options, METIS_OPTION_ONDISK, 0);
+  ctrl->seed      = GETOPTION(options, METIS_OPTION_SEED, -1);
+  ctrl->dbglvl    = GETOPTION(options, METIS_OPTION_DBGLVL, 0);
+  ctrl->numflag   = GETOPTION(options, METIS_OPTION_NUMBERING, 0);
+  ctrl->dropedges = GETOPTION(options, METIS_OPTION_DROPEDGES, 0);
 
   /* set non-option information */
   ctrl->optype  = optype;
@@ -90,7 +95,7 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
 
   /* setup the target partition weights */
   if (ctrl->optype != METIS_OP_OMETIS) {
-    ctrl->tpwgts = rmalloc(nparts*ncon, "SetupCtrl: ctrl->tpwgts");
+    ctrl->tpwgts = rsmalloc((nparts+2)*ncon, 0.0, "SetupCtrl: ctrl->tpwgts");
     if (tpwgts) {
       rcopy(nparts*ncon, tpwgts, ctrl->tpwgts);
     }
@@ -237,10 +242,14 @@ void PrintCtrl(ctrl_t *ctrl)
       printf("Unknown!\n");
   }
 
-  printf("   Perform a 2-hop matching: %s\n", (ctrl->no2hop ? "Yes" : "No"));
+  printf("   Perform a 2-hop matching: %s\n", (ctrl->no2hop ? "No" : "Yes"));
+
+  printf("   On disk storage: %s\n", (ctrl->ondisk ? "Yes" : "No"));
+  printf("   Drop edges: %s\n", (ctrl->dropedges ? "Yes" : "No"));
 
   printf("   Number of balancing constraints: %"PRIDX"\n", ctrl->ncon);
   printf("   Number of refinement iterations: %"PRIDX"\n", ctrl->niter);
+  printf("   Number of initial partitionings: %"PRIDX"\n", ctrl->nIparts);
   printf("   Random number seed: %"PRIDX"\n", ctrl->seed);
 
   if (ctrl->optype == METIS_OP_OMETIS) {
@@ -256,7 +265,7 @@ void PrintCtrl(ctrl_t *ctrl)
 
     if (ctrl->optype == METIS_OP_KMETIS) {
       printf("   Minimize connectivity: %s\n", (ctrl->minconn ? "Yes" : "No"));
-      printf("   Create contigous partitions: %s\n", (ctrl->contig ? "Yes" : "No"));
+      printf("   Create contiguous partitions: %s\n", (ctrl->contig ? "Yes" : "No"));
     }
 
     modnum = (ctrl->ncon==1 ? 5 : (ctrl->ncon==2 ? 3 : (ctrl->ncon==3 ? 2 : 1)));
@@ -370,7 +379,7 @@ int CheckParams(ctrl_t *ctrl)
         IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect coarsening scheme.\n"));
         return 0;
       }
-      if (ctrl->iptype != METIS_IPTYPE_METISRB) {
+      if (ctrl->iptype != METIS_IPTYPE_METISRB && ctrl->iptype != METIS_IPTYPE_GROW) {
         IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect initial partitioning scheme.\n"));
         return 0;
       }

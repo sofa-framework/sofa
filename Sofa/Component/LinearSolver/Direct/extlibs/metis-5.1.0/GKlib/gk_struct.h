@@ -4,7 +4,7 @@
 
 \date   Started 3/27/2007
 \author George
-\version\verbatim $Id: gk_struct.h 13005 2012-10-23 22:34:36Z karypis $ \endverbatim
+\version\verbatim $Id: gk_struct.h 21988 2018-04-16 00:11:19Z karypis $ \endverbatim
 */
 
 #ifndef _GK_STRUCT_H_
@@ -23,9 +23,12 @@ typedef struct {\
 /* The actual KeyVal data structures */
 GK_MKKEYVALUE_T(gk_ckv_t,   char,     ssize_t)
 GK_MKKEYVALUE_T(gk_ikv_t,   int,      ssize_t)
+GK_MKKEYVALUE_T(gk_i8kv_t,  int8_t,   ssize_t)
+GK_MKKEYVALUE_T(gk_i16kv_t, int16_t,  ssize_t)
 GK_MKKEYVALUE_T(gk_i32kv_t, int32_t,  ssize_t)
 GK_MKKEYVALUE_T(gk_i64kv_t, int64_t,  ssize_t)
 GK_MKKEYVALUE_T(gk_zkv_t,   ssize_t,  ssize_t)
+GK_MKKEYVALUE_T(gk_zukv_t,  size_t,   ssize_t)
 GK_MKKEYVALUE_T(gk_fkv_t,   float,    ssize_t)
 GK_MKKEYVALUE_T(gk_dkv_t,   double,   ssize_t)
 GK_MKKEYVALUE_T(gk_skv_t,   char *,   ssize_t)
@@ -38,12 +41,12 @@ GK_MKKEYVALUE_T(gk_idxkv_t, gk_idx_t, gk_idx_t)
 /********************************************************************/
 #define GK_MKPQUEUE_T(NAME, KVTYPE)\
 typedef struct {\
-  gk_idx_t nnodes;\
-  gk_idx_t maxnodes;\
+  size_t nnodes;\
+  size_t maxnodes;\
 \
   /* Heap version of the data structure */ \
   KVTYPE   *heap;\
-  gk_idx_t *locator;\
+  ssize_t *locator;\
 } NAME;\
 
 GK_MKPQUEUE_T(gk_ipq_t,    gk_ikv_t)
@@ -74,6 +77,8 @@ typedef struct gk_csr_t {
   ssize_t *rowptr, *colptr;
   int32_t *rowind, *colind;
   int32_t *rowids, *colids;
+  int32_t *rlabels, *clabels;
+  int32_t *rmap, *cmap;
   float *rowval, *colval;
   float *rnorms, *cnorms;
   float *rsums, *csums;
@@ -141,6 +146,7 @@ typedef struct gk_Tokens_t {
   char *strbuf;     /* The memory that stores all the entries */
   char **list;      /* Pointers to the strbuf for each element */
 } gk_Tokens_t;
+
 
 /*------------------------------------------------------------
  * This structure implements storage for an atom in a pdb file
@@ -237,7 +243,8 @@ typedef struct gk_mop_t {
 
 
 /*************************************************************************/
-/*! The following structure stores information used by Metis */
+/*! The following structure defines the mcore for GKlib's customized
+    memory allocations. */
 /*************************************************************************/
 typedef struct gk_mcore_t {
   /* Workspace information */
@@ -263,6 +270,27 @@ typedef struct gk_mcore_t {
 
 } gk_mcore_t;
 
+
+/*************************************************************************/
+/*! The following structure is used for cache simulation for performance
+    modeling and analysis. */
+/*************************************************************************/
+typedef struct gk_cache_t {
+  /*! The total cache is nway*(2^(cnbits+lnbits)) bytes */
+  uint32_t nway;        /*!< the associativity of the cache */
+  uint32_t lnbits;      /*!< the number of address bits indexing the cache line */
+  uint32_t cnbits;      /*!< the number of address bits indexing the cache */
+  size_t csize;         /*!< 2^cnbits */
+  size_t cmask;         /*!< csize-1 */
+
+  uint64_t clock;       /*!< a clock in terms of accesses */
+  
+  uint64_t *latimes;    /*!< a cacheline-level last access time */
+  size_t *clines;       /*!< the cache in terms of cachelines */
+
+  uint64_t nhits;       /*!< counts the number of hits */
+  uint64_t nmisses;     /*!< counts the number of misses */
+} gk_cache_t;
 
 
 #endif

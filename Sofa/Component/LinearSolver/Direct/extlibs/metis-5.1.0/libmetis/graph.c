@@ -5,7 +5,7 @@
 \date   Started 7/25/1997
 \author George  
 \author Copyright 1997-2009, Regents of the University of Minnesota 
-\version\verbatim $Id: graph.c 10513 2011-07-07 22:06:03Z karypis $ \endverbatim
+\version\verbatim $Id: graph.c 15817 2013-11-25 14:58:41Z karypis $ \endverbatim
 */
 
 #include "metislib.h"
@@ -34,6 +34,7 @@ graph_t *SetupGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t ncon, idx_t *xadj,
   graph->adjncy      = adjncy;
   graph->free_adjncy = 0;
 
+  graph->droppedewgt = 0;
 
   /* setup the vertex weights */
   if (vwgt) {
@@ -219,6 +220,26 @@ void InitGraph(graph_t *graph)
   /* linked-list structure */
   graph->coarser   = NULL;
   graph->finer     = NULL;
+
+}
+
+
+/*************************************************************************/
+/*! This function frees the memory storing the structure of the graph */
+/*************************************************************************/
+void FreeSData(graph_t *graph) 
+{
+  /* free graph structure */
+  if (graph->free_xadj)
+    gk_free((void **)&graph->xadj, LTERM);
+  if (graph->free_vwgt)
+    gk_free((void **)&graph->vwgt, LTERM);
+  if (graph->free_vsize)
+    gk_free((void **)&graph->vsize, LTERM);
+  if (graph->free_adjncy)
+    gk_free((void **)&graph->adjncy, LTERM);
+  if (graph->free_adjwgt)
+    gk_free((void **)&graph->adjwgt, LTERM);
 }
 
 
@@ -250,7 +271,76 @@ void FreeGraph(graph_t **r_graph)
 
   graph = *r_graph;
 
-  /* free graph structure */
+  /* free the graph structure's fields */
+  FreeSData(graph);
+
+  /* free the partition/refinement fields */
+  FreeRData(graph);
+
+  gk_free((void **)&graph->tvwgt, &graph->invtvwgt, &graph->label, 
+      &graph->cmap, &graph, LTERM);
+
+  *r_graph = NULL;
+}
+
+
+/*************************************************************************/
+/*! This function writes the key contents of the graph on disk and frees
+    the associated memory */
+/*************************************************************************/
+void graph_WriteToDisk(ctrl_t *ctrl, graph_t *graph) 
+{
+  idx_t nvtxs, ncon, *xadj;
+  static int gID = 1;
+  char outfile[1024];
+  FILE *fpout;
+
+  if (ctrl->ondisk == 0)
+    return;
+
+  if (sizeof(idx_t)*(graph->nvtxs*(graph->ncon+1)+2*graph->xadj[graph->nvtxs]) < 128*1024*1024)
+    return;
+
+  if (graph->gID > 0) {
+    sprintf(outfile, "metis%d.%d", (int)ctrl->pid, graph->gID);
+    gk_rmpath(outfile);
+  }
+
+  graph->gID    = gID++;
+  sprintf(outfile, "metis%d.%d", (int)ctrl->pid, graph->gID);
+
+  if ((fpout = fopen(outfile, "wb")) == NULL) 
+    return;
+
+  nvtxs = graph->nvtxs;
+  ncon  = graph->ncon;
+  xadj  = graph->xadj;
+
+  if (graph->free_xadj) {
+    if (fwrite(graph->xadj, sizeof(idx_t), nvtxs+1, fpout) != nvtxs+1)
+      goto error;
+  }
+  if (graph->free_vwgt) {
+    if (fwrite(graph->vwgt, sizeof(idx_t), nvtxs*ncon, fpout) != nvtxs*ncon)
+      goto error;
+  }
+  if (graph->free_adjncy) {
+    if (fwrite(graph->adjncy, sizeof(idx_t), xadj[nvtxs], fpout) != xadj[nvtxs])
+      goto error;
+  }
+  if (graph->free_adjwgt) {
+    if (fwrite(graph->adjwgt, sizeof(idx_t), xadj[nvtxs], fpout) != xadj[nvtxs])
+      goto error;
+  }
+  if (ctrl->objtype == METIS_OBJTYPE_VOL) { 
+    if (graph->free_vsize) {
+      if (fwrite(graph->vsize, sizeof(idx_t), nvtxs, fpout) != nvtxs)
+        goto error;
+    }
+  }
+
+  fclose(fpout);
+
   if (graph->free_xadj)
     gk_free((void **)&graph->xadj, LTERM);
   if (graph->free_vwgt)
@@ -261,14 +351,83 @@ void FreeGraph(graph_t **r_graph)
     gk_free((void **)&graph->adjncy, LTERM);
   if (graph->free_adjwgt)
     gk_free((void **)&graph->adjwgt, LTERM);
-    
-  /* free partition/refinement structure */
-  FreeRData(graph);
 
-  gk_free((void **)&graph->tvwgt, &graph->invtvwgt, &graph->label, 
-      &graph->cmap, &graph, LTERM);
+  graph->ondisk = 1;
+  return;
 
-  *r_graph = NULL;
+error:
+  printf("Failed on writing %s\n", outfile);
+  fclose(fpout);
+  gk_rmpath(outfile);
+  graph->ondisk = 0;
 }
 
+
+/*************************************************************************/
+/*! This function reads the key contents of a graph from the disk */
+/*************************************************************************/
+void graph_ReadFromDisk(ctrl_t *ctrl, graph_t *graph) 
+{
+  idx_t nvtxs, ncon, *xadj;
+  char infile[1024];
+  FILE *fpin;
+
+  if (graph->ondisk == 0)
+    return;  /* this graph is not on the disk */
+
+  sprintf(infile, "metis%d.%d", (int)ctrl->pid, graph->gID);
+
+  if ((fpin = fopen(infile, "rb")) == NULL) 
+    return;
+
+  nvtxs = graph->nvtxs;
+  ncon  = graph->ncon;
+
+  if (graph->free_xadj) {
+    graph->xadj = imalloc(nvtxs+1, "graph_ReadFromDisk: xadj");
+    if (fread(graph->xadj, sizeof(idx_t), nvtxs+1, fpin) != nvtxs+1)
+      goto error;
+  }
+  xadj = graph->xadj;
+
+  if (graph->free_vwgt) {
+    graph->vwgt = imalloc(nvtxs*ncon, "graph_ReadFromDisk: vwgt");
+    if (fread(graph->vwgt, sizeof(idx_t), nvtxs*ncon, fpin) != nvtxs*ncon)
+      goto error;
+  }
+
+  if (graph->free_adjncy) {
+    graph->adjncy = imalloc(xadj[nvtxs], "graph_ReadFromDisk: adjncy");
+    if (fread(graph->adjncy, sizeof(idx_t), xadj[nvtxs], fpin) != xadj[nvtxs])
+      goto error;
+  }
+
+  if (graph->free_adjwgt) {
+    graph->adjwgt = imalloc(xadj[nvtxs], "graph_ReadFromDisk: adjwgt");
+    if (fread(graph->adjwgt, sizeof(idx_t), xadj[nvtxs], fpin) != xadj[nvtxs])
+      goto error;
+  }
+
+  if (ctrl->objtype == METIS_OBJTYPE_VOL) {
+    if (graph->free_vsize) {
+      graph->vsize = imalloc(nvtxs, "graph_ReadFromDisk: vsize");
+      if (fread(graph->vsize, sizeof(idx_t), nvtxs, fpin) != nvtxs)
+        goto error;
+    }
+  }
+
+  fclose(fpin);
+//  printf("ondisk: deleting %s\n", infile);
+  gk_rmpath(infile);
+
+  graph->gID    = 0;
+  graph->ondisk = 0;
+  return;
+
+error:
+  fclose(fpin);
+  gk_rmpath(infile);
+  graph->ondisk = 0;
+  gk_errexit(SIGERR, "Failed to restore graph %s from the disk.\n", infile);
+}
 

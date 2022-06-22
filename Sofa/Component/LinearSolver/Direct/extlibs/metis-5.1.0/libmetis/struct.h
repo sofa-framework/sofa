@@ -8,7 +8,7 @@
  * Started 9/26/95
  * George
  *
- * $Id: struct.h 13900 2013-03-24 15:27:07Z karypis $
+ * $Id: struct.h 14362 2013-05-21 21:35:23Z karypis $
  */
 
 #ifndef _LIBMETIS_STRUCT_H_
@@ -96,9 +96,9 @@ typedef struct graph_t {
      application or library memory */
   int free_xadj, free_vwgt, free_vsize, free_adjncy, free_adjwgt;
 
-  idx_t *label;
+  idx_t *cmap;  /* The contraction/coarsening map */
 
-  idx_t *cmap;
+  idx_t *label; /* The labels of the vertices for recusive bisection (pmetis/ometis) */
 
   /* Partition parameters */
   idx_t mincut, minvol;
@@ -116,7 +116,16 @@ typedef struct graph_t {
   /* Node refinement information */
   nrinfo_t *nrinfo;
 
+  /* various fields for out-of-core processing */
+  int gID;
+  int ondisk;
+
+  /* keep track of the dropped edgewgt */
+  idx_t droppedewgt;
+
+  /* the linked-list structure of the sequence of graphs */
   struct graph_t *coarser, *finer;
+
 } graph_t;
 
 
@@ -147,6 +156,7 @@ typedef struct ctrl_t {
   idx_t CoarsenTo;		/* The # of vertices in the coarsest graph */
   idx_t nIparts;                /* The number of initial partitions to compute */
   idx_t no2hop;                 /* Indicates if 2-hop matching will be used */
+  idx_t ondisk;                 /* Indicates out-of-core execution */
   idx_t minconn;                /* Indicates if the subdomain connectivity will be minimized */
   idx_t contig;                 /* Indicates if contigous partitions are required */
   idx_t nseps;			/* The number of separators to be found during multiple bisections */
@@ -157,6 +167,7 @@ typedef struct ctrl_t {
   idx_t ncuts;                  /* The number of different partitionings to compute */
   idx_t niter;                  /* The number of iterations during each refinement */
   idx_t numflag;                /* The user-supplied numflag for the graph */
+  idx_t dropedges;              /* Indicates if edges will be randomly dropped during coarsening */
   idx_t *maxvwgt;		/* The maximum allowed weight for a vertex */
 
   idx_t ncon;                   /*!< The number of balancing constraints */
@@ -181,6 +192,7 @@ typedef struct ctrl_t {
                              mallocs/frees */
 
   /* These are for use by the k-way refinement routines */
+  size_t nbrpoolsize_max;  /*!< The maximum number of {c,v}nbr_t entries that will ever be allocated */
   size_t nbrpoolsize;      /*!< The number of {c,v}nbr_t entries that have been allocated */
   size_t nbrpoolcpos;      /*!< The position of the first free entry in the array */
   size_t nbrpoolreallocs;  /*!< The number of times the pool was resized */
@@ -199,6 +211,8 @@ typedef struct ctrl_t {
   idx_t **adwgts;               /* The edge-weight to the adjacent domains */
   idx_t *pvec1, *pvec2;         /* Auxiliar nparts-size vectors for efficiency */
 
+  /* ondisk related info */
+  pid_t pid;            /*!< The pid of the running process */
 } ctrl_t;
 
 
