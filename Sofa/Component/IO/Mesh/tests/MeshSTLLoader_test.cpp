@@ -86,7 +86,7 @@ namespace meshstlloader_test
         // for several STL meshes in share/mesh/
         loadTest("mesh/circle_knot_ascii.stl", 6144, 0, 12288, 0, 0, 0, 0, 12288);
         loadTest("mesh/dragon.stl", 1190, 0, 2526, 0, 0, 0, 0, 2526);
-        loadTest("mesh/pliers_binary.stl", 5356, 0, 10712, 0, 0, 0, 0, 10712); //NB : Gmsh detects 10708 faces. Is that normal ?
+        loadTest("mesh/pliers_binary.stl", 5356, 0, 10708, 0, 0, 0, 0, 10712);
     }
 
 } // namespace meshstlloader_test
