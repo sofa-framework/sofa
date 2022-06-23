@@ -211,7 +211,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         if (!ownerClass.empty())
             helper_button->setToolTip( ("Data from "+ownerClass).c_str());
     }
-    if(modifiable || data->getParent())
+    if(data->getParent())
     {
         std::string linkvalue = data->getParent()->getLinkPath();
         linkpath_edit = new QLineEdit(this);

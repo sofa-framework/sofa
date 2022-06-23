@@ -52,6 +52,9 @@ using namespace sofa::core::objectmodel;
 
 namespace sofa::gui::qt
 {
+
+
+
 //***********************************************************************************************************
 
 static const int iconWidth=8;
@@ -322,15 +325,46 @@ void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
         item->setIcon(0, QIcon(*pix));
 }
 
+ObjectStateListener::ObjectStateListener(
+        QTreeWidgetItem* item_,
+        sofa::core::objectmodel::Base* object_) : item(item_), object(object_)
+{
+    // We want the view to react to a change in the message log
+    object->d_messageLogCount.addOutput(this);
+
+    // We want the view to react to a change in the name
+    object->name.addOutput(this);
+}
+
+ObjectStateListener::~ObjectStateListener()
+{
+    object->d_messageLogCount.delOutput(this);
+    object->name.delOutput(this);
+}
+
+void ObjectStateListener::update() {}
+void ObjectStateListener::notifyEndEdit()
+{
+    setMessageIconFrom(item, object.get());
+
+    QString oldName = item->text(0);
+    QString newName = QString::fromStdString(object->getName());
+    if(newName != oldName)
+        item->setText(0, newName);
+}
+
+GraphListenerQListView::~GraphListenerQListView()
+{
+    for(auto [key, listener] : listeners)
+    {
+        delete listener;
+    }
+    listeners.clear();
+}
+
 /*****************************************************************************************************************/
 QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 {
-    //    QTreeWidgetItem* last = parent->firstChild();
-    //    if (last == nullptr)
-    //        return new QTreeWidgetItem(parent);
-    //    while (last->nextSibling()!=nullptr)
-    //        last = last->nextSibling();
-    //    return new QTreeWidgetItem(parent, last);
     if(parent->childCount() == 0)
         return new QTreeWidgetItem(parent);
     return new QTreeWidgetItem(parent, parent->child(parent->childCount()-1));
@@ -419,7 +453,11 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
 
         item->setExpanded(true);
         items[child] = item;
+
+        // Add a listener to connect changes on the component state with its graphical view.
+        listeners[child] = new ObjectStateListener(item, child);
     }
+
     for (BaseObject::SPtr obj : child->object)
         onBeginAddObject(child, obj.get());
     for (Node::SPtr node : child->child)
@@ -438,7 +476,9 @@ void GraphListenerQListView::onBeginRemoveChild(Node* parent, Node* child)
     if (items.count(child))
     {
         delete items[child];
+        delete listeners[child];
         items.erase(child);
+        listeners.erase(child);
     }
 }
 
@@ -498,6 +538,7 @@ void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::B
         setMessageIconFrom(item, object);
 
         items[object] = item;
+        listeners[object] = new ObjectStateListener(item, object);
     }
     for (BaseObject::SPtr slave : object->getSlaves())
         onBeginAddSlave(object, slave.get());
@@ -515,6 +556,9 @@ void GraphListenerQListView::onBeginRemoveObject(Node* parent, core::objectmodel
     {
         delete items[object];
         items.erase(object);
+
+        delete listeners[object];
+        listeners.erase(object);
     }
 }
 
@@ -590,6 +634,9 @@ void GraphListenerQListView::onBeginRemoveSlave(core::objectmodel::BaseObject* m
     {
         delete items[slave];
         items.erase(slave);
+
+        delete listeners[slave];
+        listeners.erase(slave);
     }
 }
 

@@ -81,7 +81,6 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
 
 
     connect(displaydatawidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
-    connect(displaydatawidget, SIGNAL( DataOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
     connect(this, SIGNAL(UpdateDatas()), displaydatawidget, SLOT( UpdateData()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaydatawidget, SLOT( UpdateWidgets()));
     connect(displaydatawidget, SIGNAL( dataValueChanged(QString) ), SLOT(dataValueChanged(QString) ) );
@@ -105,7 +104,6 @@ void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, c
     pixelSize += displaylinkwidget->sizeHint().height();
 
     connect(displaylinkwidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
-    connect(displaylinkwidget, SIGNAL( LinkOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
     connect(this, SIGNAL(UpdateDatas()), displaylinkwidget, SLOT( UpdateLink()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaylinkwidget, SLOT( UpdateWidgets()));
 }
@@ -113,14 +111,6 @@ void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, c
 void QTabulationModifyObject::dataValueChanged(QString dataValue)
 {
     m_dataValueModified[sender()] = dataValue;
-}
-
-void QTabulationModifyObject::updateListViewItem()
-{
-    QString currentName = item->text(0);
-    QString newName = QString::fromStdString(object->getName());
-    if(newName != currentName)
-        item->setText(0, newName);
 }
 
 QString QTabulationModifyObject::getDataModifiedString() const

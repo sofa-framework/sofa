@@ -398,7 +398,6 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     connect(displaydatawidget, SIGNAL( WidgetDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
     connect(displaydatawidget, SIGNAL( WidgetDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
     connect(buttonOk, SIGNAL(clicked() ), displaydatawidget, SLOT( UpdateData() ) );
-    connect(displaydatawidget, SIGNAL(DataOwnerDirty(bool)), this, SLOT( updateListViewItem() ) );
     connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( accept() ) );
     connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
     connect(this, SIGNAL(updateDataWidgets()), displaydatawidget, SLOT(UpdateWidgets()) );
@@ -558,17 +557,6 @@ void ModifyObject::updateValues()
 
         buttonUpdate->setEnabled(false);
     }
-}
-
-//*******************************************************************************************************************
-
-void ModifyObject::updateListViewItem()
-{
-    QTreeWidgetItem* parent = item_->parent();
-    QString currentName = parent->text(0);
-    QString newName = QString::fromStdString(data_->getOwner()->getName());
-    if(newName != currentName)
-        parent->setText(0, newName);
 }
 
 //**************************************************************************************************************************************
