@@ -27,8 +27,8 @@ message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
-sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
+sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Projective)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Select)
