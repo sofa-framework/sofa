@@ -499,11 +499,8 @@ void ModifyObject::updateValues()
         core::objectmodel::BaseObject* object = sofa::core::castTo<core::objectmodel::BaseObject*>(basenode);
         if(dialogFlags_.REINIT_FLAG)
         {
-            if (node && transformation)
+            if (node)
             {
-                if (!transformation->isDefaultValues())
-                    transformation->applyTransformation(node);
-                transformation->setDefaultValues();
                 node->reinit(sofa::core::execparams::defaultInstance());
             }
             else if (object){
@@ -552,15 +549,10 @@ void ModifyObject::updateValues()
 void ModifyObject::updateListViewItem()
 {
     QTreeWidgetItem* parent = item_->parent();
-    QString currentName =parent->text(0);
-    std::string name = parent->text(0).toStdString();
-    std::string::size_type pos = name.find(' ');
-    if (pos != std::string::npos)
-        name.resize(pos);
-    name += "  ";
-    name += data_->getOwner()->getName();
-    QString newName(name.c_str());
-    if (newName != currentName) parent->setText(0,newName);
+    QString currentName = parent->text(0);
+    QString newName = QString::fromStdString(data_->getOwner()->getName());
+    if(newName != currentName)
+        parent->setText(0, newName);
 }
 
 //**************************************************************************************************************************************
