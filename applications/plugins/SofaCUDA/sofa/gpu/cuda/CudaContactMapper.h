@@ -156,12 +156,12 @@ public:
 
 
 template <class DataTypes>
-class response::mapper::ContactMapper<sofa::component::collision::geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> : public response::mapper::SubsetContactMapper<sofa::component::collision::geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes>
+class response::mapper::ContactMapper<CudaSphereCollisionModel, DataTypes> : public response::mapper::SubsetContactMapper<CudaSphereCollisionModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef SubsetContactMapper<sofa::component::collision::geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> Inherit;
+    typedef SubsetContactMapper<CudaSphereCollisionModel, DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
     typedef typename Inherit::MMapping MMapping;
