@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaTypes.h"
-#include <SofaObjectInteraction/PenalityContactForceField.h>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 
 namespace sofa::component::collision::response::contact

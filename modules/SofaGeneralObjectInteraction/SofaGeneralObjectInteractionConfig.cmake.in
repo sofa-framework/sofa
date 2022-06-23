@@ -9,11 +9,9 @@ if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
-find_package(SofaDeformable QUIET REQUIRED)
-find_package(SofaEngine QUIET REQUIRED)
-find_package(SofaGeneralEngine QUIET REQUIRED)
 find_package(Sofa.Component.SolidMechanics.Spring QUIET REQUIRED)
 find_package(Sofa.Component.Constraint.Projective QUIET REQUIRED)
+find_package(Sofa.Component.Engine.Select QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

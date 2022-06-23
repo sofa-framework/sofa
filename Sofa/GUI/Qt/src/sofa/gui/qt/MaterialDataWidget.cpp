@@ -177,7 +177,7 @@ bool VectorMaterialDataWidget::createWidgets()
     layout->addWidget(_comboBox);
     layout->addWidget(_materialDataWidget);
 
-    connect( _comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &VectorMaterialDataWidget::changeMaterial );
+    connect( _comboBox, QOverload<int>::of(&QComboBox::activated), this, &VectorMaterialDataWidget::changeMaterial );
     connect( _materialDataWidget, &MaterialDataWidget::WidgetDirty, this, &VectorMaterialDataWidget::setWidgetDirty );
 
     readFromData();

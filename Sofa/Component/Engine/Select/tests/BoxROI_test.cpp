@@ -34,10 +34,10 @@ using ::testing::Types;
 #include <sofa/core/objectmodel/ComponentState.h>
 using sofa::core::objectmodel::ComponentState;
 
-#include <SofaEngine/BoxROI.h>
-using sofa::component::engine::BoxROI;
+#include <sofa/component/engine/select/BoxROI.h>
+using sofa::component::engine::select::BoxROI;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation;
 using sofa::simulation::graph::DAGSimulation;
 #include <sofa/simulation/Node.h>
@@ -51,7 +51,7 @@ using sofa::defaulttype::Vec3Types;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
 
 #include <sofa/helper/logging/Message.h>
@@ -60,7 +60,7 @@ using sofa::helper::logging::MessageDispatcher;
 #include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/BaseTest.h>
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 template <typename TDataType>
 struct BoxROITest :  public sofa::testing::BaseTest

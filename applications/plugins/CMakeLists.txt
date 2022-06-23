@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
-find_package(SofaFramework)
+find_package(Sofa.Framework)
 
-# SofaTest needs to be after SofaMiscCollision, as it depends on it
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    # Library used to write high level tests involving many components.
-    add_subdirectory(SofaTest)
+    # (Deprecated) Library used to write high level tests involving many components.
+    sofa_add_plugin(SofaTest SofaTest)
 endif()
 
 sofa_add_plugin(CollisionOBBCapsule CollisionOBBCapsule)

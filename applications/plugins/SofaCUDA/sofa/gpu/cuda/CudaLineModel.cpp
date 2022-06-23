@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaLineModel.h>
-#include <SofaMeshCollision/LineModel.inl>
+#include <sofa/component/collision/geometry/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry

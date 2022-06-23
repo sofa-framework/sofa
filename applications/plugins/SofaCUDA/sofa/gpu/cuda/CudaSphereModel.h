@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 
 namespace sofa::gpu::cuda
 {
@@ -30,7 +30,7 @@ namespace sofa::gpu::cuda
 using CudaSphereCollisionModel = sofa::component::collision::geometry::SphereCollisionModel<CudaVec3Types>;
 using CudaSphereCollisionModelf1 = sofa::component::collision::geometry::SphereCollisionModel<CudaVec3f1Types>;
 
-using CudaSphere = sofa::component::collision::TSphere<CudaVec3fTypes>;
+using CudaSphere = sofa::component::collision::geometry::TSphere<CudaVec3fTypes>;
 
 } // namespace sofa::gpu::cuda
 

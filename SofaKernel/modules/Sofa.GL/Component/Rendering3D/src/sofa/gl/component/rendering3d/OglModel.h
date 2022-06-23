@@ -28,7 +28,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 #include <vector>
 #include <string>
 #include <type_traits>

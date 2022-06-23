@@ -27,14 +27,14 @@
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaBaseUtils/InfoComponent.h>
+#include <sofa/component/sceneutility/InfoComponent.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/simulation/Node.h>
 
 
-using sofa::component::InfoComponent ;
+using sofa::component::sceneutility::InfoComponent ;
 
 #include "resources/icons/iconmultinode.xpm"
 #include "resources/icons/iconnode.xpm"

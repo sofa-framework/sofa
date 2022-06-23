@@ -60,7 +60,7 @@ public:
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API PointCollisionModel : public core::CollisionModel
+class PointCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel);

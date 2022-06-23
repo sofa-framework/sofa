@@ -34,7 +34,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
@@ -50,24 +50,7 @@
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
-#include <SofaConstraint/initSofaConstraint.h>
-#include <SofaGeneralAnimationLoop/initSofaGeneralAnimationLoop.h>
-#include <SofaGeneralDeformable/initSofaGeneralDeformable.h>
-#include <SofaGeneralEngine/initSofaGeneralEngine.h>
-#include <SofaGeneralExplicitOdeSolver/initSofaGeneralExplicitOdeSolver.h>
-#include <SofaGeneralImplicitOdeSolver/initSofaGeneralImplicitOdeSolver.h>
-#include <SofaGeneralLinearSolver/initSofaGeneralLinearSolver.h>
-#include <SofaGeneralLoader/initSofaGeneralLoader.h>
-#include <SofaGeneralMeshCollision/initSofaGeneralMeshCollision.h>
-#include <SofaGeneralObjectInteraction/initSofaGeneralObjectInteraction.h>
-#include <SofaGeneralRigid/initSofaGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initSofaGeneralSimpleFem.h>
-#include <SofaGeneralTopology/initSofaGeneralTopology.h>
-#include <SofaGeneralVisual/initSofaGeneralVisual.h>
-#include <SofaGraphComponent/initSofaGraphComponent.h>
-#include <SofaTopologyMapping/initSofaTopologyMapping.h>
-#include <SofaUserInteraction/initSofaUserInteraction.h>
+#include <sofa/component/init.h>
 
 SofaPhysicsAPI::SofaPhysicsAPI(bool useGUI, int GUIFramerate)
     : impl(new SofaPhysicsSimulation(useGUI, GUIFramerate))
@@ -265,24 +248,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     m_Simulation = new sofa::simulation::graph::DAGSimulation();
     sofa::simulation::setSimulation(m_Simulation);
 
-    sofa::component::initSofaBoundaryCondition();
-    sofa::component::initSofaConstraint();
-    sofa::component::initSofaGeneralAnimationLoop();
-    sofa::component::initSofaGeneralDeformable();
-    sofa::component::initSofaGeneralEngine();
-    sofa::component::initSofaGeneralExplicitOdeSolver();
-    sofa::component::initSofaGeneralImplicitOdeSolver();
-    sofa::component::initSofaGeneralLinearSolver();
-    sofa::component::initSofaGeneralLoader();
-    sofa::component::initSofaGeneralMeshCollision();
-    sofa::component::initSofaGeneralObjectInteraction();
-    sofa::component::initSofaGeneralRigid();
-    sofa::component::initSofaGeneralSimpleFem();
-    sofa::component::initSofaGeneralTopology();
-    sofa::component::initSofaGeneralVisual();
-    sofa::component::initSofaGraphComponent();
-    sofa::component::initSofaTopologyMapping();
-    sofa::component::initSofaUserInteraction();
+    sofa::component::init(); // force dependency on Sofa.Component
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
             &classVisualModel);
@@ -760,7 +726,7 @@ void SofaPhysicsSimulation::drawGL()
             groot->get(currentCamera);
             if (!currentCamera)
             {
-                currentCamera = sofa::core::objectmodel::New<sofa::component::visualmodel::InteractiveCamera>();
+                currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
                 currentCamera->setName(sofa::core::objectmodel::Base::shortName(currentCamera.get()));
                 groot->addObject(currentCamera);
                 currentCamera->p_position.forceSet();

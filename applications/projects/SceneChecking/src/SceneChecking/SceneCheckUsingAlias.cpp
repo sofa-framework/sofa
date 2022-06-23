@@ -85,9 +85,10 @@ void SceneCheckUsingAlias::doPrintSummary()
             using sofa::helper::lifecycle::uncreatableComponents;
 
             usingAliasesWarning << "  - " << i.first << ": " << count << " created with alias \"" <<  unique_alias << "\"";
-            if( uncreatableComponents.find(unique_alias) != uncreatableComponents.end() )
+            auto searchAlias = uncreatableComponents.find(unique_alias);
+            if( searchAlias != uncreatableComponents.end() )
             {
-                usingAliasesWarning << " This alias will be REMOVED at the SOFA release " << uncreatableComponents.at(unique_alias).getVersion() << ", please update your scenes.";
+                usingAliasesWarning << " This alias will be REMOVED at the SOFA release " << searchAlias->second.getVersion() << ", please update your scenes.";
             }
 
             if(unique_alias != unique_aliases.back()) usingAliasesWarning << msgendl;

@@ -149,7 +149,7 @@ public:
     void expandPathFrom(const std::vector<std::string>& pathes);
     void getExpandedNodes(std::vector<std::string>&);
 
-    void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
+    void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale ) = delete;
 
 public Q_SLOTS:
     void Export();
@@ -184,7 +184,6 @@ protected Q_SLOTS:
     void collapseNode();
     void expandNode();
     void modifyUnlock(void* Id);
-    void RaiseAddObject();
     void RemoveNode();
     void Modify();
     void openInEditor();
@@ -211,7 +210,9 @@ protected:
     void getExpandedNodes(QTreeWidgetItem* item, std::vector<std::string>&) ;
     void collapseNode(QTreeWidgetItem* item);
     void expandNode(QTreeWidgetItem* item);
-    void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale );
+
+    void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale ) = delete;
+
     bool isNodeErasable( core::objectmodel::BaseNode* node);
 
     std::list<core::objectmodel::BaseNode*> collectNodesToChange(core::objectmodel::BaseNode* node);

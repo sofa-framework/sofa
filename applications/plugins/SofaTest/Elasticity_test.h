@@ -28,11 +28,11 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
+#include <sofa/component/constraint/projective/AffineMovementConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 namespace sofa {
 
@@ -41,8 +41,8 @@ template<class T>
 struct PatchTestStruct
 {
     simulation::Node::SPtr SquareNode;
-    typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
-    typename component::container::MechanicalObject<T>::SPtr dofs;
+    typename component::constraint::projective::AffineMovementConstraint<T>::SPtr affineConstraint;
+    typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
 };
 
 /// Structure which contains the nodes and the pointers useful for the patch test
@@ -50,15 +50,15 @@ template<class T>
 struct CylinderTractionStruct
 {
     simulation::Node::SPtr root;
-    typename component::container::MechanicalObject<T>::SPtr dofs;
-    typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField;
+    typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
+    typename component::mechanicalload::TrianglePressureForceField<T>::SPtr forceField;
 };
 
 
 template< class DataTypes>
 struct SOFA_SOFATEST_API Elasticity_test: public Sofa_test<typename DataTypes::Real>
 {
-    typedef component::container::MechanicalObject<DataTypes> DOFs;
+    typedef component::statecontainer::MechanicalObject<DataTypes> DOFs;
     typedef typename DOFs::Real  Real;
     typedef typename DOFs::Coord  Coord;
     typedef typename DOFs::Deriv  Deriv;

@@ -303,7 +303,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             {
                 std::stringstream tmp;
                 int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
-                                                             Message::Error, Message::Warning, Message::Fatal});
+                                                                 Message::Error, Message::Warning, Message::Fatal});
                 tmp << "Messages(" << numMessages << ")" ;
                 dialogTab->addTab(messageTab, QString::fromStdString(tmp.str()));
             }
@@ -340,7 +340,7 @@ void ModifyObject::clearMessages()
 
     std::stringstream tmp;
     int numMessages = basenode->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
-                                                 Message::Error, Message::Warning, Message::Fatal});
+                                                     Message::Error, Message::Warning, Message::Fatal});
     tmp << "Messages(" << numMessages << ")" ;
 
     dialogTab->setTabText(dialogTab->indexOf(messageTab), QString::fromStdString(tmp.str()));
@@ -501,159 +501,175 @@ void ModifyObject::updateValues()
         {
             if (node)
             {
-                node->reinit(sofa::core::execparams::defaultInstance());
-            }
-            else if (object){
-                object->reinit();
-            }
-            else {
-                throw std::runtime_error("Invalid type, only Node and BaseObject are supported. "
+                // if the selected object is a node
+                if (node)
+                {
+                    // and there is a transformation widget associated
+                    if(transformation)
+                    {
+                        // then do some dirty hack to change the value
+                        if (!transformation->isDefaultValues())
+                        {
+                            transformation->applyTransformation(node);
+                        }
+                        transformation->setDefaultValues();
+                    }
+                    // call the reinit function on the node
+                    node->reinit(sofa::core::execparams::defaultInstance());
+                }
+                else if (object)                 //< if the selected is an object
+                {
+                    object->reinit();            //< we need to fully re-initialize the object to be sure it is ok.
+                }
+                else
+                {
+                    throw std::runtime_error("Invalid type, only Node and BaseObject are supported. "
                                          "This is a BUG, please report to https://github.com/sofa-framework/sofa/issues");
+                }
             }
+
         }
 
+#ifdef DEBUG_GUI
+        std::cout << "GUI>emit objectUpdated()" << std::endl;
+#endif
+        emit (objectUpdated());
+#ifdef DEBUG_GUI
+        std::cout << "GUI<emit objectUpdated()" << std::endl;
+#endif
+
+        if (basenode)
+        {
+#ifdef DEBUG_GUI
+            std::cout << "GUI>emit endObjectModification("<<node->getName()<<")" << std::endl;
+#endif
+            emit endObjectModification(basenode);
+#ifdef DEBUG_GUI
+            std::cout << "GUI<emit endObjectModification("<<node->getName()<<")" << std::endl;
+#endif
+#ifdef DEBUG_GUI
+            std::cout << "GUI>emit beginObjectModification("<<node->getName()<<")" << std::endl;
+#endif
+            emit beginObjectModification(basenode);
+#ifdef DEBUG_GUI
+            std::cout << "GUI<emit beginObjectModification("<<node->getName()<<")" << std::endl;
+#endif
+        }
+
+        buttonUpdate->setEnabled(false);
     }
 
-#ifdef DEBUG_GUI
-    std::cout << "GUI>emit objectUpdated()" << std::endl;
-#endif
-    emit (objectUpdated());
-#ifdef DEBUG_GUI
-    std::cout << "GUI<emit objectUpdated()" << std::endl;
-#endif
 
-    if (basenode)
+    //*******************************************************************************************************************
+
+    void ModifyObject::updateListViewItem()
+    {
+        QTreeWidgetItem* parent = item_->parent();
+        QString currentName = parent->text(0);
+        QString newName = QString::fromStdString(data_->getOwner()->getName());
+        if(newName != currentName)
+            parent->setText(0, newName);
+    }
+
+    //**************************************************************************************************************************************
+    //Called each time a new step of the simulation if computed
+    void ModifyObject::updateTables()
     {
 #ifdef DEBUG_GUI
-        std::cout << "GUI>emit endObjectModification("<<node->getName()<<")" << std::endl;
+        std::cout << "GUI>emit updateDataWidgets()" << std::endl;
 #endif
-        emit endObjectModification(basenode);
+        emit updateDataWidgets();
 #ifdef DEBUG_GUI
-        std::cout << "GUI<emit endObjectModification("<<node->getName()<<")" << std::endl;
-#endif
-#ifdef DEBUG_GUI
-        std::cout << "GUI>emit beginObjectModification("<<node->getName()<<")" << std::endl;
-#endif
-        emit beginObjectModification(basenode);
-#ifdef DEBUG_GUI
-        std::cout << "GUI<emit beginObjectModification("<<node->getName()<<")" << std::endl;
-#endif
-    }
-
-    buttonUpdate->setEnabled(false);
-}
-
-
-//*******************************************************************************************************************
-
-void ModifyObject::updateListViewItem()
-{
-    QTreeWidgetItem* parent = item_->parent();
-    QString currentName = parent->text(0);
-    QString newName = QString::fromStdString(data_->getOwner()->getName());
-    if(newName != currentName)
-        parent->setText(0, newName);
-}
-
-//**************************************************************************************************************************************
-//Called each time a new step of the simulation if computed
-void ModifyObject::updateTables()
-{
-#ifdef DEBUG_GUI
-    std::cout << "GUI>emit updateDataWidgets()" << std::endl;
-#endif
-    emit updateDataWidgets();
-#ifdef DEBUG_GUI
-    std::cout << "GUI<emit updateDataWidgets()" << std::endl;
+        std::cout << "GUI<emit updateDataWidgets()" << std::endl;
 #endif
 #if SOFA_GUI_QT_HAVE_QT5_CHARTS
-    if (energy)
-    {        
-        if (dialogTab->currentWidget() == energy) energy->step();
-    }
-
-    if (momentum)
-    {
-        if (dialogTab->currentWidget() == momentum) momentum->step();
-    }
-#endif
-
-    if(basenode)
-    {
-        updateConsole();
-    }
-}
-
-void ModifyObject::reject   ()
-{
-    if (basenode)
-    {
-#ifdef DEBUG_GUI
-        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
-        emit endObjectModification(basenode);
-#ifdef DEBUG_GUI
-        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
-    }
-
-    const QString dataModifiedString = parseDataModified();
-    if (!dataModifiedString.isEmpty())
-    {
-        emit  dataModified( dataModifiedString  );
-    }
-
-    emit(dialogClosed(Id_));
-    deleteLater();
-    QDialog::reject();
-} //When closing a window, inform the parent.
-
-void ModifyObject::accept   ()
-{
-    updateValues();
-
-    const QString dataModifiedString = parseDataModified();
-    if (!dataModifiedString.isEmpty())
-    {
-        emit  dataModified( dataModifiedString  );
-    }
-
-    if (basenode)
-    {
-#ifdef DEBUG_GUI
-        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
-        emit endObjectModification(basenode);
-#ifdef DEBUG_GUI
-        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
-    }
-    emit(dialogClosed(Id_));
-    deleteLater();
-    QDialog::accept();
-} //if closing by using Ok button, update the values
-
-QString ModifyObject::parseDataModified()
-{
-    QString cat;
-
-    for (std::size_t i = 0; i < m_tabs.size(); ++i)
-    {
-        const QString tabString = m_tabs[i]->getDataModifiedString();
-        if (!tabString.isEmpty())
+        if (energy)
         {
-            cat += tabString;
-            if (i != (m_tabs.size() - 1))
-            {
-                cat += "\n";
-            }
+            if (dialogTab->currentWidget() == energy) energy->step();
+        }
+
+        if (momentum)
+        {
+            if (dialogTab->currentWidget() == momentum) momentum->step();
+        }
+#endif
+
+        if(basenode)
+        {
+            updateConsole();
         }
     }
 
-    return cat;
-}
+    void ModifyObject::reject   ()
+    {
+        if (basenode)
+        {
+#ifdef DEBUG_GUI
+            std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+            emit endObjectModification(basenode);
+#ifdef DEBUG_GUI
+            std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+        }
 
-bool ModifyObject::hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
+        const QString dataModifiedString = parseDataModified();
+        if (!dataModifiedString.isEmpty())
+        {
+            emit  dataModified( dataModifiedString  );
+        }
+
+        emit(dialogClosed(Id_));
+        deleteLater();
+        QDialog::reject();
+    } //When closing a window, inform the parent.
+
+    void ModifyObject::accept   ()
+    {
+        updateValues();
+
+        const QString dataModifiedString = parseDataModified();
+        if (!dataModifiedString.isEmpty())
+        {
+            emit  dataModified( dataModifiedString  );
+        }
+
+        if (basenode)
+        {
+#ifdef DEBUG_GUI
+            std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+            emit endObjectModification(basenode);
+#ifdef DEBUG_GUI
+            std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+        }
+        emit(dialogClosed(Id_));
+        deleteLater();
+        QDialog::accept();
+    } //if closing by using Ok button, update the values
+
+    QString ModifyObject::parseDataModified()
+    {
+        QString cat;
+
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
+        {
+            const QString tabString = m_tabs[i]->getDataModifiedString();
+            if (!tabString.isEmpty())
+            {
+                cat += tabString;
+                if (i != (m_tabs.size() - 1))
+                {
+                    cat += "\n";
+                }
+            }
+        }
+
+        return cat;
+    }
+
+    bool ModifyObject::hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
 
 
 } // namespace sofa::gui::qt

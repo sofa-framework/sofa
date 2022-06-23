@@ -26,7 +26,7 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/Intersection.h>
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::component::collision
 {
