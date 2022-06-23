@@ -57,13 +57,13 @@ const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
 }
 
 template<class DataTypes>
-void State<DataTypes>::computeBBox(const core::ExecParams*, bool)
+auto State<DataTypes>::computeBBox() const -> sofa::type::TBoundingBox<Real>
 {
     const VecCoord& x = read(ConstVecCoordId::position())->getValue();
     const size_t xSize = x.size();
 
     if (xSize <= 0)
-        return;
+        return {};
 
     Real p[3];
     DataTypes::get(p[0], p[1], p[2], x[0]);
@@ -83,7 +83,13 @@ void State<DataTypes>::computeBBox(const core::ExecParams*, bool)
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    return sofa::type::TBoundingBox<Real>(minBBox,maxBBox);
+}
+
+template<class DataTypes>
+void State<DataTypes>::computeBBox(const core::ExecParams*, bool)
+{
+    this->f_bbox.setValue(computeBBox());
 }
 
 } // namespace core
