@@ -53,7 +53,7 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
                              QWidget* parent,
                              const char* name,
                              Qt::WindowFlags f):
-    QTreeWidget(parent),
+    SofaSceneGraphWidget(parent),
     graphListener_(nullptr),
     AddObjectDialog_(nullptr),
     attribute_(attribute),
@@ -268,53 +268,6 @@ void QSofaListView::expandNode(QTreeWidgetItem* item)
         expandNode(child);
     }
 
-}
-
-void QSofaListView::setViewToDirty()
-{
-    if(!m_isLocked)
-        return;
-
-    if(m_isDirty)
-        return;
-
-    m_isDirty = true;
-    emit dirtynessChanged(m_isDirty);
-}
-
-bool QSofaListView::isDirty()
-{
-    return m_isDirty;
-}
-
-bool QSofaListView::isLocked()
-{
-    return m_isLocked;
-}
-
-void QSofaListView::lock()
-{    
-    if(m_isLocked)
-        return;
-
-    std::cout << "Lock" << std::endl;
-    m_isLocked = true;
-    emit lockingChanged(m_isLocked);
-    std::cout << "Lock done" << std::endl;
-}
-
-void QSofaListView::unLock()
-{
-    if(!m_isLocked)
-        return;
-
-    m_isLocked = false;
-    std::cout << "UnlLock" << std::endl;
-
-    if(m_isDirty)
-        update();
-
-    emit lockingChanged(m_isLocked);
 }
 
 void QSofaListView::setRoot(Node* root)

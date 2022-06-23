@@ -42,12 +42,12 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool, bool,bool);
 class SOFA_GUI_QT_API GraphListenerQListView : public MutationListener
 {
 public:
-    QSofaListView* widget;
+    SofaSceneGraphWidget* widget;
     std::map<core::objectmodel::Base*, QTreeWidgetItem* > items;
     std::map<core::objectmodel::BaseData*, QTreeWidgetItem* > datas;
     std::multimap<QTreeWidgetItem *, QTreeWidgetItem*> nodeWithMultipleParents;
 
-    GraphListenerQListView(QSofaListView* w)
+    GraphListenerQListView(SofaSceneGraphWidget* w)
         : widget(w)
     {
     }

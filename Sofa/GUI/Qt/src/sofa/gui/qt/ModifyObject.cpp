@@ -558,118 +558,118 @@ void ModifyObject::updateValues()
 
         buttonUpdate->setEnabled(false);
     }
+}
 
+//*******************************************************************************************************************
 
-    //*******************************************************************************************************************
+void ModifyObject::updateListViewItem()
+{
+    QTreeWidgetItem* parent = item_->parent();
+    QString currentName = parent->text(0);
+    QString newName = QString::fromStdString(data_->getOwner()->getName());
+    if(newName != currentName)
+        parent->setText(0, newName);
+}
 
-    void ModifyObject::updateListViewItem()
-    {
-        QTreeWidgetItem* parent = item_->parent();
-        QString currentName = parent->text(0);
-        QString newName = QString::fromStdString(data_->getOwner()->getName());
-        if(newName != currentName)
-            parent->setText(0, newName);
-    }
-
-    //**************************************************************************************************************************************
-    //Called each time a new step of the simulation if computed
-    void ModifyObject::updateTables()
-    {
+//**************************************************************************************************************************************
+//Called each time a new step of the simulation if computed
+void ModifyObject::updateTables()
+{
 #ifdef DEBUG_GUI
-        std::cout << "GUI>emit updateDataWidgets()" << std::endl;
+    std::cout << "GUI>emit updateDataWidgets()" << std::endl;
 #endif
-        emit updateDataWidgets();
+    emit updateDataWidgets();
 #ifdef DEBUG_GUI
-        std::cout << "GUI<emit updateDataWidgets()" << std::endl;
+    std::cout << "GUI<emit updateDataWidgets()" << std::endl;
 #endif
 #if SOFA_GUI_QT_HAVE_QT5_CHARTS
-        if (energy)
-        {
-            if (dialogTab->currentWidget() == energy) energy->step();
-        }
-
-        if (momentum)
-        {
-            if (dialogTab->currentWidget() == momentum) momentum->step();
-        }
-#endif
-
-        if(basenode)
-        {
-            updateConsole();
-        }
+    if (energy)
+    {
+        if (dialogTab->currentWidget() == energy) energy->step();
     }
 
-    void ModifyObject::reject   ()
+    if (momentum)
     {
-        if (basenode)
-        {
-#ifdef DEBUG_GUI
-            std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
+        if (dialogTab->currentWidget() == momentum) momentum->step();
+    }
 #endif
-            emit endObjectModification(basenode);
-#ifdef DEBUG_GUI
-            std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
-        }
 
-        const QString dataModifiedString = parseDataModified();
-        if (!dataModifiedString.isEmpty())
-        {
-            emit  dataModified( dataModifiedString  );
-        }
-
-        emit(dialogClosed(Id_));
-        deleteLater();
-        QDialog::reject();
-    } //When closing a window, inform the parent.
-
-    void ModifyObject::accept   ()
+    if(basenode)
     {
-        updateValues();
+        updateConsole();
+    }
+}
 
-        const QString dataModifiedString = parseDataModified();
-        if (!dataModifiedString.isEmpty())
-        {
-            emit  dataModified( dataModifiedString  );
-        }
-
-        if (basenode)
-        {
-#ifdef DEBUG_GUI
-            std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
-            emit endObjectModification(basenode);
-#ifdef DEBUG_GUI
-            std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
-        }
-        emit(dialogClosed(Id_));
-        deleteLater();
-        QDialog::accept();
-    } //if closing by using Ok button, update the values
-
-    QString ModifyObject::parseDataModified()
+void ModifyObject::reject   ()
+{
+    if (basenode)
     {
-        QString cat;
+#ifdef DEBUG_GUI
+        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+        emit endObjectModification(basenode);
+#ifdef DEBUG_GUI
+        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+    }
 
-        for (std::size_t i = 0; i < m_tabs.size(); ++i)
+    const QString dataModifiedString = parseDataModified();
+    if (!dataModifiedString.isEmpty())
+    {
+        emit  dataModified( dataModifiedString  );
+    }
+
+    emit(dialogClosed(Id_));
+    deleteLater();
+    QDialog::reject();
+} //When closing a window, inform the parent.
+
+void ModifyObject::accept   ()
+{
+    updateValues();
+
+    const QString dataModifiedString = parseDataModified();
+    if (!dataModifiedString.isEmpty())
+    {
+        emit  dataModified( dataModifiedString  );
+    }
+
+    if (basenode)
+    {
+#ifdef DEBUG_GUI
+        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+        emit endObjectModification(basenode);
+#ifdef DEBUG_GUI
+        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
+#endif
+    }
+    emit(dialogClosed(Id_));
+    deleteLater();
+    QDialog::accept();
+} //if closing by using Ok button, update the values
+
+QString ModifyObject::parseDataModified()
+{
+    QString cat;
+
+    for (std::size_t i = 0; i < m_tabs.size(); ++i)
+    {
+        const QString tabString = m_tabs[i]->getDataModifiedString();
+        if (!tabString.isEmpty())
         {
-            const QString tabString = m_tabs[i]->getDataModifiedString();
-            if (!tabString.isEmpty())
+            cat += tabString;
+            if (i != (m_tabs.size() - 1))
             {
-                cat += tabString;
-                if (i != (m_tabs.size() - 1))
-                {
-                    cat += "\n";
-                }
+                cat += "\n";
             }
         }
-
-        return cat;
     }
 
-    bool ModifyObject::hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
+    return cat;
+}
+
+bool ModifyObject::hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
 
 
 } // namespace sofa::gui::qt

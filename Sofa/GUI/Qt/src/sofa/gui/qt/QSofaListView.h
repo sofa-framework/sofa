@@ -33,51 +33,14 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/gui/qt/SofaSceneGraphWidget.h>
 
 #include <map>
 
 namespace sofa::gui::qt
 {
 
-class AddObject;
-class GraphListenerQListView;
-class QDisplayPropertyWidget;
-
-enum ObjectModelType { typeNode, typeObject, typeData };
-typedef union ObjectModelPtr
-{
-    sofa::simulation::Node* Node;
-    core::objectmodel::BaseObject* Object;
-    core::objectmodel::BaseData* Data;
-} ObjectModelPtr;
-
-typedef struct ObjectModel
-{
-public:
-    ObjectModelType type;
-    ObjectModelPtr ptr;
-    bool isNode()   { return type == typeNode;   }
-    bool isObject() { return type == typeObject; }
-    bool isData()   { return type == typeData;   }
-    bool isBase()   { return isNode() || isObject(); }
-    sofa::core::objectmodel::Base* asBase()
-    {
-        if( isNode() )
-            return sofa::core::castToBase(ptr.Node);
-        if( isObject() )
-            return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Object);
-        return nullptr;
-    }
-} ObjectModel;
-
-enum SofaListViewAttribute
-{
-    SIMULATION,
-    VISUAL,
-    MODELER
-};
-
-class SOFA_GUI_QT_API QSofaListView : public QTreeWidget
+class SOFA_GUI_QT_API QSofaListView : public SofaSceneGraphWidget
 {
     Q_OBJECT
 public:
@@ -118,21 +81,6 @@ public:
     void addInPropertyWidget(QTreeWidgetItem *item, bool clear);
 
     void Clear(sofa::simulation::Node* rootNode);
-    void lock();
-    void unLock();
-
-    /// Returns true if the view is not syncrhonized anymore with the simulation graph.
-    /// To re-syncronize the view you can:
-    ///     - call unfreeze() so any future change will be reflected
-    ///     - call update(), to update one time the graph.
-    bool isDirty();
-
-    /// Returns true if the view updates for any scene graph change is disable.
-    bool isLocked();
-
-    /// call this method to indicate that the internal model has changed
-    /// and thus the view is now dirty.
-    void setViewToDirty();
 
     /// Updates the view so it is synchronized with the simulation graph.
     /// The view can be visually de-synchronized with the simulation graph. This happens
@@ -172,11 +120,6 @@ Q_SIGNALS:
     void focusChanged(sofa::core::objectmodel::BaseNode*);
     void dataModified( QString );
 
-    /// Connect to this signal to be notified when the dirtyness status of the QSofaListView changed.
-    void dirtynessChanged(bool isDirty);
-
-    /// Connect to this signal to be notified when the locking status changed
-    void lockingChanged(bool isLocked);
 
 protected Q_SLOTS:
     void SaveNode();
@@ -225,11 +168,7 @@ protected:
     SofaListViewAttribute attribute_;
     QDisplayPropertyWidget* propertyWidget;
 
-    /// Indicate that the view is de-synchronized with the real content of the simulation graph.
-    /// This can happen if the graph has been freezed (i.e. not graphically updated) for performance
-    /// reason while simulating complex scenes.
-    bool m_isDirty;
-    bool m_isLocked;
+
 };
 
 } //namespace sofa::gui::qt

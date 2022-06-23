@@ -63,7 +63,7 @@ int numNode= 0;
 int numComponent= 0;
 }
 
-GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f): QTreeWidget(parent), graphListener(nullptr), propertyWidget(nullptr)
+GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f): SofaSceneGraphWidget(parent), graphListener(nullptr), propertyWidget(nullptr)
 {
     this->setObjectName(name);
     setWindowFlags(f);
