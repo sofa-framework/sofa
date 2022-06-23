@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 
 #include <sofa/component/controller/Controller.h>
-#include <sofa/component/haptic/ForceFeedback.h>
+#include <sofa/component/haptics/ForceFeedback.h>
 #include <sofa/gl/component/rendering3d/OglModel.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
@@ -42,7 +42,7 @@ namespace sofa::gl::component::rendering3d
 
 } // namespace sofa::gl::component::rendering3d
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
     class ForceFeedback;
 }

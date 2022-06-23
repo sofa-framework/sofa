@@ -35,9 +35,9 @@ void initSofaHaptics()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaHaptics") << "SofaHaptics is deprecated. It will be removed at v23.06. Use Sofa.Component.Haptic instead.";
+        // msg_deprecated("SofaHaptics") << "SofaHaptics is deprecated. It will be removed at v23.06. Use Sofa.Component.Haptics instead.";
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Haptic");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Haptics");
 
         first = false;
     }

@@ -754,10 +754,10 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "RuleBasedContactManager", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Response.Contact") },
 
     // SofaHaptics was deprecated in #3039
-    { "ForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptic") },
-    { "LCPForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptic") },
-    { "MechanicalStateForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptic") },
-    { "NullForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptic") },
+    { "ForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
+    { "LCPForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
+    { "MechanicalStateForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
+    { "NullForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
 
     // SofaValidation was deprecated in #3039
     { "CompareState", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },

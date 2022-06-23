@@ -50,6 +50,7 @@ include(Sofa.Component.Engine.Generate.cmake)
 include(Sofa.Component.Engine.Select.cmake)
 include(Sofa.Component.Engine.Transform.cmake)
 include(Sofa.GUI.Component.cmake)
+include(Sofa.Component.Haptics.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

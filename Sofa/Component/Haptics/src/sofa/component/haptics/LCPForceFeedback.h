@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/haptic/config.h>
+#include <sofa/component/haptics/config.h>
 
-#include <sofa/component/haptic/MechanicalStateForceFeedback.h>
+#include <sofa/component/haptics/MechanicalStateForceFeedback.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <mutex>
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 
 /**
@@ -137,8 +137,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
-extern template class SOFA_COMPONENT_HAPTIC_API LCPForceFeedback<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_HAPTIC_API LCPForceFeedback<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

@@ -3,7 +3,28 @@ project(Sofa.Component LANGUAGES CXX)
 
 set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
-set(SOFACOMPONENT_DIRS ODESolver IO Playback SceneUtility Topology Visual LinearSolver Mass Diffusion Mapping SolidMechanics StateContainer Constraint AnimationLoop MechanicalLoad Collision Setting Controller Engine Haptic)
+set(SOFACOMPONENT_DIRS
+    ODESolver
+    IO
+    Playback
+    SceneUtility
+    Topology
+    Visual
+    LinearSolver
+    Mass
+    Diffusion
+    Mapping
+    SolidMechanics
+    StateContainer
+    Constraint
+    AnimationLoop
+    MechanicalLoad
+    Collision
+    Setting
+    Controller
+    Engine
+    Haptics
+)
 set(SOFACOMPONENT_TARGETS)
 foreach(component_dir ${SOFACOMPONENT_DIRS})
 	sofang_add_component_subdirectory(${component_dir} ${PROJECT_NAME}.${component_dir})

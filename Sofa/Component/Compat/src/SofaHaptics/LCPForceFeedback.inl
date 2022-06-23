@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/LCPForceFeedback.inl>
+#include <sofa/component/haptics/LCPForceFeedback.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptic/LCPForceFeedback.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/LCPForceFeedback.inl")

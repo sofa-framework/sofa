@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/NullForceFeedbackT.h>
+#include <sofa/component/haptics/NullForceFeedbackT.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptic/NullForceFeedbackT.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/NullForceFeedbackT.h")
 
 namespace sofa::component::controller
 {
-    using NullForceFeedbackT = sofa::component::haptic::NullForceFeedbackT;
+    using NullForceFeedbackT = sofa::component::haptics::NullForceFeedbackT;
 
 } // namespace sofa::component::controller

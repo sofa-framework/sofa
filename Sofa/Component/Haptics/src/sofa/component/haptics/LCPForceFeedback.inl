@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/LCPForceFeedback.h>
+#include <sofa/component/haptics/LCPForceFeedback.h>
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
@@ -116,7 +116,7 @@ double computeDot<sofa::defaulttype::Rigid3Types>(const sofa::defaulttype::Rigid
 
 } // anonymous namespace
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 
 template <class DataTypes>
@@ -419,14 +419,14 @@ void LCPForceFeedback<DataTypes>::computeWrench(const sofa::defaulttype::SolidTy
 
 
 template <>
-void SOFA_COMPONENT_HAPTIC_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz);
+void SOFA_COMPONENT_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz);
 
 template <>
-void SOFA_COMPONENT_HAPTIC_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
+void SOFA_COMPONENT_HAPTICS_API LCPForceFeedback< sofa::defaulttype::Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
         const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/,
         sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world );
 
 
 
 
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

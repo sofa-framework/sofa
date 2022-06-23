@@ -21,9 +21,34 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/config.h>
+#include <sofa/component/haptics/config.h>
+#include <sofa/component/haptics/ForceFeedback.h>
+#include <sofa/simulation/fwd.h>
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
-	SOFA_COMPONENT_HAPTIC_API void init();
-} // namespace sofa::component::haptic
+
+template<class TDataTypes>
+class SOFA_COMPONENT_HAPTICS_API MechanicalStateForceFeedback : public ForceFeedback
+{
+
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),ForceFeedback);
+
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+
+public:
+    virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
+
+    void init() override {context = sofa::simulation::node::getNodeFrom(getContext());}
+    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
+    void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {}
+
+protected:
+    MechanicalStateForceFeedback(void) {}
+};
+
+} // namespace sofa::component::haptics

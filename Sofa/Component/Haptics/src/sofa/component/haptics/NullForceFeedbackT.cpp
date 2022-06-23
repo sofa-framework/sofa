@@ -19,30 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/haptic/ForceFeedback.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/component/haptics/NullForceFeedbackT.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 
-ForceFeedback::ForceFeedback():
-    d_activate(initData(&d_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
-  , d_indice(initData(&d_indice, 0, "indice", "Tool indice in the OmniDriver"))
-{
-}
+int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
+        .add< NullForceFeedbackT<sofa::defaulttype::Vec1Types> >()
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >();
 
-void ForceFeedback::init()
-{
-    context = sofa::simulation::node::getNodeFrom(getContext());
-}
-
-void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
-{
-    SOFA_UNUSED(referencePosition);
-}
-
-bool ForceFeedback::isEnabled() {
-    return this->getContext()->isActive();
-}
-
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

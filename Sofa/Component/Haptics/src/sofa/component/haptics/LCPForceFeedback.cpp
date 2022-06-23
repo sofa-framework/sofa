@@ -21,11 +21,11 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP
 
-#include <sofa/component/haptic/LCPForceFeedback.inl>
+#include <sofa/component/haptics/LCPForceFeedback.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 
 using sofa::defaulttype::Rigid3Types;
@@ -70,8 +70,8 @@ int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for t
         .add< LCPForceFeedback<defaulttype::Vec1Types> >()
         .add< LCPForceFeedback<defaulttype::Rigid3Types> >();
 
-template class SOFA_COMPONENT_HAPTIC_API LCPForceFeedback<defaulttype::Vec1Types>;
-template class SOFA_COMPONENT_HAPTIC_API LCPForceFeedback<defaulttype::Rigid3Types>;
+template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
 
 
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

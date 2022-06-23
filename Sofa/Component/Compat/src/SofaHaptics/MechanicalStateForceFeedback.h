@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/MechanicalStateForceFeedback.h>
+#include <sofa/component/haptics/MechanicalStateForceFeedback.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptic/MechanicalStateForceFeedback.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/MechanicalStateForceFeedback.h")
 
 namespace sofa::component::controller
 {
-    using MechanicalStateForceFeedback = sofa::component::haptic::MechanicalStateForceFeedback;
+    using MechanicalStateForceFeedback = sofa::component::haptics::MechanicalStateForceFeedback;
 
 } // namespace sofa::component::controller

@@ -19,29 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/haptic/NullForceFeedback.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::component::haptic
+#include <sofa/component/haptics/MechanicalStateForceFeedback.h>
+
+namespace sofa::component::haptics
 {
 
-void NullForceFeedback::init()
+/// @brief Null force feedback for haptic feedback device
+template<class TDataTypes>
+class SOFA_COMPONENT_HAPTICS_API NullForceFeedbackT : public MechanicalStateForceFeedback<TDataTypes>
 {
-    this->ForceFeedback::init();
-}
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
 
-void NullForceFeedback::computeForce(SReal /*x*/, SReal /*y*/, SReal /*z*/, SReal /*u*/, SReal /*v*/, SReal /*w*/, SReal /*q*/, SReal& fx, SReal& fy, SReal& fz)
-{
-    fx = fy = fz = 0.0;
-}
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),MechanicalStateForceFeedback<TDataTypes>);
+    void init() override {this->ForceFeedback::init();}
 
-void NullForceFeedback::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &/*world_H_tool*/, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
-{
-    W_tool_world.clear();
-}
+    void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
+    {
+        fx = fy = fz = 0.0;
+    }
+    void computeForce(const  VecCoord &,  VecDeriv &) override {}
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();}
+};
 
-int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
-        .add< NullForceFeedback >();
-
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

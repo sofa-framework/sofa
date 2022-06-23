@@ -28,7 +28,7 @@
 #include <sofa/component/controller/init.h>
 #include <sofa/component/diffusion/init.h>
 #include <sofa/component/engine/init.h>
-#include <sofa/component/haptic/init.h>
+#include <sofa/component/haptics/init.h>
 #include <sofa/component/io/init.h>
 #include <sofa/component/linearsolver/init.h>
 #include <sofa/component/mapping/init.h>
@@ -63,7 +63,7 @@ void initExternalModule()
         sofa::component::controller::init();
         sofa::component::diffusion::init();
         sofa::component::engine::init();
-        sofa::component::haptic::init();
+        sofa::component::haptics::init();
         sofa::component::io::init();
         sofa::component::linearsolver::init();
         sofa::component::mapping::init();

@@ -19,36 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/haptics/init.h>
 
-#include <sofa/component/haptic/config.h>
-#include <sofa/component/haptic/ForceFeedback.h>
-#include <sofa/simulation/fwd.h>
-
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+}
 
-template<class TDataTypes>
-class SOFA_COMPONENT_HAPTIC_API MechanicalStateForceFeedback : public ForceFeedback
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),ForceFeedback);
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
 
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
 
-public:
-    virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
+void init()
+{
+    initExternalModule();
+}
 
-    void init() override {context = sofa::simulation::node::getNodeFrom(getContext());}
-    void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
-    void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {}
-
-protected:
-    MechanicalStateForceFeedback(void) {}
-};
-
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

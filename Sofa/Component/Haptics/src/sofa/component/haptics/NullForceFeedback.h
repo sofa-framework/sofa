@@ -21,16 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/config.h>
+#include <sofa/component/haptics/config.h>
 
-#include <sofa/component/haptic/ForceFeedback.h>
+#include <sofa/component/haptics/ForceFeedback.h>
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 
 
 /// @brief Null force feedback for haptic feedback device
-class SOFA_COMPONENT_HAPTIC_API NullForceFeedback : public ForceFeedback
+class SOFA_COMPONENT_HAPTICS_API NullForceFeedback : public ForceFeedback
 {
 public:
     SOFA_CLASS(NullForceFeedback,ForceFeedback);
@@ -40,4 +40,4 @@ public:
     void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;
 };
 
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

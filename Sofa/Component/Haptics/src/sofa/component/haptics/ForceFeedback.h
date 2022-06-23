@@ -21,18 +21,18 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/config.h>
+#include <sofa/component/haptics/config.h>
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 
 /// Base class implementing forcefeedback as a force field
-class SOFA_COMPONENT_HAPTIC_API ForceFeedback : public virtual core::behavior::BaseController
+class SOFA_COMPONENT_HAPTICS_API ForceFeedback : public virtual core::behavior::BaseController
 {
 
 public:
@@ -65,4 +65,4 @@ protected:
     ForceFeedback();
 };
 
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

@@ -24,15 +24,15 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_HAPTIC
+#ifdef SOFA_BUILD_SOFA_COMPONENT_HAPTICS
 #  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_HAPTIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#  define SOFA_COMPONENT_HAPTICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_COMPONENT_HAPTIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_COMPONENT_HAPTICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::haptic
+} // namespace sofa::component::haptics

@@ -19,31 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/haptics/ForceFeedback.h>
+#include <sofa/simulation/Node.h>
 
-#include <sofa/component/haptic/MechanicalStateForceFeedback.h>
-
-namespace sofa::component::haptic
+namespace sofa::component::haptics
 {
 
-/// @brief Null force feedback for haptic feedback device
-template<class TDataTypes>
-class SOFA_COMPONENT_HAPTIC_API NullForceFeedbackT : public MechanicalStateForceFeedback<TDataTypes>
+ForceFeedback::ForceFeedback():
+    d_activate(initData(&d_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , d_indice(initData(&d_indice, 0, "indice", "Tool indice in the OmniDriver"))
 {
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
+}
 
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),MechanicalStateForceFeedback<TDataTypes>);
-    void init() override {this->ForceFeedback::init();}
+void ForceFeedback::init()
+{
+    context = sofa::simulation::node::getNodeFrom(getContext());
+}
 
-    void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
-    {
-        fx = fy = fz = 0.0;
-    }
-    void computeForce(const  VecCoord &,  VecDeriv &) override {}
-    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();}
-};
+void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
+{
+    SOFA_UNUSED(referencePosition);
+}
 
-} // namespace sofa::component::haptic
+bool ForceFeedback::isEnabled() {
+    return this->getContext()->isActive();
+}
+
+} // namespace sofa::component::haptics

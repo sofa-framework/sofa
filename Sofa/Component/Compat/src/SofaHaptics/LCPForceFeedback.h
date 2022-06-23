@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/haptic/LCPForceFeedback.h>
+#include <sofa/component/haptics/LCPForceFeedback.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptic/LCPForceFeedback.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/LCPForceFeedback.h")
 
 namespace sofa::component::controller
 {
-    using LCPForceFeedback = sofa::component::haptic::LCPForceFeedback;
+    using LCPForceFeedback = sofa::component::haptics::LCPForceFeedback;
 
 } // namespace sofa::component::controller
