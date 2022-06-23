@@ -63,7 +63,7 @@ typedef struct
 
 typedef struct
 {
-    type::vector<haptic::ForceFeedback*> forceFeedbacks;
+    type::vector<haptics::ForceFeedback*> forceFeedbacks;
     int forceFeedbackIndice;
     simulation::Node *context;
 
@@ -124,7 +124,7 @@ public:
     void draw(const core::visual::VisualParams*) override;
 
     int initDevice(OmniData& data);
-    void setForceFeedbacks(type::vector<haptic::ForceFeedback*> ffs);
+    void setForceFeedbacks(type::vector<haptics::ForceFeedback*> ffs);
 
     void setDataValue();
 
