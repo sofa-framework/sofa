@@ -20,14 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
+#include <sofa/component/mechanicalload/InteractionEllipsoidForceField.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::mechanicalload
 {
 
 // v = sqrt(x0�/r0�+x1�/r1�+x2�/r2�)-1
@@ -418,4 +419,4 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
 }
 
 
-} //namespace sofa::component::interactionforcefield
+} // namespace sofa::component::mechanicalload

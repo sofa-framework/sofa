@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
-#define SOFA_COMPONENT_HAPTICSS_INIT_H
-#include "config.h"
+#include <sofa/component/haptics/NullForceFeedbackT.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::haptics
 {
 
-namespace component
-{
-    
-SOFA_SOFAHAPTICS_API void initSofaHaptics();
+int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
+        .add< NullForceFeedbackT<sofa::defaulttype::Vec1Types> >()
+        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >();
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::haptics

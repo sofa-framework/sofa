@@ -19,21 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
-#define SOFA_COMPONENT_HAPTICSS_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
+#include <sofa/component/playback/CompareState.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/CompareState.h")
+
+namespace sofa::component::misc
 {
+    using CompareState = sofa::component::playback::CompareState;
+    using CompareStateCreator = sofa::component::playback::CompareStateCreator;
+    using CompareStateResult = sofa::component::playback::CompareStateResult;
 
-namespace component
-{
-    
-SOFA_SOFAHAPTICS_API void initSofaHaptics();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::misc

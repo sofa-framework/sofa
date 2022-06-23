@@ -19,21 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
-#define SOFA_COMPONENT_HAPTICSS_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
-{
+#include <sofa/component/haptics/LCPForceFeedback.inl>
 
-namespace component
-{
-    
-SOFA_SOFAHAPTICS_API void initSofaHaptics();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/LCPForceFeedback.inl")

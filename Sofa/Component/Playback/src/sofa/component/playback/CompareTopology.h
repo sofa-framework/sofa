@@ -20,104 +20,102 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaValidation/config.h>
+#include <sofa/component/playback/config.h>
 
-#include <sofa/component/playback/ReadState.h>
+#include <sofa/component/playback/ReadTopology.h>
 #include <sofa/simulation/Visitor.h>
 
 #include <fstream>
 
 
-namespace sofa::component::misc
+namespace sofa::component::playback
 {
 
-/** Compare State vectors from file at each timestep
+/** Compare Topology vectors from file at each timestep
 */
-class SOFA_SOFAVALIDATION_API CompareState: public playback::ReadState
+class SOFA_COMPONENT_PLAYBACK_API CompareTopology: public ReadTopology
 {
 public:
-    SOFA_CLASS(CompareState,playback::ReadState);
+    SOFA_CLASS(CompareTopology, playback::ReadTopology);
 protected:
     /** Default constructor
     */
-    CompareState();
+    CompareTopology();
 public:
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
-    /// Compute the total errors (positions and velocities)
-    void processCompareState();
+    /// Compute the total number of errors
+    void processCompareTopology();
 
     /** Pre-construction check method called by ObjectFactory.
-    Check that DataTypes matches the MechanicalState.*/
+    Check that DataTypes matches the MechanicalTopology.*/
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() == nullptr)
-        {
-            arg->logError("No mechanical state found in the context node.");
+        if (context->getMeshTopology() == nullptr)
             return false;
-        }
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Return the total errors (position and velocity)
-    double getTotalError() {return totalError_X + totalError_V;}
-    /// Return the total errors (position and velocity)
-    double getErrorByDof() {return dofError_X + dofError_V;}
+    /// Return the total number of errors
+    unsigned int getTotalError() {return TotalError;}
+    /// Return the errors by containers
+    const std::vector <unsigned int>& getErrors() {return listError;}
 
-    void draw(const core::visual::VisualParams* vparams) override;
+
 
 protected :
-    /// total error for positions
-    double totalError_X;
-    double dofError_X;
-    /// total error for velocities
-    double totalError_V;
-    double dofError_V;
-    /// last time, position and velocity (for draw)
-    double last_time;
-    std::string last_X, last_V;
-    std::vector<std::string> nextValidLines;
+
+    /// Number of error by container
+    unsigned int EdgesError;
+    unsigned int TrianglesError;
+    unsigned int QuadsError;
+    unsigned int TetrahedraError;
+    unsigned int HexahedraError;
+
+    unsigned int TotalError;
+
+    std::vector <unsigned int> listError;
 };
 
-/// Create CompareState component in the graph each time needed
-class SOFA_SOFAVALIDATION_API CompareStateCreator: public simulation::Visitor
+
+/// Create CompareTopology component in the graph each time needed
+class SOFA_COMPONENT_PLAYBACK_API CompareTopologyCreator: public simulation::Visitor
 {
 public:
-    CompareStateCreator(const core::ExecParams* params);
-    CompareStateCreator(const std::string &n, const core::ExecParams* params, bool i=true, int c=0);
+    CompareTopologyCreator(const core::ExecParams* params);
+    CompareTopologyCreator(const std::string &n, const core::ExecParams* params, bool i=true, int c=0);
     Result processNodeTopDown( simulation::Node*  ) override;
 
     void setSceneName(std::string &n) { sceneName = n; }
-    void setCounter(int c) { counterCompareState = c; }
+    void setCounter(int c) { counterCompareTopology = c; }
     void setCreateInMapping(bool b) { createInMapping=b; }
-    const char* getClassName() const override { return "CompareStateCreator"; }
+    const char* getClassName() const override { return "CompareTopologyCreator"; }
 
 protected:
-
-    void addCompareState(sofa::core::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
+    void addCompareTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode);
     std::string sceneName;
     std::string extension;
     bool createInMapping;
     bool init;
-    int counterCompareState; //avoid to have two same files if two mechanical objects has the same name
+    int counterCompareTopology; //avoid to have two same files if two Topologies are present with the same name
 };
 
-class SOFA_SOFAVALIDATION_API CompareStateResult: public simulation::Visitor
+
+class SOFA_COMPONENT_PLAYBACK_API CompareTopologyResult: public simulation::Visitor
 {
 public:
-    CompareStateResult(const core::ExecParams* params) : Visitor(params)
-    { error=errorByDof=0; numCompareState=0;}
+    CompareTopologyResult(const core::ExecParams* params);
     Result processNodeTopDown( simulation::Node*  ) override;
 
-    double getTotalError() { return error; }
-    double getErrorByDof() { return errorByDof; }
-    unsigned int getNumCompareState() { return numCompareState; }
-    const char* getClassName() const override { return "CompareStateResult"; }
+    unsigned int getTotalError() {return TotalError;}
+    const std::vector <unsigned int>& getErrors() {return listError;}
+    unsigned int getNumCompareTopology() { return numCompareTopology; }
+    const char* getClassName() const override { return "CompareTopologyResult"; }
 protected:
-    double error;
-    double errorByDof;
-    unsigned int numCompareState;
+    unsigned int TotalError;
+    std::vector <unsigned int> listError;
+    unsigned int numCompareTopology;
 };
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::playback

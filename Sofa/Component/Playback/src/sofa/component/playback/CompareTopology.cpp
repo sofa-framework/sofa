@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaValidation/CompareTopology.h>
+#include <sofa/component/playback/CompareTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
@@ -28,7 +28,7 @@
 #include <sstream>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::misc
+namespace sofa::component::playback
 {
 
 
@@ -345,10 +345,10 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::topology::BaseMeshTo
     context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        sofa::component::misc::CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
+         CompareTopology::SPtr ct; context->get(ct, core::objectmodel::BaseContext::Local);
         if (  ct == nullptr )
         {
-            ct = sofa::core::objectmodel::New<sofa::component::misc::CompareTopology>(); gnode->addObject(ct);
+            ct = sofa::core::objectmodel::New<CompareTopology>(); gnode->addObject(ct);
         }
 
         std::ostringstream ofilename;
@@ -377,7 +377,7 @@ CompareTopologyResult::CompareTopologyResult(const core::ExecParams* params)
 //Create a Compare Topology result component each time a topology is found
 simulation::Visitor::Result CompareTopologyResult::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::CompareTopology *ct;
+    CompareTopology *ct;
     gnode->get(ct);
     if (!ct)   return simulation::Visitor::RESULT_CONTINUE;
     //We have a topology
@@ -394,5 +394,5 @@ simulation::Visitor::Result CompareTopologyResult::processNodeTopDown( simulatio
 
 
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::playback
 

@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
-#define SOFA_COMPONENT_HAPTICSS_INIT_H
-#include "config.h"
+#pragma once
 
-namespace sofa
+#include <sofa/component/haptics/MechanicalStateForceFeedback.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/MechanicalStateForceFeedback.h")
+
+namespace sofa::component::controller
 {
+    using MechanicalStateForceFeedback = sofa::component::haptics::MechanicalStateForceFeedback;
 
-namespace component
-{
-    
-SOFA_SOFAHAPTICS_API void initSofaHaptics();
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::component::controller

@@ -19,21 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
-#define SOFA_COMPONENT_HAPTICSS_INIT_H
-#include "config.h"
+#include <sofa/component/haptics/init.h>
 
-namespace sofa
-{
-
-namespace component
+namespace sofa::component::haptics
 {
     
-SOFA_SOFAHAPTICS_API void initSofaHaptics();
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+}
 
-} // namespace component
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-} // namespace sofa
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
 
-#endif
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
 
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::haptics

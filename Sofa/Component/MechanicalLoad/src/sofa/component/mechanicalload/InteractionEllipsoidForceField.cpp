@@ -19,21 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
-#define SOFA_COMPONENT_HAPTICSS_INIT_H
-#include "config.h"
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP
+#include <sofa/component/mechanicalload/InteractionEllipsoidForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::mechanicalload
 {
 
-namespace component
-{
-    
-SOFA_SOFAHAPTICS_API void initSofaHaptics();
+using namespace sofa::defaulttype;
 
-} // namespace component
+int InteractionEllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
+        .add< InteractionEllipsoidForceField<Vec3Types, Rigid3Types> >()
+        ;
 
-} // namespace sofa
+template class SOFA_COMPONENT_MECHANICALLOAD_API InteractionEllipsoidForceField<Vec3Types, Rigid3Types>;
 
-#endif
-
+} // namespace sofa::component::mechanicalload

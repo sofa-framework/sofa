@@ -19,35 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
-#include "config.h"
+#pragma once
+#include <sofa/component/haptics/config.h>
 
-#include <SofaHaptics/MechanicalStateForceFeedback.h>
+#include <sofa/component/haptics/MechanicalStateForceFeedback.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <mutex>
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::haptics
 {
 
 /**
 * LCP force field
 */
 template <class TDataTypes>
-class LCPForceFeedback : public sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>
+class LCPForceFeedback : public MechanicalStateForceFeedback<TDataTypes>
 {
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,TDataTypes),sofa::component::controller::MechanicalStateForceFeedback<TDataTypes>);
+    SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,TDataTypes),MechanicalStateForceFeedback<TDataTypes>);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -144,14 +137,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_CPP)
-extern template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAHAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_HAPTICS_API LCPForceFeedback<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
+} // namespace sofa::component::haptics

@@ -19,21 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
-#define SOFA_COMPONENT_HAPTICSS_INIT_H
-#include "config.h"
+#include <sofa/component/haptics/ForceFeedback.h>
+#include <sofa/simulation/Node.h>
 
-namespace sofa
+namespace sofa::component::haptics
 {
 
-namespace component
+ForceFeedback::ForceFeedback():
+    d_activate(initData(&d_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , d_indice(initData(&d_indice, 0, "indice", "Tool indice in the OmniDriver"))
 {
-    
-SOFA_SOFAHAPTICS_API void initSofaHaptics();
+}
 
-} // namespace component
+void ForceFeedback::init()
+{
+    context = sofa::simulation::node::getNodeFrom(getContext());
+}
 
-} // namespace sofa
+void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
+{
+    SOFA_UNUSED(referencePosition);
+}
 
-#endif
+bool ForceFeedback::isEnabled() {
+    return this->getContext()->isActive();
+}
 
+} // namespace sofa::component::haptics
