@@ -36,7 +36,7 @@ namespace sofa::gpu::cuda
     ;
 }
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
     using namespace sofa::gpu::cuda;
 
