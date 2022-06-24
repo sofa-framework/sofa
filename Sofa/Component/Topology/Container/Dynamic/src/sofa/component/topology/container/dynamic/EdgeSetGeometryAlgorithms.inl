@@ -701,6 +701,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    vparams->drawTool()->saveLastState();
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Edges indices
@@ -749,6 +750,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
     }
 
+    vparams->drawTool()->restoreLastState();
 }
 
 
