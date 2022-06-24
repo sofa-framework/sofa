@@ -8,6 +8,12 @@ macro(sofa_generate_plugin_config config_filename)
     get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
 
     list(LENGTH _allTargets nbTargets)
+
+    # if no plugin (or no deprecated "module") then quit
+    if (${nbTargets} EQUAL 0)
+        return()
+    endif()
+
     math(EXPR len "${nbTargets} - 1")
 
     set(_modulePrefix "MODULE")
