@@ -28,7 +28,7 @@
 #include <sofa/component/controller/Controller.h>
 
 //force feedback
-#include <SofaHaptics/ForceFeedback.h>
+#include <sofa/component/haptics/ForceFeedback.h>
 
 #if GEOMAGIC_HAVE_OPENHAPTICS
 #include <HD/hd.h>
@@ -120,9 +120,9 @@ public:
     Data<bool> d_button_2; ///< Button state 2
     
     // Pointer to the forceFeedBack component
-    ForceFeedback::SPtr m_forceFeedback;
+    sofa::component::haptics::ForceFeedback::SPtr m_forceFeedback;
     // link to the forceFeedBack component, if not set will search through graph and take first one encountered
-    SingleLink<GeomagicDriver, ForceFeedback, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_forceFeedback;
+    SingleLink<GeomagicDriver, sofa::component::haptics::ForceFeedback, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_forceFeedback;
 
     /// This static bool is used to know if HD scheduler is already running. No mechanism provided by Hd lib.
     inline static bool s_schedulerRunning = false;

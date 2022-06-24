@@ -194,7 +194,7 @@ void GeomagicDriver::init()
     if (l_forceFeedback.empty())
     {
         simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-        m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+        m_forceFeedback = context->get<sofa::component::haptics::ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
     }
     else
     {
