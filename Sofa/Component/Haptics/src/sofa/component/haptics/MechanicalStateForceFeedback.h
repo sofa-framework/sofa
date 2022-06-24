@@ -19,28 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
-#define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
+#pragma once
 
-#include <SofaHaptics/config.h>
-#include <SofaHaptics/ForceFeedback.h>
+#include <sofa/component/haptics/config.h>
+#include <sofa/component/haptics/ForceFeedback.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::haptics
 {
 
 template<class TDataTypes>
-class SOFA_SOFAHAPTICS_API MechanicalStateForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_COMPONENT_HAPTICS_API MechanicalStateForceFeedback : public ForceFeedback
 {
 
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),sofa::component::controller::ForceFeedback);
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateForceFeedback,TDataTypes),ForceFeedback);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -58,10 +51,4 @@ protected:
     MechanicalStateForceFeedback(void) {}
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::haptics

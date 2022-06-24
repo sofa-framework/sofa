@@ -35,15 +35,15 @@ using CudaSphere = sofa::component::collision::geometry::TSphere<CudaVec3fTypes>
 } // namespace sofa::gpu::cuda
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::geometry
 {
 
-#if  !defined(SOFA_BUILD_GPU_CUDA)
-extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#if !defined(SOFA_GPU_CUDA_CUDASPHEREMODEL_CPP)
+extern template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API geometry::SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+extern template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif
 

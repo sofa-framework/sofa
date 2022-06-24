@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaValidation/CompareState.h>
+#include <sofa/component/playback/CompareState.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/OdeSolver.h>
@@ -38,7 +38,7 @@
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-namespace sofa::component::misc
+namespace sofa::component::playback
 {
 
 namespace
@@ -308,10 +308,10 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        sofa::component::misc::CompareState::SPtr rs; context->get(rs, core::objectmodel::BaseContext::Local);
+        CompareState::SPtr rs; context->get(rs, core::objectmodel::BaseContext::Local);
         if (  rs == nullptr )
         {
-            rs = sofa::core::objectmodel::New<sofa::component::misc::CompareState>(); gnode->addObject(rs);
+            rs = sofa::core::objectmodel::New<CompareState>(); gnode->addObject(rs);
         }
 
         // compatibility:
@@ -334,7 +334,7 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
 //Create a Compare State component each time a mechanical state is found
 simulation::Visitor::Result CompareStateResult::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::CompareState *cv;
+    CompareState *cv;
     gnode->get(cv);
     if (!cv)   return simulation::Visitor::RESULT_CONTINUE;
     //We have a mechanical state
@@ -346,4 +346,4 @@ simulation::Visitor::Result CompareStateResult::processNodeTopDown( simulation::
 
 
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::playback

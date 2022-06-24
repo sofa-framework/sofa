@@ -19,22 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaHaptics/NullForceFeedbackT.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-using namespace std;
+#include <sofa/component/haptics/MechanicalStateForceFeedback.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace controller
+namespace sofa::component::haptics
 {
 
-int nullForceFeedbackTClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
-        .add< NullForceFeedbackT<sofa::defaulttype::Vec1Types> >()
-        .add< NullForceFeedbackT<sofa::defaulttype::Rigid3Types> >();
+/// @brief Null force feedback for haptic feedback device
+template<class TDataTypes>
+class SOFA_COMPONENT_HAPTICS_API NullForceFeedbackT : public MechanicalStateForceFeedback<TDataTypes>
+{
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
 
-} // namespace controller
-} // namespace component
-} // namespace sofa
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),MechanicalStateForceFeedback<TDataTypes>);
+    void init() override {this->ForceFeedback::init();}
+
+    void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
+    {
+        fx = fy = fz = 0.0;
+    }
+    void computeForce(const  VecCoord &,  VecDeriv &) override {}
+    void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override {W_tool_world.clear();}
+};
+
+} // namespace sofa::component::haptics

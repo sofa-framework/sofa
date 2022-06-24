@@ -103,7 +103,7 @@ OmniDriverEmu::~OmniDriverEmu()
 }
 
 
-void OmniDriverEmu::setForceFeedbacks(vector<ForceFeedback*> ffs)
+void OmniDriverEmu::setForceFeedbacks(vector<haptics::ForceFeedback*> ffs)
 {
     data.forceFeedbacks.clear();
     for (unsigned int i=0; i<ffs.size(); i++)
@@ -310,8 +310,8 @@ void OmniDriverEmu::bwdInit()
     // depending on toolCount, search either the first force feedback, or the feedback with indice "0"
     sofa::simulation::Node *groot = dynamic_cast<sofa::simulation::Node *>(context->getRootContext()); // access to current node
 
-    vector<ForceFeedback*> ffs;
-    groot->getTreeObjects<ForceFeedback>(&ffs);
+    vector<haptics::ForceFeedback*> ffs;
+    groot->getTreeObjects<haptics::ForceFeedback>(&ffs);
     msg_info() << "OmniDriver: "<<ffs.size()<<" ForceFeedback objects found";
     setForceFeedbacks(ffs);
 

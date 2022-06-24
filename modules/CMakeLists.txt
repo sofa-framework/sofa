@@ -42,3 +42,7 @@ sofa_add_plugin(SofaMiscSolver SofaMiscSolver ON)
 sofa_add_plugin(SofaMiscFem SofaMiscFem ON)
 sofa_add_plugin(SofaMiscMapping SofaMiscMapping ON)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
+
+sofa_add_plugin(SofaHaptics SofaHaptics ON)
+sofa_add_plugin(SofaValidation SofaValidation ON)
+sofa_add_plugin(SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)

@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP
-#include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::component::interactionforcefield
+#include <sofa/component/haptics/NullForceFeedback.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/NullForceFeedback.h")
+
+namespace sofa::component::controller
 {
+    using NullForceFeedback = sofa::component::haptics::NullForceFeedback;
 
-using namespace sofa::defaulttype;
-
-int EllipsoidForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
-        .add< InteractionEllipsoidForceField<Vec3Types, Rigid3Types> >()
-        ;
-
-template class SOFA_SOFAGENERALOBJECTINTERACTION_API InteractionEllipsoidForceField<Vec3Types, Rigid3Types>;
-
-} //namespace sofa::component::interactionforcefield
+} // namespace sofa::component::controller

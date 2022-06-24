@@ -19,34 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/haptics/init.h>
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-
-namespace sofa::gpu::cuda
+namespace sofa::component::haptics
 {
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+}
 
-SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaLineCollisionModel")
-CudaDeprecatedAndRemoved CudaLineModel;
-
-using CudaLineCollisionModel = sofa::component::collision::geometry::LineCollisionModel<CudaVec3Types>;
-using CudaLineCollisionModelf1 = sofa::component::collision::geometry::LineCollisionModel<CudaVec3f1Types>;
-
-using CudaLine = sofa::component::collision::geometry::TLine<CudaVec3fTypes>;
-
-} // namespace sofa::gpu::cuda
-
-
-namespace sofa::component::collision::geometry
+void initExternalModule()
 {
-#if !defined(SOFA_GPU_CUDA_CUDALINEMODEL_CPP)
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
-#endif  // SOFA_GPU_CUDA_DOUBLE
-#endif
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-}  // namespace sofa::component::collision::geometry
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
+
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::haptics

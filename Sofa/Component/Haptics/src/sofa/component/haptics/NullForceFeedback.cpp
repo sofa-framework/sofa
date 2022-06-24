@@ -19,34 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/haptics/NullForceFeedback.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-
-namespace sofa::gpu::cuda
+namespace sofa::component::haptics
 {
 
-SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaLineCollisionModel")
-CudaDeprecatedAndRemoved CudaLineModel;
-
-using CudaLineCollisionModel = sofa::component::collision::geometry::LineCollisionModel<CudaVec3Types>;
-using CudaLineCollisionModelf1 = sofa::component::collision::geometry::LineCollisionModel<CudaVec3f1Types>;
-
-using CudaLine = sofa::component::collision::geometry::TLine<CudaVec3fTypes>;
-
-} // namespace sofa::gpu::cuda
-
-
-namespace sofa::component::collision::geometry
+void NullForceFeedback::init()
 {
-#if !defined(SOFA_GPU_CUDA_CUDALINEMODEL_CPP)
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
-#endif  // SOFA_GPU_CUDA_DOUBLE
-#endif
+    this->ForceFeedback::init();
+}
 
-}  // namespace sofa::component::collision::geometry
+void NullForceFeedback::computeForce(SReal /*x*/, SReal /*y*/, SReal /*z*/, SReal /*u*/, SReal /*v*/, SReal /*w*/, SReal /*q*/, SReal& fx, SReal& fy, SReal& fz)
+{
+    fx = fy = fz = 0.0;
+}
+
+void NullForceFeedback::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &/*world_H_tool*/, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
+{
+    W_tool_world.clear();
+}
+
+int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
+        .add< NullForceFeedback >();
+
+} // namespace sofa::component::haptics

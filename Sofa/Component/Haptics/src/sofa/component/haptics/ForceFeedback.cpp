@@ -19,34 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/haptics/ForceFeedback.h>
+#include <sofa/simulation/Node.h>
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-
-namespace sofa::gpu::cuda
+namespace sofa::component::haptics
 {
 
-SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaLineCollisionModel")
-CudaDeprecatedAndRemoved CudaLineModel;
-
-using CudaLineCollisionModel = sofa::component::collision::geometry::LineCollisionModel<CudaVec3Types>;
-using CudaLineCollisionModelf1 = sofa::component::collision::geometry::LineCollisionModel<CudaVec3f1Types>;
-
-using CudaLine = sofa::component::collision::geometry::TLine<CudaVec3fTypes>;
-
-} // namespace sofa::gpu::cuda
-
-
-namespace sofa::component::collision::geometry
+ForceFeedback::ForceFeedback():
+    d_activate(initData(&d_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , d_indice(initData(&d_indice, 0, "indice", "Tool indice in the OmniDriver"))
 {
-#if !defined(SOFA_GPU_CUDA_CUDALINEMODEL_CPP)
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
-#endif  // SOFA_GPU_CUDA_DOUBLE
-#endif
+}
 
-}  // namespace sofa::component::collision::geometry
+void ForceFeedback::init()
+{
+    context = sofa::simulation::node::getNodeFrom(getContext());
+}
+
+void ForceFeedback::setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& referencePosition)
+{
+    SOFA_UNUSED(referencePosition);
+}
+
+bool ForceFeedback::isEnabled() {
+    return this->getContext()->isActive();
+}
+
+} // namespace sofa::component::haptics
