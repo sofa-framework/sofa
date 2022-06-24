@@ -52,22 +52,24 @@ class SOFA_GEOMAGIC_API GeomagicDriver : public Controller
 
 public:
     SOFA_CLASS(GeomagicDriver, Controller);
-    typedef sofa::defaulttype::RigidTypes::Coord Coord;
-    typedef sofa::defaulttype::RigidTypes::VecCoord VecCoord;
 
-#if GEOMAGIC_HAVE_OPENHAPTICS
-    typedef HDdouble SHDdouble;
-    typedef HDSchedulerHandle SHDSchedulerHandle;
-    typedef HHD SHHD;
-#else // This is just a compatibility layer to be able to compile the plugin without Openhaptics for the continuous integration. The plugin won't work without Openhaptics. 
-    typedef double SHDdouble;
-    typedef unsigned long SHDSchedulerHandle;
-    typedef unsigned int SHHD;
-    unsigned int HD_INVALID_HANDLE = 0;
-#endif
+    // Geomagic driver is based on Rigid Coord
+    using Coord = sofa::defaulttype::RigidTypes::Coord;
+    using VecCoord = sofa::defaulttype::RigidTypes::VecCoord;
 
     using Vec3 = sofa::type::Vec3d;
     using Quat = sofa::type::Quat<SReal>;
+    
+#if GEOMAGIC_HAVE_OPENHAPTICS
+    using SHDdouble = HDdouble;
+    using SHDSchedulerHandle = HDSchedulerHandle;
+    using SHHD = HHD;
+#else // This is just a compatibility layer to be able to compile the plugin without Openhaptics for the continuous integration. The plugin won't work without Openhaptics. 
+    using SHDdouble = double;
+    using SHDSchedulerHandle = unsigned long;
+    using SHHD = unsigned int;
+    unsigned int HD_INVALID_HANDLE = 0;
+#endif
     
     GeomagicDriver();
     virtual ~GeomagicDriver();
