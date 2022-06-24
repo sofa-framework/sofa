@@ -10,7 +10,7 @@ macro(sofa_generate_plugin_config config_filename)
     list(LENGTH _allTargets nbTargets)
 
     # do the generation only if there is any plugin
-    if (${nbTargets} NOT EQUAL 0)
+    if (NOT ${nbTargets} EQUAL 0)
         math(EXPR len "${nbTargets} - 1")
 
         set(_modulePrefix "MODULE")
