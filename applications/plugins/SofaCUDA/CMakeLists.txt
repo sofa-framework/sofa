@@ -167,7 +167,6 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaNearestPointROI.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
 
-    sofa/gpu/cuda/CudaExtraMonitor.cpp
     sofa/gpu/cuda/CudaIndexValueMapper.cpp
 )
 
@@ -248,9 +247,9 @@ sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.NonLinear REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Transform REQUIRED)
-sofa_find_package(SofaValidation REQUIRED)
 sofa_find_package(VolumetricRendering QUIET)
-sofa_find_package(SofaGeneralObjectInteraction REQUIRED)
+sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
+
 
 if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
@@ -410,8 +409,7 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Mapping.NonLinear
     Sofa.Component.Engine.Select
     Sofa.Component.Engine.Transform
-    SofaGeneralObjectInteraction
-    SofaValidation
+    Sofa.Component.MechanicalLoad
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
