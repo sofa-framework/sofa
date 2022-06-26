@@ -701,8 +701,9 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
+
+    vparams->drawTool()->saveLastState();
 
     // Draw Edges indices
     if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
@@ -948,8 +949,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
 template <class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
 {
-    return this->m_topology->getNbEdges() != 0 && (d_drawEdges.getValue() || showEdgeIndices.getValue())
-        || Inherit1::mustComputeBBox();
+    return ( (this->m_topology->getNbEdges() != 0 && (d_drawEdges.getValue() || showEdgeIndices.getValue())) || Inherit1::mustComputeBBox() );
 }
 
 } //namespace sofa::component::topology::container::dynamic
