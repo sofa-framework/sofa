@@ -137,7 +137,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
     Vector3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
 
-    SHDdouble omni_force[3];
+    GeomagicDriver::SHDdouble omni_force[3];
     omni_force[0] = force_in_omni[0];
     omni_force[1] = force_in_omni[1];
     omni_force[2] = force_in_omni[2];
