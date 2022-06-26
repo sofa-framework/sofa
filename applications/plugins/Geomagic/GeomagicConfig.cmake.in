@@ -11,7 +11,7 @@ find_package(Sofa.Component.IO.Mesh QUIET REQUIRED)
 find_package(Sofa.Component.StateContainer QUIET REQUIRED)
 find_package(Sofa.Component.Mapping.NonLinear QUIET REQUIRED)
 find_package(Sofa.GL.Component.Rendering3D QUIET REQUIRED)
-find_package(SofaHaptics QUIET REQUIRED)
+find_package(Sofa.Component.Haptics REQUIRED)
 
 if(GEOMAGIC_HAVE_OPENHAPTICS)
     find_package(OpenHaptics QUIET REQUIRED)
