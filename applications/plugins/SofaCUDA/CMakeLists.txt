@@ -235,7 +235,7 @@ endif()
 
 set(README_FILES README.md)
 
-find_package(Sofa.Component.Mass REQUIRED)
+sofa_find_package(Sofa.Component.Mass REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.HyperElastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.TensorMass REQUIRED)
