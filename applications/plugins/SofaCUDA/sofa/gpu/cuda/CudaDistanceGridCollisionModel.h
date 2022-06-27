@@ -25,7 +25,7 @@
 #include "CudaTypes.h"
 
 #include <sofa/core/CollisionModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>

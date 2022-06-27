@@ -55,7 +55,6 @@ endif()
 
 #TODO
 if(SOFA_BUILD_TESTS)
-   find_package(SofaTest QUIET)
 #   add_subdirectory(CGALPlugin_test)
 endif()
 

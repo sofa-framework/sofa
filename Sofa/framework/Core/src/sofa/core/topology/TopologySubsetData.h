@@ -60,7 +60,11 @@ public:
     * By default @sa m_addNewElements is set to false. 
     * @param {bool} to change m_addNewElements value. 
     */
-    void supportNewTopologyElements(bool value) { m_addNewElements = true; }
+    void supportNewTopologyElements(bool value)
+    {
+        SOFA_UNUSED(value);
+        m_addNewElements = true;
+    }
     
     /// Getter to the option @sa m_addNewElements
     bool isNewTopologyElementsSupported() const { return m_addNewElements; }

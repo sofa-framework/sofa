@@ -21,13 +21,9 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaCarving/CarvingManager.h>
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/testing/BaseSimulationTest.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-#include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
 
 using namespace sofa::testing;
 using namespace sofa::component::collision;
@@ -59,10 +55,7 @@ private:
 
 bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
-    sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
-    sofa::component::initSofaBaseLinearSolver(); // needed to instanciate CGLinearSolver
-    sofa::component::initSofaBaseMechanics(); // needed to instanciate DiagonalMass
-    sofa::component::initSofaBaseCollision();
+    sofa::simpleapi::importPlugin("Sofa.Component");
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
@@ -70,11 +63,6 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     // set scene variables
     m_root->setGravity(sofa::type::Vector3(0.0, 0.0, -0.9));
     m_root->setDt(0.01);
-    createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralSimpleFem" } });
-    createObject(m_root, "RequiredPlugin", { { "name","SofaTopologyMapping" } });
-    createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
-    createObject(m_root, "RequiredPlugin", { { "name","SofaEngine" } });
-    createObject(m_root, "RequiredPlugin", { { "name","SofaImplicitOdeSolver" } });
 
     // create collision pipeline
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });

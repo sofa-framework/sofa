@@ -3,18 +3,23 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SOFAGUI_TARGETS @SOFAGUI_TARGETS@)
-
 set(SOFAGUI_HAVE_SOFAHEADLESSRECORDER @SOFAGUI_HAVE_SOFAHEADLESSRECORDER@)
 set(SOFAGUI_HAVE_SOFAGUIQT @SOFAGUI_HAVE_SOFAGUIQT@)
 
+find_package(Sofa.GUI.Component QUIET REQUIRED)
+find_package(Sofa.GUI.Common QUIET REQUIRED)
+find_package(Sofa.GUI.Batch QUIET REQUIRED)
+
+# keep references to the deprecated modules
 find_package(SofaGuiCommon QUIET REQUIRED)
 
 if(SOFAGUI_HAVE_SOFAGUIQT)
+    find_package(Sofa.GUI.Qt QUIET REQUIRED)
     find_package(SofaGuiQt QUIET REQUIRED)
 endif()
 
 if(SOFAGUI_HAVE_SOFAHEADLESSRECORDER)
+    find_package(Sofa.GUI.HeadlessRecorder QUIET REQUIRED)
     find_package(SofaHeadlessRecorder QUIET REQUIRED)
 endif()
 

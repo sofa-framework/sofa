@@ -23,16 +23,14 @@
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/gui/ArgumentParser.h>
 
+#include <sofa/gui/common/init.h>
 #include <sofa/gui/GUIManager.h>
-#include <SofaGui/initSofaGui.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGNode.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationGraph/init.h>
-
-
-#include <SofaBase/initSofaBase.h>
+#include <sofa/simulation/graph/init.h>
+#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/graph/init.h>
 
 #include <cxxopts.hpp>
 
@@ -104,7 +102,6 @@ void fallingDrapExample(sofa::simulation::Node::SPtr root)
 int main(int argc, char** argv)
 {
     sofa::simulation::graph::init();
-    sofa::component::initSofaBase();
 
     bool showHelp = false;
     unsigned int idExample = 0;
@@ -143,7 +140,7 @@ int main(int argc, char** argv)
     }
 
     // init GUI
-    sofa::gui::initSofaGui();
+    sofa::gui::common::init();
     sofa::gui::GUIManager::Init(argv[0]);
 
     // Create simulation tree

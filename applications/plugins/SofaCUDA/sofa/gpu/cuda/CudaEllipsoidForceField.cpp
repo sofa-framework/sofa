@@ -22,15 +22,15 @@
 #include "CudaTypes.h"
 #include "CudaEllipsoidForceField.inl"
 #include <sofa/core/behavior/ForceField.inl>
-#include <SofaBoundaryCondition/EllipsoidForceField.inl>
+#include <sofa/component/mechanicalload/EllipsoidForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::gpu::cuda
 {
 
 int EllipsoidForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::forcefield::EllipsoidForceField<CudaVec3fTypes> >()
-        .add< component::forcefield::EllipsoidForceField<CudaVec3f1Types> >()
+        .add< component::mechanicalload::EllipsoidForceField<CudaVec3fTypes> >()
+        .add< component::mechanicalload::EllipsoidForceField<CudaVec3f1Types> >()
         ;
 
 } // namespace sofa::gpu::cuda

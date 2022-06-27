@@ -35,7 +35,7 @@ using sofa::core::objectmodel::BaseObject ;
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/component/collision/detection/intersection/MinProximityIntersection.h>
@@ -58,7 +58,7 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;

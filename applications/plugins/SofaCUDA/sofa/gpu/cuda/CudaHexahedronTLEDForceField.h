@@ -64,8 +64,7 @@ Year = {2009}                                                                   
 
 #include "CudaTypes.h"
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/MeshTopology.h>
-
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 
 namespace sofa
 {
@@ -84,8 +83,8 @@ public:
     SOFA_CLASS(CudaHexahedronTLEDForceField,SOFA_TEMPLATE(core::behavior::ForceField,CudaVec3fTypes));
     typedef CudaVec3fTypes::Real Real;
     typedef CudaVec3fTypes::Coord Coord;
-    typedef component::topology::MeshTopology::Hexa Element;
-    typedef component::topology::MeshTopology::SeqHexahedra VecElement;
+    typedef component::topology::container::constant::MeshTopology::Hexa Element;
+    typedef component::topology::container::constant::MeshTopology::SeqHexahedra VecElement;
 
     int nbVertex;                           // number of vertices
     int nbElems;                            // number of elements

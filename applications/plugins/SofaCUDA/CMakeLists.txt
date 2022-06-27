@@ -236,18 +236,21 @@ endif()
 
 set(README_FILES README.md)
 
-find_package(SofaGeneralEngine REQUIRED)
-find_package(SofaGeneralDeformable REQUIRED)
-find_package(SofaEngine REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaNonUniformFem REQUIRED)
-find_package(SofaMiscMapping REQUIRED)
-find_package(SofaMiscFem REQUIRED)
-find_package(SofaValidation REQUIRED)
-find_package(SofaMiscForceField REQUIRED)
-find_package(SofaGeneralObjectInteraction REQUIRED)
-
-find_package(VolumetricRendering QUIET)
+find_package(Sofa.Component.Mass REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.HyperElastic REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.TensorMass REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.NonLinear REQUIRED)
+sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
+sofa_find_package(Sofa.Component.Engine.Transform REQUIRED)
+sofa_find_package(SofaValidation REQUIRED)
+sofa_find_package(VolumetricRendering QUIET)
+sofa_find_package(SofaGeneralObjectInteraction REQUIRED)
 
 if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
@@ -258,8 +261,8 @@ else()
     message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
 endif()
 
-sofa_find_package(SofaGuiQt QUIET)
-if(SofaGuiQt_FOUND)
+sofa_find_package(Sofa.GUI.Qt QUIET)
+if(Sofa.GUI.Qt_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/gui/CudaDataWidget.h)
     list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
 endif()
@@ -394,17 +397,22 @@ cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_S
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
 target_link_libraries(${PROJECT_NAME}
-    SofaGeneralEngine
-    SofaGeneralDeformable
-    SofaEngine
-    SofaUserInteraction
-    SofaNonUniformFem
-    SofaMiscMapping
-    SofaMiscFem
-    SofaValidation
-    SofaMiscForceField
+    Sofa.Component.Mass
+    Sofa.Component.SolidMechanics.FEM.Elastic
+    Sofa.Component.SolidMechanics.FEM.HyperElastic
+    Sofa.Component.SolidMechanics.TensorMass
+    Sofa.Component.MechanicalLoad
+    Sofa.Component.Collision.Response.Contact
+    Sofa.Component.Collision.Detection.Intersection
+    Sofa.Component.StateContainer
+    Sofa.Component.Constraint.Projective
+    Sofa.Component.Mapping.Linear
+    Sofa.Component.Mapping.NonLinear
+    Sofa.Component.Engine.Select
+    Sofa.Component.Engine.Transform
     SofaGeneralObjectInteraction
-    )
+    SofaValidation
+)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
@@ -420,8 +428,8 @@ if(MiniFlowVR_FOUND)
     target_link_libraries(${PROJECT_NAME} miniFlowVR)
 endif()
 
-if(SofaGuiQt_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaGuiQt)
+if(Sofa.GUI.Qt_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GUI.Qt)
 endif()
 
 

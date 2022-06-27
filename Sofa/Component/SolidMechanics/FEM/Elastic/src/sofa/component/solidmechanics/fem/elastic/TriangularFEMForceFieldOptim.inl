@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
-#include <SofaBaseLinearSolver/BlocMatrixWriter.h>
+#include <sofa/core/behavior/BlocMatrixWriter.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <limits>

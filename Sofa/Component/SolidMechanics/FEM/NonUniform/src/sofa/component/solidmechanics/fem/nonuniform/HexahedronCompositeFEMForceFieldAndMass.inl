@@ -868,7 +868,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
     {
         type::fixed_array<Index,8> finerChildren;
 
-        topology::SparseGridTopology::SPtr sparseGrid, finerSparseGrid;
+        topology::container::grid::SparseGridTopology::SPtr sparseGrid, finerSparseGrid;
 
         if (level == 0)
         {
@@ -1500,7 +1500,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
     }
     else
     {
-        topology::SparseGridTopology::SPtr sparseGrid;
+        topology::container::grid::SparseGridTopology::SPtr sparseGrid;
 
         sparseGrid = this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level];
 

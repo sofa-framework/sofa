@@ -34,16 +34,19 @@
 #include <sofa/gui/component/performer/AttachBodyPerformer.inl>
 #include <sofa/gui/component/performer/FixParticlePerformer.inl>
 
-#include <SofaBaseCollision/NewProximityIntersection.inl>
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
-#include <SofaUserInteraction/RayDiscreteIntersection.h>
-#include <SofaUserInteraction/RayDiscreteIntersection.inl>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaUserInteraction/RayContact.h>
-#include <SofaMeshCollision/BarycentricPenalityContact.inl>
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
-#include <SofaObjectInteraction/PenalityContactForceField.h>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
+
+#include <sofa/component/collision/response/contact/RayContact.h>
+#include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
+
 #include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
+
 #include <sofa/gl/gl.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/Mapping.inl>
@@ -94,6 +97,8 @@ namespace sofa::gpu::cuda
 
 using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
+using namespace sofa::component::collision::detection::intersection;
+using namespace sofa::component::collision::response::contact;
 using namespace sofa::gui::component::performer;
 
 
@@ -104,21 +109,21 @@ int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction 
 #endif
         ;
 
-class CudaProximityIntersection : public sofa::component::collision::NewProximityIntersection
+class CudaProximityIntersection : public NewProximityIntersection
 {
 public:
-    SOFA_CLASS(CudaProximityIntersection,sofa::component::collision::NewProximityIntersection);
+    SOFA_CLASS(CudaProximityIntersection, NewProximityIntersection);
 
     virtual void init() override
     {
-        using CudaSphereCollisionModel = sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>;
+        using CudaSphereCollisionModel = SphereCollisionModel<gpu::cuda::CudaVec3Types>;
 
         sofa::component::collision::NewProximityIntersection::init();
         intersectors.add<CudaSphereCollisionModel, CudaSphereCollisionModel, NewProximityIntersection>(this);
         RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
         intersectors.add<RayCollisionModel,        CudaSphereCollisionModel,   RayDiscreteIntersection>(rayIntersector);
         MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
-        intersectors.add<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
+        intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
     }
 
 };
@@ -128,6 +133,6 @@ int CudaProximityIntersectionClass = core::RegisterObject("GPGPU Proximity Inter
         .add< CudaProximityIntersection >()
         ;
 
-sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);
+sofa::helper::Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);
 
 } // namespace sofa::gpu::cuda

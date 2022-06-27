@@ -25,10 +25,10 @@
 using sofa::helper::system::SetDirectory;
 using sofa::core::execparams::defaultInstance; 
 
-#include <SofaValidation/CompareState.h>
-using sofa::component::misc::CompareStateCreator;
-#include <SofaGeneralLoader/ReadState.h>
-using sofa::component::misc::ReadStateActivator;
+#include <sofa/component/playback/CompareState.h>
+using sofa::component::playback::CompareStateCreator;
+#include <sofa/component/playback/ReadState.h>
+using sofa::component::playback::ReadStateActivator;
 
 using sofa::core::ExecParams;
 

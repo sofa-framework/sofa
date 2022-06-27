@@ -24,7 +24,7 @@
 
 #include "SofaPhysicsAPI.h"
 
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/Shader.h>
 
@@ -65,7 +65,7 @@ public:
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     typedef sofa::core::visual::VisualModel SofaVisualOutputMesh;
-    typedef sofa::component::visualmodel::VisualModelImpl SofaOutputMesh;
+    typedef sofa::component::visual::VisualModelImpl SofaOutputMesh;
     typedef SofaOutputMesh::DataTypes DataTypes;
     typedef SofaOutputMesh::Coord Coord;
     typedef SofaOutputMesh::Deriv Deriv;
