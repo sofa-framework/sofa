@@ -208,7 +208,7 @@ typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>
 
 template <class DataTypes>
 inline const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point(Index i)const{
-    return this->_mstate->read(core::ConstVecCoordId::position())->getValue()[i];
+    return DataTypes::getCPos(this->_mstate->read(core::ConstVecCoordId::position())->getValue()[i]);
 }
 
 template <class DataTypes>
