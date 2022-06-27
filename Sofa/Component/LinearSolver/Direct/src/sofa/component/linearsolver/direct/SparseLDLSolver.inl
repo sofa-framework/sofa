@@ -93,10 +93,10 @@ template <class TMatrix, class TVector, class TThreadManager>
 bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data)
 {
     /*
-    J*Minv*J = J*(L*D*L^t)^-1 * J^t
-             = J*(L^t)^-1*D^-1*L^-1*J^t
-             = J*(L^t)^-1*D^-1*(J*L^-1)^t
-             = (L^-1 *J^t)^t * D^-1 * (L^-1*J^t )
+    J*Minv*J^t = J*(L*D*L^t)^-1 * J^t
+               = J*(L^t)^-1*D^-1*L^-1*J^t
+               = J*(L^t)^-1*D^-1*(J*L^-1)^t
+               = (L^-1 *J^t)^t * D^-1 * (L^-1*J^t )
     */
     if (J->rowSize()==0) return true;
 
