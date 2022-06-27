@@ -70,7 +70,8 @@ LinearSolverTask<Matrix,Vector>::LinearSolverTask(
     int row
     ,Vector *taskRH 
     ,Vector *taskLH 
-    ,sofa::simulation::CpuTask::Status *status,const JMatrixType * J
+    ,sofa::simulation::CpuTask::Status *status
+    ,const JMatrixType * J
     ,MatrixLinearSolver<Matrix,Vector> *solver)
 :sofa::simulation::CpuTask(status)
 ,m_row(row)
@@ -85,12 +86,12 @@ sofa::simulation::Task::MemoryAlloc LinearSolverTask<Matrix,Vector>::run(){
 
 /*
     for(int i=0; i<m_J->colSize(); i++){
-        std::cout<<m_taskRH[i] << ' ';
+        std::cout<<m_taskRH[i];
     }
     std::cout << std::endl;
 */
 
-m_solver->solve( *((*m_solver).linearSystem.systemMatrix), *m_taskLH, *m_taskRH );
+m_solver->solve( *(m_solver->linearSystem.systemMatrix), *m_taskLH, *m_taskRH );
 
 /*
 for(int i=0; i<m_J->rowSize(); i++){

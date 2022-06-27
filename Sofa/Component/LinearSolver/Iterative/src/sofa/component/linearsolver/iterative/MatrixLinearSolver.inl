@@ -259,23 +259,40 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     taskList.reserve( J->rowSize() );
     sofa::simulation::CpuTask::Status status;
     
-    sofa::type::vector< Vector  > listRH(J->rowSize()) ;
+    
+    sofa::type::vector< Vector  > listRH(J->rowSize()) ; // list of column
     for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
 
     sofa::type::vector< Vector  > listLH(J->rowSize());
     for(int i=0;i<J->rowSize();i++) listLH[i].resize(J->colSize());
+    
+   /*
+   sofa::type::vector< Vector  > listRH;
+   listRH.reserve(J->rowSize());
+   listRH.resize(J->rowSize());
+   for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
 
+    sofa::type::vector< Vector  > listLH;
+    listLH.reserve(J->rowSize());
+    listLH.resize(J->rowSize());
+    for(int i=0;i<J->rowSize();i++) listLH[i].resize(J->colSize());
+    */
 
-    for(int i=0;i<J->colSize();i++)
+    for(int row=0;row<J->rowSize();row++)
     {
-        for(int j=0;j<J->rowSize();j++)
+        for(int col=0;col<J->colSize();col++)
         {
                     // col,row            row,col
-                listRH[j][i] = J->element(j,i) ; //copy Jt
+                listRH[row][col] = J->element(row,col) ; //copy Jt
         }
     }
-
-
+/*
+    for(int col=0;col<J->rowSize();col++)
+    {
+        for( int row=0;row<J->colSize();row++) std::cout<<listRH[col][row];
+        std::cout << std::endl;
+    }
+*/
     if (this->linearSystem.needInvert)
         {
             this->invert(*(this->linearSystem.systemMatrix));
@@ -284,9 +301,12 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     // one task per column of Jt
     for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
     {
-        taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
+        //LinearSolverTask task(col , &listRH[col] , &listLH[col], &status  , J , this  );
+        //task.run();
+        
+        taskList.emplace_back(col , &listRH[col] , &listLH[col], &status  , J , this  );
         taskScheduler->addTask( &(taskList.back()) );
-
+        
         /*
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
         for (typename JMatrixType::Index i=0; i<J->colSize(); i++) linearSystem.systemRHVector->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
@@ -318,13 +338,21 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             return false;
         }
         */
-       taskScheduler->workUntilDone(&status);
     }
-
-
+    taskScheduler->workUntilDone(&status);
+/*
+    for(int col=0;col<J->rowSize();col++)
+    {
+        for( int row=0;row<J->colSize();row++) std::cout<<listLH[col].element(row);
+        //for( int row=0;row<J->colSize();row++) std::cout<<listLH[col][row];
+        std::cout << std::endl;
+    }  
+*/
     // STEP 3 : project the result using matrix J
+    
     if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
-    {/*
+    {
+     /*   
         for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
         {
             for(int col=0;col<J->rowSize();col++)
@@ -338,7 +366,9 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             }
 
         }
-        */
+        
+       */ 
+       
        for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
        {
             const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
@@ -350,13 +380,13 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
                 {
                     auto col2 = i2->first;
                     double val2 = i2->second;
-                    acc += val2 * listLH[col2][row2];
+                    acc += val2 * listLH[row][col2];
                 }
                 acc *= fact;
                 result->add(row2,row,acc);
             }
         }
-
+        
     }
     else
     {
@@ -364,7 +394,11 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         return false;
     }
 
-
+    for(int i=0;i<J->colSize();i++)
+    {
+        listLH[i].clear();
+        listRH[i].clear();
+    }
     listRH.clear();
     listLH.clear();
     return true;

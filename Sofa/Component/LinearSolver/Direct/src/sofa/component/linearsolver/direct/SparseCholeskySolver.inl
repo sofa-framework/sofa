@@ -49,10 +49,11 @@ template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 {
     const int n = A.n;
+    type::vector<double> tmp(n); // declared here for parallelisation
 
     sofa::helper::ScopedAdvancedTimer solveTimer("solve");
 
-    switch( d_typePermutation.getValue().getSelectedId() )
+    switch( permutationId )
     {
     case 0://None->identity
     case 1://SuiteSparse
@@ -97,7 +98,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     A.x = &(A_x[0]);				// numerical values, size nzmax
     A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &A );
-    tmp.resize(A.n);
+    //tmp.resize(A.n);
 
     {
         sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
@@ -195,6 +196,13 @@ css* SparseCholeskySolver<TMatrix,TVector>::symbolic_Chol(cs *A)
     S->Pinv = nullptr; // permutation on rows set to identity
     cs_free (c) ;
     return ((S->lnz >= 0) ? S : cs_sfree (S)) ;
+}
+
+
+template<class TMatrix, class TVector>
+void SparseCholeskySolver<TMatrix,TVector>::init()
+{
+    permutationId = d_typePermutation.getValue().getSelectedId() ; 
 }
 
 } // namespace sofa::component::linearsolver::direct

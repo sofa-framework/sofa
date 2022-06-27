@@ -47,6 +47,7 @@ public:
 
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
+    void init() override;
 
 protected:
 
@@ -59,8 +60,9 @@ protected:
     int * A_p; ///< column pointers (size n+1) or col indices (size nzmax)
     type::vector<int> Previous_colptr,Previous_rowind; ///<  shape of the matrix at the previous step
     type::vector<int> perm,iperm; ///< fill reducing permutation
-    type::vector<double> A_x,z_tmp,r_tmp,tmp;
+    type::vector<double> A_x,z_tmp,r_tmp; //,tmp;
     bool notSameShape;
+    int permutationId;
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;
 
