@@ -76,8 +76,8 @@ private:
     void updateVertexBuffer();
 
     //Tables
-    sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_mappingTableValues;
-    sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_runSelectTableValues;
+    sofa::component::visual::OglFloatVector4Variable::SPtr m_mappingTableValues;
+    sofa::component::visual::OglFloatVector4Variable::SPtr m_runSelectTableValues;
 
 protected:
     OglTetrahedralModel();

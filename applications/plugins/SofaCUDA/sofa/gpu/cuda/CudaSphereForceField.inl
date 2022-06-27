@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaSphereForceField.h"
-#include <SofaBoundaryCondition/SphereForceField.inl>
+#include <sofa/component/mechanicalload/SphereForceField.inl>
 
 namespace sofa::gpu::cuda
 {

@@ -31,4 +31,5 @@ sofa_create_package_with_targets(
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(Testing)
+    add_subdirectory(simutests)
 endif()

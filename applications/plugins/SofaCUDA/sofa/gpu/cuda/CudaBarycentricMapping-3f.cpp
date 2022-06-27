@@ -126,7 +126,7 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const topology::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( map[indexIn].in_index );
+                const auto cube = this->m_fromTopology->getHexahedron ( map[indexIn].in_index );
 
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
@@ -265,7 +265,7 @@ namespace sofa::gpu::cuda
 using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::core::behavior;
-using namespace sofa::component::mapping;
+using namespace sofa::component::mapping::linear;
 
 int BarycentricMappingCudaClass_3f = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()

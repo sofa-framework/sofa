@@ -24,7 +24,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 #include <sofa/testing/NumericTest.h>
 #include <sofa/simulation/Node.h>

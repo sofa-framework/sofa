@@ -23,7 +23,7 @@
 
 #include <MultiThreading/config.h>
 
-#include <SofaSimpleFem/HexahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
 #include <sofa/simulation/CpuTask.h>
 
 namespace sofa::component::forcefield
@@ -52,10 +52,10 @@ class AddDForceTask;
  * time-consumming step is to invert the matrix. This is where efforts should be put to accelerate the simulation.
  */
 template<class DataTypes>
-class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField : virtual public HexahedronFEMForceField<DataTypes>
+class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField : virtual public sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ParallelHexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(HexahedronFEMForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(ParallelHexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField, DataTypes));
     friend class AccumulateForceLargeTasks<DataTypes>;
     friend class AddDForceTask<DataTypes>;
 

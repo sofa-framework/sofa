@@ -23,7 +23,7 @@
 
 #include <MultiThreading/config.h>
 
-#include <SofaBaseCollision/BVHNarrowPhase.h>
+#include <sofa/component/collision/detection/algorithm/BVHNarrowPhase.h>
 #include <sofa/simulation/CpuTask.h>
 #include <unordered_set>
 
@@ -32,10 +32,10 @@ namespace sofa::component::collision
 
 class ParallelBVHNarrowPhasePairTask;
 
-class SOFA_MULTITHREADING_PLUGIN_API ParallelBVHNarrowPhase : public BVHNarrowPhase
+class SOFA_MULTITHREADING_PLUGIN_API ParallelBVHNarrowPhase : public detection::algorithm::BVHNarrowPhase
 {
 public:
-    SOFA_CLASS(ParallelBVHNarrowPhase, BVHNarrowPhase);
+    SOFA_CLASS(ParallelBVHNarrowPhase, detection::algorithm::BVHNarrowPhase);
 
 protected:
     ParallelBVHNarrowPhase();

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/config.h>
+#include <sofa/component/io/init.h>
 
 #include <sofa/component/io/mesh/init.h>
 

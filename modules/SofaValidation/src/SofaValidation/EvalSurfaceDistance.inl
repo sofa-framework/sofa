@@ -67,11 +67,11 @@ void EvalSurfaceDistance<DataTypes>::init()
         return;
     }
 
-    intersection = sofa::core::objectmodel::New<sofa::component::collision::NewProximityIntersection>();
+    intersection = sofa::core::objectmodel::New<sofa::component::collision::detection::intersection::NewProximityIntersection>();
     this->addSlave(intersection);
     intersection->init();
 
-    narrowPhaseDetection = sofa::core::objectmodel::New<sofa::component::collision::BVHNarrowPhase>();
+    narrowPhaseDetection = sofa::core::objectmodel::New<sofa::component::collision::detection::algorithm::BVHNarrowPhase>();
     this->addSlave(narrowPhaseDetection);
     narrowPhaseDetection->init();
 }

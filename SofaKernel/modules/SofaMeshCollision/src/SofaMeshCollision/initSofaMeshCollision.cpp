@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMeshCollision/initSofaMeshCollision.h>
-#include <SofaMeshCollision/MeshNewProximityIntersection.h>
+
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
 
 #include <sofa/helper/system/PluginManager.h>
 
@@ -49,7 +50,7 @@ void initSofaMeshCollision()
         first = false;
     }
 
-    core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
+    core::collision::IntersectorCreator<collision::detection::intersection::NewProximityIntersection, collision::detection::intersection::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::detection::intersection::NewProximityIntersection, collision::detection::intersection::MeshNewProximityIntersection>("Mesh");
     (void)pMeshNewProximityIntersectors;
 }
 

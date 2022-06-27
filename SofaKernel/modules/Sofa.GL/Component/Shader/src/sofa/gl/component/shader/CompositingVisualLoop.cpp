@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gl/component/shader/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/component/visual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/Node.h>

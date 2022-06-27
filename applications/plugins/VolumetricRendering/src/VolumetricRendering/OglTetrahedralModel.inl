@@ -63,8 +63,8 @@ void OglTetrahedralModel<DataTypes>::init()
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
-    sofa::type::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr > listVec4Variables;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloatVector4Variable, sofa::type::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr> >
+    sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr > listVec4Variables;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visual::OglFloatVector4Variable, sofa::type::vector<sofa::component::visual::OglFloatVector4Variable::SPtr> >
         (&listVec4Variables, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i<listVec4Variables.size(); i++)
     {
@@ -85,7 +85,7 @@ void OglTetrahedralModel<DataTypes>::init()
     if (!m_mappingTableValues)
     {
         msg_info() << "No MappingTable found, instanciating one";
-        m_mappingTableValues = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloatVector4Variable>();
+        m_mappingTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
 
@@ -109,7 +109,7 @@ void OglTetrahedralModel<DataTypes>::init()
     {
         msg_info() << "No RunSelectTable found, instanciating one";
 
-        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloatVector4Variable>();
+        m_runSelectTableValues = sofa::core::objectmodel::New<sofa::component::visual::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");
         m_runSelectTableValues->setID("RunSelectTable");
 

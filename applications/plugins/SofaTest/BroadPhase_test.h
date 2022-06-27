@@ -1,10 +1,10 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 #include <SofaMiscCollision/OBBModel.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
@@ -12,8 +12,8 @@
 
 #include <gtest/gtest.h>
 
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 struct MyBox{
 

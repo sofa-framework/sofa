@@ -15,7 +15,7 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team and external contribuSofa.GUI.Componenttors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -31,7 +31,7 @@
 #include <sofa/simulation/CollisionEndEvent.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
-#include <SofaUserInteraction/TopologicalChangeManager.h>
+#include <sofa/gui/component/performer/TopologicalChangeManager.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa
@@ -195,7 +195,7 @@ void CarvingManager::doCarve()
 
         if (!elemsToRemove.empty())
         {
-            static TopologicalChangeManager manager;
+            static sofa::gui::component::performer::TopologicalChangeManager manager;
             nbelems += manager.removeItemsFromCollisionModel(targetModel, elemsToRemove);
         }
     }

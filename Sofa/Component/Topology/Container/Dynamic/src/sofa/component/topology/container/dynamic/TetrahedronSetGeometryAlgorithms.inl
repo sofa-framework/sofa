@@ -3228,7 +3228,12 @@ int TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronWithPla
     return 0;
 }
 
-
+template <class DataTypes>
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return (d_showTetrahedraIndices.getValue() || d_drawTetrahedra.getValue()) && this->m_topology->getNbTetrahedra() != 0
+        || Inherit1::mustComputeBBox();
+}
 
 
 template<class DataTypes>

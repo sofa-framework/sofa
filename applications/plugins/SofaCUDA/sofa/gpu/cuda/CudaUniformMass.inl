@@ -23,7 +23,7 @@
 #define SOFA_GPU_CUDA_CUDAUNIFORMMASS_INL
 
 #include "CudaUniformMass.h"
-#include <SofaBaseMechanics/UniformMass.inl>
+#include <sofa/component/mass/UniformMass.inl>
 #include <sofa/gl/Axis.h>
 
 namespace sofa
