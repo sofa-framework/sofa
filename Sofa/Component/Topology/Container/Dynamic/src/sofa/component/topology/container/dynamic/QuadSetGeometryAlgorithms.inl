@@ -286,6 +286,13 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
     myfile.close();
 }
 
+template <class DataTypes>
+bool QuadSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return (_drawQuads.getValue() || showQuadIndices.getValue()) && this->m_topology->getNbQuads() != 0
+        || Inherit1::mustComputeBBox();
+}
+
 template<class Coord>
 bool is_point_in_quad(const Coord& p,
         const Coord& a, const Coord& b,

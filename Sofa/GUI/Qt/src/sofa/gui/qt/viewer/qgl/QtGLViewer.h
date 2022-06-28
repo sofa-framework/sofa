@@ -39,7 +39,7 @@
 #include <sofa/helper/visual/Trackball.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/gl/Texture.h>
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/simulation//common/xml/Element.h>
 
 
 

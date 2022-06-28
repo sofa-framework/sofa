@@ -137,7 +137,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
     Vector3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
 
-    double omni_force[3];
+    GeomagicDriver::SHDdouble omni_force[3];
     omni_force[0] = force_in_omni[0];
     omni_force[1] = force_in_omni[1];
     omni_force[2] = force_in_omni[2];
@@ -194,7 +194,7 @@ void GeomagicDriver::init()
     if (l_forceFeedback.empty())
     {
         simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-        m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+        m_forceFeedback = context->get<sofa::component::haptics::ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
     }
     else
     {

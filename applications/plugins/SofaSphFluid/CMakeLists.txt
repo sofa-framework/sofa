@@ -1,16 +1,18 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaSphFluid VERSION 1.0)
 
-sofa_find_package(SofaBase REQUIRED)
-sofa_find_package(SofaMeshCollision REQUIRED)
-sofa_find_package(SofaOpenglVisual QUIET)
+find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Constant REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
  
 set(PLUGIN_SPH_SRC_DIR src/SofaSphFluid)
 set(HEADER_FILES
     ${PLUGIN_SPH_SRC_DIR}/config.h.in
     ${PLUGIN_SPH_SRC_DIR}/ParticleSink.h
-	${PLUGIN_SPH_SRC_DIR}/ParticleSink.inl
+    ${PLUGIN_SPH_SRC_DIR}/ParticleSink.inl
     ${PLUGIN_SPH_SRC_DIR}/ParticleSource.h
 	${PLUGIN_SPH_SRC_DIR}/ParticleSource.inl
     ${PLUGIN_SPH_SRC_DIR}/ParticlesRepulsionForceField.h
@@ -36,7 +38,7 @@ set(SOURCE_FILES
     ${PLUGIN_SPH_SRC_DIR}/SpatialGridPointModel.cpp
 )
 
-if(SofaOpenglVisual_FOUND)
+if(Sofa.GL_FOUND)
     list(APPEND HEADER_FILES
             ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.h
             ${PLUGIN_SPH_SRC_DIR}/OglFluidModel.inl
@@ -58,10 +60,10 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SPH_FLUID")
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseMechanics SofaMeshCollision)
+target_link_libraries(${PROJECT_NAME} Sofa.Core Sofa.Component.Topology.Container.Dynamic Sofa.Component.Topology.Container.Constant Sofa.Component.Collision.Geometry Sofa.Component.StateContainer)
 
-if(SofaOpenglVisual_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
 
 sofa_create_package_with_targets(

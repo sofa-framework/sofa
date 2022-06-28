@@ -10,30 +10,30 @@ using sofa::testing::BaseTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
-#include <SofaOpenglVisual/OglModel.h>
+#include <sofa/gl/component/rendering3d/OglModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 namespace light_test
 {
 
 int initMessage(){
-    static sofa::component::visualmodel::OglModel* t;
+    static sofa::gl::component::rendering3d::OglModel* t;
 
     if(t){
         t->init();
