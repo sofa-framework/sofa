@@ -73,6 +73,8 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
+    Data<bool> d_computeBoundingBox;
+
 };
 
 } // namespace sofa::core::behavior

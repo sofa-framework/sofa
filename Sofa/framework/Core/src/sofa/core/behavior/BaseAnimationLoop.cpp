@@ -30,6 +30,7 @@ namespace sofa::core::behavior
 
 BaseAnimationLoop::BaseAnimationLoop()
     : m_resetTime(0.)
+    , d_computeBoundingBox(initData(&d_computeBoundingBox, !SOFA_NO_UPDATE_BBOX, "computeBoundingBox", "If true, compute the global bounding box of the scene at each time step. Used mostly for rendering."))
 {}
 
 BaseAnimationLoop::~BaseAnimationLoop()
