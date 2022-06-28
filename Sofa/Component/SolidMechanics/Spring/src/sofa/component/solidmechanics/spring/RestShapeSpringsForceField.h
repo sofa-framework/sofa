@@ -60,18 +60,18 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef type::vector< sofa::Index > SetIndexArray;
-    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
+    typedef type::vector< sofa::Index > VecIndex;
+    typedef sofa::core::topology::TopologySubsetIndices DataSubsetIndex;
     typedef type::vector< Real >	 VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    SetIndex d_points; ///< points controlled by the rest shape springs
+    DataSubsetIndex d_points; ///< points controlled by the rest shape springs
     Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
     Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
     Data< type::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
-    Data< SetIndexArray > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< VecIndex > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
     Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
@@ -111,17 +111,17 @@ public:
 
 
     const DataVecCoord* getExtPosition() const;
-    const SetIndexArray& getIndices() const { return m_indices; }
-    const SetIndexArray& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
+    const VecIndex& getIndices() const { return m_indices; }
+    const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
 protected :
 
     void recomputeIndices();
     bool checkOutOfBoundsIndices();
-    bool checkOutOfBoundsIndices(const SetIndexArray &indices, const sofa::Size dimension);
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension);
 
-    SetIndexArray m_indices;
-    SetIndexArray m_ext_indices;
+    VecIndex m_indices;
+    VecIndex m_ext_indices;
     type::vector<CPos> m_pivots;
 
     SReal lastUpdatedStep;

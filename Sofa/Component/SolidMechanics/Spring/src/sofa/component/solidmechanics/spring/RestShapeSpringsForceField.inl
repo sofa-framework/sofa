@@ -272,7 +272,7 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
 }
 
 template<class DataTypes>
-bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const SetIndexArray &indices, const sofa::Size dimension)
+bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices(const VecIndex &indices, const sofa::Size dimension)
 {
     for (sofa::Index i = 0; i < indices.size(); i++)
     {
@@ -382,8 +382,8 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
     ReadAccessor< DataVecCoord > p  = this->mstate->read(VecCoordId::position());
 
-    const SetIndexArray& indices = m_indices;
-    const SetIndexArray& ext_indices = (useRestMState ? m_ext_indices : m_indices);
+    const VecIndex& indices = m_indices;
+    const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
 
     std::vector<Vector3> vertices;
 
