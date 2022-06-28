@@ -79,7 +79,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
         c->get(s);
         if(s)
         {
-            if (s->getTemplateName() == "GraphScattered")
+            if (s->getTemplateName() == sofa::component::linearsolver::GraphScatteredMatrix::Name())
                 msg_warning() << "Can not use the solver " << s->getName() << " because it is templated on GraphScatteredType";
             else
                 linearsolvers.push_back(s);
