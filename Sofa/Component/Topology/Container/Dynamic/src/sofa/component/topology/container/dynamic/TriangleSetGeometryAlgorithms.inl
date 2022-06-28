@@ -2530,6 +2530,12 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
 }
 
 
+template <class DataTypes>
+bool TriangleSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return (showTriangleIndices.getValue() || _draw.getValue()) && this->m_topology->getNbTriangles() != 0
+        || Inherit1::mustComputeBBox();
+}
 
 template<class Real>
 bool is_point_in_triangle(const sofa::type::Vec<3,Real>& p, const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b, const sofa::type::Vec<3,Real>& c)

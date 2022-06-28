@@ -110,6 +110,7 @@ protected:
     Data<bool> _drawQuads; ///< if true, draw the quads in the topology
     Data<sofa::type::RGBAColor> _drawColor; ///< RGB code color used to draw quads.
 
+    bool mustComputeBBox() const override;
 };
 
 template<class Coord>

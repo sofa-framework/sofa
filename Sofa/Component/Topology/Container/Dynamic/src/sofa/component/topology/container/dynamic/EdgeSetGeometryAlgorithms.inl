@@ -943,5 +943,11 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     return is_intersect;
 }
 
+template <class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return this->m_topology->getNbEdges() != 0 && (d_drawEdges.getValue() || showEdgeIndices.getValue())
+        || Inherit1::mustComputeBBox();
+}
 
 } //namespace sofa::component::topology::container::dynamic

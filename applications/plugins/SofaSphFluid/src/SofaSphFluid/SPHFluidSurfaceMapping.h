@@ -24,7 +24,7 @@
 #include <SofaSphFluid/config.h>
 
 #include <SofaSphFluid/SPHFluidForceField.h>
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 
 #include <sofa/core/Mapping.h>
 
@@ -95,10 +95,10 @@ public:
 
 
 template <class In, class Out>
-class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology
+class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::container::constant::MeshTopology
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(SPHFluidSurfaceMapping, In, Out), SOFA_TEMPLATE2(core::Mapping, In, Out), topology::MeshTopology);
+    SOFA_CLASS2(SOFA_TEMPLATE2(SPHFluidSurfaceMapping, In, Out), SOFA_TEMPLATE2(core::Mapping, In, Out), topology::container::constant::MeshTopology);
 
     typedef core::Mapping<In, Out> Inherit;
     typedef typename Out::VecCoord OutVecCoord;

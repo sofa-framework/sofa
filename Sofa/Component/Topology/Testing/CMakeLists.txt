@@ -17,4 +17,4 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_COMPONENT_TOPOLOGY_TESTING_RESOURCES_DIR=\"${CMAKE_SOURCE_DIR}/share\"")
 
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
-target_link_libraries(${PROJECT_NAME} Sofa.Config SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} Sofa.Config Sofa.Simulation.Graph)

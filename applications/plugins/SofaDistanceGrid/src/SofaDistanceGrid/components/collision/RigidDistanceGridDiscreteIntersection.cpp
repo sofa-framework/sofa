@@ -26,7 +26,7 @@
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/helper/proximity.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include "RigidDistanceGridDiscreteIntersection.inl"
 
 namespace sofa
@@ -41,6 +41,8 @@ namespace collision
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::detection::intersection;
+using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<DiscreteIntersection, RigidDistanceGridDiscreteIntersection> RigidDistanceGridDiscreteIntersectors("RigidDistanceGrid");
 

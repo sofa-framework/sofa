@@ -118,7 +118,6 @@ set(SRC_ROOT src/sofa/gui/qt)
 
 set(MOC_HEADER_FILES
     ${SRC_ROOT}/AboutSOFADialog.h
-    ${SRC_ROOT}/AddObject.h
     ${SRC_ROOT}/DataFilenameWidget.h
     ${SRC_ROOT}/DataWidget.h
     ${SRC_ROOT}/DisplayFlagsDataWidget.h
@@ -166,7 +165,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/AboutSOFADialog.cpp
-    ${SRC_ROOT}/AddObject.cpp
     ${SRC_ROOT}/DataFilenameWidget.cpp
     ${SRC_ROOT}/DataWidget.cpp
     ${SRC_ROOT}/DisplayFlagsDataWidget.cpp

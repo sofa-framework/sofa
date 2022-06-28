@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -183,7 +183,7 @@ protected:
     SReal m_potentialEnergy;
 
     sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topology
-    topology::SparseGridTopology* _sparseGrid;
+    topology::container::grid::SparseGridTopology* _sparseGrid;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix

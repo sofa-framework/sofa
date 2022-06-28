@@ -22,11 +22,12 @@
 #pragma once
 #include "SimpleDataWidget.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaDeformable/SpringForceField.h>
-#include <SofaRigid/JointSpring.h>
-#include <SofaRigid/JointSpringForceField.h>
-#include <SofaMiscForceField/GearSpringForceField.h>
-/* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
+
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
+#include <sofa/component/solidmechanics/spring/JointSpring.h>
+#include <sofa/component/solidmechanics/spring/JointSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/GearSpringForceField.h>
+
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/type/RGBAColor.h>
 
@@ -383,7 +384,7 @@ class data_widget_container < sofa::defaulttype::RigidMass<N, T> > : public stru
 /// sofa::component::forcefield::LinearSpring support
 ////////////////////////////////////////////////////////////////
 
-#define CLASS typename sofa::component::interactionforcefield::LinearSpring< T >
+#define CLASS typename sofa::component::solidmechanics::spring::LinearSpring< T >
 
 template<class T>
 class struct_data_trait < CLASS >
@@ -412,7 +413,7 @@ class data_widget_container < CLASS > : public struct_data_widget_container < CL
 /// sofa::component::forcefield::JointSpring support
 ////////////////////////////////////////////////////////////////
 
-#define CLASS typename sofa::component::interactionforcefield::JointSpring< T >
+#define CLASS typename sofa::component::solidmechanics::spring::JointSpring< T >
 
 template<class T>
 class struct_data_trait < CLASS >
@@ -465,7 +466,7 @@ class data_widget_container < CLASS > : public struct_data_widget_container < CL
 /// sofa::component::forcefield::GearSpring support
 ////////////////////////////////////////////////////////////////
 
-#define CLASS typename sofa::component::interactionforcefield::GearSpring< T >
+#define CLASS typename sofa::component::solidmechanics::spring::GearSpring< T >
 
 template<class T>
 class struct_data_trait < CLASS >

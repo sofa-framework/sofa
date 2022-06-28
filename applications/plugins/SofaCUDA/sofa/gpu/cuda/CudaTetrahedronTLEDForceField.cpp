@@ -24,7 +24,7 @@
 #include "mycuda.h"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
 
 namespace sofa
 {
@@ -117,7 +117,7 @@ void CudaTetrahedronTLEDForceField::reinit()
         int ny = 1;
 //        int nz = 1;
         {
-            component::topology::GridTopology* grid = dynamic_cast<component::topology::GridTopology*>(topology);
+            auto* grid = dynamic_cast<component::topology::container::grid::GridTopology*>(topology);
             if (grid != NULL)
             {
                 nx = grid->getNx()-1;

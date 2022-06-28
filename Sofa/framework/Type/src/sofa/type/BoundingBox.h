@@ -109,6 +109,7 @@ public:
     {
     }
 
+    TBoundingBox() : BoundingBox() {}
 };
 
 
