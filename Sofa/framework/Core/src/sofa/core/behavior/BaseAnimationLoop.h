@@ -73,7 +73,7 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
-    Data<bool> d_computeBoundingBox;
+    Data<bool> d_computeBoundingBox; ///< If true, compute the global bounding box of the scene at each time step. Used mostly for rendering.
 
 };
 
