@@ -53,7 +53,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vec
 
     sofa::helper::ScopedAdvancedTimer solveTimer("solve");
 
-    switch( permutationId )
+    switch( d_typePermutation.getValue().getSelectedId() )
     {
     case 0://None->identity
     case 1://SuiteSparse
@@ -105,7 +105,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
 
         notSameShape = compareMatrixShape( A.n , A.p , A.i, Previous_colptr.size()-1 , Previous_colptr.data() , Previous_rowind.data() );
 
-        switch (d_typePermutation.getValue().getSelectedId() )
+        switch ( d_typePermutation.getValue().getSelectedId() )
         {
             case 0:
             default:// None->identity 

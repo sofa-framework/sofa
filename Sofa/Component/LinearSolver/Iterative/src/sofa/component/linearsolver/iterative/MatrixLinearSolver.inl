@@ -36,6 +36,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVis
 
 #include <sofa/simulation/TaskScheduler.h>
 #include<sofa/component/linearsolver/iterative/LinearSolverTask.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::component::linearsolver
 {
@@ -254,120 +255,47 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     {
         msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
     }
-
     std::vector< LinearSolverTask<Matrix,Vector> > taskList;
     taskList.reserve( J->rowSize() );
     sofa::simulation::CpuTask::Status status;
     
     
-    sofa::type::vector< Vector  > listRH(J->rowSize()) ; // list of column
+    sofa::type::vector< Vector  > listRH(J->rowSize()) ; // columns of Jt
     for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
 
-    sofa::type::vector< Vector  > listLH(J->rowSize());
+    sofa::type::vector< Vector  > listLH(J->rowSize()); // columns of MinvJt
     for(int i=0;i<J->rowSize();i++) listLH[i].resize(J->colSize());
-    
-   /*
-   sofa::type::vector< Vector  > listRH;
-   listRH.reserve(J->rowSize());
-   listRH.resize(J->rowSize());
-   for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
 
-    sofa::type::vector< Vector  > listLH;
-    listLH.reserve(J->rowSize());
-    listLH.resize(J->rowSize());
-    for(int i=0;i<J->rowSize();i++) listLH[i].resize(J->colSize());
-    */
 
     for(int row=0;row<J->rowSize();row++)
     {
         for(int col=0;col<J->colSize();col++)
         {
-                    // col,row            row,col
+                    // col,row                row,col
                 listRH[row][col] = J->element(row,col) ; //copy Jt
         }
     }
-/*
-    for(int col=0;col<J->rowSize();col++)
-    {
-        for( int row=0;row<J->colSize();row++) std::cout<<listRH[col][row];
-        std::cout << std::endl;
-    }
-*/
+
+
     if (this->linearSystem.needInvert)
         {
             this->invert(*(this->linearSystem.systemMatrix));
             this->linearSystem.needInvert = false;
         }
+
     // one task per column of Jt
     for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
-    {
-        //LinearSolverTask task(col , &listRH[col] , &listLH[col], &status  , J , this  );
-        //task.run();
-        
-        taskList.emplace_back(col , &listRH[col] , &listLH[col], &status  , J , this  );
-        taskScheduler->addTask( &(taskList.back()) );
-        
-        /*
-        // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (typename JMatrixType::Index i=0; i<J->colSize(); i++) linearSystem.systemRHVector->set(i, J->element(row, i)); // linearSystem.systemMatrix->rowSize()
-
-        // STEP 2 : solve the system :
-        solveSystem();
-
-        // STEP 3 : project the result using matrix J
-        if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
-        {
-            const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
-            for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
-            {
-                auto row2 = jit->first;
-                double acc = 0.0;
-                for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
-                {
-                    auto col2 = i2->first;
-                    double val2 = i2->second;
-                    acc += val2 * linearSystem.systemLHVector->element(col2);
-                }
-                acc *= fact;
-                result->add(row2,row,acc);
-            }
-        }
-        else
-        {
-            dmsg_error() << "addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
-            return false;
-        }
-        */
+    {     
+        taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , this  );
+        taskScheduler->addTask( &(taskList.back()) );  
     }
+
     taskScheduler->workUntilDone(&status);
-/*
-    for(int col=0;col<J->rowSize();col++)
-    {
-        for( int row=0;row<J->colSize();row++) std::cout<<listLH[col].element(row);
-        //for( int row=0;row<J->colSize();row++) std::cout<<listLH[col][row];
-        std::cout << std::endl;
-    }  
-*/
+
     // STEP 3 : project the result using matrix J
     
     if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
     {
-     /*   
-        for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
-        {
-            for(int col=0;col<J->rowSize();col++)
-            {
-                double acc = 0.0;
-                for(int k=0;k<J->colSize();k++)
-                {
-                    acc += J->element(row,k)*listRH[col][k];
-                }
-                result->add(row,col,acc*fact);
-            }
-
-        }
-        
-       */ 
        
        for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
        {
@@ -386,7 +314,6 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
                 result->add(row2,row,acc);
             }
         }
-        
     }
     else
     {
@@ -394,13 +321,6 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         return false;
     }
 
-    for(int i=0;i<J->colSize();i++)
-    {
-        listLH[i].clear();
-        listRH[i].clear();
-    }
-    listRH.clear();
-    listLH.clear();
     return true;
 }
 
@@ -430,7 +350,11 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* re
 
     JMatrixType * j_local = internalData.getLocalJ(J);
     ResMatrixType * res_local = internalData.getLocalRes(result);
-    bool res = addJMInvJtLocal(linearSystem.systemMatrix, res_local, j_local, fact);
+    bool res;
+    {
+        sofa::helper::ScopedAdvancedTimer constriantTimer("buildConstraint");
+        res = addJMInvJtLocal(linearSystem.systemMatrix, res_local, j_local, fact);
+    }
     internalData.addLocalRes(result);
     return res;
 }
