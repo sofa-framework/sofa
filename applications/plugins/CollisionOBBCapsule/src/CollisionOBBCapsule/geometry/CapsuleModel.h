@@ -46,7 +46,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real   Real;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::CPos Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
     typedef CapsuleCollisionModel<DataTypes> ParentModel;
@@ -69,7 +69,7 @@ public:
 
     Real radius() const;
 
-    Coord v()const;
+    Deriv v()const;
 
     bool shareSameVertex(const TCapsule<TDataTypes> & other)const;
 };
