@@ -58,6 +58,7 @@ sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE VALUE TRUE)
 sofa_find_package(metis QUIET) # Unix users can have an installed version of metis
 if(NOT metis_FOUND)
     message(STATUS "Sofa.Component.LinearSolver.Direct: using built-in metis library")
+    set(METIS-GKLIB_GKRAND ON) #GKRAND support allows the portability of random number generation across different architectures
     add_subdirectory(extlibs/metis-5.1.0)
 endif()
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
