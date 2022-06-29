@@ -49,7 +49,7 @@ template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 {
     const int n = A.n;
-    type::vector<double> tmp(n); // declared here for parallelisation
+    type::vector<double> tmp(n); // must be declared in this scope for multithreading
 
     sofa::helper::ScopedAdvancedTimer solveTimer("solve");
 
@@ -98,7 +98,6 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     A.x = &(A_x[0]);				// numerical values, size nzmax
     A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &A );
-    //tmp.resize(A.n);
 
     {
         sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");

@@ -260,67 +260,61 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     sofa::simulation::CpuTask::Status status;
     
     
+        
     sofa::type::vector< Vector  > listRH(J->rowSize()) ; // columns of Jt
     for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
 
     sofa::type::vector< Vector  > listLH(J->rowSize()); // columns of MinvJt
     for(int i=0;i<J->rowSize();i++) listLH[i].resize(J->colSize());
 
-
-    for(int row=0;row<J->rowSize();row++)
-    {
-        for(int col=0;col<J->colSize();col++)
-        {
-                    // col,row                row,col
-                listRH[row][col] = J->element(row,col) ; //copy Jt
-        }
-    }
-
-
     if (this->linearSystem.needInvert)
         {
             this->invert(*(this->linearSystem.systemMatrix));
             this->linearSystem.needInvert = false;
         }
+    {
+        sofa::helper::ScopedAdvancedTimer invertTimer("invert");
+        // one task per column of Jt
+        for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
+        {     
+            taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
+            taskScheduler->addTask( &(taskList.back()) );  
+        }
 
-    // one task per column of Jt
-    for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
-    {     
-        taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , this  );
-        taskScheduler->addTask( &(taskList.back()) );  
+        taskScheduler->workUntilDone(&status);
     }
-
-    taskScheduler->workUntilDone(&status);
 
     // STEP 3 : project the result using matrix J
     
-    if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
     {
-       
-       for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
-       {
-            const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
-            for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
-            {
-                auto row2 = jit->first;
-                double acc = 0.0;
-                for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+        sofa::helper::ScopedAdvancedTimer productTimer("product");
+        if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
+        {
+        
+        for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+        {
+                const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
+                for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
                 {
-                    auto col2 = i2->first;
-                    double val2 = i2->second;
-                    acc += val2 * listLH[row][col2];
+                    auto row2 = jit->first;
+                    double acc = 0.0;
+                    for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+                    {
+                        auto col2 = i2->first;
+                        double val2 = i2->second;
+                        acc += val2 * listLH[row][col2];
+                    }
+                    acc *= fact;
+                    result->add(row2,row,acc);
                 }
-                acc *= fact;
-                result->add(row2,row,acc);
             }
         }
+        else
+        {
+            dmsg_error() << "addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
+            return false;
+        }
     }
-    else
-    {
-        dmsg_error() << "addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
-        return false;
-    }
-
     return true;
 }
 

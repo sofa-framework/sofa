@@ -54,6 +54,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
 {
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
+    double *tmp = (double *) cs_malloc (invertData->A.n, sizeof (double)) ;
 
     {
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");
@@ -71,20 +72,22 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
 
             case 1://SuiteSparse
             {
-                cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	// x = P*b , partial pivot
-                cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x 
-                cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x 
-                cs_ipvec (n, invertData->S->Q, invertData->tmp, x.ptr()) ;	// x = Q*x fill reducing permutation on columns only
+                cs_ipvec (n, invertData->N->Pinv, b.ptr(), tmp) ;	// x = P*b , partial pivot
+                cs_lsolve (invertData->N->L, tmp) ;		// x = L\x 
+                cs_usolve (invertData->N->U, tmp) ;		// x = U\x 
+                cs_ipvec (n, invertData->S->Q, tmp, x.ptr()) ;	// x = Q*x fill reducing permutation on columns only
+                cs_free(tmp);
                 break;
             }
             
             case 2://METIS
             {
                 // no partial pivoting
-                cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b permutation on rows
-                cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x
-                cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x
-                cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// x = Q*x permutation on columns
+                cs_pvec (n, invertData->perm.data() , b.ptr(), tmp) ; // x = P*b permutation on rows
+                cs_lsolve (invertData->N->L, tmp) ;		// x = L\x
+                cs_usolve (invertData->N->U, tmp) ;		// x = U\x
+                cs_pvec (n, invertData->iperm.data() , tmp , x.ptr()) ;	// x = Q*x permutation on columns
+                cs_free(tmp);
                 break;
             }
 
@@ -119,7 +122,6 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     }
 
     if (invertData->N) cs_nfree(invertData->N);
-    if (invertData->tmp) cs_free(invertData->tmp);
 
     //build A with M
     invertData->A.nzmax = matrix->getColsValue().size();	// maximum number of entries
@@ -135,8 +137,6 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     cs_dropzeros( &invertData->A );
 
     invertData->notSameShape = compareMatrixShape(invertData->A.n , (int*) invertData->A_p.data() , (int*) invertData->A_i.data(), (invertData->Previous_colptr.size())-1 ,invertData->Previous_colptr.data() ,invertData->Previous_rowind.data() );
-
-    invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
     {
         sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");

@@ -43,18 +43,18 @@ public :
     type::vector<int> Previous_colptr,Previous_rowind; ///< shape of the matrix at the previous step
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
-    Real * tmp;
+    //Real * tmp;
     bool notSameShape;
     SparseLUInvertData()
     {
-        S=nullptr; N=nullptr; tmp=nullptr;
+        S=nullptr; N=nullptr; //tmp=nullptr;
     }
 
     ~SparseLUInvertData()
     {
         if (S) cs_sfree (S);
         if (N) cs_nfree (N);
-        if (tmp) cs_free (tmp);
+        //if (tmp) cs_free (tmp);
     }
 };
 
