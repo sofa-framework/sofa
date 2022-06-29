@@ -21,8 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/topology/TopologyData.inl>
-
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyData.inl")
-
-#include <SofaBaseTopology/TopologyData.h> // add the aliases PointData, etc
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyData.inl")

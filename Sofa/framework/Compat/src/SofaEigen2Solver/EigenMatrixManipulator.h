@@ -23,7 +23,7 @@
 
 #include <sofa/linearalgebra/EigenMatrixManipulator.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenMatrixManipulator.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenMatrixManipulator.h")
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 
 namespace sofa::component::linearsolver

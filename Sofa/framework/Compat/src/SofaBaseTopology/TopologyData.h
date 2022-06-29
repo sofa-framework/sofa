@@ -21,22 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/topology/TopologyData.h>
-
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyData.h")
-
-#include <SofaBaseTopology/TopologyDataHandler.h>
-
-namespace sofa::component::topology
-{
-    template< class TopologyElementType, class VecT>
-    using TopologyData = sofa::core::topology::TopologyData< TopologyElementType, VecT>;
-
-    template< class VecT > using PointData = sofa::core::topology::PointData<VecT>;
-    template< class VecT > using EdgeData = sofa::core::topology::EdgeData<VecT>;
-    template< class VecT > using TriangleData = sofa::core::topology::TriangleData<VecT>;
-    template< class VecT > using QuadData = sofa::core::topology::QuadData<VecT>;
-    template< class VecT > using TetrahedronData = sofa::core::topology::TetrahedronData<VecT>;
-    template< class VecT > using HexahedronData = sofa::core::topology::HexahedronData<VecT>;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyData.h")
