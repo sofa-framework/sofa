@@ -829,6 +829,8 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 {
     QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+    vparams->drawTool()->saveLastState();
+
     // Draw Hexa indices
     if (d_showHexaIndices.getValue() && this->m_topology->getNbHexahedra() != 0)
     {
@@ -894,13 +896,14 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
     }
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template <class DataTypes>
 bool HexahedronSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
 {
-    return (d_showHexaIndices.getValue() || d_drawHexahedra.getValue()) && this->m_topology->getNbHexahedra() != 0
-        || Inherit1::mustComputeBBox();
+    return ((d_showHexaIndices.getValue() || d_drawHexahedra.getValue()) && this->m_topology->getNbHexahedra() != 0) || Inherit1::mustComputeBBox();
 }
 
 } //namespace sofa::component::topology::container::dynamic
