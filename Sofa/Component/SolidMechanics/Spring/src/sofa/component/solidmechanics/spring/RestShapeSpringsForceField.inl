@@ -55,6 +55,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
+    , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {
 }
 
@@ -121,7 +122,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     }
     else
     {
-        msg_info() << "Can not find the topology, won't be able to handle topological changes";
+        msg_info() << "Cannot find the topology: topological changes will not be supported";
     }
 
     recomputeIndices();
