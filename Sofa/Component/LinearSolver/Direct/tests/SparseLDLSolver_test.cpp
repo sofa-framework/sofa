@@ -159,7 +159,6 @@ TEST(SparseLDLSolver, MatrixFactorization)
     ASSERT_EQ(invertData->L_nnz, expected_L_Values.size());
     for (std::size_t i = 0; i < expected_L_Values.size(); ++i)
     {
-        // std::cout << std::setprecision(32) << invertData->L_values[i] << std::endl;
         EXPECT_FLOATINGPOINT_EQ(invertData->L_values[i], expected_L_Values[i])
     }
 
