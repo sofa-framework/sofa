@@ -23,9 +23,9 @@
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/gl/template.h>
 #include <sofa/helper/rmath.h>
-#include <SofaBaseCollision/CubeModel.h>
 #if SOFACUDA_HAVE_MINIFLOWVR
     #include <flowvr/render/mesh.h>
 #endif // SOFACUDA_HAVE_MINIFLOWVR
@@ -597,7 +597,7 @@ void CudaRigidDistanceGridCollisionModel::setNewState(Index index, double dt, Cu
     modified = true;
 }
 
-using sofa::component::collision::CubeCollisionModel;
+using sofa::component::collision::geometry::CubeCollisionModel;
 
 /// Create or update the bounding volume hierarchy.
 void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)

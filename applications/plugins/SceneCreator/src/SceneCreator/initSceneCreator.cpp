@@ -47,9 +47,7 @@ void initExternalModule()
         first = false;
     }
 
-    /// Required for DefaultCollisionGroupManager
-    PluginManager::getInstance().loadPlugin("SofaMiscCollision") ;
-    PluginManager::getInstance().loadPlugin("SofaComponentAll") ;
+    PluginManager::getInstance().loadPlugin("Sofa.Component") ;
 }
 
 const char* getModuleName()

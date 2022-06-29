@@ -28,10 +28,11 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaBaseCollision/BVHNarrowPhase.h>
+
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
+#include <sofa/component/collision/detection/algorithm/BVHNarrowPhase.h>
 
 #include <fstream>
 
@@ -76,13 +77,13 @@ protected:
     VecCoord xproj;
 
     /// Point model of first object
-    sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types> *pointsCM;
+    sofa::component::collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types> *pointsCM;
     /// Surface model of second object
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> *surfaceCM;
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types> *surfaceCM;
 
-    sofa::component::collision::NewProximityIntersection::SPtr intersection;
-    sofa::component::collision::BVHNarrowPhase::SPtr narrowPhaseDetection;
-    typedef core::collision::TDetectionOutputVector< sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>> ContactVector;
+    sofa::component::collision::detection::intersection::NewProximityIntersection::SPtr intersection;
+    sofa::component::collision::detection::algorithm::BVHNarrowPhase::SPtr narrowPhaseDetection;
+    typedef core::collision::TDetectionOutputVector< sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::component::collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>> ContactVector;
 
 };
 

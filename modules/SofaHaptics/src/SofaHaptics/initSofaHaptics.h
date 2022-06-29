@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_HAPTICS_INIT_H
-#define SOFA_COMPONENT_HAPTICS_INIT_H
+#ifndef SOFA_COMPONENT_HAPTICSS_INIT_H
+#define SOFA_COMPONENT_HAPTICSS_INIT_H
 #include "config.h"
 
 namespace sofa

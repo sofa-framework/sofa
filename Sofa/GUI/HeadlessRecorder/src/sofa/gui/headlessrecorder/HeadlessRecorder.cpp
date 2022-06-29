@@ -31,7 +31,7 @@ using sofa::helper::system::SetDirectory;
 #include <sofa/gl/Texture.h>
 
 #include <sofa/gui/common/ArgumentParser.h>
-#include <SofaBaseVisual/InteractiveCamera.h>
+#include <sofa/component/visual/InteractiveCamera.h>
 #include <thread>
 #include <chrono>
 
@@ -572,7 +572,7 @@ void HeadlessRecorder::setScene(sofa::simulation::Node::SPtr scene, const char* 
         groot->get(currentCamera);
         if (!currentCamera)
         {
-            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
+            currentCamera = sofa::core::objectmodel::New<component::visual::InteractiveCamera>();
             currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
             groot->addObject(currentCamera);
             currentCamera->p_position.forceSet();

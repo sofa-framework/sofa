@@ -19,7 +19,9 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
+    <DefaultVisualManagerLoop/>
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" />
     <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
     <!-- resolution = number of particles (including the fixed one) -->
@@ -38,7 +40,7 @@
         <GenericConstraintCorrection />
 
         <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3d" showObject="1" />
+        <MechanicalObject name="defoDOF" template="Vec3d" />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
         <!-- 1 g for the total mass of the wire -->
@@ -59,7 +61,7 @@
         <!-- resolution = number of particles (including the fixed one) -->
         <!-- scale = total length of the pendulum -->
         <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3d"  />
+        <MechanicalObject name="defoDOF" template="Vec3d" />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
         <!-- 1 g for the total mass of the wire -->

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include "CudaTypes.h"
-#include <SofaBoundaryCondition/LinearForceField.h>
+#include <sofa/component/mechanicalload/LinearForceField.h>
 #include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa::gpu::cuda

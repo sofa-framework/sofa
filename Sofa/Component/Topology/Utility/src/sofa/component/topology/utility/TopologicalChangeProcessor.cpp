@@ -26,13 +26,13 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 #include <sofa/simulation/Simulation.h>
 
 #include <ctime>
@@ -228,7 +228,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
 
         if (!hexahedra.empty())
         {
-            sofa::component::topology::HexahedronSetTopologyModifier* topoMod;
+            sofa::component::topology::container::dynamic::HexahedronSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
             type::vector<Index> vitems;
             vitems.assign(hexahedra.begin(), hexahedra.end());
@@ -241,7 +241,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
 
         if (!tetrahedra.empty())
         {
-            sofa::component::topology::TetrahedronSetTopologyModifier* topoMod;
+            sofa::component::topology::container::dynamic::TetrahedronSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
             type::vector<Index> vitems;
             vitems.assign(tetrahedra.begin(), tetrahedra.end());
@@ -254,7 +254,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
 
         if (!quads.empty())
         {
-            sofa::component::topology::QuadSetTopologyModifier* topoMod;
+            sofa::component::topology::container::dynamic::QuadSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
             type::vector<Index> vitems;
             vitems.assign(quads.begin(), quads.end());
@@ -267,7 +267,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
 
         if (!triangles.empty())
         {
-            sofa::component::topology::TriangleSetTopologyModifier* topoMod;
+            sofa::component::topology::container::dynamic::TriangleSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
             sofa::type::vector<Index> vitems;
             vitems.assign(triangles.begin(), triangles.end());
@@ -280,7 +280,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
 
         if (!edges.empty())
         {
-            sofa::component::topology::EdgeSetTopologyModifier* topoMod;
+            sofa::component::topology::container::dynamic::EdgeSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
             type::vector<Index> vitems;
             vitems.assign(edges.begin(), edges.end());
@@ -293,7 +293,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
 
         if (!points.empty())
         {
-            sofa::component::topology::PointSetTopologyModifier* topoMod;
+            sofa::component::topology::container::dynamic::PointSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
             type::vector<Index> vitems;
             vitems.assign(points.begin(), points.end());
@@ -427,7 +427,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
             if ( EleType == "PointInTriangle" || EleType == "PointsInTriangle")
             {
-                sofa::component::topology::TriangleSetTopologyModifier* topoMod;
+                sofa::component::topology::container::dynamic::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
                 if(!topoMod)
@@ -470,7 +470,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             }
             else if ( EleType == "Edge" || EleType == "Edges")
             {
-                sofa::component::topology::EdgeSetTopologyModifier* topoMod;
+                sofa::component::topology::container::dynamic::EdgeSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
                 if (!topoMod)
@@ -509,7 +509,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     }
                 }
 
-                sofa::component::topology::TriangleSetTopologyModifier* topoMod;
+                sofa::component::topology::container::dynamic::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
                 if (!topoMod)
@@ -535,7 +535,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             }
             else if ( EleType == "Quad" || EleType == "Quads")
             {
-                sofa::component::topology::QuadSetTopologyModifier* topoMod;
+                sofa::component::topology::container::dynamic::QuadSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
                 if (!topoMod)
@@ -554,7 +554,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             }
             else if ( EleType == "Tetrahedron" || EleType == "Tetrahedra")
             {
-                sofa::component::topology::TetrahedronSetTopologyModifier* topoMod;
+                sofa::component::topology::container::dynamic::TetrahedronSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
                 if (!topoMod)
@@ -573,7 +573,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             }
             else if ( EleType == "Hexahedron" || EleType == "Hexahedra")
             {
-                sofa::component::topology::HexahedronSetTopologyModifier* topoMod;
+                sofa::component::topology::container::dynamic::HexahedronSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
                 if (!topoMod)
@@ -634,10 +634,10 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 ++it; ++it; continue;
             }
 
-            sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
+            sofa::component::topology::container::dynamic::TriangleSetTopologyModifier* triangleMod;
             m_topology->getContext()->get(triangleMod);
 
-            sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+            sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
             sofa::type::Vec3 a;
@@ -888,7 +888,7 @@ void TopologicalChangeProcessor::saveIndices()
 
             const Vector3 constCoord = coord;
             const unsigned int triInd = triangleIndex;
-            sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+            sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
             const auto baryCoef = triangleGeo->computeTriangleBarycoefs( triInd, constCoord);
@@ -942,7 +942,7 @@ void TopologicalChangeProcessor::saveIndices()
 
                 const Vector3 newPosition = triangleIncisionInformation[i].coordinates[0] + direction;
 
-                sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+                sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
                 m_topology->getContext()->get(triangleGeo);
 
                 Index triIndex;
@@ -1048,7 +1048,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangl
     //get the number of triangle in the topology
     size_t nbTriangle = m_topology->getNbTriangles();
 
-    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+    sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
     if (!triangleGeo)
     {
@@ -1192,10 +1192,10 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangl
 
 void TopologicalChangeProcessor::inciseWithSavedIndices()
 {
-    sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
+    sofa::component::topology::container::dynamic::TriangleSetTopologyModifier* triangleMod;
     m_topology->getContext()->get(triangleMod);
 
-    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+    sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
     int indexOfTime = findIndexInListOfTime(getContext()->getTime());
@@ -1332,7 +1332,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 {
     size_t nbTriangleInfo = triangleIncisionInformation.size();
-    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+    sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
     for ( size_t i = 0 ; i < nbTriangleInfo ; i++)
@@ -1383,7 +1383,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+    sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
     if (!triangleGeo)

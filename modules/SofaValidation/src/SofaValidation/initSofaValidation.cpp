@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaValidation/initSofaValidation.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -33,6 +35,10 @@ void initSofaValidation()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaValidation") << "SofaValidation is deprecated. It will be removed at v23.06. For CompareState and CompareTopology, use Sofa.Component.Playback instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Playback");
+
         first = false;
     }
 }

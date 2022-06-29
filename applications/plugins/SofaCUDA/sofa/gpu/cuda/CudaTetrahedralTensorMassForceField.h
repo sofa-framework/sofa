@@ -24,6 +24,7 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
 
+
 namespace sofa::component::solidmechanics::tensormass
 {
 template <>

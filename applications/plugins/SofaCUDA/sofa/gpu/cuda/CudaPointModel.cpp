@@ -22,7 +22,7 @@
 #include <sofa/gpu/cuda/CudaPointModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace sofa::gpu::cuda
 {
@@ -106,7 +106,7 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-using sofa::component::collision::CubeCollisionModel;
+using sofa::component::collision::geometry::CubeCollisionModel;
 
 void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
 {

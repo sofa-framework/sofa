@@ -13,7 +13,6 @@ sofa_add_plugin(SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
 sofa_add_plugin(SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON)
 sofa_add_plugin(SofaGeneralLinearSolver SofaGeneralLinearSolver ON)
 sofa_add_plugin(SofaGeneralRigid SofaGeneralRigid ON)
-sofa_add_plugin(SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)
 sofa_add_plugin(SofaGeneralSimpleFem SofaGeneralSimpleFem ON)
 sofa_add_plugin(SofaGeneralTopology SofaGeneralTopology ON)
 sofa_add_plugin(SofaTopologyMapping SofaTopologyMapping ON)
@@ -24,8 +23,6 @@ sofa_add_plugin(SofaExporter SofaExporter ON)
 
 sofa_add_plugin(SofaSparseSolver SofaSparseSolver ON)      #
 sofa_add_plugin(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
-sofa_add_plugin(SofaHaptics SofaHaptics ON)
-sofa_add_plugin(SofaValidation SofaValidation ON)
 
 sofa_add_plugin(SofaDenseSolver SofaDenseSolver ON)
 
@@ -45,3 +42,7 @@ sofa_add_plugin(SofaMiscSolver SofaMiscSolver ON)
 sofa_add_plugin(SofaMiscFem SofaMiscFem ON)
 sofa_add_plugin(SofaMiscMapping SofaMiscMapping ON)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
+
+sofa_add_plugin(SofaHaptics SofaHaptics ON)
+sofa_add_plugin(SofaValidation SofaValidation ON)
+sofa_add_plugin(SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)

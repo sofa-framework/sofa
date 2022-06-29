@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/common/PickHandler.h>
-#include <SofaGraphComponent/ViewerSetting.h>
+#include <sofa/component/setting/ViewerSetting.h>
 
 #include <sofa/helper/io/Image.h>
 

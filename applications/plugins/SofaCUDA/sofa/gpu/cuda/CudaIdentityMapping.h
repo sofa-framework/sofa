@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
+#include <sofa/component/mapping/linear/IdentityMapping.h>
 
 namespace sofa::component::mapping::linear
 {
