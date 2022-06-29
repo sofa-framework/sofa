@@ -24,7 +24,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SENSABLEEMULATIONPLUGIN")
-target_link_libraries(${PROJECT_NAME} Sofa.Component.Haptics Sofa.Component.Controller Sofa.GL.Component.Rendering3D Boost::boost)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.Haptics Sofa.Component.Controller Sofa.GL.Component.Rendering3D Boost::thread)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
