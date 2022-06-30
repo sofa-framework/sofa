@@ -112,7 +112,7 @@ public:
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-    Data< sofa::helper::OptionsGroup > d_nonLinearComplementaryProblemSolver; ///< Solver used for the NLCP problem: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
+    Data< sofa::helper::OptionsGroup > d_NLCP_solver; ///< Solver used for the NLCP problem: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
 
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
