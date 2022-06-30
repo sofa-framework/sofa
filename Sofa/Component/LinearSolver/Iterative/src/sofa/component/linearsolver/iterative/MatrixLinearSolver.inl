@@ -284,30 +284,39 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         taskScheduler->workUntilDone(&status);
     }
 
-    // STEP 3 : project the result using matrix J
+    // STEP 3 : compute the matricial product
     
+    sofa::linearalgebra::FullMatrix<double> product(J->rowSize(),J->rowSize());
+    std::vector< productTask<Matrix,Vector> > productTaskList;
+    productTaskList.reserve(J->rowSize());
+
     {
         sofa::helper::ScopedAdvancedTimer productTimer("product");
         if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
         {
         
         for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
-        {
-                const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
-                for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
-                {
-                    auto row2 = jit->first;
-                    double acc = 0.0;
-                    for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+            {
+                /*
+                    const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
+                    for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
                     {
-                        auto col2 = i2->first;
-                        double val2 = i2->second;
-                        acc += val2 * listLH[row][col2];
+                        auto row2 = jit->first;
+                        double acc = 0.0;
+                        for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+                        {
+                            auto col2 = i2->first;
+                            double val2 = i2->second;
+                            acc += val2 * listLH[row][col2];
+                        }
+                        acc *= fact;
+                        result->add(row2,row,acc);
                     }
-                    acc *= fact;
-                    result->add(row2,row,acc);
-                }
+                */
+                productTaskList.emplace_back(row, &listLH[row], J , &product , &status);
+                taskScheduler->addTask( &(productTaskList.back()) );
             }
+            taskScheduler->workUntilDone(&status);
         }
         else
         {
@@ -315,6 +324,19 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             return false;
         }
     }
+
+    //STEP 4 : project the result
+    for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+        {
+            const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J);
+                const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
+                for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
+                {
+                    auto row2 = jit->first;
+                    result->add(row2,row, fact*product.element(row2,row) );
+                }
+        }
+
     return true;
 }
 

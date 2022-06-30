@@ -97,4 +97,68 @@ m_solver->solve( *(m_solver->linearSystem.systemMatrix), *m_taskLH, *m_taskRH );
 
 return simulation::Task::Stack;
 };
+
+
+
+template<class Matrix, class Vector>
+class productTask: public sofa::simulation::CpuTask
+{
+
+public:
+
+    typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
+
+    int m_row;
+    Vector* m_colMinvJt;
+    sofa::linearalgebra::FullMatrix<double> *m_product;
+    const JMatrixType *m_J;
+
+    productTask(sofa::simulation::CpuTask::Status *status);
+    productTask(int row
+                ,Vector* colMinvJt
+                ,const JMatrixType *J
+                ,sofa::linearalgebra::FullMatrix<double> *product
+                ,sofa::simulation::CpuTask::Status *status
+                );
+    ~productTask() override = default;
+    sofa::simulation::Task::MemoryAlloc run() final;  
+};
+
+template<class Matrix, class Vector>
+productTask<Matrix,Vector>::productTask(
+    int row
+    ,Vector* colMinvJt
+    ,const JMatrixType *J
+    ,sofa::linearalgebra::FullMatrix<double> *product
+    ,sofa::simulation::CpuTask::Status *status)
+:sofa::simulation::CpuTask(status)
+,m_row(row)
+,m_colMinvJt(colMinvJt)
+,m_product(product)
+,m_J(J)
+{}
+
+template<class Matrix, class Vector>
+sofa::simulation::Task::MemoryAlloc productTask<Matrix,Vector>::run()
+{
+    
+    const typename linearalgebra::SparseMatrix<SReal>::LineConstIterator jitend = m_J->end();
+    for (typename linearalgebra::SparseMatrix<SReal>::LineConstIterator jit = m_J->begin(); jit != jitend; ++jit)
+    {
+        auto row2 = jit->first;
+        m_product->set(row2,m_row , 0 );
+
+        for (typename linearalgebra::SparseMatrix<SReal>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+        {
+            auto col2 = i2->first;
+            double val2 = i2->second;
+            m_product->add(row2,m_row, val2 * m_colMinvJt->element(col2) );
+        }
+    }
+
+
+
+    return simulation::Task::Stack;
+}
+
 } // namespace sofa::component::linearsolver
