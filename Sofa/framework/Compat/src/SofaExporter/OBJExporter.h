@@ -31,8 +31,8 @@ namespace sofa::component::exporter
 {
 
     using OBJExporter 
-        SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "Use VisualModelOBJExporter instead.")
-    = sofa::component::exporter::VisualModelOBJExporter;
+        SOFA_ATTRIBUTE_DISABLED("v21.12", "v22.06", "Use VisualModelOBJExporter instead.")
+    = DeprecatedAndRemoved;
 
 } // sofa::component::exporter
 

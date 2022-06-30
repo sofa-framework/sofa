@@ -29,7 +29,6 @@
 #include <sofa/helper/config.h>
 #include "Message.h"
 #include <vector>
-#include <sofa/helper/system/SofaOStream.h>
 
 namespace sofa
 {

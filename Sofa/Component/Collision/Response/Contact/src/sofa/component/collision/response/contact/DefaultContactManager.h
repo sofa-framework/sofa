@@ -60,7 +60,7 @@ public :
             obj->parse(arg);
 
 
-        //SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2522)", "v22.06","This attribute was only added to build a compatibility layer on the response name.")
+        //SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2522)", "v22.06","This attribute was only added to build a compatibility layer on the response name.")
         {
             static const std::map<std::string,std::string> renamingResponseMethod = {
                 {"ray", "RayContact"},

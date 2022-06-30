@@ -21,13 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/projective/PointConstraint.h>
-
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/PointConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using PointConstraint = sofa::component::constraint::projective::PointConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/component/constraint/projective/PointConstraint.h")

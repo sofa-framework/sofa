@@ -31,7 +31,6 @@ const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
-    {"PointConstraint", Deprecated("v21.12", "v22.06")},
 };
 
 const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
@@ -84,6 +83,11 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "FixedLMConstraint", Pluginized("v20.12", "LMConstraint") },
     { "LMConstraintSolver", Pluginized("v20.12", "LMConstraint") },
     { "LMConstraintDirectSolver", Pluginized("v20.12", "LMConstraint") },
+
+    /***********************/
+    // REMOVED SINCE v22.06
+
+    {"PointConstraint", Removed("v21.12", "v22.06")},
 
     /***********************/
     // REMOVED SINCE v21.12
