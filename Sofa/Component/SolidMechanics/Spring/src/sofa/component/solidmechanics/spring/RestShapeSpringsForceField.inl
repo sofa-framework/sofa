@@ -55,6 +55,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
+    , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {
 }
 
@@ -104,6 +105,24 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     {
         msg_info() << "external rest shape used";
         useRestMState = true;
+    }
+
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+        // Initialize topological changes support
+        d_points.createTopologyHandler(_topology);
+    }
+    else
+    {
+        msg_info() << "Cannot find the topology: topological changes will not be supported";
     }
 
     recomputeIndices();
@@ -183,14 +202,14 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     m_indices.clear();
     m_ext_indices.clear();
 
-    for (sofa::Index i = 0; i < d_points.getValue().size(); i++)
+    for (const sofa::Index i : d_points.getValue())
     {
-        m_indices.push_back(d_points.getValue()[i]);
+        m_indices.push_back(i);
     }
 
-    for (sofa::Index i = 0; i < d_external_points.getValue().size(); i++)
+    for (const sofa::Index i : d_external_points.getValue())
     {
-        m_ext_indices.push_back(d_external_points.getValue()[i]);
+        m_ext_indices.push_back(i);
     }
 
     if (m_indices.empty())
@@ -214,9 +233,9 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
         }
         else
         {
-            for (sofa::Index i = 0; i < m_indices.size(); i++)
+            for (const sofa::Index i : m_indices)
             {
-                m_ext_indices.push_back(m_indices[i]);
+                m_ext_indices.push_back(i);
             }
         }
     }
