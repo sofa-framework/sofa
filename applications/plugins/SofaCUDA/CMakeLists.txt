@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaCUDA LANGUAGES CUDA CXX)
+project(SofaCUDA LANGUAGES)
 
 set(SOFACUDA_MAJOR_VERSION 0)
 set(SOFACUDA_MINOR_VERSION 1)
