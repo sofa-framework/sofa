@@ -63,13 +63,13 @@ public:
 
         if (loader == NULL)
         {
-            context->serr << "Cannot create "<<sofa::helper::NameDecoder::getClassName<T>()<<" as input model is missing or invalid." << context->sendl;
+            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::helper::NameDecoder::getClassName<T>() << " as input model is missing or invalid.";
             return false;
         }
 
         if (topology == NULL)
         {
-            context->serr << "Cannot create "<<sofa::helper::NameDecoder::getClassName<T>()<<" as output model is missing or invalid." << context->sendl;
+            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::helper::NameDecoder::getClassName<T>() << " as output model is missing or invalid.";
             return false;
         }
 
