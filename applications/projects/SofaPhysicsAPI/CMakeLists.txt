@@ -24,12 +24,12 @@ sofa_find_package(SofaValidation QUIET)
 if(SofaValidation_FOUND)
     message("SofaPhysicsAPI: SofaValidation has been found; enabling DataController and DataMonitor support.")
     list(APPEND HEADER_FILES 
-        SofaPhysicsDataController_impl.h
-        SofaPhysicsDataMonitor_impl.h
+        ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsDataController_impl.h
+        ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsDataMonitor_impl.h
     )
     list(APPEND HEADER_FILES 
-        SofaPhysicsDataController.cpp
-        SofaPhysicsDataMonitor.cpp
+        ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsDataController.cpp
+        ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsDataMonitor.cpp
     )
 else()
     message("SofaPhysicsAPI: SofaValidation has not been found; DataController and DataMonitor will not be supported.")
