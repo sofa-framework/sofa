@@ -272,15 +272,16 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             this->invert(*(this->linearSystem.systemMatrix));
             this->linearSystem.needInvert = false;
         }
+
+    //STEPS 1&2: Copy Jt and compute MinvJt
     {
-        sofa::helper::ScopedAdvancedTimer invertTimer("invert");
+        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
         // one task per column of Jt
         for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
         {     
             taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
             taskScheduler->addTask( &(taskList.back()) );  
         }
-
         taskScheduler->workUntilDone(&status);
     }
 
@@ -297,22 +298,6 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         
         for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
             {
-                /*
-                    const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
-                    for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
-                    {
-                        auto row2 = jit->first;
-                        double acc = 0.0;
-                        for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
-                        {
-                            auto col2 = i2->first;
-                            double val2 = i2->second;
-                            acc += val2 * listLH[row][col2];
-                        }
-                        acc *= fact;
-                        result->add(row2,row,acc);
-                    }
-                */
                 productTaskList.emplace_back(row, &listLH[row], J , &product , &status);
                 taskScheduler->addTask( &(productTaskList.back()) );
             }
@@ -368,7 +353,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* re
     ResMatrixType * res_local = internalData.getLocalRes(result);
     bool res;
     {
-        sofa::helper::ScopedAdvancedTimer constriantTimer("buildConstraint");
+        sofa::helper::ScopedAdvancedTimer complianceTimer("buildCompliance");
         res = addJMInvJtLocal(linearSystem.systemMatrix, res_local, j_local, fact);
     }
     internalData.addLocalRes(result);
