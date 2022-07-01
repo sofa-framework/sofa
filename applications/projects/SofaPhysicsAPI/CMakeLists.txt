@@ -19,10 +19,10 @@ set(SOURCE_FILES
 find_package(Sofa.Simulation.Graph REQUIRED)
 sofa_find_package(Sofa.Component REQUIRED)
 sofa_find_package(SofaGui REQUIRED)
-sofa_find_package(GLUT REQUIRED)
-sofa_find_package(SofaValidation)
+sofa_find_package(SofaValidation QUIET)
 
 if(SofaValidation_FOUND)
+    message("SofaPhysicsAPI: SofaValidation has been found; enabling DataController and DataMonitor support.")
     list(APPEND HEADER_FILES 
         SofaPhysicsDataController_impl.h
         SofaPhysicsDataMonitor_impl.h
@@ -31,6 +31,8 @@ if(SofaValidation_FOUND)
         SofaPhysicsDataController.cpp
         SofaPhysicsDataMonitor.cpp
     )
+else()
+    message("SofaPhysicsAPI: SofaValidation has not been found; DataController and DataMonitor will not be supported.")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

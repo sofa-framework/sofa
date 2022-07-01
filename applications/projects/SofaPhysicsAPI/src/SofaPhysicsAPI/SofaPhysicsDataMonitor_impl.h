@@ -23,10 +23,7 @@
 #define SOFAPHYSICSDATAMONITOR_IMPL_H
 
 #include "SofaPhysicsAPI.h"
-#if __has_include(<SofaValidation/DataMonitor.h>)
 #include <SofaValidation/DataMonitor.h>
-#define SOFAPHYSICSAPI_HAVE_DATAMONITOR
-#endif
 
 class SofaPhysicsDataMonitor::Impl
 {
@@ -42,17 +39,13 @@ public:
 
     const char* getValue();   ///< Get the value of the associated variable
 
-
-#ifdef SOFAPHYSICSAPI_HAVE_DATAMONITOR
     typedef sofa::component::misc::DataMonitor SofaDataMonitor;
-
 protected:
     SofaDataMonitor::SPtr sObj;
 
 public:
     SofaDataMonitor* getObject() { return sObj.get(); }
     void setObject(SofaDataMonitor* dm) { sObj = dm; }
-#endif
 };
 
 #endif // SOFAPHYSICSDATAMONITOR_IMPL_H
