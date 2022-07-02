@@ -131,7 +131,7 @@ protected:
 private:
 
     // build the joints and bones array used in the SkeletalMotionConstraint
-    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, type::vector<projectiveconstraintset::SkeletonJoint<defaulttype::Rigid3Types> >& skeletonJoints, type::vector<projectiveconstraintset::SkeletonBone>& skeletonBones) const;
+    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, type::vector<constraint::projective::SkeletonJoint<defaulttype::Rigid3Types> >& skeletonJoints, type::vector<constraint::projective::SkeletonBone>& skeletonBones) const;
 
     // clean the scene graph of its empty and useless intermediary nodes
     void removeEmptyNodes();
