@@ -108,6 +108,7 @@ macro(sofa_add_generic directory name type)
             set(active ON)
         endif()
 
+        cmake_policy(SET CMP0127 NEW) # https://cmake.org/cmake/help/latest/policy/CMP0127.html
         if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
             cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
         else()
