@@ -40,7 +40,6 @@ public:
     const char* getValue();   ///< Get the value of the associated variable
 
     typedef sofa::component::misc::DataMonitor SofaDataMonitor;
-
 protected:
     SofaDataMonitor::SPtr sObj;
 
