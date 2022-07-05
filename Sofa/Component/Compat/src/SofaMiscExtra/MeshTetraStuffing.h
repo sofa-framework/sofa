@@ -23,7 +23,7 @@
 
 #include <sofa/component/engine/generate/MeshTetraStuffing.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MeshTetraStuffing.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MeshTetraStuffing.h")
 
 namespace sofa::component::misc
 {

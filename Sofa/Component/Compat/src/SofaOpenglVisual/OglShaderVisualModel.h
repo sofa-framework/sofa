@@ -27,7 +27,7 @@
 #include <sofa/gl/component/shader/OglShaderVisualModel.h>
 #define SOFAGL_COMPONENT_OGLSHADERVISUALMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShaderVisualModel.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShaderVisualModel.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglShaderVisualModel.h> instead of this one."

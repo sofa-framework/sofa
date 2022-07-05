@@ -23,7 +23,7 @@
 
 #include <sofa/component/haptics/MechanicalStateForceFeedback.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/MechanicalStateForceFeedback.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/MechanicalStateForceFeedback.h")
 
 namespace sofa::component::controller
 {

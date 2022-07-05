@@ -34,7 +34,7 @@ void initSofaLoader()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaLoader") << "SofaLoader is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh instead.";
+        msg_deprecated("SofaLoader") << "SofaLoader is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Mesh");
 

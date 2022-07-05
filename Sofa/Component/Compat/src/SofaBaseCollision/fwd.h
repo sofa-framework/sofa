@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/fwd.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/fwd.h")
 
 #include <SofaBaseCollision/SphereModel.h>
