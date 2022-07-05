@@ -7,7 +7,7 @@ sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.NonLinear REQUIRED)
 sofa_find_package(Sofa.GL.Component.Rendering3D REQUIRED)
-sofa_find_package(SofaHaptics REQUIRED)
+sofa_find_package(Sofa.Component.Haptics REQUIRED)
 
 sofa_find_package(OpenHaptics QUIET)
 if( NOT OPENHAPTICS_FOUND )
@@ -34,7 +34,7 @@ set(README_FILES README.txt)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 # Link the plugin library to its dependencies (other libraries).
-target_link_libraries(${PROJECT_NAME} Sofa.Component.Controller Sofa.Component.IO.Mesh Sofa.Component.StateContainer Sofa.Component.Mapping.NonLinear SofaHaptics Sofa.GL.Component.Rendering3D)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.Controller Sofa.Component.IO.Mesh Sofa.Component.StateContainer Sofa.Component.Mapping.NonLinear Sofa.Component.Haptics Sofa.GL.Component.Rendering3D)
 if(OPENHAPTICS_FOUND)
     target_link_libraries(${PROJECT_NAME} ${OPENHAPTICS_LIBRARIES})    
     target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")

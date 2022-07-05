@@ -76,6 +76,9 @@ class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualMod
 public:
     SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, Vec3State);
 
+    typedef sofa::type::Vec<2, float> TexCoord;
+    typedef type::vector<TexCoord> VecTexCoord;
+
     using Index = sofa::Index;
     
     //Indices must be unsigned int for drawing
@@ -95,8 +98,6 @@ public:
     typedef DataTypes::Deriv Deriv;
     typedef DataTypes::VecDeriv VecDeriv;
 
-    typedef sofa::type::Vec<2, Real> TexCoord;
-    typedef type::vector<TexCoord> VecTexCoord;
 
     bool useTopology; ///< True if list of facets should be taken from the attached topology
     int lastMeshRev; ///< Time stamps from the last time the mesh was updated from the topology
@@ -254,9 +255,9 @@ public:
 
     std::string getFilename() {return fileMesh.getValue();}
 
-    void setColor(Real r, Real g, Real b, Real a);
+    void setColor(float r, float g, float b, float a);
 
-    void setColor(const std::string& color);
+    void setColor(std::string color);
 
     void setUseNormals(bool val)
     {
