@@ -212,6 +212,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         }
     }
 
+sofa::linearalgebra::FullMatrix<SReal> JMinvJt( JlocalRowSize, JlocalRowSize );
+
+
 {
     sofa::helper::ScopedAdvancedTimer projectTimer("project");
 //compute the marix product JLtinvDinv*(JLtinv)^t and project the data
