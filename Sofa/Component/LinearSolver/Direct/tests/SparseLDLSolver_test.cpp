@@ -177,32 +177,4 @@ TEST(SparseLDLSolver, MatrixFactorization)
 
     static const sofa::type::vector<int> expected_LT_colptr_Values { 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 3, 4, 4, 5, 7, 11 };
     EXPECT_EQ(invertData->LT_colptr, expected_LT_colptr_Values);
-
-    sofa::linearalgebra::SparseMatrix<SReal> J;
-    J.resize(8, 15);
-
-    J.add(0, 3, 0.99992800873484177781591597522493);
-    J.add(0, 4, -0.01199905611179329437132601299254);
-    J.add(1, 3, -0.99999999999984334753122539041215);
-    J.add(1, 4, 5.5996908972745067042020745973208e-07);
-    J.add(1, 6, 0.99999999999984334753122539041215);
-    J.add(1, 7, -5.5996908972745067042020745973208e-07);
-    J.add(2, 6, -1);
-    J.add(2, 9, 1);
-    J.add(3, 9, -1);
-    J.add(3, 12, 1);
-    J.add(4, 3, 0.99992800873484177781591597522493);
-    J.add(4, 4, -0.01199905611179329437132601299254);
-    J.add(5, 3, -0.99999999999984334753122539041215);
-    J.add(5, 4, 5.5996908972745067042020745973208e-07);
-    J.add(5, 6, 0.99999999999984334753122539041215);
-    J.add(5, 7, -5.5996908972745067042020745973208e-07);
-    J.add(6, 6, -1);
-    J.add(6, 9, 1);
-    J.add(7, 9, -1);
-    J.add(7, 12, 1);
-
-    sofa::linearalgebra::FullMatrix<SReal> JMInvJt;
-    JMInvJt.resize(8, 8);
-    solver->addJMInvJt(&JMInvJt, &J, 1.);
 }
