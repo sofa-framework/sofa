@@ -28,6 +28,7 @@ There is a DefaultCollisionGroupManager component in this scene.
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping Quad2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [InteractiveCamera VisualStyle] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="showCollisionModels"/>
 
@@ -36,6 +37,7 @@ There is a DefaultCollisionGroupManager component in this scene.
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <DefaultContactManager name="Response" response="PenalityContactForceField"/>
+    <DefaultCollisionGroupManager name="GroupManager"/>
     <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
 
     <Node name="Cube1">
