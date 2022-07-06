@@ -19,75 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/gui/qt/config.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/simulation/fwd.h>
-
-#include <QWidget>
-#include <QTextEdit>
-#include <QGroupBox>
-#include <QTreeWidgetItem>
-#include <QTreeWidget>
-
+#include "SofaSceneGraphWidget.h"
 
 namespace sofa::gui::qt
 {
 
-struct ModifyObjectFlags;
-class DataWidget;
-
-class QTabulationModifyObject : public QWidget
+void SofaSceneGraphWidget::setViewToDirty()
 {
-    Q_OBJECT
-public:
-    QTabulationModifyObject(QWidget* parent,
-            core::objectmodel::Base *object, QTreeWidgetItem* item,
-            unsigned int idx=1);
+    if(!m_isLocked)
+        return;
 
-    void externalWidgetAddition(int num) {size+=num;}
-    void addData(sofa::core::objectmodel::BaseData *data, const ModifyObjectFlags& flags);
-    void addLink(sofa::core::objectmodel::BaseLink *link, const ModifyObjectFlags& flags);
-    void addStretch();
+    if(m_isDirty)
+        return;
 
-    unsigned int getIndex() const {return index;}
-    bool isFull() const;
-    void setFull() {pixelSize=pixelMaxSize;}
-    bool isEmpty() const;
-    bool isDirty() const;
+    m_isDirty = true;
+    emit dirtynessChanged(m_isDirty);
+}
 
-    QString getDataModifiedString() const;
+bool SofaSceneGraphWidget::isDirty()
+{
+    return m_isDirty;
+}
 
-public slots:
-    void setTabDirty(bool=true);
-    void updateDataValue();
-    void updateWidgetValue();
-    void dataValueChanged(QString dataValue);
+bool SofaSceneGraphWidget::isLocked()
+{
+    return m_isLocked;
+}
 
-signals:
-    void UpdateDatas();
-    void UpdateDataWidgets();
-    void TabDirty(bool);
-    void nodeNameModification(simulation::Node *);
+void SofaSceneGraphWidget::lock()
+{
+    if(m_isLocked)
+        return;
 
+    m_isLocked = true;
+    emit lockingChanged(m_isLocked);
+}
 
+void SofaSceneGraphWidget::unLock()
+{
+    if(!m_isLocked)
+        return;
 
-protected:
-    core::objectmodel::Base *object;
-    QTreeWidgetItem* item;
+    m_isLocked = false;
 
+    if(m_isDirty)
+        update();
 
-    const unsigned int index;
-    unsigned int size;
-
-    bool dirty;
-    std::map< QObject*, QString> m_dataValueModified;
-
-    unsigned int pixelSize;
-    unsigned int pixelMaxSize;
-
-};
-
+    emit lockingChanged(m_isLocked);
+}
 
 } //namespace sofa::gui::qt
