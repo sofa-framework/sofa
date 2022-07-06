@@ -74,13 +74,6 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    if(!SOFA_GUI_QT_ENABLE_VSYNC)
-    {
-        QSurfaceFormat format;
-        format.setSwapInterval(0);
-        QSurfaceFormat::setDefaultFormat(format);
-    }
-
     return f;
 }
 

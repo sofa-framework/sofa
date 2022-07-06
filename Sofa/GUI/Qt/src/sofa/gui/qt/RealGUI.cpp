@@ -49,6 +49,7 @@
 #endif
 
 
+#include <mutex>
 #include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
@@ -226,8 +227,23 @@ public:
 
 //======================= STATIC METHODS ========================= {
 
+void RealGUI::setupSurfaceFormat()
+{
+    if(!SOFA_GUI_QT_ENABLE_VSYNC)
+    {
+        static std::once_flag flag;
+        std::call_once(flag, []
+        {
+            QSurfaceFormat format;
+            format.setSwapInterval(0);
+            QSurfaceFormat::setDefaultFormat(format);
+        });
+    }
+}
+
 BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
 {
+    setupSurfaceFormat();
 
     CreateApplication();
 
