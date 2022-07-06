@@ -9,14 +9,12 @@
 	<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
 	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-	<RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 	<VisualStyle name="displayFlags"  displayFlags="showAll hideOptions" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
 	<DefaultContactManager name="Response"  response="PenalityContactForceField" />
-	<DefaultCollisionGroupManager name="Group" />
 	<EulerImplicitSolver name="eulerImplicitSolver0"  rayleighStiffness="0"  rayleighMass="0" />
 	<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  tolerance="1e-015"  threshold="1e-015" iterations="25"/>
 	<Node 	 name="noDamping (white)"  >

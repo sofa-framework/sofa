@@ -25,7 +25,6 @@ response. The scene should work with or without the group manager.
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <DefaultContactManager name="Response" response="PenalityContactForceField"/>
-    <DefaultCollisionGroupManager name="GroupManager"/>
 
     <Node name="Cube1">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>

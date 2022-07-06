@@ -15,7 +15,6 @@
 	<RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologyBoundingTrasher] -->
 	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 	<RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-	<RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
@@ -23,7 +22,6 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager />
 	
 	<Node name="SquareGravity">
 		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10" />
