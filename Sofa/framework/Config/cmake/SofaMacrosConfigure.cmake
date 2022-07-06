@@ -181,9 +181,25 @@ macro(sofa_add_component_subdirectory DirectoryArg FullDirectoryArg)
     string(TOUPPER ${DirectoryName} UpperDirectoryName)
     string(REPLACE "." "_" UpperDirectoryName ${UpperDirectoryName})
 
-    option(SOFA_ENABLE_${UpperDirectoryName} "Build ${DirectoryName}." ON)
-    if(SOFA_ENABLE_${UpperDirectoryName})
+    set(OptionName SOFA_ENABLE_${UpperDirectoryName})
+    option(${OptionName} "Build ${DirectoryName}." ON)
+    if(${OptionName})
         add_subdirectory(${DirectoryArg})
+    endif()
+
+    set(TargetName ${DirectoryName})
+    if(TARGET ${TargetName})
+        # Add current target in the internal list only if not present already
+        get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
+        get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
+
+        if(NOT ${TargetName} IN_LIST _allTargets)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${TargetName})
+        endif()
+
+        if(NOT ${OptionName} IN_LIST _allTargetNames)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${OptionName})
+        endif()
     endif()
 endmacro()
 
