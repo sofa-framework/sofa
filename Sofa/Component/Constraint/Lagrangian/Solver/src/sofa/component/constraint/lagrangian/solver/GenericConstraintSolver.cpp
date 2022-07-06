@@ -669,6 +669,11 @@ void GenericConstraintProblem::solveTimed(SReal tol, int maxIt, SReal timeout)
 // Debug is only available when called directly by the solver (not in haptic thread)
 void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolver* solver)
 {
+    if(!solver)
+        return;
+
+    const int dimension = getDimension();
+
     if(!dimension)
     {
         currentError = 0.0;
@@ -683,131 +688,71 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
     SReal *force = getF();
     SReal **w = getW();
     SReal tol = tolerance;
-
     SReal *d = _d.ptr();
 
-    int i, j, k, l, nb;
-
     SReal error=0.0;
-
     bool convergence = false;
     sofa::type::vector<SReal> tempForces;
-    if(sor != 1.0) tempForces.resize(dimension);
+
+    if(sor != 1.0)
+    {
+        tempForces.resize(dimension);
+    }
 
     if(scaleTolerance && !allVerified)
-        tol *= dimension;
-
-    if(solver)
     {
-        for(i=0; i<dimension; )
-        {
-            if(!constraintsResolutions[i])
-            {
-                msg_error(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+        tol *= dimension;
+    }
 
-                dimension = i;
-                break;
-            }
-            constraintsResolutions[i]->init(i, w, force);
-            i += constraintsResolutions[i]->getNbLines();
+    for(int i=0; i<dimension; )
+    {
+        if(!constraintsResolutions[i])
+        {
+            msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+            break;
         }
+        constraintsResolutions[i]->init(i, w, force);
+        i += constraintsResolutions[i]->getNbLines();
     }
 
     bool showGraphs = false;
     sofa::type::vector<SReal>* graph_residuals = nullptr;
     std::map < std::string, sofa::type::vector<SReal> > *graph_forces = nullptr, *graph_violations = nullptr;
-    sofa::type::vector<SReal> tabErrors;
 
-    if(solver)
+    showGraphs = solver->computeGraphs.getValue();
+
+    if(showGraphs)
     {
-        showGraphs = solver->computeGraphs.getValue();
+        graph_forces = solver->graphForces.beginEdit();
+        graph_forces->clear();
 
-        if(showGraphs)
-        {
-            graph_forces = solver->graphForces.beginEdit();
-            graph_forces->clear();
+        graph_violations = solver->graphViolations.beginEdit();
+        graph_violations->clear();
 
-            graph_violations = solver->graphViolations.beginEdit();
-            graph_violations->clear();
-
-            graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
-            graph_residuals->clear();
-        }
-
-        tabErrors.resize(dimension);
+        graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
+        graph_residuals->clear();
     }
 
-    for(i=0; i<maxIterations; i++)
+    sofa::type::vector<SReal> tabErrors(dimension);
+
+    int iterCount = 0;
+
+    for(int i=0; i<maxIterations; i++)
     {
+        iterCount ++;
         bool constraintsAreVerified = true;
+
         if(sor != 1.0)
         {
             std::copy_n(force, dimension, tempForces.begin());
         }
 
         error=0.0;
-        for(j=0; j<dimension; ) // increment of j realized at the end of the loop
-        {
-            //1. nbLines provide the dimension of the constraint
-            nb = constraintsResolutions[j]->getNbLines();
-
-            //2. for each line we compute the actual value of d
-            //   (a)d is set to dfree
-            
-            std::vector<SReal> errF(&force[j], &force[j+nb]);
-            std::copy_n(&dfree[j], nb, &d[j]);
-
-            //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
-            for(k=0; k<dimension; k++)
-                for(l=0; l<nb; l++)
-                    d[j+l] += w[j+l][k] * force[k];
-
-            //3. the specific resolution of the constraint(s) is called
-            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
-
-            //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-            SReal contraintError = 0.0;
-            if(nb > 1)
-            {
-                for(l=0; l<nb; l++)
-                {
-                    SReal lineError = 0.0;
-                    for (int m=0; m<nb; m++)
-                    {
-                        SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
-                        lineError += dofError * dofError;
-                    }
-                    lineError = sqrt(lineError);
-                    if(lineError > tol)
-                        constraintsAreVerified = false;
-
-                    contraintError += lineError;
-                }
-            }
-            else
-            {
-                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
-                if(contraintError > tol)
-                    constraintsAreVerified = false;
-            }
-
-            if(constraintsResolutions[j]->getTolerance())
-            {
-                if(contraintError > constraintsResolutions[j]->getTolerance())
-                    constraintsAreVerified = false;
-                contraintError *= tol / constraintsResolutions[j]->getTolerance();
-            }
-
-            error += contraintError;
-            if(solver)
-                tabErrors[j] = contraintError;
-
-            j += nb;
-        }
+        gaussSeidel_increment(true, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
 
         if(showGraphs)
         {
-            for(j=0; j<dimension; j++)
+            for(int j=0; j<dimension; j++)
             {
                 std::ostringstream oss;
                 oss << "f" << j;
@@ -824,8 +769,10 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
 
         if(sor != 1.0)
         {
-            for(j=0; j<dimension; j++)
+            for(int j=0; j<dimension; j++)
+            {
                 force[j] = sor * force[j] + (1-sor) * tempForces[j];
+            }
         }
 
         SReal t1 = (SReal)sofa::helper::system::thread::CTime::getTime();
@@ -855,22 +802,9 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
         }
     }
 
-    currentError = error;
-    currentIterations = i+1;
-
     sofa::helper::AdvancedTimer::valSet("GS iterations", currentIterations);
 
-    if(solver)
-    {
-        if(!convergence)
-        {
-            msg_info(solver) << "No convergence : error = " << error ;
-        }
-        else msg_info(solver) << "Convergence after " << i+1 << " iterations " ;
-
-        for(i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
-            constraintsResolutions[i]->store(i, force, convergence);
-    }
+    result_output(force, error, iterCount, convergence);
 
     if(showGraphs)
     {
@@ -879,7 +813,7 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
         sofa::type::vector<SReal>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
-        for(j=0; j<dimension; )
+        for(int j=0; j<dimension; )
         {
             const unsigned int nbDofs = constraintsResolutions[j]->getNbLines();
 
@@ -901,6 +835,9 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
 
 void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstraintSolver* solver)
 {
+    if(!solver)
+        return;
+
     if(!dimension)
     {
         currentError = 0.0;
@@ -929,45 +866,43 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
     if(scaleTolerance && !allVerified)
         tol *= dimension;
 
-    if(solver)
+
+    for(int i=0; i<dimension; )
     {
-        for(int i=0; i<dimension; )
+        if(!constraintsResolutions[i])
         {
-            if(!constraintsResolutions[i])
-            {
-                msg_warning(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
-                dimension = i;
-                break;
-            }
-            constraintsResolutions[i]->init(i, w, force);
-            i += constraintsResolutions[i]->getNbLines();
+            msg_warning(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+            dimension = i;
+            break;
         }
-        memset(force, 0, dimension * sizeof(SReal));	// Erase previous forces for the time being
+        constraintsResolutions[i]->init(i, w, force);
+        i += constraintsResolutions[i]->getNbLines();
     }
+    memset(force, 0, dimension * sizeof(SReal));	// Erase previous forces for the time being
+
 
     bool showGraphs = false;
     sofa::type::vector<SReal>* graph_residuals = nullptr;
     std::map < std::string, sofa::type::vector<SReal> > *graph_forces = nullptr, *graph_violations = nullptr;
     sofa::type::vector<SReal> tabErrors;
 
-    if(solver)
+
+    showGraphs = solver->computeGraphs.getValue();
+
+    if(showGraphs)
     {
-        showGraphs = solver->computeGraphs.getValue();
+        graph_forces = solver->graphForces.beginEdit();
+        graph_forces->clear();
 
-        if(showGraphs)
-        {
-            graph_forces = solver->graphForces.beginEdit();
-            graph_forces->clear();
+        graph_violations = solver->graphViolations.beginEdit();
+        graph_violations->clear();
 
-            graph_violations = solver->graphViolations.beginEdit();
-            graph_violations->clear();
-
-            graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
-            graph_residuals->clear();
-        }
-
-        tabErrors.resize(dimension);
+        graph_residuals = &(*solver->graphErrors.beginEdit())["Error"];
+        graph_residuals->clear();
     }
+
+    tabErrors.resize(dimension);
+
 
     for(iter=0; iter<maxIterations; iter++)
     {
@@ -1032,8 +967,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
             }
 
             error += contraintError;
-            if(solver)
-                tabErrors[j] = contraintError;
+            tabErrors[j] = contraintError;
 
             //5. the force is updated for the constraint corrections
             bool update = false;
@@ -1108,22 +1042,11 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
         }
     }
 
-    currentError = error;
-    currentIterations = iter+1;
+
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", currentIterations);
 
-    if(solver)
-    {
-        if(!convergence)
-        {
-            msg_info(solver) << "No convergence : error = " << error ;
-        }
-        else msg_info(solver) << "Convergence after " << currentIterations << " iterations ";
-
-        for(int i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
-            constraintsResolutions[i]->store(i, force, convergence);
-    }
+    result_output(force, error, iter, convergence);
 
     if(showGraphs)
     {
@@ -1155,8 +1078,8 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
 {
     if(!solver)
         return;
+
     const int dimension = getDimension();
-    int maxIterations = iterationNewton;
 
     if(!dimension)
     {
@@ -1164,7 +1087,6 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
         currentIterations = 0;
         return;
     }
-
 
     m_lam.clear();
     m_lam.resize(dimension);
@@ -1183,13 +1105,15 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
 
     SReal *d = _d.ptr();
 
-    int nb;
 
     SReal error = 0.0;
-
     bool convergence = false;
     sofa::type::vector<SReal> tempForces;
-    if(sor != 1.0) tempForces.resize(dimension);
+
+    if(sor != 1.0)
+    {
+        tempForces.resize(dimension);
+    }
 
     if(scaleTolerance && !allVerified)
     {
@@ -1208,35 +1132,13 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     }
 
     sofa::type::vector<SReal> tabErrors(dimension);
+    bool constraintsAreVerified = true;
 
     {
         // peform one iteration of ProjectedGaussSeidel
         std::copy(force, force + dimension, std::begin(m_lam));
 
-        for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
-        {
-            // 1. nbLines provide the dimension of the constraint
-            nb = constraintsResolutions[j]->getNbLines();
-
-            // 2. for each line we compute the actual value of d
-            //    (a)d is set to dfree
-            std::copy_n(&dfree[j], nb, &d[j]);
-
-            //    (b) contribution of forces are added to d
-            for (int k = 0; k < dimension; ++k)
-            {
-                if( force[k] != 0)
-                {
-                    for (int l = 0; l < nb; l++)
-                        d[j + l] += w[j + l][k] * force[k];
-                }
-            }
-
-            // 3. the specific resolution of the constraint(s) is called
-            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
-
-            j += nb;
-        }
+        gaussSeidel_increment(false, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
 
         for(int j=0; j<dimension; j++)
         {
@@ -1248,7 +1150,8 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
 
 
     int iterCount = 0;
-    for(int i=1; i<maxIterations; i++)
+
+    for(int i=1; i<iterationNewton; i++)
     {
         iterCount ++;
         bool constraintsAreVerified = true;
@@ -1258,68 +1161,10 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
             m_lam[j] = force[j];
         }
 
+
         error=0.0;
-        for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
-        {
-            //1. nbLines provide the dimension of the constraint
-            nb = constraintsResolutions[j]->getNbLines();
+        gaussSeidel_increment(true, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
 
-            //2. for each line we compute the actual value of d
-            //   (a)d is set to dfree
-
-            std::vector<SReal> errF(&force[j], &force[j+nb]);
-            std::copy_n(&dfree[j], nb, &d[j]);
-
-            //   (b) contribution of forces are added to d
-            for (int k = 0; k < dimension; ++k)
-            {
-                if( force[k] != 0)
-                {
-                    for (int l = 0; l < nb; l++)
-                        d[j + l] += w[j + l][k] * force[k];
-                }
-            }
-
-            //3. the specific resolution of the constraint(s) is called
-            constraintsResolutions[j]->resolution(j, w, d, force, dfree);
-
-            //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
-            SReal contraintError = 0.0;
-            if(nb > 1)
-            {
-                for(int l=0; l<nb; l++)
-                {
-                    SReal lineError = 0.0;
-                    for (int m=0; m<nb; m++)
-                    {
-                        SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
-                        lineError += dofError * dofError;
-                    }
-                    lineError = sqrt(lineError);
-                    if(lineError > tol)
-                        constraintsAreVerified = false;
-
-                    contraintError += lineError;
-                }
-            }
-            else
-            {
-                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
-                if(contraintError > tol)
-                    constraintsAreVerified = false;
-            }
-
-            if(constraintsResolutions[j]->getTolerance())
-            {
-                if(contraintError > constraintsResolutions[j]->getTolerance())
-                    constraintsAreVerified = false;
-                contraintError *= tol / constraintsResolutions[j]->getTolerance();
-            }
-
-            error += contraintError;
-
-            j += nb;
-        }
 
         if(allVerified)
         {
@@ -1360,8 +1205,93 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
         }
     }
 
+    result_output(force, error, iterCount, convergence);
+}
+
+void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors)
+{
+    for(int j=0; j<dim; ) // increment of j realized at the end of the loop
+    {
+        //1. nbLines provide the dimension of the constraint
+        int nb = constraintsResolutions[j]->getNbLines();
+
+        //2. for each line we compute the actual value of d
+        //   (a)d is set to dfree
+
+        std::vector<SReal> errF(&force[j], &force[j+nb]);
+        std::copy_n(&dfree[j], nb, &d[j]);
+
+        //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
+        for(int k=0; k<dim; k++)
+        {
+            for(int l=0; l<nb; l++)
+            {
+                d[j+l] += w[j+l][k] * force[k];
+            }
+        }
+
+        //3. the specific resolution of the constraint(s) is called
+        constraintsResolutions[j]->resolution(j, w, d, force, dfree);
+
+        //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
+        if(measureError)
+        {
+            SReal contraintError = 0.0;
+            if(nb > 1)
+            {
+                for(int l=0; l<nb; l++)
+                {
+                    SReal lineError = 0.0;
+                    for (int m=0; m<nb; m++)
+                    {
+                        SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        lineError += dofError * dofError;
+                    }
+                    lineError = sqrt(lineError);
+                    if(lineError > tol)
+                    {
+                        constraintsAreVerified = false;
+                    }
+
+                    contraintError += lineError;
+                }
+            }
+            else
+            {
+                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
+                if(contraintError > tol)
+                {
+                    constraintsAreVerified = false;
+                }
+            }
+
+            if(constraintsResolutions[j]->getTolerance())
+            {
+                if(contraintError > constraintsResolutions[j]->getTolerance())
+                {
+                    constraintsAreVerified = false;
+                }
+                contraintError *= tol / constraintsResolutions[j]->getTolerance();
+            }
+
+            error += contraintError;
+            tabErrors[j] = contraintError;
+        }
+        else
+        {
+            SOFA_UNUSED(constraintsAreVerified);
+        }
+
+        j += nb;
+    }
+}
+
+void GenericConstraintProblem::result_output(SReal *force, SReal error, int iterCount, bool convergence)
+{
     currentError = error;
     currentIterations = iterCount+1;
+
+    sofa::helper::AdvancedTimer::valSet("GS iterations", currentIterations);
 
     if(!convergence)
     {
@@ -1369,12 +1299,13 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     }
     else
     {
-        msg_info("GenericConstraintSolver") << "Convergence after " << iterCount+1 << " iterations " ;
+        msg_info("GenericConstraintSolver") << "Convergence after " << currentIterations << " iterations " ;
     }
 
     for(int i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
+    {
         constraintsResolutions[i]->store(i, force, convergence);
-
+    }
 }
 
 sofa::core::MultiVecDerivId GenericConstraintSolver::getLambda()  const

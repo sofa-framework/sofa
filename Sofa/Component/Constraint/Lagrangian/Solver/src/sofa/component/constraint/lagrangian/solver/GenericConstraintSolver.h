@@ -76,6 +76,9 @@ public:
     /// - 2010, Silcowitz, Morten and Niebe, Sarah and Erleben, Kenny
     void NNCG(GenericConstraintSolver* solver = nullptr, int iterationNewton = 1);
 
+    void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors);
+    void result_output(SReal *force, SReal error, int iterCount, bool convergence);
+
     int getNumConstraints();
     int getNumConstraintGroups();
 
