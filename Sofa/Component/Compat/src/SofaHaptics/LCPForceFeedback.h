@@ -27,6 +27,7 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/LCPForceFeedb
 
 namespace sofa::component::controller
 {
-    using LCPForceFeedback = sofa::component::haptics::LCPForceFeedback;
+    template<class TDataTypes>
+    using LCPForceFeedback = sofa::component::haptics::LCPForceFeedback<TDataTypes>;
 
 } // namespace sofa::component::controller
