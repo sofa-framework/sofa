@@ -272,6 +272,8 @@ bool PointSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    vparams->drawTool()->saveLastState();
+
     if (d_showPointIndices.getValue())
     {
         sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
@@ -293,11 +295,15 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         }
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template <class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if (!onlyVisible) return;
     if (!this->object) return;
     if (!this->m_topology) return;
