@@ -173,6 +173,7 @@ void SofaPluginManager::addLibrary()
             mbox->setText(sstream.str().c_str());
             mbox->show();
         }
+        savePluginsToIniFile();
     }
     else
     {
