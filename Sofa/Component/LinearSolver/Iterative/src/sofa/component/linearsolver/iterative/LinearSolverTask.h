@@ -35,7 +35,7 @@ namespace sofa::component::linearsolver
 {
 
 template<class Matrix, class Vector>
-class LinearSolverTask: public sofa::simulation::CpuTask
+class solverTask: public sofa::simulation::CpuTask
 {
 
 public:
@@ -49,31 +49,31 @@ public:
     MatrixLinearSolver<Matrix,Vector> *m_solver;
     
 
-    LinearSolverTask(sofa::simulation::CpuTask::Status *status);
-    LinearSolverTask(int row
+    solverTask(sofa::simulation::CpuTask::Status *status);
+    solverTask(int row
                     ,Vector  *taskRH
                     ,Vector  *taskLH
                     ,sofa::simulation::CpuTask::Status *status
                     ,const JMatrixType *J
                     ,MatrixLinearSolver<Matrix,Vector> *solver
                      );
-    ~LinearSolverTask() override = default;
+    ~solverTask() override = default;
     sofa::simulation::Task::MemoryAlloc run() final;  
 };
 
 template<class Matrix, class Vector>
-LinearSolverTask<Matrix,Vector>::LinearSolverTask(sofa::simulation::CpuTask::Status *status)
+solverTask<Matrix,Vector>::solverTask(sofa::simulation::CpuTask::Status *status)
 :sofa::simulation::CpuTask(status)
 {}
 
 template<class Matrix, class Vector>
-LinearSolverTask<Matrix,Vector>::LinearSolverTask(
-    int row
-    ,Vector *taskRH 
-    ,Vector *taskLH 
-    ,sofa::simulation::CpuTask::Status *status
-    ,const JMatrixType *J
-    ,MatrixLinearSolver<Matrix,Vector> *solver)
+solverTask<Matrix,Vector>::solverTask(
+    int row,
+    Vector *taskRH, 
+    Vector *taskLH, 
+    sofa::simulation::CpuTask::Status *status,
+    const JMatrixType *J,
+    MatrixLinearSolver<Matrix,Vector> *solver)
 :sofa::simulation::CpuTask(status)
 ,m_row(row)
 ,m_taskRH(taskRH)
@@ -83,13 +83,11 @@ LinearSolverTask<Matrix,Vector>::LinearSolverTask(
 {}
 
 template<class Matrix, class Vector>
-sofa::simulation::Task::MemoryAlloc LinearSolverTask<Matrix,Vector>::run()
+sofa::simulation::Task::MemoryAlloc solverTask<Matrix,Vector>::run()
 {
 
 for(int col=0;col<m_J->colSize();col++)
     {
-            // col,row                row,col
-        //listRH[row][col] = J->element(row,col) ; //copy Jt
         m_taskRH->set( col , m_J->element(m_row,col) );
     }
 

@@ -255,7 +255,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     {
         msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
     }
-    std::vector< LinearSolverTask<Matrix,Vector> > taskList;
+    std::vector< solverTask<Matrix,Vector> > taskList;
     taskList.reserve( J->rowSize() );
     sofa::simulation::CpuTask::Status status;
     
