@@ -37,8 +37,8 @@ namespace sofa::gui::qt
 {
 
 QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
-        core::objectmodel::Base *o, QTreeWidgetItem* i,
-        unsigned int idx):
+                                                 core::objectmodel::Base *o, QTreeWidgetItem* i,
+                                                 unsigned int idx):
     QWidget(parent), object(o), item(i), index(idx), size(0), dirty(false), pixelSize(0), pixelMaxSize(600)
 {
     const int screenHeight = QGuiApplication::primaryScreen()->availableGeometry().height();
@@ -81,7 +81,6 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
 
 
     connect(displaydatawidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
-    connect(displaydatawidget, SIGNAL( DataOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
     connect(this, SIGNAL(UpdateDatas()), displaydatawidget, SLOT( UpdateData()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaydatawidget, SLOT( UpdateWidgets()));
     connect(displaydatawidget, SIGNAL( dataValueChanged(QString) ), SLOT(dataValueChanged(QString) ) );
@@ -105,7 +104,6 @@ void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, c
     pixelSize += displaylinkwidget->sizeHint().height();
 
     connect(displaylinkwidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
-    connect(displaylinkwidget, SIGNAL( LinkOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
     connect(this, SIGNAL(UpdateDatas()), displaylinkwidget, SLOT( UpdateLink()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaylinkwidget, SLOT( UpdateWidgets()));
 }
@@ -115,33 +113,11 @@ void QTabulationModifyObject::dataValueChanged(QString dataValue)
     m_dataValueModified[sender()] = dataValue;
 }
 
-void QTabulationModifyObject::updateListViewItem()
-{
-    if (simulation::Node *node=sofa::core::castTo<sofa::simulation::Node*>(object))
-    {
-        item->setText(0,object->getName().c_str());
-        emit nodeNameModification(node);
-    }
-    else
-    {
-        QString currentName = item->text(0);
-
-        std::string name=item->text(0).toStdString();
-        std::string::size_type pos = name.find(' ');
-        if (pos != std::string::npos)
-            name = name.substr(0,pos);
-        name += "  ";
-        name += object->getName();
-        QString newName(name.c_str());
-        if (newName != currentName) item->setText(0,newName);
-    }
-}
-
 QString QTabulationModifyObject::getDataModifiedString() const
 {
     if (m_dataValueModified.empty())
     {
-       return QString();
+        return QString();
     }
 
     QString dataModifiedString;

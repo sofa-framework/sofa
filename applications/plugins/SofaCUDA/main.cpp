@@ -41,14 +41,17 @@ extern "C" {
     SOFA_GPU_CUDA_API const char* getModuleLicense();
     SOFA_GPU_CUDA_API const char* getModuleDescription();
     SOFA_GPU_CUDA_API const char* getModuleComponentList();
+    SOFA_GPU_CUDA_API bool moduleIsInitialized();
 }
+
+bool isModuleInitialized = false;
 
 void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
-        sofa::gpu::cuda::mycudaInit();
+        isModuleInitialized = sofa::gpu::cuda::mycudaInit();
         first = false;
     }
 }
@@ -78,6 +81,11 @@ const char* getModuleComponentList()
     /// string containing the names of the classes provided by the plugin
     static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
     return classes.c_str();
+}
+
+bool moduleIsInitialized()
+{
+    return isModuleInitialized;
 }
 
 }

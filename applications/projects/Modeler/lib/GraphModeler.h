@@ -39,6 +39,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/gui/qt/GraphListenerQListView.h>
+#include <sofa/gui/qt/SofaSceneGraphWidget.h>
 
 
 #include <QTreeWidget>
@@ -65,7 +66,7 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 using sofa::core::SofaLibrary;
 
-class GraphModeler : public QTreeWidget
+class GraphModeler : public SofaSceneGraphWidget
 {
     friend class GraphHistoryManager;
     friend class LinkComponent;
