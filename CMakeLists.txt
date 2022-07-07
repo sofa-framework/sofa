@@ -191,32 +191,22 @@ add_subdirectory(Sofa/GUI)
 add_subdirectory(SofaGui)
 
 ### Compatibility
-option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
-
+option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated CMake modules." ON)
 if(SOFA_ENABLE_LEGACY_HEADERS)
-    # Deprecated (hollow) framework and component modules
-    # some modules still contains (maybe useful) components still not in Sofa/
-    # TODO: finally empty those remnants
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase) 
+    # Deprecated (hollow) framework and component modules.
+    # some modules still contain (maybe useful) components not moved in Sofa/ yet.
+    # TODO: finally empty those remnants and move them to applications/collections
+    sofa_add_collection(SofaKernel/SofaFramework SofaFramework ON)
+    sofa_add_collection(SofaKernel/SofaSimulation SofaSimulation ON)
+    sofa_add_collection(SofaKernel/SofaBase SofaBase ON)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
     add_subdirectory(modules)
-
-    ## Collections
-    ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
-    # SofaAdvanced is legacy and deprecated since 20.06
-    set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS ${SOFA_KERNEL_SOURCE_DIR}/SofaCommon SofaGeneral SofaAdvanced SofaMisc)
-    option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
-    if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
-        foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})
-            add_subdirectory(${deprecated_collection})
-        endforeach()
-    endif()
-
-    ## Customized collections
-    # SofaComponentAll is a convenient collection to get all Sofa features
-    add_subdirectory(applications/collections)
+    sofa_add_collection(SofaKernel/SofaCommon SofaCommon ON)
+    sofa_add_collection(SofaGeneral SofaGeneral ON)
+    sofa_add_collection(SofaAdvanced SofaAdvanced ON)
+    sofa_add_collection(SofaMisc SofaMisc ON)
+    # SofaComponentAll is a convenient collection to get all SOFA features
+    sofa_add_collection(applications/collections/SofaComponentAll SofaComponentAll ON)
 endif()
 
 ## Tutorials option

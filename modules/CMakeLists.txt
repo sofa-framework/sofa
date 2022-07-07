@@ -2,47 +2,47 @@
 # need to first add find_package(XXX) in your CMakeLists.txt
 
 # General
-sofa_add_plugin(SofaGeneralVisual SofaGeneralVisual ON)
-sofa_add_plugin(SofaGraphComponent SofaGraphComponent ON)
-sofa_add_plugin(SofaGeneralMeshCollision SofaGeneralMeshCollision ON)
-sofa_add_plugin(SofaBoundaryCondition SofaBoundaryCondition ON)
-sofa_add_plugin(SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
-sofa_add_plugin(SofaGeneralDeformable SofaGeneralDeformable ON)
-sofa_add_plugin(SofaGeneralEngine SofaGeneralEngine ON)
-sofa_add_plugin(SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
-sofa_add_plugin(SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON)
-sofa_add_plugin(SofaGeneralLinearSolver SofaGeneralLinearSolver ON)
-sofa_add_plugin(SofaGeneralRigid SofaGeneralRigid ON)
-sofa_add_plugin(SofaGeneralSimpleFem SofaGeneralSimpleFem ON)
-sofa_add_plugin(SofaGeneralTopology SofaGeneralTopology ON)
-sofa_add_plugin(SofaTopologyMapping SofaTopologyMapping ON)
-sofa_add_plugin(SofaUserInteraction SofaUserInteraction ON)
-sofa_add_plugin(SofaConstraint SofaConstraint ON)
-sofa_add_plugin(SofaGeneralLoader SofaGeneralLoader ON)
-sofa_add_plugin(SofaExporter SofaExporter ON)
+sofa_add_collection(SofaGeneralVisual SofaGeneralVisual ON)
+sofa_add_collection(SofaGraphComponent SofaGraphComponent ON)
+sofa_add_collection(SofaGeneralMeshCollision SofaGeneralMeshCollision ON)
+sofa_add_collection(SofaBoundaryCondition SofaBoundaryCondition ON)
+sofa_add_collection(SofaGeneralAnimationLoop SofaGeneralAnimationLoop ON)
+sofa_add_collection(SofaGeneralDeformable SofaGeneralDeformable ON)
+sofa_add_collection(SofaGeneralEngine SofaGeneralEngine ON)
+sofa_add_collection(SofaGeneralExplicitOdeSolver SofaGeneralExplicitOdeSolver ON)
+sofa_add_collection(SofaGeneralImplicitOdeSolver SofaGeneralImplicitOdeSolver ON)
+sofa_add_collection(SofaGeneralLinearSolver SofaGeneralLinearSolver ON)
+sofa_add_collection(SofaGeneralRigid SofaGeneralRigid ON)
+sofa_add_collection(SofaGeneralSimpleFem SofaGeneralSimpleFem ON)
+sofa_add_collection(SofaGeneralTopology SofaGeneralTopology ON)
+sofa_add_collection(SofaTopologyMapping SofaTopologyMapping ON)
+sofa_add_collection(SofaUserInteraction SofaUserInteraction ON)
+sofa_add_collection(SofaConstraint SofaConstraint ON)
+sofa_add_collection(SofaGeneralLoader SofaGeneralLoader ON)
+sofa_add_collection(SofaExporter SofaExporter ON)
 
-sofa_add_plugin(SofaSparseSolver SofaSparseSolver ON)      #
-sofa_add_plugin(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
+sofa_add_collection(SofaSparseSolver SofaSparseSolver ON)      #
+sofa_add_collection(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSparseSolver
 
-sofa_add_plugin(SofaDenseSolver SofaDenseSolver ON)
+sofa_add_collection(SofaDenseSolver SofaDenseSolver ON)
 
-sofa_add_plugin(SofaNonUniformFem SofaNonUniformFem ON)
+sofa_add_collection(SofaNonUniformFem SofaNonUniformFem ON)
 
 find_package(Sofa.GL QUIET)
-sofa_add_plugin(SofaOpenglVisual SofaOpenglVisual ON
+sofa_add_collection(SofaOpenglVisual SofaOpenglVisual ON
     WHEN_TO_SHOW "Sofa.GL_FOUND"
     VALUE_IF_HIDDEN OFF)
 
 # Misc
-sofa_add_plugin(SofaMiscTopology SofaMiscTopology ON)
-sofa_add_plugin(SofaMiscExtra SofaMiscExtra ON)
-sofa_add_plugin(SofaMiscForceField SofaMiscForceField ON)
-sofa_add_plugin(SofaMiscEngine SofaMiscEngine ON)
-sofa_add_plugin(SofaMiscSolver SofaMiscSolver ON)
-sofa_add_plugin(SofaMiscFem SofaMiscFem ON)
-sofa_add_plugin(SofaMiscMapping SofaMiscMapping ON)
-sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
+sofa_add_collection(SofaMiscTopology SofaMiscTopology ON)
+sofa_add_collection(SofaMiscExtra SofaMiscExtra ON)
+sofa_add_collection(SofaMiscForceField SofaMiscForceField ON)
+sofa_add_collection(SofaMiscEngine SofaMiscEngine ON)
+sofa_add_collection(SofaMiscSolver SofaMiscSolver ON)
+sofa_add_collection(SofaMiscFem SofaMiscFem ON)
+sofa_add_collection(SofaMiscMapping SofaMiscMapping ON)
+sofa_add_collection(SofaMiscCollision SofaMiscCollision ON)
 
-sofa_add_plugin(SofaHaptics SofaHaptics ON)
-sofa_add_plugin(SofaValidation SofaValidation ON)
-sofa_add_plugin(SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)
+sofa_add_collection(SofaHaptics SofaHaptics ON)
+sofa_add_collection(SofaValidation SofaValidation ON)
+sofa_add_collection(SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON)
