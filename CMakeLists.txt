@@ -219,22 +219,14 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     add_subdirectory(applications/collections)
 endif()
 
-## Scene creator option
-option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
-
 ## Tutorials option
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 
-# Activate SceneCreator when required
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS OR SOFA_BUILD_RELEASE_PACKAGE)
-    set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
-endif()
-
-
+# SceneCreator plugin
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
-if(SOFA_BUILD_SCENECREATOR)
-    sofa_add_plugin(applications/plugins/SceneCreator SceneCreator)
-endif()
+sofa_add_plugin(applications/plugins/SceneCreator SceneCreator OFF
+    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_TUTORIALS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
+    VALUE_IF_HIDDEN "ON")
 
 ## Plugins
 add_subdirectory(applications/plugins)
