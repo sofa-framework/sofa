@@ -366,6 +366,8 @@ private:
     mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
+    mutable Data<int> d_messageLogCount;
+
     void addMessage(const sofa::helper::logging::Message& m) const ;
     size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;
     const std::deque<sofa::helper::logging::Message>& getLoggedMessages() const ;
@@ -374,6 +376,7 @@ public:
     void clearLoggedMessages() const ;
 
     inline bool notMuted() const { return f_printLog.getValue(); }
+
 
 protected:
     /// Helper method used by initData()

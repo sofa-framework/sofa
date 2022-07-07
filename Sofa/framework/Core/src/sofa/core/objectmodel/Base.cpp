@@ -255,11 +255,13 @@ void Base::addMessage(const Message &m) const
         m_messageslog.pop_front();
     }
     m_messageslog.push_back(m) ;
+    d_messageLogCount = d_messageLogCount.getValue()+1;
 }
 
 void Base::clearLoggedMessages() const
 {
    m_messageslog.clear() ;
+   d_messageLogCount = 0;
 }
 
 

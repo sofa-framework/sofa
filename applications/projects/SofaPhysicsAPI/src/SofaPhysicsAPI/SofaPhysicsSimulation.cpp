@@ -48,7 +48,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <SceneCreator/SceneCreator.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 #include <sofa/component/init.h>
 
@@ -323,7 +323,19 @@ bool SofaPhysicsSimulation::load(const char* cfilename)
 
 void SofaPhysicsSimulation::createScene()
 {
-    m_RootNode = sofa::modeling::createRootWithCollisionPipeline();
+    m_RootNode = sofa::simulation::getSimulation()->createNewGraph("root");
+    sofa::simpleapi::createObject(m_RootNode, "DefaultPipeline", { {"name","Collision Pipeline"} });
+    sofa::simpleapi::createObject(m_RootNode, "BruteForceBroadPhase", { {"name","Broad Phase Detection"} });
+    sofa::simpleapi::createObject(m_RootNode, "BVHNarrowPhase", { {"name","Narrow Phase Detection"} });
+    sofa::simpleapi::createObject(m_RootNode, "MinProximityIntersection", { {"name","Proximity"},
+                                                               {"alarmDistance", "0.3"},
+                                                               {"contactDistance", "0.2"} });
+
+    sofa::simpleapi::createObject(m_RootNode, "DefaultContactManager", {
+                                {"name", "Contact Manager"},
+                                {"response", "PenalityContactForceField"}
+        });
+
     if (m_RootNode.get())
     {
         m_RootNode->setGravity({ 0,-9.8,0 });
@@ -582,11 +594,18 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
 
 unsigned int SofaPhysicsSimulation::getNbDataMonitors()
 {
+
+#if SOFAPHYSICSAPI_HAVE_SOFAVALIDATION == 1
     return dataMonitors.size();
+#else
+    msg_error("SofaPhysicsSimulation") << "did not implement getNbDataMonitors()";
+    return 0;
+#endif
 }
 
 SofaPhysicsDataMonitor** SofaPhysicsSimulation::getDataMonitors()
 {
+#if SOFAPHYSICSAPI_HAVE_SOFAVALIDATION == 1
     if (dataMonitors.empty())
     {
         sofa::simulation::Node* groot = getScene();
@@ -605,15 +624,25 @@ SofaPhysicsDataMonitor** SofaPhysicsSimulation::getDataMonitors()
         }
     }
     return &(dataMonitors[0]);
+#else
+    msg_error("SofaPhysicsSimulation") << "did not implement getDataMonitors()";
+    return nullptr;
+#endif
 }
 
 unsigned int SofaPhysicsSimulation::getNbDataControllers()
 {
+#if SOFAPHYSICSAPI_HAVE_SOFAVALIDATION == 1
     return dataControllers.size();
+#else
+    msg_error("SofaPhysicsSimulation") << "did not implement getNbDataControllers()";
+    return 0;
+#endif
 }
 
 SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
 {
+#if SOFAPHYSICSAPI_HAVE_SOFAVALIDATION == 1
     if (dataControllers.empty())
     {
         sofa::simulation::Node* groot = getScene();
@@ -632,6 +661,10 @@ SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
         }
     }
     return &(dataControllers[0]);
+#else
+    msg_error("SofaPhysicsSimulation") << "did not implement getDataControllers()";
+    return nullptr;
+#endif
 }
 
 void SofaPhysicsSimulation::drawGL()
