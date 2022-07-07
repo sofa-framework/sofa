@@ -52,12 +52,12 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "CollisionOBB";
+    return sofa_tostring(SOFA_TARGET);
 }
 
 const char* getModuleVersion()
 {
-    return "1.0";
+    return sofa_tostring(COLLISIONOBBCAPSULE_VERSION);
 }
 
 const char* getModuleLicense()
@@ -67,7 +67,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "This plugin contains OBB collision components.";
+    return "This plugin contains OBB and capsule collision components.";
 }
 
 const char* getModuleComponentList()
