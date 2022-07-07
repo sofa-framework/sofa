@@ -1,17 +1,15 @@
 cmake_minimum_required(VERSION 3.12)
-
 project(Sofa.Simulation LANGUAGES CXX)
-
-sofa_add_module(Core ${PROJECT_NAME}.Core ON)
-sofa_add_module(Common ${PROJECT_NAME}.Common ON)
-sofa_add_module(Graph ${PROJECT_NAME}.Graph ON)
 
 set(SOFASIMULATION_SOURCE_DIR "src/sofa/simulation")
 
-set(SOFASIMULATION_MODULES Sofa.Simulation.Core Sofa.Simulation.Common Sofa.Simulation.Graph)
-foreach(simulation_module ${SOFASIMULATION_MODULES})
-    sofa_find_package(${simulation_module} REQUIRED)
+set(SOFASIMULATION_DIRS Core Common Graph)
+set(SOFASIMULATION_TARGETS)
+foreach(simulation_dir ${SOFASIMULATION_DIRS})
+        sofa_add_module(${simulation_dir} ${PROJECT_NAME}.${simulation_dir} ON)
+        list(APPEND SOFASIMULATION_TARGETS ${PROJECT_NAME}.${simulation_dir})
 endforeach()
+
 
 set(HEADER_FILES
     ${SOFASIMULATION_SOURCE_DIR}/config.h.in
@@ -23,7 +21,7 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFASIMULATION_MODULES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFASIMULATION_TARGETS})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
