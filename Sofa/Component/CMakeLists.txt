@@ -27,7 +27,7 @@ set(SOFACOMPONENT_DIRS
 )
 set(SOFACOMPONENT_TARGETS)
 foreach(component_dir ${SOFACOMPONENT_DIRS})
-        sofa_add_module(${component_dir} ${PROJECT_NAME}.${component_dir})
+        sofa_add_module(${component_dir} ${PROJECT_NAME}.${component_dir} ON)
 	list(APPEND SOFACOMPONENT_TARGETS ${PROJECT_NAME}.${component_dir})
 endforeach()
 

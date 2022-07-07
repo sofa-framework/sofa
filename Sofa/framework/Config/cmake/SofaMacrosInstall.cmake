@@ -209,6 +209,11 @@ macro(sofa_create_package)
     endif()
 
     sofa_install_git_infos(${ARG_PACKAGE_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+
+    string(TOUPPER "${PROJECT_NAME}" PROJECT_OPTION)
+    if(NOT "${${PROJECT_NAME}_OPTION}" STREQUAL "")
+        set(PROJECT_OPTION "${${PROJECT_NAME}_OPTION}")
+    endif()
 endmacro()
 
 

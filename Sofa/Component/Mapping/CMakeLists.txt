@@ -6,7 +6,7 @@ set(SOFACOMPONENTMAPPING_SOURCE_DIR "src/sofa/component/mapping")
 set(SOFACOMPONENTMAPPING_DIRS Linear NonLinear MappedMatrix)
 set(SOFACOMPONENTMAPPING_TARGETS)
 foreach(mapping_dir ${SOFACOMPONENTMAPPING_DIRS})
-    sofa_add_module(${mapping_dir} ${PROJECT_NAME}.${mapping_dir})
+    sofa_add_module(${mapping_dir} ${PROJECT_NAME}.${mapping_dir} ON)
     list(APPEND SOFACOMPONENTMAPPING_TARGETS ${PROJECT_NAME}.${mapping_dir})
 endforeach()
 

@@ -6,7 +6,7 @@ set(SOFACOMPONENTODESOLVER_SOURCE_DIR "src/sofa/component/odesolver")
 set(SOFACOMPONENTODESOLVER_DIRS Forward Backward)
 set(SOFACOMPONENTODESOLVER_TARGETS)
 foreach(odesolver_dir ${SOFACOMPONENTODESOLVER_DIRS})
-    sofa_add_module(${odesolver_dir} ${PROJECT_NAME}.${odesolver_dir})
+    sofa_add_module(${odesolver_dir} ${PROJECT_NAME}.${odesolver_dir} ON)
     list(APPEND SOFACOMPONENTODESOLVER_TARGETS ${PROJECT_NAME}.${odesolver_dir})
 endforeach()
 
