@@ -6,7 +6,7 @@ set(SOFACOMPONENTIO_SOURCE_DIR "src/sofa/component/io")
 set(SOFACOMPONENTIO_DIRS Mesh)
 set(SOFACOMPONENTIO_TARGETS)
 foreach(io_dir ${SOFACOMPONENTIO_DIRS})
-    sofa_add_component_subdirectory(${io_dir} ${PROJECT_NAME}.${io_dir})
+    sofa_add_module(${io_dir} ${PROJECT_NAME}.${io_dir})
     list(APPEND SOFACOMPONENTIO_TARGETS ${PROJECT_NAME}.${io_dir})
 endforeach()
 

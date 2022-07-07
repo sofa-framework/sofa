@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.12)
 
-add_subdirectory(Component)
-add_subdirectory(Common)
-add_subdirectory(Batch)
+sofa_add_module(Component Sofa.GUI.Component)
+sofa_add_module(Common Sofa.GUI.Common)
+sofa_add_module(Batch Sofa.GUI.Batch)
 
 option(SOFA_GUI_ENABLE_QT "Compile the Qt GUI" ON)
 if(SOFA_GUI_ENABLE_QT)
-    add_subdirectory(Qt)
+    sofa_add_module(Qt Sofa.GUI.Qt)
 endif()
 
 option(SOFA_GUI_ENABLE_HEADLESSRECORDER "Compile the headless recorder (Linux only)" OFF)
 if(SOFA_GUI_ENABLE_HEADLESSRECORDER)
-    add_subdirectory(HeadlessRecorder)
+    sofa_add_module(HeadlessRecorder Sofa.GUI.HeadlessRecorder)
 endif()

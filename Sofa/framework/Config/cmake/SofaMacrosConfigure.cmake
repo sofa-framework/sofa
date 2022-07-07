@@ -99,6 +99,7 @@ macro(sofa_add_generic directory name type)
 
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
         string(TOUPPER ${type}_${name} option)
+        string(REPLACE "." "_" option ${option})
         string(TOLOWER ${type} type_lower)
 
         # optional parameter to activate/desactivate the option
@@ -161,7 +162,7 @@ macro(sofa_add_plugin_experimental directory plugin_name)
 endmacro()
 
 macro(sofa_add_module directory module_name)
-    sofa_add_generic(${directory} ${module_name} "Module" DEFAULT_VALUE "${ARGV2}" ${ARGN})
+    sofa_add_generic(${directory} ${module_name} "Module" DEFAULT_VALUE "ON" ${ARGN})
 endmacro()
 
 macro(sofa_add_module_experimental directory module_name)

@@ -86,7 +86,7 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
 
-sofa_add_component_subdirectory(Component ${PROJECT_NAME}.Component)
+sofa_add_module(Component ${PROJECT_NAME}.Component)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
