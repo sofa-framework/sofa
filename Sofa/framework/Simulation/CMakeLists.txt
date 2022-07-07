@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 
 project(Sofa.Simulation LANGUAGES CXX)
 
-add_subdirectory(Core)
-add_subdirectory(Common)
-add_subdirectory(Graph)
+sofa_add_module(Core ${PROJECT_NAME}.Core ON)
+sofa_add_module(Common ${PROJECT_NAME}.Common ON)
+sofa_add_module(Graph ${PROJECT_NAME}.Graph ON)
 
 set(SOFASIMULATION_SOURCE_DIR "src/sofa/simulation")
 

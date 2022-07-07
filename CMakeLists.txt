@@ -19,8 +19,9 @@ if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR})
 endif()
 
 ## Default build type
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "Setting build type to Release as none was specified.")
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
 endif()
 
 # Output Directories definition
@@ -75,8 +76,11 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/cmake)
 # adding paths to disabled plugins.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Sofa/framework/Config/cmake")
+include(SofaMacros)
+
 # Sofa.Config sets the environment (options, compiler flags, global variables)
-add_subdirectory(Sofa/framework/Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
+sofa_add_module(Sofa/framework/Config Sofa.Config ON)
 
 ## Custom Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -170,8 +174,8 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
     message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 
-    add_subdirectory(Sofa/framework/Compat)
-    add_subdirectory(Sofa/Component/Compat)
+    sofa_add_module(Sofa/framework/Compat Sofa.Compat ON)
+    sofa_add_module(Sofa/Component/Compat Sofa.Component.Compat ON)
 endif()
 
 ### SOFA (framework and components)
@@ -179,7 +183,7 @@ add_subdirectory(Sofa)
 
 option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
 if(SOFA_WITH_OPENGL)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
+    sofa_add_module(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL Sofa.GL ON)
 endif()
 
 add_subdirectory(Sofa/GUI)
@@ -229,7 +233,7 @@ endif()
 
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
 if(SOFA_BUILD_SCENECREATOR)
-    add_subdirectory(applications/plugins/SceneCreator)
+    sofa_add_plugin(applications/plugins/SceneCreator SceneCreator)
 endif()
 
 ## Plugins
