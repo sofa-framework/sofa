@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "OglLineAxis.h"
+#include <sofa/gl/component/rendering3d/OglLineAxis.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/gl/gl.h>
@@ -36,15 +36,16 @@ int OglLineAxisClass = core::RegisterObject("Display scene axis")
 using namespace sofa::defaulttype;
 
 OglLineAxis::OglLineAxis()
-    : axis(initData(&axis, std::string("xyz"),  "axis", "Axis to draw"))
-    , size(initData(&size, (float)(10.0),  "size", "Size of the squared grid"))
-    , thickness(initData(&thickness, (float)(1.0),  "thickness", "Thickness of the lines in the grid"))
-    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
-    , drawX(true), drawY(true), drawZ(true)
+    : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
+    , d_size(initData(&d_size, 10.f,  "size", "Size of the squared grid"))
+    , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines in the grid"))
+    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
+    , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 
 void OglLineAxis::init()
 {
+    Inherit1::init();
     updateVisual();
 }
 
@@ -55,46 +56,47 @@ void OglLineAxis::reinit()
 
 void OglLineAxis::updateVisual()
 {
-    std::string a = axis.getValue();
+    const std::string a = d_axis.getValue();
 
-    drawX = a.find_first_of("xX")!=std::string::npos;
-    drawY = a.find_first_of("yY")!=std::string::npos;
-    drawZ = a.find_first_of("zZ")!=std::string::npos;
+    m_drawX = a.find_first_of("xX")!=std::string::npos;
+    m_drawY = a.find_first_of("yY")!=std::string::npos;
+    m_drawZ = a.find_first_of("zZ")!=std::string::npos;
 }
 
-void OglLineAxis::drawVisual(const core::visual::VisualParams* /*vparams*/)
+void OglLineAxis::drawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!draw.getValue()) return;
+    if (!d_draw.getValue()) return;
 
-    GLfloat s = size.getValue();
+    const GLfloat s = d_size.getValue();
 
-    glPushAttrib( GL_ALL_ATTRIB_BITS);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_LINES);
-    if(drawX)
+    if(m_drawX)
     {
-        glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-        glVertex3f(-s*0.5f, 0.0f, 0.0f);
-        glVertex3f( s*0.5f, 0.0f, 0.0f);
+        vparams->drawTool()->drawLine(
+            helper::visual::DrawTool::Vector3(-s*0.5f, 0.0f, 0.0f),
+            helper::visual::DrawTool::Vector3(s*0.5f, 0.0f, 0.0f),
+            helper::visual::DrawTool::RGBAColor(1.0f, 0.0f, 0.0f, 1.0f));
     }
-    if (drawY)
-    {
-        glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-        glVertex3f(0.0f, -s*0.5f, 0.0f);
-        glVertex3f(0.0f,  s*0.5f, 0.0f);
-    }
-    if (drawZ)
-    {
-        glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-        glVertex3f(0.0f, 0.0f, -s*0.5f);
-        glVertex3f(0.0f, 0.0f, s*0.5f);
-    }
-    glEnd();
 
+    if(m_drawY)
+    {
+        vparams->drawTool()->drawLine(
+            helper::visual::DrawTool::Vector3(0.0f, -s*0.5f, 0.0f),
+            helper::visual::DrawTool::Vector3(0.0f,  s*0.5f, 0.0f),
+            helper::visual::DrawTool::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f));
+    }
 
-    glPopAttrib();
+    if(m_drawZ)
+    {
+        vparams->drawTool()->drawLine(
+            helper::visual::DrawTool::Vector3(0.0f, 0.0f, -s*0.5f),
+            helper::visual::DrawTool::Vector3(0.0f, 0.0f, s*0.5f),
+            helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
+    }
+
+    vparams->drawTool()->restoreLastState();
 
 }
 

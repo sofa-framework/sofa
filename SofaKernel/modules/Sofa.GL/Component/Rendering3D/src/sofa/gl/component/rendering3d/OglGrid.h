@@ -28,7 +28,7 @@
 namespace sofa::gl::component::rendering3d
 {
 
-class OglGrid : public core::visual::VisualModel
+class SOFA_GL_COMPONENT_RENDERING3D_API OglGrid : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglGrid, VisualModel);
@@ -37,24 +37,32 @@ public:
 
     enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
 
-    Data<std::string> plane; ///< Plane of the grid
-    PLANE internalPlane;
+    Data<std::string> d_plane; ///< Plane of the grid
 
-    Data<float> size; ///< Size of the squared grid
-    Data<int> nbSubdiv; ///< Number of subdivisions
 
-    Data<sofa::type::RGBAColor> color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
-    Data<float> thickness; ///< Thickness of the lines in the grid
-    Data<bool> draw; ///< Display the grid or not
+    Data<float> d_size; ///< Size of the squared grid
+    Data<int> d_nbSubdiv; ///< Number of subdivisions
+
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
 
     OglGrid();
+    ~OglGrid() override = default;
 
     void init() override;
     void reinit() override;
     void drawVisual(const core::visual::VisualParams*) override;
     void updateVisual() override;
+    void buildGrid();
+
+    SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
+    DeprecatedAndRemoved size, nbSubdiv, color, thickness, draw;
 
 protected:
+
+    PLANE internalPlane;
+    sofa::type::vector<Vector3> m_drawnPoints;
 
 };
 

@@ -35,17 +35,29 @@ int OglGridClass = core::RegisterObject("Display a simple grid")
 using namespace sofa::defaulttype;
 
 OglGrid::OglGrid()
-    : plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid"))
-    , size(initData(&size, 10.0f,  "size", "Size of the squared grid"))
-    , nbSubdiv(initData(&nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
-    , color(initData(&color, sofa::type::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
-    , thickness(initData(&thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
-    , draw(initData(&draw, true,  "draw", "Display the grid or not"))
-{}
+    : d_plane(initData(&d_plane, std::string("z"),  "plane", "Plane of the grid"))
+    , d_size(initData(&d_size, 10.0f,  "size", "Size of the squared grid"))
+    , d_nbSubdiv(initData(&d_nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
+    , d_thickness(initData(&d_thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
+    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
+    , internalPlane(PLANE_Z)
+{
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
+    addUpdateCallback("buildGrid", {&d_plane, &d_size, &d_nbSubdiv}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        updateVisual();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+}
 
 void OglGrid::init()
 {
+    Inherit1::init();
     updateVisual();
+
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void OglGrid::reinit()
@@ -55,120 +67,133 @@ void OglGrid::reinit()
 
 void OglGrid::updateVisual()
 {
-    if (plane.getValue() == "x" ||
-             plane.getValue() == "X" ||
-            plane.getValue() == "zOy" ||
-            plane.getValue() == "ZOY" ||
-            plane.getValue() == "yOz" ||
-            plane.getValue() == "YOZ")
+    const auto planeValue = d_plane.getValue();
+
+    if (planeValue == "x" ||
+             planeValue == "X" ||
+            planeValue == "zOy" ||
+            planeValue == "ZOY" ||
+            planeValue == "yOz" ||
+            planeValue == "YOZ")
     {
         internalPlane = PLANE_X;
     }
-    else if (plane.getValue() == "y" ||
-             plane.getValue() == "Y" ||
-             plane.getValue() == "zOx" ||
-             plane.getValue() == "ZOX" ||
-             plane.getValue() == "xOz" ||
-             plane.getValue() == "XOZ")
+    else if (planeValue == "y" ||
+             planeValue == "Y" ||
+             planeValue == "zOx" ||
+             planeValue == "ZOX" ||
+             planeValue == "xOz" ||
+             planeValue == "XOZ")
     {
         internalPlane = PLANE_Y;
     }
-    else if (plane.getValue() == "z" ||
-             plane.getValue() == "Z" ||
-             plane.getValue() == "xOy" ||
-             plane.getValue() == "XOY" ||
-             plane.getValue() == "yOx" ||
-             plane.getValue() == "YOX")
+    else if (planeValue == "z" ||
+             planeValue == "Z" ||
+             planeValue == "xOy" ||
+             planeValue == "XOY" ||
+             planeValue == "yOx" ||
+             planeValue == "YOX")
     {
         internalPlane = PLANE_Z;
     }
     else
     {
-        msg_error() << "Plane parameter " << plane.getValue() << " not recognized. Set to z instead";
-        plane.setValue("z");
+        msg_error() << "Plane parameter " << d_plane.getValue() << " not recognized. Set to z instead";
+        d_plane.setValue("z");
         internalPlane = PLANE_Z;
     }
 
-    int nb = nbSubdiv.getValue();
+    const int nb = d_nbSubdiv.getValue();
     if (nb < 2)
     {
         msg_error() << "nbSubdiv should be > 2";
-        nbSubdiv.setValue(2);
+        d_nbSubdiv.setValue(2);
     }
 
-    //bounding box for the camera
-//    Real s = size.getValue();
-//    Coord min,max;
-//    switch(internalPlane)
-//    {
-//        case PLANE_X:
-//            min = Coord(-s*0.1, -s*0.5, -s*0.5);
-//            max = Coord(s*0.1, s*0.5, s*0.5);
-//            break;
-//        case PLANE_Y:
-//            min = Coord(-s*0.5, -s*0.1, -s*0.5);
-//            max = Coord(s*0.5, s*0.1, s*0.5);
-//            break;
-//        case PLANE_Z:
-//            min = Coord(-s*0.5, -s*0.5, -s*0.1);
-//            max = Coord(s*0.5, s*0.5, s*0.1);
-//            break;
-//    }
-//    f_bbox.setValue(sofa::type::BoundingBox(min,max));
+    buildGrid();
 
+    //bounding box for the camera
+    auto s = d_size.getValue();
+    sofa::type::Vec3f min,max;
+    switch(internalPlane)
+    {
+        case PLANE_X:
+            min = sofa::type::Vec3f(-s*0.1f, -s*0.5f, -s*0.5f);
+            max = sofa::type::Vec3f(s*0.1f, s*0.5f, s*0.5f);
+            break;
+        case PLANE_Y:
+            min = sofa::type::Vec3f(-s*0.5f, -s*0.1f, -s*0.5f);
+            max = sofa::type::Vec3f(s*0.5f, s*0.1f, s*0.5f);
+            break;
+        case PLANE_Z:
+            min = sofa::type::Vec3f(-s*0.5f, -s*0.5f, -s*0.1f);
+            max = sofa::type::Vec3f(s*0.5f, s*0.5f, s*0.1f);
+            break;
+    }
+    f_bbox.setValue(sofa::type::BoundingBox(min,max));
 }
 
 
-void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
+void OglGrid::buildGrid()
 {
-    if (!draw.getValue()) return;
+    m_drawnPoints.clear();
 
-    std::vector<Vector3> points;
+    const unsigned int nb = d_nbSubdiv.getValue();
+    const float s = d_size.getValue();
 
-    unsigned int nb = nbSubdiv.getValue();
-    float s = size.getValue();
+    m_drawnPoints.reserve(4u * (nb + 1));
 
     switch(internalPlane)
     {
     case PLANE_X:
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            points.push_back(Vector3(0.0, -s*0.5 + i * s / nb, -s*0.5));
-            points.push_back(Vector3(0.0, -s*0.5 + i * s / nb,  s*0.5));
+            m_drawnPoints.emplace_back(0.0, -s*0.5 + i * s / nb, -s*0.5);
+            m_drawnPoints.emplace_back(0.0, -s*0.5 + i * s / nb,  s*0.5);
         }
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            points.push_back(Vector3(0.0, -s*0.5, -s*0.5 + i * s / nb));
-            points.push_back(Vector3(0.0,  s*0.5, -s*0.5 + i * s / nb));
+            m_drawnPoints.emplace_back(0.0, -s*0.5, -s*0.5 + i * s / nb);
+            m_drawnPoints.emplace_back(0.0,  s*0.5, -s*0.5 + i * s / nb);
         }
         break;
     case PLANE_Y:
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            points.push_back(Vector3(-s*0.5, 0.0, -s*0.5 + i * s / nb));
-            points.push_back(Vector3( s*0.5, 0.0, -s*0.5 + i * s / nb));
+            m_drawnPoints.emplace_back(-s*0.5, 0.0, -s*0.5 + i * s / nb);
+            m_drawnPoints.emplace_back( s*0.5, 0.0, -s*0.5 + i * s / nb);
         }
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            points.push_back(Vector3(-s*0.5 + i * s / nb, 0.0, -s*0.5));
-            points.push_back(Vector3(-s*0.5 + i * s / nb, 0.0,  s*0.5));
+            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb, 0.0, -s*0.5);
+            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb, 0.0,  s*0.5);
         }
         break;
     case PLANE_Z:
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            points.push_back(Vector3(-s*0.5, -s*0.5 + i * s / nb, 0.0));
-            points.push_back(Vector3( s*0.5, -s*0.5 + i * s / nb, 0.0));
+            m_drawnPoints.emplace_back(-s*0.5, -s*0.5 + i * s / nb, 0.0);
+            m_drawnPoints.emplace_back( s*0.5, -s*0.5 + i * s / nb, 0.0);
         }
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            points.push_back(Vector3(-s*0.5 + i * s / nb, -s*0.5, 0.0));
-            points.push_back(Vector3(-s*0.5 + i * s / nb,  s*0.5, 0.0));
+            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb, -s*0.5, 0.0);
+            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb,  s*0.5, 0.0);
         }
         break;
     }
+}
 
-    vparams->drawTool()->drawLines(points, thickness.getValue(), color.getValue());
+void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
+{
+    if (!d_draw.getValue()) return;
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    vparams->drawTool()->drawLines(m_drawnPoints, d_thickness.getValue(), d_color.getValue());
+
+    vparams->drawTool()->restoreLastState();
 
 }
 

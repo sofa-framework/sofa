@@ -23,20 +23,19 @@
 #include <sofa/gl/component/rendering3d/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::gl::component::rendering3d
 {
 
-class OglLineAxis : public core::visual::VisualModel
+class SOFA_GL_COMPONENT_RENDERING3D_API OglLineAxis : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglLineAxis, VisualModel);
 
-    Data<std::string> axis; ///< Axis to draw
-    Data<float> size; ///< Size of the squared grid
-    Data<float> thickness; ///< Thickness of the lines in the grid
-    Data<bool> draw; ///< Display the grid or not
+    Data<std::string> d_axis; ///< Axis to draw
+    Data<float> d_size; ///< Size of the squared grid
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
 
     OglLineAxis();
 
@@ -45,11 +44,14 @@ public:
     void drawVisual(const core::visual::VisualParams*) override;
     void updateVisual() override;
 
+    SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
+    DeprecatedAndRemoved axis, size, thickness, draw;
+
 protected:
 
-    bool drawX;
-    bool drawY;
-    bool drawZ;
+    bool m_drawX;
+    bool m_drawY;
+    bool m_drawZ;
 
 };
 
