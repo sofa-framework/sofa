@@ -37,17 +37,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::engine::analyze::init();
-        sofa::component::engine::generate::init();
-        sofa::component::engine::select::init();
-        sofa::component::engine::transform::init();
-
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -62,7 +52,17 @@ const char* getModuleVersion()
 
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::component::engine::analyze::init();
+        sofa::component::engine::generate::init();
+        sofa::component::engine::select::init();
+        sofa::component::engine::transform::init();
+
+        first = false;
+    }
 }
 
 } // namespace sofa::component::engine
