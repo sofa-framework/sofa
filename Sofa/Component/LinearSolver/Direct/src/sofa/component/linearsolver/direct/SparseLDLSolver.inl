@@ -162,8 +162,8 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
     }
 
-    std::vector< ComplianceTask<TMatrix,TVector> > taskList;
-    taskList.reserve( JlocalRowSize );
+    std::vector< ComplianceTask<TMatrix,TVector> > solveTaskList;
+    solveTaskList.reserve( JlocalRowSize );
     sofa::simulation::CpuTask::Status status;
 
     //ComplianceTask<TMatrix,TVector> task(&status);
@@ -190,18 +190,19 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         }
     }
 */
-{
-    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-    for (unsigned c = 0; c < JlocalRowSize; c++) 
     {
-        SReal* row = JLTinv[c];
-        SReal* rowD = JLTinvDinv[c] ;
-        taskList.emplace_back( data->n, row , rowD ,
-                             data->L_colptr.data(), data->L_rowind.data() , data->L_values.data(), data->invD.data() , &status );
-    }
-}
+        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+        // compute JLTinv line by line
+        for (unsigned c = 0; c < JlocalRowSize; c++) 
+        {
+            SReal* row = JLTinv[c];
+            SReal* rowD = JLTinvDinv[c] ;
+            solveTaskList.emplace_back( data->n, row , rowD ,
+                                data->L_colptr.data(), data->L_rowind.data() , data->L_values.data(), data->invD.data() , &status );
+        }
 
-    taskScheduler->workUntilDone(&status);
+        taskScheduler->workUntilDone(&status);
+    }
 
     //apply diagonal
     for (unsigned j = 0; j < JlocalRowSize; j++) {
@@ -212,29 +213,53 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         }
     }
 
-sofa::linearalgebra::FullMatrix<SReal> JMinvJt( JlocalRowSize, JlocalRowSize );
+    sofa::linearalgebra::FullMatrix<SReal> JMinvJt( JlocalRowSize, JlocalRowSize );
+    std::vector< multiplyTask<TMatrix,TVector> > multiplyTaskList;
+    multiplyTaskList.reserve( JlocalRowSize );
 
+    {
 
-{
-    sofa::helper::ScopedAdvancedTimer projectTimer("project");
-//compute the marix product JLtinvDinv*(JLtinv)^t and project the data
-    for (unsigned j = 0; j < JlocalRowSize; j++) {
-        Real* lineJ = JLTinvDinv[j];
-        int globalRowJ = Jlocal2global[j];
-        for (unsigned i = j; i < JlocalRowSize; i++) {
-            Real* lineI = JLTinv[i];
-            int globalRowI = Jlocal2global[i];
+        sofa::helper::ScopedAdvancedTimer multiplyTimer("product");
+        //compute the marix product JLtinvDinv*(JLtinv)^t
+        for (unsigned j = 0; j < JlocalRowSize; j++)
+        {
+            Real* lineJ = JLTinvDinv[j];
+            int globalRowJ = Jlocal2global[j];
+            multiplyTaskList.emplace_back(data->n, JlocalRowSize, j, &JLTinvDinv, &JLTinv, &JMinvJt, Jlocal2global.data(), &status );
+            
+            
+            for (unsigned i = j; i < JlocalRowSize; i++) {
+                Real* lineI = JLTinv[i];
+                int globalRowI = Jlocal2global[i];
 
-            double acc = 0.0;
-            for (unsigned k = 0; k < (unsigned)data->n; k++) {
-                acc += lineJ[k] * lineI[k];
+                JMinvJt.set(globalRowI,globalRowJ, 0.0);
+                for (unsigned k = 0; k < (unsigned)data->n; k++) {
+                    JMinvJt.add(globalRowI,globalRowJ, lineJ[k] * lineI[k]);
+                }
             }
-            acc *= fact;
-            result->add(globalRowJ, globalRowI, acc);
-            if (globalRowI != globalRowJ) result->add(globalRowI, globalRowJ, acc);
+            
         }
+        taskScheduler->workUntilDone(&status);
+
     }
-}
+
+    {
+        sofa::helper::ScopedAdvancedTimer projectTimer("project");
+        //project the data
+        for (unsigned j = 0; j < JlocalRowSize; j++) {
+            Real* lineJ = JLTinvDinv[j];
+            int globalRowJ = Jlocal2global[j];
+            for (unsigned i = j; i < JlocalRowSize; i++) {
+                Real* lineI = JLTinv[i];
+                int globalRowI = Jlocal2global[i];
+
+                result->add(globalRowJ, globalRowI, JMinvJt.element(globalRowI,globalRowJ)*fact);
+                if (globalRowI != globalRowJ) result->add(globalRowI, globalRowJ, JMinvJt.element(globalRowI,globalRowJ)*fact);
+            }
+        }
+
+    }
+
     return true;
 }
 
