@@ -1,15 +1,37 @@
 cmake_minimum_required(VERSION 3.12)
+project(Sofa.GUI LANGUAGES CXX)
 
-sofa_add_module(Component ${PROJECT_NAME}.Component ON)
-sofa_add_module(Common ${PROJECT_NAME}.Common ON)
-sofa_add_module(Batch ${PROJECT_NAME}.Batch ON)
+set(SOFAGUI_SOURCE_DIR "src/sofa/gui")
 
-option(SOFA_GUI_ENABLE_QT "Compile the Qt GUI" ON)
-if(SOFA_GUI_ENABLE_QT)
-    sofa_add_module(Qt Sofa.GUI.Qt ON)
+set(SOFAGUI_DIRS Component Common Batch Qt)
+set(SOFAGUI_TARGETS)
+foreach(dir ${SOFAGUI_DIRS})
+    sofa_add_module(${dir} ${PROJECT_NAME}.${dir} ON)
+    if(TARGET ${PROJECT_NAME}.${dir})
+        list(APPEND SOFAGUI_TARGETS ${PROJECT_NAME}.${dir})
+    endif()
+endforeach()
+
+sofa_add_module(HeadlessRecorder ${PROJECT_NAME}.HeadlessRecorder OFF)
+if(TARGET ${PROJECT_NAME}.HeadlessRecorder)
+    list(APPEND SOFAGUI_TARGETS ${PROJECT_NAME}.HeadlessRecorder)
 endif()
 
-option(SOFA_GUI_ENABLE_HEADLESSRECORDER "Compile the headless recorder (Linux only)" OFF)
-if(SOFA_GUI_ENABLE_HEADLESSRECORDER)
-    sofa_add_module(HeadlessRecorder Sofa.GUI.HeadlessRecorder ON)
-endif()
+set(HEADER_FILES
+    ${SOFAGUI_SOURCE_DIR}/config.h.in
+    ${SOFAGUI_SOURCE_DIR}/init.h
+)
+set(SOURCE_FILES
+    ${SOFAGUI_SOURCE_DIR}/init.cpp
+)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
