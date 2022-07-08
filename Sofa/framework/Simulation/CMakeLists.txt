@@ -12,7 +12,6 @@ foreach(simulation_dir ${SOFASIMULATION_DIRS})
     endif()
 endforeach()
 
-
 set(HEADER_FILES
     ${SOFASIMULATION_SOURCE_DIR}/config.h.in
     ${SOFASIMULATION_SOURCE_DIR}/init.h
