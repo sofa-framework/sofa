@@ -157,7 +157,9 @@ public:
     }
 
     /// Constructor from an array of values.
+    /// This function is dangerous and should be avoided
     template<typename real2>
+    SOFA_ATTRIBUTE_DEPRECATED__UNSAFE_VEC_CONTRUCTOR()
     explicit constexpr Vec(const real2* p) noexcept
     {
         for(Size i=0; i<N; i++)
@@ -527,7 +529,7 @@ public:
 
     /// return true if norm()==1
     constexpr bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const
-    { 
+    {
         return rabs( norm2() - static_cast<ValueType>(1) ) <= threshold;
     }
 

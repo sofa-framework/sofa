@@ -34,9 +34,14 @@
 
 #ifdef SOFA_BUILD_SOFA_TYPE
 #define SOFA_ATTRIBUTE_DEPRECATED__REBIND()
+#define SOFA_ATTRIBUTE_DEPRECATED__UNSAFE_VEC_CONTRUCTOR()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__REBIND() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v22.06", "v22.12", \
         "As an alternative, use sofa::type::Rebind or sofa::type::rebind_to.")
+#define SOFA_ATTRIBUTE_DEPRECATED__UNSAFE_VEC_CONTRUCTOR() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12", "v23.06", \
+        "This constructor is unsafe as it takes a raw pointer and does not check its bounds. It will be removed in the future. Use a constructor with type::Vec or type::fixed_array instead..")
 #endif
