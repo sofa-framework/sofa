@@ -64,21 +64,8 @@ helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 // --- Constructor
 // ---------------------------------------------------------
 
-QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
-{
-    QGLFormat f = QGLFormat::defaultFormat();
-
-    if(nbMSAASamples > 1)
-    {
-        f.setSampleBuffers(true);
-        f.setSamples(nbMSAASamples);
-    }
-
-    return f;
-}
-
-QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-    : QGLViewer(setupGLFormat(nbMSAASamples), parent, nullptr, Qt::WindowType::Widget)
+QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
+    : QGLViewer(parent, nullptr, Qt::WindowType::Widget)
 {
     this->setObjectName(name);
 
