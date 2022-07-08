@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/component/rendering3d/config.h>
-#include <sofa/core/ObjectFactory.h>
-
 #include <sofa/gl/component/rendering3d/OglSceneFrame.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/gl/gl.h>
 
 namespace sofa::gl::component::rendering3d
 {
@@ -37,7 +36,7 @@ OglSceneFrame::OglSceneFrame()
     : d_drawFrame(initData(&d_drawFrame, true,  "draw", "Display the frame or not"))
     , d_style(initData(&d_style, "style", "Style of the frame"))
     , d_alignment(initData(&d_alignment, "alignment", "Alignment of the frame in the view"))
-    , quadratic(nullptr)
+    , d_viewportSize(initData(&d_viewportSize, 150, "viewportSize", "Size of the viewport where the frame is rendered"))
 {
     sofa::helper::OptionsGroup styleOptions(3,"Arrows", "Cylinders", "CubeCones");
     styleOptions.setSelectedItem(1);
@@ -59,36 +58,141 @@ void OglSceneFrame::reinit()
     updateVisual();
 }
 
+void OglSceneFrame::drawArrows(const core::visual::VisualParams* vparams)
+{
+    //X axis
+    vparams->drawTool()->drawArrow(
+        sofa::core::visual::DrawTool::Vector3(),
+        sofa::core::visual::DrawTool::Vector3(1, 0, 0),
+        0.05f,
+        sofa::core::visual::DrawTool::RGBAColor(1.0f, 0.0f, 0.0f, 1.0f));
+
+    //Y axis
+    vparams->drawTool()->drawArrow(
+        sofa::core::visual::DrawTool::Vector3(),
+        sofa::core::visual::DrawTool::Vector3(0, 1, 0),
+        0.05f,
+        sofa::core::visual::DrawTool::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f)
+    );
+
+    //Z axis
+    vparams->drawTool()->drawArrow(
+        sofa::core::visual::DrawTool::Vector3(),
+        sofa::core::visual::DrawTool::Vector3(0, 0, 1),
+        0.05f,
+        sofa::core::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f)
+    );
+}
+
+void OglSceneFrame::drawCylinders(const core::visual::VisualParams* vparams)
+{
+    //X axis
+    vparams->drawTool()->drawCylinder(
+        sofa::core::visual::DrawTool::Vector3(),
+        sofa::core::visual::DrawTool::Vector3(1, 0, 0),
+        0.05f,
+        sofa::core::visual::DrawTool::RGBAColor::red()
+    );
+
+    //Y axis
+    vparams->drawTool()->drawCylinder(
+        sofa::core::visual::DrawTool::Vector3(),
+        sofa::core::visual::DrawTool::Vector3(0, 1, 0),
+        0.05f,
+        sofa::core::visual::DrawTool::RGBAColor::green()
+    );
+
+    //Z axis
+    vparams->drawTool()->drawCylinder(
+        sofa::core::visual::DrawTool::Vector3(),
+        sofa::core::visual::DrawTool::Vector3(0, 0, 1),
+        0.05f,
+        sofa::core::visual::DrawTool::RGBAColor::blue()
+    );
+}
+
+void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
+{
+    constexpr float s = 0.25f;
+
+    vparams->drawTool()->drawHexahedron(
+        sofa::core::visual::DrawTool::Vector3(-s, -s, -s),
+        sofa::core::visual::DrawTool::Vector3(s, -s, -s),
+        sofa::core::visual::DrawTool::Vector3(s, s, -s),
+        sofa::core::visual::DrawTool::Vector3(-s, s, -s),
+        sofa::core::visual::DrawTool::Vector3(-s, -s, s),
+        sofa::core::visual::DrawTool::Vector3(s, -s, s),
+        sofa::core::visual::DrawTool::Vector3(s, s, s),
+        sofa::core::visual::DrawTool::Vector3(-s, s, s),
+        sofa::core::visual::DrawTool::RGBAColor::darkgray());
+
+    //X axis
+    vparams->drawTool()->drawCone(
+        sofa::core::visual::DrawTool::Vector3(s, 0, 0),
+        sofa::core::visual::DrawTool::Vector3(s * 3.f, 0, 0),
+        0, s,
+        sofa::core::visual::DrawTool::RGBAColor::red());
+    vparams->drawTool()->drawCone(
+        sofa::core::visual::DrawTool::Vector3(-s, 0, 0),
+        sofa::core::visual::DrawTool::Vector3(-s * 3.f, 0, 0),
+        0, s,
+        sofa::core::visual::DrawTool::RGBAColor::gray());
+
+    //Y axis
+    vparams->drawTool()->drawCone(
+        sofa::core::visual::DrawTool::Vector3(0, s, 0),
+        sofa::core::visual::DrawTool::Vector3(0, s * 3.f, 0),
+        0, s,
+        sofa::core::visual::DrawTool::RGBAColor::green());
+    vparams->drawTool()->drawCone(
+        sofa::core::visual::DrawTool::Vector3(0, -s, 0),
+        sofa::core::visual::DrawTool::Vector3(0, -s * 3.f, 0),
+        0, s,
+        sofa::core::visual::DrawTool::RGBAColor::gray());
+
+    //Z axis
+    vparams->drawTool()->drawCone(
+        sofa::core::visual::DrawTool::Vector3(0, 0, s),
+        sofa::core::visual::DrawTool::Vector3(0, 0, s * 3.f),
+        0, s,
+        sofa::core::visual::DrawTool::RGBAColor::blue());
+    vparams->drawTool()->drawCone(
+        sofa::core::visual::DrawTool::Vector3(0, 0, -s),
+        sofa::core::visual::DrawTool::Vector3(0, 0, -s * 3.f),
+        0, s,
+        sofa::core::visual::DrawTool::RGBAColor::gray());
+}
+
 void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 {
     if (!d_drawFrame.getValue()) return;
 
-    glPushAttrib( GL_ALL_ATTRIB_BITS);
+    vparams->drawTool()->saveLastState();
 
     const Viewport& viewport = vparams->viewport();
 
+    const auto viewportSize = d_viewportSize.getValue();
+
     switch(d_alignment.getValue().getSelectedId())
     {
-        case 0:
+        case 0: //BottomLeft
         default:
-            glViewport(0,0,150,150);
-            glScissor(0,0,150,150);
+            glViewport(0,0,viewportSize,viewportSize);
+            glScissor(0,0,viewportSize,viewportSize);
             break;
-        case 1:
-            glViewport(viewport[2]-150,0,150,150);
-            glScissor(viewport[2]-150,0,150,150);
+        case 1: //BottomRight
+            glViewport(viewport[2]-viewportSize,0,viewportSize,viewportSize);
+            glScissor(viewport[2]-viewportSize,0,viewportSize,viewportSize);
             break;
-        case 2:
-            glViewport(viewport[2]-150,viewport[3]-150,150,150);
-            glScissor(viewport[2]-150,viewport[3]-150,150,150);
+        case 2: //TopRight
+            glViewport(viewport[2]-viewportSize,viewport[3]-viewportSize,viewportSize,viewportSize);
+            glScissor(viewport[2]-viewportSize,viewport[3]-viewportSize,viewportSize,viewportSize);
             break;
-        case 3:
-            glViewport(0,viewport[3]-150,150,150);
-            glScissor(0,viewport[3]-150,150,150);
+        case 3: //TopLeft
+            glViewport(0,viewport[3]-viewportSize,viewportSize,viewportSize);
+            glScissor(0,viewport[3]-viewportSize,viewportSize,viewportSize);
             break;
     }
-
-
 
 
     glEnable(GL_SCISSOR_TEST);
@@ -96,12 +200,12 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     glClearColor (1.0f, 1.0f, 1.0f, 0.0f);
 
     glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
+    vparams->drawTool()->pushMatrix();
     glLoadIdentity();
     gluPerspective(60.0, 1.0, 0.5, 10.0);
 
     GLdouble matrix[16];
-    glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
+    vparams->getModelViewMatrix(matrix);
 
     matrix[12] = 0;
     matrix[13] = 0;
@@ -109,173 +213,33 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     matrix[15] = 1;
 
     glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
+    vparams->drawTool()->pushMatrix();
     glLoadMatrixd(matrix);
 
-    if (!quadratic)
+    vparams->drawTool()->disableLighting();
+
+    switch (d_style.getValue().getSelectedId())
     {
-        quadratic = gluNewQuadric();
+    case 0:
+    default:
+        drawArrows(vparams);
+        break;
 
-        gluQuadricNormals(quadratic, GLU_SMOOTH);
-        gluQuadricTexture(quadratic, GL_TRUE);
-    }
+    case 1:
+        drawCylinders(vparams);
+        break;
 
-    glDisable(GL_LIGHTING);
-
-    if (quadratic)
-    {
-
-        switch (d_style.getValue().getSelectedId())
-        {
-            case 0:
-            default:
-                //X axis
-                glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-                glRotatef(90,0,1,0);
-                gluCylinder(quadratic,0.1f,0.1f,1.0f,32,32);
-                glRotatef(-90,0,1,0);
-
-                glTranslated(1.0f,0,0);
-                glRotatef(90,0,1,0);
-                gluDisk(quadratic,0,0.2f,32,32);
-                gluCylinder(quadratic,0.2f,0,0.2f,32,32);
-                glRotatef(-90,0,1,0);
-                glTranslated(-1.0f,0,0);
-
-                //Y axis
-                glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-                glRotatef(-90,1,0,0);
-                gluCylinder(quadratic,0.1f,0.1f,1.0f,32,32);
-                glRotatef(90,1,0,0);
-
-                glTranslated(0.0f, 1.0f, 0);
-                glRotatef(-90,1,0,0);
-                gluDisk(quadratic,0,0.2f,32,32);
-                gluCylinder(quadratic,0.2f,0,0.2f,32,32);
-                glRotatef(90,1,0,0);
-                glTranslated(0.0f, -1.0f, 0.0f);
-
-                //Z axis
-                glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-                gluCylinder(quadratic,0.1f,0.1f,1.0f,32,32);
-
-                glTranslated(0.0f, 0.0f, 1.0f);
-                gluDisk(quadratic,0,0.2f,32,32);
-                gluCylinder(quadratic,0.2f,0,0.2f,32,32);
-                glTranslated(0.0f, 0.0f, -1.0f);
-
-                break;
-
-            case 1:
-                //X axis
-                glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-                glRotatef(90,0,1,0);
-                gluCylinder(quadratic,0.05f,0.05f,1.0f,32,32);
-                glRotatef(-90,0,1,0);
-
-                //Y axis
-                glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-                glRotatef(-90,1,0,0);
-                gluCylinder(quadratic,0.05f,0.05f,1.0f,32,32);
-                glRotatef(90,1,0,0);
-
-                //Z axis
-                glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-                gluCylinder(quadratic,0.05f,0.05f,1.0f,32,32);
-
-                break;
-
-            case 2:
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-
-                GLfloat s = 0.25f;
-
-                glBegin(GL_QUADS);
-                    glVertex3f(-s, -s,  s);
-                    glVertex3f( s, -s,  s);
-                    glVertex3f( s,  s,  s);
-                    glVertex3f(-s,  s,  s);
-
-                    glVertex3f(-s, -s, -s);
-                    glVertex3f(-s,  s, -s);
-                    glVertex3f( s,  s, -s);
-                    glVertex3f( s, -s, -s);
-
-                    glVertex3f(-s,  s, -s);
-                    glVertex3f(-s,  s,  s);
-                    glVertex3f( s,  s,  s);
-                    glVertex3f( s,  s, -s);
-
-                    glVertex3f(-s, -s, -s);
-                    glVertex3f( s, -s, -s);
-                    glVertex3f( s, -s,  s);
-                    glVertex3f(-s, -s,  s);
-
-                    glVertex3f( s, -s, -s);
-                    glVertex3f( s,  s, -s);
-                    glVertex3f( s,  s,  s);
-                    glVertex3f( s, -s,  s);
-
-                    glVertex3f(-s, -s, -s);
-                    glVertex3f(-s, -s,  s);
-                    glVertex3f(-s,  s,  s);
-                    glVertex3f(-s,  s, -s);
-                glEnd();
-
-                //X axis
-                glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-                glTranslated(s,0,0);
-                glRotatef(90,0,1,0);
-                gluCylinder(quadratic,0,s,s*3.0f,32,32);
-                glRotatef(-90,0,1,0);
-                glTranslated(-s,0,0);
-
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-                glTranslated(-s,0,0);
-                glRotatef(-90,0,1,0);
-                gluCylinder(quadratic,0,s,s*3.0f,32,32);
-                glRotatef(90,0,1,0);
-                glTranslated(s,0,0);
-
-                //Y axis
-                glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-                glTranslated(0.0f, s, 0);
-                glRotatef(-90,1,0,0);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glRotatef(90,1,0,0);
-                glTranslated(0.0f, -s, 0.0f);
-
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-                glTranslated(0.0f, -s, 0);
-                glRotatef(90,1,0,0);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glRotatef(-90,1,0,0);
-                glTranslated(0.0f, s, 0.0f);
-
-                //Z axis
-                glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-                glTranslated(0.0f, 0.0f, s);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glTranslated(0.0f, 0.0f, -s);
-
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-                glTranslated(0.0f, 0.0f, -s);
-                glRotatef(-180,0,1,0);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glRotatef(180,0,1,0);
-                glTranslated(0.0f, 0.0f, s);
-
-
-                break;
-        }
+    case 2:
+        drawCubeCones(vparams);
+        break;
     }
 
     glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
+    vparams->drawTool()->popMatrix();
     glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    vparams->drawTool()->popMatrix();
 
-    glPopAttrib();
+    vparams->drawTool()->restoreLastState();
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
 }
