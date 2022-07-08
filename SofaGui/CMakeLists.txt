@@ -22,25 +22,34 @@ set(SOFAGUI_TARGETS Sofa.GUI.Component Sofa.GUI.Common Sofa.GUI.Batch)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND SOFAGUI_TARGETS Sofa.GUI.Qt)
 endif()
-sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${Sofa.GUI.Qt_FOUND})
+sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_HAVE_SOFA_GUI_QT})
 
 if(Sofa.GUI.HeadlessRecorder_FOUND)
     list(APPEND SOFAGUI_TARGETS Sofa.GUI.HeadlessRecorder)
 endif()
-sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${Sofa.GUI.HeadlessRecorder_FOUND})
+sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HAVE_SOFA_GUI_HEADLESSRECORDER})
 
 # Keep legacy modules for compatibility
 # they merely redirect to the new modules
 # legacy (deprecated) module
-add_subdirectory(../modules/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
+sofa_add_collection(../modules/SofaGuiCommon SofaGuiCommon ON
+    BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon")
+if(TARGET SofaGuiCommon)
     list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
+endif()
 if(Sofa.GUI.Qt_FOUND)
-    add_subdirectory(../modules/SofaGuiQt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
-    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+    sofa_add_collection(../modules/SofaGuiQt SofaGuiQt ON
+        BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt")
+    if(TARGET SofaGuiQt)
+        list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+    endif()
 endif()
 if(Sofa.GUI.HeadlessRecorder_FOUND)
-    add_subdirectory(../modules/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
-    list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+    sofa_add_collection(../modules/SofaHeadlessRecorder SofaHeadlessRecorder ON
+        BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder")
+    if(TARGET SofaHeadlessRecorder)
+        list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+    endif()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

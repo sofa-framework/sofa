@@ -7,7 +7,9 @@ set(SOFACOMPONENTENGINE_DIRS Analyze Generate Select Transform)
 set(SOFACOMPONENTENGINE_TARGETS)
 foreach(engine_dir ${SOFACOMPONENTENGINE_DIRS})
     sofa_add_module(${engine_dir} ${PROJECT_NAME}.${engine_dir} ON)
-    list(APPEND SOFACOMPONENTENGINE_TARGETS ${PROJECT_NAME}.${engine_dir})
+    if(TARGET ${PROJECT_NAME}.${engine_dir})
+        list(APPEND SOFACOMPONENTENGINE_TARGETS ${PROJECT_NAME}.${engine_dir})
+    endif()
 endforeach()
 
 

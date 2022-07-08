@@ -6,8 +6,10 @@ set(SOFASIMULATION_SOURCE_DIR "src/sofa/simulation")
 set(SOFASIMULATION_DIRS Core Common Graph)
 set(SOFASIMULATION_TARGETS)
 foreach(simulation_dir ${SOFASIMULATION_DIRS})
-        sofa_add_module(${simulation_dir} ${PROJECT_NAME}.${simulation_dir} ON)
+    sofa_add_module(${simulation_dir} ${PROJECT_NAME}.${simulation_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${simulation_dir})
         list(APPEND SOFASIMULATION_TARGETS ${PROJECT_NAME}.${simulation_dir})
+    endif()
 endforeach()
 
 

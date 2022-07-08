@@ -7,7 +7,9 @@ set(SOFACOMPONENTLINEARSOLVER_DIRS Iterative Direct Preconditioner)
 set(SOFACOMPONENTLINEARSOLVER_TARGETS)
 foreach(linearsolver_dir ${SOFACOMPONENTLINEARSOLVER_DIRS})
     sofa_add_module(${linearsolver_dir} ${PROJECT_NAME}.${linearsolver_dir} ON)
-    list(APPEND SOFACOMPONENTLINEARSOLVER_TARGETS ${PROJECT_NAME}.${linearsolver_dir})
+    if(TARGET ${PROJECT_NAME}.${linearsolver_dir})
+        list(APPEND SOFACOMPONENTLINEARSOLVER_TARGETS ${PROJECT_NAME}.${linearsolver_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES

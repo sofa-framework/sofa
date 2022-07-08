@@ -7,7 +7,9 @@ set(SOFAGLCOMPONENT_DIRS Rendering2D Rendering3D Engine Shader)
 set(SOFAGLCOMPONENT_TARGETS)
 foreach(gl_dir ${SOFAGLCOMPONENT_DIRS})
     sofa_add_module(${gl_dir} ${PROJECT_NAME}.${gl_dir} ON)
-    list(APPEND SOFAGLCOMPONENT_TARGETS ${PROJECT_NAME}.${gl_dir})
+    if(TARGET ${PROJECT_NAME}.${gl_dir})
+        list(APPEND SOFAGLCOMPONENT_TARGETS ${PROJECT_NAME}.${gl_dir})
+    endif()
 endforeach()
 
 

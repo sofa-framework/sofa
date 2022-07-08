@@ -7,7 +7,9 @@ set(SOFACOMPONENTODESOLVER_DIRS Forward Backward)
 set(SOFACOMPONENTODESOLVER_TARGETS)
 foreach(odesolver_dir ${SOFACOMPONENTODESOLVER_DIRS})
     sofa_add_module(${odesolver_dir} ${PROJECT_NAME}.${odesolver_dir} ON)
-    list(APPEND SOFACOMPONENTODESOLVER_TARGETS ${PROJECT_NAME}.${odesolver_dir})
+    if(TARGET ${PROJECT_NAME}.${odesolver_dir})
+        list(APPEND SOFACOMPONENTODESOLVER_TARGETS ${PROJECT_NAME}.${odesolver_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES

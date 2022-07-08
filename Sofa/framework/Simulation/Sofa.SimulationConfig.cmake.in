@@ -3,14 +3,13 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SOFASIMULATION_MODULES @SOFASIMULATION_MODULES@)
+set(SOFASIMULATION_TARGETS @SOFASIMULATION_TARGETS@)
 
-foreach(target ${SOFASIMULATION_MODULES})
+foreach(target ${SOFASIMULATION_TARGETS})
     find_package(${target} QUIET REQUIRED)
 endforeach()
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 endif()
-
 check_required_components(@PROJECT_NAME@)

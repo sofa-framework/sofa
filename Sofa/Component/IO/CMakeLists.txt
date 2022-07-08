@@ -7,7 +7,9 @@ set(SOFACOMPONENTIO_DIRS Mesh)
 set(SOFACOMPONENTIO_TARGETS)
 foreach(io_dir ${SOFACOMPONENTIO_DIRS})
     sofa_add_module(${io_dir} ${PROJECT_NAME}.${io_dir} ON)
-    list(APPEND SOFACOMPONENTIO_TARGETS ${PROJECT_NAME}.${io_dir})
+    if(TARGET ${PROJECT_NAME}.${io_dir})
+        list(APPEND SOFACOMPONENTIO_TARGETS ${PROJECT_NAME}.${io_dir})
+    endif()
 endforeach()
 
 
