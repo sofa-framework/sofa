@@ -215,14 +215,14 @@ public:
     bool operator==(const Quat& q) const;
     bool operator!=(const Quat& q) const;
 
-    enum { static_size = 4 };
-    static unsigned int size() {return 4;}
+    static constexpr Size static_size = 4;
+    static Size size() {return static_size;}
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 4 };
+    static constexpr Size total_size = 4;
 
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for quaternions)
-    enum { spatial_dimensions = 3 };
+    static constexpr Size spatial_dimensions = 3;
 };
 
 /// write to an output stream

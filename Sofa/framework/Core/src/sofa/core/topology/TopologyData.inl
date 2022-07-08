@@ -241,6 +241,8 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     const sofa::type::vector<sofa::type::vector<SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
+    SOFA_UNUSED(ancestorElems);
+
     std::size_t nbElements = index.size();
     if (nbElements == 0) 
         return;

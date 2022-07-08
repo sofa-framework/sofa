@@ -219,9 +219,10 @@ public:
     }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 6 };
+    static constexpr sofa::Size total_size = 6;
+
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 3 };
+    static constexpr sofa::Size spatial_dimensions = 3;
 
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
@@ -664,9 +665,9 @@ public:
     }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 7 };
+    static constexpr sofa::Size total_size = 7;
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 3 };
+    static constexpr sofa::Size spatial_dimensions = 3;
 
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
@@ -825,9 +826,9 @@ public:
     typedef typename Coord::Quat Quat;
     typedef type::Vec<3,Real> AngularVector;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
@@ -1536,9 +1537,10 @@ public:
     }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 3 };
+    static constexpr sofa::Size total_size = 3;
+
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 2 };
+    static constexpr sofa::Size spatial_dimensions = 2;
 
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
@@ -1708,9 +1710,9 @@ public:
     typedef RigidCoord<2,Real> Coord;
     typedef Real AngularVector;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
