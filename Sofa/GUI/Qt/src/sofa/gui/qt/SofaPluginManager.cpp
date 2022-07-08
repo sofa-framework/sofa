@@ -82,7 +82,7 @@ void SofaPluginManager::updatePluginsListView()
         {
             for (unsigned int i = 0; i < 4; ++i)
             {
-                item->setForeground(i, QColorConstants::Blue);
+                item->setForeground(i, QColor::fromRgb(0, 0, 255));
                 item->setToolTip(i, QString(std::string{"This plugin has been loaded by the GUI from the file " + m_pluginsIniFile}.c_str()));
             }
         }
