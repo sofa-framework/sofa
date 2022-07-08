@@ -76,16 +76,12 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/cmake)
 # adding paths to disabled plugins.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Sofa/framework/Config/cmake")
-include(SofaMacros)
-
-# Sofa.Config sets the environment (options, compiler flags, global variables)
-sofa_add_module(Sofa/framework/Config Sofa.Config ON)
-
 ## Custom Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Sofa/framework/Config/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
+include(SofaMacros)
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
@@ -141,7 +137,6 @@ if(MSVC)
     install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
-
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 
@@ -163,17 +158,17 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+# Sofa.Config sets the environment (options, compiler flags, global variables)
+sofa_add_module(Sofa/framework/Config Sofa.Config ON)
+
 ### Extlibs
 add_subdirectory(extlibs)
 
-
 ### Compatibility
 option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
-
 if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
     message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
-
     sofa_add_module(Sofa/framework/Compat Sofa.Compat ON)
     sofa_add_module(Sofa/Component/Compat Sofa.Component.Compat ON)
 endif()
@@ -186,9 +181,10 @@ if(SOFA_WITH_OPENGL)
     sofa_add_module(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL Sofa.GL ON)
 endif()
 
-add_subdirectory(Sofa/GUI)
+#add_subdirectory(Sofa/GUI)
+
 # SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
-add_subdirectory(SofaGui)
+sofa_add_collection(SofaGui SofaGui ON)
 
 ### Compatibility
 option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated CMake modules." ON)
@@ -223,7 +219,6 @@ add_subdirectory(applications/plugins)
 
 ## Applications
 add_subdirectory(applications/projects)
-
 
 # Tutorial add subdirectory
 if(SOFA_BUILD_TUTORIALS)
