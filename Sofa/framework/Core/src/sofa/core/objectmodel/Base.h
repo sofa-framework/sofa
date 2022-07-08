@@ -369,6 +369,8 @@ private:
     mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
+    mutable Data<int> d_messageLogCount;
+
     /// write into component buffer + Message processedby message handlers
     /// default message type = Warning
     /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
@@ -389,6 +391,7 @@ public:
     void clearLoggedMessages() const ;
 
     inline bool notMuted() const { return f_printLog.getValue(); }
+
 
 protected:
     /// Helper method used by initData()

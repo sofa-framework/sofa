@@ -19,75 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/gui/qt/config.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/simulation/fwd.h>
+#ifndef SOFAPHYSICSDATAMONITOR_IMPL_H
+#define SOFAPHYSICSDATAMONITOR_IMPL_H
 
-#include <QWidget>
-#include <QTextEdit>
-#include <QGroupBox>
-#include <QTreeWidgetItem>
-#include <QTreeWidget>
+#include "SofaPhysicsAPI.h"
+#include <SofaValidation/DataMonitor.h>
 
-
-namespace sofa::gui::qt
+class SofaPhysicsDataMonitor::Impl
 {
-
-struct ModifyObjectFlags;
-class DataWidget;
-
-class QTabulationModifyObject : public QWidget
-{
-    Q_OBJECT
 public:
-    QTabulationModifyObject(QWidget* parent,
-            core::objectmodel::Base *object, QTreeWidgetItem* item,
-            unsigned int idx=1);
 
-    void externalWidgetAddition(int num) {size+=num;}
-    void addData(sofa::core::objectmodel::BaseData *data, const ModifyObjectFlags& flags);
-    void addLink(sofa::core::objectmodel::BaseLink *link, const ModifyObjectFlags& flags);
-    void addStretch();
+    Impl();
+    ~Impl();
 
-    unsigned int getIndex() const {return index;}
-    bool isFull() const;
-    void setFull() {pixelSize=pixelMaxSize;}
-    bool isEmpty() const;
-    bool isDirty() const;
+    std::string m_internalValue; ///< Store the textual representation of the internal value.
 
-    QString getDataModifiedString() const;
+    const char* getName(); ///< (non-unique) name of this object
+    ID          getID();   ///< unique ID of this object
 
-public slots:
-    void setTabDirty(bool=true);
-    void updateDataValue();
-    void updateWidgetValue();
-    void dataValueChanged(QString dataValue);
+    const char* getValue();   ///< Get the value of the associated variable
 
-signals:
-    void UpdateDatas();
-    void UpdateDataWidgets();
-    void TabDirty(bool);
-    void nodeNameModification(simulation::Node *);
-
-
-
+    typedef sofa::component::misc::DataMonitor SofaDataMonitor;
 protected:
-    core::objectmodel::Base *object;
-    QTreeWidgetItem* item;
+    SofaDataMonitor::SPtr sObj;
 
-
-    const unsigned int index;
-    unsigned int size;
-
-    bool dirty;
-    std::map< QObject*, QString> m_dataValueModified;
-
-    unsigned int pixelSize;
-    unsigned int pixelMaxSize;
-
+public:
+    SofaDataMonitor* getObject() { return sObj.get(); }
+    void setObject(SofaDataMonitor* dm) { sObj = dm; }
 };
 
-
-} //namespace sofa::gui::qt
+#endif // SOFAPHYSICSDATAMONITOR_IMPL_H

@@ -24,8 +24,6 @@
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
-#include "SofaPhysicsDataMonitor_impl.h"
-#include "SofaPhysicsDataController_impl.h"
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/Simulation.h>
@@ -37,6 +35,10 @@
 
 #include <map>
 
+#if SOFAPHYSICSAPI_HAVE_SOFAVALIDATION == 1
+#include "SofaPhysicsDataMonitor_impl.h"
+#include "SofaPhysicsDataController_impl.h"
+#endif
 
 class SOFA_SOFAPHYSICSAPI_API SofaPhysicsSimulation
 {
@@ -78,10 +80,12 @@ public:
     SofaPhysicsDataController** getDataControllers();
 
     typedef SofaPhysicsOutputMesh::Impl::SofaOutputMesh SofaOutputMesh;
-    typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
-    typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
     typedef SofaPhysicsOutputMesh::Impl::SofaVisualOutputMesh SofaVisualOutputMesh;
 
+#if SOFAPHYSICSAPI_HAVE_SOFAVALIDATION == 1
+    typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
+    typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
+#endif
 protected:
 
     sofa::simulation::Simulation* m_Simulation;
@@ -95,11 +99,14 @@ protected:
 
     std::vector<SofaPhysicsOutputMesh*> outputMeshes;
 
+
+#if SOFAPHYSICSAPI_HAVE_SOFAVALIDATION == 1
     std::vector<SofaDataMonitor*> sofaDataMonitors;
     std::vector<SofaPhysicsDataMonitor*> dataMonitors;
 
     std::vector<SofaDataController*> sofaDataControllers;
     std::vector<SofaPhysicsDataController*> dataControllers;
+#endif
 
     sofa::gl::Texture *texLogo;
     double lastProjectionMatrix[16];

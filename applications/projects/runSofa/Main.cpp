@@ -418,7 +418,12 @@ int main(int argc, char** argv)
     PluginManager::getInstance().init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
+    {
+        sofa::simulation::common::cleanup();
+        sofa::simulation::graph::cleanup();
+
         return err;
+    }
 
     if (fileName.empty())
     {
