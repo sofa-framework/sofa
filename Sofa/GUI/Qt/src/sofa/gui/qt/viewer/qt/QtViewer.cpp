@@ -363,11 +363,13 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
 // ---
 // ---
 // ---------------------------------------------------
-void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
+void QtViewer::DrawBox(const type::BoundingBox& bbox, SReal r)
 {
-    //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
+    const auto& maxBBox = bbox.maxBBox();
+    const auto& minBBox = bbox.minBBox();
+
     if (r == 0.0)
-        r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
+        r = (maxBBox - minBBox).norm() / 500;
 
     Enable<GL_DEPTH_TEST> depth;
     Enable<GL_LIGHTING> lighting;
@@ -597,7 +599,7 @@ void QtViewer::DisplayOBJs()
             DrawAxis(0.0, 0.0, 0.0,(maxDistance*0.1));
 
             if (vparams->sceneBBox().minBBox().x() < vparams->sceneBBox().maxBBox().x())
-                DrawBox(vparams->sceneBBox().minBBoxPtr(), vparams->sceneBBox().maxBBoxPtr());
+                DrawBox(vparams->sceneBBox());
 
             // 2D Axis: project current world orientation in the lower left part of the screen
             glMatrixMode(GL_PROJECTION);

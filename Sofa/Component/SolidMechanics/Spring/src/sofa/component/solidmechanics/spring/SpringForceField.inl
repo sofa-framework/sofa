@@ -414,10 +414,10 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
     constexpr Real max_real = std::numeric_limits<Real>::max();
     constexpr Real min_real = std::numeric_limits<Real>::lowest();
 
-    Real maxBBox[DataTypes::spatial_dimensions];
-    Real minBBox[DataTypes::spatial_dimensions];
+    type::Vec<3, Real> maxBBox;
+    type::Vec<3, Real> minBBox;
 
-    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
+    for (sofa::Index c = 0; c < std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)); ++c)
     {
         maxBBox[c] = min_real;
         minBBox[c] = max_real;
@@ -437,7 +437,7 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
                 const auto& b = p2[spring.m2];
                 for (const auto& p : {a, b})
                 {
-                    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
+                    for (sofa::Index c = 0; c < std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)); ++c)
                     {
                         if (p[c] > maxBBox[c])
                             maxBBox[c] = p[c];
@@ -451,7 +451,7 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 
     if (foundSpring)
     {
-        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+        this->f_bbox.setValue(sofa::type::BoundingBox(minBBox, maxBBox));
     }
 }
 

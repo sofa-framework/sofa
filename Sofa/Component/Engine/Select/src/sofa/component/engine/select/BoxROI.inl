@@ -1052,8 +1052,8 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
 
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    type::Vec<3, SReal> maxBBox { min_real, min_real, min_real };
+    type::Vec<3, SReal> minBBox { max_real, max_real, max_real };
 
     for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
     {
@@ -1085,7 +1085,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
         }
     }
 
-    this->f_bbox.setValue(TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::BoundingBox(minBBox,maxBBox));
 }
 
 

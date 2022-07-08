@@ -142,8 +142,8 @@ void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams*, bool only
 
 	static const Real max_real = std::numeric_limits<Real>::max();
 	static const Real min_real = std::numeric_limits<Real>::lowest();
-	Real maxBBox[3] = {min_real,min_real,min_real};
-	Real minBBox[3] = {max_real,max_real,max_real};
+    type::Vec<3, SReal> maxBBox { min_real, min_real, min_real };
+    type::Vec<3, SReal> minBBox { max_real, max_real, max_real };
 	for (size_t i=0; i<x.size(); i++)
 	{
 		for (int c=0; c<3; c++)
@@ -153,7 +153,7 @@ void SmoothMeshEngine<DataTypes>::computeBBox(const core::ExecParams*, bool only
 		}
 	}
 
-	this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::BoundingBox(minBBox,maxBBox));
 }
 
 template <class DataTypes>

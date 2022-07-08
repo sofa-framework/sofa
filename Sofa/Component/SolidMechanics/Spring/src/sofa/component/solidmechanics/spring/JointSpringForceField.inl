@@ -456,8 +456,8 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
 
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
-    Real maxBBox[3] = { min_real,min_real,min_real };
-    Real minBBox[3] = { max_real,max_real,max_real };
+    type::Vec<3, Real> maxBBox { min_real, min_real, min_real };
+    type::Vec<3, Real> minBBox { max_real, max_real, max_real };
 
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -479,7 +479,7 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
             if (v1[c] < minBBox[c]) minBBox[c] = (Real)v1[c];
         }
     }
-    this->f_bbox.setValue( sofa::type::TBoundingBox<Real>(minBBox, maxBBox));
+    this->f_bbox.setValue( sofa::type::BoundingBox(minBBox, maxBBox));
 }
 
 template <class DataTypes>

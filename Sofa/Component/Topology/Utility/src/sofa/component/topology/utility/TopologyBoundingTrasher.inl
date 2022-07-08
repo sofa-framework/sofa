@@ -139,9 +139,9 @@ template <class DataTypes>
 void TopologyBoundingTrasher<DataTypes>::reinit()
 {
     const Vec6& border = d_borders.getValue();
-    Real minBBox[3] = { border[0], border[1], border[2] };
-    Real maxBBox[3] = { border[3], border[4], border[5] };
-    this->f_bbox.setValue(type::TBoundingBox<Real>(minBBox, maxBBox));
+    type::Vec<3, SReal> maxBBox { border[0], border[1], border[2] };
+    type::Vec<3, SReal> minBBox { border[3], border[4], border[5] };
+    this->f_bbox.setValue(type::BoundingBox(minBBox, maxBBox));
 }
 
 

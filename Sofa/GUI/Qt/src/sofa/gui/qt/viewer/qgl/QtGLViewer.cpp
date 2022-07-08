@@ -324,49 +324,14 @@ void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void QtGLViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
+void QtGLViewer::DrawBox(const type::BoundingBox& bbox, SReal r)
 {
-    if (r==0.0)
-        r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
-#if 0
-    {
-        Enable<GL_DEPTH_TEST> depth;
-        Disable<GL_LIGHTING> lighting;
-        glColor3f(0.0, 1.0, 1.0);
-        glBegin(GL_LINES);
-        for (int corner=0; corner<4; ++corner)
-        {
-            glVertex3d(           minBBox[0]           ,
-                    (corner&1)?minBBox[1]:maxBBox[1],
-                                          (corner&2)?minBBox[2]:maxBBox[2]);
-            glVertex3d(           maxBBox[0]           ,
-                    (corner&1)?minBBox[1]:maxBBox[1],
-                                          (corner&2)?minBBox[2]:maxBBox[2]);
-        }
-        for (int corner=0; corner<4; ++corner)
-        {
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    minBBox[1]           ,
-                    (corner&2)?minBBox[2]:maxBBox[2]);
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    maxBBox[1]           ,
-                    (corner&2)?minBBox[2]:maxBBox[2]);
-        }
+    const auto& maxBBox = bbox.maxBBox();
+    const auto& minBBox = bbox.minBBox();
 
-        // --- Draw the Z edges
-        for (int corner=0; corner<4; ++corner)
-        {
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    (corner&2)?minBBox[1]:maxBBox[1],
-                                          minBBox[2]           );
-            glVertex3d((corner&1)?minBBox[0]:maxBBox[0],
-                    (corner&2)?minBBox[1]:maxBBox[1],
-                                          maxBBox[2]           );
-        }
-        glEnd();
-        return;
-    }
-#endif
+    if (r == 0.0)
+        r = (maxBBox - minBBox).norm() / 500;
+
     Enable<GL_DEPTH_TEST> depth;
     Enable<GL_LIGHTING> lighting;
     Enable<GL_COLOR_MATERIAL> colorMat;
@@ -600,7 +565,7 @@ void QtGLViewer::DisplayOBJs()
             DrawAxis(0.0, 0.0, 0.0, this->sceneRadius());
 
             if (vparams->sceneBBox().isValid())
-                DrawBox(vparams->sceneBBox().minBBoxPtr(), vparams->sceneBBox().maxBBoxPtr());
+                DrawBox(vparams->sceneBBox());
 
             // 2D Axis: project current world orientation in the lower left part of the screen
             glMatrixMode(GL_PROJECTION);

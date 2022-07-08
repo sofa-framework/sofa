@@ -363,8 +363,8 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
 
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    type::Vec<3, SReal> maxBBox { min_real, min_real, min_real };
+    type::Vec<3, SReal> minBBox { max_real, max_real, max_real };
 
     type::Vec3d normal ( d_planeNormal.getValue() );
     const SReal size = d_drawSize.getValue();
@@ -394,7 +394,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
             if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
         }
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::BoundingBox(minBBox,maxBBox));
 }
 
 } // namespace sofa::component::mechanicalload

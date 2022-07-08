@@ -567,8 +567,8 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 
     static const Real max_real = std::numeric_limits<Real>::max();
     static const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    type::Vec<3, SReal> maxBBox { min_real, min_real, min_real };
+    type::Vec<3, SReal> minBBox { max_real, max_real, max_real };
 
     for (Size i=0; i<size; i++)
     {
@@ -586,7 +586,7 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::BoundingBox(minBBox,maxBBox));
 }
 
 template<class DataTypes>
