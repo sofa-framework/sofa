@@ -108,7 +108,7 @@ public:
     void setShowFactorSize(double s) { setting->showFactorSize.setValue(s); }
     double getShowFactorSize() const { return setting->showFactorSize.getValue(); }
 
-    static std::string getDescription() {return "Attach an object to the Mouse";}
+    static std::string getDescription() {return "Attach an object to the Mouse using a spring force field";}
 
 protected:
     void setSetting(sofa::component::setting::MouseButtonSetting* s) override { Operation::setSetting(s); setting = down_cast<sofa::gui::component::AttachBodyButtonSetting>(s); }
