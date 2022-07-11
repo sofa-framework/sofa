@@ -106,30 +106,18 @@ void OglGrid::updateVisual()
     const int nb = d_nbSubdiv.getValue();
     if (nb < 2)
     {
-        msg_error() << "nbSubdiv should be > 2";
+        msg_error() << "The Data " << d_nbSubdiv.getName() << " should be >= 2";
         d_nbSubdiv.setValue(2);
     }
 
     buildGrid();
 
     //bounding box for the camera
-    auto s = d_size.getValue();
-    sofa::type::Vec3f min,max;
-    switch(internalPlane)
-    {
-        case PLANE_X:
-            min = sofa::type::Vec3f(-s*0.1f, -s*0.5f, -s*0.5f);
-            max = sofa::type::Vec3f(s*0.1f, s*0.5f, s*0.5f);
-            break;
-        case PLANE_Y:
-            min = sofa::type::Vec3f(-s*0.5f, -s*0.1f, -s*0.5f);
-            max = sofa::type::Vec3f(s*0.5f, s*0.1f, s*0.5f);
-            break;
-        case PLANE_Z:
-            min = sofa::type::Vec3f(-s*0.5f, -s*0.5f, -s*0.1f);
-            max = sofa::type::Vec3f(s*0.5f, s*0.5f, s*0.1f);
-            break;
-    }
+    auto s = d_size.getValue() * 0.5f;
+    sofa::type::Vec3f min(-s, -s, -s);
+    sofa::type::Vec3f max( s,  s,  s);
+    min[internalPlane] = -s * 0.2f;
+    max[internalPlane] =  s * 0.2f;
     f_bbox.setValue(sofa::type::BoundingBox(min,max));
 }
 
@@ -140,6 +128,8 @@ void OglGrid::buildGrid()
 
     const unsigned int nb = d_nbSubdiv.getValue();
     const float s = d_size.getValue();
+    const float hs = s / 2; //half the size
+    const float s_nb = s / static_cast<float>(nb); //space between points
 
     m_drawnPoints.reserve(4u * (nb + 1));
 
@@ -148,37 +138,37 @@ void OglGrid::buildGrid()
     case PLANE_X:
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(0.0, -s*0.5 + i * s / nb, -s*0.5);
-            m_drawnPoints.emplace_back(0.0, -s*0.5 + i * s / nb,  s*0.5);
+            m_drawnPoints.emplace_back(0.0, -hs + i * s_nb, -hs);
+            m_drawnPoints.emplace_back(0.0, -hs + i * s_nb,  hs);
         }
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(0.0, -s*0.5, -s*0.5 + i * s / nb);
-            m_drawnPoints.emplace_back(0.0,  s*0.5, -s*0.5 + i * s / nb);
+            m_drawnPoints.emplace_back(0.0, -hs, -hs + i * s_nb);
+            m_drawnPoints.emplace_back(0.0,  hs, -hs + i * s_nb);
         }
         break;
     case PLANE_Y:
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-s*0.5, 0.0, -s*0.5 + i * s / nb);
-            m_drawnPoints.emplace_back( s*0.5, 0.0, -s*0.5 + i * s / nb);
+            m_drawnPoints.emplace_back(-hs, 0.0, -hs + i * s_nb);
+            m_drawnPoints.emplace_back( hs, 0.0, -hs + i * s_nb);
         }
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb, 0.0, -s*0.5);
-            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb, 0.0,  s*0.5);
+            m_drawnPoints.emplace_back(-hs + i * s_nb, 0.0, -hs);
+            m_drawnPoints.emplace_back(-hs + i * s_nb, 0.0,  hs);
         }
         break;
     case PLANE_Z:
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-s*0.5, -s*0.5 + i * s / nb, 0.0);
-            m_drawnPoints.emplace_back( s*0.5, -s*0.5 + i * s / nb, 0.0);
+            m_drawnPoints.emplace_back(-hs, -hs + i * s_nb, 0.0);
+            m_drawnPoints.emplace_back( hs, -hs + i * s_nb, 0.0);
         }
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb, -s*0.5, 0.0);
-            m_drawnPoints.emplace_back(-s*0.5 + i * s / nb,  s*0.5, 0.0);
+            m_drawnPoints.emplace_back(-hs + i * s_nb, -hs, 0.0);
+            m_drawnPoints.emplace_back(-hs + i * s_nb,  hs, 0.0);
         }
         break;
     }

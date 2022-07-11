@@ -35,7 +35,12 @@ public:
 
     typedef sofa::type::Vector3 Vector3;
 
-    enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
+    enum PLANE
+    {
+        PLANE_X = 0,
+        PLANE_Y = 1,
+        PLANE_Z = 2
+    };
 
     Data<std::string> d_plane; ///< Plane of the grid
 
@@ -62,6 +67,8 @@ public:
 protected:
 
     PLANE internalPlane;
+
+    ///< Pre-computed points used to draw the grid
     sofa::type::vector<Vector3> m_drawnPoints;
 
 };

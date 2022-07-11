@@ -60,107 +60,58 @@ void OglSceneFrame::reinit()
 
 void OglSceneFrame::drawArrows(const core::visual::VisualParams* vparams)
 {
-    //X axis
-    vparams->drawTool()->drawArrow(
-        sofa::core::visual::DrawTool::Vector3(),
-        sofa::core::visual::DrawTool::Vector3(1, 0, 0),
-        0.05f,
-        sofa::core::visual::DrawTool::RGBAColor(1.0f, 0.0f, 0.0f, 1.0f));
-
-    //Y axis
-    vparams->drawTool()->drawArrow(
-        sofa::core::visual::DrawTool::Vector3(),
-        sofa::core::visual::DrawTool::Vector3(0, 1, 0),
-        0.05f,
-        sofa::core::visual::DrawTool::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f)
-    );
-
-    //Z axis
-    vparams->drawTool()->drawArrow(
-        sofa::core::visual::DrawTool::Vector3(),
-        sofa::core::visual::DrawTool::Vector3(0, 0, 1),
-        0.05f,
-        sofa::core::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f)
-    );
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        vparams->drawTool()->drawArrow(
+             {}, {i == 0, i == 1, i == 2},
+            0.05f,
+            sofa::core::visual::DrawTool::RGBAColor(i == 0, i == 1, i == 2, 1.)
+        );
+    }
 }
 
 void OglSceneFrame::drawCylinders(const core::visual::VisualParams* vparams)
 {
-    //X axis
-    vparams->drawTool()->drawCylinder(
-        sofa::core::visual::DrawTool::Vector3(),
-        sofa::core::visual::DrawTool::Vector3(1, 0, 0),
-        0.05f,
-        sofa::core::visual::DrawTool::RGBAColor::red()
-    );
-
-    //Y axis
-    vparams->drawTool()->drawCylinder(
-        sofa::core::visual::DrawTool::Vector3(),
-        sofa::core::visual::DrawTool::Vector3(0, 1, 0),
-        0.05f,
-        sofa::core::visual::DrawTool::RGBAColor::green()
-    );
-
-    //Z axis
-    vparams->drawTool()->drawCylinder(
-        sofa::core::visual::DrawTool::Vector3(),
-        sofa::core::visual::DrawTool::Vector3(0, 0, 1),
-        0.05f,
-        sofa::core::visual::DrawTool::RGBAColor::blue()
-    );
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        vparams->drawTool()->drawCylinder(
+             {}, {i == 0, i == 1, i == 2},
+            0.05f,
+            sofa::core::visual::DrawTool::RGBAColor(i == 0, i == 1, i == 2, 1.)
+        );
+    }
 }
 
 void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
 {
-    constexpr float s = 0.25f;
+    using Vector3 = sofa::core::visual::DrawTool::Vector3;
+    using Real = Vector3::value_type;
+    static constexpr Real s = 0.25;
+    static constexpr Vector3 p0 {-s, -s, -s};
+    static constexpr Vector3 p1 {s, -s, -s};
+    static constexpr Vector3 p2 {s, s, -s};
+    static constexpr Vector3 p3 {-s, s, -s};
+    static constexpr Vector3 p4 {-s, -s, s};
+    static constexpr Vector3 p5 {s, -s, s};
+    static constexpr Vector3 p6 {s, s, s};
+    static constexpr Vector3 p7 {-s, s, s};
 
-    vparams->drawTool()->drawHexahedron(
-        sofa::core::visual::DrawTool::Vector3(-s, -s, -s),
-        sofa::core::visual::DrawTool::Vector3(s, -s, -s),
-        sofa::core::visual::DrawTool::Vector3(s, s, -s),
-        sofa::core::visual::DrawTool::Vector3(-s, s, -s),
-        sofa::core::visual::DrawTool::Vector3(-s, -s, s),
-        sofa::core::visual::DrawTool::Vector3(s, -s, s),
-        sofa::core::visual::DrawTool::Vector3(s, s, s),
-        sofa::core::visual::DrawTool::Vector3(-s, s, s),
+    vparams->drawTool()->drawHexahedron(p0, p1, p2, p3, p4, p5, p6, p7,
         sofa::core::visual::DrawTool::RGBAColor::darkgray());
 
-    //X axis
-    vparams->drawTool()->drawCone(
-        sofa::core::visual::DrawTool::Vector3(s, 0, 0),
-        sofa::core::visual::DrawTool::Vector3(s * 3.f, 0, 0),
-        0, s,
-        sofa::core::visual::DrawTool::RGBAColor::red());
-    vparams->drawTool()->drawCone(
-        sofa::core::visual::DrawTool::Vector3(-s, 0, 0),
-        sofa::core::visual::DrawTool::Vector3(-s * 3.f, 0, 0),
-        0, s,
-        sofa::core::visual::DrawTool::RGBAColor::gray());
-
-    //Y axis
-    vparams->drawTool()->drawCone(
-        sofa::core::visual::DrawTool::Vector3(0, s, 0),
-        sofa::core::visual::DrawTool::Vector3(0, s * 3.f, 0),
-        0, s,
-        sofa::core::visual::DrawTool::RGBAColor::green());
-    vparams->drawTool()->drawCone(
-        sofa::core::visual::DrawTool::Vector3(0, -s, 0),
-        sofa::core::visual::DrawTool::Vector3(0, -s * 3.f, 0),
-        0, s,
-        sofa::core::visual::DrawTool::RGBAColor::gray());
-
-    //Z axis
-    vparams->drawTool()->drawCone(
-        sofa::core::visual::DrawTool::Vector3(0, 0, s),
-        sofa::core::visual::DrawTool::Vector3(0, 0, s * 3.f),
-        0, s,
-        sofa::core::visual::DrawTool::RGBAColor::blue());
-    vparams->drawTool()->drawCone(
-        sofa::core::visual::DrawTool::Vector3(0, 0, -s),
-        sofa::core::visual::DrawTool::Vector3(0, 0, -s * 3.f),
-        0, s,
-        sofa::core::visual::DrawTool::RGBAColor::gray());
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        vparams->drawTool()->drawCone(
+             s * Vector3{i == 0, i == 1, i == 2}, static_cast<Real>(3) * s * Vector3{i == 0, i == 1, i == 2},
+            0, s,
+            sofa::core::visual::DrawTool::RGBAColor(i == 0, i == 1, i == 2, 1.)
+        );
+        vparams->drawTool()->drawCone(
+             - s * Vector3{i == 0, i == 1, i == 2}, - static_cast<Real>(3) * s * Vector3{i == 0, i == 1, i == 2},
+            0, s,
+            sofa::core::visual::DrawTool::RGBAColor::gray()
+        );
+    }
 }
 
 void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
