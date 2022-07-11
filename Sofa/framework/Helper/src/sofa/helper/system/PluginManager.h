@@ -157,7 +157,7 @@ public:
     /// Returns "_d" in debug configuration and an empty string otherwise 
     static std::string getDefaultSuffix();
 
-    enum class PluginLoadStatus : sofa::Size
+    enum class PluginLoadStatus : unsigned char
     {
         SUCCESS,
         ALREADY_LOADED,
