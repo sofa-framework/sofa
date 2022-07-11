@@ -109,14 +109,26 @@ macro(sofa_add_generic directory name type)
             set(active ON)
         endif()
 
+        # Hide/show sub-options depending on this option
+        set(${name}_OPTION "${option}" CACHE INTERNAL "${name} option string")
+        set(${name}_ENABLED "${${option}}" CACHE INTERNAL "${name} option value")
+        get_cmake_property(suboptions CACHE_VARIABLES)
+        list(FILTER suboptions INCLUDE REGEX "${${name}_OPTION}_.*") # keep only sub-options
+        if(${name}_ENABLED)
+            foreach(suboption ${suboptions})
+                mark_as_advanced(CLEAR ${suboption})
+            endforeach()
+        else()
+            foreach(suboption ${suboptions})
+                mark_as_advanced(${suboption})
+            endforeach()
+        endif()
+
         if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
             cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
         else()
             option(${option} "Build the ${name} ${type_lower}." ${active})
         endif()
-
-        #set(${name}_OPTION "${option}" CACHE INTERNAL "${name} option string")
-        #set(${name}_ENABLED "${${option}}" CACHE INTERNAL "${name} option value")
 
         if(${option})
             message("Adding ${type_lower} ${name}")
