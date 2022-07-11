@@ -163,9 +163,9 @@ option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers locat
 if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
     message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
-    sofa_add_module(Sofa/framework/Compat Sofa.Compat ON)
-    sofa_add_module(Sofa/Component/Compat Sofa.Component.Compat ON)
 endif()
+sofa_add_module(Sofa/framework/Compat Sofa.Compat WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
+sofa_add_module(Sofa/Component/Compat Sofa.Component.Compat WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
@@ -174,21 +174,11 @@ add_subdirectory(Sofa)
 sofa_add_collection(applications/collections/deprecated/SofaGui SofaGui ON)
 
 ### Compatibility
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    # Deprecated (hollow) framework and component modules.
-    # some modules still contain (maybe useful) components not moved in Sofa/ yet.
-    # TODO: finally empty those remnants and move them to applications/collections
-    sofa_add_collection(applications/collections/deprecated/SofaFramework SofaFramework ON)
-    sofa_add_collection(applications/collections/deprecated/SofaSimulation SofaSimulation ON)
-    sofa_add_collection(applications/collections/deprecated/SofaBase SofaBase ON)
-    add_subdirectory(applications/collections/deprecated/modules)
-    sofa_add_collection(applications/collections/deprecated/SofaCommon SofaCommon ON)
-    sofa_add_collection(applications/collections/deprecated/SofaGeneral SofaGeneral ON)
-    sofa_add_collection(applications/collections/deprecated/SofaAdvanced SofaAdvanced ON)
-    sofa_add_collection(applications/collections/deprecated/SofaMisc SofaMisc ON)
-    # SofaComponentAll was a convenient collection to get all SOFA features
-    sofa_add_collection(applications/collections/deprecated/SofaComponentAll SofaComponentAll ON)
-endif()
+# Deprecated (hollow) framework and component modules.
+# All depend on SOFA_ENABLE_LEGACY_HEADERS
+# Some still contain (maybe useful) components not moved in Sofa/ yet.
+# TODO: finally empty those remnants
+add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
