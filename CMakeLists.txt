@@ -177,22 +177,21 @@ endif()
 add_subdirectory(Sofa)
 
 # SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
-sofa_add_collection(SofaGui SofaGui ON)
+sofa_add_collection(applications/collections/deprecated/SofaGui SofaGui ON)
 
 ### Compatibility
 if(SOFA_ENABLE_LEGACY_HEADERS)
     # Deprecated (hollow) framework and component modules.
     # some modules still contain (maybe useful) components not moved in Sofa/ yet.
     # TODO: finally empty those remnants and move them to applications/collections
-    sofa_add_collection(SofaKernel/SofaFramework SofaFramework ON)
-    sofa_add_collection(SofaKernel/SofaSimulation SofaSimulation ON)
-    sofa_add_collection(SofaKernel/SofaBase SofaBase ON)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
-    add_subdirectory(modules)
-    sofa_add_collection(SofaKernel/SofaCommon SofaCommon ON)
-    sofa_add_collection(SofaGeneral SofaGeneral ON)
-    sofa_add_collection(SofaAdvanced SofaAdvanced ON)
-    sofa_add_collection(SofaMisc SofaMisc ON)
+    sofa_add_collection(applications/collections/deprecated/SofaFramework SofaFramework ON)
+    sofa_add_collection(applications/collections/deprecated/SofaSimulation SofaSimulation ON)
+    sofa_add_collection(applications/collections/deprecated/SofaBase SofaBase ON)
+    add_subdirectory(applications/collections/deprecated/modules)
+    sofa_add_collection(applications/collections/deprecated/SofaCommon SofaCommon ON)
+    sofa_add_collection(applications/collections/deprecated/SofaGeneral SofaGeneral ON)
+    sofa_add_collection(applications/collections/deprecated/SofaAdvanced SofaAdvanced ON)
+    sofa_add_collection(applications/collections/deprecated/SofaMisc SofaMisc ON)
     # SofaComponentAll is a convenient collection to get all SOFA features
     sofa_add_collection(applications/collections/SofaComponentAll SofaComponentAll ON)
 endif()
