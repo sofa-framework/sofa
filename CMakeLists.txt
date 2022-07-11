@@ -186,8 +186,8 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     sofa_add_collection(applications/collections/deprecated/SofaGeneral SofaGeneral ON)
     sofa_add_collection(applications/collections/deprecated/SofaAdvanced SofaAdvanced ON)
     sofa_add_collection(applications/collections/deprecated/SofaMisc SofaMisc ON)
-    # SofaComponentAll is a convenient collection to get all SOFA features
-    sofa_add_collection(applications/collections/SofaComponentAll SofaComponentAll ON)
+    # SofaComponentAll was a convenient collection to get all SOFA features
+    sofa_add_collection(applications/collections/deprecated/SofaComponentAll SofaComponentAll ON)
 endif()
 
 ## Tutorials option
