@@ -21,5 +21,11 @@ sofa_add_collection(framework/Framework Sofa.Framework ON)
 # Component
 sofa_add_module(Component Sofa.Component ON)
 
+# GL
+option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
+if(SOFA_WITH_OPENGL)
+    sofa_add_module(GL Sofa.GL ON)
+endif()
+
 # GUI
 sofa_add_module(GUI Sofa.GUI ON)

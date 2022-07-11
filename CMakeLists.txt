@@ -176,18 +176,10 @@ endif()
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
 
-option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
-if(SOFA_WITH_OPENGL)
-    sofa_add_module(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL Sofa.GL ON)
-endif()
-
-#add_subdirectory(Sofa/GUI)
-
 # SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
 sofa_add_collection(SofaGui SofaGui ON)
 
 ### Compatibility
-option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated CMake modules." ON)
 if(SOFA_ENABLE_LEGACY_HEADERS)
     # Deprecated (hollow) framework and component modules.
     # some modules still contain (maybe useful) components not moved in Sofa/ yet.
