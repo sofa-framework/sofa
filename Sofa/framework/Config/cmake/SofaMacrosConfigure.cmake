@@ -116,11 +116,11 @@ macro(sofa_add_generic directory name type)
         list(FILTER suboptions INCLUDE REGEX "${${name}_OPTION}_.*") # keep only sub-options
         if(${name}_ENABLED)
             foreach(suboption ${suboptions})
-                mark_as_advanced(CLEAR ${suboption})
+                mark_as_advanced(CLEAR FORCE ${suboption})
             endforeach()
         else()
             foreach(suboption ${suboptions})
-                mark_as_advanced(${suboption})
+                mark_as_advanced(FORCE ${suboption})
             endforeach()
         endif()
 

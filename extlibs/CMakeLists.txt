@@ -6,9 +6,9 @@ set(EXTLIBS_TARGETS
 
 ############# extlibs ##############
 
-# Nlohmann JSON (header-only): see SofaKernel/cmake/Modules/FindJson.cmake
+# Nlohmann JSON (header-only)
 set(JSON_ROOT "${CMAKE_CURRENT_LIST_DIR}/json" CACHE PATH "Nlohmann JSON directory")
-# STB (header-only): see SofaKernel/cmake/Modules/FindSTB.cmake
+# STB (header-only)
 set(STB_ROOT "${CMAKE_CURRENT_LIST_DIR}/stb" CACHE PATH "STB directory")
 
 # TinyXML
