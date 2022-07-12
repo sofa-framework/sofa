@@ -20,14 +20,54 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/config.h>
-SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/component/visual/VisualGrid.h")
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/type/RGBAColor.h>
 
-#include <sofa/component/visual/VisualGrid.h>
-
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "sofa::gl::component::rendering3d::OglGrid has been replaced by sofa::component::visual::VisualGrid")
-    using OglGrid = sofa::component::visual::VisualGrid;
-}
+
+class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(VisualGrid, VisualModel);
+
+    typedef sofa::type::Vector3 Vector3;
+
+    enum PLANE
+    {
+        PLANE_X = 0,
+        PLANE_Y = 1,
+        PLANE_Z = 2
+    };
+
+    Data<std::string> d_plane; ///< Plane of the grid
+
+
+    Data<float> d_size; ///< Size of the squared grid
+    Data<int> d_nbSubdiv; ///< Number of subdivisions
+
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
+
+    VisualGrid();
+    ~VisualGrid() override = default;
+
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams*) override;
+    void updateVisual() override;
+    void buildGrid();
+
+protected:
+
+    PLANE internalPlane;
+
+    ///< Pre-computed points used to draw the grid
+    sofa::type::vector<Vector3> m_drawnPoints;
+
+};
+
+} // namespace sofa::component::visual

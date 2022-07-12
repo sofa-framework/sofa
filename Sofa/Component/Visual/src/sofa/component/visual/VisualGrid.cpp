@@ -20,21 +20,22 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gl/component/rendering3d/OglGrid.h>
+#include <sofa/component/visual/VisualGrid.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
 
-int OglGridClass = core::RegisterObject("Display a simple grid")
-        .add< OglGrid>()
+int VisualGridClass = core::RegisterObject("Display a simple grid")
+        .add< VisualGrid>()
+        .addAlias("OglGrid")
         ;
 
 using namespace sofa::defaulttype;
 
-OglGrid::OglGrid()
+VisualGrid::VisualGrid()
     : d_plane(initData(&d_plane, std::string("z"),  "plane", "Plane of the grid"))
     , d_size(initData(&d_size, 10.0f,  "size", "Size of the squared grid"))
     , d_nbSubdiv(initData(&d_nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
@@ -52,7 +53,7 @@ OglGrid::OglGrid()
     }, {});
 }
 
-void OglGrid::init()
+void VisualGrid::init()
 {
     Inherit1::init();
     updateVisual();
@@ -60,12 +61,12 @@ void OglGrid::init()
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-void OglGrid::reinit()
+void VisualGrid::reinit()
 {
     updateVisual();
 }
 
-void OglGrid::updateVisual()
+void VisualGrid::updateVisual()
 {
     const auto planeValue = d_plane.getValue();
 
@@ -122,7 +123,7 @@ void OglGrid::updateVisual()
 }
 
 
-void OglGrid::buildGrid()
+void VisualGrid::buildGrid()
 {
     m_drawnPoints.clear();
 
@@ -174,7 +175,7 @@ void OglGrid::buildGrid()
     }
 }
 
-void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
+void VisualGrid::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (!d_draw.getValue()) return;
 
@@ -187,4 +188,4 @@ void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
 
 }
 
-} // namespace sofa::gl::component::rendering3d
+} // namespace sofa::component::visual
