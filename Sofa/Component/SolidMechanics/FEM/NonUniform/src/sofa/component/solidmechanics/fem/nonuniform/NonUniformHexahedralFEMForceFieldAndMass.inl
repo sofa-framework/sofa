@@ -91,7 +91,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
         return;
     }
 
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=HexahedralFEMForceFieldT::mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     type::Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
         nodesCoarse[w] = (X0)[this->_topology->getHexahedron(0)[w]];
@@ -428,7 +428,7 @@ template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 
 {
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=HexahedralFEMForceFieldT::mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     type::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
@@ -463,7 +463,7 @@ template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 
 {
-    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& X0=HexahedralFEMForceFieldT::mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
@@ -934,8 +934,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
 {
     Real mFactor=(Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
     Real kFactor=(Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(this->mstate);
-    helper::WriteAccessor< DataVecDeriv > df = *dfId[this->mstate.get()].write();
+    helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(HexahedralFEMForceFieldT::mstate);
+    helper::WriteAccessor< DataVecDeriv > df = *dfId[HexahedralFEMForceFieldT::mstate.get()].write();
     const VecElement& hexahedra = this->_topology->getHexahedra();
     const auto& hexahedronInf = this->hexahedronInfo.getValue();
 

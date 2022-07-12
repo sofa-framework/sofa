@@ -40,6 +40,8 @@ public:
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/) override;
 
+    Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass) override;
+
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
 
     bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;

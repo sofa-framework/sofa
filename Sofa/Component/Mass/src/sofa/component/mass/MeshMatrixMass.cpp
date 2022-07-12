@@ -43,9 +43,9 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
     for( unsigned int i=0 ; i<v.size() ; i++ )
     {
         Deriv linearMomentum = v[i] * vertexMass[i];
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+        for( int j=0 ; j<Vec3Types::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
         Deriv angularMomentum = cross( x[i], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+        for( int j=0 ; j<Vec3Types::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
     const auto& edges = l_topology->getEdges();
@@ -58,14 +58,14 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
         const MassType m = edgeMass[i] * static_cast<MassType>(0.5);
 
         Deriv linearMomentum = v[v0] * m;
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+        for( int j=0 ; j<Vec3Types::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
         Deriv angularMomentum = cross( x[v0], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+        for( int j=0 ; j<Vec3Types::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
 
         linearMomentum = v[v1] * m;
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+        for( int j=0 ; j<Vec3Types::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
         angularMomentum = cross( x[v1], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+        for( int j=0 ; j<Vec3Types::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
     return momentum;

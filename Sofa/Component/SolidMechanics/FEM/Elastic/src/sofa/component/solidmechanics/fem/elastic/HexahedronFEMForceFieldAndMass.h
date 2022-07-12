@@ -78,7 +78,7 @@ public:
     bool isDiagonal() const override { return d_lumpedMass.getValue(); }
 
     using HexahedronFEMForceFieldT::addKToMatrix;
-    using core::behavior::Mass<DataTypes>::addKToMatrix;
+
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override
     {
         HexahedronFEMForceFieldT::addKToMatrix(mparams, matrix);
@@ -123,6 +123,8 @@ public:
     Real getDensity() {return d_density.getValue();}
 
 
+    bool insertInNode( core::objectmodel::BaseNode* node ) override { return HexahedronFEMForceFieldT::insertInNode(node); }
+    bool removeInNode( core::objectmodel::BaseNode* node ) override { return HexahedronFEMForceFieldT::removeInNode(node); }
 
 protected :
 

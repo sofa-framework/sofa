@@ -30,6 +30,22 @@ BaseMass::BaseMass()
 {
 }
 
+void BaseMass::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
+{
+    if (sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams,rayleighMass.getValue()) != 0.0)
+    {
+        addMDx(mparams, dfId, sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams,rayleighMass.getValue()));
+    }
+}
+
+void BaseMass::addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    if (sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams,rayleighMass.getValue()) != 0.0 )
+    {
+        addMToMatrix(mparams, matrix);
+    }
+}
+
 bool BaseMass::insertInNode( objectmodel::BaseNode* node )
 {
     node->addMass(this);

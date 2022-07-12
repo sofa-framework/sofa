@@ -222,7 +222,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
     int node1, node2;
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(HexahedronFEMForceFieldT::mstate);
 
     for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
     {
@@ -305,7 +305,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = HexahedronFEMForceFieldT::mstate->read(core::ConstVecCoordId::position())->getValue();
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
     std::vector<type::Vector3> pos;
     pos.resize(x.size());

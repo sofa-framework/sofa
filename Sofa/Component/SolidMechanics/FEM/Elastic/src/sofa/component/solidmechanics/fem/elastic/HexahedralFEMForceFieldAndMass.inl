@@ -131,7 +131,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeLumpedMasses(  )
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
-    const VecCoord& initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& initialPoints = HexahedralFEMForceFieldT::mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
@@ -261,7 +261,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(HexahedralFEMForceFieldT::mstate);
 
     for(unsigned int e=0; e<hexahedra.size(); ++e)
     {
@@ -303,7 +303,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
     Index node1, node2;
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(HexahedralFEMForceFieldT::mstate);
 
     for(it = this->hexahedronInfo.getValue().begin(), e=0 ; it != this->hexahedronInfo.getValue().end() ; ++it,++e)
     {
@@ -350,7 +350,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
 
     typename type::vector<HexahedronInformation>::const_iterator it;
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(HexahedralFEMForceFieldT::mstate);
 
     unsigned int e = 0;
     for ( it = this->hexahedronInfo.getValue().begin() ; it != this->hexahedronInfo.getValue().end() ; ++it, ++e )
@@ -447,7 +447,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = HexahedralFEMForceFieldT::mstate->read(core::ConstVecCoordId::position())->getValue();
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
     std::vector<type::Vector3> pos;
     pos.resize(x.size());

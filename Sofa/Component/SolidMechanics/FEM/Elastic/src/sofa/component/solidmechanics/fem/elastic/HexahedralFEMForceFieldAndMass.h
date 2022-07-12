@@ -75,7 +75,7 @@ public:
     bool isDiagonal() const override { return _useLumpedMass.getValue(); }
 
     using HexahedralFEMForceFieldT::addKToMatrix;
-    using MassT::addKToMatrix;
+
     ///// WARNING this method only add diagonal elements in the given matrix !
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
@@ -124,6 +124,9 @@ protected:
     void computeParticleMasses();
 
     void computeLumpedMasses();
+
+    bool insertInNode( core::objectmodel::BaseNode* node ) override { return HexahedralFEMForceFieldT::insertInNode(node); }
+    bool removeInNode( core::objectmodel::BaseNode* node ) override { return HexahedralFEMForceFieldT::removeInNode(node); }
 
 protected:
     Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)

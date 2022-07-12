@@ -23,6 +23,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
 
 #include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/Mass.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
@@ -37,6 +38,16 @@ Visitor::Result
 MechanicalAddMBK_ToMatrixVisitor::fwdMechanicalState(simulation::Node *, core::behavior::BaseMechanicalState *)
 {
     //ms->setOffset(offsetOnExit);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalAddMBK_ToMatrixVisitor::fwdMass(simulation::Node *, core::behavior::BaseMass *mass)
+{
+    if (matrix != nullptr)
+    {
+        mass->addMBKToMatrix(this->mparams, matrix);
+    }
+
     return RESULT_CONTINUE;
 }
 

@@ -1547,7 +1547,7 @@ template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!this->mstate) return;
+    if (!HexahedronFEMForceFieldT::mstate) return;
     if (vparams->displayFlags().getShowWireFrame()) return;
 
 
@@ -1557,7 +1557,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     vparams->drawTool()->saveLastState();
 
-    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x = HexahedronFEMForceFieldT::mstate->read(core::ConstVecCoordId::position())->getValue();
 
 
     sofa::type::RGBAColor colour;

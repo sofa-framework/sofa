@@ -135,7 +135,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
 
     WriteAccessor<Data<SetIndexArray > > indices = d_indices;
     
-    if(mstate==nullptr)
+    if(this->mstate==nullptr)
     {
         msg_warning(this) << "Missing mechanical state. \n"
                              "UniformMass need to be used with an object also having a MechanicalState. \n"
@@ -152,7 +152,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     //If localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
         && d_localRange.getValue()[1] > 0
-        && d_localRange.getValue()[1] + 1 < int(mstate->getSize()))
+        && d_localRange.getValue()[1] + 1 < int(this->mstate->getSize()))
     {
         indices.clear();
         for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
@@ -163,7 +163,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
     if(indices.size()==0)
     {
         indices.clear();
-        for(int i=0; i<int(mstate->getSize()); i++)
+        for(int i=0; i<int(this->mstate->getSize()); i++)
             indices.push_back(i);
     }
 
@@ -514,7 +514,7 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
     static constexpr auto N = Deriv::total_size;
 
     AddMToMatrixFunctor<Deriv,MassType> calc;
-    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
+    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
     const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
@@ -554,13 +554,13 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
     if ( !vparams->displayFlags().getShowBehaviorModels() )
         return;
 
-    if (!mstate.get())
+    if (!this->mstate.get())
         return;
 
     if (!d_showCenterOfGravity.getValue())
         return;
 
-    ReadAccessor<VecCoord> x = mstate->read(ConstVecCoordId::position())->getValue();
+    ReadAccessor<VecCoord> x = this->mstate->read(ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Coord gravityCenter;

@@ -23,6 +23,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBKdxVisitor.h>
 
 #include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseMass.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
@@ -35,6 +36,12 @@ Visitor::Result MechanicalAddMBKdxVisitor::fwdMechanicalState(simulation::Node* 
 
 Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
 {
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalAddMBKdxVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+{
+    mass->addMBKdx( this->mparams, res);
     return RESULT_CONTINUE;
 }
 

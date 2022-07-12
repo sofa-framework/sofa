@@ -33,7 +33,7 @@ namespace sofa::core::behavior
 
 template<class DataTypes>
 Mass<DataTypes>::Mass(MechanicalState<DataTypes> *mm)
-    : ForceField<DataTypes>(mm)
+    : BaseMass(), SingleStateAccessor<DataTypes>(mm)
     , m_gnuplotFileEnergy(nullptr)
 {
 }
@@ -48,7 +48,7 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
 {
     if (mparams)
     {
-            addMDx(mparams, *fid[this->mstate.get()].write(), *mparams->readDx(this->mstate), factor);
+        addMDx(mparams, *fid[this->mstate.get()].write(), *mparams->readDx(this->mstate), factor);
     }
 }
 
@@ -64,7 +64,7 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId 
 {
     if(mparams)
     {
-            accFromF(mparams, *aid[this->mstate.get()].write(), *mparams->readF(this->mstate));
+        accFromF(mparams, *aid[this->mstate.get()].write(), *mparams->readF(this->mstate));
     }
     else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
 }
@@ -73,41 +73,6 @@ template<class DataTypes>
 void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
     msg_warning() << "Method accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented.";
-}
-
-template<class DataTypes>
-void Mass<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv & df, const DataVecDeriv & dx)
-{
-    SOFA_UNUSED(mparams);
-    SOFA_UNUSED(df);
-    SOFA_UNUSED(dx);
-}
-
-template<class DataTypes>
-void Mass<DataTypes>::addForce(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
-{
-    SOFA_UNUSED(mparams);
-    SOFA_UNUSED(f);
-    SOFA_UNUSED(x);
-    SOFA_UNUSED(v);
-}
-
-template<class DataTypes>
-SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x) const
-{
-    SOFA_UNUSED(mparams);
-    SOFA_UNUSED(x);
-    return 0.0;
-}
-
-template<class DataTypes>
-void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
-{
-    this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
-    if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
-    {
-        addMDx(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
-    }
 }
 
 template<class DataTypes>
@@ -160,13 +125,6 @@ void Mass<DataTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SR
     }
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-{
-    this->ForceField<DataTypes>::addMBKToMatrix(mparams, matrix);
-    if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
-        addMToMatrix(mparams, matrix);
-}
 
 template<class DataTypes>
 void Mass<DataTypes>::initGnuplot(const std::string path)

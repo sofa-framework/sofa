@@ -24,6 +24,7 @@
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
 #include <sofa/core/ObjectFactory.h> // TO REMOVE
@@ -41,10 +42,10 @@ namespace sofa::core::behavior
  *  It is also a ForceField, computing gravity-related forces.
  */
 template<class DataTypes>
-class Mass : virtual public ForceField<DataTypes>, public BaseMass
+class Mass : public BaseMass, public SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(Mass,DataTypes), SOFA_TEMPLATE(ForceField,DataTypes), BaseMass);
+    SOFA_CLASS(SOFA_TEMPLATE(Mass,DataTypes), BaseMass);
 
     typedef typename DataTypes::VecCoord    VecCoord;
     typedef typename DataTypes::VecDeriv    VecDeriv;
@@ -78,30 +79,6 @@ public:
     void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) override;
 
     virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
-
-
-    /// Mass does not generate any force
-    void addForce(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-
-    /// Mass does not generate any force derivative
-    void addDForce(const MechanicalParams* mparams, DataVecDeriv & df, const DataVecDeriv & dx ) override;
-
-    /// Appart from the potential energy due to the gravitational acceleration, no energy comes from the mass itself
-    SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
-
-
-    /// Accumulate the contribution of M, B, and/or K matrices multiplied
-    /// by the dx vector with the given coefficients.
-    ///
-    /// This method from the ForceField API computes
-    /// $ df += mFactor M dx + bFactor B dx + kFactor K dx $
-    /// For masses, it calls both addMdx and addDForce (which is often empty).
-    ///
-    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) override;
-
 
     ///                         $ f = M g $
     ///
@@ -137,19 +114,8 @@ public:
     /// @name Matrix operations
     /// @{
 
-    void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
-    void addBToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
-
     void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     virtual void addMToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
-
-    /// Compute the system matrix corresponding to m M + b B + k K
-    ///
-    /// \param matrix matrix to add the result to
-    /// \param mFact coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// \param bFact coefficient for damping contributions (i.e. first derivatives term in the ODE)
-    /// \param kFact coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// @}
 
@@ -168,8 +134,8 @@ protected:
     std::ofstream* m_gnuplotFileEnergy;
 
 public:
-    bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }
-    bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); BaseForceField::removeInNode(node); return true; }
+    bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); return true; }
+    bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); return true; }
 
 
     // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")

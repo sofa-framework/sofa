@@ -50,6 +50,7 @@ public:
     }
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
     Result fwdForceField(simulation::Node* /*node*/,sofa::core::behavior::BaseForceField* ff) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
     void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;

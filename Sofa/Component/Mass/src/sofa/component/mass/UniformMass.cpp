@@ -197,7 +197,7 @@ void UniformMass<RigidTypes>::loadFromFileRigidImpl(const string& filename)
         }
         setMass(m);
     }
-    else if (d_totalMass.getValue()>0 && mstate!=nullptr) d_vertexMass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
+    else if (d_totalMass.getValue()>0 && this->mstate!=nullptr) d_vertexMass.setValue((Real)d_totalMass.getValue() / this->mstate->getSize());
 }
 
 
@@ -208,7 +208,7 @@ void UniformMass<RigidTypes>::drawRigid2DImpl(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =this->mstate->read(core::ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     type::Vec3d len;
 
@@ -231,7 +231,7 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =this->mstate->read(core::ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     typename RigidTypes::Vec3 gravityCenter;
     type::Vec3d len;
@@ -261,7 +261,7 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
 
     if (d_showInitialCenterOfGravity.getValue())
     {
-        const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (unsigned int i=0; i<indices.size(); i++)
             vparams->drawTool()->drawFrame(x0[indices[i]].getCenter(), x0[indices[i]].getOrientation(), len*d_showAxisSize.getValue());
@@ -281,8 +281,8 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x =this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Mat3x3d R; R.identity();

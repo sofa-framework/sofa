@@ -44,6 +44,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     else this->_alreadyInit=true;
 
 
+    this->core::behavior::Mass<DataTypes>::init();
     this->core::behavior::ForceField<DataTypes>::init();
 
     if (l_topology.empty())
@@ -79,7 +80,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
     if (this->_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& p = HexahedronFEMForceFieldT::mstate->read(core::ConstVecCoordId::position())->getValue();
         this->_initialPoints.setValue(p);
     }
 
@@ -278,7 +279,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeClassicalMechanicalMatr
     type::fixed_array<Coord,8> nodes;
 
     //           for (unsigned int k=0;k<8;++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]);
-    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]).linearProduct(this->mstate->getScale());
+    for (unsigned int k=0; k<8; ++k) nodes[k] =  this->_sparseGrid->_virtualFinerLevels[level]->getPointPos(points[k]).linearProduct(HexahedronFEMForceFieldT::mstate->getScale());
 
     //       //given an elementIndice, find the 8 others from the sparse grid
     //       //compute MaterialStiffness
