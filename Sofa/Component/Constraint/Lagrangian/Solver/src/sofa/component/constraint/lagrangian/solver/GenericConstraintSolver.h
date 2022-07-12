@@ -83,10 +83,10 @@ public:
     int getNumConstraintGroups();
 
 protected:
-    sofa::linearalgebra::FullVector<double> m_lam;
-    sofa::linearalgebra::FullVector<double> m_deltaF;
-    sofa::linearalgebra::FullVector<double> m_deltaF_new;
-    sofa::linearalgebra::FullVector<double> m_p;
+    sofa::linearalgebra::FullVector<SReal> m_lam;
+    sofa::linearalgebra::FullVector<SReal> m_deltaF;
+    sofa::linearalgebra::FullVector<SReal> m_deltaF_new;
+    sofa::linearalgebra::FullVector<SReal> m_p;
 
 };
 
