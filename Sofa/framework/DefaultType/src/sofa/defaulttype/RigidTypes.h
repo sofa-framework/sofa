@@ -75,6 +75,13 @@ public:
         clear();
     }
 
+    explicit RigidDeriv(type::NoInit)
+        : vCenter(type::NOINIT)
+        , vOrientation(type::NOINIT)
+    {
+
+    }
+
     RigidDeriv(const Vec3 &velCenter, const Vec3 &velOrient)
         : vCenter(velCenter), vOrientation(velOrient)
     {}
@@ -1046,6 +1053,13 @@ private:
 
 public:
     friend class RigidCoord<2,real>;
+
+    explicit RigidDeriv(type::NoInit)
+        : vCenter(type::NOINIT)
+        , vOrientation(type::NOINIT)
+    {
+
+    }
 
     RigidDeriv()
     {

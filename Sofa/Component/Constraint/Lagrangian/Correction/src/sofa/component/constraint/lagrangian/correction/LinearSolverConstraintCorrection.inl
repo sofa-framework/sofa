@@ -585,7 +585,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
             {
                 const auto dof = colIt.index();
-                Deriv disp;
+                Deriv disp(type::NOINIT);
 
                 for(Size j = 0; j < derivDim; j++)
                 {
