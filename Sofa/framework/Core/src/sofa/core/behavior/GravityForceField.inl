@@ -52,7 +52,7 @@ void GravityForceField<DataTypes>::init()
         l_mass.set(p_mass);
     }
 
-    // temprory pointer to the mass
+    // temporary pointer to the mass
     if (sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get())
     {
         msg_info() << "Mass path used: '" << l_mass.getLinkedPath() << "'";
@@ -94,7 +94,10 @@ SReal GravityForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPar
     sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get();
     Deriv gravity;
     DataTypes::setDPos(gravity, d_gravitationalAcceleration.getValue());
-    return _mass->getGravitationalPotentialEnergy(params, x, gravity);
+    if(_mass)
+        return _mass->getGravitationalPotentialEnergy(params, x, gravity);
+    else
+        return 0.0;
 }
 
 
