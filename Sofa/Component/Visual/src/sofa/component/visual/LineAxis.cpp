@@ -20,22 +20,22 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gl/component/rendering3d/OglLineAxis.h>
+#include <sofa/component/visual/LineAxis.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/gl/gl.h>
 
 
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
 
-int OglLineAxisClass = core::RegisterObject("Display scene axis")
-        .add< OglLineAxis >()
+int LineAxisClass = core::RegisterObject("Display scene axis")
+        .add< LineAxis >()
+        .addAlias("OglLineAxis")
         ;
 
 using namespace sofa::defaulttype;
 
-OglLineAxis::OglLineAxis()
+LineAxis::LineAxis()
     : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
     , d_size(initData(&d_size, 10.f,  "size", "Size of the squared grid"))
     , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines in the grid"))
@@ -43,18 +43,18 @@ OglLineAxis::OglLineAxis()
     , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 
-void OglLineAxis::init()
+void LineAxis::init()
 {
     Inherit1::init();
     updateVisual();
 }
 
-void OglLineAxis::reinit()
+void LineAxis::reinit()
 {
     updateVisual();
 }
 
-void OglLineAxis::updateVisual()
+void LineAxis::updateVisual()
 {
     const std::string a = d_axis.getValue();
 
@@ -63,11 +63,11 @@ void OglLineAxis::updateVisual()
     m_drawZ = a.find_first_of("zZ")!=std::string::npos;
 }
 
-void OglLineAxis::drawVisual(const core::visual::VisualParams* vparams)
+void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (!d_draw.getValue()) return;
 
-    const GLfloat s = d_size.getValue();
+    const float s = d_size.getValue();
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
@@ -101,4 +101,4 @@ void OglLineAxis::drawVisual(const core::visual::VisualParams* vparams)
 }
 
 
-} // namespace sofa::gl::component::rendering3d
+} // namespace sofa::component::visual
