@@ -27,8 +27,6 @@
 
 namespace sofa::component::constraintset::bilateralinteractionconstraint
 {
-    template<class T>
-    using BilateralInteractionConstraintSpecialization = sofa::component::constraint::lagrangian::model::BilateralInteractionConstraintSpecialization<T>;
     template<class DataTypes>
     using BilateralInteractionConstraint = sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint<DataTypes>;
     
@@ -36,7 +34,6 @@ namespace sofa::component::constraintset::bilateralinteractionconstraint
 
 namespace sofa::component::constraintset
 {
-    using bilateralinteractionconstraint::BilateralInteractionConstraintSpecialization;
     using bilateralinteractionconstraint::BilateralInteractionConstraint;
 
 } // namespace sofa::component::constraintset

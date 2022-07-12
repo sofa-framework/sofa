@@ -54,20 +54,12 @@ using sofa::defaulttype::Rigid3Types ;
 using sofa::defaulttype::Vec3Types ;
 
 
-template<class T>
-class BilateralInteractionConstraintSpecialization {};
-
-
 template<class DataTypes>
 class BilateralInteractionConstraint : public PairInteractionConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes),
                SOFA_TEMPLATE(PairInteractionConstraint,DataTypes));
-
-    /// That any templates variation of BilateralInteractionConstraintSpecialization are friend.
-    template<typename>
-    friend class BilateralInteractionConstraintSpecialization ;
 
     typedef PairInteractionConstraint<DataTypes> Inherit;
 
@@ -97,7 +89,7 @@ protected:
     Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
-    Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
+    Data<Real> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
     Data<int> activateAtIteration; ///< activate constraint at specified interation (0 = always enabled, -1=disabled)
     Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
     Data<bool> derivative; ///< TEST: derivative
@@ -177,6 +169,5 @@ namespace sofa::component::constraint::lagrangian::model
 /// Import the following into the constraintset namespace to preserve
 /// compatibility with the existing sofa source code.
 using bilateralinteractionconstraint::BilateralInteractionConstraint;
-using bilateralinteractionconstraint::BilateralInteractionConstraintSpecialization;
 
 } //namespace sofa::component::constraint::lagrangian::model

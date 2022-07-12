@@ -47,7 +47,7 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
     , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
 
-    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
+    , d_numericalTolerance(initData(&d_numericalTolerance, static_cast<Real>(0.0001), "numericalTolerance",
                                     "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
 
     //TODO(dmarchal): Such kind of behavior shouldn't be implemented in the component but externalized in a second component or in a python script controlling the scene.
