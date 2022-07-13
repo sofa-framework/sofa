@@ -17,7 +17,7 @@ sofa_find_package(Sofa.Simulation.Core REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual and Sofa.Component.Setting instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual and Sofa.Component.Setting instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Visual REQUIRED)

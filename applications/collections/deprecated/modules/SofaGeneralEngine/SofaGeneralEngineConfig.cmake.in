@@ -1,16 +1,18 @@
-# CMake package configuration file for the @PROJECT_NAME@ module
+# CMake package configuration file for @PROJECT_NAME@
+
+if(NOT "${CMAKE_PROJECT_NAME}" STREQUAL "Sofa" OR NOT "${PROJECT_SOURCE_DIR}" MATCHES "${CMAKE_SOURCE_DIR}/.*")
+    # The project doing find_package is not a subproject of SOFA or is not located inside SOFA
+    get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
+    if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
+        message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06."
+            "Use Sofa.Component.Engine.Analyze, Sofa.Component.Engine.Generate, Sofa.Component.Engine.Select and Sofa.Component.Engine.Transform instead."
+            "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.")
+    endif()
+    set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
+endif()
 
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
-
-get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
-if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Analyze, Sofa.Component.Engine.Generate, Sofa.Component.Engine.Select and Sofa.Component.Engine.Transform instead.")
-    if(Sofa.GL.Component.Engine_FOUND)
-        message(WARNING "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.")
-    endif()
-endif()
-set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
 set(SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE @SOFAGENERALENGINE_HAVE_SOFA_GL_COMPONENT_ENGINE@)
 

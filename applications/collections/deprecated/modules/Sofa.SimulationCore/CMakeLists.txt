@@ -7,7 +7,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Simulation.Core instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Simulation.Core instead.")
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)

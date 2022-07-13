@@ -1,4 +1,4 @@
-# CMake package configuration file for for the @PROJECT_NAME@ module
+# CMake package configuration file for @PROJECT_NAME@
 
 @PACKAGE_GUARD@
 @PACKAGE_INIT@

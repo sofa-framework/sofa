@@ -14,7 +14,7 @@ set(SOURCE_FILES
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.FEM.Elastic, Sofa.Component.SolidMechanics.FEM.HyperElastic and Sofa.Component.SolidMechanics.TensorMass instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.FEM.Elastic, Sofa.Component.SolidMechanics.FEM.HyperElastic and Sofa.Component.SolidMechanics.TensorMass instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)

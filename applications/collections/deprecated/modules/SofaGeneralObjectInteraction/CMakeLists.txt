@@ -22,7 +22,7 @@ list(APPEND SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring, Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring, Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)

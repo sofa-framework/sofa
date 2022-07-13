@@ -7,7 +7,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.GUI.Qt instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.GUI.Qt instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.GUI.Qt REQUIRED)

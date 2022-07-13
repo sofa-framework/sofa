@@ -12,7 +12,7 @@ set(SOURCE_FILES
     ${SOFANONUNIFORMFEM_SRC}/initSofaNonUniformFem.cpp
     )
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Grid, Sofa.Component.Topology.Container.Dynamic and Sofa.Component.SolidMechanics.FEM.NonUniform instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Grid, Sofa.Component.Topology.Container.Dynamic and Sofa.Component.SolidMechanics.FEM.NonUniform instead.")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

@@ -14,7 +14,9 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(SofaBaseMechanics REQUIRED)
-sofa_find_package(SofaBaseCollision REQUIRED)
+message("###########################")
+find_package(SofaBaseCollision REQUIRED)
+message("###########################")
 sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaObjectInteraction REQUIRED)
 sofa_find_package(SofaRigid REQUIRED)
@@ -22,7 +24,7 @@ sofa_find_package(SofaRigid REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaBaseMechanics SofaBaseTopology)
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Mapper and Sofa.Component.Collision.Response.Contact instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Mapper and Sofa.Component.Collision.Response.Contact instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)

@@ -347,13 +347,11 @@ macro(sofa_find_package name)
         list(REMOVE_ITEM find_package_args "BOTH_SCOPES")
     endif()
 
-    if(NOT TARGET ${name})
-        find_package(${name} ${find_package_args})
-    else()
+    find_package(${name} ${find_package_args})
+
+    if(TARGET ${name} AND NOT ${name}_FOUND)
         # Dirty ? set the variable _FOUND if the target is present
-        if(NOT ${name}_FOUND)
-            set(${name}_FOUND TRUE)
-        endif()
+        set(${name}_FOUND TRUE)
     endif()
 
     string(TOUPPER ${name} name_upper)

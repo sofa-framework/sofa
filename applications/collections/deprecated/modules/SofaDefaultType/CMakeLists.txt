@@ -6,7 +6,7 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.DefaultType instead.")
+#message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.DefaultType instead.")
 
 sofa_find_package(Sofa.DefaultType REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.DefaultType)
