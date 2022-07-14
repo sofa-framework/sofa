@@ -399,6 +399,14 @@
               </item>
               <item>
                <widget class="QPushButton" name="sceneGraphRefreshToggleButton">
+                <property name="toolTip">
+                 <string>The scene graph update button has three states
+State 0: unlocked (all the changes on the graph are immediately taken into account)
+State 1: locked (the changes on the graph are not done but the simulation graph is set to dirty if
+         there is some changes on the graph. A click on the button unlocks the graph (go to state 0).
+State 2: dirty, in that state the button reflect the fact that the scene graph view has changed but not displayed.
+         A click on the button refreshes the graph view but does not change the Lock/Unlock state</string>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
