@@ -113,10 +113,10 @@ public:
     void toHomogeneousMatrix(Mat4x4 &m) const;
 
     /// Apply the rotation to a given vector
-    auto rotate( const Vec3& v ) const -> Vec3;
+    constexpr auto rotate( const Vec3& v ) const -> Vec3;
 
     /// Apply the inverse rotation to a given vector
-    auto inverseRotate( const Vec3& v ) const -> Vec3;
+    constexpr auto inverseRotate( const Vec3& v ) const -> Vec3;
 
     /// Given two quaternions, add them together to get a third quaternion.
     /// Adding quaternions to get a compound rotation is analagous to adding
