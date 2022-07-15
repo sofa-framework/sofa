@@ -105,7 +105,7 @@ macro(sofa_add_generic directory name type)
         # optional parameter to activate/desactivate the option
         #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION ON)
         set(active OFF)
-        if(ARG_DEFAULT_VALUE)
+        if(${ARG_DEFAULT_VALUE})
             set(active ON)
         endif()
 
@@ -160,36 +160,6 @@ macro(sofa_add_generic directory name type)
     endif()
 endmacro()
 
-macro(sofa_add_collection directory name)
-    sofa_add_generic(${directory} ${name} "Collection" DEFAULT_VALUE "${ARGV2}" ${ARGN})
-endmacro()
-
-macro(sofa_add_plugin directory plugin_name)
-    sofa_add_generic(${directory} ${plugin_name} "Plugin" DEFAULT_VALUE "${ARGV2}" ${ARGN})
-endmacro()
-
-macro(sofa_add_plugin_experimental directory plugin_name)
-    sofa_add_plugin(${ARGV})
-    if(TARGET ${plugin_name})
-        message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
-    endif()
-endmacro()
-
-macro(sofa_add_module directory module_name)
-    sofa_add_generic(${directory} ${module_name} "Module" DEFAULT_VALUE "${ARGV2}" ${ARGN})
-endmacro()
-
-macro(sofa_add_module_experimental directory module_name)
-    sofa_add_module(${ARGV})
-    if(TARGET ${module_name})
-        message("-- ${module_name} is an experimental feature, use it at your own risk.")
-    endif()
-endmacro()
-
-macro(sofa_add_application directory app_name)
-    sofa_add_generic(${directory} ${app_name} "Application" DEFAULT_VALUE "${ARGV2}" ${ARGN})
-endmacro()
-
 
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/
@@ -222,7 +192,7 @@ function(sofa_add_generic_external directory name type)
 
     # Default value for fetch activation and for plugin activation (if adding a plugin)
     set(active OFF)
-    if(ARG_DEFAULT_VALUE)
+    if(${ARG_DEFAULT_VALUE})
         set(active ON)
     endif()
 
@@ -282,21 +252,45 @@ function(sofa_add_generic_external directory name type)
     # Add
     if(EXISTS "${directory}/.git" AND IS_DIRECTORY "${directory}/.git")
         configure_file(${directory}/ExternalProjectConfig.cmake.in ${fetched_dir}/CMakeLists.txt)
-        if(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "External subdirectory")
+        if(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*directory.*")
             add_subdirectory("${directory}")
-        elseif(NOT ARG_FETCH_ONLY AND "${type}" STREQUAL "External plugin")
-            sofa_add_plugin("${name}" "${name}" ${active})
+        elseif(NOT ARG_FETCH_ONLY AND "${type}" MATCHES ".*plugin.*")
+            sofa_add_subdirectory(plugin "${name}" "${name}" ${active})
         endif()
     endif()
 endfunction()
 
-function(sofa_add_subdirectory_external directory name)
-    sofa_add_generic_external(${directory} ${name} "External subdirectory" DEFAULT_VALUE "${ARGV2}" ${ARGN})
-endfunction()
 
-function(sofa_add_plugin_external directory name)
-    sofa_add_generic_external(${directory} ${name} "External plugin" DEFAULT_VALUE "${ARGV2}" ${ARGN})
-endfunction()
+macro(sofa_add_subdirectory type directory name)
+    set(optionArgs EXTERNAL EXPERIMENTAL)
+    set(oneValueArgs)
+    set(multiValueArgs)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    set(valid_types "application" "project" "plugin" "module" "library" "collection" "directory")
+
+    string(TOLOWER "${type}" type_lower)
+    if(NOT "${type}" IN_LIST valid_types)
+        message(SEND_ERROR "Type \"${type}\" is invalid. Valid types are: ${valid_types}.")
+    endif()
+
+    set(default_value OFF)
+    if(${ARGV3})
+        set(default_value ON)
+    endif()
+
+    if(ARG_EXTERNAL)
+        sofa_add_generic_external(${directory} ${name} "External ${type_lower}" DEFAULT_VALUE ${default_value} ${ARGN})
+    else()
+        sofa_add_generic(${directory} ${name} ${type_lower} DEFAULT_VALUE ${default_value} ${ARGN})
+    endif()
+
+    if(ARG_EXPERIMENTAL)
+        if(TARGET ${name})
+            message(STATUS "${name} is an experimental feature, use it at your own risk.")
+        endif()
+    endif()
+endmacro()
 
 
 # sofa_set_01
@@ -405,3 +399,49 @@ macro(sofa_set_targets_release_only)
             )
     endforeach()
 endmacro()
+
+
+
+#######################################################
+################## DEPRECATED MACROS ##################
+#######################################################
+
+macro(sofa_add_collection directory name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(collection ...)' instead.")
+    sofa_add_subdirectory(collection ${ARGV})
+endmacro()
+
+macro(sofa_add_plugin directory plugin_name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(plugin ...)' instead.")
+    sofa_add_subdirectory(plugin ${ARGV})
+endmacro()
+
+macro(sofa_add_plugin_experimental directory plugin_name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(plugin ... EXPERIMENTAL)' instead.")
+    sofa_add_subdirectory(plugin ${ARGV} EXPERIMENTAL)
+endmacro()
+
+macro(sofa_add_module directory module_name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(module ...)' instead.")
+    sofa_add_subdirectory(module ${ARGV})
+endmacro()
+
+macro(sofa_add_module_experimental directory module_name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(module ... EXPERIMENTAL)' instead.")
+    sofa_add_subdirectory(module ${ARGV} EXPERIMENTAL)
+endmacro()
+
+macro(sofa_add_application directory app_name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(application ...)' instead.")
+    sofa_add_subdirectory(application ${ARGV})
+endmacro()
+
+function(sofa_add_subdirectory_external directory name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(directory ... EXTERNAL)' instead.")
+    sofa_add_subdirectory(directory ${ARGV} EXTERNAL)
+endfunction()
+
+function(sofa_add_plugin_external directory name)
+    message(WARNING "Deprecated macro. Use 'sofa_add_subdirectory(plugin ... EXTERNAL)' instead.")
+    sofa_add_subdirectory(plugin ${ARGV} EXTERNAL)
+endfunction()
