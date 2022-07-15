@@ -5,7 +5,7 @@ set(SOFACOMPONENTSOLIDMECHANICSFEM_SOURCE_DIR "src/sofa/component/solidmechanics
 
 set(OFACOMPONENTSOLIDMECHANICSFEM_DIRS Elastic HyperElastic NonUniform)
 foreach(fem_dir ${OFACOMPONENTSOLIDMECHANICSFEM_DIRS})
-    sofa_add_module(${fem_dir} ${PROJECT_NAME}.${fem_dir} ON)
+    sofa_add_subdirectory(module ${fem_dir} ${PROJECT_NAME}.${fem_dir} ON)
     if(TARGET ${PROJECT_NAME}.${fem_dir})
         list(APPEND SOFACOMPONENTSOLIDMECHANICSFEM_TARGETS ${PROJECT_NAME}.${fem_dir})
     endif()

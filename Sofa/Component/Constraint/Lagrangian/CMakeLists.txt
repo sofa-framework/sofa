@@ -6,7 +6,7 @@ set(SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR "src/sofa/component/constraint/
 set(SOFACOMPONENTCONSTRAINTLAGRANGIAN_DIRS Model Correction Solver)
 set(SOFACOMPONENTCONSTRAINTLAGRANGIAN_TARGETS)
 foreach(lagrangian_dir ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_DIRS})
-    sofa_add_module(${lagrangian_dir} ${PROJECT_NAME}.${lagrangian_dir} ON)
+    sofa_add_subdirectory(module ${lagrangian_dir} ${PROJECT_NAME}.${lagrangian_dir} ON)
     if(TARGET ${PROJECT_NAME}.${lagrangian_dir})
         list(APPEND SOFACOMPONENTCONSTRAINTLAGRANGIAN_TARGETS ${PROJECT_NAME}.${lagrangian_dir})
     endif()

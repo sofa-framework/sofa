@@ -32,20 +32,20 @@ sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HAVE_SOFA_GUI_HEAD
 # Keep legacy modules for compatibility
 # they merely redirect to the new modules
 # legacy (deprecated) module
-sofa_add_collection(../modules/SofaGuiCommon SofaGuiCommon ON
+sofa_add_subdirectory(collection ../modules/SofaGuiCommon SofaGuiCommon ON
     BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon")
 if(TARGET SofaGuiCommon)
     list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 endif()
 if(Sofa.GUI.Qt_FOUND)
-    sofa_add_collection(../modules/SofaGuiQt SofaGuiQt ON
+    sofa_add_subdirectory(collection ../modules/SofaGuiQt SofaGuiQt ON
         BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt")
     if(TARGET SofaGuiQt)
         list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     endif()
 endif()
 if(Sofa.GUI.HeadlessRecorder_FOUND)
-    sofa_add_collection(../modules/SofaHeadlessRecorder SofaHeadlessRecorder ON
+    sofa_add_subdirectory(collection ../modules/SofaHeadlessRecorder SofaHeadlessRecorder ON
         BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder")
     if(TARGET SofaHeadlessRecorder)
         list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)

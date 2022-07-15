@@ -31,7 +31,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Transform)
 
 sofa_find_package(Sofa.GL.Component.Engine QUIET)
 if(Sofa.GL.Component.Engine_FOUND)
-    message(WARNING "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.")
+#    message(WARNING "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.")
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL.Component.Engine) 
 endif()
 

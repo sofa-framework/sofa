@@ -6,7 +6,7 @@ set(SOFACOMPONENTCOLLISIONDETECTION_SOURCE_DIR "src/sofa/component/collision/det
 set(SOFACOMPONENTCOLLISIONDETECTION_DIRS Algorithm Intersection)
 set(SOFACOMPONENTCOLLISIONDETECTION_TARGETS)
 foreach(detection_dir ${SOFACOMPONENTCOLLISIONDETECTION_DIRS})
-    sofa_add_module(${detection_dir} ${PROJECT_NAME}.${detection_dir} ON)
+    sofa_add_subdirectory(module ${detection_dir} ${PROJECT_NAME}.${detection_dir} ON)
     if(TARGET ${PROJECT_NAME}.${detection_dir})
         list(APPEND SOFACOMPONENTCOLLISIONDETECTION_TARGETS ${PROJECT_NAME}.${detection_dir})
     endif()

@@ -153,7 +153,7 @@ endif()
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
 # Sofa.Config sets the environment (options, compiler flags, global variables)
-sofa_add_module(Sofa/framework/Config Sofa.Config ON)
+sofa_add_subdirectory(module Sofa/framework/Config Sofa.Config ON)
 
 ### Extlibs
 add_subdirectory(extlibs)
@@ -164,14 +164,14 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
     message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 endif()
-sofa_add_module(Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_module(Sofa/Component/Compat Sofa.Component.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
+sofa_add_subdirectory(module Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
+sofa_add_subdirectory(module Sofa/Component/Compat Sofa.Component.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
 
 # SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
-sofa_add_collection(applications/collections/deprecated/SofaGui SofaGui ON)
+sofa_add_subdirectory(collection applications/collections/deprecated/SofaGui SofaGui ON)
 
 ### Compatibility
 # Deprecated (hollow) framework and component modules.
@@ -185,7 +185,7 @@ option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 
 # SceneCreator plugin
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
-sofa_add_plugin(applications/plugins/SceneCreator SceneCreator OFF
+sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
     WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_TUTORIALS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
     VALUE_IF_HIDDEN "ON")
 
