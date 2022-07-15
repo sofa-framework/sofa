@@ -14,9 +14,7 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(SofaBaseMechanics REQUIRED)
-message("###########################")
-find_package(SofaBaseCollision REQUIRED)
-message("###########################")
+sofa_find_package(SofaBaseCollision REQUIRED)
 sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaObjectInteraction REQUIRED)
 sofa_find_package(SofaRigid REQUIRED)
