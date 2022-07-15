@@ -153,7 +153,7 @@ endif()
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
 # Sofa.Config sets the environment (options, compiler flags, global variables)
-sofa_add_subdirectory(module Sofa/framework/Config Sofa.Config ON)
+sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
 
 ### Extlibs
 add_subdirectory(extlibs)

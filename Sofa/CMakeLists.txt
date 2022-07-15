@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 # framework
 if(NOT TARGET Sofa.Config)
     # add Config only if it was not loaded before
-    sofa_add_subdirectory(module framework/Config Sofa.Config ON)
+    sofa_add_subdirectory(library framework/Config Sofa.Config ON)
 endif()
 sofa_add_subdirectory(library framework/Type Sofa.Type ON)
 sofa_add_subdirectory(library framework/Geometry Sofa.Geometry ON)
