@@ -23,35 +23,14 @@
 
 namespace sofa::simulation
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-}
 
-void initExternalModule()
+SOFA_SIMULATION_API void init()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    initExternalModule();
 }
 
 } // namespace sofa::simulation
