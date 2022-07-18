@@ -36,6 +36,11 @@ SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
     d_typePermutationOptions.setSelectedItem(0); // default None
     d_typePermutation.setValue(d_typePermutationOptions);
+
+    this->addUpdateCallback(  "permutationId", { &d_typePermutation } , [ this ] ( const core::DataTracker &t ) {
+        permutationId = d_typePermutation.getValue().getSelectedId() ;
+        return sofa::core::objectmodel::ComponentState::Valid ;
+      } , {} ) ;
 }
 
 template<class TMatrix, class TVector>
@@ -53,7 +58,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vec
 
     sofa::helper::ScopedAdvancedTimer solveTimer("solve");
 
-    switch( d_typePermutation.getValue().getSelectedId() )
+    switch( permutationId )
     {
     case 0://None->identity
     case 1://SuiteSparse
@@ -104,7 +109,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
 
         notSameShape = compareMatrixShape( A.n , A.p , A.i, Previous_colptr.size()-1 , Previous_colptr.data() , Previous_rowind.data() );
 
-        switch ( d_typePermutation.getValue().getSelectedId() )
+        switch ( permutationId )
         {
             case 0:
             default:// None->identity 

@@ -58,7 +58,7 @@ public:
                     ,MatrixLinearSolver<Matrix,Vector> *solver
                      );
     ~solverTask() override = default;
-    sofa::simulation::Task::MemoryAlloc run() final;  
+    sofa::simulation::Task::MemoryAlloc run() final;
 };
 
 template<class Matrix, class Vector>

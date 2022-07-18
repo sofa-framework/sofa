@@ -74,6 +74,7 @@ public:
     
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
+    void init() override;
 
     SparseLUSolver();
 
@@ -83,6 +84,7 @@ protected :
     Data<int> d_L_nnz; ///< Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.
 
     css* symbolic_LU(cs *A);
+    int permutationId;
 
     MatrixInvertData * createInvertData() override {
         return new SparseLUInvertData<Real>();

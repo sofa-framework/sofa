@@ -46,6 +46,11 @@ SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
     sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
     d_typePermutationOptions.setSelectedItem(0); // default None
     d_typePermutation.setValue(d_typePermutationOptions);
+
+    this->addUpdateCallback(  "permutationId", { &d_typePermutation } , [ this ] ( const core::DataTracker &t ) {
+        permutationId = d_typePermutation.getValue().getSelectedId() ;
+        return sofa::core::objectmodel::ComponentState::Valid ;
+      } , {} ) ;
 }
 
 
@@ -58,7 +63,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
 
     {
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-        switch( d_typePermutation.getValue().getSelectedId() )
+        switch( permutationId )
         {
             
             case 0://None->Identity
@@ -140,7 +145,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 
     {
         sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
-        switch( d_typePermutation.getValue().getSelectedId() )
+        switch( permutationId )
         {
             case 0://None->Identity
             {  
@@ -237,5 +242,13 @@ css* SparseLUSolver<TMatrix,TVector,TThreadManager>::symbolic_LU(cs *A)
     S->Q = nullptr; // should have been the fill permutation computed by SuiteSparse, not used here
     return S ;
 }
+
+
+template<class TMatrix, class TVector,class TThreadManager>
+void SparseLUSolver<TMatrix,TVector,TThreadManager>::init()
+{
+    permutationId = d_typePermutation.getValue().getSelectedId() ; 
+}
+
 
 } // namespace sofa::component::linearsolver::direct

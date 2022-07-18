@@ -273,7 +273,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
             this->linearSystem.needInvert = false;
         }
 
-    //STEPS 1&2: Copy Jt and compute MinvJt
+    //STEPS 1&2: Copy Jt and compute Minv*Jt
     {
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");
         // one task per column of Jt
@@ -285,7 +285,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         taskScheduler->workUntilDone(&status);
     }
 
-    // STEP 3 : compute the matricial product
+    // STEP 3 : compute the matricial product L*MinvJt
     
     sofa::linearalgebra::FullMatrix<double> product(J->rowSize(),J->rowSize());
     std::vector< productTask<Matrix,Vector> > productTaskList;
