@@ -162,12 +162,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
     }
 
-    std::vector< ComplianceTask<TMatrix,TVector> > solveTaskList;
+    std::vector< SolverTask<TMatrix,TVector> > solveTaskList;
     solveTaskList.reserve( JlocalRowSize );
     sofa::simulation::CpuTask::Status status;
-
-    //ComplianceTask<TMatrix,TVector> task(&status);
-    //task.run();
 
     if (this->linearSystem.needInvert)
     {
@@ -175,46 +172,28 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         this->linearSystem.needInvert = false;
     }
 
-/*
-    //Compute JLtinv line by line ( row(JLTinv) = col(LinvJt) = Linv*col(Jt) = Linv*row(J)  )
-    for (unsigned c = 0; c < JlocalRowSize; c++) {
-        Real* line = JLTinv[c];
-
-        // Solve the triangular system
-        for (int j=0; j<data->n; j++) {
-            for (int p = data->L_colptr[j] ; p<data->L_colptr[j+1] ; p++) {
-                int col = data->L_rowind[p];
-                double val = data->L_values[p];
-                line[j] -= val * line[col];
-            }
-        }
-    }
-*/
+// Compute JLtinv column by column and then compute JLtinvDinv 
     {
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");
         // compute JLTinv line by line
+        // row(JLtinv) = col( LinvJt ) = Linv*col(Jt) = Linv*row(J)
         for (unsigned c = 0; c < JlocalRowSize; c++) 
         {
             SReal* row = JLTinv[c];
             SReal* rowD = JLTinvDinv[c] ;
-            solveTaskList.emplace_back( data->n, row , rowD ,
-                                data->L_colptr.data(), data->L_rowind.data() , data->L_values.data(), data->invD.data() , &status );
+
+            // CSC Lt <-> CSR L
+            solveTaskList.emplace_back( data->n, c,row , rowD ,data->LT_colptr.data(), data->LT_rowind.data() ,
+                                        data->LT_values.data(), data->invD.data(), &status );
+            taskScheduler->addTask( &(solveTaskList.back()) ); 
         }
 
         taskScheduler->workUntilDone(&status);
     }
 
-    //apply diagonal
-    for (unsigned j = 0; j < JlocalRowSize; j++) {
-        Real* lineD = JLTinv[j];
-        Real* lineM = JLTinvDinv[j];
-        for (unsigned i = 0; i < (unsigned)data->n; i++) {
-            lineM[i] = lineD[i] * data->invD[i];
-        }
-    }
 
-    sofa::linearalgebra::FullMatrix<SReal> JMinvJt( JlocalRowSize, JlocalRowSize );
-    std::vector< multiplyTask<TMatrix,TVector> > multiplyTaskList;
+    sofa::linearalgebra::FullMatrix<Real> JMinvJt( JlocalRowSize, JlocalRowSize );
+    std::vector< MultiplyTask<TMatrix,TVector> > multiplyTaskList;
     multiplyTaskList.reserve( JlocalRowSize );
 
     {
@@ -226,8 +205,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
             Real* lineJ = JLTinvDinv[j];
             int globalRowJ = Jlocal2global[j];
             multiplyTaskList.emplace_back(data->n, JlocalRowSize, j, &JLTinvDinv, &JLTinv, &JMinvJt, Jlocal2global.data(), &status );
+            taskScheduler->addTask( &(multiplyTaskList.back()) ); 
             
-            
+            /*
             for (unsigned i = j; i < JlocalRowSize; i++) {
                 Real* lineI = JLTinv[i];
                 int globalRowI = Jlocal2global[i];
@@ -237,7 +217,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
                     JMinvJt.add(globalRowI,globalRowJ, lineJ[k] * lineI[k]);
                 }
             }
-            
+           */
         }
         taskScheduler->workUntilDone(&status);
 
@@ -247,10 +227,8 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         sofa::helper::ScopedAdvancedTimer projectTimer("project");
         //project the data
         for (unsigned j = 0; j < JlocalRowSize; j++) {
-            Real* lineJ = JLTinvDinv[j];
             int globalRowJ = Jlocal2global[j];
             for (unsigned i = j; i < JlocalRowSize; i++) {
-                Real* lineI = JLTinv[i];
                 int globalRowI = Jlocal2global[i];
 
                 result->add(globalRowJ, globalRowI, JMinvJt.element(globalRowI,globalRowJ)*fact);
