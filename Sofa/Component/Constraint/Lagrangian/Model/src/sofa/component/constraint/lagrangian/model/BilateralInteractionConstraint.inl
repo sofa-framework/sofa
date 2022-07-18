@@ -21,24 +21,36 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+#include <sofa/type/Vec.h>
+#include <sofa/helper/accessor.h>
+
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/type/RGBAColor.h>
-#include <sofa/type/Vec.h>
-#include <sofa/core/ConstraintParams.h>
-#include <algorithm> // for std::min
 
 namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
 {
-
+using sofa::type::Vec;
+using sofa::helper::WriteAccessor ;
 using sofa::core::objectmodel::KeypressedEvent ;
 using sofa::core::objectmodel::Event ;
-using sofa::helper::WriteAccessor ;
-using sofa::type::Vec;
+
+
+template<class DataTypes>
+void BilateralInteractionConstraint<DataTypes>::reset(){
+    init();
+}
+
+
+template<class DataTypes>
+void BilateralInteractionConstraint<DataTypes>::reinit()
+{
+    prevForces.clear();
+    activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
+}
 
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
@@ -88,22 +100,47 @@ void BilateralInteractionConstraint<DataTypes>::unspecializedInit()
     activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
 }
 
+
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::init()
+void BilateralInteractionConstraint<DataTypes>::clear(int reserve)
 {
-    unspecializedInit();
+    WriteAccessor<Data<type::vector<int> > > wm1 = this->m1;
+    WriteAccessor<Data<type::vector<int> > > wm2 = this->m2;
+    WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
+    wm1.clear();
+    wm2.clear();
+    wrest.clear();
+    if (reserve)
+    {
+        wm1.reserve(reserve);
+        wm2.reserve(reserve);
+        wrest.reserve(reserve);
+    }
 }
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::reinit()
+void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const ConstraintParams* cParams,
+                                                                        std::vector<ConstraintResolution*>& resTab,
+                                                                        unsigned int& offset)
 {
-    prevForces.clear();
-    activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
-}
+    SOFA_UNUSED(cParams);
+    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
 
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::reset(){
-    init();
+    if (!merge.getValue())
+    {
+        prevForces.resize(minp);
+        for (unsigned pid=0; pid<minp; pid++)
+        {
+            resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid]);
+            offset += 3;
+        }
+    }
+    else
+    {
+        prevForces.resize(1);
+        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[0]);
+        offset +=3;
+    }
 }
 
 template<class DataTypes>
@@ -283,230 +320,16 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
 }
 
 
+
+
+//TODO(dmarchal): implementing keyboard interaction behavior directly in a component is not a valid
+//design for a component. Interaction should be defered to an independent Component implemented in the SofaInteraction
+//a second possibility is to implement this behavir using script.
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                                       BaseVector *v,
-                                                                       const DataVecCoord &d_x1, const DataVecCoord &d_x2
-                                                                       , const DataVecDeriv & d_v1, const DataVecDeriv & d_v2)
+void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
 {
-    if (!activated) return;
-
-    const type::vector<int> &m1Indices = m1.getValue();
-    const type::vector<int> &m2Indices = m2.getValue();
-
-    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
-
-    const VecDeriv& restVector = this->restVector.getValue();
-
-    if (cParams->constOrder() == ConstraintParams::VEL)
-    {
-        getVelocityViolation(v, d_x1, d_x2, d_v1, d_v2);
-        return;
-    }
-
-    const VecCoord &x1 = d_x1.getValue();
-    const VecCoord &x2 = d_x2.getValue();
-
-    if (!merge.getValue())
-    {
-        dfree.resize(minp);
-
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
-
-            if (pid < restVector.size())
-                dfree[pid] -= restVector[pid];
-
-            v->set(cid[pid]  , dfree[pid][0]);
-            v->set(cid[pid]+1, dfree[pid][1]);
-            v->set(cid[pid]+2, dfree[pid][2]);
-        }
-    }
-    else
-    {
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
-
-            if (pid < restVector.size())
-                dfree[pid] -= restVector[pid];
-
-            for (unsigned int i=0; i<3; i++)
-            {
-                if(squareXYZ[i])
-                    v->add(cid[pid]+i  , dfree[pid][i]*dfree[pid][i]);
-                else
-                {
-
-                    v->add(cid[pid]+i  , dfree[pid][i]*sofa::helper::sign(dfree[pid][i] ) );
-                }
-            }
-
-        }
-    }
-}
-
-
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector *v,
-                                                                     const DataVecCoord &d_x1,
-                                                                     const DataVecCoord &d_x2,
-                                                                     const DataVecDeriv &d_v1,
-                                                                     const DataVecDeriv &d_v2)
-{
-    const type::vector<int> &m1Indices = m1.getValue();
-    const type::vector<int> &m2Indices = m2.getValue();
-
-    const VecCoord &x1 = d_x1.getValue();
-    const VecCoord &x2 = d_x2.getValue();
-    const VecCoord &v1 = d_v1.getValue();
-    const VecCoord &v2 = d_v2.getValue();
-
-    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
-    const VecDeriv& restVector = this->restVector.getValue();
-
-    if (!merge.getValue())
-    {
-        auto pos1 = this->getMState1()->readPositions();
-        auto pos2 = this->getMState2()->readPositions();
-
-        const SReal dt = this->getContext()->getDt();
-        const SReal invDt = SReal(1.0) / dt;
-
-        for (unsigned pid=0; pid<minp; ++pid)
-        {
-
-            Deriv dPos = (pos2[m2Indices[pid]] - pos1[m1Indices[pid]]);
-            if (pid < restVector.size())
-            {
-                dPos -= -restVector[pid];
-            }
-            dPos *= invDt;
-            const Deriv dVfree = v2[m2Indices[pid]] - v1[m1Indices[pid]];
-
-            v->set(cid[pid]  , dVfree[0] + dPos[0] );
-            v->set(cid[pid]+1, dVfree[1] + dPos[1] );
-            v->set(cid[pid]+2, dVfree[2] + dPos[2] );
-        }
-    }
-    else
-    {
-        VecDeriv dPrimefree;
-        dPrimefree.resize(minp);
-        dfree.resize(minp);
-
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            dPrimefree[pid] = v2[m2Indices[pid]] - v1[m1Indices[pid]];
-            dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
-
-            if (pid < restVector.size())
-            {
-                dPrimefree[pid] -= restVector[pid];
-                dfree[pid] -= restVector[pid];
-            }
-
-            std::cout<<" x2 : "<<x2[m2Indices[pid]]<<" - x1 :"<<x1[m1Indices[pid]]<<" = "<<dfree[pid]<<std::endl;
-            std::cout<<" v2 : "<<v2[m2Indices[pid]]<<" - v1 :"<<v1[m1Indices[pid]]<<" = "<<dPrimefree[pid]<<std::endl;
-
-            for (unsigned int i=0; i<3; i++)
-            {
-                if(squareXYZ[i])
-                {
-                    v->add(cid[pid]+i  , 2*dPrimefree[pid][i]*dfree[pid][i]);
-                }
-                else
-                {
-                    v->add(cid[pid]+i  , dPrimefree[pid][i]*sofa::helper::sign(dfree[pid][i] ) );
-                }
-            }
-
-        }
-    }
-}
-
-
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const ConstraintParams* cParams,
-                                                                        std::vector<ConstraintResolution*>& resTab,
-                                                                        unsigned int& offset)
-{
-    SOFA_UNUSED(cParams);
-    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
-
-    if (!merge.getValue())
-    {
-        prevForces.resize(minp);
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid]);
-            offset += 3;
-        }
-    }
-    else
-    {
-        prevForces.resize(1);
-        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[0]);
-        offset +=3;
-    }
-}
-
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q,
-                                                           Real /*contactDistance*/, int m1, int m2,
-                                                           Coord /*Pfree*/, Coord /*Qfree*/,
-                                                           long /*id*/, PersistentID /*localid*/)
-{
-    WriteAccessor<Data<type::vector<int> > > wm1 = this->m1;
-    WriteAccessor<Data<type::vector<int> > > wm2 = this->m2;
-    WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
-    wm1.push_back(m1);
-    wm2.push_back(m2);
-    wrest.push_back(Q-P);
-}
-
-
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::addContact(Deriv norm, Coord P, Coord Q, Real
-                                                           contactDistance, int m1, int m2,
-                                                           long id, PersistentID localid)
-{
-   addContact(norm, P, Q, contactDistance, m1, m2,
-               this->getMState2()->read(ConstVecCoordId::freePosition())->getValue()[m2],
-               this->getMState1()->read(ConstVecCoordId::freePosition())->getValue()[m1],
-               id, localid);
-}
-
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::addContact(Deriv norm, Real contactDistance,
-                                                           int m1, int m2, long id, PersistentID localid)
-{
-    addContact(norm,
-               this->getMState2()->read(ConstVecCoordId::position())->getValue()[m2],
-               this->getMState1()->read(ConstVecCoordId::position())->getValue()[m1],
-               contactDistance, m1, m2,
-               this->getMState2()->read(ConstVecCoordId::freePosition())->getValue()[m2],
-               this->getMState1()->read(ConstVecCoordId::freePosition())->getValue()[m1],
-               id, localid);
-}
-
-
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::clear(int reserve)
-{
-    WriteAccessor<Data<type::vector<int> > > wm1 = this->m1;
-    WriteAccessor<Data<type::vector<int> > > wm2 = this->m2;
-    WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
-    wm1.clear();
-    wm2.clear();
-    wrest.clear();
-    if (reserve)
-    {
-        wm1.reserve(reserve);
-        wm2.reserve(reserve);
-        wrest.reserve(reserve);
-    }
+    SOFA_UNUSED(event);
+    msg_deprecated() << "Removed";
 }
 
 template<class DataTypes>
@@ -538,37 +361,5 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->restoreLastState();
 }
 
-//TODO(dmarchal): implementing keyboard interaction behavior directly in a component is not a valid
-//design for a component. Interaction should be defered to an independent Component implemented in the SofaInteraction
-//a second possibility is to implement this behavir using script.
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
-{
-    if (KeypressedEvent::checkEventType(event))
-    {
-        KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
-        switch(ev->getKey())
-        {
 
-        case 'A':
-        case 'a':
-            msg_info() << "Activating constraint" ;
-            activated = true;
-            break;
-        }
-    }
-
-
-    if (simulation::AnimateEndEvent::checkEventType(event) )
-    {
-        ++iteration;
-        if (!activated && activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration)
-        {
-            msg_info() << "Activating constraint" ;
-            activated = true;
-        }
-    }
 }
-
-
-} //namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint

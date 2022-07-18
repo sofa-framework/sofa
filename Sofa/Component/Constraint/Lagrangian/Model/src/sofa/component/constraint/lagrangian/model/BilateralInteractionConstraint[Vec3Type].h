@@ -19,3 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/component/constraint/lagrangian/model/config.h>
+
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+{
+
+using sofa::defaulttype::Vec3Types;
+
+#if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint< Vec3Types >;
+#endif
+
+} // namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+
