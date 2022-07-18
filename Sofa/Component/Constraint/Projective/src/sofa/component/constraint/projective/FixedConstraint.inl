@@ -363,12 +363,14 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
         std::vector< sofa::type::Vector3 > points;
         sofa::type::Vector3 point;
 
-        if( d_fixAll.getValue() )
-            for (unsigned i=0; i<x.size(); i++ )
+        if (d_fixAll.getValue())
+        {
+            for (unsigned i = 0; i < x.size(); i++)
             {
                 point = DataTypes::getCPos(x[i]);
                 points.push_back(point);
             }
+        }
         else
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
