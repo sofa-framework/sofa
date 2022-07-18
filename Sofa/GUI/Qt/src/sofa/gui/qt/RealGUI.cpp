@@ -1930,7 +1930,25 @@ void RealGUI::createSimulationGraph()
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
 
-    simulationGraph->unLock();
+    std::ifstream file( BaseGUI::getConfigDirectoryPath() + "/sceneGraphLock" );
+    if(file.is_open())
+    {
+        bool isLocked;
+        file >> isLocked;
+        if (isLocked)
+        {
+            simulationGraph->lock();
+        }
+        else
+        {
+            simulationGraph->unLock();
+        }
+        file.close();
+    }
+    else
+    {
+        simulationGraph->unLock();
+    }
 }
 
 // This slot is called when the sceneGraph view is set to dirty
@@ -1965,12 +1983,12 @@ void RealGUI::sceneGraphViewLockingChanged(bool isLocked)
     }
 }
 
-// The scenegraph update button has tree states
-// State 0: unLocked (all the changes on the graph are immediately taken into account)
-// State 1: locked (the changes on the graph are not done but the simulationGraph is set to dirty if
-//          there is some changes on the graph A click on the buttont load to UnLock the graph (go to state 1).
-// State 2: dirty, in that state the button reflect the fact that the scenegraphi view has changed but not displayed
-//          a click on the button, refresh the graph view but don't change the Lock/Unlock state
+// The scene graph update button has three states
+// State 0: unlocked (all the changes on the graph are immediately taken into account)
+// State 1: locked (the changes on the graph are not done but the simulation graph is set to dirty if
+//          there is some changes on the graph. A click on the button unlocks the graph (go to state 0).
+// State 2: dirty, in that state the button reflect the fact that the scene graph view has changed but not displayed.
+//          A click on the button refreshes the graph view but does not change the Lock/Unlock state
 void RealGUI::onSceneGraphRefreshButtonClicked()
 {
     if(simulationGraph->isLocked())
@@ -1980,6 +1998,13 @@ void RealGUI::onSceneGraphRefreshButtonClicked()
     else
     {
         simulationGraph->lock();
+    }
+
+    std::ofstream file( BaseGUI::getConfigDirectoryPath() + "/sceneGraphLock" );
+    if(file)
+    {
+        file << simulationGraph->isLocked();
+        file.close();
     }
 }
 
