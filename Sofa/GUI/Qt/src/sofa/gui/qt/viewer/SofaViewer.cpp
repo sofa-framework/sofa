@@ -21,13 +21,13 @@
 ******************************************************************************/
 #include "SofaViewer.h"
 #include <sofa/helper/Factory.inl>
-#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <sofa/gui/common/BaseGUI.h>
+#include <sofa/component/visual/VisualStyle.h>
 
 using namespace sofa::gui::common;
 
@@ -195,16 +195,16 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     {
         // --- Switch between parallax and toedIn stereovision
         switch (currentCamera->getStereoStrategy()) {
-        case sofa::component::visualmodel::BaseCamera::PARALLEL:
-            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::TOEDIN);
+        case sofa::component::visual::BaseCamera::PARALLEL:
+            currentCamera->setStereoStrategy(sofa::component::visual::BaseCamera::TOEDIN);
             msg_info("SofaViewer") << "Stereo Strategy: TOEDIN";
             break;
-        case sofa::component::visualmodel::BaseCamera::TOEDIN:
-            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
+        case sofa::component::visual::BaseCamera::TOEDIN:
+            currentCamera->setStereoStrategy(sofa::component::visual::BaseCamera::PARALLEL);
             msg_info("SofaViewer") << "Stereo Strategy: Parallel";
             break;
         default:
-            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
+            currentCamera->setStereoStrategy(sofa::component::visual::BaseCamera::PARALLEL);
             break;
         }
         break;
@@ -213,25 +213,25 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         // --- enable binocular mode
     {
         //_stereoMode = (StereoMode)(((int)_stereoMode+1)%(int)NB_STEREO_MODES);
-        currentCamera->setStereoMode((sofa::component::visualmodel::BaseCamera::StereoMode)(((int)currentCamera->getStereoMode()+1)%(int)sofa::component::visualmodel::BaseCamera::NB_STEREO_MODES));
+        currentCamera->setStereoMode((sofa::component::visual::BaseCamera::StereoMode)(((int)currentCamera->getStereoMode()+1)%(int)sofa::component::visual::BaseCamera::NB_STEREO_MODES));
         switch (currentCamera->getStereoMode())
         {
-        case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
+        case sofa::component::visual::BaseCamera::STEREO_INTERLACED:
             msg_info("SofaViewer") << "Stereo mode: Interlaced";
             break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
+        case sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE:
             msg_info("SofaViewer") << "Stereo mode: Side by Side"; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
+        case sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
             msg_info("SofaViewer") << "Stereo mode: Side by Side Half"; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
+        case sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING:
             msg_info("SofaViewer") << "Stereo mode: Frame Packing"; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
+        case sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM:
             msg_info("SofaViewer") << "Stereo mode: Top Bottom"; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
+        case sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM_HALF:
             msg_info("SofaViewer") << "Stereo mode: Top Bottom Half"; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
+        case sofa::component::visual::BaseCamera::STEREO_AUTO:
             msg_info("SofaViewer") << "Stereo mode: Automatic"; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
+        case sofa::component::visual::BaseCamera::STEREO_NONE:
             msg_info("SofaViewer") << "Stereo mode: None"; break;
         default:
             msg_info("SofaViewer") << "Stereo mode: INVALID"; break;

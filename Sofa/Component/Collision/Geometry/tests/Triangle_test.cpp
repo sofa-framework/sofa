@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaBaseCollision/MinProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/MinProximityIntersection.h>
 #include <sofa/component/collision/detection/intersection/MeshMinProximityIntersection.h>
 using sofa::component::collision::detection::intersection::MeshMinProximityIntersection;
 
@@ -47,7 +47,7 @@ using sofa::helper::logging::MessageDispatcher;
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 
 #include <sofa/component/collision/testing/MeshPrimitiveCreator.h>
 #include <sofa/component/collision/testing/SpherePrimitiveCreator.h>

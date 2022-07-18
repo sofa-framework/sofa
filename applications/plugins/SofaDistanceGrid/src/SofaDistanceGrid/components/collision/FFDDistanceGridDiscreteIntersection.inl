@@ -43,13 +43,13 @@ namespace collision
 
 
 template<class T>
-bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&)
+bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, geometry::TSphere<T>&)
 {
     return true;
 }
 
 template<class T>
-int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, TSphere<T>& e2, OutputVector* contacts)
+int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, geometry::TSphere<T>& e2, OutputVector* contacts)
 {
 
     DistanceGrid* grid1 = e1.getGrid();

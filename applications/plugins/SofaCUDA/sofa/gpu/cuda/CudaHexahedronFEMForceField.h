@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaSimpleFem/HexahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
 
 namespace sofa::gpu::cuda
 {

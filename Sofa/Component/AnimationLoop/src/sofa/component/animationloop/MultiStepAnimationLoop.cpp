@@ -130,7 +130,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
-    if (!SOFA_NO_UPDATE_BBOX)
+    if (d_computeBoundingBox.getValue())
     {
         sofa::helper::ScopedAdvancedTimer timer("UpdateBBox");
         this->gnode->execute<UpdateBoundingBoxVisitor>(params);

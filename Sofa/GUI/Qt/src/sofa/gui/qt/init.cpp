@@ -24,13 +24,37 @@
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/qt/RealGUI.h>
 
-#if SOFA_GUI_QT_HAVE_QGLVIEWER
+#if SOFA_GUI_QT_ENABLE_QGLVIEWER
 int QGLViewerGUIClass = sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
 #endif
 
-#if SOFA_GUI_QT_HAVE_QTVIEWER
+#if SOFA_GUI_QT_ENABLE_QTVIEWER
 int QtGUIClass = sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
 #endif
+
+void redirectQtMessages(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    SOFA_UNUSED(context);
+    const QByteArray localMsg = msg.toLocal8Bit();
+    switch (type)
+    {
+    case QtDebugMsg:
+        msg_info("Qt") << localMsg.constData();
+        break;
+    case QtInfoMsg:
+        msg_info("Qt") << localMsg.constData();
+        break;
+    case QtWarningMsg:
+        msg_warning("Qt") << localMsg.constData();
+        break;
+    case QtCriticalMsg:
+        msg_error("Qt") << localMsg.constData();
+        break;
+    case QtFatalMsg:
+        msg_fatal("Qt") << localMsg.constData();
+        break;
+    }
+}
 
 namespace sofa::gui::qt
 {
@@ -41,6 +65,8 @@ void init()
     if (first)
     {
         first = false;
+
+        qInstallMessageHandler(redirectQtMessages);
     }
 }
 

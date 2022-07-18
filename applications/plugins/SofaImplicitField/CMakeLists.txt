@@ -41,8 +41,7 @@ set(EXTRA_FILES
     examples/README.md
     )
 
-find_package(SofaTest QUIET)
-if(SofaTest_FOUND)
+if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaImplicitField_test)
 endif()
 

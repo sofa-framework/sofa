@@ -36,8 +36,7 @@ AboutSOFADialog::AboutSOFADialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUi(this);
-    // SLOTS CONNECTION
-    this->connect(buttonOk, SIGNAL(clicked() ),  this, SLOT( clickSupportUs() ));
+    connect(buttonOk, &QPushButton::clicked, this, &AboutSOFADialog::clickSupportUs);
 
     std::string file = "icons/AboutSOFA.png";
     if (DataRepository.findFile(file))
@@ -46,7 +45,6 @@ AboutSOFADialog::AboutSOFADialog(QWidget *parent)
         label_2->setPixmap(pix);
     }
 }
-
 
 void AboutSOFADialog::clickSupportUs()
 {

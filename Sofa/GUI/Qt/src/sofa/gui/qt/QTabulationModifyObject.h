@@ -61,7 +61,6 @@ public:
 
 public slots:
     void setTabDirty(bool=true);
-    void updateListViewItem();
     void updateDataValue();
     void updateWidgetValue();
     void dataValueChanged(QString dataValue);

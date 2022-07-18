@@ -182,7 +182,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
         d_indices.supportNewTopologyElements(true);
 
         // Need to create a call back to assign index of new point into the topologySubsetData. Deletion is automatically handle.
-        d_indices.setCreationCallback([this](Index dataIndex, Index& valueIndex,
+        d_indices.setCreationCallback([](Index dataIndex, Index& valueIndex,
             const core::topology::BaseMeshTopology::Point& point,
             const sofa::type::vector< Index >& ancestors,
             const sofa::type::vector< SReal >& coefs)
@@ -193,8 +193,9 @@ void UniformMass<DataTypes>::initDefaultImpl()
             valueIndex = dataIndex;
         });
 
-        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo) 
+        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo)
         {
+            SOFA_UNUSED(eventTopo);
             updateMassOnResize(d_indices.getValue().size());
         });
     }

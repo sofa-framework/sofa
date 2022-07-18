@@ -31,17 +31,16 @@ using std::vector;
 
 #include <runSofaValidation.h>
 
-#include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
-#include <SofaSimulationCommon/init.h>
-#include <SofaSimulationGraph/init.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/graph/init.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
-#include <SofaGraphComponent/SceneCheckerListener.h>
-using sofa::simulation::scenechecking::SceneCheckerListener;
+#include <SceneChecking/SceneCheckerListener.h>
+using sofa::scenechecking::SceneCheckerListener;
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>
@@ -412,7 +411,12 @@ int main(int argc, char** argv)
     PluginManager::getInstance().init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
+    {
+        sofa::simulation::common::cleanup();
+        sofa::simulation::graph::cleanup();
+
         return err;
+    }
 
     if (fileName.empty())
     {

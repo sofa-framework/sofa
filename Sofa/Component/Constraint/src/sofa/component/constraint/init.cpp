@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/config.h>
+#include <sofa/component/constraint/init.h>
 
 #include <sofa/component/constraint/lagrangian/init.h>
 #include <sofa/component/constraint/projective/init.h>
@@ -35,15 +35,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::init();
-        sofa::component::constraint::projective::init();
-
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -58,7 +50,15 @@ const char* getModuleVersion()
 
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::component::constraint::lagrangian::init();
+        sofa::component::constraint::projective::init();
+
+        first = false;
+    }
 }
 
 } // namespace sofa::component::constraint

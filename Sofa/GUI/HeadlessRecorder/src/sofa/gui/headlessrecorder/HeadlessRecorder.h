@@ -26,7 +26,7 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/gl/DrawToolGL.h>
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/component/visual//BaseCamera.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <csignal>
@@ -104,7 +104,7 @@ private:
 
     sofa::simulation::NodeSPtr groot;
     std::string sceneFileName;
-    sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
+    sofa::component::visual::BaseCamera::SPtr currentCamera;
 
     sofa::gl::VideoRecorderFFMPEG m_videorecorder;
     int m_nFrames;

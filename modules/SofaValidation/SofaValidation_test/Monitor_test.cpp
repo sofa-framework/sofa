@@ -22,24 +22,23 @@
 
 #include <SofaValidation/Monitor.h>
 using sofa::component::misc::Monitor;
-#include <SofaBaseMechanics/MechanicalObject.h>
-using sofa::component::container::MechanicalObject;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using sofa::component::statecontainer::MechanicalObject;
 
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 using sofa::core::objectmodel::BaseObject;
 using sofa::simulation::Simulation;
 using sofa::simulation::Node;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
 using sofa::core::ExecParams;
 
-#include <SofaBase/initSofaBase.h>
-#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 #include <fstream>
 #include <streambuf>
@@ -164,15 +163,13 @@ struct Monitor_test : public BaseSimulationTest
     }
     void SetUp() override
     {
-        sofa::component::initSofaBase();
-        sofa::component::initSofaImplicitOdeSolver();
+        simpleapi::importPlugin("Sofa.Component");
+        simpleapi::importPlugin("SofaValidation");
 
         std::string scene =
                 "<Node name='root' gravity='0 -9.81 0'>"
                 "<DefaultAnimationLoop/>"
                 "<Node name='node'>"
-                "<RequiredPlugin name = 'SofaGeneralLoader' />"
-                "<RequiredPlugin name = 'SofaValidation' />"
                 "<EulerImplicit rayleighStiffness='0' printLog='false' rayleighMass='0.1'/>"
                 "<CGLinearSolver iterations='100' threshold='0.00000001' "
                 "tolerance='1e-5'/>"

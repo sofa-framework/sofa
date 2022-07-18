@@ -239,8 +239,6 @@ bool TopologyDataHandler<TopologyElementType, VecT>::isTopologyDataRegistered()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EAdded* event)
 {
-    //this->add(event->getNbAddedElements(), event->getElementArray(),
-    //    event->ancestorsList, event->coefs);
     m_topologyData->add(event->getIndexArray(), event->getElementArray(),
         event->ancestorsList, event->coefs, event->ancestorElems);
 }

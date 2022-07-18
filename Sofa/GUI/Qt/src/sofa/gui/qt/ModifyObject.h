@@ -138,7 +138,6 @@ public slots:
     void closeEvent ( QCloseEvent * ) override {emit(reject());}
     void updateTables();
     virtual void updateValues();              //update the node with the values of the field
-    void updateListViewItem();
 signals:
     void updateDataWidgets();             // emitted eachtime updateValues is called to propagate the changes to the widgets.
     void objectUpdated();                 //update done

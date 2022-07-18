@@ -175,6 +175,17 @@ macro(sofa_add_application directory app_name)
     sofa_add_generic(${directory} ${app_name} "Application" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endmacro()
 
+macro(sofa_add_component_subdirectory DirectoryArg FullDirectoryArg)
+    set(DirectoryName ${FullDirectoryArg})
+
+    string(TOUPPER ${DirectoryName} UpperDirectoryName)
+    string(REPLACE "." "_" UpperDirectoryName ${UpperDirectoryName})
+
+    option(SOFA_ENABLE_${UpperDirectoryName} "Build ${DirectoryName}." ON)
+    if(SOFA_ENABLE_${UpperDirectoryName})
+        add_subdirectory(${DirectoryArg})
+    endif()
+endmacro()
 
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/

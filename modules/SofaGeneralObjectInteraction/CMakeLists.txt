@@ -15,28 +15,24 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     ${SOFAGENERALOBJECTINTERACTION_SRC}/BoxStiffSpringForceField.h
     ${SOFAGENERALOBJECTINTERACTION_SRC}/BoxStiffSpringForceField.inl
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.h
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.inl
     )
 list(APPEND SOURCE_FILES
     ${SOFAGENERALOBJECTINTERACTION_SRC}/BoxStiffSpringForceField.cpp
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.cpp
     )
 
-sofa_find_package(SofaDeformable REQUIRED)
-sofa_find_package(SofaEngine REQUIRED)
-sofa_find_package(SofaGeneralEngine REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable SofaEngine SofaGeneralEngine)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SolidMechanics.Spring and Sofa.Component.Constraint.Projective instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring, Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
+sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
+sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Projective)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Select)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.MechanicalLoad)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

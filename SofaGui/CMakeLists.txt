@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGui)
 
-sofa_find_package(SofaFramework REQUIRED)
-
 set(SOFAGUI_TARGETS "")
 
 sofa_find_package(Sofa.GUI.Component REQUIRED)
@@ -24,9 +22,12 @@ set(SOFAGUI_TARGETS Sofa.GUI.Component Sofa.GUI.Common Sofa.GUI.Batch)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND SOFAGUI_TARGETS Sofa.GUI.Qt)
 endif()
+sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${Sofa.GUI.Qt_FOUND})
+
 if(Sofa.GUI.HeadlessRecorder_FOUND)
     list(APPEND SOFAGUI_TARGETS Sofa.GUI.HeadlessRecorder)
 endif()
+sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${Sofa.GUI.HeadlessRecorder_FOUND})
 
 # Keep legacy modules for compatibility
 # they merely redirect to the new modules
