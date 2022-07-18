@@ -31,6 +31,8 @@
 #include <sstream>
 #include <list>
 
+#include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
+
 namespace sofa::component::constraint::lagrangian::correction
 {
 
@@ -72,20 +74,30 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 
     linearsolvers.clear();
 
-    std::stringstream tmp ;
-    if (solverNames.size() == 0)
+    if (solverNames.empty())
     {
-        linearsolvers.push_back(c->get<sofa::core::behavior::LinearSolver>());
+        sofa::core::behavior::LinearSolver* s = nullptr;
+        c->get(s);
+        if(s)
+        {
+            addSolverToList(s);
+        }
     }
-
     else
     {
-        for (unsigned int i=0; i<solverNames.size(); ++i)
+        for (const auto& solver : solverNames)
         {
             sofa::core::behavior::LinearSolver* s = nullptr;
-            c->get(s, solverNames[i]);
-            if (s) linearsolvers.push_back(s);
-            else tmp << "- searching for solver \'" << solverNames[i] << "\' but cannot find it upward in the scene graph." << msgendl ;
+            c->get(s, solver);
+
+            if(s)
+            {
+                addSolverToList(s);
+            } 
+            else
+            {
+                msg_warning() << "Solver \"" << solver << "\" not found.";
+            }
         }
     }
 
@@ -95,9 +107,9 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
         d_componentState.setValue(ComponentState::Invalid) ;
         return;
     }
-    if (linearsolvers.size()==0)
+    if (linearsolvers.empty())
     {
-        msg_error() << "No LinearSolver found (component is disabled)." << tmp.str() ;
+        msg_error() << "No LinearSolver found (component is disabled).";
         d_componentState.setValue(ComponentState::Invalid) ;
         return;
     }
@@ -109,6 +121,19 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     }
 
     d_componentState.setValue(ComponentState::Valid) ;
+}
+
+template <class TDataTypes>
+void LinearSolverConstraintCorrection<TDataTypes>::addSolverToList(sofa::core::behavior::LinearSolver* s)
+{
+    if (s->getTemplateName() == sofa::component::linearsolver::GraphScatteredMatrix::Name())
+    {
+        msg_warning() << "Can not use the solver " << s->getName() << " because it is templated on GraphScatteredType";
+    }
+    else
+    {
+        linearsolvers.push_back(s);
+    }
 }
 
 template<class TDataTypes>
