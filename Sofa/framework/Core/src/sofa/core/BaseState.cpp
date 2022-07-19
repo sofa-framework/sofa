@@ -19,13 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseState.h"
+#include <sofa/core/BaseState.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 
@@ -42,10 +39,5 @@ bool BaseState::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core
 

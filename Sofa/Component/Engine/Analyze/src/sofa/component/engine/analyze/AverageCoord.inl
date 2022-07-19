@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "AverageCoord.h"
+#include <sofa/component/engine/analyze/AverageCoord.h>
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

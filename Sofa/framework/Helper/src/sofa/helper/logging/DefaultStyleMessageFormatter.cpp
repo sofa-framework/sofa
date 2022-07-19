@@ -25,17 +25,11 @@
 ******************************************************************************/
 
 #include <sofa/helper/system/console.h>
-#include "DefaultStyleMessageFormatter.h"
-#include "Message.h"
+#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
+#include <sofa/helper/logging/Message.h>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 void DefaultStyleMessageFormatter::formatMessage(const Message & m, std::ostream & out)
@@ -48,8 +42,4 @@ void DefaultStyleMessageFormatter::formatMessage(const Message & m, std::ostream
 
     out << console::Foreground::Normal::Reset << m.message().str() << std::endl;
 }
-
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging

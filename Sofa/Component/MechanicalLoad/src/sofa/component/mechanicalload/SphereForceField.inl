@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "SphereForceField.h"
+#include <sofa/component/mechanicalload/SphereForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/rmath.h>

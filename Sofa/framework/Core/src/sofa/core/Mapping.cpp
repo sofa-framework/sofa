@@ -20,14 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_MAPPING_CPP
-#include "Mapping.inl"
+#include <sofa/core/Mapping.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 using namespace sofa::defaulttype;
@@ -60,9 +57,5 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3Types, sofa::defaul
 
 
 // cross templates
-
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core
 

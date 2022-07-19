@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "HausdorffDistance.h"
+#include <sofa/component/engine/analyze/HausdorffDistance.h>
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

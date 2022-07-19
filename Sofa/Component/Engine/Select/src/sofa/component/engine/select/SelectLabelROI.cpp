@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SelectLabelROI_CPP_
 
-#include "SelectLabelROI.h"
+#include <sofa/component/engine/select/SelectLabelROI.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 

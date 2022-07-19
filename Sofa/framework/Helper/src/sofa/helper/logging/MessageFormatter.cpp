@@ -25,8 +25,8 @@
 ******************************************************************************/
 
 #include <sofa/helper/system/console.h>
-#include "Message.h"
-#include "MessageFormatter.h"
+#include <sofa/helper/logging/Message.h>
+#include <sofa/helper/logging/MessageFormatter.h>
 
 namespace sofa
 {

@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseTopologyObject.h"
+#include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 bool BaseTopologyObject::insertInNode( objectmodel::BaseNode* node )
@@ -44,11 +38,5 @@ bool BaseTopologyObject::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::topology
 

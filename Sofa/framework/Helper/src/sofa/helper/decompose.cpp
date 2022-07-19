@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_HELPER_DECOMPOSE_CPP
-#include "decompose.inl"
+#include <sofa/helper/decompose.inl>
 
 namespace sofa
 {

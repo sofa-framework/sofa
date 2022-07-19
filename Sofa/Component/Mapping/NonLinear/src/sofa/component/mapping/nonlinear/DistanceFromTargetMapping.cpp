@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP
 
-#include "DistanceFromTargetMapping.inl"
+#include <sofa/component/mapping/nonlinear/DistanceFromTargetMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping::nonlinear

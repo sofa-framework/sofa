@@ -23,13 +23,9 @@
 * User of this library should read the documentation
 * in the TextMessaging.h file.
 *****************************************************************************/
-#include "ComponentInfo.h"
+#include <sofa/helper/logging/ComponentInfo.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
+namespace sofa::helper::logging
 {
 
 
@@ -63,8 +59,5 @@ std::ostream& operator<<(std::ostream& out, const ComponentInfo* nfo)
 {
     return nfo->toStream(out) ;
 }
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 

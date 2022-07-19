@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "HexahedralFEMForceFieldAndMass.h"
+#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceFieldAndMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 

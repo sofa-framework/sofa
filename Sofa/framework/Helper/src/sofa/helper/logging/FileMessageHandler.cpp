@@ -24,11 +24,11 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include "Message.h"
-#include "MessageFormatter.h"
-#include "DefaultStyleMessageFormatter.h"
-#include "FileMessageHandler.h"
-#include "Messaging.h"
+#include <sofa/helper/logging/Message.h>
+#include <sofa/helper/logging/MessageFormatter.h>
+#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
+#include <sofa/helper/logging/FileMessageHandler.h>
+#include <sofa/helper/logging/Messaging.h>
 
 
 namespace sofa

@@ -38,10 +38,10 @@ using std::string ;
 #include <algorithm>
 using std::remove ;
 
-#include "MessageDispatcher.h"
+#include <sofa/helper/logging/MessageDispatcher.h>
 
-#include "MessageHandler.h"
-#include "ConsoleMessageHandler.h"
+#include <sofa/helper/logging/MessageHandler.h>
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
 
 #include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
 using sofa::helper::logging::DefaultStyleMessageFormatter;

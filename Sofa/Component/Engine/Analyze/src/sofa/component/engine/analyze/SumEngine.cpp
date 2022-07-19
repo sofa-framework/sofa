@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SumEngine_CPP
-#include "SumEngine.inl"
+#include <sofa/component/engine/analyze/SumEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::analyze
