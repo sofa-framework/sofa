@@ -597,6 +597,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
     _new_force = false;
 
+    const auto positionIntegrationFactor = odesolver->getPositionIntegrationFactor();
     // TODO => optimisation => for each bloc store J[bloc,dof]
     for (int i = begin; i <= end; i++)
     {
@@ -609,11 +610,11 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
             {
                 const auto dof = colIt.index();
-                Deriv disp;
+                Deriv disp(type::NOINIT);
 
                 for(Size j = 0; j < derivDim; j++)
                 {
-                    disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * odesolver->getPositionIntegrationFactor());
+                    disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * positionIntegrationFactor);
                 }
 
                 d[i] += colIt.val() * disp;
