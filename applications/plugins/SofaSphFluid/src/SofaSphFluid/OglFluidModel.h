@@ -99,16 +99,6 @@ public:
 
     virtual void updateVisual() override;
 
-    static std::string templateName(const OglFluidModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
 };
 
 }
