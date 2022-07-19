@@ -116,7 +116,7 @@ public:
     inline constexpr auto rotate( const Vec3& v ) const -> Vec3
     {
         const Vec3 qxyz{ _q[0], _q[1] , _q[2] };
-        const auto& t = qxyz.cross(v) * 2;
+        const auto t = qxyz.cross(v) * 2;
         return (v + _q[3] * t + qxyz.cross(t));
     }
 
@@ -124,7 +124,7 @@ public:
     inline constexpr auto inverseRotate( const Vec3& v ) const -> Vec3
     {
         const Vec3 qxyz{ -_q[0], -_q[1] , -_q[2] };
-        const auto& t = qxyz.cross(v) * 2;
+        const auto t = qxyz.cross(v) * 2;
         return (v + _q[3] * t + qxyz.cross(t));
     }
 
