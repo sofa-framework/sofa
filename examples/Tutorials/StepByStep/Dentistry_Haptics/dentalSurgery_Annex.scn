@@ -1,11 +1,11 @@
 <Node name="Root" dt="0.0001">
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MeshTetraStuffing] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [VTKExporter] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscExtra"/> <!-- Needed to use components [MeshTetraStuffing] -->
     <VisualStyle displayFlags="showVisualModels showWireframe" />
     <Node name="input">
         <MeshTopology name="surface" filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/tongue.obj" />
