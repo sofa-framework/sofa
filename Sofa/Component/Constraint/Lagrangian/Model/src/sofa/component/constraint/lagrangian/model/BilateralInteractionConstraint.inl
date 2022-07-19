@@ -328,8 +328,30 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
 {
-    SOFA_UNUSED(event);
-    msg_deprecated() << "Removed";
+    if (KeypressedEvent::checkEventType(event))
+    {
+        KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
+        switch(ev->getKey())
+        {
+
+        case 'A':
+        case 'a':
+            msg_info() << "Activating constraint" ;
+            activated = true;
+            break;
+        }
+    }
+
+
+    if (simulation::AnimateEndEvent::checkEventType(event) )
+    {
+        ++iteration;
+        if (!activated && activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration)
+        {
+            msg_info() << "Activating constraint" ;
+            activated = true;
+        }
+    }
 }
 
 template<class DataTypes>
