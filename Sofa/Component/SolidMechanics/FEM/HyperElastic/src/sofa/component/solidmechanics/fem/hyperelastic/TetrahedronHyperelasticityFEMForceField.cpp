@@ -22,7 +22,7 @@
 
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_CPP
 
-#include "TetrahedronHyperelasticityFEMForceField.inl"
+#include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
