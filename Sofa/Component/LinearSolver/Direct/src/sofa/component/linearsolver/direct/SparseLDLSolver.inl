@@ -175,7 +175,6 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 // Compute JLtinv column by column and then compute JLtinvDinv 
     {
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-        // compute JLTinv line by line
         // row(JLtinv) = col( LinvJt ) = Linv*col(Jt) = Linv*row(J)
         for (unsigned c = 0; c < JlocalRowSize; c++) 
         {
@@ -204,23 +203,11 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
         {
             Real* lineJ = JLTinvDinv[j];
             int globalRowJ = Jlocal2global[j];
+
             multiplyTaskList.emplace_back(data->n, JlocalRowSize, j, &JLTinvDinv, &JLTinv, &JMinvJt, Jlocal2global.data(), &status );
             taskScheduler->addTask( &(multiplyTaskList.back()) ); 
-            
-            /*
-            for (unsigned i = j; i < JlocalRowSize; i++) {
-                Real* lineI = JLTinv[i];
-                int globalRowI = Jlocal2global[i];
-
-                JMinvJt.set(globalRowI,globalRowJ, 0.0);
-                for (unsigned k = 0; k < (unsigned)data->n; k++) {
-                    JMinvJt.add(globalRowI,globalRowJ, lineJ[k] * lineI[k]);
-                }
-            }
-           */
         }
         taskScheduler->workUntilDone(&status);
-
     }
 
     {

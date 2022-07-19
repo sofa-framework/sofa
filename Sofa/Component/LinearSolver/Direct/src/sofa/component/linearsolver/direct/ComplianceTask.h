@@ -172,51 +172,17 @@ sofa::simulation::Task::MemoryAlloc MultiplyTask<Matrix,Vector>::run()
     unsigned j = (unsigned)m_lineIndex;
     int globalRowJ = m_local2global[j];
 
-    for (unsigned i = j; i < m_RowSize; i++) {
+    for (unsigned i = j; i < (unsigned)m_RowSize; i++) {
 
                 int globalRowI = m_local2global[i];
-
-                //m_result->set(globalRowI,globalRowJ, 0.0);
                 double coeff =0;
+
                 for (unsigned k = 0; k < (unsigned)m_n; k++) 
                 {
-                    //m_result->add(globalRowI,globalRowJ, m_LHfactor->element( i, k ) * m_RHfactor->element(i,k)  ); // we use the transpose here
-                    coeff += m_LHfactor->element( i, k ) * m_RHfactor->element(i,k);
+                    coeff += m_LHfactor->element( j, k ) * m_RHfactor->element(i,k); // we use the transpose here
                 }
-                m_result->add(globalRowI,globalRowJ, coeff);
+                m_result->set(globalRowI,globalRowJ, coeff);
             }
-    
-
-   /*
-    unsigned j = (unsigned)m_lineIndex;
-    //Real* lineJ = m_LHfactor[j];
-    int globalRowJ = m_local2global[j];
-    for (unsigned i = j; i < (unsigned)m_RowSize; i++) 
-    {
-        //Real* lineI = m_RHfactor[i];
-        int globalRowI = m_local2global[i];
-
-            double acc = 0.0;
-            for (unsigned k = 0; k < (unsigned)m_n; k++) 
-            {
-                //acc += lineJ[k] * lineI[k];
-                acc += m_LHfactor->element(i,k) * m_RHfactor->element(i,k);
-            }
-            m_result->add(globalRowI,globalRowJ, acc  );
-    }
-    */
-
-/*
-for (unsigned i = j; i < JlocalRowSize; i++) {
-    Real* lineI = JLTinv[i];
-    int globalRowI = Jlocal2global[i];
-
-    JMinvJt.set(globalRowI,globalRowJ, 0.0);
-    for (unsigned k = 0; k < (unsigned)data->n; k++) {
-        JMinvJt.add(globalRowI,globalRowJ, lineJ[k] * lineI[k]);
-    }
-            }
-*/
 
     return simulation::Task::Stack;
 }
