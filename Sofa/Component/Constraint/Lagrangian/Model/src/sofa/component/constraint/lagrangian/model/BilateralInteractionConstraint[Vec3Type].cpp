@@ -19,3 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_VEC3TYPE_CPP
+
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint[Vec3Type].inl>
+
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+{
+
+namespace
+{
+int BilateralInteractionConstraintClass = core::RegisterObject("BilateralInteractionConstraint defining an holonomic equality constraint (attachment)")
+        .add< BilateralInteractionConstraint<Vec3Types> >()
+        ;
+}
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint< Vec3Types >;
+
+} //namespace sofa::component::constraint::lagrangian::model

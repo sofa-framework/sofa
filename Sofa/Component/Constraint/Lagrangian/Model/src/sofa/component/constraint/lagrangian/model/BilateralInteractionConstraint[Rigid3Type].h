@@ -19,3 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+namespace  sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+{
+
+using sofa::defaulttype::Rigid3Types;
+
+} // namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+

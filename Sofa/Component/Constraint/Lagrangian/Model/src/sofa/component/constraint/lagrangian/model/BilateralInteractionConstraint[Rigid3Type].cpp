@@ -19,3 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_RIGID3TYPE_CPP
+
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint[Rigid3Type].inl>
+
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+{
+
+int BilateralInteractionConstraintClass = core::RegisterObject("BilateralInteractionConstraint defining an holonomic equality constraint (attachment)")
+        .add< BilateralInteractionConstraint<Rigid3Types> >()
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint< Rigid3Types >;
+
+}

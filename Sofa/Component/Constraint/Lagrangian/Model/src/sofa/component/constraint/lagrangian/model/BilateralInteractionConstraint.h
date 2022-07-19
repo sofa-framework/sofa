@@ -26,9 +26,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
 
 #include <deque>
 
@@ -49,9 +47,6 @@ using sofa::core::ConstVecCoordId;
 using sofa::linearalgebra::BaseVector ;
 using sofa::type::Vec3d;
 using sofa::type::Quat ;
-
-using sofa::defaulttype::Rigid3Types ;
-using sofa::defaulttype::Vec3Types ;
 
 
 template<class DataTypes>
@@ -155,12 +150,6 @@ public:
 private:
     void unspecializedInit() ;
 };
-
-
-#if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint< Vec3Types >;
-extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint< Rigid3Types >;
-#endif
 
 } // namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
 
