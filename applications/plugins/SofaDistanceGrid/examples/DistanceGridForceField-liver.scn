@@ -6,7 +6,6 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.1" />
-    <DefaultCollisionGroupManager />
     
     <Node name="Simulation">
 

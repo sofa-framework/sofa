@@ -53,6 +53,7 @@ sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_plugin(SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
 sofa_add_plugin_external(OpenCTMPlugin OpenCTMPlugin)
+sofa_add_plugin_external(BeamAdapter BeamAdapter)
 
 sofa_add_plugin_experimental(PSL PSL)
 
