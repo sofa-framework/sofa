@@ -10,7 +10,6 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
-    <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
         <EulerImplicitSolver name="cg_odesolver"  />
         <SparsePARDISOSolver />

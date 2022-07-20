@@ -19,7 +19,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [CylinderGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
+
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" />
@@ -27,7 +27,6 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
-    <DefaultCollisionGroupManager name="Group" />
     <Node name="Cylinder Static Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 0" rotation="0 90 0" scale="10" />

@@ -20,7 +20,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     <VisualStyle displayFlags="showBehavior" />
     <FreeMotionAnimationLoop />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
@@ -28,7 +27,6 @@
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
     <DefaultContactManager name="Response" response="FrictionContactConstraint" />
-    <DefaultCollisionGroupManager name="Group" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node name="ChainRigid">
         <Node name="TorusFixed">
