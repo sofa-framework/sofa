@@ -159,7 +159,7 @@ std::string PluginManager::getDefaultSuffix()
 #endif
 }
 
-auto PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog) -> PluginLoadStatus
+PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog)
 {
     if (pluginIsLoaded(pluginPath))
     {
