@@ -114,6 +114,8 @@ void GenericConstraintCorrection::bwdInit()
         msg_info() << "ODESolver path used: '" << l_ODESolver.getLinkedPath() << "'";
         m_ODESolver = l_ODESolver.get();
     }
+
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void GenericConstraintCorrection::cleanup()
