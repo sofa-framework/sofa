@@ -119,7 +119,7 @@
                 <BarycentricMapping name="VisualMapping"/>
             </Node>
         </Node>
-        <LinearSolverConstraintCorrection solverName="precond"/>
+        <LinearSolverConstraintCorrection linearSolver="@precond"/>
     </Node>
 
 

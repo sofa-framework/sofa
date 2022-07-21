@@ -22,7 +22,7 @@
 		<MechanicalObject name="MichelleM0" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
 		<UniformMass totalmass="3.0"/>
 		<TetrahedronFEMForceField name="FEM" youngModulus="500000" poissonRatio="0.4"/>
-		<LinearSolverConstraintCorrection  solverName="taucs"/>
+                <LinearSolverConstraintCorrection  linearSolver="@taucs"/>
 		
 		<Node name="Tetra">
 			<TetrahedronSetTopologyContainer name="Container"/>
@@ -54,7 +54,7 @@
 		<MechanicalObject name="MichelleM0" dx="30" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
 		<UniformMass totalmass="3.0"/>
 		<TetrahedronFEMForceField name="FEM" youngModulus="500000" poissonRatio="0.4"/>
-		<LinearSolverConstraintCorrection  solverName="taucs"/>
+                <LinearSolverConstraintCorrection linearSolver="@taucs"/>
 		
 		<Node name="Tetra">
 			<TetrahedronSetTopologyContainer name="Container"/>
