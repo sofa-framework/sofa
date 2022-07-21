@@ -36,6 +36,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::createTetrahedronInformati
         const sofa::type::vector<Index>& ancestors,
         const sofa::type::vector<SReal>& coefs)
 {
+    SOFA_UNUSED(tInfo);
+    SOFA_UNUSED(tetra);
+    SOFA_UNUSED(ancestors);
+    SOFA_UNUSED(coefs);
+
     const core::topology::BaseMeshTopology::Tetrahedron t=this->m_topology->getTetrahedron(tetrahedronIndex);
     Index a = t[0];
     Index b = t[1];

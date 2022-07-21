@@ -393,6 +393,8 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 template <class DataTypes>
 void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     if (!this->mstate1 || !this->mstate2)
@@ -411,10 +413,11 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 
     constexpr Real max_real = std::numeric_limits<Real>::max();
     constexpr Real min_real = std::numeric_limits<Real>::lowest();
+
     Real maxBBox[DataTypes::spatial_dimensions];
     Real minBBox[DataTypes::spatial_dimensions];
 
-    for (int c = 0; c < DataTypes::spatial_dimensions; ++c)
+    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
     {
         maxBBox[c] = min_real;
         minBBox[c] = max_real;
@@ -434,7 +437,7 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
                 const auto& b = p2[spring.m2];
                 for (const auto& p : {a, b})
                 {
-                    for (int c = 0; c < DataTypes::spatial_dimensions; ++c)
+                    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
                     {
                         if (p[c] > maxBBox[c])
                             maxBBox[c] = p[c];

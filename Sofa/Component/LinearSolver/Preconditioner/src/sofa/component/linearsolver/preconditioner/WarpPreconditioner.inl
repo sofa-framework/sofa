@@ -117,7 +117,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         if (!this->linearSystem.systemMatrix) this->linearSystem.systemMatrix = this->createMatrix();
     }
 
-    if (first || d_updateStep.getValue() > 0 && nextRefreshStep >= d_updateStep.getValue() || d_updateStep.getValue() == 0)
+    if (first || ( d_updateStep.getValue() > 0 && nextRefreshStep >= d_updateStep.getValue()) || (d_updateStep.getValue() == 0))
     {
         realSolver->setSystemMBKMatrix(mparams);
         nextRefreshStep = 1;

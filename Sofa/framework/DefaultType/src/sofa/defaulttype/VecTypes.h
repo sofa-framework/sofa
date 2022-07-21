@@ -49,9 +49,9 @@ public:
     typedef type::vector<Deriv> VecDeriv;
     typedef type::vector<Real> VecReal;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename TCoord::Size Size;
 

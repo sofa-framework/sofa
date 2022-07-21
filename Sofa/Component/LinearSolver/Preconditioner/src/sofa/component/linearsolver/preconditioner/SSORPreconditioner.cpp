@@ -40,7 +40,6 @@ void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<SReal>, lineara
     const Index n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
 
-    const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const Matrix::VecIndex& colsIndex = M.getColsIndex();
     const Matrix::VecBlock& colsValue = M.getColsValue();
     // Solve (D/w+U) * t = r;
@@ -85,13 +84,11 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
-    static constexpr std::size_t BlocSize = 3;
+    static constexpr sofa::Size BlocSize = 3;
 
-    const Index n = M.rowSize();
     const Index nb = M.rowBSize();
     const Real w = (Real)f_omega.getValue();
 
-    const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const typename Matrix::VecIndex& colsIndex = M.getColsIndex();
     const typename Matrix::VecBlock& colsValue = M.getColsValue();
     // Solve (D+U) * t = r;
@@ -111,7 +108,6 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
             const typename Matrix::Block& b = colsValue[xi];
             for (Index j1=0; j1<BlocSize; ++j1)
             {
-                Index j = j0+j1;
                 for (Index i1=0; i1<BlocSize; ++i1)
                 {
                     Index i = i0+i1;
@@ -149,7 +145,6 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
             const typename Matrix::Block& b = colsValue[xi];
             for (Index j1=0; j1<BlocSize; ++j1)
             {
-                Index j = j0+j1;
                 for (Index i1=0; i1<BlocSize; ++i1)
                 {
                     Index i = i0+i1;
