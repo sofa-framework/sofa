@@ -119,6 +119,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
                = J*(L^t)^-1*D^-1*(J*L^-1)^t
                = (L^-1 *J^t)^t * D^-1 * (L^-1*J^t )
     */
+   
     if (J->rowSize()==0) return true;
 
     Jlocal2global.clear();
