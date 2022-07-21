@@ -69,7 +69,7 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 }
 
 GenericConstraintSolver::GenericConstraintSolver()
-    : d_NLCP_solver( initData(&d_NLCP_solver, "NLCP_solver", "Solver used for the Non-Linear Complementary Problem (NLCP) among: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
+    : d_resolutionMethod( initData(&d_resolutionMethod, "resolutionMethod", "Method used to solve the Non-Linear Complementary Problem (NLCP) among: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
     , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
@@ -97,7 +97,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 {
     sofa::helper::OptionsGroup m_newoptiongroup(2,"ProjectedGaussSeidel","NonsmoothNonlinearConjugateGradient");
     m_newoptiongroup.setSelectedItem("ProjectedGaussSeidel");
-    d_NLCP_solver.setValue(m_newoptiongroup);
+    d_resolutionMethod.setValue(m_newoptiongroup);
 
     addAlias(&maxIt, "maxIt");
 
@@ -168,7 +168,7 @@ void GenericConstraintSolver::init()
 
     if(d_newtonIterations.isSet())
     {
-        if (d_NLCP_solver.getValue().getSelectedId() == 0) // ProjectedGaussSeidel
+        if (d_resolutionMethod.getValue().getSelectedId() == 0) // ProjectedGaussSeidel
         {
             msg_warning() << "data \"newtonIterations\" is not taken into account when using the ProjectedGaussSeidel solver";
         }
@@ -176,7 +176,7 @@ void GenericConstraintSolver::init()
 
     if(unbuilt.isSet())
     {
-        if (d_NLCP_solver.getValue().getSelectedId() == 1) // NNCG
+        if (d_resolutionMethod.getValue().getSelectedId() == 1) // NNCG
         {
             msg_warning() << "data \"unbuilt\" is not taken into account when using the NonsmoothNonlinearConjugateGradient solver";
         }
@@ -428,7 +428,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     current_cp->unbuilt = unbuilt.getValue();
 
     // Projective Gauss Seidel method
-    if (d_NLCP_solver.getValue().getSelectedId() == 0)
+    if (d_resolutionMethod.getValue().getSelectedId() == 0)
     {
         if (unbuilt.getValue())
         {
