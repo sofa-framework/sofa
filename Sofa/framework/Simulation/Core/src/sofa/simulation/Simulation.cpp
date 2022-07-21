@@ -171,7 +171,7 @@ void Simulation::init ( Node* root )
 
     if(!root->getVisualLoop())
     {
-        msg_warning(root) <<
+        msg_info(root) <<
             "Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning";
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
