@@ -2,7 +2,7 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <ShewchukPCGLinearSolver name="PCG" iterations="1000" preconditioners="preconditioner"/>
+    <ShewchukPCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
     <SSORPreconditioner name="preconditioner"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 

@@ -6,7 +6,7 @@
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" />-->
 		<EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.01" />
 		<CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
-<!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioners="precond" />
+<!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioner="@precond" />
 		<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->
 		<MeshTopology src="@volume" />
 		<MechanicalObject template="Vec3" />
