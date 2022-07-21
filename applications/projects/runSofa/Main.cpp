@@ -387,11 +387,11 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
-
     if (!noAutoloadPlugins)
     {
+        std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
+        std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
+
         if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
@@ -403,10 +403,14 @@ int main(int argc, char** argv)
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
+        {
             msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+        }
     }
     else
+    {
         msg_info("runSofa") << "Automatic plugin loading disabled.";
+    }
 
     PluginManager::getInstance().init();
 

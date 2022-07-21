@@ -29,6 +29,8 @@
 #include <memory>
 #include <functional>
 
+#include <sofa/type/vector.h>
+
 namespace sofa
 {
 namespace helper
@@ -155,6 +157,16 @@ public:
     /// Returns "_d" in debug configuration and an empty string otherwise 
     static std::string getDefaultSuffix();
 
+    enum class PluginLoadStatus : unsigned char
+    {
+        SUCCESS,
+        ALREADY_LOADED,
+        PLUGIN_FILE_NOT_FOUND,
+        INVALID_LOADING,
+        MISSING_SYMBOL,
+        INIT_ERROR
+    };
+
     
     /// Loads a plugin library in process memory. 
     /// @param plugin Can be just the filename of the library to load (without extension) or the full path
@@ -162,12 +174,12 @@ public:
     /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
     ///                   Not used if the plugin string passed as a parameter is a full path
     /// @param errlog An optional stream for error logging.
-    bool loadPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
-    
+    PluginLoadStatus loadPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog = nullptr);
+
     /// Loads a plugin library in process memory. 
     /// @param path The full path of the plugin to load
     /// @param errlog An optional stream for error logging.
-    bool loadPluginByPath(const std::string& path, std::ostream* errlog= nullptr);
+    PluginLoadStatus loadPluginByPath(const std::string& path, std::ostream* errlog= nullptr);
     
     /// Loads a plugin library in process memory. 
     /// @param pluginName The filename without extension of the plugin to load
@@ -175,7 +187,7 @@ public:
     /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
     ///                   Not used if the plugin string passed as a parameter is a full path
     /// @param errlog An optional stream for error logging.
-    bool loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog= nullptr);
+    PluginLoadStatus loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, bool recursive = true, std::ostream* errlog= nullptr);
     
     /// Unloads a plugin from process memory.
     bool unloadPlugin(const std::string& path, std::ostream* errlog= nullptr);
@@ -202,6 +214,7 @@ public:
     Plugin* getPluginByName(const std::string& pluginName);
 
     void readFromIniFile(const std::string& path);
+    void readFromIniFile(const std::string& path, type::vector<std::string>& listLoadedPlugins);
     void writeToIniFile(const std::string& path);
 
     static std::string s_gui_postfix; ///< the postfix to gui plugin, default="gui" (e.g. myplugin_gui.so)
