@@ -552,32 +552,39 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
         p[0] += 1.0;
     else
         p[2] += 1.0;
-    Vector3 q;
-    q = p.cross(tmp);
+    Vector3 q = p.cross(tmp);
     p = tmp.cross(q);
     /* do the normalization outside the segment loop */
     p.normalize();
     q.normalize();
 
-    int i2;
-
     /* build the cylinder from rectangular subd */
-    std::vector<Vector3> points;
-    std::vector<Vector3> normals;
+    sofa::type::vector<Vector3> points;
+    sofa::type::vector<Vector3> normals;
 
-    std::vector<Vector3> pointsCloseCylinder1;
-    std::vector<Vector3> normalsCloseCylinder1;
-    std::vector<Vector3> pointsCloseCylinder2;
-    std::vector<Vector3> normalsCloseCylinder2;
+    points.reserve(subd);
+    normals.reserve(subd);
 
-    Vector3 dir=p1-p2; dir.normalize();
+    sofa::type::vector<Vector3> pointsCloseCylinder1;
+    sofa::type::vector<Vector3> normalsCloseCylinder1;
+    sofa::type::vector<Vector3> pointsCloseCylinder2;
+    sofa::type::vector<Vector3> normalsCloseCylinder2;
+
+    pointsCloseCylinder1.reserve(1 + subd + 1);
+    normalsCloseCylinder1.reserve(1 + subd + 1);
+    pointsCloseCylinder2.reserve(1 + subd + 1);
+    normalsCloseCylinder2.reserve(1 + subd + 1);
+
+    Vector3 dir=p1-p2;
+    dir.normalize();
+
     pointsCloseCylinder1.push_back(p1);
     normalsCloseCylinder1.push_back(dir);
     pointsCloseCylinder2.push_back(p2);
     normalsCloseCylinder2.push_back(-dir);
 
 
-    for (i2=0 ; i2<=subd ; i2++)
+    for (int i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
         float theta =  (float)( i2 * 2.0f * M_PI / subd );

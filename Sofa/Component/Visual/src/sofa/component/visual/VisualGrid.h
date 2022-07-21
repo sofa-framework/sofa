@@ -20,27 +20,56 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/type/RGBAColor.h>
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING3D
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_GL_COMPONENT_RENDERING3D_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GL_COMPONENT_RENDERING3D_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::gl::component::rendering3d
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING3D
-#define SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
-#else
-#define SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v22.12 (PR#3113)", "v23.06", "Variable names have been renamed with the d_ prefix")
-#endif
+class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(VisualGrid, VisualModel);
+
+    typedef sofa::type::Vector3 Vector3;
+
+    enum PLANE
+    {
+        PLANE_X = 0,
+        PLANE_Y = 1,
+        PLANE_Z = 2
+    };
+
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+
+    Data<std::string> d_plane; ///< Plane of the grid
+
+
+    Data<float> d_size; ///< Size of the squared grid
+    Data<int> d_nbSubdiv; ///< Number of subdivisions
+
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
+
+    VisualGrid();
+    ~VisualGrid() override = default;
+
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams*) override;
+    void updateVisual() override;
+    void buildGrid();
+
+protected:
+
+    PLANE internalPlane;
+
+    ///< Pre-computed points used to draw the grid
+    sofa::type::vector<Vector3> m_drawnPoints;
+
+};
+
+} // namespace sofa::component::visual
