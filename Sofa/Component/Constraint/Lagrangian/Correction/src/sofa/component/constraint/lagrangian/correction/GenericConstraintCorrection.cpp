@@ -24,9 +24,9 @@
 #include <sofa/component/constraint/lagrangian/correction/GenericConstraintCorrection.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ConstraintParams.h>
 
 using sofa::core::execparams::defaultInstance; 
@@ -36,7 +36,6 @@ namespace sofa::component::constraint::lagrangian::correction
 using sofa::simulation::mechanicalvisitor::MechanicalIntegrateConstraintsVisitor;
 using sofa::type::vector;
 using sofa::core::objectmodel::BaseContext;
-using sofa::core::behavior::LinearSolver;
 using sofa::core::behavior::BaseConstraintCorrection;
 using sofa::core::behavior::ConstraintSolver;
 using sofa::linearalgebra::BaseMatrix;
@@ -51,8 +50,8 @@ using sofa::core::VecDerivId;
 using sofa::core::VecCoordId;
 
 GenericConstraintCorrection::GenericConstraintCorrection()
-: d_linearSolversName( initData(&d_linearSolversName, "solverName", "name of the constraint solver") )
-, d_ODESolverName( initData(&d_ODESolverName, "ODESolverName", "name of the ode solver") )
+: l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix"))
+, l_ODESolver(initLink("ODESolver", "Link towards the ODE solver used to recover the integration factors"))
 , d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 {
     m_ODESolver = nullptr;
@@ -65,67 +64,57 @@ void GenericConstraintCorrection::bwdInit()
     BaseContext* context = this->getContext();
 
     // Find linear solvers
-    m_linearSolvers.clear();
-    const vector<std::string>& solverNames = d_linearSolversName.getValue();
-    if(solverNames.empty())
+    if (l_linearSolver.empty())
     {
-        LinearSolver* s = nullptr;
-        context->get(s);
-        if(s)
-        {
-            if (s->getTemplateName() == "GraphScattered")
-                msg_warning() << "Can not use the solver " << s->getName() << " because it is templated on GraphScatteredType";
-            else
-                m_linearSolvers.push_back(s);
-        }
+        msg_info() << "Link \"linearSolver\" to the desired linear solver should be set to ensure right behavior." << msgendl
+                   << "First LinearSolver found in current context will be used.";
+        l_linearSolver.set( context->get<sofa::core::behavior::LinearSolver>(BaseContext::Local) );
     }
-    else 
+
+    if (l_linearSolver.get() == nullptr)
     {
-        for(unsigned int i=0; i<solverNames.size(); ++i)
+        msg_error() << "No LinearSolver component found at path: " << l_linearSolver.getLinkedPath() << ", nor in current context: " << context->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    else
+    {
+        if (l_linearSolver.get()->getTemplateName() == "GraphScattered")
         {
-            LinearSolver* s = nullptr;
-            context->get(s, solverNames[i]);
-
-            if(s)
-            {
-                if (s->getTemplateName() == "GraphScattered")
-                    msg_warning() << "Can not use the solver " << solverNames[i] << " because it is templated on GraphScatteredType";
-                else
-                    m_linearSolvers.push_back(s);
-            } 
-            else
-                msg_warning() << "Solver \"" << solverNames[i] << "\" not found.";
+            msg_error() << "Can not use the solver " << l_linearSolver.get()->getName() << " because it is templated on GraphScatteredType";
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
         }
-
+        else
+        {
+            msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
+            m_linearSolver = l_linearSolver.get();
+        }
     }
 
     // Find ODE solver
-    if(d_ODESolverName.isSet())
-        context->get(m_ODESolver, d_ODESolverName.getValue());
-
-    if(m_ODESolver == nullptr)
+    if (l_ODESolver.empty())
     {
-        context->get(m_ODESolver, BaseContext::Local);
-        if (m_ODESolver == nullptr)
+        msg_info() << "Link \"ODESolver\" to the desired ODE solver should be set to ensure right behavior." << msgendl
+                   << "First ODESolver found in current context will be used.";
+        l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(BaseContext::Local) );
+        if (l_ODESolver.get() == nullptr)
         {
-            context->get(m_ODESolver, BaseContext::SearchRoot);
-            if (m_ODESolver == nullptr)
-            {
-                msg_error() << "No OdeSolver found.";
-                return;
-            }
+            l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(BaseContext::SearchRoot) );
         }
     }
 
-    if (m_linearSolvers.empty())
+    if (l_ODESolver.get() == nullptr)
     {
-        msg_error() << "No LinearSolver found.";
+        msg_error() << "No ODESolver component found at path: " << l_ODESolver.getLinkedPath() << ", nor in current context: " << context->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-
-    msg_info() << "Found " << m_linearSolvers.size() << " m_linearSolvers";
-    for (auto* linearSolver : m_linearSolvers)
-        msg_info() << linearSolver->getName();
+    else
+    {
+        msg_info() << "ODESolver path used: '" << l_ODESolver.getLinkedPath() << "'";
+        m_ODESolver = l_ODESolver.get();
+    }
 }
 
 void GenericConstraintCorrection::cleanup()
@@ -149,9 +138,8 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 }
 
 void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
-{
-    for (auto* linearSolver : m_linearSolvers)
-        linearSolver->rebuildSystem(massFactor, forceFactor);
+{    
+    m_linearSolver->rebuildSystem(massFactor, forceFactor);
 }
 
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
@@ -180,18 +168,12 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     factor *= complianceFactor;
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        linearSolver->buildComplianceMatrix(cparams, W, factor);
-    }
+    m_linearSolver->buildComplianceMatrix(cparams, W, factor);
 }
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
 {
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        linearSolver->applyConstraintForce(cparams, dx, lambda);
-    }
+    m_linearSolver->applyConstraintForce(cparams, dx, lambda);
 }
 
 void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* cparams,
@@ -202,11 +184,8 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         double positionFactor,
                                                         double velocityFactor)
 {
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, linearSolver->getSystemMultiMatrixAccessor());
-        linearSolver->getContext()->executeVisitor(&v);
-    }
+    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolver->getSystemMultiMatrixAccessor());
+    m_linearSolver->getContext()->executeVisitor(&v);
 }
 
 void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams * cparams,
@@ -262,10 +241,7 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
 {
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        linearSolver->computeResidual(params, lambda);
-    }
+    m_linearSolver->computeResidual(params, lambda);
 }
 
 

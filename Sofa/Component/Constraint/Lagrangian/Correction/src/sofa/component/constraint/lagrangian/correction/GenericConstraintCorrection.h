@@ -59,9 +59,30 @@ public:
 
     void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector *lambda) override;
 
-    Data< type::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
-    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
+    SingleLink<GenericConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solvers used to compute the compliance matrix, requiring the inverse of the linear system matrices
+    SingleLink<GenericConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
     Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
+
+
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#XXXX)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    Data< type::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#XXXX)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
+
+    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#XXXX)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit1::parse(arg);
+        if (arg->getAttribute("solverName"))
+        {
+            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #XXXX)";
+        }
+        if (arg->getAttribute("ODESolverName"))
+        {
+            msg_warning() << "String data \"ODESolverName\" is now replaced by explicit data link: \"ODESolver\" (PR #XXXX)";
+        }
+    }
+
 
 protected:
     GenericConstraintCorrection();
@@ -72,8 +93,8 @@ protected:
     void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
                                core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);
 
-    core::behavior::OdeSolver* m_ODESolver;
-    std::vector< core::behavior::LinearSolver* > m_linearSolvers;
+    sofa::core::behavior::OdeSolver* m_ODESolver;
+    sofa::core::behavior::LinearSolver* m_linearSolver;
 };
 
 } //namespace sofa::component::constraint::lagrangian::correction
