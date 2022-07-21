@@ -45,7 +45,7 @@ public:
     Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
     Data<bool> f_use_precond; ///< Use preconditioner
-    SingleLink<ShewchukPCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solvers used to compute the compliance matrix, requiring the inverse of the linear system matrices
+    SingleLink<ShewchukPCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
     Data<unsigned> f_update_step; ///< Number of steps before the next refresh of precondtioners
     Data<bool> f_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
     Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
