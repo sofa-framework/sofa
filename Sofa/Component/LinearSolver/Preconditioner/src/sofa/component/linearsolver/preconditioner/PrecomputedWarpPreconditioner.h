@@ -113,15 +113,15 @@ public:
     Data<bool> use_rotations; ///< Use Rotations around the preconditioner
     Data<double> draw_rotations_scale; ///< Scale rotations in draw function
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3154)", "v23.06", "String data of the PrecomputedWarpPreconditioner were replaced by an explicit link")
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the PrecomputedWarpPreconditioner were replaced by an explicit link")
     Data <std::string> solverName;
-    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3154)", "v23.06", "String data of the PrecomputedWarpPreconditioner were replaced by an explicit link")
+    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the PrecomputedWarpPreconditioner were replaced by an explicit link")
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         Inherit1::parse(arg);
         if (arg->getAttribute("solverName"))
         {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3154)";
+            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3155)";
         }
     }
 

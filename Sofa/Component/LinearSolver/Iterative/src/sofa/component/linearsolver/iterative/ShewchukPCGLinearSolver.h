@@ -51,15 +51,15 @@ public:
     Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
 
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3154)", "v23.06", "String data of the ShewchukPCGLinearSolver were replaced by an explicit link")
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the ShewchukPCGLinearSolver were replaced by an explicit link")
     Data< std::string > f_preconditioners; ///< If not empty: path to the solvers to use as preconditioners
-    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3154)", "v23.06", "String data of the ShewchukPCGLinearSolver were replaced by an explicit link")
+    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the ShewchukPCGLinearSolver were replaced by an explicit link")
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         Inherit1::parse(arg);
         if (arg->getAttribute("preconditioners"))
         {
-            msg_warning() << "String data \"preconditioners\" is now replaced by explicit data link: \"preconditioner\" (PR #3154)";
+            msg_warning() << "String data \"preconditioners\" is now replaced by explicit data link: \"preconditioner\" (PR #3155)";
         }
     }
 
