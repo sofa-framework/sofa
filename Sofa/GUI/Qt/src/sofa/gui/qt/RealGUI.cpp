@@ -381,7 +381,7 @@ RealGUI::RealGUI ( const char* viewername)
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
     connect ( this, SIGNAL ( quit() ), this, SLOT ( fileExit() ) );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
-    connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
+    connect ( ReloadSceneButton, SIGNAL ( clicked() ), this, SLOT ( fileReload() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
     connect ( realTimeCheckBox, SIGNAL ( stateChanged ( int ) ), this, SLOT ( updateDtEditState() ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );

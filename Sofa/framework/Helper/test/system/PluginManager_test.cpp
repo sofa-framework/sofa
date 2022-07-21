@@ -112,7 +112,7 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
         std::cout << "PluginManager_test.loadTestPluginByPath: "
                   << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
                   << std::endl;
-        ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
+        ASSERT_EQ(pm.loadPluginByPath(pluginPath), PluginManager::PluginLoadStatus::SUCCESS);
         ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
     }
 
@@ -125,7 +125,7 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
         std::cout << "PluginManager_test.loadTestPluginByPath: "
                   << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
                   << std::endl;
-        ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
+        ASSERT_EQ(pm.loadPluginByPath(nonpluginPath), PluginManager::PluginLoadStatus::PLUGIN_FILE_NOT_FOUND);
         ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
         std::cout << "PluginManager_test.loadTestPluginByPath: "
                   << "pm.getPluginMap().size() = " << pm.getPluginMap().size()
@@ -142,7 +142,7 @@ TEST_F(PluginManager_test, loadTestPluginByName )
     {
         EXPECT_MSG_NOEMIT(Warning, Error);
 
-        ASSERT_TRUE(pm.loadPluginByName(pluginName) );
+        ASSERT_EQ(pm.loadPluginByName(pluginName), PluginManager::PluginLoadStatus::SUCCESS );
         std::string pluginPath = pm.findPlugin(pluginName);
         ASSERT_GT(pluginPath.size(), 0u);
     }
@@ -152,7 +152,7 @@ TEST_F(PluginManager_test, loadTestPluginByName )
     {
         EXPECT_MSG_NOEMIT(Warning);
         EXPECT_MSG_EMIT(Error);
-        ASSERT_FALSE(pm.loadPluginByName(nonpluginName));
+        ASSERT_EQ(pm.loadPluginByName(nonpluginName), PluginManager::PluginLoadStatus::PLUGIN_FILE_NOT_FOUND);
 
         ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
     }

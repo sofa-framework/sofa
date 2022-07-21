@@ -20,27 +20,38 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/core/visual/VisualModel.h>
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING3D
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_GL_COMPONENT_RENDERING3D_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GL_COMPONENT_RENDERING3D_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::gl::component::rendering3d
+namespace sofa::component::visual
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::gl::component::rendering3d
 
-#ifdef SOFA_BUILD_SOFA_GL_COMPONENT_RENDERING3D
-#define SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
-#else
-#define SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v22.12 (PR#3113)", "v23.06", "Variable names have been renamed with the d_ prefix")
-#endif
+class SOFA_COMPONENT_VISUAL_API LineAxis : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(LineAxis, VisualModel);
+
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+
+    Data<std::string> d_axis; ///< Axis to draw
+    Data<float> d_size; ///< Size of the squared grid
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
+
+    LineAxis();
+
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams*) override;
+    void updateVisual() override;
+
+protected:
+
+    bool m_drawX;
+    bool m_drawY;
+    bool m_drawZ;
+
+};
+
+} // namespace sofa::component::visual
