@@ -45,8 +45,8 @@ template<class DataTypes>
 LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
 : Inherit(mm)
 , wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
-, solverName( initData(&solverName, "solverName", "search for the following names upward the scene graph") )
-, odesolver(nullptr)
+, l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix"))
+, l_ODESolver(initLink("ODESolver", "Link towards the ODE solver used to recover the integration factors"))
 {
 }
 
@@ -54,7 +54,6 @@ template<class DataTypes>
 LinearSolverConstraintCorrection<DataTypes>::~LinearSolverConstraintCorrection()
 {
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -66,53 +65,62 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 {
     Inherit::init();
 
-    sofa::core::objectmodel::BaseContext* c = this->getContext();
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
 
-    odesolver = c->get<sofa::core::behavior::OdeSolver>() ;
 
-    const type::vector<std::string>& solverNames = solverName.getValue();
-
-    linearsolvers.clear();
-
-    if (solverNames.empty())
+    // Find linear solvers
+    if (l_linearSolver.empty())
     {
-        sofa::core::behavior::LinearSolver* s = nullptr;
-        c->get(s);
-        if(s)
-        {
-            addSolverToList(s);
-        }
+        msg_info() << "Link \"linearSolver\" to the desired linear solver should be set to ensure right behavior." << msgendl
+                   << "First LinearSolver found in current context will be used.";
+        l_linearSolver.set( context->get<sofa::core::behavior::LinearSolver>(sofa::core::objectmodel::BaseContext::Local) );
+    }
+
+    if (l_linearSolver.get() == nullptr)
+    {
+        msg_error() << "No LinearSolver component found at path: " << l_linearSolver.getLinkedPath() << ", nor in current context: " << context->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
     else
     {
-        for (const auto& solver : solverNames)
+        if (l_linearSolver.get()->getTemplateName() == "GraphScattered")
         {
-            sofa::core::behavior::LinearSolver* s = nullptr;
-            c->get(s, solver);
-
-            if(s)
-            {
-                addSolverToList(s);
-            } 
-            else
-            {
-                msg_warning() << "Solver \"" << solver << "\" not found.";
-            }
+            msg_error() << "Can not use the solver " << l_linearSolver.get()->getName() << " because it is templated on GraphScatteredType";
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
+        else
+        {
+            msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
+            m_linearSolver = l_linearSolver.get();
         }
     }
 
-    if (odesolver == nullptr)
+    // Find ODE solver
+    if (l_ODESolver.empty())
     {
-        msg_error() << "No OdeSolver found (component is disabled)." ;
-        d_componentState.setValue(ComponentState::Invalid) ;
+        msg_info() << "Link \"ODESolver\" to the desired ODE solver should be set to ensure right behavior." << msgendl
+                   << "First ODESolver found in current context will be used.";
+        l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(sofa::core::objectmodel::BaseContext::Local) );
+        if (l_ODESolver.get() == nullptr)
+        {
+            l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(sofa::core::objectmodel::BaseContext::SearchRoot) );
+        }
+    }
+
+    if (l_ODESolver.get() == nullptr)
+    {
+        msg_error() << "No ODESolver component found at path: " << l_ODESolver.getLinkedPath() << ", nor in current context: " << context->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    if (linearsolvers.empty())
+    else
     {
-        msg_error() << "No LinearSolver found (component is disabled).";
-        d_componentState.setValue(ComponentState::Invalid) ;
-        return;
+        msg_info() << "ODESolver path used: '" << l_ODESolver.getLinkedPath() << "'";
+        m_ODESolver = l_ODESolver.get();
     }
+
 
     if(mstate==nullptr)
     {
@@ -121,19 +129,6 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     }
 
     d_componentState.setValue(ComponentState::Valid) ;
-}
-
-template <class TDataTypes>
-void LinearSolverConstraintCorrection<TDataTypes>::addSolverToList(sofa::core::behavior::LinearSolver* s)
-{
-    if (s->getTemplateName() == sofa::component::linearsolver::GraphScatteredMatrix::Name())
-    {
-        msg_warning() << "Can not use the solver " << s->getName() << " because it is templated on GraphScatteredType";
-    }
-    else
-    {
-        linearsolvers.push_back(s);
-    }
 }
 
 template<class TDataTypes>
@@ -183,12 +178,12 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     {
     case core::ConstraintParams::POS_AND_VEL :
     case core::ConstraintParams::POS :
-        factor = odesolver->getPositionIntegrationFactor();
+        factor = m_ODESolver->getPositionIntegrationFactor();
         break;
 
     case core::ConstraintParams::ACC :
     case core::ConstraintParams::VEL :
-        factor = odesolver->getVelocityIntegrationFactor();
+        factor = m_ODESolver->getVelocityIntegrationFactor();
         break;
 
     default :
@@ -199,21 +194,15 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     this->computeJ(W, cparams->readJ(this->mstate)->getValue());
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    for (unsigned i = 0; i < linearsolvers.size(); i++)
-    {
-        linearsolvers[i]->setSystemLHVector(sofa::core::MultiVecDerivId::null());
-        linearsolvers[i]->addJMInvJt(W, &J, factor);
-    }
+    m_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
+    m_linearSolver->addJMInvJt(W, &J, factor);
 }
 
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (unsigned i = 0; i < linearsolvers.size(); i++)
-    {
-        linearsolvers[i]->rebuildSystem(massFactor, forceFactor);
-    }
+    m_linearSolver->rebuildSystem(massFactor, forceFactor);
 }
 
 template<class DataTypes>
@@ -222,7 +211,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalge
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    const double factor = odesolver->getPositionIntegrationFactor();
+    const double factor = m_ODESolver->getPositionIntegrationFactor();
 
     const unsigned int numDOFs = mstate->getSize();
     const unsigned int N = Deriv::size();
@@ -238,17 +227,17 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalge
     Minv->resize(numDOFReals,numDOFReals);
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    linearsolvers[0]->addJMInvJt(Minv, &J, factor);
+    m_linearSolver->addJMInvJt(Minv, &J, factor);
 }
 
 template< class DataTypes >
 void LinearSolverConstraintCorrection< DataTypes >::computeMotionCorrection(const core::ConstraintParams* /*cparams*/, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
-    if (mstate && !linearsolvers.empty())
+    if (mstate && m_linearSolver)
     {
-        linearsolvers[0]->setSystemRHVector(f);
-        linearsolvers[0]->setSystemLHVector(dx);
-        linearsolvers[0]->solveSystem();
+        m_linearSolver->setSystemRHVector(f);
+        m_linearSolver->setSystemLHVector(dx);
+        m_linearSolver->solveSystem();
     }
 }
 
@@ -267,8 +256,8 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
-        const double positionFactor = odesolver->getPositionIntegrationFactor();
-        const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+        const double positionFactor = m_ODESolver->getPositionIntegrationFactor();
+        const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
@@ -294,7 +283,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
         const VecDeriv& correction = correction_d.getValue();
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
 
-        const double positionFactor = odesolver->getPositionIntegrationFactor();
+        const double positionFactor = m_ODESolver->getPositionIntegrationFactor();
         for (unsigned int i = 0; i < numDOFs; i++)
         {
             const Deriv dxi = correction[i] * positionFactor;
@@ -318,7 +307,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
         const VecDeriv& correction = correction_d.getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
-        const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+        const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
@@ -372,17 +361,17 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
             }
         }
     }
-    linearsolvers[0]->setSystemRHVector(forceID);
-    linearsolvers[0]->setSystemLHVector(dxID);
-    linearsolvers[0]->solveSystem();
+    m_linearSolver->setSystemRHVector(forceID);
+    m_linearSolver->setSystemLHVector(dxID);
+    m_linearSolver->solveSystem();
 
     //TODO: tell the solver not to recompute the matrix
 
     // use the OdeSolver to get the position integration factor
-    const double positionFactor = odesolver->getPositionIntegrationFactor();
+    const double positionFactor = m_ODESolver->getPositionIntegrationFactor();
 
     // use the OdeSolver to get the position integration factor
-    const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
 
     Data<VecCoord>& xData     = *mstate->write(core::VecCoordId::position());
     Data<VecDeriv>& vData     = *mstate->write(core::VecDerivId::velocity());
@@ -542,13 +531,13 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::VecDerivId::dx();
 
-    linearsolvers[0]->setSystemRHVector(forceID);
-    linearsolvers[0]->setSystemLHVector(dxID);
+    m_linearSolver->setSystemRHVector(forceID);
+    m_linearSolver->setSystemLHVector(dxID);
 
 
-    systemMatrix_buf   = linearsolvers[0]->getSystemBaseMatrix();
-    systemRHVector_buf = linearsolvers[0]->getSystemRHBaseVector();
-    systemLHVector_buf = linearsolvers[0]->getSystemLHBaseVector();
+    systemMatrix_buf   = m_linearSolver->getSystemBaseMatrix();
+    systemRHVector_buf = m_linearSolver->getSystemRHBaseVector();
+    systemLHVector_buf = m_linearSolver->getSystemLHBaseVector();
 
     const unsigned int derivDim = Deriv::size();
     const unsigned int systemSize = mstate->getSize() * derivDim;
@@ -562,7 +551,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     }
 
     // Init the internal data of the solver for partial solving
-    linearsolvers[0]->init_partial_solve();
+    m_linearSolver->init_partial_solve();
 
 
     ///////// new : precalcul des liste d'indice ///////
@@ -593,11 +582,11 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
     last_disp = begin;
 
 
-    linearsolvers[0]->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
+    m_linearSolver->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
 
     _new_force = false;
 
-    const auto positionIntegrationFactor = odesolver->getPositionIntegrationFactor();
+    const auto positionIntegrationFactor = m_ODESolver->getPositionIntegrationFactor();
     // TODO => optimisation => for each bloc store J[bloc,dof]
     for (int i = begin; i <= end; i++)
     {
@@ -677,7 +666,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
         return ;
 
     // use the OdeSolver to get the position integration factor
-    const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
+    const double factor = m_ODESolver->getPositionIntegrationFactor(); //*m_ODESolver->getPositionIntegrationFactor(); // dt*dt
 
     const unsigned int numDOFs = mstate->getSize();
     const unsigned int N = Deriv::size();
@@ -723,7 +712,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     }
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    linearsolvers[0]->addJMInvJt(W, &J, factor);
+    m_linearSolver->addJMInvJt(W, &J, factor);
 
     // construction of  Vec_I_list_dof : vector containing, for each constraint block, the list of dof concerned
 
