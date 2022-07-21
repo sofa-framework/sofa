@@ -54,7 +54,6 @@ GenericConstraintCorrection::GenericConstraintCorrection()
 , l_ODESolver(initLink("ODESolver", "Link towards the ODE solver used to recover the integration factors"))
 , d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 {
-    m_ODESolver = nullptr;
 }
 
 GenericConstraintCorrection::~GenericConstraintCorrection() {}
