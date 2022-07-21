@@ -23,7 +23,7 @@
 
 #include <sofa/component/playback/ReadTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadTopology.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadTopology.h")
 
 namespace sofa::component::misc
 {

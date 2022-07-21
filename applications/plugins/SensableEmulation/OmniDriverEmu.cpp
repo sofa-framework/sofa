@@ -29,8 +29,8 @@
 #include <sofa/core/visual/VisualParams.h>
 
 ////force feedback
-#include <SofaHaptics/ForceFeedback.h>
-#include <SofaHaptics/NullForceFeedback.h>
+#include <sofa/component/haptics/ForceFeedback.h>
+#include <sofa/component/haptics/NullForceFeedback.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>

@@ -34,7 +34,7 @@ void initSofaEngine()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaEngine") << "SofaEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Select instead.";
+        msg_deprecated("SofaEngine") << "SofaEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Select instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Select");
 

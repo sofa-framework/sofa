@@ -34,7 +34,7 @@ void initSofaMiscFem()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMiscFem") << "SofaMiscFem is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.FEM.Elastic, Sofa.Component.SolidMechanics.FEM.HyperElastic and Sofa.Component.SolidMechanics.TensorMass instead.";
+        msg_deprecated("SofaMiscFem") << "SofaMiscFem is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.FEM.Elastic, Sofa.Component.SolidMechanics.FEM.HyperElastic and Sofa.Component.SolidMechanics.TensorMass instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.FEM.HyperElastic");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");

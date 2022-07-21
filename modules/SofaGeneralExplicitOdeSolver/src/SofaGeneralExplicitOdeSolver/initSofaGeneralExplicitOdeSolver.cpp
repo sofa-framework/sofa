@@ -34,7 +34,7 @@ void initSofaGeneralExplicitOdeSolver()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaGeneralExplicitOdeSolver") << "SofaGeneralExplicitOdeSolver is deprecated. It will be removed at v23.06. Use Sofa.Component.ODESolver.Forward instead.";
+        msg_deprecated("SofaGeneralExplicitOdeSolver") << "SofaGeneralExplicitOdeSolver is deprecated. It will be removed at v23.06. Use Sofa.Component.ODESolver.Forward instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.ODESolver.Forward");
 

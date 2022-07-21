@@ -158,6 +158,7 @@ int main(int argc, char** argv)
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
+    unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
     string    computationTimeOutputType="stdout";
@@ -305,6 +306,12 @@ int main(int argc, char** argv)
         "argv",
         "forward extra args to the python interpreter"
     );
+    argParser->addArgument(
+        cxxopts::value<unsigned int>(nbMSSASamples)
+        ->default_value("1"),
+        "msaa",
+        "Number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
+    );
 
     addGUIParameters(argParser);
     argParser->parse();
@@ -387,11 +394,11 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
-
     if (!noAutoloadPlugins)
     {
+        std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
+        std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
+
         if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
@@ -403,10 +410,14 @@ int main(int argc, char** argv)
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
+        {
             msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+        }
     }
     else
+    {
         msg_info("runSofa") << "Automatic plugin loading disabled.";
+    }
 
     PluginManager::getInstance().init();
 

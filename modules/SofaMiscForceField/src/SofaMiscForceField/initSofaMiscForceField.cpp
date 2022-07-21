@@ -34,7 +34,7 @@ void initSofaMiscForceField()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMiscForceField") << "SofaMiscForceField is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass and Sofa.Component.SolidMechanics.FEM.Elastic instead.";
+        msg_deprecated("SofaMiscForceField") << "SofaMiscForceField is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass and Sofa.Component.SolidMechanics.FEM.Elastic instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mass");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");

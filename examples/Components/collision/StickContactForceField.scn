@@ -22,7 +22,8 @@
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="Response" response="stick" />
+
+    <DefaultContactManager name="Response" response="StickContactForceField" />
     <LocalMinDistance contactDistance="1" alarmDistance="2" />
     
     <Node name="cubeFEM">

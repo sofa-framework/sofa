@@ -35,7 +35,7 @@ void initSofaBaseUtils()
     static bool first = true;
     if (first)
     {        
-        // msg_deprecated("SofaBaseUtils") << "SofaBaseUtils is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility instead.";
+        msg_deprecated("SofaBaseUtils") << "SofaBaseUtils is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility instead.";
 
         // sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SceneUtility");
         sofa::component::sceneutility::init(); // force-load this module, like SofaBaseUtils

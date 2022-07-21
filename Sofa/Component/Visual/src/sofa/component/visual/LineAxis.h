@@ -19,24 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POINTCONSTRAINT_CPP
-#include <sofa/component/constraint/projective/PointConstraint.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/simulation/Node.h>
+#include <sofa/core/visual/VisualModel.h>
 
-namespace sofa::component::constraint::projective
+namespace sofa::component::visual
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
+class SOFA_COMPONENT_VISUAL_API LineAxis : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(LineAxis, VisualModel);
 
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-int PointConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-        .add< PointConstraint<Vec3Types> >()
+    Data<std::string> d_axis; ///< Axis to draw
+    Data<float> d_size; ///< Size of the squared grid
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
 
-        ;
+    LineAxis();
 
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointConstraint<Vec3Types>;
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams*) override;
+    void updateVisual() override;
 
-} // namespace sofa::component::constraint::projective
+protected:
+
+    bool m_drawX;
+    bool m_drawY;
+    bool m_drawZ;
+
+};
+
+} // namespace sofa::component::visual

@@ -34,7 +34,7 @@ void initSofaGeneralVisual()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaGeneralVisual") << "SofaGeneralVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual instead.";
+        msg_deprecated("SofaGeneralVisual") << "SofaGeneralVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
 

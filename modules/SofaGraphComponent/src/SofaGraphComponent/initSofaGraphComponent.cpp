@@ -34,7 +34,7 @@ void initSofaGraphComponent()
     static bool first = true;
     if (first)
     {        
-        // msg_deprecated("SofaGraphComponent") << "SofaGraphComponent is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility, Sofa.Component.Setting and Sofa.GUI.Component instead.";
+        msg_deprecated("SofaGraphComponent") << "SofaGraphComponent is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility, Sofa.Component.Setting and Sofa.GUI.Component instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SceneUtility");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Setting");

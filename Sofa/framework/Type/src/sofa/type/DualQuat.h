@@ -55,8 +55,9 @@ class SOFA_TYPE_API DualQuatCoord3
     typedef type::Vec<3,real> Pos;
     typedef type::Vec<3,real> Vec3;
     typedef type::Vec<4,real> Quat;
-    enum { total_size = 8 };
-    enum { spatial_dimensions = 3 };
+
+    static constexpr Size total_size = 8;
+    static constexpr Size spatial_dimensions = 3;
 
     Quat dual;
     Quat orientation;

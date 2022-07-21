@@ -27,7 +27,7 @@
 #include <sofa/gl/component/rendering2d/OglColorMap.h>
 #define SOFAGL_COMPONENT_OGLCOLORMAP
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering2d/OglColorMap.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering2d/OglColorMap.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering2d/OglColorMap.h> instead of this one."

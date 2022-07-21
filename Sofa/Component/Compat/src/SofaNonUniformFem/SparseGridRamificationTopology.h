@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/container/grid/SparseGridRamificationTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/SparseGridRamificationTopology.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/SparseGridRamificationTopology.h")
 
 namespace sofa::component::topology
 {

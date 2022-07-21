@@ -34,7 +34,7 @@ void initSofaMiscEngine()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMiscEngine") << "SofaMiscEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Analyze and Sofa.Component.Engine.Transform instead.";
+        msg_deprecated("SofaMiscEngine") << "SofaMiscEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Analyze and Sofa.Component.Engine.Transform instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Analyze");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Transform");

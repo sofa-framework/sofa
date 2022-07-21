@@ -34,7 +34,7 @@ void initSofaRigid()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaRigid") << "SofaRigid is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping and Sofa.Component.SolidMechanics.Spring instead.";
+        msg_deprecated("SofaRigid") << "SofaRigid is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping and Sofa.Component.SolidMechanics.Spring instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.Spring");
