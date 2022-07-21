@@ -34,7 +34,7 @@ void initSofaMiscTopology()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMiscTopology") << "SofaMiscTopology is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Utility instead.";
+        msg_deprecated("SofaMiscTopology") << "SofaMiscTopology is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Utility instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Utility");
 

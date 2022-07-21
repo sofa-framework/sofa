@@ -34,7 +34,7 @@ void initSofaMiscExtra()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMiscExtra") << "SofaMiscExtra is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Generate instead.";
+        msg_deprecated("SofaMiscExtra") << "SofaMiscExtra is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Generate instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Generate");
 

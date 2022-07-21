@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/visual/VisualModelImpl.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualModelImpl.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualModelImpl.h")
 
 namespace sofa::component::visualmodel
 {

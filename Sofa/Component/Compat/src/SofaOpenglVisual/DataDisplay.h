@@ -27,7 +27,7 @@
 #include <sofa/gl/component/rendering3d/DataDisplay.h>
 #define SOFAGL_COMPONENT_DATADISPLAY
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/DataDisplay.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/DataDisplay.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering3d/DataDisplay.h> instead of this one."

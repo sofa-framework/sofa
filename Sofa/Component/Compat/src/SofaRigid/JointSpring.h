@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/JointSpring.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/JointSpring.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/JointSpring.h")
 
 namespace sofa::component::interactionforcefield
 {

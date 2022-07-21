@@ -27,7 +27,7 @@
 #include <sofa/gui/component/AddRecordedCameraButtonSetting.h>
 #define SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AddRecordedCameraButtonSetting.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AddRecordedCameraButtonSetting.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AddRecordedCameraButtonSetting.h> instead of this one."

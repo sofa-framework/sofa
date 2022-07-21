@@ -21,14 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/RotationMatrix.h>
-
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/RotationMatrix.h")
-
-namespace sofa::component::linearsolver
-{
-
-    template<typename TReal>
-    using RotationMatrix = sofa::linearalgebra::RotationMatrix<TReal>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/RotationMatrix.h")

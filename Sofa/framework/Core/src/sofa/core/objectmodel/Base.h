@@ -38,8 +38,6 @@
 #include <sofa/core/DataTrackerCallback.h>
 #include <sofa/type/fwd.h>
 
-#include <sofa/helper/system/SofaOStream.h>
-
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
 // it is not super elegant, but it is way more efficient than dynamic_cast
@@ -365,23 +363,10 @@ public:
 
 private:
     /// effective ostringstream for logging
-    mutable std::ostringstream _serr, _sout;
     mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
     mutable Data<int> d_messageLogCount;
-
-    /// write into component buffer + Message processedby message handlers
-    /// default message type = Warning
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
-    /// write into component buffer.
-    /// Message is processed by message handlers only if printLog==true
-    /// /// default message type = Info
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
-    /// runs the stream processing
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaEndl<Base> sendl;
-
-    void processStream(std::ostream& out);
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
     size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;

@@ -22,6 +22,7 @@
 #include <SofaMiscCollision/initSofaMiscCollision.h>
 
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -34,8 +35,8 @@ void initSofaMiscCollision()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMiscCollision") << "SofaMiscCollision is deprecated. It will be removed at v23.06. Use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection and Sofa.Component.Collision.Response.Contact instead.";
-        // msg_deprecated("SofaMiscCollision") << "If you are looking for OBB and Capsule-related components, please use the external plugin CollisionOBBCapsule.";
+        msg_deprecated("SofaMiscCollision") << "SofaMiscCollision is deprecated. It will be removed at v23.06. Use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection and Sofa.Component.Collision.Response.Contact instead.";
+        msg_deprecated("SofaMiscCollision") << "If you are looking for OBB and Capsule-related components, please use the external plugin CollisionOBBCapsule.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Geometry");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");

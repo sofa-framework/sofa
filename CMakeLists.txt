@@ -42,6 +42,11 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
+
+# https://cmake.org/cmake/help/latest/policy/CMP0127.html
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.22)
+    cmake_policy(SET CMP0127 NEW)
+endif()
 cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
     "Compile SOFA using precompiled header (to accelerate the build process)" OFF
     "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)

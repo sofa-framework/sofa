@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/mapping/SubsetTopologicalMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/SubsetTopologicalMapping.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/SubsetTopologicalMapping.h")
 
 namespace sofa::component::topology
 {

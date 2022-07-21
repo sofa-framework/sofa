@@ -23,7 +23,7 @@
 
 #include <sofa/component/engine/generate/MergeVectors.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MergeVectors.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/MergeVectors.h")
 
 namespace sofa::component::engine
 {
