@@ -348,12 +348,15 @@ bool BaseLink::updateLinks()
         Base* ptr;
         std::string path = getLinkedPath(i);
         /// Search for path and if any returns the pointer to the proper object.
-        /// Search for path and if any returns the pointer to the proper object.
         if(!getLinkedBase() && !path.empty())
         {
             ptr = PathResolver::FindBaseFromClassAndPath(getOwner(), getDestClass(), path);
             if(!ptr)
                 ok = false;
+            else
+            {
+                msg_info(this->getOwner()) << "Link '" << this->getName() << "' successfully updated";
+            }
             set(ptr,i);
         }
     }

@@ -95,27 +95,23 @@ void BaseObject::parse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
     {
-        std::string valueString(arg->getAttribute("src"));
+        const std::string valueString(arg->getAttribute("src"));
+        arg->removeAttribute("src");
 
-        if (valueString[0] != '@')
+        BaseLink::InitLink<BaseObject> initObjectLink(this, "src", "Link to another component in which the Data sharing the same name are linked");
+        auto* link = new sofa::core::objectmodel::SingleLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK>(initObjectLink);
+        link->addPath(valueString);
+
+        if (link->get())
         {
-            msg_error() <<"'src' attribute value should be a link using '@'";
+            std::vector< std::string > attributeList;
+            arg->getAttributeList(attributeList);
+            setSrc(valueString, link->get(), &attributeList);
         }
         else
         {
-            if(valueString.size() == 1) // ignore '@' alone
-            {
-                msg_warning() << "'src=@' does nothing.";
-            }
-            else
-            {
-                std::vector< std::string > attributeList;
-                arg->getAttributeList(attributeList);
-                setSrc(valueString, &attributeList);
-            }
-
+            msg_info(this->getClassName()) << "Link \"src\" to " << valueString << " could not be set now. Will try later";
         }
-        arg->removeAttribute("src");
     }
     Base::parse(arg);
 }
@@ -178,8 +174,9 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
             }
             else
             {
-                std::string linkPath = valueString+"."+(*it_map).first;
+                const std::string linkPath = valueString+"."+(*it_map).first;
                 data->setParent( (*it_map).second, linkPath);
+                msg_info() << linkPath << " is now the parent of " << data->getLinkPath();
             }
         }
     }
@@ -191,6 +188,37 @@ Base* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string
         return nullptr;
     else
         return this->getContext()->findLinkDestClass(destType, path, link);
+}
+
+void BaseObject::updateLinks(bool logErrors)
+{
+    for (BaseLink* iLink : m_vecLink)
+    {
+        const Base* previousTarget = iLink->getLinkedBase();
+        const bool ok = iLink->updateLinks();
+
+        if (!ok && iLink->storePath())
+        {
+            msg_warning_when(logErrors) << "Link update failed for " << iLink->getName() << " = " << iLink->getValueString() ;
+        }
+        else
+        {
+            const Base* currentTarget = iLink->getLinkedBase();
+            if (currentTarget && currentTarget != previousTarget)
+            {
+                if (iLink->getName() == "src")
+                {
+                    const std::string relativePath = BaseLink::CreateString(iLink->getLinkedBase(0), this);
+                    Base* target = iLink->getLinkedBase();
+                    if (const auto* targetObject = dynamic_cast<BaseObject*>(target))
+                    {
+                        this->setSrc(iLink->getLinkedPath(), targetObject, nullptr);
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 

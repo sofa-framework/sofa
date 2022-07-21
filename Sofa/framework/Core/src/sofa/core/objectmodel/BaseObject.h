@@ -176,6 +176,7 @@ public:
 
     Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
+    void updateLinks(bool logErrors = true) override;
 
     /// Return the full path name of this object
     virtual std::string getPathName() const override;
