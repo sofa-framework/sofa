@@ -39,14 +39,14 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
     , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
     , f_use_precond( initData(&f_use_precond,true,"use_precond","Use preconditioner") )
+    , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient, requiring the inverse of the linear system matrix"))
     , f_update_step( initData(&f_update_step,(unsigned)1,"update_step","Number of steps before the next refresh of precondtioners") )
     , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )
-    , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
-    , next_refresh_step(0), m_preconditioners(nullptr), newton_iter(0)
+    , next_refresh_step(0)
+    , newton_iter(0)
 {
     f_graph.setWidget("graph");
-//    f_graph.setReadOnly(true);
     first = true;
     this->f_listening.setValue(true);
 }
@@ -56,21 +56,37 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
 {
     Inherit1::init();
 
-    if (! f_preconditioners.getValue().empty())
+    // Find linear solvers
+    if (l_preconditioner.empty())
     {
-        this->getContext()->get(m_preconditioners, f_preconditioners.getValue());
-
-        if(m_preconditioners)
+        msg_info() << "Link \"preconditioner\" to the desired linear solver should be set to precondition the conjugate gradient.";
+    }
+    else
+    {
+        if (l_preconditioner.get() == nullptr)
         {
-            msg_info() << "Found " << f_preconditioners.getValue() << ": '" << m_preconditioners->getPathName() << "'";
+            msg_error() << "No preconditioner found at path: " << l_preconditioner.getLinkedPath();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
         }
         else
         {
-            msg_error() << "Solver \"" << f_preconditioners.getValue() << "\" not found.";
+            if (l_preconditioner.get()->getTemplateName() == "GraphScattered")
+            {
+                msg_error() << "Can not use the preconditioner " << l_preconditioner.get()->getName() << " because it is templated on GraphScatteredType";
+                sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                return;
+            }
+            else
+            {
+                msg_info() << "Preconditioner path used: '" << l_preconditioner.getLinkedPath() << "'";
+                m_preconditioner = l_preconditioner.get();
+            }
         }
     }
 
     first = true;
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class TMatrix, class TVector>
@@ -83,11 +99,11 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
 
     sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix");
 
-    if (m_preconditioners==nullptr) return;
+    if (m_preconditioner==nullptr) return;
 
     if (first) //We initialize all the preconditioners for the first step
     {
-        m_preconditioners->setSystemMBKMatrix(mparams);
+        m_preconditioner->setSystemMBKMatrix(mparams);
         first = false;
         next_refresh_step = 1;
     }
@@ -100,7 +116,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
         {
             if (next_refresh_step>=f_update_step.getValue())
             {
-                m_preconditioners->setSystemMBKMatrix(mparams);
+                m_preconditioner->setSystemMBKMatrix(mparams);
                 next_refresh_step=1;
             }
             else
@@ -110,7 +126,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
         }
     }
 
-    m_preconditioners->updateSystemMatrix();
+    m_preconditioner->updateSystemMatrix();
 }
 
 template<>
@@ -156,7 +172,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     Vector& w = *vtmp.createTempVector();
     Vector& s = *vtmp.createTempVector();
 
-    bool apply_precond = m_preconditioners!=nullptr && f_use_precond.getValue();
+    bool apply_precond = m_preconditioner!=nullptr && f_use_precond.getValue();
 
     double b_norm = b.dot(b);
     double tol = f_tolerance.getValue() * b_norm;
@@ -167,9 +183,9 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     if (apply_precond)
     {
         helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
-        m_preconditioners->setSystemLHVector(w);
-        m_preconditioners->setSystemRHVector(r);
-        m_preconditioners->solveSystem();
+        m_preconditioner->setSystemLHVector(w);
+        m_preconditioner->setSystemRHVector(r);
+        m_preconditioner->solveSystem();
     }
     else
     {
@@ -192,9 +208,9 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         if (apply_precond)
         {
             helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
-            m_preconditioners->setSystemLHVector(s);
-            m_preconditioners->setSystemRHVector(r);
-            m_preconditioners->solveSystem();
+            m_preconditioner->setSystemLHVector(s);
+            m_preconditioner->setSystemRHVector(r);
+            m_preconditioner->solveSystem();
         }
         else
         {
