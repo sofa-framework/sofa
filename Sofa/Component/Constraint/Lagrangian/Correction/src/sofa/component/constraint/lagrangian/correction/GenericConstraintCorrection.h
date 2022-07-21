@@ -64,22 +64,22 @@ public:
     Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#XXXX)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
     Data< type::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#XXXX)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
     Data< std::string >                    d_ODESolverName; ///< name of the ode solver
 
-    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#XXXX)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         Inherit1::parse(arg);
         if (arg->getAttribute("solverName"))
         {
-            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #XXXX)";
+            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3152)";
         }
         if (arg->getAttribute("ODESolverName"))
         {
-            msg_warning() << "String data \"ODESolverName\" is now replaced by explicit data link: \"ODESolver\" (PR #XXXX)";
+            msg_warning() << "String data \"ODESolverName\" is now replaced by explicit data link: \"ODESolver\" (PR #3152)";
         }
     }
 
