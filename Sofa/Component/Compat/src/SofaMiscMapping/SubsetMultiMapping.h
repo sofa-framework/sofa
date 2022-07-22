@@ -26,7 +26,7 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/Subset
 
 namespace sofa::component::mapping
 {
-	template<class TIn, class TOut>
+    template<class TIn, class TOut>
     using SubsetMultiMapping = sofa::component::mapping::linear::SubsetMultiMapping<TIn, TOut>;
 
 } // namespace sofa::component::mapping

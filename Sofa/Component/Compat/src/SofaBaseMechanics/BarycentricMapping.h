@@ -28,7 +28,7 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/Baryce
 
 namespace sofa::component::mapping
 {
-	template<class TIn, class TOut>
+    template<class TIn, class TOut>
     using BarycentricMapping = sofa::component::mapping::linear::BarycentricMapping<TIn, TOut>;
 
 } // namespace sofa::component::mapping

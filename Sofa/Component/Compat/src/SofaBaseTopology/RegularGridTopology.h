@@ -25,7 +25,7 @@
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/RegularGridTopology.h")
 
 // for Grid_dimension
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/container/grid/GridTopology.h>
 
 namespace sofa::component::topology
 {
