@@ -217,7 +217,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
     }
 #else
     SOFA_UNUSED(node);
-    SOFA_UNUSED(tmodel);
+    SOFA_UNUSED(smodel);
 #endif // SOFA_GUI_COMMON_HAVE_SOFA_GL  == 1
 }
 
