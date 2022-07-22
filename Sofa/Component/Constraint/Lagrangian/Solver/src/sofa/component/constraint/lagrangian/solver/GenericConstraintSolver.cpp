@@ -1132,11 +1132,11 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     }
 
     sofa::type::vector<SReal> tabErrors(dimension);
-    bool constraintsAreVerified = true;
 
     {
         // peform one iteration of ProjectedGaussSeidel
-        std::copy(force, force + dimension, std::begin(m_lam));
+        static constexpr bool constraintsAreVerified = true;
+        std::copy_n(force, force + dimension, std::begin(m_lam));
 
         gaussSeidel_increment(false, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
 
@@ -1154,7 +1154,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     for(int i=1; i<iterationNewton; i++)
     {
         iterCount ++;
-        bool constraintsAreVerified = true;
+        static constexpr bool constraintsAreVerified = true;
 
         for(int j=0; j<dimension; j++)
         {
@@ -1208,12 +1208,12 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     result_output(force, error, iterCount, convergence);
 }
 
-void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors)
+void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const
 {
     for(int j=0; j<dim; ) // increment of j realized at the end of the loop
     {
         //1. nbLines provide the dimension of the constraint
-        int nb = constraintsResolutions[j]->getNbLines();
+        const unsigned int nb = constraintsResolutions[j]->getNbLines();
 
         //2. for each line we compute the actual value of d
         //   (a)d is set to dfree
@@ -1224,7 +1224,7 @@ void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *d
         //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
         for(int k=0; k<dim; k++)
         {
-            for(int l=0; l<nb; l++)
+            for(unsigned int l=0; l<nb; l++)
             {
                 d[j+l] += w[j+l][k] * force[k];
             }
@@ -1239,12 +1239,12 @@ void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *d
             SReal contraintError = 0.0;
             if(nb > 1)
             {
-                for(int l=0; l<nb; l++)
+                for(unsigned int l=0; l<nb; l++)
                 {
                     SReal lineError = 0.0;
-                    for (int m=0; m<nb; m++)
+                    for (unsigned int m=0; m<nb; m++)
                     {
-                        SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        const SReal dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
                         lineError += dofError * dofError;
                     }
                     lineError = sqrt(lineError);
@@ -1265,7 +1265,9 @@ void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *d
                 }
             }
 
-            if(constraintsResolutions[j]->getTolerance())
+            const bool givenTolerance = (bool)constraintsResolutions[j]->getTolerance();
+
+            if(givenTolerance)
             {
                 if(contraintError > constraintsResolutions[j]->getTolerance())
                 {
@@ -1279,7 +1281,7 @@ void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *d
         }
         else
         {
-            SOFA_UNUSED(constraintsAreVerified);
+            constraintsAreVerified = true;
         }
 
         j += nb;
