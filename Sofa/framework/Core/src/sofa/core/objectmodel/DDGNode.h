@@ -70,33 +70,21 @@ public:
     virtual void update() = 0;
 
     /// Returns true if the DDGNode needs to be updated
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    bool isDirty(const core::ExecParams*) const = delete;
     bool isDirty() const { return dirtyFlags.dirtyValue; }
 
     /// Indicate the value needs to be updated
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    virtual void setDirtyValue(const core::ExecParams*) final = delete;
     virtual void setDirtyValue();
 
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    virtual void setDirtyOutputs(const core::ExecParams*) final = delete;
     virtual void setDirtyOutputs();
 
     /// Set dirty flag to false
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    void cleanDirty(const core::ExecParams*) = delete;
     void cleanDirty();
 
     /// Notify links that the DGNode has been modified
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    virtual void notifyEndEdit(const core::ExecParams*) final = delete;
     virtual void notifyEndEdit();
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    void updateIfDirty(const core::ExecParams*) const = delete;
     void updateIfDirty() const;
 
 protected:
@@ -109,8 +97,6 @@ protected:
     virtual void doDelOutput(DDGNode* n);
 
     /// the dirtyOutputs flags of all the inputs will be set to false
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    void cleanDirtyOutputsOfInputs(const core::ExecParams*) = delete;
     void cleanDirtyOutputsOfInputs();
 
 private:

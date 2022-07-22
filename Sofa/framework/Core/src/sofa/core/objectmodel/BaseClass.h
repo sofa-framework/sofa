@@ -98,31 +98,6 @@ public:
 
     virtual Base* dynamicCast(Base* obj) const = 0;
     virtual bool isInstance(Base* obj) const = 0;
-
-    /// Helper method to decode the type name
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeFullName(const std::type_info& t) = delete;
-
-    /// Helper method to decode the type name to a more readable form if possible
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeTypeName(const std::type_info& t) = delete;
-
-    /// Helper method to extract the class name (removing namespaces and templates)
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeClassName(const std::type_info& t) = delete;
-
-    /// Helper method to extract the namespace (removing class name and templates)
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeNamespaceName(const std::type_info& t) = delete;
-
-    /// Helper method to extract the template name (removing namespaces and class name)
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeTemplateName(const std::type_info& t) = delete;
-
-    /// Helper method to get the type name
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string defaultTypeName(const T* = nullptr) = delete;
 };
 
 class SOFA_CORE_API DeprecatedBaseClass : public BaseClass

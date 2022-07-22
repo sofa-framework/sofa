@@ -329,50 +329,36 @@ public:
     {
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    size_t size(const core::ExecParams*) const = delete;
     size_t size() const
     {
         return static_cast<size_t>(m_value.size());
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    bool empty(const core::ExecParams* param) const  = delete;
     bool empty() const
     {
         return m_value.empty();
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    const Container& getValue(const core::ExecParams*) const = delete;
     const Container& getValue() const
     {
         return m_value;
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    const_iterator begin(const core::ExecParams*) const = delete;
     const_iterator begin() const
     {
         return m_value.cbegin();
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    const_iterator end(const core::ExecParams*) const = delete;
     const_iterator end() const
     {
         return m_value.cend();
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    const_reverse_iterator rbegin(const core::ExecParams*) const = delete;
     const_reverse_iterator rbegin() const
     {
         return m_value.crbegin();
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    const_reverse_iterator rend(const core::ExecParams*) const = delete;
     const_reverse_iterator rend() const
     {
         return m_value.crend();
@@ -471,15 +457,10 @@ public:
         return size();
     }
 
-    SOFA_ATTRIBUTE_DISABLED__DATALINK()
-    BaseData* getLinkedData(std::size_t =0) const = delete;
     sofa::core::objectmodel::Base* getOwnerBase() const override
     {
         return m_owner;
     }
-
-    SOFA_ATTRIBUTE_DISABLED__DATALINK()
-    sofa::core::objectmodel::BaseData* getOwnerData() const = delete;
 
     void setOwner(OwnerType* owner)
     {
@@ -613,8 +594,6 @@ public:
         m_validator = fn;
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    DestType* get(std::size_t index, const core::ExecParams*) const = delete;
     DestType* get(std::size_t index) const
     {
         if (index < this->m_value.size())
@@ -695,8 +674,6 @@ public:
         m_validator = fn;
     }
 
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    DestType* get(const core::ExecParams*) const = delete;
     DestType* get() const
     {
         return TraitsDestPtr::get(TraitsValueType::get(m_value.get()));
