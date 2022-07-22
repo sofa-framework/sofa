@@ -704,7 +704,7 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
     {
         if(!constraintsResolutions[i])
         {
-            msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+            msg_error(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
             break;
         }
         constraintsResolutions[i]->init(i, w, force);
