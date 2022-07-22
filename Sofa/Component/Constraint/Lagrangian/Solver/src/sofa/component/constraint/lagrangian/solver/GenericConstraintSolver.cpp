@@ -1135,7 +1135,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
 
     {
         // peform one iteration of ProjectedGaussSeidel
-        static constexpr bool constraintsAreVerified = true;
+        bool constraintsAreVerified = true;
         std::copy_n(force, force + dimension, std::begin(m_lam));
 
         gaussSeidel_increment(false, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
@@ -1154,7 +1154,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     for(int i=1; i<iterationNewton; i++)
     {
         iterCount ++;
-        static constexpr bool constraintsAreVerified = true;
+        bool constraintsAreVerified = true;
 
         for(int j=0; j<dimension; j++)
         {
