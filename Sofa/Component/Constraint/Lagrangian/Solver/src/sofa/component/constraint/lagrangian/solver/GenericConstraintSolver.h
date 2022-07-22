@@ -41,7 +41,7 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem :
 public:
     sofa::linearalgebra::FullVector<SReal> _d;
     std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
-    bool scaleTolerance, allVerified, unbuilt;
+    bool scaleTolerance, allVerified;
     SReal sor;
     SReal sceneTime;
     SReal currentError;
@@ -58,7 +58,7 @@ public:
     std::vector< ConstraintCorrections > cclist_elems;
 
 
-    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), unbuilt(false), sor(1.0)
+    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
       , sceneTime(0.0), currentError(0.0), currentIterations(0)
       , change_sequence(false) {}
     ~GenericConstraintProblem() override { freeConstraintResolutions(); }
@@ -115,14 +115,13 @@ public:
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-    Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the Non-Linear Complementary Problem (NLCP) among: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
+    Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
 
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> sor; ///< Successive Over Relaxation parameter (0-2)
     Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
-    Data<bool> unbuilt; ///< Compliance is not fully built  (for the PGS solver only)
     Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NNCG solver only)
     Data<bool> d_multithreading; ///< Compliances built concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
@@ -141,6 +140,17 @@ public:
 
     SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data schemeCorrection was unused therefore removed.")
     DeprecatedAndRemoved schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3053)", "v23.06", "Make the \"unbuild\" option as an option group \"resolutionMethod\".")
+    Data<bool> unbuilt; ///< Compliance is not fully built  (for the PGS solver only)
+    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3053)", "v23.06", "Make the \"unbuild\" option as an option group \"resolutionMethod\".")
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit1::parse(arg);
+        if (arg->getAttribute("unbuilt"))
+        {
+            msg_warning() << "String data \"unbuilt\" is now an option group \"resolutionMethod\" (PR #3053)" << msgendl << "Use: resolutionMethod=\"UnbuildGaussSeidel\"";
+        }
+    }
 
     sofa::core::MultiVecDerivId getLambda() const override;
     sofa::core::MultiVecDerivId getDx() const override;

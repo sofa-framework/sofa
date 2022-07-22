@@ -69,13 +69,12 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 }
 
 GenericConstraintSolver::GenericConstraintSolver()
-    : d_resolutionMethod( initData(&d_resolutionMethod, "resolutionMethod", "Method used to solve the Non-Linear Complementary Problem (NLCP) among: \"ProjectedGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
+    : d_resolutionMethod( initData(&d_resolutionMethod, "resolutionMethod", "Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
     , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
     , scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
-    , unbuilt(initData(&unbuilt, false, "unbuilt", "Compliance is not fully built  (for the ProjectedGaussSeidel solver only)"))
     , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
     , d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
     , computeGraphs(initData(&computeGraphs, false, "computeGraphs", "Compute graphs of errors and forces during resolution"))
@@ -95,7 +94,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {
-    sofa::helper::OptionsGroup m_newoptiongroup(2,"ProjectedGaussSeidel","NonsmoothNonlinearConjugateGradient");
+    sofa::helper::OptionsGroup m_newoptiongroup(3,"ProjectedGaussSeidel","UnbuiltGaussSeidel", "NonsmoothNonlinearConjugateGradient");
     m_newoptiongroup.setSelectedItem("ProjectedGaussSeidel");
     d_resolutionMethod.setValue(m_newoptiongroup);
 
@@ -168,17 +167,9 @@ void GenericConstraintSolver::init()
 
     if(d_newtonIterations.isSet())
     {
-        if (d_resolutionMethod.getValue().getSelectedId() == 0) // ProjectedGaussSeidel
+        if (d_resolutionMethod.getValue().getSelectedId() != 2)
         {
-            msg_warning() << "data \"newtonIterations\" is not taken into account when using the ProjectedGaussSeidel solver";
-        }
-    }
-
-    if(unbuilt.isSet())
-    {
-        if (d_resolutionMethod.getValue().getSelectedId() == 1) // NNCG
-        {
-            msg_warning() << "data \"unbuilt\" is not taken into account when using the NonsmoothNonlinearConjugateGradient solver";
+            msg_warning() << "data \"newtonIterations\" is not only taken into account when using the NonsmoothNonlinearConjugateGradient solver";
         }
     }
 }
@@ -268,7 +259,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
 
-    if (unbuilt.getValue())
+    // UnbuiltGaussSeidel
+    if (d_resolutionMethod.getValue().getSelectedId() == 1)
     {
         for (auto* cc : constraintCorrections)
         {
@@ -425,18 +417,13 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     current_cp->scaleTolerance = scaleTolerance.getValue();
     current_cp->allVerified = allVerified.getValue();
     current_cp->sor = sor.getValue();
-    current_cp->unbuilt = unbuilt.getValue();
 
-    // Projective Gauss Seidel method
-    if (d_resolutionMethod.getValue().getSelectedId() == 0)
+
+    // Resolution depending on the method selected
+    switch ( d_resolutionMethod.getValue().getSelectedId() )
     {
-        if (unbuilt.getValue())
-        {
-            sofa::helper::ScopedAdvancedTimer unbuiltGaussSeidelTimer("ConstraintsUnbuiltGaussSeidel");
-            current_cp->unbuiltGaussSeidel(0, this);
-        }
-        else
-        {
+        // ProjectedGaussSeidel
+        case 0: {
             if (notMuted())
             {
                 std::stringstream tmp;
@@ -445,16 +432,25 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
                 msg_info() << tmp.str() ;
             }
-
             sofa::helper::ScopedAdvancedTimer gaussSeidelTimer("ConstraintsGaussSeidel");
             current_cp->gaussSeidel(0, this);
+            break;
         }
+        // UnbuiltGaussSeidel
+        case 1: {
+            sofa::helper::ScopedAdvancedTimer unbuiltGaussSeidelTimer("ConstraintsUnbuiltGaussSeidel");
+            current_cp->unbuiltGaussSeidel(0, this);
+            break;
+        }
+        // NonsmoothNonlinearConjugateGradient
+        case 2: {
+            current_cp->NNCG(this, d_newtonIterations.getValue());
+            break;
+        }
+        default:
+            msg_error() << "Wrong \"resolutionMethod\" given";
     }
-    // Non-smooth Non-linear Conjugate Gradient method
-    else
-    {
-        current_cp->NNCG(this, d_newtonIterations.getValue());
-    }
+
 
     this->currentError.setValue(current_cp->currentError);
     this->currentIterations.setValue(current_cp->currentIterations);
