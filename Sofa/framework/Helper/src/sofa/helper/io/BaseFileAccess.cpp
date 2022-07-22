@@ -21,16 +21,10 @@
 ******************************************************************************/
 
 
-#include "BaseFileAccess.h"
-#include "FileAccess.h"
+#include <sofa/helper/io/BaseFileAccess.h>
+#include <sofa/helper/io/FileAccess.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 BaseFileAccessCreator* BaseFileAccess::OurCreator = nullptr;
@@ -67,10 +61,5 @@ BaseFileAccess::~BaseFileAccess()
 {
 
 }
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io
 

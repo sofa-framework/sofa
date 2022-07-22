@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MeshExporter.h"
+#include <sofa/component/io/mesh/MeshExporter.h>
 
 #include <iomanip>
 #include <fstream>

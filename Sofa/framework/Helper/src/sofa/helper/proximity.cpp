@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "proximity.h"
+#include <sofa/helper/proximity.h>
 #include <sofa/type/Mat_solve_LCP.h>
 
 namespace sofa

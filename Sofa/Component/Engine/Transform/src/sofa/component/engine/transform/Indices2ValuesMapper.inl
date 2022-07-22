@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "Indices2ValuesMapper.h"
+#include <sofa/component/engine/transform/Indices2ValuesMapper.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "NormalsFromPoints.h"
+#include <sofa/component/engine/generate/NormalsFromPoints.h>
 #include <iostream>
 #include <cmath>
 

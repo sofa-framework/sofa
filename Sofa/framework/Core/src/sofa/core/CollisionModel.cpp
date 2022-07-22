@@ -19,15 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CollisionModel.h"
+#include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/type/RGBAColor.h>
 
 using sofa::type::RGBAColor ;
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 std::vector<int> BaseCollisionElementIterator::emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
@@ -194,10 +192,5 @@ bool CollisionModel::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core
 

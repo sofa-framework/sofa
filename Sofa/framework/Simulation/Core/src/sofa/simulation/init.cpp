@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#include <sofa/simulation/init.h>
 
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SingleMatrixAccessor.h"
+#include <sofa/core/behavior/SingleMatrixAccessor.h>
 
 namespace sofa::core::behavior
 {

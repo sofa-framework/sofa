@@ -24,25 +24,16 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include "Message.h"
-#include "ClangMessageHandler.h"
-#include "ClangStyleMessageFormatter.h"
+#include <sofa/helper/logging/Message.h>
+#include <sofa/helper/logging/ClangMessageHandler.h>
+#include <sofa/helper/logging/ClangStyleMessageFormatter.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 
 void ClangMessageHandler::process(Message &m) {
     ClangStyleMessageFormatter::getInstance().formatMessage(m, std::cerr) ;
 }
-
-} // logging
-} // helper
-} // sofa
+} // sofa::helper::logging
 

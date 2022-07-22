@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "TriangularAnisotropicFEMForceField.h"
+#include <sofa/component/solidmechanics/fem/elastic/TriangularAnisotropicFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>

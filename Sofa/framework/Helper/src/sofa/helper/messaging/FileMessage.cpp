@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "FileMessage.h"
+#include <sofa/helper/messaging/FileMessage.h>
 
 namespace sofa
 {

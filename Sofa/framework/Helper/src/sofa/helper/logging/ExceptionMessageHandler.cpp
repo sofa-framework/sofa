@@ -25,16 +25,10 @@
 ******************************************************************************/
 
 
-#include "ExceptionMessageHandler.h"
-#include "Message.h"
+#include <sofa/helper/logging/ExceptionMessageHandler.h>
+#include <sofa/helper/logging/Message.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 
@@ -47,10 +41,5 @@ namespace logging
            throw errorMessageException;
         }
     }
-
-
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 

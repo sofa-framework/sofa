@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "PrecomputedWarpPreconditioner.h"
+#include <sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/BaseContext.h>

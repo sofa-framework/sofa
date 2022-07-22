@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "GenerateGrid.h"
+#include <sofa/component/engine/generate/GenerateGrid.h>
 
 namespace sofa::component::engine::generate
 {

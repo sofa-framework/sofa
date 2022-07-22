@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "MeshClosingEngine.h"
+#include <sofa/component/engine/generate/MeshClosingEngine.h>
 
 namespace sofa::component::engine::generate
 {

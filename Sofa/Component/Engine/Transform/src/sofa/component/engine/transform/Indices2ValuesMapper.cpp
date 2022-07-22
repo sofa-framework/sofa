@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_CPP
 
-#include "Indices2ValuesMapper.inl"
+#include <sofa/component/engine/transform/Indices2ValuesMapper.inl>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 

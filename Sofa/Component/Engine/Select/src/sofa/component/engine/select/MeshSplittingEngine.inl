@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "MeshSplittingEngine.h"
+#include <sofa/component/engine/select/MeshSplittingEngine.h>
 
 namespace sofa::component::engine::select
 {

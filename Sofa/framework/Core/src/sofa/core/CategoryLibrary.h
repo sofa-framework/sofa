@@ -22,12 +22,9 @@
 #ifndef SOFA_CATEGORYLIBRARY_H
 #define SOFA_CATEGORYLIBRARY_H
 
-#include "ComponentLibrary.h"
+#include <sofa/core/ComponentLibrary.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 
@@ -84,7 +81,6 @@ protected:
     VecComponent components;
 };
 
-}
-}
+} // namespace sofa::core
 
 #endif

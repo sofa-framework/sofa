@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "AbstractTypeInfo.h"
+#include <sofa/defaulttype/AbstractTypeInfo.h>
 
 namespace sofa::defaulttype
 {

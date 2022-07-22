@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "Mesh2PointMechanicalMapping.h"
+#include <sofa/component/mapping/linear/Mesh2PointMechanicalMapping.h>
 
 #include <sofa/component/mapping/linear/Mesh2PointTopologicalMapping.h>
 
