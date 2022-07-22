@@ -76,7 +76,7 @@ void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparam
     
     std::vector< Vector3 > points;
     
-    if (d_fixAll.getValue() == true)
+    if (d_fixAll.getValue())
     {
         for (unsigned i = 0; i < x.size(); i++)
             points.push_back(x[i].getCenter());
