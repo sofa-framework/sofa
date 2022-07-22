@@ -68,9 +68,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     // SofaGraphComponent was pluginized in #1531
     { "Gravity", Pluginized("v20.12", "SofaGraphComponent") },
     { "PauseAnimationOnEvent", Pluginized("v20.12", "SofaGraphComponent") },
-
-    // SofaGeneralObjectInteraction was pluginized in #1580
-    { "InteractionEllipsoidForceField", Pluginized("v20.12", "SofaGeneralObjectInteraction") },
     
     // SofaUserInteraction was pluginized in #1588
     { "SleepController", Pluginized("v20.12", "SofaUserInteraction") },
@@ -593,8 +590,9 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "VectorSpringForceField", Moved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.Spring") },
     { "TriangularTensorMassForceField", Moved("v22.06", "SofaGeneralDeformable", "Sofa.Component.SolidMechanics.TensorMass") },
 
-    // SofaGeneralObjectInteraction was deprecated in #2759
+    // SofaGeneralObjectInteraction was deprecated in #2759 and #3039
     { "RepulsiveSpringForceField", Moved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.SolidMechanics.Spring") },
+    { "InteractionEllipsoidForceField", Moved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.MechanicalLoad") },
 
     // SofaGeneralObjectInteraction was deprecated in #2790 and ...
     { "AttachConstraint", Moved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.Constraint.Projective") },
@@ -754,6 +752,16 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "TriangleModelInRegularGrid", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Geometry") },
     { "TetrahedronCollisionModel", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Geometry") },
     { "RuleBasedContactManager", Moved("v22.06", "SofaMiscCollision", "Sofa.Component.Collsion.Response.Contact") },
+
+    // SofaHaptics was deprecated in #3039
+    { "ForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
+    { "LCPForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
+    { "MechanicalStateForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
+    { "NullForceFeedback", Moved("v22.06", "SofaHaptics", "Sofa.Component.Haptics") },
+
+    // SofaValidation was deprecated in #3039
+    { "CompareState", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
+    { "CompareTopology", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
 };
 
 } // namespace sofa::helper::lifecycle

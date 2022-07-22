@@ -16,4 +16,4 @@ add_definitions("-DSOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR=\"${CMAKE_CURR
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 # dependencies are managed directly in the target_link_libraries pass
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.ODESolver.Testing Sofa.Component.ODESolver.Backward SofaBaseUtils SofaBaseMechanics SofaDeformable SofaBoundaryCondition)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.ODESolver.Testing Sofa.Component.ODESolver.Backward Sofa.Component.StateContainer)

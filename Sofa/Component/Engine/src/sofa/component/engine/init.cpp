@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/engine/config.h>
+#include <sofa/component/engine/init.h>
 
 #include <sofa/component/engine/analyze/init.h>
 #include <sofa/component/engine/generate/init.h>
@@ -37,17 +37,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::engine::analyze::init();
-        sofa::component::engine::generate::init();
-        sofa::component::engine::select::init();
-        sofa::component::engine::transform::init();
-
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -62,7 +52,17 @@ const char* getModuleVersion()
 
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::component::engine::analyze::init();
+        sofa::component::engine::generate::init();
+        sofa::component::engine::select::init();
+        sofa::component::engine::transform::init();
+
+        first = false;
+    }
 }
 
 } // namespace sofa::component::engine

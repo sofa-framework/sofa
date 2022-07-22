@@ -31,17 +31,17 @@ using sofa::core::execparams::defaultInstance;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include<SofaBaseCollision/DefaultPipeline.h>
-using sofa::component::collision::DefaultPipeline ;
+#include <sofa/component/collision/detection/algorithm/DefaultPipeline.h>
+using sofa::component::collision::detection::algorithm::DefaultPipeline ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
@@ -51,7 +51,7 @@ using sofa::helper::BackTrace;
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 namespace defaultpipeline_test
 {

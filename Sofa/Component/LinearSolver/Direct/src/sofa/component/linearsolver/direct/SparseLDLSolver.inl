@@ -44,6 +44,24 @@ void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::object
 {
     Inherit1::parse(arg);
 
+    if (!arg->getAttribute("template"))
+    {
+        std::string header = this->getClassName();
+        if (const std::string& name = this->getName(); !name.empty())
+        {
+            header.append("(" + name + ")");
+        }
+
+        static const char* blocksType =
+        sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal> >::Name();
+
+        msg_advice(header) << "Template is empty\n"
+                           << "By default " << this->getClassName() << " uses blocks with a single scalar (to handle all cases of simulations).\n"
+                           << "If you are using only 3D DOFs, you may consider using blocks of Matrix3 to speedup the calculations.\n"
+                           << "If it is the case, add template=\"" << blocksType << "\" to this object in your scene\n"
+                           << "Otherwise, if you want to disable this message, add " << "template=\"" << this->getTemplateName() << "\" " << ".";
+    }
+
     if (arg->getAttribute("savingMatrixToFile"))
     {
         msg_warning() << "It is no longer possible to export the linear system matrix from within " << this->getClassName() <<  ". Instead, use the component GlobalSystemMatrixExporter (from the SofaMatrix plugin).";

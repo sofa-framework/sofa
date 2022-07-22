@@ -136,7 +136,7 @@ void HexahedronFEMForceField<DataTypes>::init()
         return;
     }
 
-    _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
+    _sparseGrid = dynamic_cast<topology::container::grid::SparseGridTopology*>(m_topology);
     m_potentialEnergy = 0;
 
     this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);

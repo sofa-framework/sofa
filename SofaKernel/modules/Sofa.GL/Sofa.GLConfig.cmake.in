@@ -5,7 +5,8 @@
 
 set(SOFA_GL_HAVE_GLEW @SOFA_GL_HAVE_GLEW@)
 
-find_package(SofaFramework QUIET REQUIRED) # Sofa.Helper Sofa.DefaultType
+find_package(Sofa.Helper QUIET REQUIRED)
+find_package(Sofa.DefaultType QUIET REQUIRED)
 find_package(OpenGL QUIET REQUIRED)
 find_package(GLEW QUIET REQUIRED)
 

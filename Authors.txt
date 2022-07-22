@@ -18,6 +18,7 @@
         Pierre-Jean Bensoussan
         Alexandre Bilger
         Jean-Nicolas Brunet
+        Paul Maria Scheikl
         Guillaume Bousquet
         Olivier Carre
         Bruno Carrez

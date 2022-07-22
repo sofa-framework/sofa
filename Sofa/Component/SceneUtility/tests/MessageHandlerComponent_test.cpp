@@ -27,7 +27,7 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/TestMessageHandler.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Simulation.h>
@@ -36,15 +36,15 @@ using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBaseUtils/messageHandlerComponent.h>
-using sofa::component::logging::MessageHandlerComponent ;
+#include <sofa/component/sceneutility/MessageHandlerComponent.h>
+using sofa::component::sceneutility::MessageHandlerComponent ;
 
 using sofa::helper::logging::MessageDispatcher ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 bool perTestInit()
 {

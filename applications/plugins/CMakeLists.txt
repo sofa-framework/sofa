@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
-find_package(SofaFramework)
+find_package(Sofa.Framework)
 
-# SofaTest needs to be after SofaMiscCollision, as it depends on it
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    # Library used to write high level tests involving many components.
-    add_subdirectory(SofaTest)
+    # (Deprecated) Library used to write high level tests involving many components.
+    sofa_add_plugin(SofaTest SofaTest)
 endif()
 
 sofa_add_plugin(CollisionOBBCapsule CollisionOBBCapsule)
@@ -54,6 +53,7 @@ sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_plugin(SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
 sofa_add_plugin_external(OpenCTMPlugin OpenCTMPlugin)
+sofa_add_plugin_external(BeamAdapter BeamAdapter)
 
 sofa_add_plugin_experimental(PSL PSL)
 

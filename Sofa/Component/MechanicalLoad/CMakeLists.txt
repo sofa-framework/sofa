@@ -16,6 +16,8 @@ set(HEADER_FILES
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/EdgePressureForceField.inl
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/EllipsoidForceField.h
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/EllipsoidForceField.inl
+    ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/InteractionEllipsoidForceField.h
+    ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/InteractionEllipsoidForceField.inl
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/LinearForceField.h
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/LinearForceField.inl
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/OscillatingTorsionPressureForceField.h
@@ -45,6 +47,7 @@ set(SOURCE_FILES
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/DiagonalVelocityDampingForceField.cpp
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/EdgePressureForceField.cpp
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/EllipsoidForceField.cpp
+    ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/InteractionEllipsoidForceField.cpp
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/LinearForceField.cpp
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/OscillatingTorsionPressureForceField.cpp
     ${SOFACOMPONENTMECHANICALLOAD_SOURCE_DIR}/PlaneForceField.cpp
@@ -69,3 +72,11 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_COMPONENT_MECHANICALLOAD_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_COMPONENT_MECHANICALLOAD_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

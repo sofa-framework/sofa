@@ -27,7 +27,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 namespace sofa {
 

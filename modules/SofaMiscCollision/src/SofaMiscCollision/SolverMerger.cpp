@@ -23,12 +23,13 @@
 
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <SofaGeneralExplicitOdeSolver/RungeKutta4Solver.h>
-#include <SofaImplicitOdeSolver/StaticSolver.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaConstraint/LCPConstraintSolver.h>
+
+#include <sofa/component/odesolver/forward/EulerSolver.h>
+#include <sofa/component/odesolver/forward/RungeKutta4Solver.h>
+#include <sofa/component/odesolver/backward/StaticSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/LCPConstraintSolver.h>
 
 namespace sofa::component::collision
 {
@@ -84,22 +85,22 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
     if (!csolver1)
     {
         //first ODE solver does not have any constraint solver. The second is copied to be shared with the first
-        if (auto* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
-            return copySolver<constraintset::LCPConstraintSolver>(*cs);
+        if (auto* cs=dynamic_cast<constraint::lagrangian::solver::LCPConstraintSolver*>(csolver2))
+            return copySolver<constraint::lagrangian::solver::LCPConstraintSolver>(*cs);
     }
     else if (!csolver2)
     {
         //second ODE solver does not have any constraint solver. The first is copied to be shared with the second
-        if (auto* cs=dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1))
-            return copySolver<constraintset::LCPConstraintSolver>(*cs);
+        if (auto* cs=dynamic_cast<constraint::lagrangian::solver::LCPConstraintSolver*>(csolver1))
+            return copySolver<constraint::lagrangian::solver::LCPConstraintSolver>(*cs);
     }
     else
     {
         //both ODE solvers have an associated constraint solver
-        if (auto* lcp1 = dynamic_cast<constraintset::LCPConstraintSolver*>(csolver1))
-        if (auto* lcp2 = dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
+        if (auto* lcp1 = dynamic_cast<constraint::lagrangian::solver::LCPConstraintSolver*>(csolver1))
+        if (auto* lcp2 = dynamic_cast<constraint::lagrangian::solver::LCPConstraintSolver*>(csolver2))
         {
-            constraintset::LCPConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
+            constraint::lagrangian::solver::LCPConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::LCPConstraintSolver>();
             newSolver->initial_guess.setValue(lcp1->initial_guess.getValue() | lcp2->initial_guess.getValue());
             newSolver->build_lcp.setValue(lcp1->build_lcp.getValue() | lcp2->build_lcp.getValue());
             newSolver->tol.setValue(lcp1->tol.getValue() < lcp2->tol.getValue() ? lcp1->tol.getValue() : lcp2->tol.getValue() );
@@ -115,17 +116,17 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
 
 // First the easy cases...
 
-SolverSet createSolverEulerExplicitEulerExplicit(odesolver::EulerExplicitSolver& solver1, odesolver::EulerExplicitSolver& solver2)
+SolverSet createSolverEulerExplicitEulerExplicit(odesolver::forward::EulerExplicitSolver& solver1, odesolver::forward::EulerExplicitSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerExplicitSolver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::forward::EulerExplicitSolver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solver1, odesolver::RungeKutta4Solver& solver2)
+SolverSet createSolverRungeKutta4RungeKutta4(odesolver::forward::RungeKutta4Solver& solver1, odesolver::forward::RungeKutta4Solver& solver2)
 {
-    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::forward::RungeKutta4Solver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
-typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
+typedef linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
 
 BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
@@ -164,9 +165,9 @@ BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2
     return lsolver;
 }
 
-SolverSet createSolverEulerImplicitEulerImplicit(odesolver::EulerImplicitSolver& solver1, odesolver::EulerImplicitSolver& solver2)
+SolverSet createSolverEulerImplicitEulerImplicit(odesolver::backward::EulerImplicitSolver& solver1, odesolver::backward::EulerImplicitSolver& solver2)
 {
-    odesolver::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::EulerImplicitSolver>();
+    odesolver::backward::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::backward::EulerImplicitSolver>();
     solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
     solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
     solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
@@ -175,30 +176,30 @@ SolverSet createSolverEulerImplicitEulerImplicit(odesolver::EulerImplicitSolver&
             createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverStaticSolver(odesolver::StaticSolver& solver1, odesolver::StaticSolver& solver2)
+SolverSet createSolverStaticSolver(odesolver::backward::StaticSolver& solver1, odesolver::backward::StaticSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::StaticSolver>(solver1),
+    return SolverSet(copySolver<odesolver::backward::StaticSolver>(solver1),
             createLinearSolver(&solver1, &solver2),
             createConstraintSolver(&solver1, &solver2));
 }
 
 // Then the other, with the policy of taking the more precise solver
 
-SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, odesolver::EulerExplicitSolver& solver2)
+SolverSet createSolverRungeKutta4Euler(odesolver::forward::RungeKutta4Solver& solver1, odesolver::forward::EulerExplicitSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::forward::RungeKutta4Solver>(solver1), nullptr,createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerExplicitSolver& solver2)
+SolverSet createSolverEulerImplicitEuler(odesolver::backward::EulerImplicitSolver& solver1, odesolver::forward::EulerExplicitSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
+    return SolverSet(copySolver<odesolver::backward::EulerImplicitSolver>(solver1),
             createLinearSolver(&solver1, nullptr),
             createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverEulerImplicitRungeKutta4(odesolver::EulerImplicitSolver& solver1, odesolver::RungeKutta4Solver& solver2)
+SolverSet createSolverEulerImplicitRungeKutta4(odesolver::backward::EulerImplicitSolver& solver1, odesolver::forward::RungeKutta4Solver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
+    return SolverSet(copySolver<odesolver::backward::EulerImplicitSolver>(solver1),
             createLinearSolver(&solver1, nullptr),
             createConstraintSolver(&solver1, &solver2));
 }
@@ -221,13 +222,13 @@ SolverSet SolverMerger::merge(core::behavior::OdeSolver* solver1, core::behavior
 
 SolverMerger::SolverMerger()
 {
-    solverDispatcher.add<odesolver::EulerExplicitSolver,odesolver::EulerExplicitSolver,createSolverEulerExplicitEulerExplicit,false>();
-    solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::RungeKutta4Solver,createSolverRungeKutta4RungeKutta4,false>();
-    solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::EulerImplicitSolver,createSolverEulerImplicitEulerImplicit,false>();
-    solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::EulerExplicitSolver,createSolverRungeKutta4Euler,true>();
-    solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::EulerExplicitSolver,createSolverEulerImplicitEuler,true>();
-    solverDispatcher.add<odesolver::EulerImplicitSolver,odesolver::RungeKutta4Solver,createSolverEulerImplicitRungeKutta4,true>();
-    solverDispatcher.add<odesolver::StaticSolver,odesolver::StaticSolver,createSolverStaticSolver,true>();
+    solverDispatcher.add<odesolver::forward::EulerExplicitSolver,odesolver::forward::EulerExplicitSolver,createSolverEulerExplicitEulerExplicit,false>();
+    solverDispatcher.add<odesolver::forward::RungeKutta4Solver,odesolver::forward::RungeKutta4Solver,createSolverRungeKutta4RungeKutta4,false>();
+    solverDispatcher.add<odesolver::backward::EulerImplicitSolver,odesolver::backward::EulerImplicitSolver,createSolverEulerImplicitEulerImplicit,false>();
+    solverDispatcher.add<odesolver::forward::RungeKutta4Solver,odesolver::forward::EulerExplicitSolver,createSolverRungeKutta4Euler,true>();
+    solverDispatcher.add<odesolver::backward::EulerImplicitSolver,odesolver::forward::EulerExplicitSolver,createSolverEulerImplicitEuler,true>();
+    solverDispatcher.add<odesolver::backward::EulerImplicitSolver,odesolver::forward::RungeKutta4Solver,createSolverEulerImplicitRungeKutta4,true>();
+    solverDispatcher.add<odesolver::backward::StaticSolver,odesolver::backward::StaticSolver,createSolverStaticSolver,true>();
 }
 
 } // namespace sofa::component::collision

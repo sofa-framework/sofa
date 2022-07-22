@@ -21,8 +21,8 @@
 ******************************************************************************/
 
 #include "RayTriangleVisitor.h"
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 
@@ -68,9 +68,9 @@ core::objectmodel::BaseObject* RayTriangleVisitor::embeddingModel()
     return nullptr;
 }
 
-void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* tm)
+void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* tm)
 {
-    typedef TriangleCollisionModel<sofa::defaulttype::Vec3Types>::DataTypes DataTypes;
+    typedef geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::DataTypes DataTypes;
 
     const DataTypes::VecCoord& x = tm->getMechanicalState()->read(sofa::core::ConstVecCoordId::position())->getValue();
     for( core::topology::BaseMeshTopology::SeqTriangles::const_iterator it=tm->getTriangles().begin(), iend=tm->getTriangles().end() ; it!=iend; it++)
@@ -117,9 +117,9 @@ void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, compon
     }
 }
 
-void RayTriangleVisitor::processVisualModel(simulation::Node* /*node*/, component::visualmodel::VisualModelImpl* om)
+void RayTriangleVisitor::processVisualModel(simulation::Node* /*node*/, component::visual::VisualModelImpl* om)
 {
-    typedef component::visualmodel::VisualModelImpl::DataTypes DataTypes;
+    typedef component::visual::VisualModelImpl::DataTypes DataTypes;
 
     const DataTypes::VecCoord& x = om->getVertices();
     for( std::size_t i=0; i<om->getTriangles().size(); i++ )
@@ -170,10 +170,10 @@ void RayTriangleVisitor::processVisualModel(simulation::Node* /*node*/, componen
 simulation::Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::Node* node)
 {
     using core::visual::VisualModel;
-    using component::visualmodel::VisualModelImpl;
+    using component::visual::VisualModelImpl;
     typedef simulation::Node::Sequence<core::CollisionModel> CollisionModels;
     typedef simulation::Node::Sequence<VisualModel> VisualModels;
-    typedef component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
+    typedef component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
 
     for( CollisionModels::const_iterator it=node->collisionModel.begin(), iend=node->collisionModel.end(); it!=iend; it++ )
     {

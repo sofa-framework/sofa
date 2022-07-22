@@ -21,12 +21,12 @@
 ******************************************************************************/
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaGeneralSimpleFem/BeamFEMForceField.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
+#include <sofa/component/solidmechanics/fem/elastic/BeamFEMForceField.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-#include <SofaSimulationGraph/SimpleApi.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -52,8 +52,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef MechanicalObject<DataTypes> MState;
-    using BeamFEM = sofa::component::forcefield::BeamFEMForceField<DataTypes>;
-    using EdgeModifier = sofa::component::topology::EdgeSetTopologyModifier;
+    using BeamFEM = sofa::component::solidmechanics::fem::elastic::BeamFEMForceField<DataTypes>;
+    using EdgeModifier = sofa::component::topology::container::dynamic::EdgeSetTopologyModifier;
     typedef typename BeamFEM::BeamInfo BeamInfo;
     typedef typename type::vector<BeamInfo> VecBeamInfo;
 
@@ -65,7 +65,7 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
+        sofa::simpleapi::importPlugin("Sofa.Component");
         simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
     }
 

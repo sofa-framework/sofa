@@ -36,16 +36,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofa::component::topology::container::init();
-        sofa::component::topology::mapping::init();
-        sofa::component::topology::utility::init();
-
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -60,7 +51,16 @@ const char* getModuleVersion()
 
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::component::topology::container::init();
+        sofa::component::topology::mapping::init();
+        sofa::component::topology::utility::init();
+
+        first = false;
+    }
 }
 
 

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP
 #include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
-#include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
