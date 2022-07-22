@@ -23,7 +23,7 @@
 
 #include <SofaGraphComponent/config.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/behavior/Mass.h>
 
 
