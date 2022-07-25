@@ -44,7 +44,7 @@ void OglShaderMacro::init()
 }
 
 OglShaderDefineMacro::OglShaderDefineMacro()
-    : value(initData(&value, (std::string) "", "value", "Set a value for define macro"))
+    : value(initData( (std::string) "", "value", "Set a value for define macro"))
 {
 
 }

@@ -49,7 +49,7 @@ public:
 protected:
     PointSetTopologyModifier()
         : TopologyModifier()
-        , d_propagateToDOF(initData(&d_propagateToDOF, true, "propagateToDOF", " propagate changes to MEchanical object DOFs if true"))
+        , d_propagateToDOF(initData( true, "propagateToDOF", " propagate changes to MEchanical object DOFs if true"))
     {}
 
     ~PointSetTopologyModifier() override {}

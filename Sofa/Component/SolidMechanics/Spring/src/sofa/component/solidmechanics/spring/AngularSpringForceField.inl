@@ -34,11 +34,11 @@ namespace sofa::component::solidmechanics::spring
 
 template<class DataTypes>
 AngularSpringForceField<DataTypes>::AngularSpringForceField()
-    : indices(initData(&indices, "indices", "index of nodes controlled by the angular springs"))
-    , angularStiffness(initData(&angularStiffness, "angularStiffness", "angular stiffness for the controlled nodes"))
-    , angularLimit(initData(&angularLimit, "limit", "angular limit (max; min) values where the force applies"))
-    , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
-    , springColor(initData(&springColor, type::RGBAColor::green(), "springColor","spring color"))
+    : indices(initData( "indices", "index of nodes controlled by the angular springs"))
+    , angularStiffness(initData( "angularStiffness", "angular stiffness for the controlled nodes"))
+    , angularLimit(initData( "limit", "angular limit (max; min) values where the force applies"))
+    , drawSpring(initData(false,"drawSpring","draw Spring"))
+    , springColor(initData( type::RGBAColor::green(), "springColor","spring color"))
 {    
 }
 

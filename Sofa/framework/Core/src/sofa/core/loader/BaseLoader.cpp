@@ -29,7 +29,7 @@ namespace sofa::core::loader
 
 bool SOFA_CORE_API canLoad(const char* filename);
 
-BaseLoader::BaseLoader(): d_filename(initData(&d_filename,"filename","Filename of the object"))
+BaseLoader::BaseLoader(): d_filename(initData("filename","Filename of the object"))
 {
 }
 

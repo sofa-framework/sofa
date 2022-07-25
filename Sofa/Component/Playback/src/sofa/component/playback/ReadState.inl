@@ -40,13 +40,13 @@ namespace sofa::component::playback
 using type::Vector3;
 
 ReadState::ReadState()
-    : d_filename( initData(&d_filename, "filename", "output file name"))
-    , d_interval( initData(&d_interval, 0.0, "interval", "time duration between inputs"))
-    , d_shift( initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
-    , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
-    , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
-    , d_rotation( initData(&d_rotation, Vector3(0.,0.,0.), "rotation", "rotate the input mechanical object"))
-    , d_translation( initData(&d_translation, Vector3(0.,0.,0.), "translation", "translate the input mechanical object"))
+    : d_filename( initData( "filename", "output file name"))
+    , d_interval( initData( 0.0, "interval", "time duration between inputs"))
+    , d_shift( initData( 0.0, "shift", "shift between times in the file and times when they will be read"))
+    , d_loop( initData( false, "loop", "set to 'true' to re-read the file when reaching the end"))
+    , d_scalePos( initData( 1.0, "scalePos", "scale the input mechanical object"))
+    , d_rotation( initData( Vector3(0.,0.,0.), "rotation", "rotate the input mechanical object"))
+    , d_translation( initData( Vector3(0.,0.,0.), "translation", "translate the input mechanical object"))
     , mmodel(nullptr)
     , infile(nullptr)
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB

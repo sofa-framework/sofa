@@ -26,8 +26,8 @@ namespace sofa::core::behavior
 {
 
 BaseMass::BaseMass()
-    : m_separateGravity (initData(&m_separateGravity , false, "separateGravity", "add separately gravity to velocity computation"))
-    , rayleighMass (initData(&rayleighMass , SReal(0), "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
+    : m_separateGravity (initData( false, "separateGravity", "add separately gravity to velocity computation"))
+    , rayleighMass (initData( SReal(0), "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
 {
 }
 

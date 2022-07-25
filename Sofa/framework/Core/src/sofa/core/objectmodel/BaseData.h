@@ -70,8 +70,7 @@ public:
     class BaseInitData
     {
     public:
-        BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), ownerClass(""), group(""), widget("") {}
-        BaseData* data;
+        BaseInitData() : helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), ownerClass(""), group(""), widget("") {}
         std::string helpMsg;
         DataFlags dataFlags;
         Base* owner;

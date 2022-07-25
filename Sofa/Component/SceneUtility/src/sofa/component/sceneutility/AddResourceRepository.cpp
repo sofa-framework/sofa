@@ -34,7 +34,7 @@ namespace sofa::component::sceneutility
 BaseAddResourceRepository::BaseAddResourceRepository()
     : Inherit1()
     , m_repository(nullptr)
-    , d_repositoryPath(initData(&d_repositoryPath, "path", "Path to add to the pool of resources"))
+    , d_repositoryPath(initData( "path", "Path to add to the pool of resources"))
     , m_currentAddedPath("")
 {
     d_repositoryPath.setPathType(core::objectmodel::PathType::DIRECTORY);

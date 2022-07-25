@@ -33,10 +33,10 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 PositionBasedDynamicsConstraint<DataTypes>::PositionBasedDynamicsConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , stiffness(initData(&stiffness,(Real)1.0,"stiffness","Blending between current pos and target pos."))
-    , position(initData(&position,"position","Target positions."))
-    , velocity(initData(&velocity,"velocity","Velocities."))
-    , old_position(initData(&old_position,"old_position","Old positions."))
+    , stiffness(initData((Real)1.0,"stiffness","Blending between current pos and target pos."))
+    , position(initData("position","Target positions."))
+    , velocity(initData("velocity","Velocities."))
+    , old_position(initData("old_position","Old positions."))
 {
 }
 

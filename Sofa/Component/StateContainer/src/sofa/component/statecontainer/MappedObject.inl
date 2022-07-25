@@ -29,8 +29,8 @@ namespace sofa::component::statecontainer
 
 template <class DataTypes>
 MappedObject<DataTypes>::MappedObject()
-    : f_X( initData(&f_X, "position", "position vector") )
-    , f_V( initData(&f_V, "velocity", "velocity vector") )
+    : f_X( initData( "position", "position vector") )
+    , f_V( initData( "velocity", "velocity vector") )
 {
 }
 

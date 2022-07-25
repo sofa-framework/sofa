@@ -58,19 +58,19 @@ const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softSha
 
 Light::Light()
     : m_lightID(0), m_shadowTexWidth(0),m_shadowTexHeight(0)
-    , d_color(initData(&d_color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
-    , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
-    , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
-    , d_zNear(initData(&d_zNear, "zNear", "[Shadowing] Light's ZNear"))
-    , d_zFar(initData(&d_zFar, "zFar", "[Shadowing] Light's ZFar"))
-    , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "[Shadowing] Enable Shadow from this light"))
-    , d_softShadows(initData(&d_softShadows, (bool) false, "softShadows", "[Shadowing] Turn on Soft Shadow from this light"))
-    , d_shadowFactor(initData(&d_shadowFactor, (float) 1.0, "shadowFactor", "[Shadowing] Shadow Factor (decrease/increase darkness)"))
-    , d_VSMLightBleeding(initData(&d_VSMLightBleeding, (float) 0.05, "VSMLightBleeding", "[Shadowing] (VSM only) Light bleeding paramter"))
-    , d_VSMMinVariance(initData(&d_VSMMinVariance, (float) 0.001, "VSMMinVariance", "[Shadowing] (VSM only) Minimum variance parameter"))
-    , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "[Shadowing] Texture unit for the genereated shadow texture"))
-    , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "[Shadowing] ModelView Matrix"))
-    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "[Shadowing] Projection Matrix"))
+    , d_color(initData( sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
+    , d_shadowTextureSize(initData( (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
+    , d_drawSource(initData( (bool) false, "drawSource", "Draw Light Source"))
+    , d_zNear(initData( "zNear", "[Shadowing] Light's ZNear"))
+    , d_zFar(initData( "zFar", "[Shadowing] Light's ZFar"))
+    , d_shadowsEnabled(initData( (bool) true, "shadowsEnabled", "[Shadowing] Enable Shadow from this light"))
+    , d_softShadows(initData( (bool) false, "softShadows", "[Shadowing] Turn on Soft Shadow from this light"))
+    , d_shadowFactor(initData( (float) 1.0, "shadowFactor", "[Shadowing] Shadow Factor (decrease/increase darkness)"))
+    , d_VSMLightBleeding(initData( (float) 0.05, "VSMLightBleeding", "[Shadowing] (VSM only) Light bleeding paramter"))
+    , d_VSMMinVariance(initData( (float) 0.001, "VSMMinVariance", "[Shadowing] (VSM only) Minimum variance parameter"))
+    , d_textureUnit(initData( (unsigned short) 1, "textureUnit", "[Shadowing] Texture unit for the genereated shadow texture"))
+    , d_modelViewMatrix(initData( "modelViewMatrix", "[Shadowing] ModelView Matrix"))
+    , d_projectionMatrix(initData( "projectionMatrix", "[Shadowing] Projection Matrix"))
     , b_needUpdate(false)
 {
     type::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
@@ -397,7 +397,7 @@ GLfloat Light::getZFar()
 }
 
 DirectionalLight::DirectionalLight()
-    : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
+    : d_direction(initData( (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
 {
 
 }
@@ -600,9 +600,9 @@ GLuint DirectionalLight::getColorTexture()
 }
 
 PositionalLight::PositionalLight()
-    : d_fixed(initData(&d_fixed, (bool) false, "fixed", "Fix light position from the camera"))
-    , d_position(initData(&d_position, (Vector3) Vector3(-0.7,0.3,0.0), "position", "Set the position of the light"))
-    , d_attenuation(initData(&d_attenuation, (float) 0.0, "attenuation", "Set the attenuation of the light"))
+    : d_fixed(initData( (bool) false, "fixed", "Fix light position from the camera"))
+    , d_position(initData( (Vector3) Vector3(-0.7,0.3,0.0), "position", "Set the position of the light"))
+    , d_attenuation(initData( (float) 0.0, "attenuation", "Set the attenuation of the light"))
 {
 
 }
@@ -670,10 +670,10 @@ void PositionalLight::draw(const core::visual::VisualParams* vparams)
 
 
 SpotLight::SpotLight()
-    : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
-    , d_cutoff(initData(&d_cutoff, (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot"))
-    , d_exponent(initData(&d_exponent, (float) 1.0, "exponent", "Set the exponent of the spot"))
-    , d_lookat(initData(&d_lookat, false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
+    : d_direction(initData( (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
+    , d_cutoff(initData( (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot"))
+    , d_exponent(initData( (float) 1.0, "exponent", "Set the exponent of the spot"))
+    , d_lookat(initData( false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
 {
 
 }

@@ -38,7 +38,7 @@ Mapping<In,Out>::Mapping(State<In>* from, State<Out>* to)
     : BaseMapping()
     , fromModel(initLink("input", "Input object to map"), from)
     , toModel(initLink("output", "Output object to map"), to)
-    , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
+    , f_applyRestPosition( initData( false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
 {
     if(to != nullptr && !testMechanicalState(to))
         setNonMechanical();

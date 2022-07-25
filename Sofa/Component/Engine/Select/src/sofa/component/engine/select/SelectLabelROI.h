@@ -71,9 +71,9 @@ public:
 protected:
 
     SelectLabelROI(): Inherited()
-      , d_labels ( initData ( &d_labels,"labels","lists of labels associated to each point/cell" ) )
-      , d_selectLabels ( initData ( &d_selectLabels,"selectLabels","list of selected labels" ) )
-      , d_indices ( initData ( &d_indices,"indices","selected point/cell indices" ) )
+      , d_labels ( initData("labels","lists of labels associated to each point/cell" ) )
+      , d_selectLabels ( initData("selectLabels","list of selected labels" ) )
+      , d_indices ( initData("indices","selected point/cell indices" ) )
     {
         addInput(&d_labels);
         addInput(&d_selectLabels);

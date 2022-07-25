@@ -31,7 +31,7 @@ int ComplianceMatrixImageClass = core::RegisterObject("View the compliance matri
 
 ComplianceMatrixImage::ComplianceMatrixImage()
     : Inherit1()
-    , d_bitmap(initData(&d_bitmap, type::BaseMatrixImageProxy(), "bitmap", "Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros."))
+    , d_bitmap(initData( type::BaseMatrixImageProxy(), "bitmap", "Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros."))
     , l_constraintSolver(initLink("constraintSolver", "Link to the constraint solver containing a compliance matrix"))
 {
     d_bitmap.setGroup("Image");

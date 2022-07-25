@@ -27,7 +27,7 @@ namespace sofa::component::misc
 
 template <class DataTypes>
 DevAngleCollisionMonitor<DataTypes>::DevAngleCollisionMonitor()
-    : maxDist( initData(&maxDist, (Real)1.0, "maxDist", "alarm distance for proximity detection"))
+    : maxDist( initData( (Real)1.0, "maxDist", "alarm distance for proximity detection"))
     , pointsCM(nullptr)
     , surfaceCM(nullptr)
     , intersection(nullptr)

@@ -32,8 +32,8 @@ int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglT
 
 OglTexturePointer::OglTexturePointer()
     :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )
-    ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
-    ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
+    ,textureUnit(initData( (unsigned short) 1, "textureUnit", "Set the texture unit"))
+    ,enabled(initData( (bool) true, "enabled", "enabled ?"))
 {
     
 }

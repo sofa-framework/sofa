@@ -31,12 +31,12 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 ParabolicConstraint<DataTypes>::ParabolicConstraint(core::behavior::MechanicalState<DataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<DataTypes>(mstate)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_P1(initData(&m_P1,"P1","first point of the parabol") )
-    , m_P2(initData(&m_P2,"P2","second point of the parabol") )
-    , m_P3(initData(&m_P3,"P3","third point of the parabol") )
-    , m_tBegin(initData(&m_tBegin,"BeginTime","Begin Time of the motion") )
-    , m_tEnd(initData(&m_tEnd,"EndTime","End Time of the motion") )
+    , m_indices( initData("indices","Indices of the constrained points") )
+    , m_P1(initData("P1","first point of the parabol") )
+    , m_P2(initData("P2","second point of the parabol") )
+    , m_P3(initData("P3","third point of the parabol") )
+    , m_tBegin(initData("BeginTime","Begin Time of the motion") )
+    , m_tEnd(initData("EndTime","End Time of the motion") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }

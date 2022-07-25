@@ -34,9 +34,9 @@ namespace sofa::component::sceneutility::makedataaliascomponent
 {
 
 MakeDataAliasComponent::MakeDataAliasComponent()
-    : d_componentname(initData(&d_componentname, "componentname", "The component class for which to create an alias."))
-    , d_dataname(initData(&d_dataname, "dataname", "The data field for which to create an alias."))
-    , d_alias(initData(&d_alias, "alias", "The alias of the data field."))
+    : d_componentname(initData( "componentname", "The component class for which to create an alias."))
+    , d_dataname(initData( "dataname", "The data field for which to create an alias."))
+    , d_alias(initData( "alias", "The alias of the data field."))
 {
     d_componentState.setValue(ComponentState::Invalid) ;
 }

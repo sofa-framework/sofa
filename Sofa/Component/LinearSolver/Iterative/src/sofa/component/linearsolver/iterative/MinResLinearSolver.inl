@@ -38,10 +38,10 @@ namespace sofa::component::linearsolver::iterative
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
-    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+    : f_maxIter( initData((unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
+    , f_tolerance( initData(1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
+    , f_verbose( initData(false,"verbose","Dump system state at each iteration") )
+    , f_graph( initData("graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);

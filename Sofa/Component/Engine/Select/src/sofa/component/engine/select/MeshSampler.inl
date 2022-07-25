@@ -35,12 +35,12 @@ using namespace core::objectmodel;
 template <class DataTypes>
 MeshSampler<DataTypes>::MeshSampler()
     : DataEngine()
-    , number(initData(&number, (unsigned int)1, "number", "Sample number"))
-    , position(initData(&position,"position","Input positions."))
-    , f_edges(initData(&f_edges,"edges","Input edges for geodesic sampling (Euclidean distances are used if not specified)."))
-    , maxIter(initData(&maxIter, (unsigned int)100, "maxIter", "Max number of Lloyd iterations."))
-    , outputIndices(initData(&outputIndices,"outputIndices","Computed sample indices."))
-    , outputPosition(initData(&outputPosition,"outputPosition","Computed sample coordinates."))
+    , number(initData( (unsigned int)1, "number", "Sample number"))
+    , position(initData("position","Input positions."))
+    , f_edges(initData("edges","Input edges for geodesic sampling (Euclidean distances are used if not specified)."))
+    , maxIter(initData( (unsigned int)100, "maxIter", "Max number of Lloyd iterations."))
+    , outputIndices(initData("outputIndices","Computed sample indices."))
+    , outputPosition(initData("outputPosition","Computed sample coordinates."))
 {
     addInput(&number);
     addInput(&position);

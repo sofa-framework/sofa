@@ -35,7 +35,7 @@ using namespace sofa::linearalgebra;
 
 template<class Matrix, class Vector>
 LULinearSolver<Matrix,Vector>::LULinearSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    : f_verbose( initData(false,"verbose","Dump system state at each iteration") )
     , solver(nullptr), computedMinv(false)
 {
 }

@@ -59,21 +59,21 @@ using linearalgebra::BaseMatrix;
 
 template <class DataTypes>
 UniformMass<DataTypes>::UniformMass()
-    : d_vertexMass ( initData ( &d_vertexMass, MassType ( 1.0f ), "vertexMass", "Specify one single, positive, real value for the mass of each particle. \n"
+    : d_vertexMass ( initData( MassType ( 1.0f ), "vertexMass", "Specify one single, positive, real value for the mass of each particle. \n"
                                                                                 "If unspecified or wrongly set, the totalMass information is used." ) )
-    , d_totalMass ( initData ( &d_totalMass, SReal(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
+    , d_totalMass ( initData( SReal(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
                                                                       "If unspecified or wrongly set, the default value is used: totalMass = 1.0") )
-    , d_filenameMass ( initData ( &d_filenameMass, "filename", "rigid file to load the mass parameters" ) )
-    , d_showCenterOfGravity ( initData ( &d_showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , d_showAxisSize ( initData ( &d_showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , d_computeMappingInertia ( initData ( &d_computeMappingInertia, false, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
-    , d_showInitialCenterOfGravity ( initData ( &d_showInitialCenterOfGravity, false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
-    , d_showX0 ( initData ( &d_showX0, false, "showX0", "display the rest positions" ) )
-    , d_localRange ( initData ( &d_localRange, Vec<2,int> ( -1,-1 ), "localRange", "optional range of local DOF indices. \n"
+    , d_filenameMass ( initData( "filename", "rigid file to load the mass parameters" ) )
+    , d_showCenterOfGravity ( initData( false, "showGravityCenter", "display the center of gravity of the system" ) )
+    , d_showAxisSize ( initData( 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , d_computeMappingInertia ( initData( false, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
+    , d_showInitialCenterOfGravity ( initData( false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
+    , d_showX0 ( initData( false, "showX0", "display the rest positions" ) )
+    , d_localRange ( initData( Vec<2,int> ( -1,-1 ), "localRange", "optional range of local DOF indices. \n"
                                                                                    "Any computation involving only indices outside of this range \n"
                                                                                    "are discarded (useful for parallelization using mesh partitionning)" ) )
-    , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
-    , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
+    , d_indices ( initData( "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
+    , d_preserveTotalMass( initData( false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();

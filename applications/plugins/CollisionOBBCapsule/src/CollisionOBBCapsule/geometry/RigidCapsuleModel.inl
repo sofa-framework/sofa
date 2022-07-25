@@ -29,10 +29,10 @@ namespace collisionobbcapsule::geometry
 
 template<class MyReal>
 CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::CapsuleCollisionModel():
-      d_capsule_radii(initData(&d_capsule_radii, "radii","Radius of each capsule")),
-      d_capsule_heights(initData(&d_capsule_heights,"heights","The capsule heights")),
-      d_default_radius(initData(&d_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-      d_default_height(initData(&d_default_height,(Real)2,"dafaultHeight","The default height")),
+      d_capsule_radii(initData( "radii","Radius of each capsule")),
+      d_capsule_heights(initData("heights","The capsule heights")),
+      d_default_radius(initData((Real)0.5,"defaultRadius","The default radius")),
+      d_default_height(initData((Real)2,"dafaultHeight","The default height")),
       _mstate(nullptr)
 {
     enum_type = CAPSULE_TYPE;
@@ -40,10 +40,10 @@ CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::CapsuleColli
 
 template<class MyReal>
 CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::CapsuleCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate):
-    d_capsule_radii(initData(&d_capsule_radii, "radii","Radius of each capsule")),
-    d_capsule_heights(initData(&d_capsule_heights,"heights","The capsule heights")),
-    d_default_radius(initData(&d_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-    d_default_height(initData(&d_default_height,(Real)2,"dafaultHeight","The default height")),
+    d_capsule_radii(initData( "radii","Radius of each capsule")),
+    d_capsule_heights(initData("heights","The capsule heights")),
+    d_default_radius(initData((Real)0.5,"defaultRadius","The default radius")),
+    d_default_height(initData((Real)2,"dafaultHeight","The default height")),
     _mstate(mstate)
 {
     enum_type = CAPSULE_TYPE;

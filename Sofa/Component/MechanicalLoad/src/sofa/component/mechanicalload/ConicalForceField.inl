@@ -35,13 +35,13 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 ConicalForceField<DataTypes>::ConicalForceField()
-    : coneCenter(initData(&coneCenter, "coneCenter", "cone center"))
-    , coneHeight(initData(&coneHeight, "coneHeight", "cone height"))
-    , coneAngle(initData(&coneAngle, (Real)10, "coneAngle", "cone angle"))
+    : coneCenter(initData( "coneCenter", "cone center"))
+    , coneHeight(initData( "coneHeight", "cone height"))
+    , coneAngle(initData( (Real)10, "coneAngle", "cone angle"))
 
-    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
-    , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, sofa::type::RGBAColor::blue(), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
+    , stiffness(initData( (Real)500, "stiffness", "force stiffness"))
+    , damping(initData( (Real)5, "damping", "force damping"))
+    , color(initData( sofa::type::RGBAColor::blue(), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
 {
 }
 

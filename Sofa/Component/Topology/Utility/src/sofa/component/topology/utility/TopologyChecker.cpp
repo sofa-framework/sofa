@@ -42,7 +42,7 @@ int TopologyCheckerClass = core::RegisterObject("Read topological Changes and pr
 
 
 TopologyChecker::TopologyChecker()
-    : d_eachStep(initData(&d_eachStep, false, "eachStep", "Check topology at each step"))
+    : d_eachStep(initData( false, "eachStep", "Check topology at each step"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {

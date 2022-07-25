@@ -44,8 +44,8 @@ using namespace sofa::core::loader;
 
 VoxelLoader::VoxelLoader()
     :BaseLoader()
-    ,positions(initData(&positions,"position","Coordinates of the nodes loaded"))
-    ,hexahedra(initData(&hexahedra,"hexahedra","Hexahedra loaded"))
+    ,positions(initData("position","Coordinates of the nodes loaded"))
+    ,hexahedra(initData("hexahedra","Hexahedra loaded"))
 {
 }
 

@@ -37,10 +37,10 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 ProjectToPointConstraint<DataTypes>::ProjectToPointConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , f_indices( initData(&f_indices,"indices","Indices of the points to project") )
-    , f_point( initData(&f_point,"point","Target of the projection") )
-    , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_indices( initData("indices","Indices of the points to project") )
+    , f_point( initData("point","Target of the projection") )
+    , f_fixAll( initData(false,"fixAll","filter all the DOF to implement a fixed object") )
+    , f_drawSize( initData((SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new ProjectToPointConstraintInternalData<DataTypes>())    
 {

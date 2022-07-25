@@ -136,7 +136,7 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>::updateSolverOderingMethod
 template <class TBlockType, class EigenSolver>
 EigenDirectSparseSolver<TBlockType, EigenSolver>::EigenDirectSparseSolver()
     : Inherit1()
-    , d_orderingMethod(initData(&d_orderingMethod, "ordering", "Ordering method"))
+    , d_orderingMethod(initData( "ordering", "Ordering method"))
 {
     sofa::helper::OptionsGroup d_orderingMethodOptions(4,"Natural", "AMD", "COLAMD", "Metis");
 

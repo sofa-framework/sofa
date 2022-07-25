@@ -33,11 +33,11 @@ using sofa::core::objectmodel::ComponentState;
 
 template<class DataTypes>
 CylinderCollisionModel<DataTypes>::CylinderCollisionModel():
-      d_cylinder_radii(initData(&d_cylinder_radii, "radii","Radius of each cylinder")),
-      d_cylinder_heights(initData(&d_cylinder_heights,"heights","The cylinder heights")),
-      d_default_radius(initData(&d_default_radius,Real(0.5),"defaultRadius","The default radius")),
-      d_default_height(initData(&d_default_height,Real(2),"defaultHeight","The default height")),
-      d_default_local_axis(initData(&d_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
+      d_cylinder_radii(initData( "radii","Radius of each cylinder")),
+      d_cylinder_heights(initData("heights","The cylinder heights")),
+      d_default_radius(initData(Real(0.5),"defaultRadius","The default radius")),
+      d_default_height(initData(Real(2),"defaultHeight","The default height")),
+      d_default_local_axis(initData(typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
       m_mstate(nullptr)
 {
     enum_type = CYLINDER_TYPE;

@@ -31,17 +31,17 @@ namespace sofa::gl::component::engine
 
 template <class DataTypes>
 TextureInterpolation<DataTypes>::TextureInterpolation()
-    : _inputField (initData (&_inputField, "input_states", "input array of state values."))
-    , _inputCoords (initData (&_inputCoords, "input_coordinates", "input array of coordinates values."))
-    , _outputCoord (initData (&_outputCoord, "output_coordinates", "output array of texture coordinates."))
-    , _scalarField (initData (&_scalarField, (bool) true, "scalarField", "To interpolate only the first dimension of input field (useful if this component need to be templated in higher dimension)."))
-    , _minVal (initData (&_minVal, (Real)0, "min_value", "minimum value of state value for interpolation."))
-    , _maxVal (initData (&_maxVal, (Real)0, "max_value", "maximum value of state value for interpolation."))
-    , _changeScale (initData (&_changeScale, false, "manual_scale", "compute texture interpolation on manually scale defined above."))
-    , drawPotentiels (initData (&drawPotentiels, (bool) false, "drawPotentiels", "Debug: view state values."))
-    , showIndicesScale (initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Debug : scale of state values displayed."))
-    ,_vertexPloted (initData(&_vertexPloted, (unsigned int)0, "vertexPloted", "Vertex index of values display in graph for each iteration."))
-    ,f_graph( initData(&f_graph,"graph","Vertex state value per iteration") )
+    : _inputField (initData( "input_states", "input array of state values."))
+    , _inputCoords (initData( "input_coordinates", "input array of coordinates values."))
+    , _outputCoord (initData( "output_coordinates", "output array of texture coordinates."))
+    , _scalarField (initData( (bool) true, "scalarField", "To interpolate only the first dimension of input field (useful if this component need to be templated in higher dimension)."))
+    , _minVal (initData( (Real)0, "min_value", "minimum value of state value for interpolation."))
+    , _maxVal (initData( (Real)0, "max_value", "maximum value of state value for interpolation."))
+    , _changeScale (initData( false, "manual_scale", "compute texture interpolation on manually scale defined above."))
+    , drawPotentiels (initData( (bool) false, "drawPotentiels", "Debug: view state values."))
+    , showIndicesScale (initData( (float) 0.0001, "showIndicesScale", "Debug : scale of state values displayed."))
+    ,_vertexPloted (initData( (unsigned int)0, "vertexPloted", "Vertex index of values display in graph for each iteration."))
+    ,f_graph( initData("graph","Vertex state value per iteration") )
 {
     f_graph.setWidget("graph");
 

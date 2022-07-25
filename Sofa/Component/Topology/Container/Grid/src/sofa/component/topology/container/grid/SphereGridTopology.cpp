@@ -38,17 +38,17 @@ int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
 
 SphereGridTopology::SphereGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
-    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
-    , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
+    , d_center(initData(Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
+    , d_axis(initData(Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
+    , d_radius(initData((SReal)1.0,"radius", "Radius of the cylinder"))
 {
 }
 
 SphereGridTopology::SphereGridTopology()
     : GridTopology()
-    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
-    , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
+    , d_center(initData(Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
+    , d_axis(initData(Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
+    , d_radius(initData((SReal)1.0,"radius", "Radius of the cylinder"))
 {
 }
 

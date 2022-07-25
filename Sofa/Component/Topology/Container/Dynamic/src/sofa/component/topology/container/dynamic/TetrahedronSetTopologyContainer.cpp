@@ -39,8 +39,8 @@ int TetrahedronSetTopologyContainerClass = core::RegisterObject("Tetrahedron set
 
 TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
-	, d_createTriangleArray(initData(&d_createTriangleArray, bool(false),"createTriangleArray", "Force the creation of a set of triangles associated with each tetrahedron"))
-    , d_tetrahedron(initData(&d_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
+	, d_createTriangleArray(initData( bool(false),"createTriangleArray", "Force the creation of a set of triangles associated with each tetrahedron"))
+    , d_tetrahedron(initData( "tetrahedra", "List of tetrahedron indices"))
 {
     addAlias(&d_tetrahedron, "tetras");
 }

@@ -56,7 +56,7 @@ public:
 };
 
 OrderIndependentTransparencyManager::OrderIndependentTransparencyManager()
-    : depthScale(initData(&depthScale, 0.01f, "depthScale", "Depth scale"))
+    : depthScale(initData( 0.01f, "depthScale", "Depth scale"))
     , fbo()
     , accumulationShader()
     , compositionShader()

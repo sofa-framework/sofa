@@ -32,8 +32,8 @@ namespace sofa::component::mapping::linear
 template <class In, class Out>
 BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::BarycentricMapperTetrahedronSetTopologyRigid(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* _toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
-      map(initData(&map,"map", "mapper data")),
-      mapOrient(initData(&mapOrient,"mapOrient", "mapper data for mapped frames")),
+      map(initData("map", "mapper data")),
+      mapOrient(initData("mapOrient", "mapper data for mapped frames")),
       matrixJ(nullptr),
       updateJ(true)
 {

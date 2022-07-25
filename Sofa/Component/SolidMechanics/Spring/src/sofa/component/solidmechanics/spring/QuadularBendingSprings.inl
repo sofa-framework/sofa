@@ -411,10 +411,10 @@ void QuadularBendingSprings<DataTypes>::applyPointRenumbering(const sofa::type::
 
 template<class DataTypes>
 QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
-    : f_ks ( initData(&f_ks,(SReal) 100000.0,"stiffness","uniform stiffness for the all springs"))
-    , f_kd ( initData(&f_kd,(SReal) 1.0,"damping","uniform damping for the all springs"))
+    : f_ks ( initData((SReal) 100000.0,"stiffness","uniform stiffness for the all springs"))
+    , f_kd ( initData((SReal) 1.0,"damping","uniform damping for the all springs"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , edgeInfo ( initData(&edgeInfo, "edgeInfo","Internal edge data"))
+    , edgeInfo ( initData( "edgeInfo","Internal edge data"))
     , m_topology(nullptr)
     , updateMatrix(true)
 {

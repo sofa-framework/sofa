@@ -48,13 +48,13 @@ int MeshExporterClass = core::RegisterObject("Export topology and positions into
         .add< MeshExporter >();
 
 MeshExporter::MeshExporter()
-    : d_fileFormat( initData(&d_fileFormat, sofa::helper::OptionsGroup(7,"ALL","vtkxml","vtk","netgen","tetgen","gmsh","obj"), "format", "File format to use"))
-    , d_position( initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
-    , d_writeEdges( initData(&d_writeEdges, true, "edges", "write edge topology"))
-    , d_writeTriangles( initData(&d_writeTriangles, true, "triangles", "write triangle topology"))
-    , d_writeQuads( initData(&d_writeQuads, true, "quads", "write quad topology"))
-    , d_writeTetras( initData(&d_writeTetras, true, "tetras", "write tetra topology"))
-    , d_writeHexas( initData(&d_writeHexas, true, "hexas", "write hexa topology"))
+    : d_fileFormat( initData( sofa::helper::OptionsGroup(7,"ALL","vtkxml","vtk","netgen","tetgen","gmsh","obj"), "format", "File format to use"))
+    , d_position( initData( "position", "points position (will use points from topology or mechanical state if this is empty)"))
+    , d_writeEdges( initData( true, "edges", "write edge topology"))
+    , d_writeTriangles( initData( true, "triangles", "write triangle topology"))
+    , d_writeQuads( initData( true, "quads", "write quad topology"))
+    , d_writeTetras( initData( true, "tetras", "write tetra topology"))
+    , d_writeHexas( initData( true, "hexas", "write hexa topology"))
 {
 }
 

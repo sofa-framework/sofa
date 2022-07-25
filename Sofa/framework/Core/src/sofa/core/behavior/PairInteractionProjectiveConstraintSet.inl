@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 template<class DataTypes>
 PairInteractionProjectiveConstraintSet<DataTypes>::PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : Inherit1(), Inherit2(mm1, mm2)
-    , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+    , endTime( initData((SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
     if (!mm1)
         this->mstate1.setPath("@./"); // default to state of the current node

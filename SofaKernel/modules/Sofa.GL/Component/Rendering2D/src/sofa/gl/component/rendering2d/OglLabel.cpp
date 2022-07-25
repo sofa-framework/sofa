@@ -38,16 +38,16 @@ using sofa::core::objectmodel::BaseObjectDescription ;
 using sofa::type::RGBAColor ;
 
 OglLabel::OglLabel():
-   d_prefix(initData(&d_prefix, std::string(""), "prefix", "The prefix of the text to display"))
-  ,d_label(initData(&d_label, std::string(""), "label", "The text to display"))
-  ,d_suffix(initData(&d_suffix, std::string(""), "suffix", "The suffix of the text to display"))
-  ,d_x(initData(&d_x, (unsigned int)10, "x", "The x position of the text on the screen"))
-  ,d_y(initData(&d_y, (unsigned int)10, "y", "The y position of the text on the screen"))
-  ,d_fontsize(initData(&d_fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
-  ,d_color(initData(&d_color, sofa::type::RGBAColor::gray(), "color", "The color of the text to display. (default='gray')"))
-  ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
-  ,d_updateLabelEveryNbSteps(initData(&d_updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
-  ,d_visible(initData(&d_visible,true,"visible","Is label displayed"))
+   d_prefix(initData( std::string(""), "prefix", "The prefix of the text to display"))
+  ,d_label(initData( std::string(""), "label", "The text to display"))
+  ,d_suffix(initData( std::string(""), "suffix", "The suffix of the text to display"))
+  ,d_x(initData( (unsigned int)10, "x", "The x position of the text on the screen"))
+  ,d_y(initData( (unsigned int)10, "y", "The y position of the text on the screen"))
+  ,d_fontsize(initData( (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
+  ,d_color(initData( sofa::type::RGBAColor::gray(), "color", "The color of the text to display. (default='gray')"))
+  ,d_selectContrastingColor(initData( false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
+  ,d_updateLabelEveryNbSteps(initData( (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
+  ,d_visible(initData(true,"visible","Is label displayed"))
   ,m_stepCounter(0)
 {
     f_listening.setValue(true);

@@ -51,10 +51,10 @@ int LightManagerClass = RegisterObject
         ;
 
 LightManager::LightManager()
-    : d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) false, "shadows", "Enable Shadow in the scene. (default=0)"))
-    , d_softShadowsEnabled(initData(&d_softShadowsEnabled, (bool) false, "softShadows", "If Shadows enabled, Enable Variance Soft Shadow in the scene. (default=0)"))
-    , d_ambient(initData(&d_ambient, RGBAColor::black(), "ambient", "Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])"))
-    , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "debugDraw", "enable/disable drawing of lights shadow textures. (default=false)"))
+    : d_shadowsEnabled(initData( (bool) false, "shadows", "Enable Shadow in the scene. (default=0)"))
+    , d_softShadowsEnabled(initData( (bool) false, "softShadows", "If Shadows enabled, Enable Variance Soft Shadow in the scene. (default=0)"))
+    , d_ambient(initData( RGBAColor::black(), "ambient", "Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])"))
+    , d_drawIsEnabled(initData( false, "debugDraw", "enable/disable drawing of lights shadow textures. (default=false)"))
 {
     //listen by default, in order to get the keys to activate shadows
     if(!f_listening.isSet())

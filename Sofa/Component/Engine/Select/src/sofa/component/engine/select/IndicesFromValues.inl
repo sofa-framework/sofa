@@ -28,11 +28,11 @@ namespace sofa::component::engine::select
 
 template <class T>
 IndicesFromValues<T>::IndicesFromValues()
-    : f_values( initData (&f_values, "values", "input values") )
-    , f_global( initData (&f_global, "global", "Global values, in which the input values are searched") )
-    , f_indices( initData(&f_indices, "indices","Output indices of the given values, searched in global") )
-    , f_otherIndices( initData(&f_otherIndices, "otherIndices","Output indices of the other values, (NOT the given ones) searched in global") )
-    , f_recursiveSearch( initData(&f_recursiveSearch, false, "recursiveSearch", "if set to true, output are indices of the \"global\" data matching with one of the values"))
+    : f_values( initData( "values", "input values") )
+    , f_global( initData( "global", "Global values, in which the input values are searched") )
+    , f_indices( initData( "indices","Output indices of the given values, searched in global") )
+    , f_otherIndices( initData( "otherIndices","Output indices of the other values, (NOT the given ones) searched in global") )
+    , f_recursiveSearch( initData( false, "recursiveSearch", "if set to true, output are indices of the \"global\" data matching with one of the values"))
 {
     addInput(&f_values);
     addInput(&f_global);

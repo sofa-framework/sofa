@@ -121,11 +121,11 @@ namespace sofa::component::haptics
 
 template <class DataTypes>
 LCPForceFeedback<DataTypes>::LCPForceFeedback()
-    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
-    , solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints."))
-    , d_solverMaxIt(initData(&d_solverMaxIt, 100, "solverMaxIt", "max iteration to spend solving constraints"))
-    , d_derivRotations(initData(&d_derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations"))
-    , d_localHapticConstraintAllFrames(initData(&d_localHapticConstraintAllFrames, false, "localHapticConstraintAllFrames", "Flag to enable/disable constraint haptic influence from all frames"))
+    : forceCoef(initData( 0.03, "forceCoef","multiply haptic force by this coef."))
+    , solverTimeout(initData( 0.0008, "solverTimeout","max time to spend solving constraints."))
+    , d_solverMaxIt(initData( 100, "solverMaxIt", "max iteration to spend solving constraints"))
+    , d_derivRotations(initData( false, "derivRotations", "if true, deriv the rotations when updating the violations"))
+    , d_localHapticConstraintAllFrames(initData( false, "localHapticConstraintAllFrames", "Flag to enable/disable constraint haptic influence from all frames"))
     , mState(nullptr)
     , mNextBufferId(0)
     , mCurBufferId(0)

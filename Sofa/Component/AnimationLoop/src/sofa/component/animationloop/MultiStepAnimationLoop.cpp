@@ -50,8 +50,8 @@ int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation lo
 
 MultiStepAnimationLoop::MultiStepAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
-    , collisionSteps( initData(&collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
-    , integrationSteps( initData(&integrationSteps,1,"integrationSteps", "number of integration steps between each collision detection") )
+    , collisionSteps( initData(1,"collisionSteps", "number of collision steps between each frame rendering") )
+    , integrationSteps( initData(1,"integrationSteps", "number of integration steps between each collision detection") )
 {
 }
 

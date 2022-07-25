@@ -191,8 +191,8 @@ inline const core::CollisionElementIterator ISAPBox::finalElement()const{
 
 
 IncrSAP::IncrSAP()
-    : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
-    , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
+    : bDraw(initData( false, "draw", "enable/disable display of results"))
+    , box(initData( "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
     // _end_points = new EndPointList[3];

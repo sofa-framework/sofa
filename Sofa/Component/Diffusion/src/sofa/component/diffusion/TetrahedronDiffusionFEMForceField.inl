@@ -119,12 +119,12 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 TetrahedronDiffusionFEMForceField<DataTypes>::TetrahedronDiffusionFEMForceField()
-    : d_constantDiffusionCoefficient(initData(&d_constantDiffusionCoefficient, (Real)1.0, "constantDiffusionCoefficient","Constant diffusion coefficient")),
-      d_tetraDiffusionCoefficient( initData(&d_tetraDiffusionCoefficient, "tetraDiffusionCoefficient","Diffusion coefficient for each tetrahedron, by default equal to constantDiffusionCoefficient.")),
-      d_transverseAnisotropyRatio(initData(&d_transverseAnisotropyRatio, (Real)1.0, "anisotropyRatio","Anisotropy ratio (r²>1).\n Default is 1.0 = isotropy.")),
-      d_transverseAnisotropyDirectionArray(initData(&d_transverseAnisotropyDirectionArray, "transverseAnisotropyArray","Data to handle topology on tetrahedra")),
-      d_tagMeshMechanics(initData(&d_tagMeshMechanics, std::string("meca"),"tagMechanics","Tag of the Mechanical Object.")),
-      d_drawConduc( initData(&d_drawConduc, (bool)false, "drawConduc","To display conductivity map."))
+    : d_constantDiffusionCoefficient(initData( (Real)1.0, "constantDiffusionCoefficient","Constant diffusion coefficient")),
+      d_tetraDiffusionCoefficient( initData( "tetraDiffusionCoefficient","Diffusion coefficient for each tetrahedron, by default equal to constantDiffusionCoefficient.")),
+      d_transverseAnisotropyRatio(initData( (Real)1.0, "anisotropyRatio","Anisotropy ratio (r²>1).\n Default is 1.0 = isotropy.")),
+      d_transverseAnisotropyDirectionArray(initData( "transverseAnisotropyArray","Data to handle topology on tetrahedra")),
+      d_tagMeshMechanics(initData( std::string("meca"),"tagMechanics","Tag of the Mechanical Object.")),
+      d_drawConduc( initData( (bool)false, "drawConduc","To display conductivity map."))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {

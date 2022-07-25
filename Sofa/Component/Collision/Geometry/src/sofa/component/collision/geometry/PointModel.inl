@@ -34,10 +34,10 @@ namespace sofa::component::collision::geometry
 
 template<class DataTypes>
 PointCollisionModel<DataTypes>::PointCollisionModel()
-    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
+    : bothSide(initData( false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(nullptr)
-    , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
+    , computeNormals( initData( false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
+    , m_displayFreePosition(initData( false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = POINT_TYPE;

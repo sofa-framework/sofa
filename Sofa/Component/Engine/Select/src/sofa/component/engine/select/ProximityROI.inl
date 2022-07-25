@@ -34,17 +34,17 @@ namespace sofa::component::engine::select
 
 template <class DataTypes>
 ProximityROI<DataTypes>::ProximityROI()
-    : centers( initData(&centers, "centers", "Center(s) of the sphere(s)") )
-    , radii( initData(&radii, "radii", "Radius(i) of the sphere(s)") )
-    , f_num( initData (&f_num, "N", "Maximum number of points to select") )
-    , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
-    , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
-    , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
-    , f_distanceInROI( initData(&f_distanceInROI,"distance","distance between the points contained in the ROI and the closest center.") )
-    , f_indicesOut( initData(&f_indicesOut,"indicesOut","Indices of the points not contained in the ROI") )
-    , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw shpere(s)") )
-    , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
-    , _drawSize( initData(&_drawSize,1.0,"drawSize","rendering size for box and topological elements") )
+    : centers( initData( "centers", "Center(s) of the sphere(s)") )
+    , radii( initData( "radii", "Radius(i) of the sphere(s)") )
+    , f_num( initData( "N", "Maximum number of points to select") )
+    , f_X0( initData( "position", "Rest position coordinates of the degrees of freedom") )
+    , f_indices( initData("indices","Indices of the points contained in the ROI") )
+    , f_pointsInROI( initData("pointsInROI","Points contained in the ROI") )
+    , f_distanceInROI( initData("distance","distance between the points contained in the ROI and the closest center.") )
+    , f_indicesOut( initData("indicesOut","Indices of the points not contained in the ROI") )
+    , p_drawSphere( initData(false,"drawSphere","Draw shpere(s)") )
+    , p_drawPoints( initData(false,"drawPoints","Draw Points") )
+    , _drawSize( initData(1.0,"drawSize","rendering size for box and topological elements") )
 {
     //Adding alias to handle TrianglesInSphereROI input/output
     addAlias(&p_drawSphere,"isVisible");

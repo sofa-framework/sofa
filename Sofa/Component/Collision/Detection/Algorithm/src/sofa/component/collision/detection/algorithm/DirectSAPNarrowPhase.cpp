@@ -31,9 +31,9 @@ namespace sofa::component::collision::detection::algorithm
 using namespace sofa::component::collision::geometry;
 
 DirectSAPNarrowPhase::DirectSAPNarrowPhase()
-        : d_draw(initData(&d_draw, false, "draw", "enable/disable display of results"))
-        , d_showOnlyInvestigatedBoxes(initData(&d_showOnlyInvestigatedBoxes, true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
-        , d_nbPairs(initData(&d_nbPairs, 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
+        : d_draw(initData( false, "draw", "enable/disable display of results"))
+        , d_showOnlyInvestigatedBoxes(initData( true, "showOnlyInvestigatedBoxes", "Show only boxes which will be sent to narrow phase"))
+        , d_nbPairs(initData( 0, "nbPairs", "number of pairs of elements sent to narrow phase"))
         , m_currentAxis(0)
         , m_alarmDist(0)
         , m_alarmDist_d2(0)

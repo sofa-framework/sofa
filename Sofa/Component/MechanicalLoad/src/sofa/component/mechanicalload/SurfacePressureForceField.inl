@@ -37,19 +37,19 @@ namespace sofa::component::mechanicalload
 
 template <class DataTypes>
 SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
-    m_pressure(initData(&m_pressure, (Real)0.0, "pressure", "Pressure force per unit area")),
-    m_min(initData(&m_min, Coord(), "min", "Lower bond of the selection box")),
-    m_max(initData(&m_max, Coord(), "max", "Upper bond of the selection box")),
-    m_triangleIndices(initData(&m_triangleIndices, "triangleIndices", "Indices of affected triangles")),
-    m_quadIndices(initData(&m_quadIndices, "quadIndices", "Indices of affected quads")),
-    m_pulseMode(initData(&m_pulseMode, false, "pulseMode", "Cyclic pressure application")),
-    m_pressureLowerBound(initData(&m_pressureLowerBound, (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)")),
-    m_pressureSpeed(initData(&m_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
-    m_volumeConservationMode(initData(&m_volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation")),
-	m_useTangentStiffness(initData(&m_useTangentStiffness, true, "useTangentStiffness", "Whether (non-symmetric) stiffness matrix should be used")),
-    m_defaultVolume(initData(&m_defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume")),
-    m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application")),
-    m_drawForceScale(initData(&m_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
+    m_pressure(initData( (Real)0.0, "pressure", "Pressure force per unit area")),
+    m_min(initData( Coord(), "min", "Lower bond of the selection box")),
+    m_max(initData( Coord(), "max", "Upper bond of the selection box")),
+    m_triangleIndices(initData( "triangleIndices", "Indices of affected triangles")),
+    m_quadIndices(initData( "quadIndices", "Indices of affected quads")),
+    m_pulseMode(initData( false, "pulseMode", "Cyclic pressure application")),
+    m_pressureLowerBound(initData( (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)")),
+    m_pressureSpeed(initData( (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
+    m_volumeConservationMode(initData( false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation")),
+	m_useTangentStiffness(initData( true, "useTangentStiffness", "Whether (non-symmetric) stiffness matrix should be used")),
+    m_defaultVolume(initData( (Real)-1.0, "defaultVolume", "Default Volume")),
+    m_mainDirection(initData( Deriv(), "mainDirection", "Main direction for pressure application")),
+    m_drawForceScale(initData( (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
     , l_topology(initLink("topology", "link to the topology container"))
     , state(INCREASE)
     , m_topology(nullptr)

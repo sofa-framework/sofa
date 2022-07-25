@@ -47,15 +47,15 @@ int Mesh2PointTopologicalMappingClass = core::RegisterObject ( "This class maps 
 
 // Implementation
 Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
-    : pointBaryCoords ( initData ( &pointBaryCoords, "pointBaryCoords", "Coordinates for the points of the output topology created from the points of the input topology" ) ),
-      edgeBaryCoords ( initData ( &edgeBaryCoords, "edgeBaryCoords", "Coordinates for the points of the output topology created from the edges of the input topology" ) ),
-      triangleBaryCoords ( initData ( &triangleBaryCoords, "triangleBaryCoords", "Coordinates for the points of the output topology created from the triangles of the input topology" ) ),
-      quadBaryCoords ( initData ( &quadBaryCoords, "quadBaryCoords", "Coordinates for the points of the output topology created from the quads of the input topology" ) ),
-      tetraBaryCoords ( initData ( &tetraBaryCoords, "tetraBaryCoords", "Coordinates for the points of the output topology created from the tetra of the input topology" ) ),
-      hexaBaryCoords ( initData ( &hexaBaryCoords, "hexaBaryCoords", "Coordinates for the points of the output topology created from the hexa of the input topology" ) ),
-      copyEdges ( initData ( &copyEdges, false, "copyEdges", "Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)" ) ),
-      copyTriangles ( initData ( &copyTriangles, false, "copyTriangles", "Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)" ) ),
-      copyTetrahedra ( initData ( &copyTetrahedra, false, "copyTetrahedra", "Activate mapping of input tetrahedra into the output topology (requires at least one item in pointBaryCoords)" ) ),
+    : pointBaryCoords ( initData( "pointBaryCoords", "Coordinates for the points of the output topology created from the points of the input topology" ) ),
+      edgeBaryCoords ( initData( "edgeBaryCoords", "Coordinates for the points of the output topology created from the edges of the input topology" ) ),
+      triangleBaryCoords ( initData( "triangleBaryCoords", "Coordinates for the points of the output topology created from the triangles of the input topology" ) ),
+      quadBaryCoords ( initData( "quadBaryCoords", "Coordinates for the points of the output topology created from the quads of the input topology" ) ),
+      tetraBaryCoords ( initData( "tetraBaryCoords", "Coordinates for the points of the output topology created from the tetra of the input topology" ) ),
+      hexaBaryCoords ( initData( "hexaBaryCoords", "Coordinates for the points of the output topology created from the hexa of the input topology" ) ),
+      copyEdges ( initData( false, "copyEdges", "Activate mapping of input edges into the output topology (requires at least one item in pointBaryCoords)" ) ),
+      copyTriangles ( initData( false, "copyTriangles", "Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)" ) ),
+      copyTetrahedra ( initData( false, "copyTetrahedra", "Activate mapping of input tetrahedra into the output topology (requires at least one item in pointBaryCoords)" ) ),
        initDone(false)
 {
     pointBaryCoords.setGroup("BaryCoords");

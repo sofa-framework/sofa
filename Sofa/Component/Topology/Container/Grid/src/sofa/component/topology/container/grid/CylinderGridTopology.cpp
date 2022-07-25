@@ -38,19 +38,19 @@ int CylinderGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
 
 CylinderGridTopology::CylinderGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
-    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
-    , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
-    , d_length(initData(&d_length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
+    , d_center(initData(Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
+    , d_axis(initData(Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
+    , d_radius(initData((SReal)1.0,"radius", "Radius of the cylinder"))
+    , d_length(initData((SReal)1.0,"length", "Length of the cylinder along its axis"))
 {
 }
 
 CylinderGridTopology::CylinderGridTopology()
     : GridTopology()
-    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
-    , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
-    , d_length(initData(&d_length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
+    , d_center(initData(Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
+    , d_axis(initData(Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
+    , d_radius(initData((SReal)1.0,"radius", "Radius of the cylinder"))
+    , d_length(initData((SReal)1.0,"length", "Length of the cylinder along its axis"))
 {
 }
 

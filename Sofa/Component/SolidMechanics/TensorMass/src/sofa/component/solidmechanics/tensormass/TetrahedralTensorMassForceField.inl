@@ -225,12 +225,12 @@ template <class DataTypes>
 TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     : _initialPoints(0)
     , updateMatrix(true)
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young's modulus in Hooke's law"))
+    , f_poissonRatio(initData((Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_youngModulus(initData((Real)1000.,"youngModulus","Young's modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , edgeInfo(initData( "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
 

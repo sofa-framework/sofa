@@ -39,10 +39,10 @@ using sofa::type::Vec;
 /////////////////////////// DEFINITION OF FixedPlaneConstraint /////////////////////////////////////
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
-    : d_direction( initData(&d_direction,"direction","normal direction of the plane"))
-    , d_dmin( initData(&d_dmin,(Real)0,"dmin","Minimum plane distance from the origin"))
-    , d_dmax( initData(&d_dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
-    , d_indices( initData(&d_indices,"indices","Indices of the fixed points"))
+    : d_direction( initData("direction","normal direction of the plane"))
+    , d_dmin( initData((Real)0,"dmin","Minimum plane distance from the origin"))
+    , d_dmax( initData((Real)0,"dmax","Maximum plane distance from the origin") )
+    , d_indices( initData("indices","Indices of the fixed points"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     m_selectVerticesFromPlanes=false;   

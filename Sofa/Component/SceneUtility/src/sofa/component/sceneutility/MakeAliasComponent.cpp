@@ -34,8 +34,8 @@ namespace sofa::component::sceneutility::makealiascomponent
 {
 
 MakeAliasComponent::MakeAliasComponent() :
-   d_targetcomponent(initData(&d_targetcomponent, "targetcomponent", "The component class for which to create an alias."))
-  ,d_alias(initData(&d_alias, "alias", "The new alias of the component."))
+   d_targetcomponent(initData( "targetcomponent", "The component class for which to create an alias."))
+  ,d_alias(initData( "alias", "The new alias of the component."))
 {
     d_componentState.setValue(ComponentState::Invalid) ;
 }

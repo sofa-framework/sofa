@@ -36,7 +36,7 @@ namespace sofa::component::sceneutility::_apiversion_
 {
 
 APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string(SOFA_VERSION_STR), "level", "The API Level of the scene ('17.06', '17.12', '18.06', ...)"))
+     d_level ( initData( std::string(SOFA_VERSION_STR), "level", "The API Level of the scene ('17.06', '17.12', '18.06', ...)"))
 {
 }
 

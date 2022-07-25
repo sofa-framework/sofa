@@ -33,10 +33,10 @@ namespace sofa::component::playback
 {
 
 ReadTopology::ReadTopology()
-    : f_filename( initData(&f_filename, "filename", "input file name"))
-    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))
-    , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
-    , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
+    : f_filename( initData( "filename", "input file name"))
+    , f_interval( initData( 0.0, "interval", "time duration between inputs"))
+    , f_shift( initData( 0.0, "shift", "shift between times in the file and times when they will be read"))
+    , f_loop( initData( false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , m_topology(nullptr)
     , infile(nullptr)
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB

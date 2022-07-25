@@ -68,9 +68,9 @@ public:
 protected:
     LineSetSkinningMapping()
         : Inherit()
-        , nvNeighborhood(initData(&nvNeighborhood,(unsigned int)3,"neighborhoodLevel","Set the neighborhood line level"))
-        , numberInfluencedLines(initData(&numberInfluencedLines,(unsigned int)4,"numberInfluencedLines","Set the number of most influenced lines by each vertice"))
-        , weightCoef(initData(&weightCoef, (int) 4,"weightCoef","Set the coefficient used to compute the weight of lines"))
+        , nvNeighborhood(initData((unsigned int)3,"neighborhoodLevel","Set the neighborhood line level"))
+        , numberInfluencedLines(initData((unsigned int)4,"numberInfluencedLines","Set the number of most influenced lines by each vertice"))
+        , weightCoef(initData( (int) 4,"weightCoef","Set the coefficient used to compute the weight of lines"))
     {
     }
 

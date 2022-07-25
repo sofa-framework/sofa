@@ -32,8 +32,8 @@ int GlobalSystemMatrixExporterClass = core::RegisterObject("Export the global sy
 
 GlobalSystemMatrixExporter::GlobalSystemMatrixExporter()
 : Inherit1()
-, d_fileFormat(initData(&d_fileFormat, sofa::defaulttype::matrixExporterOptionsGroup, "format", "File format"))
-, d_precision(initData(&d_precision, 6, "precision", "Number of digits used to write an entry of the matrix, default is 6"))
+, d_fileFormat(initData( sofa::defaulttype::matrixExporterOptionsGroup, "format", "File format"))
+, d_precision(initData( 6, "precision", "Number of digits used to write an entry of the matrix, default is 6"))
 , l_linearSolver(initLink("linearSolver", "Linear solver used to export its matrix"))
 {
     d_exportAtBegin.setReadOnly(true);

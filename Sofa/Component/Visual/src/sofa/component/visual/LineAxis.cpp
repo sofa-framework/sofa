@@ -52,10 +52,10 @@ void LineAxis::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 }
 
 LineAxis::LineAxis()
-    : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
-    , d_size(initData(&d_size, 10.f,  "size", "Size of the squared grid"))
-    , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines in the grid"))
-    , d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
+    : d_axis(initData( std::string("xyz"),  "axis", "Axis to draw"))
+    , d_size(initData( 10.f,  "size", "Size of the squared grid"))
+    , d_thickness(initData( 1.f,  "thickness", "Thickness of the lines in the grid"))
+    , d_draw(initData( true,  "draw", "Display the grid or not"))
     , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 

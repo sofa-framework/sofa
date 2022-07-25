@@ -37,14 +37,14 @@ template <class DataTypes> QuadPressureForceField<DataTypes>::~QuadPressureForce
 
 template <class DataTypes>
 QuadPressureForceField<DataTypes>::QuadPressureForceField()
-    : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-    , quadList(initData(&quadList,"quadList", "Indices of quads separated with commas where a pressure is applied"))
-    , normal(initData(&normal,"normal", "Normal direction for the plane selection of quads"))
-    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
-    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw quads which have a given pressure"))
+    : pressure(initData( "pressure", "Pressure force per unit area"))
+    , quadList(initData("quadList", "Indices of quads separated with commas where a pressure is applied"))
+    , normal(initData("normal", "Normal direction for the plane selection of quads"))
+    , dmin(initData((Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData((Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , p_showForces(initData( (bool)false, "showForces", "draw quads which have a given pressure"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , quadPressureMap(initData(&quadPressureMap, "quadPressureMap", "map between edge indices and their pressure"))
+    , quadPressureMap(initData( "quadPressureMap", "map between edge indices and their pressure"))
     , m_topology(nullptr)
 {
 }

@@ -31,12 +31,12 @@ namespace sofa::component::mapping::linear
 
 template <class TIn, class TInRoot, class TOut>
 DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping()
-    : index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
-    , indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
-    , repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
-    , globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
-    , m_rootAngularForceScaleFactor(initData(&m_rootAngularForceScaleFactor, (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
-    , m_rootLinearForceScaleFactor(initData(&m_rootLinearForceScaleFactor, (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))
+    : index ( initData( ( unsigned ) 0,"index","input DOF index" ) )
+    , indexFromEnd( initData(false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
+    , repartition ( initData("repartition","number of dest dofs per entry dof" ) )
+    , globalToLocalCoords ( initData("globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
+    , m_rootAngularForceScaleFactor(initData( (Real)1.0, "rootAngularForceScaleFactor", "Scale factor applied on the angular force accumulated on the rigid model"))
+    , m_rootLinearForceScaleFactor(initData( (Real)1.0, "rootLinearForceScaleFactor", "Scale factor applied on the linear force accumulated on the rigid model"))
     , m_fromModel(nullptr)
     , m_toModel(nullptr)
     , m_fromRootModel(nullptr)

@@ -30,9 +30,9 @@ namespace sofa::component::mapping::linear
 template <class TIn, class TOut>
 TubularMapping<TIn, TOut>::TubularMapping ( )
     : Inherit ( )
-    , m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
-    , m_radius( initData(&m_radius, "radius", "Radius of created circles"))
-    , m_peak (initData(&m_peak, 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
+    , m_nbPointsOnEachCircle( initData( "nbPointsOnEachCircle", "Discretization of created circles"))
+    , m_radius( initData( "radius", "Radius of created circles"))
+    , m_peak (initData( 0, "peak", "=0 no peak, =1 peak on the first segment =2 peak on the two first segment, =-1 peak on the last segment"))
 {
 }
 template <class TIn, class TOut>

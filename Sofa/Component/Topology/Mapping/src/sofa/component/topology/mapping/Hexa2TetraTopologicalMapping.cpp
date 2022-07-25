@@ -55,7 +55,7 @@ int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of ma
 // Implementation
 
 Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping()
-    : swapping(initData(&swapping, false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
+    : swapping(initData( false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
 {
 }
 

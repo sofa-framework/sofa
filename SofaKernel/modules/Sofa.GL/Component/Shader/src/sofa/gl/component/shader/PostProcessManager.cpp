@@ -38,8 +38,8 @@ const std::string PostProcessManager::DEPTH_OF_FIELD_VERTEX_SHADER = "shaders/de
 const std::string PostProcessManager::DEPTH_OF_FIELD_FRAGMENT_SHADER = "shaders/depthOfField.frag";
 
 PostProcessManager::PostProcessManager()
-    :zNear(initData(&zNear, (double) 1.0, "zNear", "Set zNear distance (for Depth Buffer)"))
-    ,zFar(initData(&zFar, (double) 100.0, "zFar", "Set zFar distance (for Depth Buffer)"))
+    :zNear(initData( (double) 1.0, "zNear", "Set zNear distance (for Depth Buffer)"))
+    ,zFar(initData( (double) 100.0, "zFar", "Set zFar distance (for Depth Buffer)"))
     ,postProcessEnabled (true)
 {
     // TODO Auto-generated constructor stub

@@ -50,14 +50,14 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
 PointSplatModel::PointSplatModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : radius(initData(&radius, 1.0f, "radius", "Radius of the spheres.")),
-      textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
-      alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
-      color(initData(&color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
+    : radius(initData( 1.0f, "radius", "Radius of the spheres.")),
+      textureSize(initData( 32, "textureSize", "Size of the billboard texture.")),
+      alpha(initData( 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
+      color(initData( sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "Billboard color.(default=[1.0,1.0,1.0,1.0])")),
       _topology(nullptr),
       _mstate(nullptr),
       texture_data(nullptr),
-      pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+      pointData(initData( "pointData", "scalar field modulating point colors"))
 {
 }
 

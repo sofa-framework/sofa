@@ -43,10 +43,10 @@ int STLExporterClass = core::RegisterObject("Save a topology in file")
         .add< STLExporter >();
 
 STLExporter::STLExporter()
-    : d_binaryFormat( initData(&d_binaryFormat, (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
-    , d_position( initData(&d_position, "position", "points coordinates"))
-    , d_triangle( initData(&d_triangle, "triangle", "triangles indices"))
-    , d_quad( initData(&d_quad, "quad", "quads indices"))
+    : d_binaryFormat( initData( (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
+    , d_position( initData( "position", "points coordinates"))
+    , d_triangle( initData( "triangle", "triangles indices"))
+    , d_quad( initData( "quad", "quads indices"))
 {
     this->addAlias(&d_triangle, "triangles");
     this->addAlias(&d_quad, "quads");

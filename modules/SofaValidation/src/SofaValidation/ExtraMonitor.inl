@@ -43,12 +43,12 @@ namespace sofa::component::misc
 template <class DataTypes>
 ExtraMonitor<DataTypes>::ExtraMonitor()
     : Inherit()
-    , saveWcinToGnuplot ( initData ( &saveWcinToGnuplot, false, "ExportWcin", "export Wcin of the monitored dofs as gnuplot file" ) )
-    , saveWextToGnuplot ( initData ( &saveWextToGnuplot, false, "ExportWext", "export Wext of the monitored dofs as gnuplot file" ) )
-    , resultantF( initData( &resultantF, true, "resultantF", "export force resultant of the monitored dofs as gnuplot file instead of all dofs") )
-    , minX( initData( &minX, -1, "minCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
-    , maxX( initData( &maxX, -1, "maxCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
-    , disp( initData( &disp, -1, "dispCoord", "export displacement on the given coordinate as gnuplot file" ) )
+    , saveWcinToGnuplot ( initData( false, "ExportWcin", "export Wcin of the monitored dofs as gnuplot file" ) )
+    , saveWextToGnuplot ( initData( false, "ExportWext", "export Wext of the monitored dofs as gnuplot file" ) )
+    , resultantF( initData( true, "resultantF", "export force resultant of the monitored dofs as gnuplot file instead of all dofs") )
+    , minX( initData( -1, "minCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
+    , maxX( initData( -1, "maxCoord", "export minimum displacement on the given coordinate as gnuplot file instead of positions of all dofs" ) )
+    , disp( initData( -1, "dispCoord", "export displacement on the given coordinate as gnuplot file" ) )
 {
     saveGnuplotWcin = nullptr;
     saveGnuplotWext = nullptr;

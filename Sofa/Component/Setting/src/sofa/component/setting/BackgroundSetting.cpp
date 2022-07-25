@@ -32,8 +32,8 @@ int BackgroundSettingClass = core::RegisterObject("Background setting")
         ;
 
 BackgroundSetting::BackgroundSetting():
-      color(initData(&color, "color", "Color of the background"))
-    , image(initData(&image, "image", "Image to be used as background"))
+      color(initData( "color", "Color of the background"))
+    , image(initData( "image", "Image to be used as background"))
 {
 }
 

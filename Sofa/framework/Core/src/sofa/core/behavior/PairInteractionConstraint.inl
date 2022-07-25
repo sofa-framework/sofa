@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 template<class DataTypes>
 PairInteractionConstraint<DataTypes>::PairInteractionConstraint(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : Inherit1(), Inherit2(mm1, mm2)
-    , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+    , endTime( initData((SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 

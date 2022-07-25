@@ -33,7 +33,7 @@ int BruteForceBroadPhaseClass = core::RegisterObject("Broad phase collision dete
 ;
 
 BruteForceBroadPhase::BruteForceBroadPhase()
-        : box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
+        : box(initData( "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
 {}
 
 void BruteForceBroadPhase::init()

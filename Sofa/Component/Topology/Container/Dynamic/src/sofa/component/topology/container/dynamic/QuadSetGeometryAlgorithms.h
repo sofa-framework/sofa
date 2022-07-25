@@ -55,9 +55,9 @@ public:
 protected:
     QuadSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-        , showQuadIndices(core::objectmodel::Base::initData(&showQuadIndices, (bool) false, "showQuadIndices", "Debug : view Quad indices"))
-        , _drawQuads(core::objectmodel::Base::initData(&_drawQuads, false, "drawQuads","if true, draw the quads in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::type::RGBAColor(0.0f,0.4f,0.4f,1.0f), "drawColorQuads", "RGB code color used to draw quads."))
+        , showQuadIndices(core::objectmodel::Base::initData( (bool) false, "showQuadIndices", "Debug : view Quad indices"))
+        , _drawQuads(core::objectmodel::Base::initData( false, "drawQuads","if true, draw the quads in the topology"))
+        , _drawColor(initData( sofa::type::RGBAColor(0.0f,0.4f,0.4f,1.0f), "drawColorQuads", "RGB code color used to draw quads."))
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}

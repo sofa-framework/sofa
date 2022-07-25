@@ -27,10 +27,10 @@ namespace sofa::component::engine::transform
 {
 template <class DataTypes>
 QuatToRigidEngine<DataTypes>::QuatToRigidEngine()
-    : f_positions( initData (&f_positions, "positions", "Positions (Vector of 3)") )
-    , f_orientations( initData (&f_orientations, "orientations", "Orientations (Quaternion)") )
-    , f_colinearPositions( initData (&f_colinearPositions, "colinearPositions", "Optional positions to restrict output to be colinear in the quaternion Z direction") )
-    , f_rigids( initData (&f_rigids, "rigids", "Rigid (Position + Orientation)") )
+    : f_positions( initData( "positions", "Positions (Vector of 3)") )
+    , f_orientations( initData( "orientations", "Orientations (Quaternion)") )
+    , f_colinearPositions( initData( "colinearPositions", "Optional positions to restrict output to be colinear in the quaternion Z direction") )
+    , f_rigids( initData( "rigids", "Rigid (Position + Orientation)") )
 {
     //
     addAlias(&f_positions,"position");

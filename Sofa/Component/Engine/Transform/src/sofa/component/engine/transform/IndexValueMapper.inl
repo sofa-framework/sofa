@@ -28,11 +28,11 @@ namespace sofa::component::engine::transform
 
 template <class DataTypes>
 IndexValueMapper<DataTypes>::IndexValueMapper()
-    : f_inputValues(initData(&f_inputValues, "inputValues", "Already existing values (can be empty) "))
-    , f_indices(initData(&f_indices, "indices", "Indices to map value on "))
-    , f_value(initData(&f_value, "value", "Value to map indices on "))
-    , f_outputValues(initData(&f_outputValues, "outputValues", "New map between indices and values"))
-    , p_defaultValue(initData(&p_defaultValue, (Real) 1.0, "defaultValue", "Default value for indices without any value"))
+    : f_inputValues(initData( "inputValues", "Already existing values (can be empty) "))
+    , f_indices(initData( "indices", "Indices to map value on "))
+    , f_value(initData( "value", "Value to map indices on "))
+    , f_outputValues(initData( "outputValues", "New map between indices and values"))
+    , p_defaultValue(initData( (Real) 1.0, "defaultValue", "Default value for indices without any value"))
 {
     addInput(&f_inputValues);
     addInput(&f_indices);

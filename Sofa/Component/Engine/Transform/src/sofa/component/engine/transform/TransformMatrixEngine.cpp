@@ -50,8 +50,8 @@ int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input t
  */
 
 AbstractTransformMatrixEngine::AbstractTransformMatrixEngine()
-    : d_inT ( initData (&d_inT, Matrix4::s_identity, "inT", "input transformation if any") )
-    , d_outT( initData (&d_outT, "outT", "output transformation") )
+    : d_inT ( initData( Matrix4::s_identity, "inT", "input transformation if any") )
+    , d_outT( initData( "outT", "output transformation") )
 {
     addInput(&d_inT);
     addOutput(&d_outT);
@@ -88,7 +88,7 @@ void InvertTransformMatrixEngine::doUpdate()
  */
 
 TranslateTransformMatrixEngine::TranslateTransformMatrixEngine()
-    : d_translation ( initData (&d_translation, "translation", "translation vector") )
+    : d_translation ( initData( "translation", "translation vector") )
 {
 }
 
@@ -117,7 +117,7 @@ void TranslateTransformMatrixEngine::doUpdate()
  */
 
 RotateTransformMatrixEngine::RotateTransformMatrixEngine()
-    : d_rotation ( initData (&d_rotation, "rotation", "euler angles") )
+    : d_rotation ( initData( "rotation", "euler angles") )
 {
 }
 
@@ -149,7 +149,7 @@ void RotateTransformMatrixEngine::doUpdate()
  * ScaleTransformMatrixEngine
  */
 ScaleTransformMatrixEngine::ScaleTransformMatrixEngine()
-    : d_scale ( initData (&d_scale, "scale", "scaling values") )
+    : d_scale ( initData( "scale", "scaling values") )
 {
 }
 

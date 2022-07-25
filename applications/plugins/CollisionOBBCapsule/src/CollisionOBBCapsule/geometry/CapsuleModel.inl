@@ -39,8 +39,8 @@ CapsuleCollisionModel<DataTypes>::CapsuleCollisionModel()
 
 template<class DataTypes>
 CapsuleCollisionModel<DataTypes>::CapsuleCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate)
-    : _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii", "Radius of each capsule"))
-    , _default_radius(initData(&_default_radius, (Real)0.5, "defaultRadius", "The default radius"))
+    : _capsule_radii(initData( "listCapsuleRadii", "Radius of each capsule"))
+    , _default_radius(initData( (Real)0.5, "defaultRadius", "The default radius"))
     , l_topology(initLink("topology", "link to the topology container"))
     , _mstate(mstate)
 {

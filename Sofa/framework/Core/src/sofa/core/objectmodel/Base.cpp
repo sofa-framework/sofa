@@ -47,11 +47,11 @@ static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
     : ref_counter(0)
-    , name(initData(&name,unnamed_label,"name","object name"))
-    , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
-    , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
-    , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
-    , d_componentState(initData(&d_componentState, ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
+    , name(initData(unnamed_label,"name","object name"))
+    , f_printLog(initData( false, "printLog", "if true, emits extra messages at runtime."))
+    , f_tags(initData( "tags", "list of the subsets the objet belongs to"))
+    , f_bbox(initData( "bbox", "this object bounding box"))
+    , d_componentState(initData( ComponentState::Undefined, "componentState", "The state of the component among (Dirty, Valid, Undefined, Loading, Invalid)."))
 {
     name.setAutoLink(false);
     d_componentState.setAutoLink(false);
@@ -126,17 +126,17 @@ void Base::addOutputsToCallback(const std::string& name, std::initializer_list<B
 
 
 /// Helper method used by initData()
-void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
+void Base::initData0( BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed, bool isReadOnly )
 {
     BaseData::DataFlags flags = BaseData::FLAG_DEFAULT;
     if(isDisplayed) flags |= BaseData::DataFlags(BaseData::FLAG_DISPLAYED); else flags &= ~BaseData::DataFlags(BaseData::FLAG_DISPLAYED);
     if(isReadOnly)  flags |= BaseData::DataFlags(BaseData::FLAG_READONLY); else flags &= ~BaseData::DataFlags(BaseData::FLAG_READONLY);
 
-    initData0(field, res, name, help, flags);
+    initData0(res, name, help, flags);
 }
 
 /// Helper method used by initData()
-void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
+void Base::initData0( BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
 {
     // Questionnable optimization: test a single 'uint32_t' rather that four 'char'
     static const char *draw_str = "draw";
@@ -145,7 +145,6 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     static uint32_t show_prefix = *reinterpret_cast<const uint32_t*>(show_str);
 
     res.owner = this;
-    res.data = field;
     res.name = name;
     res.helpMsg = help;
     res.dataFlags = dataFlags;

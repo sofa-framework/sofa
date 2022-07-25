@@ -77,17 +77,6 @@ BaseData::BaseData( const BaseInitData& init)
     m_counter = 0;
     m_isSet = false;
 
-    if (init.data && init.data != this)
-    {
-        {
-            helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("BaseData");
-            msgerror << "initData POINTER MISMATCH: field name \"" << init.name << "\"";
-            if (init.owner)
-                msgerror << " created by class " << init.owner->getClassName();
-        }
-        sofa::helper::BackTrace::dump();
-        exit( EXIT_FAILURE );
-    }
     if (m_owner) m_owner->addData(this, m_name);
     setFlag(FLAG_PERSISTENT, false);
 }

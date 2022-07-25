@@ -43,29 +43,29 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 
 StaticSolver::StaticSolver()
-    : d_newton_iterations(initData(&d_newton_iterations,
+    : d_newton_iterations(initData(
             (unsigned) 1,
             "newton_iterations",
             "Number of newton iterations between each load increments (normally, one load increment per simulation time-step."))
-    , d_absolute_correction_tolerance_threshold(initData(&d_absolute_correction_tolerance_threshold,
+    , d_absolute_correction_tolerance_threshold(initData(
             (double) 1e-5,
             "absolute_correction_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the norm |du| is smaller than this threshold."))
-    , d_relative_correction_tolerance_threshold(initData(&d_relative_correction_tolerance_threshold,
+    , d_relative_correction_tolerance_threshold(initData(
             (double) 1e-5,
             "relative_correction_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the ratio |du| / |U| is smaller than this threshold."))
-    , d_absolute_residual_tolerance_threshold( initData(&d_absolute_residual_tolerance_threshold,
+    , d_absolute_residual_tolerance_threshold( initData(
             (double) 1e-5,
             "absolute_residual_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the norm |R| is smaller than this threshold. "
             "Use a negative value to disable this criterion."))
-    , d_relative_residual_tolerance_threshold( initData(&d_relative_residual_tolerance_threshold,
+    , d_relative_residual_tolerance_threshold( initData(
             (double) 1e-5,
             "relative_residual_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. "
             "Use a negative value to disable this criterion."))
-    , d_should_diverge_when_residual_is_growing( initData(&d_should_diverge_when_residual_is_growing,
+    , d_should_diverge_when_residual_is_growing( initData(
             false,
             "should_diverge_when_residual_is_growing",
             "Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration."))

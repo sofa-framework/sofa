@@ -31,8 +31,8 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
-    : dampingCoefficient(initData(&dampingCoefficient, Real(0.1), "dampingCoefficient", "velocity damping coefficient"))
-    , d_implicit(initData(&d_implicit, false, "implicit", "should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)"))
+    : dampingCoefficient(initData( Real(0.1), "dampingCoefficient", "velocity damping coefficient"))
+    , d_implicit(initData( false, "implicit", "should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)"))
 {
     core::objectmodel::Base::addAlias( &dampingCoefficient, "damping" );
 }

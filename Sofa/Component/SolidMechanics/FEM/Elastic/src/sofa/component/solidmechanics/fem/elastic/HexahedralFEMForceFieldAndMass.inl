@@ -33,13 +33,17 @@ template<class DataTypes>
 HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
     : MassT()
     , HexahedralFEMForceFieldT()
-    , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
-    , _useLumpedMass(initData(&_useLumpedMass, (bool)false, "lumpedMass", "Does it use lumped masses?"))
-    , _elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)",false))
-    , _elementTotalMass(initData(&_elementTotalMass,"totalMass", "Total mass per element",false))
-    , _particleMasses(initData(&_particleMasses, "particleMasses", "Mass per particle",false))
-    , _lumpedMasses(initData(&_lumpedMasses, "lumpedMasses", "Lumped masses",false))
+    , _density(initData((Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
+    , _useLumpedMass(initData( (bool)false, "lumpedMass", "Does it use lumped masses?"))
+    , _elementMasses(initData("massMatrices", "Mass matrices per element (M_i)"))
+    , _elementTotalMass(initData("totalMass", "Total mass per element"))
+    , _particleMasses(initData( "particleMasses", "Mass per particle"))
+    , _lumpedMasses(initData( "lumpedMasses", "Lumped masses"))
 {
+    _elementMasses.setDisplayed(false);
+    _elementTotalMass.setDisplayed(false);
+    _particleMasses.setDisplayed(false);
+    _lumpedMasses.setDisplayed(false);
 }
 
 

@@ -34,9 +34,9 @@ template < class DataTypes, class OutputType >
 DisplacementTransformEngine< DataTypes, OutputType >::DisplacementTransformEngine()
 :
 Inherit()
-, d_x0( initData( &d_x0, "x0", "Rest position" ) )
-, d_x( initData( &d_x, "x", "Current position" ) )
-, d_displacements( initData( &d_displacements, "displacements", "Displacement transforms with respect to original rigid positions") )
+, d_x0( initData( "x0", "Rest position" ) )
+, d_x( initData( "x", "Current position" ) )
+, d_displacements( initData( "displacements", "Displacement transforms with respect to original rigid positions") )
 {
     addInput( &d_x0 );
     addInput( &d_x );
@@ -94,7 +94,7 @@ void DisplacementTransformEngine< DataTypes, OutputType >::doUpdate()
 template < class DataTypes >
 DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
 : Inherit()
-, d_scales( initData(&d_scales, "scales", "Scale transformation added to the rigid transformation"))
+, d_scales( initData( "scales", "Scale transformation added to the rigid transformation"))
 {
     this->addInput( &d_scales );
     this->d_displacements.setName( "displaceMats" );

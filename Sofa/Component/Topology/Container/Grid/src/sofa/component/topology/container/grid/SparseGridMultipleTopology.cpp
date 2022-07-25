@@ -34,11 +34,11 @@ int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
 
 
 SparseGridMultipleTopology::SparseGridMultipleTopology( bool _isVirtual ) : SparseGridRamificationTopology(_isVirtual),
-    _fileTopologies(initData(&_fileTopologies, type::vector< std::string >() , "fileTopologies", "All topology filenames")),
-    _dataStiffnessCoefs(initData(&_dataStiffnessCoefs, type::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
-    _dataMassCoefs(initData(&_dataMassCoefs, type::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
-    _computeRamifications(initData(&_computeRamifications, true , "computeRamifications", "Are ramifications wanted?")),
-    _erasePreviousCoef(initData(&_erasePreviousCoef, false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
+    _fileTopologies(initData( type::vector< std::string >() , "fileTopologies", "All topology filenames")),
+    _dataStiffnessCoefs(initData( type::vector< float >() , "stiffnessCoefs", "A stiffness coefficient for each topology filename")),
+    _dataMassCoefs(initData( type::vector< float >() , "massCoefs", "A mass coefficient for each topology filename")),
+    _computeRamifications(initData( true , "computeRamifications", "Are ramifications wanted?")),
+    _erasePreviousCoef(initData( false , "erasePreviousCoef", "Does a new stiffness/mass coefficient replace the previous or blend half/half with it?"))
 {
 }
 

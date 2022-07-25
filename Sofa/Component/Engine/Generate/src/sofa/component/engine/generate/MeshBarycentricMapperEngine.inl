@@ -29,13 +29,13 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
-    : d_inputPositions( initData (&d_inputPositions, "inputPositions", "Initial positions of the master points"))
-    , d_mappedPointPositions( initData (&d_mappedPointPositions, "mappedPointPositions", "Initial positions of the points to be mapped"))
-    , d_barycentricPositions(initData (&d_barycentricPositions, "barycentricPositions", "Output : Barycentric positions of the mapped points"))
-    , d_tableElements(initData (&d_tableElements, "tableElements", "Output : Table that provides the index of the element to which each input point belongs"))
-    , d_bComputeLinearInterpolation(initData(&d_bComputeLinearInterpolation, false, "computeLinearInterpolation", "if true, computes a linear interpolation (debug)"))
-    , d_interpolationIndices(initData(&d_interpolationIndices, "linearInterpolationIndices", "Indices of a linear interpolation"))
-    , d_interpolationValues(initData(&d_interpolationValues, "linearInterpolationValues", "Values of a linear interpolation"))
+    : d_inputPositions( initData( "inputPositions", "Initial positions of the master points"))
+    , d_mappedPointPositions( initData( "mappedPointPositions", "Initial positions of the points to be mapped"))
+    , d_barycentricPositions(initData( "barycentricPositions", "Output : Barycentric positions of the mapped points"))
+    , d_tableElements(initData( "tableElements", "Output : Table that provides the index of the element to which each input point belongs"))
+    , d_bComputeLinearInterpolation(initData( false, "computeLinearInterpolation", "if true, computes a linear interpolation (debug)"))
+    , d_interpolationIndices(initData( "linearInterpolationIndices", "Indices of a linear interpolation"))
+    , d_interpolationValues(initData( "linearInterpolationValues", "Values of a linear interpolation"))
     , l_topology(initLink("topology", "Name of the master topology"))
 {
     addInput(&d_inputPositions);

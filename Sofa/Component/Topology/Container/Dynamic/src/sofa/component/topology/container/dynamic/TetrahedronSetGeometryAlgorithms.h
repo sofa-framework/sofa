@@ -68,10 +68,10 @@ protected:
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
         ,initializedCubatureTables(false)
-        , d_showTetrahedraIndices (initData(&d_showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
-        , d_drawTetrahedra(initData(&d_drawTetrahedra, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
-        , d_drawScaleTetrahedra(initData(&d_drawScaleTetrahedra, (float) 1.0, "drawScaleTetrahedra", "Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)"))
-        , d_drawColorTetrahedra(initData(&d_drawColorTetrahedra, sofa::type::RGBAColor(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
+        , d_showTetrahedraIndices (initData( (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
+        , d_drawTetrahedra(initData( false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
+        , d_drawScaleTetrahedra(initData( (float) 1.0, "drawScaleTetrahedra", "Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)"))
+        , d_drawColorTetrahedra(initData( sofa::type::RGBAColor(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
     {
         core::objectmodel::Base::addAlias(&d_showTetrahedraIndices, "showTetrasIndices");
         core::objectmodel::Base::addAlias(&d_drawTetrahedra, "drawTetra");

@@ -43,10 +43,10 @@ namespace sofa::component::controller
 
 template <class DataTypes>
 MechanicalStateController<DataTypes>::MechanicalStateController()
-    : index( initData(&index, (unsigned int)0, "index", "Index of the controlled DOF") )
-    , onlyTranslation( initData(&onlyTranslation, false, "onlyTranslation", "Controlling the DOF only in translation") )
-    , buttonDeviceState(initData(&buttonDeviceState, false, "buttonDeviceState", "state of ths device button"))
-    , mainDirection( initData(&mainDirection, sofa::type::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
+    : index( initData( (unsigned int)0, "index", "Index of the controlled DOF") )
+    , onlyTranslation( initData( false, "onlyTranslation", "Controlling the DOF only in translation") )
+    , buttonDeviceState(initData( false, "buttonDeviceState", "state of ths device button"))
+    , mainDirection( initData( sofa::type::Vec<3,Real>((Real)0.0, (Real)0.0, (Real)-1.0), "mainDirection", "Main direction and orientation of the controlled DOF") )
 {
     mainDirection.beginEdit()->normalize();
     mainDirection.endEdit();

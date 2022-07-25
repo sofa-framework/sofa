@@ -50,7 +50,7 @@ public:
     typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 protected:
     TriangleSetTopologyModifier()
-        : list_Out(initData(&list_Out,"list_Out","triangles with at least one null values."))
+        : list_Out(initData("list_Out","triangles with at least one null values."))
     {}
 
     ~TriangleSetTopologyModifier() override {}

@@ -36,11 +36,11 @@ int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
 
 
 Visual3DText::Visual3DText()
-    : d_text(initData(&d_text, "text", "Test to display"))
-    , d_position(initData(&d_position, type::Vec3f(), "position", "3d position"))
-    , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
-    , d_color(initData(&d_color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
-    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
+    : d_text(initData( "text", "Test to display"))
+    , d_position(initData( type::Vec3f(), "position", "3d position"))
+    , d_scale(initData( 1.f, "scale", "text scale"))
+    , d_color(initData( sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
+    , d_depthTest(initData( true, "depthTest", "perform depth test"))
 {
 }
 

@@ -28,10 +28,10 @@ namespace sofa::component::engine::select
 
 template <class T>
 ValuesFromIndices<T>::ValuesFromIndices()
-    : f_in( initData (&f_in, "in", "input values") )
-    , f_indices( initData(&f_indices, "indices","Indices of the values") )
-    , f_out( initData (&f_out, "out", "Output values corresponding to the indices"))
-    , f_outStr( initData (&f_outStr, "outStr", "Output values corresponding to the indices, converted as a string"))
+    : f_in( initData( "in", "input values") )
+    , f_indices( initData( "indices","Indices of the values") )
+    , f_out( initData( "out", "Output values corresponding to the indices"))
+    , f_outStr( initData( "outStr", "Output values corresponding to the indices, converted as a string"))
 {
     addAlias(&f_in, "input");
     addAlias(&f_out, "output");

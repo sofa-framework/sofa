@@ -90,8 +90,8 @@ namespace simulation
 
 	AnimationLoopParallelScheduler::AnimationLoopParallelScheduler(simulation::Node* _gnode)
 		: Inherit()
-        , schedulerName(initData(&schedulerName, "scheduler", "name of the scheduler to use"))
-		, threadNumber(initData(&threadNumber, (unsigned int)0, "threadNumber", "number of thread") )
+        , schedulerName(initData( "scheduler", "name of the scheduler to use"))
+		, threadNumber(initData( (unsigned int)0, "threadNumber", "number of thread") )
 		, mNbThread(0)
 		, gnode(_gnode)
         , _taskScheduler(nullptr)

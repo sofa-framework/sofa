@@ -56,13 +56,13 @@ int DefaultPipelineClass = core::RegisterObject("The default collision detection
 const int DefaultPipeline::defaultDepthValue = 6;
 
 DefaultPipeline::DefaultPipeline()
-    : d_doPrintInfoMessage(initData(&d_doPrintInfoMessage, false, "verbose",
+    : d_doPrintInfoMessage(initData( false, "verbose",
                                     "Display extra informations at each computation step. (default=false)"))
-    , d_doDebugDraw(initData(&d_doDebugDraw, false, "draw",
+    , d_doDebugDraw(initData( false, "draw",
                              "Draw the detected collisions. (default=false)"))
 
     //TODO(dmarchal 2017-05-16) Fix the min & max value with response from a github issue. Remove in 1 year if not done.
-    , d_depth(initData(&d_depth, defaultDepthValue, "depth",
+    , d_depth(initData( defaultDepthValue, "depth",
                ("Max depth of bounding trees. (default=" + std::to_string(defaultDepthValue) + ", min=?, max=?)").c_str()))
 {
 }

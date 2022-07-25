@@ -36,8 +36,8 @@ int DefaultContactManagerClass = core::RegisterObject("Default class to create r
         ;
 
 DefaultContactManager::DefaultContactManager()
-    : response(initData(&response, "response", "contact response class"))
-    , responseParams(initData(&responseParams, "responseParams", "contact response parameters (syntax: name1=value1&name2=value2&...)"))
+    : response(initData( "response", "contact response class"))
+    , responseParams(initData( "responseParams", "contact response parameters (syntax: name1=value1&name2=value2&...)"))
 {
 }
 

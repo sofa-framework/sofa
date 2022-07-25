@@ -88,12 +88,12 @@ public:
     Data<int> f_blockSize; ///< dimension of the blocks in the matrix
 protected:
     BTDLinearSolver()
-        : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-        , problem(initData(&problem, false,"showProblem", "display debug informations about subpartSolve computation") )
-        , subpartSolve(initData(&subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
-        , verification(initData(&verification, false,"verification", "verification of the subpartSolve"))
-        , test_perf(initData(&test_perf, false,"test_perf", "verification of performance"))
-        , f_blockSize( initData(&f_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
+        : f_verbose( initData(false,"verbose","Dump system state at each iteration") )
+        , problem(initData( false,"showProblem", "display debug informations about subpartSolve computation") )
+        , subpartSolve(initData( false,"subpartSolve", "Allows for the computation of a subpart of the system") )
+        , verification(initData( false,"verification", "verification of the subpartSolve"))
+        , test_perf(initData( false,"test_perf", "verification of performance"))
+        , f_blockSize( initData(6,"blockSize","dimension of the blocks in the matrix") )
     {
         Index bsize = Matrix::getSubMatrixDim(0);
         if (bsize > 0)

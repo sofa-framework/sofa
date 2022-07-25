@@ -33,12 +33,12 @@ namespace sofa::component::playback
 {
 
 WriteTopology::WriteTopology()
-    : f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_writeContainers( initData(&f_writeContainers, true, "writeContainers", "flag enabling output of common topology containers."))
-    , f_writeShellContainers( initData(&f_writeShellContainers, false, "writeShellContainers", "flag enabling output of specific shell topology containers."))
-    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
-    , f_time( initData(&f_time, type::vector<double>(0), "time", "set time to write outputs"))
-    , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
+    : f_filename( initData( "filename", "output file name"))
+    , f_writeContainers( initData( true, "writeContainers", "flag enabling output of common topology containers."))
+    , f_writeShellContainers( initData( false, "writeShellContainers", "flag enabling output of specific shell topology containers."))
+    , f_interval( initData( 0.0, "interval", "time duration between outputs"))
+    , f_time( initData( type::vector<double>(0), "time", "set time to write outputs"))
+    , f_period( initData( 0.0, "period", "period between outputs"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , outfile(nullptr)

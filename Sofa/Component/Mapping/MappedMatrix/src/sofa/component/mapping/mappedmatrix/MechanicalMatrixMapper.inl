@@ -96,13 +96,13 @@ void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::computeMatrixProduct(
 template<class DataTypes1, class DataTypes2>
 MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
     :
-      d_forceFieldList(initData(&d_forceFieldList,"forceFieldList","List of ForceField Names to work on (by default will take all)")),
+      d_forceFieldList(initData("forceFieldList","List of ForceField Names to work on (by default will take all)")),
       l_nodeToParse(initLink("nodeToParse","link to the node on which the component will work, from this link the mechanicalState/mass/forceField links will be made")),
-      d_stopAtNodeToParse(initData(&d_stopAtNodeToParse,false,"stopAtNodeToParse","Boolean to choose whether forceFields in children Nodes of NodeToParse should be considered.")),
-      d_skipJ1tKJ1(initData(&d_skipJ1tKJ1,false,"skipJ1tKJ1","Boolean to choose whether to skip J1tKJ1 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used")),
-      d_skipJ2tKJ2(initData(&d_skipJ2tKJ2,false,"skipJ2tKJ2","Boolean to choose whether to skip J2tKJ2 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used")),
-      d_fastMatrixProduct(initData(&d_fastMatrixProduct, true, "fastMatrixProduct", "If true, an accelerated method to compute matrix products based on the pre-computation of the matrices intersection is used. Regular matrix product otherwise.")),
-      d_parallelTasks(initData(&d_parallelTasks, true, "parallelTasks", "Execute some tasks in parallel for better performances")),
+      d_stopAtNodeToParse(initData(false,"stopAtNodeToParse","Boolean to choose whether forceFields in children Nodes of NodeToParse should be considered.")),
+      d_skipJ1tKJ1(initData(false,"skipJ1tKJ1","Boolean to choose whether to skip J1tKJ1 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used")),
+      d_skipJ2tKJ2(initData(false,"skipJ2tKJ2","Boolean to choose whether to skip J2tKJ2 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used")),
+      d_fastMatrixProduct(initData( true, "fastMatrixProduct", "If true, an accelerated method to compute matrix products based on the pre-computation of the matrices intersection is used. Regular matrix product otherwise.")),
+      d_parallelTasks(initData( true, "parallelTasks", "Execute some tasks in parallel for better performances")),
       l_mechanicalState(initLink("mechanicalState","The mechanicalState with which the component will work on (filled automatically during init)")),
       l_mappedMass(initLink("mass","mass with which the component will work on (filled automatically during init)")),
       l_forceField(initLink("forceField","The ForceField(s) attached to this node (filled automatically during init)"))

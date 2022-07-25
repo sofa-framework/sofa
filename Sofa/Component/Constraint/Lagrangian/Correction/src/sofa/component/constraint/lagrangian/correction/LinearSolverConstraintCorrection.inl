@@ -44,8 +44,8 @@ using sofa::core::objectmodel::ComponentState ;
 template<class DataTypes>
 LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
 : Inherit(mm)
-, wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
-, solverName( initData(&solverName, "solverName", "search for the following names upward the scene graph") )
+, wire_optimization(initData( false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
+, solverName( initData( "solverName", "search for the following names upward the scene graph") )
 , odesolver(nullptr)
 {
 }

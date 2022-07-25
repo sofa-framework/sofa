@@ -31,9 +31,9 @@ template<class DataTypes>
 HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
     : MassT()
     , HexahedronFEMForceFieldT()
-    , d_elementMasses(initData(&d_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
-    , d_density(initData(&d_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
-    , d_lumpedMass(initData(&d_lumpedMass,(bool)false,"lumpedMass","Does it use lumped masses?"))
+    , d_elementMasses(initData("massMatrices", "Mass matrices per element (M_i)"))
+    , d_density(initData((Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
+    , d_lumpedMass(initData((bool)false,"lumpedMass","Does it use lumped masses?"))
 {
 }
 

@@ -35,8 +35,8 @@ namespace sofa::component::solidmechanics::fem::nonuniform
 template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
     : HexahedralFEMForceFieldAndMassT()
-    , _bRecursive(core::objectmodel::Base::initData(&_bRecursive, false, "recursive", "Use recursive matrix computation"))
-    , useMBK(initData(&useMBK, true, "useMBK", "compute MBK and use it in addMBKdx, instead of using addDForce and addMDx."))
+    , _bRecursive(core::objectmodel::Base::initData( false, "recursive", "Use recursive matrix computation"))
+    , useMBK(initData( true, "useMBK", "compute MBK and use it in addMBKdx, instead of using addDForce and addMDx."))
 {}
 
 template <class DataTypes>

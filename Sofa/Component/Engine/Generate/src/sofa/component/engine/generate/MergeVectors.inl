@@ -27,9 +27,9 @@ namespace sofa::component::engine::generate
 
 template <class VecT>
 MergeVectors<VecT>::MergeVectors()
-    : f_nbInputs( initData(&f_nbInputs, (unsigned)2, "nbInputs", "Number of input vectors") )
+    : f_nbInputs( initData( (unsigned)2, "nbInputs", "Number of input vectors") )
     , vf_inputs( this, "input", "Input vector", sofa::core::objectmodel::DataEngineDataType::DataEngineInput)
-    , f_output( initData(&f_output , "output", "Output vector") )
+    , f_output( initData( "output", "Output vector") )
 {
 }
 

@@ -64,9 +64,9 @@ public:
 protected:
 
     MergeROIs(): Inherited()
-        , d_nbROIs ( initData ( &d_nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
+        , d_nbROIs ( initData((unsigned int)0,"nbROIs","size of indices/value vector" ) )
         , f_indices(this, "indices", "ROIs", sofa::core::objectmodel::DataEngineDataType::DataEngineInput)
-        , d_outputIndices(initData(&d_outputIndices, "roiIndices", "Vector of ROIs"))
+        , d_outputIndices(initData( "roiIndices", "Vector of ROIs"))
     {
     }
 

@@ -28,9 +28,9 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 NormEngine<DataTypes>::NormEngine()
-    : d_input ( initData (&d_input, "input", "input array of 3d points") )
-    , d_output( initData (&d_output, "output", "output array of scalar norms") )
-    , d_normType( initData (&d_normType, 2, "normType", "The type of norm. Use a negative value for the infinite norm.") )
+    : d_input ( initData( "input", "input array of 3d points") )
+    , d_output( initData( "output", "output array of scalar norms") )
+    , d_normType( initData( 2, "normType", "The type of norm. Use a negative value for the infinite norm.") )
 {
     addInput(&d_input);
     addOutput(&d_output);

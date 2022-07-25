@@ -44,7 +44,7 @@ int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity In
 
 NewProximityIntersection::NewProximityIntersection()
     : BaseProximityIntersection()
-    , useLineLine(initData(&useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
+    , useLineLine(initData( false, "useLineLine", "Line-line collision detection enabled"))
 {
 }
 

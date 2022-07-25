@@ -46,14 +46,14 @@ using core::visual::VisualParams;
 
 template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
-    : d_points(initData(&d_points, "points", "points controlled by the rest shape springs"))
-    , d_stiffness(initData(&d_stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
-    , d_angularStiffness(initData(&d_angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
-    , d_pivotPoints(initData(&d_pivotPoints, "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
-    , d_external_points(initData(&d_external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
-    , d_recompute_indices(initData(&d_recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
-    , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
-    , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
+    : d_points(initData( "points", "points controlled by the rest shape springs"))
+    , d_stiffness(initData( "stiffness", "stiffness values between the actual position and the rest shape position"))
+    , d_angularStiffness(initData( "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
+    , d_pivotPoints(initData( "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
+    , d_external_points(initData( "external_points", "points from the external Mechancial State that define the rest shape springs"))
+    , d_recompute_indices(initData( true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
+    , d_drawSpring(initData(false,"drawSpring","draw Spring"))
+    , d_springColor(initData( sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {

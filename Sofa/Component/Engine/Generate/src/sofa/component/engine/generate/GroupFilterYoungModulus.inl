@@ -30,13 +30,13 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 GroupFilterYoungModulus<DataTypes>::GroupFilterYoungModulus()
-    : f_groups( initData (&f_groups, "groups", "Groups") )
-    , f_primitives( initData (&f_primitives, "primitives", "Vector of primitives (indices)") )
-    , f_elementsGroup( initData (&f_elementsGroup, "elementsGroup", "Vector of groups (each element gives its group") )
-    , f_youngModulus( initData (&f_youngModulus, "youngModulus", "Vector of young modulus for each primitive") )
-    , p_mapGroupModulus( initData (&p_mapGroupModulus, "mapGroupModulus", "Mapping between groups and modulus") )
-    , p_defaultModulus( initData (&p_defaultModulus, (Real) 10000.0, "defaultYoungModulus", "Default value if the primitive is not in a group") )
-    , p_groupMod( initData (&p_groupMod, "groupModulus", "list of young modulus for each group") )
+    : f_groups( initData( "groups", "Groups") )
+    , f_primitives( initData( "primitives", "Vector of primitives (indices)") )
+    , f_elementsGroup( initData( "elementsGroup", "Vector of groups (each element gives its group") )
+    , f_youngModulus( initData( "youngModulus", "Vector of young modulus for each primitive") )
+    , p_mapGroupModulus( initData( "mapGroupModulus", "Mapping between groups and modulus") )
+    , p_defaultModulus( initData( (Real) 10000.0, "defaultYoungModulus", "Default value if the primitive is not in a group") )
+    , p_groupMod( initData( "groupModulus", "list of young modulus for each group") )
 {
     addInput(&f_groups);
     addInput(&f_primitives);

@@ -37,13 +37,13 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 EulerImplicitSolver::EulerImplicitSolver()
-    : f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
-    , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
-    , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
-    , d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )
-    , f_solveConstraint( initData(&f_solveConstraint,false,"solveConstraint","Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)") )
-    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    : f_rayleighStiffness( initData((SReal)0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData((SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
+    , f_velocityDamping( initData((SReal)0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
+    , f_firstOrder (initData( false, "firstOrder", "Use backward Euler scheme for first order ode system."))
+    , d_trapezoidalScheme( initData(false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )
+    , f_solveConstraint( initData(false,"solveConstraint","Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)") )
+    , d_threadSafeVisitor(initData( false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 

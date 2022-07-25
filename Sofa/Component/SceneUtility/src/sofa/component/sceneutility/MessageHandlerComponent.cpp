@@ -56,7 +56,7 @@ namespace sofa::component::sceneutility
 {
 
 MessageHandlerComponent::MessageHandlerComponent() :
-    d_type(initData(&d_type, "handler", "Type of the message handler to use among "
+    d_type(initData( "handler", "Type of the message handler to use among "
                                         "[sofa, clang\
                                         //, log\
                                         , silent]. "))
@@ -108,7 +108,7 @@ int MessageHandlerComponentClass = RegisterObject("This object controls the way 
 
 ////////////////////////// FileMessageHandlerComponent ////////////////////////////////////
 FileMessageHandlerComponent::FileMessageHandlerComponent() :
-    d_filename(initData(&d_filename, "filename", "Name of the file into which the message will be saved in."))
+    d_filename(initData( "filename", "Name of the file into which the message will be saved in."))
 {
     m_isValid = false ;
 }

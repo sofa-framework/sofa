@@ -39,18 +39,18 @@ using namespace sofa::core::topology;
 
 template <class DataTypes, class GeometricalTypes>
 MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
-    : d_massDensity( initData(&d_massDensity, "massDensity", "Specify real and strictly positive value(s) for the mass density. \n"
+    : d_massDensity( initData( "massDensity", "Specify real and strictly positive value(s) for the mass density. \n"
                                                              "If unspecified or wrongly set, the totalMass information is used.") )
-    , d_totalMass( initData(&d_totalMass, Real(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
+    , d_totalMass( initData( Real(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
                                                                   "If unspecified or wrongly set, the default value is used: totalMass = 1.0") )
-    , d_vertexMass( initData(&d_vertexMass, "vertexMass", "internal values of the particles masses on vertices, supporting topological changes") )
-    , d_edgeMass( initData(&d_edgeMass, "edgeMass", "internal values of the particles masses on edges, supporting topological changes") )
-    , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
-    , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , d_showAxisSize( initData(&d_showAxisSize, Real(1.0), "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , d_lumping( initData(&d_lumping, false, "lumping","boolean if you need to use a lumped mass matrix") )
-    , d_printMass( initData(&d_printMass, false, "printMass","boolean if you want to check the mass conservation") )
-    , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
+    , d_vertexMass( initData( "vertexMass", "internal values of the particles masses on vertices, supporting topological changes") )
+    , d_edgeMass( initData( "edgeMass", "internal values of the particles masses on edges, supporting topological changes") )
+    , d_computeMassOnRest(initData( false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
+    , d_showCenterOfGravity( initData( false, "showGravityCenter", "display the center of gravity of the system" ) )
+    , d_showAxisSize( initData( Real(1.0), "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , d_lumping( initData( false, "lumping","boolean if you need to use a lumped mass matrix") )
+    , d_printMass( initData( false, "printMass","boolean if you want to check the mass conservation") )
+    , f_graph( initData("graph","Graph of the controlled potential") )
     , l_topology(initLink("topology", "link to the topology container"))
     , l_geometryState(initLink("geometryState", "link to the MechanicalObject associated with the geometry"))
     , m_massTopologyType(TopologyElementType::UNKNOWN)

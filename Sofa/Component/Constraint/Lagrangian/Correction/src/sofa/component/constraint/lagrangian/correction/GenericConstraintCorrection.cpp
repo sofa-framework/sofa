@@ -51,9 +51,9 @@ using sofa::core::VecDerivId;
 using sofa::core::VecCoordId;
 
 GenericConstraintCorrection::GenericConstraintCorrection()
-: d_linearSolversName( initData(&d_linearSolversName, "solverName", "name of the constraint solver") )
-, d_ODESolverName( initData(&d_ODESolverName, "ODESolverName", "name of the ode solver") )
-, d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
+: d_linearSolversName( initData( "solverName", "name of the constraint solver") )
+, d_ODESolverName( initData( "ODESolverName", "name of the ode solver") )
+, d_complianceFactor(initData( 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 {
     m_ODESolver = nullptr;
 }

@@ -33,7 +33,7 @@ int DataMonitorClass = core::RegisterObject("DataMonitor")
         ;
 
 DataMonitor::DataMonitor()
-    : data( initData (&data, "data", "Monitored data") )
+    : data( initData( "data", "Monitored data") )
 {
 }
 

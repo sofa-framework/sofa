@@ -27,14 +27,14 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 GenerateGrid<DataTypes>::GenerateGrid()
-    : d_outputX ( initData (&d_outputX, "output_position", "output array of 3d points") )
-    , d_tetrahedron( initData (&d_tetrahedron, "tetrahedra", "output mesh tetrahedra") )
-    , d_quad( initData (&d_quad, "quads", "output mesh quads") )
-    , d_triangle( initData (&d_triangle, "triangles", "output mesh triangles") )
-    , d_hexahedron( initData (&d_hexahedron, "hexahedra", "output mesh hexahedra") )
-    , d_minCorner( initData (&d_minCorner,Vec3(), "min", "the 3 coordinates of the minimum corner") )
-    , d_maxCorner( initData (&d_maxCorner,Vec3(), "max", "the 3 coordinates of the maximum corner") )
-    , d_resolution( initData (&d_resolution,Vec3Int(3,3,3), "resolution", "the number of cubes in the x,y,z directions. If resolution in the z direction is  0 then a 2D grid is generated") )
+    : d_outputX ( initData( "output_position", "output array of 3d points") )
+    , d_tetrahedron( initData( "tetrahedra", "output mesh tetrahedra") )
+    , d_quad( initData( "quads", "output mesh quads") )
+    , d_triangle( initData( "triangles", "output mesh triangles") )
+    , d_hexahedron( initData( "hexahedra", "output mesh hexahedra") )
+    , d_minCorner( initData(Vec3(), "min", "the 3 coordinates of the minimum corner") )
+    , d_maxCorner( initData(Vec3(), "max", "the 3 coordinates of the maximum corner") )
+    , d_resolution( initData(Vec3Int(3,3,3), "resolution", "the number of cubes in the x,y,z directions. If resolution in the z direction is  0 then a 2D grid is generated") )
 {
     addAlias(&d_outputX,"position");
 

@@ -37,12 +37,12 @@ namespace sofa::component::mapping::linear
 template <class TIn, class TOut>
 SkinningMapping<TIn, TOut>::SkinningMapping ()
     : Inherit ()
-    , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame." ) )
-    , nbRef ( initData ( &nbRef, "nbRef","Number of primitives influencing each point." ) )
-    , f_index ( initData ( &f_index,"indices","parent indices for each child." ) )
-    , weight ( initData ( &weight,"weight","influence weights of the Dofs." ) )
-    , showFromIndex ( initData ( &showFromIndex, ( unsigned int ) 0, "showFromIndex","Displayed From Index." ) )
-    , showWeights ( initData ( &showWeights, false, "showWeights","Show influence." ) )
+    , f_initPos ( initData("initPos","initial child coordinates in the world reference frame." ) )
+    , nbRef ( initData( "nbRef","Number of primitives influencing each point." ) )
+    , f_index ( initData("indices","parent indices for each child." ) )
+    , weight ( initData("weight","influence weights of the Dofs." ) )
+    , showFromIndex ( initData( ( unsigned int ) 0, "showFromIndex","Displayed From Index." ) )
+    , showWeights ( initData( false, "showWeights","Show influence." ) )
 {
     type::vector<unsigned int> defaultNbRef;
     defaultNbRef.push_back((unsigned ) 4);

@@ -55,12 +55,12 @@ namespace sofa::component::mechanicalload
 
 template<class DataTypes>
 EllipsoidForceField<DataTypes>::EllipsoidForceField()
-    : contacts(initData(&contacts,"contacts", "Contacts"))
-    , center(initData(&center, "center", "ellipsoid center"))
-    , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
-    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
-    , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, sofa::type::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
+    : contacts(initData("contacts", "Contacts"))
+    , center(initData( "center", "ellipsoid center"))
+    , vradius(initData( "vradius", "ellipsoid radius"))
+    , stiffness(initData( (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
+    , damping(initData( (Real)5, "damping", "force damping"))
+    , color(initData( sofa::type::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
 {
 }
 

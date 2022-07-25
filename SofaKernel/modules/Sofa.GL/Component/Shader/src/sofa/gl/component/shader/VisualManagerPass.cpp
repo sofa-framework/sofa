@@ -37,9 +37,9 @@ int VisualManagerPassClass = core::RegisterObject("VisualManagerPass")
         ;
 
 VisualManagerPass::VisualManagerPass()
-    : factor(initData(&factor, (float)1.0, "factor","set the resolution factor for the output pass. default value:1.0")),
-      renderToScreen(initData(&renderToScreen, "renderToScreen", "if true, this pass will be displayed on screen (only one renderPass in the scene must be defined as renderToScreen)")),
-      outputName(initData(&outputName, "outputName","name the output texture"))
+    : factor(initData( (float)1.0, "factor","set the resolution factor for the output pass. default value:1.0")),
+      renderToScreen(initData( "renderToScreen", "if true, this pass will be displayed on screen (only one renderPass in the scene must be defined as renderToScreen)")),
+      outputName(initData( "outputName","name the output texture"))
 {
     if(factor.getValue()==0.0)
     {

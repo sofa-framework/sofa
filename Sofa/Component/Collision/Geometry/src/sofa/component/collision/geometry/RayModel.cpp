@@ -37,7 +37,7 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 RayCollisionModel::RayCollisionModel(SReal length)
-    : defaultLength(initData(&defaultLength, length, "", "TODO"))
+    : defaultLength(initData( length, "", "TODO"))
 {
     this->contactResponse.setValue("RayContact"); // use RayContact response class
 }

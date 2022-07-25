@@ -33,10 +33,10 @@ namespace sofa::component::constraint::projective
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
+    , f_indices( initData("indices","Indices of the fixed points") )
+    , f_fixAll( initData(false,"fixAll","filter all the DOF to implement a fixed object") )
+    , _drawSize( initData((SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_coordinates( initData("coordinates","Coordinates of the fixed points") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
     // default to indice 0

@@ -33,7 +33,7 @@ int DataControllerClass = core::RegisterObject("DataController")
         ;
 
 DataController::DataController()
-    : data( initData (&data, "data", "Controlled data") )
+    : data( initData( "data", "Controlled data") )
 {
 }
 

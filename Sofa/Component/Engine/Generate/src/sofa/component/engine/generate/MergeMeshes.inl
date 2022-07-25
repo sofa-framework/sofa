@@ -28,15 +28,15 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 MergeMeshes<DataTypes>::MergeMeshes()
-    : f_nbMeshes( initData (&f_nbMeshes, (unsigned)2, "nbMeshes", "number of meshes to merge") )
-    , f_output_npoints( initData (&f_output_npoints, (unsigned)0, "npoints", "Number Of out points") )
-    , f_output_positions(initData(&f_output_positions,"position","Output Vertices of the merged mesh"))
-    , f_output_edges(initData(&f_output_edges,"edges","Output Edges of the merged mesh"))
-    , f_output_triangles(initData(&f_output_triangles,"triangles","Output Triangles of the merged mesh"))
-    , f_output_quads(initData(&f_output_quads,"quads","Output Quads of the merged mesh"))
-    , f_output_polygons(initData(&f_output_polygons,"polygons","Output Polygons of the merged mesh"))
-    , f_output_tetrahedra(initData(&f_output_tetrahedra,"tetrahedra","Output Tetrahedra of the merged mesh"))
-    , f_output_hexahedra(initData(&f_output_hexahedra,"hexahedra","Output Hexahedra of the merged mesh"))
+    : f_nbMeshes( initData( (unsigned)2, "nbMeshes", "number of meshes to merge") )
+    , f_output_npoints( initData( (unsigned)0, "npoints", "Number Of out points") )
+    , f_output_positions(initData("position","Output Vertices of the merged mesh"))
+    , f_output_edges(initData("edges","Output Edges of the merged mesh"))
+    , f_output_triangles(initData("triangles","Output Triangles of the merged mesh"))
+    , f_output_quads(initData("quads","Output Quads of the merged mesh"))
+    , f_output_polygons(initData("polygons","Output Polygons of the merged mesh"))
+    , f_output_tetrahedra(initData("tetrahedra","Output Tetrahedra of the merged mesh"))
+    , f_output_hexahedra(initData("hexahedra","Output Hexahedra of the merged mesh"))
 {
     createInputMeshesData();
 }

@@ -36,14 +36,14 @@ using type::vector;
 
 template <class DataTypes>
 DilateEngine<DataTypes>::DilateEngine()
-    : d_inputX ( initData (&d_inputX, "input_position", "input array of 3d points") )
-    , d_outputX( initData (&d_outputX, "output_position", "output array of 3d points") )
-    , d_triangles( initData (&d_triangles, "triangles", "input mesh triangles") )
-    , d_quads( initData (&d_quads, "quads", "input mesh quads") )
-    , d_normals( initData (&d_normals, "normal", "point normals") )
-    , d_thickness( initData (&d_thickness, "thickness", "point thickness") )
-    , d_distance( initData (&d_distance, (Real)0, "distance", "distance to move the points (positive for dilatation, negative for erosion)") )
-    , d_minThickness( initData (&d_minThickness, (Real)0, "minThickness", "minimal thickness to enforce") )
+    : d_inputX ( initData( "input_position", "input array of 3d points") )
+    , d_outputX( initData( "output_position", "output array of 3d points") )
+    , d_triangles( initData( "triangles", "input mesh triangles") )
+    , d_quads( initData( "quads", "input mesh quads") )
+    , d_normals( initData( "normal", "point normals") )
+    , d_thickness( initData( "thickness", "point thickness") )
+    , d_distance( initData( (Real)0, "distance", "distance to move the points (positive for dilatation, negative for erosion)") )
+    , d_minThickness( initData( (Real)0, "minThickness", "minimal thickness to enforce") )
 {
     addAlias(&d_inputX,"position");
 

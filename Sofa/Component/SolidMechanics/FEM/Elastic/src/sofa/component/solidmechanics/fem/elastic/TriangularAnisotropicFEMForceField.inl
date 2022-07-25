@@ -39,11 +39,11 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 template <class DataTypes>
 TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceField()
-    : f_young2(initData(&f_young2,type::vector<Real>(1,1000.0),"transverseYoungModulus","transverseYoungModulus","Young modulus along transverse direction"))
-    , f_theta(initData(&f_theta,(Real)(0.0),"fiberAngle","Fiber angle in global reference frame (in degrees)"))
-    , f_fiberCenter(initData(&f_fiberCenter,"fiberCenter","Concentric fiber center in global reference frame"))
-    , showFiber(initData(&showFiber,true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
-    , localFiberDirection(initData(&localFiberDirection,"localFiberDirection", "Computed fibers direction within each triangle"))
+    : f_young2(initData(type::vector<Real>(1,1000.0),"transverseYoungModulus","transverseYoungModulus","Young modulus along transverse direction"))
+    , f_theta(initData((Real)(0.0),"fiberAngle","Fiber angle in global reference frame (in degrees)"))
+    , f_fiberCenter(initData("fiberCenter","Concentric fiber center in global reference frame"))
+    , showFiber(initData(true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
+    , localFiberDirection(initData("localFiberDirection", "Computed fibers direction within each triangle"))
 {
     this->_anisotropicMaterial = true;
 

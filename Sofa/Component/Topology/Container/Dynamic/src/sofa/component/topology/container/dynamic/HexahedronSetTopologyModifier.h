@@ -57,7 +57,7 @@ public:
 protected:
     HexahedronSetTopologyModifier()
         : QuadSetTopologyModifier()
-        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
+        , removeIsolated( initData(true, "removeIsolated", "remove Isolated dof") )
     { }
 
     ~HexahedronSetTopologyModifier() override {}

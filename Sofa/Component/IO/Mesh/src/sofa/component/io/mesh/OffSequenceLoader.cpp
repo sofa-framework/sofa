@@ -39,8 +39,8 @@ int OffSequenceLoaderClass = core::RegisterObject("Read and load an .off file at
 
 OffSequenceLoader::OffSequenceLoader()
     : MeshOffLoader()
-    , nbFiles( initData(&nbFiles,(int)1,"nbOfFiles","number of files in the sequence") )
-    , stepDuration( initData(&stepDuration,0.04,"stepDuration","how long each file is loaded") )
+    , nbFiles( initData((int)1,"nbOfFiles","number of files in the sequence") )
+    , stepDuration( initData(0.04,"stepDuration","how long each file is loaded") )
     , firstIndex(0) , currentIndex(0)
 {
     this->f_listening.setValue(true);

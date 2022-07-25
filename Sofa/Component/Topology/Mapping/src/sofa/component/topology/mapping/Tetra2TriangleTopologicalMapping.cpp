@@ -55,9 +55,9 @@ int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case o
 
 Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
-    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
-    , noNewTriangles(initData(&noNewTriangles, bool(false), "noNewTriangles", "If true no new triangles are being created"))
-    , noInitialTriangles(initData(&noInitialTriangles, bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
+    , flipNormals(initData( bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
+    , noNewTriangles(initData( bool(false), "noNewTriangles", "If true no new triangles are being created"))
+    , noInitialTriangles(initData( bool(false), "noInitialTriangles", "If true the list of initial triangles is initially empty. Only additional triangles will be added in the list"))
     , m_outTopoModifier(nullptr)
 {
 }

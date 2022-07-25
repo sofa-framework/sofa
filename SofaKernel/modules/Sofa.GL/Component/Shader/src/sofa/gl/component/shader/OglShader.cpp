@@ -35,32 +35,32 @@ int OglShaderClass = core::RegisterObject("OglShader")
         ;
 
 OglShader::OglShader():
-    turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
-    passive(initData(&passive, (bool) false, "passive", "Will this shader be activated manually or automatically?")),
-    vertFilename(initData(&vertFilename, type::SVector<std::string>(1,"shaders/toonShading.vert"), "fileVertexShaders", "Set the vertex shader filename to load")),
-    fragFilename(initData(&fragFilename, type::SVector<std::string>(1,"shaders/toonShading.frag"), "fileFragmentShaders", "Set the fragment shader filename to load")),
+    turnOn(initData( (bool) true, "turnOn", "Turn On the shader?")),
+    passive(initData( (bool) false, "passive", "Will this shader be activated manually or automatically?")),
+    vertFilename(initData( type::SVector<std::string>(1,"shaders/toonShading.vert"), "fileVertexShaders", "Set the vertex shader filename to load")),
+    fragFilename(initData( type::SVector<std::string>(1,"shaders/toonShading.frag"), "fileFragmentShaders", "Set the fragment shader filename to load")),
 #ifdef GL_GEOMETRY_SHADER_EXT
-    geoFilename(initData(&geoFilename, "fileGeometryShaders", "Set the geometry shader filename to load")),
+    geoFilename(initData( "fileGeometryShaders", "Set the geometry shader filename to load")),
 #endif
 #ifdef GL_TESS_CONTROL_SHADER
-    tessellationControlFilename(initData(&tessellationControlFilename, "fileTessellationControlShaders", "Set the tessellation control filename to load")),
+    tessellationControlFilename(initData( "fileTessellationControlShaders", "Set the tessellation control filename to load")),
 #endif
 #ifdef GL_TESS_EVALUATION_SHADER
-    tessellationEvaluationFilename(initData(&tessellationEvaluationFilename, "fileTessellationEvaluationShaders", "Set the tessellation evaluation filename to load")),
+    tessellationEvaluationFilename(initData( "fileTessellationEvaluationShaders", "Set the tessellation evaluation filename to load")),
 #endif
 #ifdef GL_GEOMETRY_SHADER_EXT
-    geometryInputType(initData(&geometryInputType, (int) -1, "geometryInputType", "Set input types for the geometry shader")),
-    geometryOutputType(initData(&geometryOutputType, (int) -1, "geometryOutputType", "Set output types for the geometry shader")),
-    geometryVerticesOut(initData(&geometryVerticesOut, (int) -1, "geometryVerticesOut", "Set max number of vertices in output for the geometry shader")),
+    geometryInputType(initData( (int) -1, "geometryInputType", "Set input types for the geometry shader")),
+    geometryOutputType(initData( (int) -1, "geometryOutputType", "Set output types for the geometry shader")),
+    geometryVerticesOut(initData( (int) -1, "geometryVerticesOut", "Set max number of vertices in output for the geometry shader")),
 #endif
 #ifdef GL_TESS_CONTROL_SHADER
-    tessellationOuterLevel(initData(&tessellationOuterLevel,(GLfloat)1, "tessellationOuterLevel", "For tessellation without control shader: default outer level (edge subdivisions)")),
-    tessellationInnerLevel(initData(&tessellationInnerLevel,(GLfloat)1, "tessellationInnerLevel", "For tessellation without control shader: default inner level (face subdivisions)")),
+    tessellationOuterLevel(initData((GLfloat)1, "tessellationOuterLevel", "For tessellation without control shader: default outer level (edge subdivisions)")),
+    tessellationInnerLevel(initData((GLfloat)1, "tessellationInnerLevel", "For tessellation without control shader: default inner level (face subdivisions)")),
 #endif
 
-    indexActiveShader(initData(&indexActiveShader, (unsigned int) 0, "indexActiveShader", "Set current active shader")),
-    backfaceWriting( initData(&backfaceWriting, (bool) false, "backfaceWriting", "it enables writing to gl_BackColor inside a GLSL vertex shader" ) ),
-    clampVertexColor( initData(&clampVertexColor, (bool) true, "clampVertexColor", "clamp the vertex color between 0 and 1" ) )
+    indexActiveShader(initData( (unsigned int) 0, "indexActiveShader", "Set current active shader")),
+    backfaceWriting( initData( (bool) false, "backfaceWriting", "it enables writing to gl_BackColor inside a GLSL vertex shader" ) ),
+    clampVertexColor( initData( (bool) true, "clampVertexColor", "clamp the vertex color between 0 and 1" ) )
 {
 #ifdef GL_TESS_CONTROL_SHADER
     addAlias(&tessellationOuterLevel,"tessellationLevel");
@@ -536,8 +536,8 @@ void  OglShader::setGeometryVerticesOut(const unsigned int index, GLint v)
 #endif
 
 OglShaderElement::OglShaderElement()
-    : id(initData(&id, std::string(""), "id", "Set an ID name"))
-    , indexShader(initData(&indexShader, (unsigned int) 0, "indexShader", "Set the index of the desired shader you want to apply this parameter"))
+    : id(initData( std::string(""), "id", "Set an ID name"))
+    , indexShader(initData( (unsigned int) 0, "indexShader", "Set the index of the desired shader you want to apply this parameter"))
 {
 
 }

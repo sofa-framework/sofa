@@ -52,10 +52,10 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 template <class DataTypes>
 HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
-    : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
-    , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
-    , hexahedronInfo(initData(&hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
+    : f_method(initData(std::string("large"),"method","\"large\" or \"polar\" displacements"))
+    , f_poissonRatio(initData((Real)0.45f,"poissonRatio",""))
+    , f_youngModulus(initData((Real)5000,"youngModulus",""))
+    , hexahedronInfo(initData( "hexahedronInfo", "Internal hexahedron data"))
 {
 
     _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;

@@ -62,7 +62,7 @@ namespace objectmodel
  * the component, using the helper function Base::initData():
  *
  * \code{.cpp}
- * Foo::Foo(): d_bar(initData(&d_bar, true, "bar", "Here is a little description of this Data.")) {
+ * Foo::Foo(): d_bar(initData( true, "bar", "Here is a little description of this Data.")) {
  *     // ...
  * }
  * \endcode
@@ -322,8 +322,11 @@ bool Data<T>::read(const std::string& s)
     std::stringstream cerrbuffer;
     std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
 
-    istr >> *beginEdit();
-    endEdit();
+    {
+        T* edit = beginEdit();
+        istr >> *edit;
+        endEdit();
+    }
 
     // restore the previous cerr
     std::cerr.rdbuf(old);

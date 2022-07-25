@@ -19,8 +19,8 @@ namespace sofa
 
             template <class DataTypes>
             MeanComputation<DataTypes>::MeanComputation()
-                //: d_inputs(initData(&d_inputs, "input", "List of all input values for mean computation"))
-                : d_result(initData(&d_result, "result", "Result: mean computed from the input values"))
+                //: d_inputs(initData( "input", "List of all input values for mean computation"))
+                : d_result(initData( "result", "Result: mean computed from the input values"))
             {
 
             }

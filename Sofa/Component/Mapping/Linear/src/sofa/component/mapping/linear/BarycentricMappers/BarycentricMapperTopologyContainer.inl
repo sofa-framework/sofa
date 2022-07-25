@@ -35,7 +35,7 @@ template <class In, class Out, class MappingDataType, class Element>
 BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::BarycentricMapperTopologyContainer(sofa::core::topology::TopologyContainer* fromTopology,
     core::topology::BaseMeshTopology* toTopology)
      : Inherit1(fromTopology, toTopology),
-       d_map(initData(&d_map,"map", "mapper data")),
+       d_map(initData("map", "mapper data")),
        m_matrixJ(nullptr),
        m_updateJ(true)
  {}

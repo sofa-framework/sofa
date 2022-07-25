@@ -36,10 +36,10 @@ using type::vector;
 /// defined only one the member initialization.
 RegularGridTopology::RegularGridTopology(const Vec3i& dimXYZ)
     : GridTopology(dimXYZ)
-    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal"))
-    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal"))
-    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points"))
-    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
+    , d_min(initData(Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal"))
+    , d_max(initData(Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal"))
+    , d_p0(initData(Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points"))
+    , d_cellWidth(initData( (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
 {
 }
 

@@ -30,11 +30,11 @@ using namespace std;
 
 template<class T>
 BlenderExporter<T>::BlenderExporter()
-    : path(initData(&path,"path","output path")),
-    baseName(initData(&baseName, "baseName", "Base name for the output files")),
-    simulationType(initData(&simulationType,0, "simulationType", "simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)")),
-    simulationStep(initData(&simulationStep,2, "step", "save the  simulation result every step frames")),
-    nbPtsByHair(initData(&nbPtsByHair,20, "nbPtsByHair", "number of element by hair strand")),
+    : path(initData("path","output path")),
+    baseName(initData( "baseName", "Base name for the output files")),
+    simulationType(initData(0, "simulationType", "simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)")),
+    simulationStep(initData(2, "step", "save the  simulation result every step frames")),
+    nbPtsByHair(initData(20, "nbPtsByHair", "number of element by hair strand")),
     frameCounter(0)
 {
     Inherit::f_listening.setValue(true);

@@ -40,8 +40,8 @@ int HexahedronSetTopologyContainerClass = core::RegisterObject("Hexahedron set t
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
-    , d_createQuadArray(initData(&d_createQuadArray, bool(false),"createQuadArray", "Force the creation of a set of quads associated with the hexahedra"))
-    , d_hexahedron(initData(&d_hexahedron, "hexahedra", "List of hexahedron indices"))
+    , d_createQuadArray(initData( bool(false),"createQuadArray", "Force the creation of a set of quads associated with the hexahedra"))
+    , d_hexahedron(initData( "hexahedra", "List of hexahedron indices"))
 {
     addAlias(&d_hexahedron, "hexas");
 }

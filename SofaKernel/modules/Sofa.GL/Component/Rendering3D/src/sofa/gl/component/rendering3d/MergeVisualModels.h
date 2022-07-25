@@ -54,7 +54,7 @@ public:
 
 protected:
     MergeVisualModels()
-        : d_nbInput( initData (&d_nbInput, (unsigned)1, "nb", "number of input visual models to merge") )
+        : d_nbInput( initData( (unsigned)1, "nb", "number of input visual models to merge") )
         , vl_input(this,"input", "input visual model")
     {
         vl_input.resize(d_nbInput.getValue());

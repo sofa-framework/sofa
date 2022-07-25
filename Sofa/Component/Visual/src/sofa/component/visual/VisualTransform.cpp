@@ -31,8 +31,8 @@ int VisualTransformClass = sofa::core::RegisterObject("TODO")
         .add<VisualTransform>();
 
 VisualTransform::VisualTransform()
-    : transform(initData(&transform,"transform","Transformation to apply"))
-    , recursive(initData(&recursive,false,"recursive","True to apply transform to all nodes below"))
+    : transform(initData("transform","Transformation to apply"))
+    , recursive(initData(false,"recursive","True to apply transform to all nodes below"))
     , nbpush(0)
 {
 }

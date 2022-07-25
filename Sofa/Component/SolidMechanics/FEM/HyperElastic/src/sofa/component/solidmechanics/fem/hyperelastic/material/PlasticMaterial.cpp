@@ -28,8 +28,8 @@ namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 PlasticMaterial::PlasticMaterial()
-: _poissonRatio(initData(&_poissonRatio,(SReal)0.45,"poissonRatio","Poisson ratio in Hooke's law"))
-, _youngModulus(initData(&_youngModulus,(SReal)3000.,"youngModulus","Young modulus in Hooke's law"))
+: _poissonRatio(initData((SReal)0.45,"poissonRatio","Poisson ratio in Hooke's law"))
+, _youngModulus(initData((SReal)3000.,"youngModulus","Young modulus in Hooke's law"))
 {
 	// we give the inclination here
 	_E.push_back(_youngModulus.getValue());

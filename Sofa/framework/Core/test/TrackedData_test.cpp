@@ -57,8 +57,8 @@ public:
 
     TestObject()
         : Inherit1()
-        , input(initData(&input,false,"input","input"))
-        , depend_on_input(initData(&depend_on_input,(int)UNDEFINED,"depend_on_input","depend_on_input"))
+        , input(initData(false,"input","input"))
+        , depend_on_input(initData((int)UNDEFINED,"depend_on_input","depend_on_input"))
     {
         // we will check at each step, if the Data 'input' changed
         // note that it could be done anywhere else
@@ -167,10 +167,10 @@ public:
 
     TestObject2()
         : Inherit1()
-        , input(initData(&input,false,"input","input"))
-        , input2(initData(&input2,true,"input2","input2"))
-        , depend_on_input(initData(&depend_on_input,"depend_on_input","depend_on_input"))
-        , depend_on_input2(initData(&depend_on_input2,"depend_on_input2","depend_on_input2"))
+        , input(initData(false,"input","input"))
+        , input2(initData(true,"input2","input2"))
+        , depend_on_input(initData("depend_on_input","depend_on_input"))
+        , depend_on_input2(initData("depend_on_input2","depend_on_input2"))
     {
         addUpdateCallback("TestObject2Engine", {&input, &input2}
                           , std::bind(&TestObject2::myUpdate, this, std::placeholders::_1)
@@ -204,7 +204,7 @@ public:
     Data< bool > myData;
     DummyObject()
         : Inherit1()
-        , myData(initData(&myData,false,"myData","myData"))
+        , myData(initData(false,"myData","myData"))
     {}
 };
 

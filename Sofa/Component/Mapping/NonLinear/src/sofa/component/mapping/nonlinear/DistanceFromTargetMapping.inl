@@ -34,13 +34,13 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     : Inherit()
-    , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
-    , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
-    , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
+    , f_indices(initData( "indices", "Indices of the parent points"))
+    , f_targetPositions(initData( "targetPositions", "Positions to compute the distances from"))
+    , f_restDistances(initData( "restLengths", "Rest lengths of the connections."))
     //TODO(dmarchal): use a list of options instead of numeric values.
-    , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
-    , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_geometricStiffness(initData( (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , d_showObjectScale(initData( 0.f, "showObjectScale", "Scale for object display"))
+    , d_color(initData( sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
 {
 }
 

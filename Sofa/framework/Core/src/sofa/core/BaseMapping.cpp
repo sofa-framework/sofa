@@ -29,10 +29,10 @@ namespace core
 {
 
 BaseMapping::BaseMapping()
-    : f_mapForces(initData(&f_mapForces, true, "mapForces", "Are forces mapped ?"))
-    , f_mapConstraints(initData(&f_mapConstraints, true, "mapConstraints", "Are constraints mapped ?"))
-    , f_mapMasses(initData(&f_mapMasses, true, "mapMasses", "Are masses mapped ?"))
-    , f_mapMatrices(initData(&f_mapMatrices, false, "mapMatrices", "Are matrix explicit mapped?"))
+    : f_mapForces(initData( true, "mapForces", "Are forces mapped ?"))
+    , f_mapConstraints(initData( true, "mapConstraints", "Are constraints mapped ?"))
+    , f_mapMasses(initData( true, "mapMasses", "Are masses mapped ?"))
+    , f_mapMatrices(initData( false, "mapMatrices", "Are matrix explicit mapped?"))
 {
     this->addAlias(&f_mapForces, "isMechanical");
     this->addAlias(&f_mapMasses, "isMechanical");

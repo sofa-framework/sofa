@@ -55,8 +55,8 @@ protected:
     * @brief Default Constructor.
      */
     ArticulatedHierarchyBVHController()
-        : useExternalTime( initData(&useExternalTime, false, "useExternalTime", "use the external time line"))
-        , externalTime( initData(&externalTime, 0.0, "externalTime", " value of the External Time") )
+        : useExternalTime( initData( false, "useExternalTime", "use the external time line"))
+        , externalTime( initData( 0.0, "externalTime", " value of the External Time") )
     {
         this->f_listening.setValue(true);
     };

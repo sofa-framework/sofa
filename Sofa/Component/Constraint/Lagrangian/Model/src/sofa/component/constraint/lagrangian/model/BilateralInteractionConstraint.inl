@@ -43,20 +43,20 @@ using sofa::type::Vec;
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
-    , m1(initData(&m1, "first_point","index of the constraint on the first model"))
-    , m2(initData(&m2, "second_point","index of the constraint on the second model"))
-    , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
+    , m1(initData( "first_point","index of the constraint on the first model"))
+    , m2(initData( "second_point","index of the constraint on the second model"))
+    , restVector(initData( "rest_vector","Relative position to maintain between attached points (optional)"))
 
-    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
+    , d_numericalTolerance(initData( 0.0001, "numericalTolerance",
                                     "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
 
     //TODO(dmarchal): Such kind of behavior shouldn't be implemented in the component but externalized in a second component or in a python script controlling the scene.
-    , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
+    , activateAtIteration( initData( 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
 
     //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
-    , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
-    , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
-    , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
+    , merge(initData(false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
+    , derivative(initData(false, "derivative", "TEST: derivative"))
+    , keepOrientDiff(initData(false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
 {
     this->f_listening.setValue(true);
 }

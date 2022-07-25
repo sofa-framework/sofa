@@ -35,9 +35,9 @@ namespace sofa::component::collision::geometry
 
 template<class DataTypes>
 TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
-    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
-    , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
-    , d_useCurvature(initData(&d_useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
+    : d_bothSide(initData( false, "bothSide", "activate collision on both side of the triangle model") )
+    , d_computeNormals(initData( true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , d_useCurvature(initData( false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_mstate(nullptr)
     , m_topology(nullptr)

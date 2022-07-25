@@ -32,14 +32,14 @@ const typename Vertex2Frame<DataTypes>::Real Vertex2Frame<DataTypes>::EPSILON = 
 
 template <class DataTypes>
 Vertex2Frame<DataTypes>::Vertex2Frame():
-    d_vertices(initData(&d_vertices,"position","Vertices of the mesh loaded"))
-    , d_texCoords(initData(&d_texCoords,"texCoords","TexCoords of the mesh loaded"))
-    , d_normals(initData(&d_normals,"normals","Normals of the mesh loaded"))
-    , d_frames( initData (&d_frames, "frames", "Frames at output") )
-    , d_useNormals( initData (&d_useNormals, true, "useNormals", "Use normals to compute the orientations; if disabled the direction of the x axisof a vertice is the one from this vertice to the next one") )
-    , d_invertNormals( initData (&d_invertNormals, false, "invertNormals", "Swap normals") )
-    , d_rotation( initData (&d_rotation, 0, "rotation", "Apply a local rotation on the frames. If 0 a x-axis rotation is applied. If 1 a y-axis rotation is applied, If 2 a z-axis rotation is applied.") )
-    , d_rotationAngle( initData (&d_rotationAngle, 0.0, "rotationAngle", "Angle rotation") )
+    d_vertices(initData("position","Vertices of the mesh loaded"))
+    , d_texCoords(initData("texCoords","TexCoords of the mesh loaded"))
+    , d_normals(initData("normals","Normals of the mesh loaded"))
+    , d_frames( initData( "frames", "Frames at output") )
+    , d_useNormals( initData( true, "useNormals", "Use normals to compute the orientations; if disabled the direction of the x axisof a vertice is the one from this vertice to the next one") )
+    , d_invertNormals( initData( false, "invertNormals", "Swap normals") )
+    , d_rotation( initData( 0, "rotation", "Apply a local rotation on the frames. If 0 a x-axis rotation is applied. If 1 a y-axis rotation is applied, If 2 a z-axis rotation is applied.") )
+    , d_rotationAngle( initData( 0.0, "rotationAngle", "Angle rotation") )
 {
     addInput(&d_vertices);
     addInput(&d_texCoords);

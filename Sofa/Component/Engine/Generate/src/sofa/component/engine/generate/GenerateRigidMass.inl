@@ -31,17 +31,17 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes, class MassType>
 GenerateRigidMass<DataTypes,MassType>::GenerateRigidMass()
-    : m_density(  initData(&m_density,static_cast<Real>(1000.0),"density","input: Density of the object") )
-    , m_positions(  initData(&m_positions,"position","input: positions of the vertices") )
-    , m_triangles(  initData(&m_triangles,"triangles","input: triangles of the mesh") )
-    , m_quads(  initData(&m_quads,"quads","input: quads of the mesh") )
-    , m_polygons(  initData(&m_polygons,"polygons","input: polygons of the mesh") )
-    , rigidMass(  initData(&rigidMass,"rigidMass","output: rigid mass computed") )
-    , mass(  initData(&mass,"mass","output: mass of the mesh") )
-    , volume(  initData(&volume,"volume","output: volume of the mesh") )
-    , inertiaMatrix(  initData(&inertiaMatrix,"inertiaMatrix","output: the inertia matrix of the mesh") )
-    , massCenter(  initData(&massCenter,"massCenter","output: the gravity center of the mesh") )
-    , centerToOrigin(  initData(&centerToOrigin,"centerToOrigin","output: vector going from the mass center to the space origin") )
+    : m_density(  initData(static_cast<Real>(1000.0),"density","input: Density of the object") )
+    , m_positions(  initData("position","input: positions of the vertices") )
+    , m_triangles(  initData("triangles","input: triangles of the mesh") )
+    , m_quads(  initData("quads","input: quads of the mesh") )
+    , m_polygons(  initData("polygons","input: polygons of the mesh") )
+    , rigidMass(  initData("rigidMass","output: rigid mass computed") )
+    , mass(  initData("mass","output: mass of the mesh") )
+    , volume(  initData("volume","output: volume of the mesh") )
+    , inertiaMatrix(  initData("inertiaMatrix","output: the inertia matrix of the mesh") )
+    , massCenter(  initData("massCenter","output: the gravity center of the mesh") )
+    , centerToOrigin(  initData("centerToOrigin","output: vector going from the mass center to the space origin") )
 {
     addInput(&m_density);
     addInput(&m_positions);

@@ -33,15 +33,15 @@ using sofa::core::topology::BaseMeshTopology;
 template <class DataTypes>
 ExtrudeEdgesAndGenerateQuads<DataTypes>::ExtrudeEdgesAndGenerateQuads()
     : initialized(false)
-    , d_direction( initData (&d_direction, Coord(1.0f,0.0f,0.0f), "extrudeDirection", "Direction along which to extrude the curve") )
-    , d_thicknessIn( initData (&d_thicknessIn, Real (0.0), "thicknessIn", "Thickness of the extruded volume in the opposite direction of the normals") )
-    , d_thicknessOut( initData (&d_thicknessOut, Real (1.0), "thicknessOut", "Thickness of the extruded volume in the direction of the normals") )
-    , d_nbSections( initData (&d_nbSections, int (1), "numberOfSections", "Number of sections / steps in the extrusion") )
-    , d_curveVertices( initData (&d_curveVertices, "curveVertices", "Position coordinates along the initial curve") )
-    , d_curveEdges( initData (&d_curveEdges, "curveEdges", "Indices of the edges of the curve to extrude") )
-    , d_extrudedVertices( initData (&d_extrudedVertices, "extrudedVertices", "Coordinates of the extruded vertices") )
-    , d_extrudedEdges( initData (&d_extrudedEdges, "extrudedEdges", "List of all edges generated during the extrusion") )
-    , d_extrudedQuads( initData (&d_extrudedQuads, "extrudedQuads", "List of all quads generated during the extrusion") )
+    , d_direction( initData( Coord(1.0f,0.0f,0.0f), "extrudeDirection", "Direction along which to extrude the curve") )
+    , d_thicknessIn( initData( Real (0.0), "thicknessIn", "Thickness of the extruded volume in the opposite direction of the normals") )
+    , d_thicknessOut( initData( Real (1.0), "thicknessOut", "Thickness of the extruded volume in the direction of the normals") )
+    , d_nbSections( initData( int (1), "numberOfSections", "Number of sections / steps in the extrusion") )
+    , d_curveVertices( initData( "curveVertices", "Position coordinates along the initial curve") )
+    , d_curveEdges( initData( "curveEdges", "Indices of the edges of the curve to extrude") )
+    , d_extrudedVertices( initData( "extrudedVertices", "Coordinates of the extruded vertices") )
+    , d_extrudedEdges( initData( "extrudedEdges", "List of all edges generated during the extrusion") )
+    , d_extrudedQuads( initData( "extrudedQuads", "List of all quads generated during the extrusion") )
 {
     addInput(&d_curveVertices);
     addInput(&d_curveEdges);

@@ -40,9 +40,9 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(SReal ks, SReal kd)
 template<class DataTypes>
 StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, SReal ks, SReal kd)
     : SpringForceField<DataTypes>(object1, object2, ks, kd)
-    , d_indices1(initData(&d_indices1, "indices1", "Indices of the source points on the first model"))
-    , d_indices2(initData(&d_indices2, "indices2", "Indices of the fixed points on the second model"))
-    , d_lengths(initData(&d_lengths, "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
+    , d_indices1(initData( "indices1", "Indices of the source points on the first model"))
+    , d_indices2(initData( "indices2", "Indices of the fixed points on the second model"))
+    , d_lengths(initData( "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
 {
     this->addAlias(&d_lengths, "length");
 

@@ -39,16 +39,16 @@ using namespace sofa::core::topology;
 
 template <class DataTypes, class GeometricalTypes>
 DiagonalMass<DataTypes, GeometricalTypes>::DiagonalMass()
-    : d_vertexMass( initData(&d_vertexMass, "vertexMass", "Specify a vector giving the mass of each vertex. \n"
+    : d_vertexMass( initData( "vertexMass", "Specify a vector giving the mass of each vertex. \n"
                                                           "If unspecified or wrongly set, the massDensity or totalMass information is used.") )
-    , d_massDensity( initData(&d_massDensity, Real(1.0),"massDensity","Specify one single real and positive value for the mass density. \n"
+    , d_massDensity( initData( Real(1.0),"massDensity","Specify one single real and positive value for the mass density. \n"
                                                                       "If unspecified or wrongly set, the totalMass information is used.") )
-    , d_totalMass(initData(&d_totalMass, Real(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
+    , d_totalMass(initData( Real(1.0), "totalMass", "Specify the total mass resulting from all particles. \n"
                                                                  "If unspecified or wrongly set, the default value is used: totalMass = 1.0"))
-    , d_computeMassOnRest(initData(&d_computeMassOnRest, true, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
-    , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
-    , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
-    , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
+    , d_computeMassOnRest(initData( true, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
+    , d_showCenterOfGravity( initData( false, "showGravityCenter", "Display the center of gravity of the system" ) )
+    , d_showAxisSize( initData( 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
+    , d_fileMass( initData(  "filename", "Xsp3.0 file to specify the mass parameters" ) )
     , l_topology(initLink("topology", "link to the topology container"))
     , l_geometryState(initLink("geometryState", "link to the MechanicalObject associated with the geometry"))
     , m_massTopologyType(sofa::geometry::ElementType::UNKNOWN)

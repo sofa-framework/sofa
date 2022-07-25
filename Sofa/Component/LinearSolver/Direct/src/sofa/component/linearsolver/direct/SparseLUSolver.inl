@@ -38,10 +38,10 @@ using std::endl;
 
 template<class TMatrix, class TVector,class TThreadManager>
 SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
-    , d_typePermutation(initData(&d_typePermutation , "permutation", "Type of fill reducing permutation"))
-    , d_L_nnz(initData(&d_L_nnz, 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
+    : f_verbose( initData(false,"verbose","Dump system state at each iteration") )
+    , f_tol( initData(0.001,"tolerance","tolerance of factorization") )
+    , d_typePermutation(initData( "permutation", "Type of fill reducing permutation"))
+    , d_L_nnz(initData( 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
 {
     sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
     d_typePermutationOptions.setSelectedItem(0); // default None

@@ -55,10 +55,10 @@ using sofa::component::controller::ArticulatedHierarchyContainer;
 
 
 ArticulatedHierarchyController::ArticulatedHierarchyController()
-    : articulationsIndices( initData(&articulationsIndices, "articulationsIndices", "Indices of articulations controlled by the keyboard") )
-    , bindingKeys( initData(&bindingKeys, "bindingKeys", "Keys to press to control the articulations" ) )
-    , angleDelta( initData(&angleDelta, 0.01, "angleDelta", "Angle incrementation due to each user interaction" ) )
-    , propagateUserInteraction( initData(&propagateUserInteraction, false, "propagateUserInteraction", "Says wether or not the user interaction is local on the articulations, or must be propagated to children recursively" ) )
+    : articulationsIndices( initData( "articulationsIndices", "Indices of articulations controlled by the keyboard") )
+    , bindingKeys( initData( "bindingKeys", "Keys to press to control the articulations" ) )
+    , angleDelta( initData( 0.01, "angleDelta", "Angle incrementation due to each user interaction" ) )
+    , propagateUserInteraction( initData( false, "propagateUserInteraction", "Says wether or not the user interaction is local on the articulations, or must be propagated to children recursively" ) )
 {
     m_artCenterVec.resize(0);
 }

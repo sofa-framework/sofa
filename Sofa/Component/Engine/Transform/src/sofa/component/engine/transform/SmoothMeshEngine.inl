@@ -30,12 +30,12 @@ namespace sofa::component::engine::transform
 
 template <class DataTypes>
 SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
-    : input_position( initData (&input_position, "input_position", "Input position") )
-    , input_indices( initData (&input_indices, "input_indices", "Position indices that need to be smoothed, leave empty for all positions") )
-    , output_position( initData (&output_position, "output_position", "Output position") )
-    , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
-    , showInput( initData (&showInput, false, "showInput", "showInput") )
-    , showOutput( initData (&showOutput, false, "showOutput", "showOutput") )
+    : input_position( initData( "input_position", "Input position") )
+    , input_indices( initData( "input_indices", "Position indices that need to be smoothed, leave empty for all positions") )
+    , output_position( initData( "output_position", "Output position") )
+    , nb_iterations( initData( (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
+    , showInput( initData( false, "showInput", "showInput") )
+    , showOutput( initData( false, "showOutput", "showOutput") )
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {

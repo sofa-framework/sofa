@@ -35,8 +35,8 @@ OglAttribute< size, type, DataTypes>::OglAttribute() :
     OglShaderElement()
     , _abo ( GLuint(-1) ), _aboSize(0), _needUpdate(false), _lastUpdateDataCounter(-1)
     , _index ( GLuint(-1) ), _usage( GL_STATIC_DRAW)
-    , value( initData(&value, "value", "internal Data"))
-    , handleDynamicTopology( initData(&handleDynamicTopology, true, "handleDynamicTopology",
+    , value( initData( "value", "internal Data"))
+    , handleDynamicTopology( initData( true, "handleDynamicTopology",
         "Activate handling of topological changes on the values of this attribute (resizes only)"))
 {
     _topology = nullptr;

@@ -39,10 +39,10 @@ int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian 
         ;
 
 MeshTrianLoader::MeshTrianLoader() : MeshLoader()
-    , p_trian2(initData(&p_trian2,(bool)false,"trian2","Set to true if the mesh is a trian2 format."))
-    , neighborTable(initData(&neighborTable,"neighborTable","Table of neighborhood triangle indices for each triangle."))
-    , edgesOnBorder(initData(&edgesOnBorder,"edgesOnBorder","List of edges which are on the border of the mesh loaded."))
-    , trianglesOnBorderList(initData(&trianglesOnBorderList,"trianglesOnBorderList","List of triangle indices which are on the border of the mesh loaded."))
+    , p_trian2(initData((bool)false,"trian2","Set to true if the mesh is a trian2 format."))
+    , neighborTable(initData("neighborTable","Table of neighborhood triangle indices for each triangle."))
+    , edgesOnBorder(initData("edgesOnBorder","List of edges which are on the border of the mesh loaded."))
+    , trianglesOnBorderList(initData("trianglesOnBorderList","List of triangle indices which are on the border of the mesh loaded."))
 {
     neighborTable.setPersistent(false);
     edgesOnBorder.setPersistent(false);

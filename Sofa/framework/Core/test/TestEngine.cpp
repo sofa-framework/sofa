@@ -40,9 +40,9 @@ using namespace core::behavior;
 using namespace core::objectmodel;
 
 TestEngine::TestEngine()
-    : f_numberToMultiply( initData (&f_numberToMultiply, "number", "number that will be multiplied by the factor") )
-    , f_factor(initData (&f_factor,"factor", "multiplication factor") )
-    , f_result( initData (&f_result, "result", "result of the multiplication of numberToMultiply by factor") )
+    : f_numberToMultiply( initData( "number", "number that will be multiplied by the factor") )
+    , f_factor(initData("factor", "multiplication factor") )
+    , f_result( initData( "result", "result of the multiplication of numberToMultiply by factor") )
 {
     counter = 0;
     instance++;

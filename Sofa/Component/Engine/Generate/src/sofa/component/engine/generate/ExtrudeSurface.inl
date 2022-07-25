@@ -30,13 +30,13 @@ namespace sofa::component::engine::generate
 template <class DataTypes>
 ExtrudeSurface<DataTypes>::ExtrudeSurface()
     : initialized(false)
-    , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
-    , heightFactor( initData (&heightFactor, Real (1.0), "heightFactor", "Factor for the height of the extrusion (based on normal) ?") )
-    , f_triangles(initData(&f_triangles, "triangles", "List of triangle indices"))
-    , f_extrusionVertices( initData (&f_extrusionVertices, "extrusionVertices", "Position coordinates of the extrusion") )
-    , f_surfaceVertices( initData (&f_surfaceVertices, "surfaceVertices", "Position coordinates of the surface") )
-    , f_extrusionTriangles( initData (&f_extrusionTriangles, "extrusionTriangles", "Triangles indices of the extrusion") )
-    , f_surfaceTriangles( initData (&f_surfaceTriangles, "surfaceTriangles", "Indices of the triangles of the surface to extrude") )
+    , isVisible( initData( bool (true), "isVisible", "is Visible ?") )
+    , heightFactor( initData( Real (1.0), "heightFactor", "Factor for the height of the extrusion (based on normal) ?") )
+    , f_triangles(initData( "triangles", "List of triangle indices"))
+    , f_extrusionVertices( initData( "extrusionVertices", "Position coordinates of the extrusion") )
+    , f_surfaceVertices( initData( "surfaceVertices", "Position coordinates of the surface") )
+    , f_extrusionTriangles( initData( "extrusionTriangles", "Triangles indices of the extrusion") )
+    , f_surfaceTriangles( initData( "surfaceTriangles", "Indices of the triangles of the surface to extrude") )
 {
     addInput(&f_surfaceTriangles);
     addInput(&f_surfaceVertices);

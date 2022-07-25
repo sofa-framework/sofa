@@ -39,18 +39,18 @@ int MeshTetraStuffingClass = core::RegisterObject("Create a tetrahedral volume m
         ;
 
 MeshTetraStuffing::MeshTetraStuffing()
-    : vbbox(initData(&vbbox,"vbbox","BBox to restrict the volume to"))
-    , size(initData(&size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
-    , inputPoints(initData(&inputPoints,"inputPoints","Input surface mesh points"))
-    , inputTriangles(initData(&inputTriangles,"inputTriangles","Input surface mesh triangles"))
-    , inputQuads(initData(&inputQuads,"inputQuads","Input surface mesh quads"))
-    , outputPoints(initData(&outputPoints,"outputPoints","Output volume mesh points"))
-    , outputTetrahedra(initData(&outputTetrahedra,"outputTetrahedra","Output volume mesh tetrahedra"))
-    , alphaLong(initData(&alphaLong,(Real)0.24999,"alphaLong","Minimum alpha values on long edges when snapping points"))
-    , alphaShort(initData(&alphaShort,(Real)0.42978,"alphaShort","Minimum alpha values on short edges when snapping points"))
-    , bSnapPoints(initData(&bSnapPoints,false,"snapPoints","Snap points to the surface if intersections on edges are closed to given alpha values"))
-    , bSplitTetrahedra(initData(&bSplitTetrahedra,false,"splitTetrahedra","Split tetrahedra crossing the surface"))
-    , bDraw(initData(&bDraw,false,"draw","Activate rendering of internal datasets"))
+    : vbbox(initData("vbbox","BBox to restrict the volume to"))
+    , size(initData((Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
+    , inputPoints(initData("inputPoints","Input surface mesh points"))
+    , inputTriangles(initData("inputTriangles","Input surface mesh triangles"))
+    , inputQuads(initData("inputQuads","Input surface mesh quads"))
+    , outputPoints(initData("outputPoints","Output volume mesh points"))
+    , outputTetrahedra(initData("outputTetrahedra","Output volume mesh tetrahedra"))
+    , alphaLong(initData((Real)0.24999,"alphaLong","Minimum alpha values on long edges when snapping points"))
+    , alphaShort(initData((Real)0.42978,"alphaShort","Minimum alpha values on short edges when snapping points"))
+    , bSnapPoints(initData(false,"snapPoints","Snap points to the surface if intersections on edges are closed to given alpha values"))
+    , bSplitTetrahedra(initData(false,"splitTetrahedra","Split tetrahedra crossing the surface"))
+    , bDraw(initData(false,"draw","Activate rendering of internal datasets"))
 {
     addAlias(&outputTetrahedra,"outputTetras");
     addAlias(&bSplitTetrahedra,"splitTetras");

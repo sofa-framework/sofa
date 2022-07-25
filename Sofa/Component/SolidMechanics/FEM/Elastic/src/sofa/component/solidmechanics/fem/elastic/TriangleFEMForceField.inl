@@ -34,14 +34,14 @@ template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
     : _indexedElements(nullptr)
-    , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
+    , _initialPoints(initData( "initialPoints", "Initial Position"))
     , m_topology(nullptr)
     , method(LARGE)
-    , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-    , f_poisson(initData(&f_poisson,Real(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_young(initData(&f_young,Real(1000.),"youngModulus","Young modulus in Hooke's law"))
-    , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
-    , f_planeStrain(initData(&f_planeStrain,false,"planeStrain","Plane strain or plane stress assumption"))
+    , f_method(initData(std::string("large"),"method","large: large displacements, small: small displacements"))
+    , f_poisson(initData(Real(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_young(initData(Real(1000.),"youngModulus","Young modulus in Hooke's law"))
+    , f_thickness(initData(Real(1.),"thickness","Thickness of the elements"))
+    , f_planeStrain(initData(false,"planeStrain","Plane strain or plane stress assumption"))
     , l_topology(initLink("topology", "link to the topology container"))    
 {
     f_poisson.setRequired(true);

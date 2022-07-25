@@ -31,16 +31,16 @@ namespace sofa::component::engine::select
 
 template <class DataTypes>
 PairBoxROI<DataTypes>::PairBoxROI()
-    : inclusiveBox( initData(&inclusiveBox, "inclusiveBox", "Inclusive box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
-    , includedBox( initData(&includedBox, "includedBox", "Included box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
-    , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
-    , positions(initData(&positions,"meshPosition","Vertices of the mesh loaded"))
-    , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
-    , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
-    , p_drawInclusiveBox( initData(&p_drawInclusiveBox,false,"drawInclusiveBox","Draw Inclusive Box") )
-    , p_drawIncludedBox( initData(&p_drawIncludedBox,false,"drawIncludedBox","Draw Included Box") )
-    , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
-    , _drawSize( initData(&_drawSize,"drawSize","Draw Size") )
+    : inclusiveBox( initData( "inclusiveBox", "Inclusive box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , includedBox( initData( "includedBox", "Included box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , f_X0( initData( "position", "Rest position coordinates of the degrees of freedom") )
+    , positions(initData("meshPosition","Vertices of the mesh loaded"))
+    , f_indices( initData("indices","Indices of the points contained in the ROI") )
+    , f_pointsInROI( initData("pointsInROI","Points contained in the ROI") )
+    , p_drawInclusiveBox( initData(false,"drawInclusiveBox","Draw Inclusive Box") )
+    , p_drawIncludedBox( initData(false,"drawIncludedBox","Draw Included Box") )
+    , p_drawPoints( initData(false,"drawPoints","Draw Points") )
+    , _drawSize( initData("drawSize","Draw Size") )
 {
     //Adding alias to handle old PairBoxROI input/output
     addAlias(&f_pointsInROI,"pointsInBox");

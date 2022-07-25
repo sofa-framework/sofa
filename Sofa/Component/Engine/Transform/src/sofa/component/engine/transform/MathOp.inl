@@ -349,9 +349,9 @@ struct MathOpApply< std::pair<TOps1, TOps2> >
 
 template <class VecT>
 MathOp<VecT>::MathOp()
-    : f_nbInputs (initData(&f_nbInputs, (unsigned)2, "nbInputs", "Number of input values"))
-    , f_op       (initData(&f_op      ,              "op"      , "Selected operation to apply"))
-    , f_output   (initData(&f_output  ,              "output"  , "Output values"))
+    : f_nbInputs (initData( (unsigned)2, "nbInputs", "Number of input values"))
+    , f_op       (initData("op"      , "Selected operation to apply"))
+    , f_output   (initData("output"  , "Output values"))
 {
     
     sofa::helper::OptionsGroup& ops = *f_op.beginEdit();

@@ -67,8 +67,8 @@ struct DataCallback_test: public BaseTest
 
         TestObject()
             : sofa::core::objectmodel::BaseObject()
-            , d_objdata1(initData(&d_objdata1, 0, "objdata1", "objdata1"))
-            , d_objdata2(initData(&d_objdata2, 1, "objdata2", "objdata2"))
+            , d_objdata1(initData( 0, "objdata1", "objdata1"))
+            , d_objdata2(initData( 1, "objdata2", "objdata2"))
             , m_datacallback1()
             , m_datacallback2()
             , m_datacallbackAll( )

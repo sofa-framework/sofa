@@ -72,9 +72,9 @@ protected:
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
         ,initializedEdgeCubatureTables(false)
-        , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
-        , d_drawEdges(core::objectmodel::Base::initData(&d_drawEdges, false, "drawEdges","if true, draw the edges in the topology."))
-        , _drawColor(initData(&_drawColor, RGBAColor(0.4f,1.0f,0.3f, 1.0f), "drawColorEdges", "RGB code color used to draw edges."))
+        , showEdgeIndices(core::objectmodel::Base::initData( (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
+        , d_drawEdges(core::objectmodel::Base::initData( false, "drawEdges","if true, draw the edges in the topology."))
+        , _drawColor(initData( RGBAColor(0.4f,1.0f,0.3f, 1.0f), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
     ~EdgeSetGeometryAlgorithms() override {}

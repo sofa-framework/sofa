@@ -38,15 +38,15 @@ using sofa::helper::system::FileSystem ;
 
 
 BaseSimulationExporter::BaseSimulationExporter() :
-    d_filename(initData(&d_filename, "filename",
+    d_filename(initData( "filename",
                         "Path or filename where to export the data.  If missing the name of the component is used."))
-  , d_exportEveryNbSteps(initData(&d_exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps",
+  , d_exportEveryNbSteps(initData( (unsigned int)0, "exportEveryNumberOfSteps",
                                   "export file only at specified number of steps (0=disable, default=0)"))
-  , d_exportAtBegin( initData(&d_exportAtBegin, false, "exportAtBegin",
+  , d_exportAtBegin( initData( false, "exportAtBegin",
                               "export file at the initialization (default=false)"))
-  , d_exportAtEnd( initData(&d_exportAtEnd, false, "exportAtEnd",
+  , d_exportAtEnd( initData( false, "exportAtEnd",
                             "export file when the simulation is finished (default=false)"))
-  , d_isEnabled( initData(&d_isEnabled, true, "enable", "Enable or disable the component. (default=true)"))
+  , d_isEnabled( initData( true, "enable", "Enable or disable the component. (default=true)"))
 {
     f_listening.setValue(false) ;
     d_filename.setPathType(sofa::core::objectmodel::PathType::BOTH);

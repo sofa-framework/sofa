@@ -28,13 +28,13 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 MergePoints<DataTypes>::MergePoints()
-    : f_X1( initData (&f_X1, "position1", "position coordinates of the degrees of freedom of the first object") )
-    , f_X2( initData (&f_X2, "position2", "Rest position coordinates of the degrees of freedom of the second object") )
-    , f_X2_mapping( initData (&f_X2_mapping, "mappingX2", "Mapping of indices to inject position2 inside position1 vertex buffer") )
-    , f_indices1( initData(&f_indices1,"indices1","Indices of the points of the first object") )
-    , f_indices2( initData(&f_indices2,"indices2","Indices of the points of the second object") )
-    , f_points( initData (&f_points, "points", "position coordinates of the merge") )
-    , f_noUpdate( initData (&f_noUpdate, false, "noUpdate", "do not update the output at eacth time step (false)") )
+    : f_X1( initData( "position1", "position coordinates of the degrees of freedom of the first object") )
+    , f_X2( initData( "position2", "Rest position coordinates of the degrees of freedom of the second object") )
+    , f_X2_mapping( initData( "mappingX2", "Mapping of indices to inject position2 inside position1 vertex buffer") )
+    , f_indices1( initData("indices1","Indices of the points of the first object") )
+    , f_indices2( initData("indices2","Indices of the points of the second object") )
+    , f_points( initData( "points", "position coordinates of the merge") )
+    , f_noUpdate( initData( false, "noUpdate", "do not update the output at eacth time step (false)") )
 {
     addInput(&f_X1);
     addInput(&f_X2);

@@ -35,8 +35,8 @@ int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling mult
 
 CompositingVisualLoop::CompositingVisualLoop(simulation::Node* _gnode)
     : simulation::DefaultVisualManagerLoop(_gnode),
-      vertFilename(initData(&vertFilename, (std::string) "shaders/compositing.vert", "vertFilename", "Set the vertex shader filename to load")),
-      fragFilename(initData(&fragFilename, (std::string) "shaders/compositing.frag", "fragFilename", "Set the fragment shader filename to load"))
+      vertFilename(initData( (std::string) "shaders/compositing.vert", "vertFilename", "Set the vertex shader filename to load")),
+      fragFilename(initData( (std::string) "shaders/compositing.frag", "fragFilename", "Set the fragment shader filename to load"))
 {
 }
 

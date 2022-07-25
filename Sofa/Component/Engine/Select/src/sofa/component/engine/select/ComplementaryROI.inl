@@ -40,11 +40,11 @@ using helper::WriteAccessor;
 
 template <class DataTypes>
 ComplementaryROI<DataTypes>::ComplementaryROI()
-    : d_position(initData(&d_position, "position", "input positions"))
-    , d_nbSet( initData(&d_nbSet, (unsigned int)0, "nbSet", "number of sets to complement"))
+    : d_position(initData( "position", "input positions"))
+    , d_nbSet( initData( (unsigned int)0, "nbSet", "number of sets to complement"))
     , vd_setIndices(this, "setIndices",  "particles indices in the set")
-    , d_indices( initData(&d_indices, "indices", "indices of the point in the ROI") )
-    , d_pointsInROI(initData(&d_pointsInROI, "pointsInROI", "points in the ROI"))
+    , d_indices( initData( "indices", "indices of the point in the ROI") )
+    , d_pointsInROI(initData( "pointsInROI", "points in the ROI"))
 {
     vd_setIndices.resize(d_nbSet.getValue());
 

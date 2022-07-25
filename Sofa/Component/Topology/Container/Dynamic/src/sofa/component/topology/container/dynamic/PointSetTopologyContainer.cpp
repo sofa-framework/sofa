@@ -56,9 +56,9 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         ;
 
 PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
-    : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
-    , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
-    , nbPoints (initData(&nbPoints, npoints, "nbPoints", "Number of points"))
+    : d_initPoints (initData( "position", "Initial position of points",true,true))
+    , d_checkTopology (initData( false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
+    , nbPoints (initData( npoints, "nbPoints", "Number of points"))
 {
     addAlias(&d_initPoints,"points");
 }

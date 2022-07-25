@@ -91,11 +91,11 @@ public:
 protected:
 
     ROIValueMapper(): Inherited()
-        , nbROIs ( initData ( &nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
+        , nbROIs ( initData((unsigned int)0,"nbROIs","size of indices/value vector" ) )
         , f_indices(this, "indices", "ROIs", sofa::core::objectmodel::DataEngineDataType::DataEngineInput)
         , f_value(this, "value", "Values", sofa::core::objectmodel::DataEngineDataType::DataEngineInput)
-        , f_outputValues(initData(&f_outputValues, "outputValues", "New vector of values"))
-        , p_defaultValue(initData(&p_defaultValue, (Real) 0.0, "defaultValue", "Default value for indices out of ROIs"))
+        , f_outputValues(initData( "outputValues", "New vector of values"))
+        , p_defaultValue(initData( (Real) 0.0, "defaultValue", "Default value for indices out of ROIs"))
     {
         addInput(&nbROIs);
         addOutput(&f_outputValues);

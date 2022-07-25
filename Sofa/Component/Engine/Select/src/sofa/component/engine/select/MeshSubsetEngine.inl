@@ -28,15 +28,15 @@ namespace sofa::component::engine::select
 template <class DataTypes>
 MeshSubsetEngine<DataTypes>::MeshSubsetEngine()
     : Inherited()
-    , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
-    , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
-    , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
-    , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
-    , indices(initData(&indices,"indices","Index lists of the selected vertices"))
-    , position(initData(&position,"position","Vertices of mesh subset"))
-    , edges(initData(&edges,"edges","edges of mesh subset"))
-    , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
-    , quads(initData(&quads,"quads","Quads of mesh subset"))
+    , inputPosition(initData("inputPosition","input vertices"))
+    , inputEdges(initData("inputEdges","input edges"))
+    , inputTriangles(initData("inputTriangles","input triangles"))
+    , inputQuads(initData("inputQuads","input quads"))
+    , indices(initData("indices","Index lists of the selected vertices"))
+    , position(initData("position","Vertices of mesh subset"))
+    , edges(initData("edges","edges of mesh subset"))
+    , triangles(initData("triangles","Triangles of mesh subset"))
+    , quads(initData("quads","Quads of mesh subset"))
 {
     addInput(&inputPosition);
     addInput(&inputEdges);

@@ -35,7 +35,7 @@ template< class In, class Out>
 MultiMapping<In,Out>::MultiMapping()
     : fromModels(initLink("input", "Input Object(s)"))
     , toModels(initLink("output", "Output Object(s)"))
-    , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
+    , f_applyRestPosition( initData( false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
 {
 
 }

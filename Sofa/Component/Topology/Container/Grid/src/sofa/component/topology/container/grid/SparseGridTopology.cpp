@@ -77,18 +77,18 @@ const SparseGridTopology::Index SparseGridTopology::cornerIndicesFromFineToCoars
 
 
 SparseGridTopology::SparseGridTopology(bool _isVirtual)
-    : _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)"))
-    , d_bOnlyInsideCells(initData(&d_bOnlyInsideCells, false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)"))
-    , n(initData(&n, Vec3i(2,2,2), "n", "grid resolution"))
-    , _min(initData(&_min, Vector3(0,0,0), "min","Min"))
-    , _max(initData(&_max, Vector3(0,0,0), "max","Max"))
-    , _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
-    , _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)"))
-    , dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File"))
-    , voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel"))
-    , marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm"))
-    , convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
-    , facets(initData(&facets, "facets", "Input mesh facets"))
+    : _fillWeighted(initData( true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)"))
+    , d_bOnlyInsideCells(initData( false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)"))
+    , n(initData( Vec3i(2,2,2), "n", "grid resolution"))
+    , _min(initData( Vector3(0,0,0), "min","Min"))
+    , _max(initData( Vector3(0,0,0), "max","Max"))
+    , _cellWidth(initData( (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+    , _nbVirtualFinerLevels( initData( 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)"))
+    , dataResolution(initData( Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File"))
+    , voxelSize(initData( Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel"))
+    , marchingCubeStep(initData( (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm"))
+    , convolutionSize(initData( (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
+    , facets(initData( "facets", "Input mesh facets"))
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;

@@ -30,10 +30,10 @@ namespace sofa::component::engine::generate
 
 template <class T>
 MergeSets<T>::MergeSets()
-    : f_in1( initData (&f_in1, "in1", "first set of indices") )
-    , f_in2( initData (&f_in2, "in2", "second set of indices") )
-    , f_out( initData (&f_out, "out", "merged set of indices") )
-    , f_op( initData (&f_op, std::string("union"), "op", "name of operation to compute (union, intersection, difference, symmetric_difference)") )
+    : f_in1( initData( "in1", "first set of indices") )
+    , f_in2( initData( "in2", "second set of indices") )
+    , f_out( initData( "out", "merged set of indices") )
+    , f_op( initData( std::string("union"), "op", "name of operation to compute (union, intersection, difference, symmetric_difference)") )
 {
     addInput(&f_in1);
     addInput(&f_in2);

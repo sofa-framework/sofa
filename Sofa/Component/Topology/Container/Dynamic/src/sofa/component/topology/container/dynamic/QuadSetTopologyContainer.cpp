@@ -37,7 +37,7 @@ int QuadSetTopologyContainerClass = core::RegisterObject("Quad set topology cont
 
 QuadSetTopologyContainer::QuadSetTopologyContainer()
     : EdgeSetTopologyContainer()
-    , d_quad(initData(&d_quad, "quads", "List of quad indices"))
+    , d_quad(initData( "quads", "List of quad indices"))
 {
 }
 

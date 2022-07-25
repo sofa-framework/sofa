@@ -39,8 +39,8 @@ int GridMeshCreatorClass = core::RegisterObject("Procedural creation of a two-di
 
 
 GridMeshCreator::GridMeshCreator(): MeshLoader()
-    , resolution( initData(&resolution,Vec2i(2,2),"resolution","Number of vertices in each direction"))
-    , trianglePattern( initData(&trianglePattern,2,"trianglePattern","0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles"))
+    , resolution( initData(Vec2i(2,2),"resolution","Number of vertices in each direction"))
+    , trianglePattern( initData(2,"trianglePattern","0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles"))
 {
     // doLoad() is called only if d_filename is modified
     // but this loader in particular does not require a filename (refactoring would be needed)

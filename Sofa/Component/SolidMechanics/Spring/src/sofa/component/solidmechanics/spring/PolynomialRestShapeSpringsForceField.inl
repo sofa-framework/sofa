@@ -34,17 +34,17 @@ namespace sofa::component::solidmechanics::spring
 
 template<class DataTypes>
 PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialRestShapeSpringsForceField()
-    : d_points(initData(&d_points, "points", "points controlled by the rest shape springs"))
-    , d_external_points(initData(&d_external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
-    , d_polynomialStiffness(initData(&d_polynomialStiffness, "polynomialStiffness", "coefficients for all spring polynomials"))
-    , d_polynomialDegree(initData(&d_polynomialDegree, "polynomialDegree", "vector of values that show polynomials degrees"))
-    , d_recomputeIndices(initData(&d_recomputeIndices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
-    , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
-    , d_springColor(initData(&d_springColor, sofa::type::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
-    , d_showIndicesScale(initData(&d_showIndicesScale, (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
-    , d_zeroLength(initData(&d_zeroLength,"initialLength","initial virtual length of the spring"))
-    , d_smoothShift(initData(&d_smoothShift,double(0.0),"smoothShift","denominator correction adding shift value"))
-    , d_smoothScale(initData(&d_smoothScale,double(1.0),"smoothScale","denominator correction adding scale"))
+    : d_points(initData( "points", "points controlled by the rest shape springs"))
+    , d_external_points(initData( "external_points", "points from the external Mechancial State that define the rest shape springs"))
+    , d_polynomialStiffness(initData( "polynomialStiffness", "coefficients for all spring polynomials"))
+    , d_polynomialDegree(initData( "polynomialDegree", "vector of values that show polynomials degrees"))
+    , d_recomputeIndices(initData( false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
+    , d_drawSpring(initData(false,"drawSpring","draw Spring"))
+    , d_springColor(initData( sofa::type::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
+    , d_showIndicesScale(initData( (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
+    , d_zeroLength(initData("initialLength","initial virtual length of the spring"))
+    , d_smoothShift(initData(double(0.0),"smoothShift","denominator correction adding shift value"))
+    , d_smoothScale(initData(double(1.0),"smoothScale","denominator correction adding scale"))
     , d_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
 {        
 }

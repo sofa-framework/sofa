@@ -39,17 +39,17 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 RigidRigidMapping<TIn,TOut>::RigidRigidMapping()
     : Inherit(),
-      points(initData(&points, "initialPoints", "Initial position of the points")),
-      repartition(initData(&repartition,"repartition","number of child frames per parent frame. \n"
+      points(initData( "initialPoints", "Initial position of the points")),
+      repartition(initData("repartition","number of child frames per parent frame. \n"
                            "If empty, all the children are attached to the parent with index \n"
                            "given in the \"index\" attribute. If one value, each parent frame drives \n"
                            "the given number of children frames. Otherwise, the values are the number \n"
                            "of child frames driven by each parent frame. ")),
-      index(initData(&index,sofa::Index(0),"index","input frame index")),
-      fileRigidRigidMapping(initData(&fileRigidRigidMapping,"filename","Xsp file where to load rigidrigid mapping description")),
-      axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
-      indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
-      globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
+      index(initData(sofa::Index(0),"index","input frame index")),
+      fileRigidRigidMapping(initData("filename","Xsp file where to load rigidrigid mapping description")),
+      axisLength(initData( 0.7, "axisLength", "axis length for display")),
+      indexFromEnd( initData(false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
+      globalToLocalCoords ( initData("globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
 {
     this->addAlias(&fileRigidRigidMapping,"fileRigidRigidMapping");
 }

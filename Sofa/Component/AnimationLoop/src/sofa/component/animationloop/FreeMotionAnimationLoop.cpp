@@ -68,10 +68,10 @@ using sofa::helper::ScopedAdvancedTimer;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
     : Inherit1(gnode)
-    , m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
-    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
-    , d_parallelCollisionDetectionAndFreeMotion(initData(&d_parallelCollisionDetectionAndFreeMotion, false, "parallelCollisionDetectionAndFreeMotion", "If true, executes free motion step and collision detection step in parallel."))
-    , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
+    , m_solveVelocityConstraintFirst(initData( false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
+    , d_threadSafeVisitor(initData( false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    , d_parallelCollisionDetectionAndFreeMotion(initData( false, "parallelCollisionDetectionAndFreeMotion", "If true, executes free motion step and collision detection step in parallel."))
+    , d_parallelODESolving(initData( false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
     , defaultSolver(nullptr)
     , l_constraintSolver(initLink("constraintSolver", "The ConstraintSolver used in this animation loop (required)"))
 {

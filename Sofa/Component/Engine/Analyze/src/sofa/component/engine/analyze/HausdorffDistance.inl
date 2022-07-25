@@ -30,12 +30,12 @@ namespace sofa::component::engine::analyze
 
 template <class DataTypes>
 HausdorffDistance<DataTypes>::HausdorffDistance()
-    : f_points_1( initData (&f_points_1, "points1", "Points belonging to the first point cloud") )
-    , f_points_2( initData (&f_points_2, "points2", "Points belonging to the second point cloud") )
-    , d12( initData (&d12, "d12", "Distance from point cloud 1 to 2") )
-    , d21( initData (&d21, "d21", "Distance from point cloud 2 to 1") )
-    , max( initData (&max, "max", "Symmetrical Hausdorff distance") )
-    , f_update( initData (&f_update, false, "update", "Recompute every time step") )
+    : f_points_1( initData( "points1", "Points belonging to the first point cloud") )
+    , f_points_2( initData( "points2", "Points belonging to the second point cloud") )
+    , d12( initData( "d12", "Distance from point cloud 1 to 2") )
+    , d21( initData( "d21", "Distance from point cloud 2 to 1") )
+    , max( initData( "max", "Symmetrical Hausdorff distance") )
+    , f_update( initData( false, "update", "Recompute every time step") )
 {
     f_points_1.setGroup("Input");
     f_points_2.setGroup("Input");

@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 template<class DataTypes>
 Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
     : Inherit1(), Inherit2(mm)
-    , endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+    , endTime( initData((Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 

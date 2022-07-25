@@ -39,15 +39,15 @@ int OglColorMapClass = core::RegisterObject("Provides color palette and support 
         ;
 
 OglColorMap::OglColorMap()
-: d_paletteSize(initData(&d_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
-, d_colorScheme(initData(&d_colorScheme, "colorScheme", "Color scheme to use"))
-, d_showLegend(initData(&d_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
-, d_legendOffset(initData(&d_legendOffset, type::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
-, d_legendTitle(initData(&d_legendTitle,"legendTitle", "Font size of the legend (if any)"))
-, d_legendSize(initData(&d_legendSize, 11u, "legendSize", "Add a title to the legend"))
-, d_min(initData(&d_min,0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
-, d_max(initData(&d_max,0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
-, d_legendRangeScale(initData(&d_legendRangeScale,1.f,"legendRangeScale","to change the unit of the min/max value of the legend"))
+: d_paletteSize(initData( (unsigned int)256, "paletteSize", "How many colors to use"))
+, d_colorScheme(initData( "colorScheme", "Color scheme to use"))
+, d_showLegend(initData( false, "showLegend", "Activate rendering of color scale legend on the side"))
+, d_legendOffset(initData( type::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
+, d_legendTitle(initData("legendTitle", "Font size of the legend (if any)"))
+, d_legendSize(initData( 11u, "legendSize", "Add a title to the legend"))
+, d_min(initData(0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
+, d_max(initData(0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
+, d_legendRangeScale(initData(1.f,"legendRangeScale","to change the unit of the min/max value of the legend"))
 , texture(0)
 {
    d_colorScheme.beginEdit()->setNames(19,

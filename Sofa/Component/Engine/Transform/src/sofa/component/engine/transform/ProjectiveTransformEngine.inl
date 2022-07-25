@@ -30,10 +30,10 @@ namespace sofa::component::engine::transform
 
 template <class DataTypes>
 ProjectiveTransformEngine<DataTypes>::ProjectiveTransformEngine()
-    : f_inputX ( initData (&f_inputX, "input_position", "input array of 3d points") )
-    , f_outputX( initData (&f_outputX, "output_position", "output array of projected 3d points") )
-    , proj_mat(initData(&proj_mat, "proj_mat", "projection matrix ") )
-    , focal_distance(initData(&focal_distance, (Real)1,"focal_distance", "focal distance ") )
+    : f_inputX ( initData( "input_position", "input array of 3d points") )
+    , f_outputX( initData( "output_position", "output array of projected 3d points") )
+    , proj_mat(initData( "proj_mat", "projection matrix ") )
+    , focal_distance(initData( (Real)1,"focal_distance", "focal distance ") )
 {
     addInput(&f_inputX);
     addInput(&focal_distance);

@@ -29,12 +29,12 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 NormalsFromPoints<DataTypes>::NormalsFromPoints()
-    : position(initData(&position,"position","Vertices of the mesh"))
-    , triangles(initData(&triangles,"triangles","Triangles of the mesh"))
-    , quads(initData(&quads,"quads","Quads of the mesh"))
-    , normals(initData(&normals,"normals","Computed vertex normals of the mesh"))
-    , invertNormals( initData (&invertNormals, false, "invertNormals", "Swap normals") )
-    , useAngles( initData (&useAngles, false, "useAngles", "Use incident angles to weight faces normal contributions at each vertex") )
+    : position(initData("position","Vertices of the mesh"))
+    , triangles(initData("triangles","Triangles of the mesh"))
+    , quads(initData("quads","Quads of the mesh"))
+    , normals(initData("normals","Computed vertex normals of the mesh"))
+    , invertNormals( initData( false, "invertNormals", "Swap normals") )
+    , useAngles( initData( false, "useAngles", "Use incident angles to weight faces normal contributions at each vertex") )
 
 {
     addInput(&position);

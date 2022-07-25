@@ -49,11 +49,11 @@ int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Speci
 
 // Implementation
 SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ()
-    : tetrahedraMappedFromTetra( initData ( &tetrahedraMappedFromTetra, "tetrahedraMappedFromTetra", "Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided")),
-      tetraSource( initData ( &tetraSource, "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)")),
-      d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
-      d_pointMappedFromEdge( initData ( &d_pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint")),
-      d_pointSource( initData ( &d_pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
+    : tetrahedraMappedFromTetra( initData( "tetrahedraMappedFromTetra", "Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided")),
+      tetraSource( initData( "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)")),
+      d_pointMappedFromPoint( initData( "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
+      d_pointMappedFromEdge( initData( "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint")),
+      d_pointSource( initData( "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
 {
 }
 

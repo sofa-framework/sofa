@@ -31,9 +31,9 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 JoinPoints<DataTypes>::JoinPoints()
-    : f_points(initData(&f_points, "points", "Points"))
-    , f_distance(initData(&f_distance, "distance", "Distance to merge points"))
-    , f_mergedPoints(initData(&f_mergedPoints, "mergedPoints", "Merged Points"))
+    : f_points(initData( "points", "Points"))
+    , f_distance(initData( "distance", "Distance to merge points"))
+    , f_mergedPoints(initData( "mergedPoints", "Merged Points"))
 {
     addInput(&f_points);
     addInput(&f_distance);

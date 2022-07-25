@@ -39,11 +39,11 @@ int SphereLoaderClass = core::RegisterObject("Loader for sphere model descriptio
 
 SphereLoader::SphereLoader()
     :BaseLoader(),
-     d_positions(initData(&d_positions,"position","Sphere centers")),
-     d_radius(initData(&d_radius,"listRadius","Radius of each sphere")),
-     d_scale(initData(&d_scale, type::Vec3(1.0, 1.0, 1.0), "scale","Scale applied to sphere positions & radius")),
-     d_rotation(initData(&d_rotation, type::Vec3(), "rotation", "Rotation of the DOFs")),
-     d_translation(initData(&d_translation, type::Vec3(),"translation","Translation applied to sphere positions"))
+     d_positions(initData("position","Sphere centers")),
+     d_radius(initData("listRadius","Radius of each sphere")),
+     d_scale(initData( type::Vec3(1.0, 1.0, 1.0), "scale","Scale applied to sphere positions & radius")),
+     d_rotation(initData( type::Vec3(), "rotation", "Rotation of the DOFs")),
+     d_translation(initData( type::Vec3(),"translation","Translation applied to sphere positions"))
 {
     addAlias(&d_positions,"sphere_centers");
     addAlias(&d_scale, "scale3d");

@@ -43,7 +43,7 @@ namespace mapping
     
     template <class TIn, class TOut>
     BeamLinearMapping_mt< TIn, TOut>::BeamLinearMapping_mt()
-    : mGrainSize(initData(&mGrainSize, (unsigned int)32,"granularity", "minimum number of Beam points for task creation" ))
+    : mGrainSize(initData( (unsigned int)32,"granularity", "minimum number of Beam points for task creation" ))
     {
     }
     

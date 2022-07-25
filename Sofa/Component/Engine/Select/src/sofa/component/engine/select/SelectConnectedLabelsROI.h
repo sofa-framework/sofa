@@ -58,10 +58,10 @@ public:
     static std::string GetCustomTemplateName(){       return sofa::defaulttype::DataTypeName<T>::name();    }
 
     SelectConnectedLabelsROI(): Inherited()
-      , d_nbLabels ( initData ( &d_nbLabels,(unsigned int)0,"nbLabels","number of label lists" ) )
+      , d_nbLabels ( initData((unsigned int)0,"nbLabels","number of label lists" ) )
       , d_labels(this, "labels", "lists of labels associated to each point/cell", core::objectmodel::DataEngineDataType::DataEngineInput)
-      , d_connectLabels ( initData ( &d_connectLabels,"connectLabels","Pairs of label to be connected accross different label lists" ) )
-      , d_indices ( initData ( &d_indices,"indices","selected point/cell indices" ) )
+      , d_connectLabels ( initData("connectLabels","Pairs of label to be connected accross different label lists" ) )
+      , d_indices ( initData("indices","selected point/cell indices" ) )
     {
         d_labels.resize(d_nbLabels.getValue());
 

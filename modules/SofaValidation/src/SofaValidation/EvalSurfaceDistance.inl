@@ -32,7 +32,7 @@ namespace sofa::component::misc
 
 template<class DataTypes>
 EvalSurfaceDistance<DataTypes>::EvalSurfaceDistance()
-    : maxDist( initData(&maxDist, (SReal)1.0, "maxDist", "alarm distance for proximity detection"))
+    : maxDist( initData( (SReal)1.0, "maxDist", "alarm distance for proximity detection"))
     , pointsCM(nullptr)
     , surfaceCM(nullptr)
     , intersection(nullptr)

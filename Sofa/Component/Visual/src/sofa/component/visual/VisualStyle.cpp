@@ -52,7 +52,7 @@ showAll, hideAll,\n\
         showWireframe hideWireframe").add<VisualStyle>();
 
 VisualStyle::VisualStyle()
-    :displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
+    :displayFlags(initData("displayFlags","Display Flags"))
 {
     displayFlags.setWidget("widget_displayFlags");
 }

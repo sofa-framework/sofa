@@ -33,7 +33,7 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 SquareMapping<TIn, TOut>::SquareMapping()
     : Inherit()
-    , d_geometricStiffness(initData(&d_geometricStiffness, 1u, "geometricStiffness", "0 -> no GS, 1 -> exact GS (default)"))
+    , d_geometricStiffness(initData( 1u, "geometricStiffness", "0 -> no GS, 1 -> exact GS (default)"))
 {
 }
 

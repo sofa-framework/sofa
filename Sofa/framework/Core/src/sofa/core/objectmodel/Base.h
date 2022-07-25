@@ -274,20 +274,19 @@ public:
     virtual void updateLinks(bool logErrors = true);
 
     /// Helper method used to initialize a data field containing a value of type T
-    template<class T>
-    BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    BaseData::BaseInitData initData(const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
         BaseData::BaseInitData res;
-        this->initData0(field, res, name, help, isDisplayed, isReadOnly);
+        this->initData0(res, name, help, isDisplayed, isReadOnly);
         return res;
     }
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
-    typename Data<T>::InitData initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
+    typename Data<T>::InitData initData( const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
     {
         typename Data<T>::InitData res;
-        this->initData0(field, res, value, name, help, isDisplayed, isReadOnly);
+        this->initData0(res, value, name, help, isDisplayed, isReadOnly);
         return res;
     }
 
@@ -380,14 +379,14 @@ public:
 
 protected:
     /// Helper method used by initData()
-    void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
-    void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags );
+    void initData0( BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
+    void initData0( BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags );
 
     /// Helper method used by initData()
     template<class T>
-    void initData0( Data<T>* field, typename Data<T>::InitData& res, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    void initData0( typename Data<T>::InitData& res, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
-        initData0( field, res, name, help, isDisplayed, isReadOnly );
+        initData0( res, name, help, isDisplayed, isReadOnly );
         res.value = value;
     }
 

@@ -115,16 +115,16 @@ public:
 
 protected:
     InteractionEllipsoidForceField()
-        : contacts(initData(&contacts,"contacts", "Contacts"))
-        , center(initData(&center, "center", "ellipsoid center"))
-        , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
-        , stiffness(initData(&stiffness, (Real1)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
-        , damping(initData(&damping, (Real1)5, "damping", "force damping"))
-        , color(initData(&color, sofa::type::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=[0.0,0.5,1.0,1.0])"))
-        , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
-        , object2_dof_index(initData(&object2_dof_index, (int)0, "object2_dof_index", "Dof index of object 2 where the forcefield is attached"))
-        , object2_forces(initData(&object2_forces, true, "object2_forces", "enable/disable propagation of forces to object 2"))
-        , object2_invert(initData(&object2_invert, false, "object2_invert", "inverse transform from object 2 (use when object 1 is in local coordinates within a frame defined by object 2)"))
+        : contacts(initData("contacts", "Contacts"))
+        , center(initData( "center", "ellipsoid center"))
+        , vradius(initData( "vradius", "ellipsoid radius"))
+        , stiffness(initData( (Real1)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
+        , damping(initData( (Real1)5, "damping", "force damping"))
+        , color(initData( sofa::type::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=[0.0,0.5,1.0,1.0])"))
+        , bDraw(initData( true, "draw", "enable/disable drawing of the ellipsoid"))
+        , object2_dof_index(initData( (int)0, "object2_dof_index", "Dof index of object 2 where the forcefield is attached"))
+        , object2_forces(initData( true, "object2_forces", "enable/disable propagation of forces to object 2"))
+        , object2_invert(initData( false, "object2_invert", "inverse transform from object 2 (use when object 1 is in local coordinates within a frame defined by object 2)"))
     {
     }
 public:

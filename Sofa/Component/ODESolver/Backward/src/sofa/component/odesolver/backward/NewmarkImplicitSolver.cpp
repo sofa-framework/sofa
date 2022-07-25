@@ -42,12 +42,12 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 NewmarkImplicitSolver::NewmarkImplicitSolver()
-    : d_rayleighStiffness(initData(&d_rayleighStiffness,0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
-    , d_rayleighMass( initData(&d_rayleighMass,0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
-    , d_velocityDamping( initData(&d_velocityDamping,0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
-    , d_gamma( initData(&d_gamma, 0.5, "gamma", "Newmark scheme gamma coefficient"))
-    , d_beta( initData(&d_beta, 0.25, "beta", "Newmark scheme beta coefficient") )
-    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    : d_rayleighStiffness(initData(0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
+    , d_rayleighMass( initData(0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    , d_velocityDamping( initData(0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
+    , d_gamma( initData( 0.5, "gamma", "Newmark scheme gamma coefficient"))
+    , d_beta( initData( 0.25, "beta", "Newmark scheme beta coefficient") )
+    , d_threadSafeVisitor(initData( false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
     cpt=0;
 }

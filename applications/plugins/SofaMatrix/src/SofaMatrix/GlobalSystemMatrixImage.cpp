@@ -32,7 +32,7 @@ int GlobalSystemMatrixImageClass = core::RegisterObject("View the global linear 
 
 GlobalSystemMatrixImage::GlobalSystemMatrixImage()
     : Inherit1()
-    , d_bitmap(initData(&d_bitmap, type::BaseMatrixImageProxy(), "bitmap", "Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros."))
+    , d_bitmap(initData( type::BaseMatrixImageProxy(), "bitmap", "Visualization of the representation of the matrix as a binary image. White pixels are zeros, black pixels are non-zeros."))
     , l_linearSolver(initLink("linearSolver", "Link to the linear solver containing a matrix"))
 {
     d_bitmap.setGroup("Image");

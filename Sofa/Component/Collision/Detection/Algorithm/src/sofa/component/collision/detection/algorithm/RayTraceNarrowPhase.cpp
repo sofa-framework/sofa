@@ -38,7 +38,7 @@ using sofa::helper::TriangleOctree;
 int RayTraceNarrowPhaseClass = core::RegisterObject("Collision detection using TriangleOctreeModel").add < RayTraceNarrowPhase > ();
 
 RayTraceNarrowPhase::RayTraceNarrowPhase()
-:bDraw (initData(&bDraw, false, "draw","enable/disable display of results"))
+:bDraw (initData( false, "draw","enable/disable display of results"))
 {}
 
 void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)

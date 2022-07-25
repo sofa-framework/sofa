@@ -27,8 +27,8 @@ namespace sofa::core::behavior
 
 BaseForceField::BaseForceField()
     : objectmodel::BaseObject()
-    , isCompliance( initData(&isCompliance, false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
-    , rayleighStiffness( initData(&rayleighStiffness, SReal(0), "rayleighStiffness", "Rayleigh damping - stiffness matrix coefficient"))
+    , isCompliance( initData( false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
+    , rayleighStiffness( initData( SReal(0), "rayleighStiffness", "Rayleigh damping - stiffness matrix coefficient"))
 {
 }
 

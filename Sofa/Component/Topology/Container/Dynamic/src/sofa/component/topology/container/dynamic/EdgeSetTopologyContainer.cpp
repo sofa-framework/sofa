@@ -44,8 +44,8 @@ int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology cont
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
-    , d_edge(initData(&d_edge, "edges", "List of edge indices"))
-    , m_checkConnexity(initData(&m_checkConnexity, false, "checkConnexity", "It true, will check the connexity of the mesh."))
+    , d_edge(initData( "edges", "List of edge indices"))
+    , m_checkConnexity(initData( false, "checkConnexity", "It true, will check the connexity of the mesh."))
 {
 }
 

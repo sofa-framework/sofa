@@ -32,15 +32,15 @@ template <class DataTypes>
 FillReducingOrdering<DataTypes>::FillReducingOrdering()
     : l_mstate(initLink("mstate", "Mechanical state to reorder"))
     , l_topology(initLink("topology", "Topology to reorder"))
-    , d_orderingMethod(initData(&d_orderingMethod, sofa::helper::OptionsGroup(2, "nestedDissection", "approximateMinimumDegree"),
+    , d_orderingMethod(initData( sofa::helper::OptionsGroup(2, "nestedDissection", "approximateMinimumDegree"),
         "orderingMethod", "Ordering method.\n"
         "nestedDissection is the multilevel nested dissection algorithm implemented in the METIS library.\n"
         "approximateMinimumDegree is the approximate minimum degree algorithm implemented in the Eigen library."))
-    , d_permutation(initData(&d_permutation, "permutation", "Output vector of indices mapping the reordered vertices to the initial list"))
-    , d_invPermutation(initData(&d_invPermutation, "invPermutation", "Output vector of indices mapping the initial vertices to the reordered list"))
-    , d_position(initData(&d_position, "position", "Reordered position vector"))
-    , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Reordered hexahedra"))
-    , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Reordered tetrahedra"))
+    , d_permutation(initData( "permutation", "Output vector of indices mapping the reordered vertices to the initial list"))
+    , d_invPermutation(initData( "invPermutation", "Output vector of indices mapping the initial vertices to the reordered list"))
+    , d_position(initData( "position", "Reordered position vector"))
+    , d_hexahedra(initData( "hexahedra", "Reordered hexahedra"))
+    , d_tetrahedra(initData( "tetrahedra", "Reordered tetrahedra"))
 {
     addOutput(&d_permutation);
     addOutput(&d_invPermutation);

@@ -34,10 +34,10 @@ using sofa::linearalgebra::CompressedRowSparseMatrix;
 
 template<typename DataTypes>
 TorsionForceField<DataTypes>::TorsionForceField() :
-	m_indices(initData(&m_indices, "indices", "indices of the selected points")),
-	m_torque(initData(&m_torque, "torque", "torque to apply")),
-	m_axis(initData(&m_axis, "axis", "direction of the axis (will be normalized)")),
-	m_origin(initData(&m_origin, "origin", "origin of the axis"))
+	m_indices(initData( "indices", "indices of the selected points")),
+	m_torque(initData( "torque", "torque to apply")),
+	m_axis(initData( "axis", "direction of the axis (will be normalized)")),
+	m_origin(initData( "origin", "origin of the axis"))
 {
 }
 

@@ -28,9 +28,9 @@ namespace sofa::component::engine::select
 
 template <class DataTypes>
 PointsFromIndices<DataTypes>::PointsFromIndices()
-    : f_X( initData (&f_X, "position", "Position coordinates of the degrees of freedom") )
-    , f_indices( initData(&f_indices,"indices","Indices of the points") )
-    , f_indices_position( initData (&f_indices_position, "indices_position", "Coordinates of the points contained in indices"))
+    : f_X( initData( "position", "Position coordinates of the degrees of freedom") )
+    , f_indices( initData("indices","Indices of the points") )
+    , f_indices_position( initData( "indices_position", "Coordinates of the points contained in indices"))
 {
     addInput(&f_X);
     addInput(&f_indices);

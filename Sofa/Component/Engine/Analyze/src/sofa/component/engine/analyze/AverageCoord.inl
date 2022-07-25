@@ -31,9 +31,9 @@ namespace sofa::component::engine::analyze
 
 template <class DataTypes>
 AverageCoord<DataTypes>::AverageCoord()
-    : d_indices( initData (&d_indices, "indices", "indices of the coordinates to average") )
-    , d_vecId(initData (&d_vecId, sofa::core::VecCoordId::position().getIndex(), "vecId", "index of the vector (default value corresponds to core::VecCoordId::position() )") )
-    , d_average( initData (&d_average, "average", "average of the values with the given indices in the given coordinate vector \n"
+    : d_indices( initData( "indices", "indices of the coordinates to average") )
+    , d_vecId(initData( sofa::core::VecCoordId::position().getIndex(), "vecId", "index of the vector (default value corresponds to core::VecCoordId::position() )") )
+    , d_average( initData( "average", "average of the values with the given indices in the given coordinate vector \n"
                                                    "(default value corresponds to the average coord of the mechanical context)") )
 {
     addInput(&d_indices);

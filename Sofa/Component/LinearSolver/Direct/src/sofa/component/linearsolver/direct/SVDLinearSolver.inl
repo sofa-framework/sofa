@@ -36,9 +36,9 @@ using namespace sofa::simulation;
 
 template<class TMatrix, class TVector>
 SVDLinearSolver<TMatrix,TVector>::SVDLinearSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_minSingularValue( initData(&f_minSingularValue,(Real)1.0e-6,"minSingularValue","Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.") )
-    , f_conditionNumber( initData(&f_conditionNumber,(Real)0.0,"conditionNumber","Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.") )
+    : f_verbose( initData(false,"verbose","Dump system state at each iteration") )
+    , f_minSingularValue( initData((Real)1.0e-6,"minSingularValue","Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.") )
+    , f_conditionNumber( initData((Real)0.0,"conditionNumber","Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.") )
 {
 }
 

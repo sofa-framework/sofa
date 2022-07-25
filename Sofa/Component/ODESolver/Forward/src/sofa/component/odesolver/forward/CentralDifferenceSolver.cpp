@@ -33,8 +33,8 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
-    : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
-    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    : f_rayleighMass( initData((SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    , d_threadSafeVisitor(initData( false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 

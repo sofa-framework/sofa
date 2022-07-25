@@ -53,13 +53,13 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TDataTypes>
 PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
-    : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
-    , share_matrix( initData(&share_matrix,true,"share_matrix","Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
-    , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
-    , use_rotations( initData(&use_rotations,true,"use_rotations","Use Rotations around the preconditioner") )
-    , draw_rotations_scale( initData(&draw_rotations_scale,0.0,"draw_rotations_scale","Scale rotations in draw function") )
+    : jmjt_twostep( initData(true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
+    , f_verbose( initData(false,"verbose","Dump system state at each iteration") )
+    , use_file( initData(true,"use_file","Dump system matrix in a file") )
+    , share_matrix( initData(true,"share_matrix","Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
+    , solverName(initData( std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
+    , use_rotations( initData(true,"use_rotations","Use Rotations around the preconditioner") )
+    , draw_rotations_scale( initData(0.0,"draw_rotations_scale","Scale rotations in draw function") )
 {
     first = true;
     _rotate = false;

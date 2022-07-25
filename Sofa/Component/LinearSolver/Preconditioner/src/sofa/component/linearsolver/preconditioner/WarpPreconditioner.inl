@@ -41,9 +41,9 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
-    : solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
-    , f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
-    , d_updateStep(initData(&d_updateStep, 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
+    : solverName(initData( std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
+    , f_useRotationFinder(initData( (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
+    , d_updateStep(initData( 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
 {
 
     realSolver = nullptr;

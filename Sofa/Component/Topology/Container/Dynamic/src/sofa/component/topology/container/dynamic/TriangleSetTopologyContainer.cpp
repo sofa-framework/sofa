@@ -36,7 +36,7 @@ int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topol
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()
-    , d_triangle(initData(&d_triangle, "triangles", "List of triangle indices"))
+    , d_triangle(initData( "triangles", "List of triangle indices"))
 {
 
 }

@@ -29,9 +29,9 @@ namespace sofa::component::engine::transform
 
 template <class DataTypes>
 DifferenceEngine<DataTypes>::DifferenceEngine()
-    : d_input ( initData (&d_input, "input", "input vector") )
-    , d_substractor ( initData (&d_substractor, "substractor", "vector to substract to input") )
-    , d_output( initData (&d_output, "output", "output vector = input-substractor") )
+    : d_input ( initData( "input", "input vector") )
+    , d_substractor ( initData( "substractor", "vector to substract to input") )
+    , d_output( initData( "output", "output vector = input-substractor") )
 {
     addInput(&d_input);
     addInput(&d_substractor);

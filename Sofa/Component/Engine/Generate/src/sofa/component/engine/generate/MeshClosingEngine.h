@@ -73,15 +73,15 @@ public:
 protected:
 
     MeshClosingEngine()    : Inherited()
-      , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
-      , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
-      , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
-      , position(initData(&position,"position","Vertices of closed mesh"))
-      , triangles(initData(&triangles,"triangles","Triangles of closed mesh"))
-      , quads(initData(&quads,"quads","Quads of closed mesh (=input quads with current method)"))
-      , indices(initData(&indices,"indices","Index lists of the closing parts"))
-      , closingPosition(initData(&closingPosition,"closingPosition","Vertices of the closing parts"))
-      , closingTriangles(initData(&closingTriangles,"closingTriangles","Triangles of the closing parts"))
+      , inputPosition(initData("inputPosition","input vertices"))
+      , inputTriangles(initData("inputTriangles","input triangles"))
+      , inputQuads(initData("inputQuads","input quads"))
+      , position(initData("position","Vertices of closed mesh"))
+      , triangles(initData("triangles","Triangles of closed mesh"))
+      , quads(initData("quads","Quads of closed mesh (=input quads with current method)"))
+      , indices(initData("indices","Index lists of the closing parts"))
+      , closingPosition(initData("closingPosition","Vertices of the closing parts"))
+      , closingTriangles(initData("closingTriangles","Triangles of the closing parts"))
     {
         addInput(&inputPosition);
         addInput(&inputTriangles);

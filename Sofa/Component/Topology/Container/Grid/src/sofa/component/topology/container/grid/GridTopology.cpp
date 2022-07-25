@@ -209,16 +209,20 @@ void GridTopology::GridUpdate::updateHexas()
 /// The following constructor is "chained" by the other constructors to
 /// defined only one the member initialization.
 GridTopology::GridTopology()
-    : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution. (default = 2 2 2)"))
-    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init (default=true)"))
-    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init (default=true)"))
-    , d_computeTriangleList(initData(&d_computeTriangleList, true, "computeTriangleList", "put true if the list of triangle is needed during init (default=true)"))
-    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init (default=true)"))
-    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init (default=true)"))
-    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
+    : d_n(initData(Vec3i(2,2,2),"n","grid resolution. (default = 2 2 2)"))
+    , d_computeHexaList(initData( true, "computeHexaList", "put true if the list of Hexahedra is needed during init (default=true)"))
+    , d_computeQuadList(initData( true, "computeQuadList", "put true if the list of Quad is needed during init (default=true)"))
+    , d_computeTriangleList(initData( true, "computeTriangleList", "put true if the list of triangle is needed during init (default=true)"))
+    , d_computeEdgeList(initData( true, "computeEdgeList", "put true if the list of Lines is needed during init (default=true)"))
+    , d_computePointList(initData( true, "computePointList", "put true if the list of Points is needed during init (default=true)"))
+    , d_createTexCoords(initData( (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
 {
     setNbGridPoints();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
+    if (this->getContext())
+    {
+        gridUpdate->setName(this->getContext()->getNameHelper().resolveName(gridUpdate->getClassName(), sofa::core::ComponentNameHelper::Convention::xml));
+    }
     this->addSlave(gridUpdate);
 }
 

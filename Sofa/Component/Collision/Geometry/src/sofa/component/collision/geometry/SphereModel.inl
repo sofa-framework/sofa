@@ -33,9 +33,9 @@ namespace sofa::component::collision::geometry
 
 template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel()
-    : radius(initData(&radius, "listRadius","Radius of each sphere"))
-    , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
-    , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
+    : radius(initData( "listRadius","Radius of each sphere"))
+    , defaultRadius(initData((SReal)(1.0), "radius","Default Radius"))
+    , d_showImpostors(initData( true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(nullptr)
 {
     enum_type = SPHERE_TYPE;
@@ -43,9 +43,9 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
 
 template<class DataTypes>
 SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate )
-    : radius(initData(&radius, "listRadius","Radius of each sphere"))
-    , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
-    , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
+    : radius(initData( "listRadius","Radius of each sphere"))
+    , defaultRadius(initData((SReal)(1.0), "radius","Default Radius. (default=1.0)"))
+    , d_showImpostors(initData( true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(_mstate)
 {
     enum_type = SPHERE_TYPE;

@@ -44,15 +44,15 @@ using sofa::helper::WriteOnlyAccessor;
 
 template <class DataTypes>
 ClusteringEngine<DataTypes>::ClusteringEngine()
-    : d_useTopo(initData(&d_useTopo, true, "useTopo", "Use avalaible topology to compute neighborhood."))
-    , d_radius(initData(&d_radius, (Real)1.0, "radius", "Neighborhood range."))
-    , d_fixedRadius(initData(&d_fixedRadius, (Real)1.0, "fixedRadius", "Neighborhood range (for non mechanical particles)."))
-    , d_nbClusters(initData(&d_nbClusters, (int)-1, "number", "Number of clusters (-1 means that all input points are selected)."))
-    , d_fixedPosition(initData(&d_fixedPosition,"fixedPosition","Input positions of fixed (non mechanical) particles."))
-    , d_position(initData(&d_position,"position","Input rest positions."))
-    , d_cluster(initData(&d_cluster,"cluster","Computed clusters."))
-    , input_filename(initData(&input_filename,"inFile","import precomputed clusters"))
-    , output_filename(initData(&output_filename,"outFile","export clusters"))
+    : d_useTopo(initData( true, "useTopo", "Use avalaible topology to compute neighborhood."))
+    , d_radius(initData( (Real)1.0, "radius", "Neighborhood range."))
+    , d_fixedRadius(initData( (Real)1.0, "fixedRadius", "Neighborhood range (for non mechanical particles)."))
+    , d_nbClusters(initData( (int)-1, "number", "Number of clusters (-1 means that all input points are selected)."))
+    , d_fixedPosition(initData("fixedPosition","Input positions of fixed (non mechanical) particles."))
+    , d_position(initData("position","Input rest positions."))
+    , d_cluster(initData("cluster","Computed clusters."))
+    , input_filename(initData("inFile","import precomputed clusters"))
+    , output_filename(initData("outFile","export clusters"))
     , topo(nullptr)
 {
     addInput(&d_radius);

@@ -35,9 +35,9 @@ using sofa::core::objectmodel::ComponentState;
 template <class DataTypes>
  PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        
     : GeometryAlgorithms()
-    , d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
-    , d_showPointIndices (core::objectmodel::Base::initData(&d_showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
-    , d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
+    , d_showIndicesScale (core::objectmodel::Base::initData( (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
+    , d_showPointIndices (core::objectmodel::Base::initData( (bool) false, "showPointIndices", "Debug : view Point indices"))
+    , d_tagMechanics( initData(std::string(),"tagMechanics","Tag of the Mechanical Object"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }

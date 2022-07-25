@@ -47,12 +47,12 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
-    , d_stiffnessMatrixRegularizationWeight(initData(&d_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
-    , d_materialName(initData(&d_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
-    , d_parameterSet(initData(&d_parameterSet,"ParameterSet","The global parameters specifying the material"))
-    , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
-    , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
-    , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
+    , d_stiffnessMatrixRegularizationWeight(initData( (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
+    , d_materialName(initData(std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
+    , d_parameterSet(initData("ParameterSet","The global parameters specifying the material"))
+    , d_anisotropySet(initData("AnisotropyDirections","The global directions of anisotropy of the material"))
+    , m_tetrahedronInfo(initData( "tetrahedronInfo", "Internal tetrahedron data"))
+    , m_edgeInfo(initData( "edgeInfo", "Internal edge data"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
 

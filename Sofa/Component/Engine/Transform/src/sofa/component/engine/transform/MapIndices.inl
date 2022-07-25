@@ -28,11 +28,11 @@ namespace sofa::component::engine::transform
 
 template <class T>
 MapIndices<T>::MapIndices()
-    : f_in( initData (&f_in, "in", "input indices") )
-    , f_indices( initData(&f_indices, "indices","array containing in ith cell the input index corresponding to the output index i (or reversively if transpose=true)") )
-    , f_out( initData (&f_out, "out", "Output indices"))
-    , f_outStr( initData (&f_outStr, "outStr", "Output indices, converted as a string"))
-    , f_transpose( initData (&f_transpose, false, "transpose", "Should the transposed mapping be used ?"))
+    : f_in( initData( "in", "input indices") )
+    , f_indices( initData( "indices","array containing in ith cell the input index corresponding to the output index i (or reversively if transpose=true)") )
+    , f_out( initData( "out", "Output indices"))
+    , f_outStr( initData( "outStr", "Output indices, converted as a string"))
+    , f_transpose( initData( false, "transpose", "Should the transposed mapping be used ?"))
 {
     f_outStr.setParent(&f_out);
     addInput(&f_in);

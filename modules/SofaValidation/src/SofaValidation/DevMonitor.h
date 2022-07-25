@@ -45,8 +45,8 @@ public:
     Data< sofa::type::vector< unsigned int > > f_indices; ///< Indices of the points which will be monitored
 
     DevMonitor():
-        f_period( initData(&f_period, 1.0, "period", "period between outputs"))
-        , f_indices( initData(&f_indices,"indices","Indices of the points which will be monitored") )
+        f_period( initData( 1.0, "period", "period between outputs"))
+        , f_indices( initData("indices","Indices of the points which will be monitored") )
         , lastTime(0)
     {
     }

@@ -31,8 +31,8 @@ namespace collisionobbcapsule::geometry
 
 template<class DataTypes>
 OBBCollisionModel<DataTypes>::OBBCollisionModel():
-    ext(initData(&ext,"extents","Extents in x,y and z directions")),
-    default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
+    ext(initData("extents","Extents in x,y and z directions")),
+    default_ext(initData((Real)(1.0), "defaultExtent","Default extent")),
     _mstate(nullptr)
 {
     enum_type = OBB_TYPE;
@@ -40,8 +40,8 @@ OBBCollisionModel<DataTypes>::OBBCollisionModel():
 
 template<class DataTypes>
 OBBCollisionModel<DataTypes>::OBBCollisionModel(sofa::core::behavior::MechanicalState<DataTypes>* mstate):
-    ext(initData(&ext, "extents","Extents in x,y and z directions")),
-    default_ext(initData(&default_ext,(Real)(1.0), "defaultExtent","Default extent")),
+    ext(initData( "extents","Extents in x,y and z directions")),
+    default_ext(initData((Real)(1.0), "defaultExtent","Default extent")),
     _mstate(mstate)
 {
     enum_type = OBB_TYPE;

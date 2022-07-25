@@ -62,21 +62,21 @@ int CubeTopologyClass = core::RegisterObject("Surface of a cube in 3D")
         ;
 
 CubeTopology::CubeTopology(int _nx, int _ny, int _nz)
-    : nx(initData(&nx,_nx,"nx","x grid resolution")), ny(initData(&ny,_ny,"ny","y grid resolution")), nz(initData(&nz,_nz,"nz","z grid resolution"))
-    , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
-    , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
-    , min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
-    , max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+    : nx(initData(_nx,"nx","x grid resolution")), ny(initData(_ny,"ny","y grid resolution")), nz(initData(_nz,"nz","z grid resolution"))
+    , internalPoints(initData( false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
+    , splitNormals(initData( false, "splitNormals", "split corner points to have planar normals"))
+    , min(initData(Vector3(0.0f,0.0f,0.0f),"min", "Min"))
+    , max(initData(Vector3(1.0f,1.0f,1.0f),"max", "Max"))
 {
     setSize();
 }
 
 CubeTopology::CubeTopology()
-    : nx(initData(&nx,0,"nx","x grid resolution")), ny(initData(&ny,0,"ny","y grid resolution")), nz(initData(&nz,0,"nz","z grid resolution"))
-    , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
-    , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
-    , min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
-    , max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+    : nx(initData(0,"nx","x grid resolution")), ny(initData(0,"ny","y grid resolution")), nz(initData(0,"nz","z grid resolution"))
+    , internalPoints(initData( false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
+    , splitNormals(initData( false, "splitNormals", "split corner points to have planar normals"))
+    , min(initData(Vector3(0.0f,0.0f,0.0f),"min", "Min"))
+    , max(initData(Vector3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 

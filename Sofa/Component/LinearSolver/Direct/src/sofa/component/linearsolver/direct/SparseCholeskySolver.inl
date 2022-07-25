@@ -29,9 +29,9 @@ namespace sofa::component::linearsolver::direct
 
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    : f_verbose( initData(false,"verbose","Dump system state at each iteration") )
     , S(nullptr), N(nullptr)
-    , d_typePermutation(initData(&d_typePermutation, "permutation", "Type of fill reducing permutation"))
+    , d_typePermutation(initData( "permutation", "Type of fill reducing permutation"))
 {   
     sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
     d_typePermutationOptions.setSelectedItem(0); // default None

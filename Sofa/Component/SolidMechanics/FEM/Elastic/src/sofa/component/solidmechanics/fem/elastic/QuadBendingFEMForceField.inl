@@ -65,15 +65,15 @@ using namespace sofa::core::topology;
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
 QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
-  : quadInfo(initData(&quadInfo,"quadInfo", "Internal quad data"))
-  , vertexInfo(initData(&vertexInfo,"vertexInfo", "Internal node data"))
-  , edgeInfo(initData(&edgeInfo,"edgeInfo", "Internal edge data"))
+  : quadInfo(initData("quadInfo", "Internal quad data"))
+  , vertexInfo(initData("vertexInfo", "Internal node data"))
+  , edgeInfo(initData("edgeInfo", "Internal edge data"))
   , m_topology(nullptr)
   , method(SMALL)
-  , f_method(initData(&f_method,std::string("small"),"method","large: large displacements, small: small displacements"))
-  , f_poisson(initData(&f_poisson,type::vector<Real>(1,static_cast<Real>(0.45)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
-  , f_young(initData(&f_young,type::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
-  , f_thickness(initData(&f_thickness,Real(1.),"thickness","Thickness of the elements"))
+  , f_method(initData(std::string("small"),"method","large: large displacements, small: small displacements"))
+  , f_poisson(initData(type::vector<Real>(1,static_cast<Real>(0.45)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
+  , f_young(initData(type::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
+  , f_thickness(initData(Real(1.),"thickness","Thickness of the elements"))
   , l_topology(initLink("topology", "link to the topology container"))
 
 {

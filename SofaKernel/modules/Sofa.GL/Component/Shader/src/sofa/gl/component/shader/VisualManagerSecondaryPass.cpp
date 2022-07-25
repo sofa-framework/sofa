@@ -36,9 +36,9 @@ int VisualManagerSecondaryPassClass = core::RegisterObject("VisualManagerSeconda
         ;
 
 VisualManagerSecondaryPass::VisualManagerSecondaryPass()
-    : input_tags(initData( &input_tags, "input_tags", "list of input passes used as source textures"))
-    , output_tags(initData( &output_tags, "output_tags", "output reference tag (use it if the resulting fbo is used as a source for another secondary pass)"))
-    , fragFilename(initData(&fragFilename, "fragFilename", "Set the fragment shader filename to load"))
+    : input_tags(initData( "input_tags", "list of input passes used as source textures"))
+    , output_tags(initData( "output_tags", "output reference tag (use it if the resulting fbo is used as a source for another secondary pass)"))
+    , fragFilename(initData( "fragFilename", "Set the fragment shader filename to load"))
     , l_shader(initLink("shader", "Shader to apply for compositing"))
 {
     nbFbo=0;

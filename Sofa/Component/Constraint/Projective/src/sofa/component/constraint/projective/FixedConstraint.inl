@@ -36,11 +36,11 @@ namespace sofa::component::constraint::projective
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(nullptr)
-    , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
-    , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , d_showObject(initData(&d_showObject,true,"showObject","draw or not the fixed constraints"))
-    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
+    , d_indices( initData("indices","Indices of the fixed points") )
+    , d_fixAll( initData(false,"fixAll","filter all the DOF to implement a fixed object") )
+    , d_showObject(initData(true,"showObject","draw or not the fixed constraints"))
+    , d_drawSize( initData((SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , d_projectVelocity( initData(false,"activate_projectVelocity","activate project velocity to set velocity") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new FixedConstraintInternalData<DataTypes>())
 {

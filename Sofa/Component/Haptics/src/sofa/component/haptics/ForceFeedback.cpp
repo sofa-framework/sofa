@@ -26,8 +26,8 @@ namespace sofa::component::haptics
 {
 
 ForceFeedback::ForceFeedback():
-    d_activate(initData(&d_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
-  , d_indice(initData(&d_indice, 0, "indice", "Tool indice in the OmniDriver"))
+    d_activate(initData( false, "activate", "boolean to activate or deactivate the forcefeedback"))
+  , d_indice(initData( 0, "indice", "Tool indice in the OmniDriver"))
 {
 }
 

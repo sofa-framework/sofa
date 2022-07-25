@@ -107,17 +107,17 @@ void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleDestruction(I
 }
 
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::TriangularQuadraticSpringsForceField()
-    : _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+    : _initialPoints(initData("initialPoints", "Initial Position"))
     , updateMatrix(true)
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_dampingRatio(initData(&f_dampingRatio,(Real)0.,"dampingRatio","Ratio damping/stiffness"))
-    , f_useAngularSprings(initData(&f_useAngularSprings,true,"useAngularSprings","If Angular Springs should be used or not"))
+    , f_poissonRatio(initData((Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_youngModulus(initData((Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    , f_dampingRatio(initData((Real)0.,"dampingRatio","Ratio damping/stiffness"))
+    , f_useAngularSprings(initData(true,"useAngularSprings","If Angular Springs should be used or not"))
     , lambda(0)
     , mu(0)
     , l_topology(initLink("topology", "link to the topology container"))
-    , triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , triangleInfo(initData( "triangleInfo", "Internal triangle data"))
+    , edgeInfo(initData( "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
 

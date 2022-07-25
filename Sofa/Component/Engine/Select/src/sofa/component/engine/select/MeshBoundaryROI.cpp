@@ -30,10 +30,10 @@ int MeshBoundaryROIClass = core::RegisterObject("Outputs indices of boundary ver
         .add< MeshBoundaryROI >(true);
 
 MeshBoundaryROI::MeshBoundaryROI(): Inherited()
-                                    , d_triangles(initData(&d_triangles,"triangles","input triangles"))
-                                    , d_quads(initData(&d_quads,"quads","input quads"))
-                                    , d_inputROI(initData(&d_inputROI,"inputROI","optional subset of the input mesh"))
-                                    , d_indices(initData(&d_indices,"indices","Index lists of the closing vertices"))
+                                    , d_triangles(initData("triangles","input triangles"))
+                                    , d_quads(initData("quads","input quads"))
+                                    , d_inputROI(initData("inputROI","optional subset of the input mesh"))
+                                    , d_indices(initData("indices","Index lists of the closing vertices"))
 {
     addInput(&d_triangles);
     addInput(&d_quads);

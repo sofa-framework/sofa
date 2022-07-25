@@ -50,13 +50,13 @@ template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::Standard
     , _initialPoints(0)
     , updateMatrix(true)
     , _meshSaved( false)
-    , f_materialName(initData(&f_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
-    , f_parameterSet(initData(&f_parameterSet,"ParameterSet","The global parameters specifying the material"))
-    , f_anisotropySet(initData(&f_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
-    , f_parameterFileName(initData(&f_parameterFileName,std::string("myFile.param"),"ParameterFile","the name of the file describing the material parameters for all tetrahedra"))
+    , f_materialName(initData(std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
+    , f_parameterSet(initData("ParameterSet","The global parameters specifying the material"))
+    , f_anisotropySet(initData("AnisotropyDirections","The global directions of anisotropy of the material"))
+    , f_parameterFileName(initData(std::string("myFile.param"),"ParameterFile","the name of the file describing the material parameters for all tetrahedra"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    , tetrahedronInfo(initData( "tetrahedronInfo", "Internal tetrahedron data"))
+    , edgeInfo(initData( "edgeInfo", "Internal edge data"))
 {
     
 }

@@ -53,7 +53,7 @@ public:
     Data< DataTypes > value;
 
 protected:
-    OglVariable(): value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
+    OglVariable(): value(initData( DataTypes(), "value", "Set Uniform Value"))
     {
         addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
     }

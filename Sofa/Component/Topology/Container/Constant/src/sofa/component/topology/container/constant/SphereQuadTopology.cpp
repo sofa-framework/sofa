@@ -36,14 +36,14 @@ int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed 
 
 SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
     : CubeTopology(nx, ny, nz),
-      center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
-      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
+      center(initData(Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData((SReal)1.0,"radius", "Radius of the sphere"))
 {
 }
 
 SphereQuadTopology::SphereQuadTopology()
-    : center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
-      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
+    : center(initData(Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData((SReal)1.0,"radius", "Radius of the sphere"))
 {
 }
 

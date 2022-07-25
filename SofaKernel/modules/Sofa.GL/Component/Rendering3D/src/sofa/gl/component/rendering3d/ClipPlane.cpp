@@ -34,10 +34,10 @@ int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
 
 
 ClipPlane::ClipPlane()
-    : position(initData(&position, sofa::type::Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
-    , normal(initData(&normal, sofa::type::Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
-    , id(initData(&id, 0, "id", "Clipping plane OpenGL ID"))
-    , active(initData(&active,true,"active","Control whether the clipping plane should be applied or not"))
+    : position(initData( sofa::type::Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
+    , normal(initData( sofa::type::Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
+    , id(initData( 0, "id", "Clipping plane OpenGL ID"))
+    , active(initData(true,"active","Control whether the clipping plane should be applied or not"))
 {
 }
 

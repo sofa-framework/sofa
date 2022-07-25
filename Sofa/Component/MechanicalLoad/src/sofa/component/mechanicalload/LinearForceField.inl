@@ -34,11 +34,11 @@ namespace sofa::component::mechanicalload
 template<class DataTypes>
 LinearForceField<DataTypes>::LinearForceField()
     : data(new LinearForceFieldInternalData<DataTypes>())
-    , points(initData(&points, "points", "points where the force is applied"))
-    , d_force(initData(&d_force, (Real)1.0, "force", "applied force to all points"))
-    , d_keyTimes(initData(&d_keyTimes, "times", "key times for the interpolation"))
-    , d_keyForces(initData(&d_keyForces, "forces", "forces corresponding to the key times"))
-    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , points(initData( "points", "points where the force is applied"))
+    , d_force(initData( (Real)1.0, "force", "applied force to all points"))
+    , d_keyTimes(initData( "times", "key times for the interpolation"))
+    , d_keyForces(initData( "forces", "forces corresponding to the key times"))
+    , d_arrowSizeCoef(initData((SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
     , l_topology(initLink("topology", "link to the topology container"))
 { }
 

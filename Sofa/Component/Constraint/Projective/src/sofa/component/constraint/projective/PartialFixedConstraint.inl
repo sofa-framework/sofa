@@ -34,8 +34,8 @@ namespace sofa::component::constraint::projective
 
 template <class DataTypes>
 PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
-    : d_fixedDirections( initData(&d_fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
-    , d_projectVelocity(initData(&d_projectVelocity, false, "projectVelocity", "project velocity to ensure no drift of the fixed point"))
+    : d_fixedDirections( initData("fixedDirections","for each direction, 1 if fixed, 0 if free") )
+    , d_projectVelocity(initData( false, "projectVelocity", "project velocity to ensure no drift of the fixed point"))
 {
     VecBool blockedDirection;
     for( unsigned i=0; i<NumDimensions; i++)

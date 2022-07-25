@@ -40,22 +40,22 @@ using sofa::core::loader::VoxelLoader;
 
 template<class DataTypes>
 Distances< DataTypes >::Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
-    showMapIndex ( initData ( &showMapIndex, (unsigned int)0, "showMapIndex","Frame DOF index on which display values." ) ),
-    showDistanceMap ( initData ( &showDistanceMap, false, "showDistancesMap","show the dsitance for each point of the target point set." ) ),
-    showGoalDistanceMap ( initData ( &showGoalDistanceMap, false, "showGoalDistancesMap","show the dsitance for each point of the target point set." ) ),
-    showTextScaleFactor ( initData ( &showTextScaleFactor, 0.001, "showTextScaleFactor","Scale to apply on the text." ) ),
-    showGradientMap ( initData ( &showGradientMap, false, "showGradients","show gradients for each point of the target point set." ) ),
-    showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.1, "showGradientsScaleFactor","scale for the gradients displayed." ) ),
-    offset ( initData ( &offset, Coord(), "offset","translation offset between the topology and the point set." ) ),
-    distanceType ( initData ( &distanceType, TYPE_GEODESIC, "distanceType","type of distance to compute for inserted frames." ) ),
-    initTarget ( initData ( &initTarget, false, "initTarget","initialize the target MechanicalObject from the grid." ) ),
-    initTargetStep ( initData ( &initTargetStep, 1, "initTargetStep","initialize the target MechanicalObject from the grid using this step." ) ),
-    zonesFramePair ( initData ( &zonesFramePair, "zonesFramePair","Correspondance between the segmented value and the frames." ) ),
-    harmonicMaxValue ( initData ( &harmonicMaxValue, 100.0, "harmonicMaxValue","Max value used to initialize the harmonic distance grid." ) ),
-    fileDistance( initData(&fileDistance, "filename", "file containing the result of the computation of the distances")),
-    targetPath(initData(&targetPath, "targetPath", "path to the goal point set topology")),
+    showMapIndex ( initData( (unsigned int)0, "showMapIndex","Frame DOF index on which display values." ) ),
+    showDistanceMap ( initData( false, "showDistancesMap","show the dsitance for each point of the target point set." ) ),
+    showGoalDistanceMap ( initData( false, "showGoalDistancesMap","show the dsitance for each point of the target point set." ) ),
+    showTextScaleFactor ( initData( 0.001, "showTextScaleFactor","Scale to apply on the text." ) ),
+    showGradientMap ( initData( false, "showGradients","show gradients for each point of the target point set." ) ),
+    showGradientsScaleFactor ( initData( 0.1, "showGradientsScaleFactor","scale for the gradients displayed." ) ),
+    offset ( initData( Coord(), "offset","translation offset between the topology and the point set." ) ),
+    distanceType ( initData( TYPE_GEODESIC, "distanceType","type of distance to compute for inserted frames." ) ),
+    initTarget ( initData( false, "initTarget","initialize the target MechanicalObject from the grid." ) ),
+    initTargetStep ( initData( 1, "initTargetStep","initialize the target MechanicalObject from the grid using this step." ) ),
+    zonesFramePair ( initData( "zonesFramePair","Correspondance between the segmented value and the frames." ) ),
+    harmonicMaxValue ( initData( 100.0, "harmonicMaxValue","Max value used to initialize the harmonic distance grid." ) ),
+    fileDistance( initData( "filename", "file containing the result of the computation of the distances")),
+    targetPath(initData( "targetPath", "path to the goal point set topology")),
     target ( targetPointSet ) ,
-    hexaContainerPath(initData(&hexaContainerPath, "hexaContainerPath", "path to the grid used to compute the distances")),
+    hexaContainerPath(initData( "hexaContainerPath", "path to the grid used to compute the distances")),
     hexaContainer ( hexaTopoContainer )
 {
     this->addAlias(&fileDistance, "fileDistance");

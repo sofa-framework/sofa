@@ -36,12 +36,12 @@ RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField()
 template<class DataTypes>
 RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
     : StiffSpringForceField<DataTypes>(object1, object2),
-      linesStiffness  (initData(&linesStiffness,Real(100),"linesStiffness","Lines Stiffness"))
-      , linesDamping  (initData(&linesDamping  ,Real(5),"linesDamping"  ,"Lines Damping"))
-      , quadsStiffness(initData(&quadsStiffness,Real(100),"quadsStiffness","Quads Stiffness"))
-      , quadsDamping  (initData(&quadsDamping  ,Real(5),"quadsDamping"  ,"Quads Damping"))
-      , cubesStiffness(initData(&cubesStiffness,Real(100),"cubesStiffness","Cubes Stiffness"))
-      , cubesDamping  (initData(&cubesDamping  ,Real(5),"cubesDamping"  ,"Cubes Damping"))
+      linesStiffness  (initData(Real(100),"linesStiffness","Lines Stiffness"))
+      , linesDamping  (initData(Real(5),"linesDamping"  ,"Lines Damping"))
+      , quadsStiffness(initData(Real(100),"quadsStiffness","Quads Stiffness"))
+      , quadsDamping  (initData(Real(5),"quadsDamping"  ,"Quads Damping"))
+      , cubesStiffness(initData(Real(100),"cubesStiffness","Cubes Stiffness"))
+      , cubesDamping  (initData(Real(5),"cubesDamping"  ,"Cubes Damping"))
       , topology(nullptr)
 {
     this->addAlias(&linesStiffness,    "stiffness"); this->addAlias(&linesDamping,    "damping");

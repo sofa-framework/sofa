@@ -33,8 +33,8 @@ int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa A
         ;
 
 SofaDefaultPathSetting::SofaDefaultPathSetting():
-    recordPath(initData(&recordPath, "recordPath", "Path where will be saved the data of the recorded simulation"))
-    , gnuplotPath(initData(&gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
+    recordPath(initData( "recordPath", "Path where will be saved the data of the recorded simulation"))
+    , gnuplotPath(initData( "gnuplotPath", "Path where will be saved the gnuplot files"))
 {
 
 }

@@ -36,10 +36,10 @@ namespace sofa::component::constraint::projective
 template <class TDataTypes>
 LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(nullptr)
-    , d_indices( initData(&d_indices,"indices","Indices of the constrained points") )
-    , d_keyTimes(  initData(&d_keyTimes,"keyTimes","key times for the movements") )
-    , d_keyVelocities(  initData(&d_keyVelocities,"velocities","velocities corresponding to the key times") )
-    , d_coordinates( initData(&d_coordinates, "coordinates", "coordinates on which to apply velocities") )
+    , d_indices( initData("indices","Indices of the constrained points") )
+    , d_keyTimes(  initData("keyTimes","key times for the movements") )
+    , d_keyVelocities(  initData("velocities","velocities corresponding to the key times") )
+    , d_coordinates( initData( "coordinates", "coordinates on which to apply velocities") )
     , l_topology(initLink("topology", "link to the topology container"))
     , finished(false)
 {

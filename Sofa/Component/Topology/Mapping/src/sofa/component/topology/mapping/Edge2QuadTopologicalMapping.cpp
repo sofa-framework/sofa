@@ -57,12 +57,12 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 // Implementation
 Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     : TopologicalMapping()
-    , d_nbPointsOnEachCircle( initData(&d_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
-    , d_radius( initData(&d_radius, 1., "radius", "Radius of created circles in yz plan"))
-    , d_radiusFocal( initData(&d_radiusFocal, 0., "radiusFocal", "If greater than 0., radius in focal axis of created ellipses"))
-    , d_focalAxis( initData(&d_focalAxis, Vec(0,0,1), "focalAxis", "In case of ellipses"))
-    , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
-    , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
+    , d_nbPointsOnEachCircle( initData( "nbPointsOnEachCircle", "Discretization of created circles"))
+    , d_radius( initData( 1., "radius", "Radius of created circles in yz plan"))
+    , d_radiusFocal( initData( 0., "radiusFocal", "If greater than 0., radius in focal axis of created ellipses"))
+    , d_focalAxis( initData( Vec(0,0,1), "focalAxis", "In case of ellipses"))
+    , d_edgeList(initData( "edgeList", "list of input edges for the topological mapping: by default, all considered"))
+    , d_flipNormals(initData( bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
 {
 }
 

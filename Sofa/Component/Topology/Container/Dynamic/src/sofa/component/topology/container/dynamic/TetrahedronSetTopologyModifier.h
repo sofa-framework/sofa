@@ -58,7 +58,7 @@ public:
 protected:
     TetrahedronSetTopologyModifier()
         : TriangleSetTopologyModifier()
-        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
+        , removeIsolated( initData(true, "removeIsolated", "remove Isolated dof") )
     {}
 
     ~TetrahedronSetTopologyModifier() override {}

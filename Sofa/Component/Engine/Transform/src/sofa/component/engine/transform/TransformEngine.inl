@@ -32,13 +32,13 @@ namespace sofa::component::engine::transform
 
 template <class DataTypes>
 TransformEngine<DataTypes>::TransformEngine()
-    : f_inputX ( initData (&f_inputX, "input_position", "input array of 3d points") )
-    , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
-    , translation(initData(&translation, type::Vector3(0,0,0),"translation", "translation vector ") )
-    , rotation(initData(&rotation, type::Vector3(0,0,0), "rotation", "rotation vector ") )
-    , quaternion(initData(&quaternion, type::Quat<SReal>(0,0,0,1), "quaternion", "rotation quaternion ") )
-    , scale(initData(&scale, type::Vector3(1,1,1),"scale", "scale factor") )
-    , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
+    : f_inputX ( initData( "input_position", "input array of 3d points") )
+    , f_outputX( initData( "output_position", "output array of 3d points") )
+    , translation(initData( type::Vector3(0,0,0),"translation", "translation vector ") )
+    , rotation(initData( type::Vector3(0,0,0), "rotation", "rotation vector ") )
+    , quaternion(initData( type::Quat<SReal>(0,0,0,1), "quaternion", "rotation quaternion ") )
+    , scale(initData( type::Vector3(1,1,1),"scale", "scale factor") )
+    , inverse(initData( false, "inverse", "true to apply inverse transformation"))
 {
     addInput(&f_inputX);
     addInput(&translation);

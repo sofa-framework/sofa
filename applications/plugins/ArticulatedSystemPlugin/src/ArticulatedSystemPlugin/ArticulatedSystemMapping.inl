@@ -38,7 +38,7 @@ ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
     : ahc(nullptr)
     , m_fromModel(nullptr), m_toModel(nullptr), m_fromRootModel(nullptr)
     , l_container(initLink("container", "Path to ArticulatedHierarchyContainer."))
-    , d_indexFromRoot(initData(&d_indexFromRoot, (unsigned int)0, "indexInput2", "Corresponding index if the base of the articulated system is attached to input2. Default is last index."))
+    , d_indexFromRoot(initData( (unsigned int)0, "indexInput2", "Corresponding index if the base of the articulated system is attached to input2. Default is last index."))
 {
 
 }

@@ -40,11 +40,11 @@ static const SReal s_null_distance_epsilon = std::numeric_limits<SReal>::epsilon
 template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
     : Inherit()
-    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
-    , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color,sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
-    , d_geometricStiffness(initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , f_computeDistance(initData( false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+    , f_restLengths(initData( "restLengths", "Rest lengths of the connections"))
+    , d_showObjectScale(initData( Real(0), "showObjectScale", "Scale for object display"))
+    , d_color(initData(sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_geometricStiffness(initData( 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }
@@ -394,12 +394,12 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 template <class TIn, class TOut>
 DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     : Inherit()
-    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
-    , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
-    , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
-    , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , f_computeDistance(initData( false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+    , f_restLengths(initData( "restLengths", "Rest lengths of the connections"))
+    , d_showObjectScale(initData( Real(0), "showObjectScale", "Scale for object display"))
+    , d_color(initData( sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_indexPairs(initData( "indexPairs", "list of couples (parent index + index in the parent)"))
+    , d_geometricStiffness(initData( (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }

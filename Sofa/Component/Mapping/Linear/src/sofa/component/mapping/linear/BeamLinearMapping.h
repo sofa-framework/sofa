@@ -77,10 +77,10 @@ protected:
 
     BeamLinearMapping()
         : Inherit()
-        //, index(initData(&index,(unsigned)0,"index","input DOF index"))
+        //, index(initData((unsigned)0,"index","input DOF index"))
         , matrixJ()
         , updateJ(false)
-        , localCoord(initData(&localCoord,true,"localCoord","true if initial coordinates are in the beam local coordinate system (i.e. a point at (10,0,0) is on the DOF number 10, whereas if this is false it is at whatever position on the beam where the distance from the initial DOF is 10)"))
+        , localCoord(initData(true,"localCoord","true if initial coordinates are in the beam local coordinate system (i.e. a point at (10,0,0) is on the DOF number 10, whereas if this is false it is at whatever position on the beam where the distance from the initial DOF is 10)"))
     {
     }
 

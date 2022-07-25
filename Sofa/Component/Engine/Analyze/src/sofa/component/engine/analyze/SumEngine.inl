@@ -30,8 +30,8 @@ namespace sofa::component::engine::analyze
 
 template <class DataTypes>
 SumEngine<DataTypes>::SumEngine()
-    : d_input ( initData (&d_input, "input", "input vector") )
-    , d_output( initData (&d_output, "output", "output sum") )
+    : d_input ( initData( "input", "input vector") )
+    , d_output( initData( "output", "output sum") )
 {
     addInput(&d_input);
     addOutput(&d_output);

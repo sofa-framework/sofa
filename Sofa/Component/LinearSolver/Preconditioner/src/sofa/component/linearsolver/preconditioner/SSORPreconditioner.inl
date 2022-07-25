@@ -35,8 +35,8 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TMatrix, class TVector, class TThreadManager>
 SSORPreconditioner<TMatrix,TVector,TThreadManager>::SSORPreconditioner()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_omega( initData(&f_omega,1.0, "omega","Omega coefficient") )
+    : f_verbose( initData(false,"verbose","Dump system state at each iteration") )
+    , f_omega( initData(1.0, "omega","Omega coefficient") )
 {
 }
 

@@ -31,9 +31,9 @@ namespace sofa::component::engine::generate
 
 template <class DataTypes>
 Spiral<DataTypes>::Spiral()
-    : f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
-    , f_X( initData (&f_X, "position", "Position coordinates of the degrees of freedom") )
-    , curvature( initData (&curvature, Real(0.2),"curvature", "Spiral curvature factor") )
+    : f_X0( initData( "rest_position", "Rest position coordinates of the degrees of freedom") )
+    , f_X( initData( "position", "Position coordinates of the degrees of freedom") )
+    , curvature( initData( Real(0.2),"curvature", "Spiral curvature factor") )
 {
     addInput(&f_X0);
     addOutput(&f_X);

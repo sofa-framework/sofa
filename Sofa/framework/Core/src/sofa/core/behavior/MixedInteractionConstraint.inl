@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 template<class DataTypes1, class DataTypes2>
 MixedInteractionConstraint<DataTypes1, DataTypes2>::MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
     : Inherit1(), Inherit2(mm1, mm2)
-    , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+    , endTime( initData((SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 

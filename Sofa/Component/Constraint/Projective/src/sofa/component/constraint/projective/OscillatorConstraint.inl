@@ -31,7 +31,7 @@ namespace sofa::component::constraint::projective
 template <class TDataTypes>
 OscillatorConstraint<TDataTypes>::OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate)
     : core::behavior::ProjectiveConstraintSet<TDataTypes>(mstate)
-    , constraints(initData(&constraints,"oscillators","Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
+    , constraints(initData("oscillators","Define a sequence of oscillating particules: \n[index, Mean(x,y,z), amplitude(x,y,z), pulsation, phase]"))
 {
 }
 

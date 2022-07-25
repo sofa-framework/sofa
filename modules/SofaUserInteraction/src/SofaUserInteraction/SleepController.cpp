@@ -109,9 +109,9 @@ bool StateTester<defaulttype::Rigid3Types>::wantsToSleep(core::behavior::BaseMec
 }
 
 SleepController::SleepController()
-    : d_minTimeSinceWakeUp(initData(&d_minTimeSinceWakeUp, 0.1, "minTimeSinceWakeUp", "Do not do anything before objects have been moving for this duration"))
-    , d_speedThreshold(initData(&d_speedThreshold, (SReal)0.001, "immobileThreshold", "Speed value under which we consider a particule to be immobile"))
-    , d_rotationThreshold(initData(&d_rotationThreshold, (SReal)0.0, "rotationThreshold", "If non null, this is the rotation speed value under which we consider a particule to be immobile"))
+    : d_minTimeSinceWakeUp(initData( 0.1, "minTimeSinceWakeUp", "Do not do anything before objects have been moving for this duration"))
+    , d_speedThreshold(initData( (SReal)0.001, "immobileThreshold", "Speed value under which we consider a particule to be immobile"))
+    , d_rotationThreshold(initData( (SReal)0.0, "rotationThreshold", "If non null, this is the rotation speed value under which we consider a particule to be immobile"))
 {
     f_listening.setValue(true);
 

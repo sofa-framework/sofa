@@ -32,21 +32,21 @@ namespace sofa::component::container
 {
 
 Articulation::Articulation():
-    axis(initData(&axis, type::Vector3(1,0,0), "axis", "Set the rotation axis for the articulation")),
-    rotation(initData(&rotation, (bool) false, "rotation", "Rotation")),
-    translation(initData(&translation, (bool) false, "translation", "Translation")),
-    articulationIndex(initData(&articulationIndex, (int) 0, "articulationIndex", "Articulation index"))
+    axis(initData( type::Vector3(1,0,0), "axis", "Set the rotation axis for the articulation")),
+    rotation(initData( (bool) false, "rotation", "Rotation")),
+    translation(initData( (bool) false, "translation", "Translation")),
+    articulationIndex(initData( (int) 0, "articulationIndex", "Articulation index"))
 {
     this->addAlias(&axis, "rotationAxis");
 }
 
 ArticulationCenter::ArticulationCenter():
-    parentIndex(initData(&parentIndex, "parentIndex", "Parent of the center articulation")),
-    childIndex(initData(&childIndex, "childIndex", "Child of the center articulation")),
-    globalPosition(initData(&globalPosition, "globalPosition", "Global position of the articulation center")),
-    posOnParent(initData(&posOnParent, "posOnParent", "Parent position of the articulation center")),
-    posOnChild(initData(&posOnChild, "posOnChild", "Child position of the articulation center")),
-    articulationProcess(initData(&articulationProcess, (int) 0, "articulationProcess", " 0 - (default) hierarchy between articulations (euler angles)\n 1- ( on Parent) no hierarchy - axis are attached to the parent\n 2- (attached on Child) no hierarchy - axis are attached to the child"))
+    parentIndex(initData( "parentIndex", "Parent of the center articulation")),
+    childIndex(initData( "childIndex", "Child of the center articulation")),
+    globalPosition(initData( "globalPosition", "Global position of the articulation center")),
+    posOnParent(initData( "posOnParent", "Parent position of the articulation center")),
+    posOnChild(initData( "posOnChild", "Child position of the articulation center")),
+    articulationProcess(initData( (int) 0, "articulationProcess", " 0 - (default) hierarchy between articulations (euler angles)\n 1- ( on Parent) no hierarchy - axis are attached to the parent\n 2- (attached on Child) no hierarchy - axis are attached to the child"))
 {
 }
 
@@ -84,7 +84,7 @@ type::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList
 }
 
 ArticulatedHierarchyContainer::ArticulatedHierarchyContainer():
-    filename(initData(&filename, "filename", "BVH File to load the articulation", false))
+    filename(initData( std::string("filename"), "BVH File to load the articulation", false))
 {
     joint = nullptr;
     id = 0;
