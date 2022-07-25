@@ -48,9 +48,9 @@ namespace mapping
 template <class In, class Out>
 SPHFluidSurfaceMapping<In, Out>::SPHFluidSurfaceMapping()
     : Inherit()
-    , d_mStep(initData(&d_mStep, 0.5, "step", "Step"))
-    , d_mRadius(initData(&d_mRadius, 2.0, "radius", "Radius"))
-    , d_mIsoValue(initData(&d_mIsoValue, 0.5, "isoValue", "Iso Value"))
+    , d_mStep(initData(0.5, "step", "Step"))
+    , d_mRadius(initData(2.0, "radius", "Radius"))
+    , d_mIsoValue(initData(0.5, "isoValue", "Iso Value"))
     , sph(nullptr)
     , grid(nullptr)
     , firstApply(true)

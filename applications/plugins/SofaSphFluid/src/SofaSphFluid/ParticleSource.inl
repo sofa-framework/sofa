@@ -39,16 +39,16 @@ namespace misc
 
 template<class DataTypes>
 ParticleSource<DataTypes>::ParticleSource()
-    : d_translation(initData(&d_translation, Coord(), "translation", "translation applied to center(s)"))
-    , d_scale(initData(&d_scale, (Real)1.0, "scale", "scale applied to center(s)"))
-    , d_center(initData(&d_center, "center", "Source center(s)"))
-    , d_radius(initData(&d_radius, Coord(), "radius", "Source radius"))
-    , d_velocity(initData(&d_velocity, Deriv(), "velocity", "Particle initial velocity"))
-    , d_delay(initData(&d_delay, (Real)0.01, "delay", "Delay between particles creation"))
-    , d_start(initData(&d_start, (Real)0, "start", "Source starting time"))
-    , d_stop(initData(&d_stop, (Real)1e10, "stop", "Source stopping time"))
+    : d_translation(initData(Coord(), "translation", "translation applied to center(s)"))
+    , d_scale(initData((Real)1.0, "scale", "scale applied to center(s)"))
+    , d_center(initData("center", "Source center(s)"))
+    , d_radius(initData(Coord(), "radius", "Source radius"))
+    , d_velocity(initData(Deriv(), "velocity", "Particle initial velocity"))
+    , d_delay(initData((Real)0.01, "delay", "Delay between particles creation"))
+    , d_start(initData((Real)0, "start", "Source starting time"))
+    , d_stop(initData((Real)1e10, "stop", "Source stopping time"))
     , m_numberParticles(0)
-    , m_lastparticles(initData(&m_lastparticles, "lastparticles", "lastparticles indices"))
+    , m_lastparticles(initData("lastparticles", "lastparticles indices"))
 {
     this->f_listening.setValue(true);
     d_center.beginEdit()->push_back(Coord()); d_center.endEdit();

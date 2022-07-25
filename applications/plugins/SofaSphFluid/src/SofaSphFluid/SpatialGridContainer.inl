@@ -666,10 +666,10 @@ void SpatialGrid<DataTypes>::draw(const core::visual::VisualParams* )
 template<class DataTypes>
 SpatialGridContainer<DataTypes>::SpatialGridContainer()
     : grid(nullptr)
-    , d_cellWidth(initData(&d_cellWidth, (Real)1.0, "cellWidth", "Width each cell in the grid. If it is used to compute neighboors, it should be greater than the max radius considered."))
-    , d_showGrid(initData(&d_showGrid, false, "showGrid", "activate rendering of the grid"))
-    , d_autoUpdate(initData(&d_autoUpdate, false, "autoUpdate", "Automatically update the grid at each iteration."))
-    , d_sortPoints(initData(&d_sortPoints, false, "sortPoints", "Sort points depending on which cell they are in the grid. This is required for efficient collision detection."))
+    , d_cellWidth(initData((Real)1.0, "cellWidth", "Width each cell in the grid. If it is used to compute neighboors, it should be greater than the max radius considered."))
+    , d_showGrid(initData(false, "showGrid", "activate rendering of the grid"))
+    , d_autoUpdate(initData(false, "autoUpdate", "Automatically update the grid at each iteration."))
+    , d_sortPoints(initData(false, "sortPoints", "Sort points depending on which cell they are in the grid. This is required for efficient collision detection."))
     , mstate(nullptr)
 {
     this->f_listening.setValue(true);

@@ -42,9 +42,9 @@ namespace forcefield
 
 template<class DataTypes>
 ParticlesRepulsionForceField<DataTypes>::ParticlesRepulsionForceField()
-    : distance (initData(&distance, Real(1)   , "distance", "Distance to maintain between particles"))
-    , stiffness(initData(&stiffness, Real(100), "stiffness", "Stiffness"))
-    , damping  (initData(&damping  , Real(0.1), "damping", "Damping"))
+    : distance (initData(Real(1)   , "distance", "Distance to maintain between particles"))
+    , stiffness(initData(Real(100), "stiffness", "Stiffness"))
+    , damping  (initData(Real(0.1), "damping", "Damping"))
     , grid(nullptr)
 {
 }

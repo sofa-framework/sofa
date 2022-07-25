@@ -37,11 +37,11 @@ namespace misc
 
 template<class DataTypes>
 ParticleSink<DataTypes>::ParticleSink()
-    : d_planeNormal(initData(&d_planeNormal, "normal", "plane normal"))
-    , d_planeD0(initData(&d_planeD0, (Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
-    , d_planeD1(initData(&d_planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
-    , d_showPlane(initData(&d_showPlane, false, "showPlane", "enable/disable drawing of plane"))
-    , d_fixed(initData(&d_fixed, "fixed", "indices of fixed particles"))
+    : d_planeNormal(initData("normal", "plane normal"))
+    , d_planeD0(initData((Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
+    , d_planeD1(initData((Real)0, "d1", "plane d coef at which particles are removed"))
+    , d_showPlane(initData(false, "showPlane", "enable/disable drawing of plane"))
+    , d_fixed(initData("fixed", "indices of fixed particles"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topoModifier(nullptr)
 {

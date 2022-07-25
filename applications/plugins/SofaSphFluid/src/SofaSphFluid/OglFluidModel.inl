@@ -27,14 +27,14 @@ const float SPRITE_SCALE_DIV = tanf(65.0f * ((float)M_PI_2 / 180.0f));
 
 template<class DataTypes>
 OglFluidModel<DataTypes>::OglFluidModel()
-    : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-    , d_debugFBO(initData(&d_debugFBO, unsigned(9), "debugFBO", "DEBUG FBO"))
-    , d_spriteRadius(initData(&d_spriteRadius, 1.0f,"spriteRadius", "Radius of sprites"))
-    , d_spriteThickness(initData(&d_spriteThickness, 0.01f,"spriteThickness", "Thickness of sprites"))
-    , d_spriteBlurRadius(initData(&d_spriteBlurRadius,  float(10.f), "spriteBlurRadius", "Blur radius (in pixels)"))
-    , d_spriteBlurScale(initData(&d_spriteBlurScale, 0.1f, "spriteBlurScale", "Blur scale"))
-    , d_spriteBlurDepthFalloff(initData(&d_spriteBlurDepthFalloff, 1.0f,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
-    , d_spriteDiffuseColor(initData(&d_spriteDiffuseColor, sofa::type::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
+    : m_positions(initData("position", "Vertices coordinates"))
+    , d_debugFBO(initData(unsigned(9), "debugFBO", "DEBUG FBO"))
+    , d_spriteRadius(initData(1.0f,"spriteRadius", "Radius of sprites"))
+    , d_spriteThickness(initData(0.01f,"spriteThickness", "Thickness of sprites"))
+    , d_spriteBlurRadius(initData(float(10.f), "spriteBlurRadius", "Blur radius (in pixels)"))
+    , d_spriteBlurScale(initData(0.1f, "spriteBlurScale", "Blur scale"))
+    , d_spriteBlurDepthFalloff(initData(1.0f,"spriteBlurDepthFalloff", "Blur Depth Falloff"))
+    , d_spriteDiffuseColor(initData(sofa::type::RGBAColor::blue(),"spriteDiffuseColor", "Diffuse Color"))
 {
 }
 

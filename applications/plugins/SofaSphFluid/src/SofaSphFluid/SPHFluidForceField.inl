@@ -40,17 +40,17 @@ namespace forcefield
 
 template<class DataTypes>
 SPHFluidForceField<DataTypes>::SPHFluidForceField()
-    : d_particleRadius (initData(&d_particleRadius, Real(1), "radius", "Radius of a Particle"))
-    , d_particleMass (initData(&d_particleMass, Real(1), "mass", "Mass of a Particle"))
-    , d_pressureStiffness (initData(&d_pressureStiffness, Real(100), "pressure", "Pressure"))
-    , d_density0 (initData(&d_density0, Real(1), "density", "Density"))
-    , d_viscosity (initData(&d_viscosity, Real(0.001f), "viscosity", "Viscosity"))
-    , d_surfaceTension (initData(&d_surfaceTension, Real(0), "surfaceTension", "Surface Tension"))
-    , d_kernelType(initData(&d_kernelType, 0, "kernelType", "0 = default kernels, 1 = cubic spline"))
-    , d_pressureType(initData(&d_pressureType, 1, "pressureType", "0 = none, 1 = default pressure"))
-    , d_viscosityType(initData(&d_viscosityType, 1, "viscosityType", "0 = none, 1 = default d_viscosity using kernel Laplacian, 2 = artificial d_viscosity"))
-    , d_surfaceTensionType(initData(&d_surfaceTensionType, 1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
-    , d_debugGrid(initData(&d_debugGrid, false, "debugGrid", "If true will store additionnal information on the grid to check neighbors and draw them"))
+    : d_particleRadius (initData(Real(1), "radius", "Radius of a Particle"))
+    , d_particleMass (initData(Real(1), "mass", "Mass of a Particle"))
+    , d_pressureStiffness (initData(Real(100), "pressure", "Pressure"))
+    , d_density0 (initData(Real(1), "density", "Density"))
+    , d_viscosity (initData(Real(0.001f), "viscosity", "Viscosity"))
+    , d_surfaceTension (initData(Real(0), "surfaceTension", "Surface Tension"))
+    , d_kernelType(initData(0, "kernelType", "0 = default kernels, 1 = cubic spline"))
+    , d_pressureType(initData(1, "pressureType", "0 = none, 1 = default pressure"))
+    , d_viscosityType(initData(1, "viscosityType", "0 = none, 1 = default d_viscosity using kernel Laplacian, 2 = artificial d_viscosity"))
+    , d_surfaceTensionType(initData(1, "surfaceTensionType", "0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007"))
+    , d_debugGrid(initData(false, "debugGrid", "If true will store additionnal information on the grid to check neighbors and draw them"))
     , m_grid(nullptr)
 {
 
