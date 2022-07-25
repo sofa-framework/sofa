@@ -24,9 +24,16 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/gpu/cuda/CudaTypes.h>
 
-namespace sofa::gpu::cuda
+namespace sofa::component::mechanicalload
 {
-    using namespace sofa::component::mechanicalload;
+
+    using namespace sofa::gpu::cuda;
+
+    template <> SOFA_GPU_CUDA_API
+    SReal ConstantForceField<CudaRigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+    // template <> SOFA_GPU_CUDA_API
+    // SReal ConstantForceField<CudaRigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+
 
     // Register in the Factory
     int ConstantForceFieldCudaClass = core::RegisterObject("Constant forces applied to given degrees of freedom")
@@ -34,6 +41,8 @@ namespace sofa::gpu::cuda
         .add< ConstantForceField<CudaVec2Types> >()
         .add< ConstantForceField<CudaVec1Types> >()
         .add< ConstantForceField<CudaVec6Types> >()
+        .add< ConstantForceField<CudaRigid3Types> >()
+        // .add< ConstantForceField<CudaRigid2Types> >()
     ;
 } // namespace sofa::gpu::cuda
 
@@ -45,4 +54,6 @@ namespace sofa::component::mechanicalload
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6Types>;
+    template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3Types>;
+    // template class SOFA_COMPONENT_MECHANICALLOAD_API ConstantForceField<CudaRigid2Types>;
 } // namespace sofa::component::mechanicalload
