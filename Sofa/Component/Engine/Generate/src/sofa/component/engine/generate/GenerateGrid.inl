@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "GenerateGrid.h"
+#include <sofa/component/engine/generate/GenerateGrid.h>
 
 namespace sofa::component::engine::generate
 {
@@ -90,7 +90,7 @@ void GenerateGrid<DataTypes>::doUpdate()
     Coord origin;
 
     const auto& minCorder = d_minCorner.getValue();
-    for (auto i = 0; i < Coord::spatial_dimensions; i++)
+    for (sofa::Index i = 0; i < Coord::spatial_dimensions; i++)
     {
         origin[i] = minCorder[i];
     }
@@ -107,7 +107,7 @@ void GenerateGrid<DataTypes>::doUpdate()
             for(i=0;i<=freqL;i++) {
                 // handle Vec2D case
                 const Vec3 t { i * length, j * width, k * height };
-                for (auto c = 0; c < Coord::spatial_dimensions; c++)
+                for (sofa::Index c = 0; c < Coord::spatial_dimensions; c++)
                 {
                     pos[c] = t[c];
                 }

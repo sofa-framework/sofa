@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <regex>
-#include "PathResolver.h"
+#include <sofa/core/PathResolver.h>
 #include <sofa/core/objectmodel/DataLink.h>
 #include <sofa/core/objectmodel/Base.h>
 

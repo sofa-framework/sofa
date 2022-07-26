@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "DistanceMapping.h"
+#include <sofa/component/mapping/nonlinear/DistanceMapping.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>

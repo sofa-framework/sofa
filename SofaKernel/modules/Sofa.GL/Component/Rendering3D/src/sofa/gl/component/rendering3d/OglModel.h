@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/gl/component/rendering3d/config.h>
 
+#include <vector>
+#include <string>
 #include <sofa/gl/template.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -29,9 +31,8 @@
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/visual/VisualModelImpl.h>
-#include <vector>
-#include <string>
-#include <type_traits>
+
+#define   NB_MAX_TEXTURES 16
 
 namespace sofa::gl::component::rendering3d
 {
@@ -80,6 +81,11 @@ protected:
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
 
+    /// These two buffers are used to convert the data field to float type before being sent to
+    /// opengl
+    std::vector<sofa::type::Vec3f> verticesTmpBuffer;
+    std::vector<sofa::type::Vec3f> normalsTmpBuffer;
+
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
 
     void drawGroup(int ig, bool transparent);
@@ -99,18 +105,6 @@ protected:
 
     ~OglModel() override;
 public:
-
-    static constexpr auto glTypeReal()
-    {
-        if constexpr (std::is_same_v< SReal, double>)
-        {
-            return GL_DOUBLE;
-        }
-        else
-        {
-            return GL_FLOAT;
-        }
-    }
 
     bool loadTexture(const std::string& filename) override;
     bool loadTextures() override;

@@ -161,6 +161,8 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // reserve vector before filling it
     my_triangles.reserve( nbrFacet );
 
+    unsigned int nbDegeneratedTriangles = 0;
+
     // Parsing facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
@@ -213,18 +215,28 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
             }
         }
 
-        this->addTriangle(my_triangles.wref(), the_tri);
+        if (the_tri[0] == the_tri[1] || the_tri[1] == the_tri[2] || the_tri[0] == the_tri[2])
+        {
+            ++nbDegeneratedTriangles;
+        }
+        else
+        {
+            this->addTriangle(my_triangles.wref(), the_tri);
+        }
 
         // Attribute byte count
         uint16_t count;
         dataFile.read((char*)&count, 2);
     }
 
-    if(my_triangles.size() != (size_t)nbrFacet)
+    if(my_triangles.size() != (size_t)(nbrFacet - nbDegeneratedTriangles))
     {
         msg_error() << "Size mismatch between triangle vector and facetSize";
         return false;
     }
+
+    msg_warning_when(nbDegeneratedTriangles > 0) << "Found " << nbDegeneratedTriangles << " degenerated triangles ("
+        "triangles which indices are not all different). Those triangles have not been added to the list of triangles";
 
     dmsg_info() << "done!" ;
     return true;

@@ -27,16 +27,10 @@
 #define DEFAULTSTYLEMESSAGEFORMATTER_H
 #include <sstream>
 #include <string>
-#include "MessageFormatter.h"
+#include <sofa/helper/logging/MessageFormatter.h>
 
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 class Message;
@@ -62,9 +56,6 @@ private:
     DefaultStyleMessageFormatter (const DefaultStyleMessageFormatter &);
     void operator= (const DefaultStyleMessageFormatter &);
 };
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 
 #endif // DEFAULTSTYLEMESSAGEFORMATTER_H

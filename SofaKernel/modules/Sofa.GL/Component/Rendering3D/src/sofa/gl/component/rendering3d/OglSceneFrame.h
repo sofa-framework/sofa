@@ -24,13 +24,12 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/gl/glu.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::gl::component::rendering3d
 {
 
-class OglSceneFrame : public core::visual::VisualModel
+class SOFA_GL_COMPONENT_RENDERING3D_API OglSceneFrame : public core::visual::VisualModel
 {
 
 public:
@@ -38,22 +37,24 @@ public:
 
     typedef core::visual::VisualParams::Viewport Viewport;
 
-    Data<bool> drawFrame; ///< Display the frame or not
-    Data<sofa::helper::OptionsGroup> style; ///< Style of the frame
-    Data<sofa::helper::OptionsGroup> alignment; ///< Alignment of the frame in the view
+    Data<bool> d_drawFrame; ///< Display the frame or not
+    Data<sofa::helper::OptionsGroup> d_style; ///< Style of the frame
+    Data<sofa::helper::OptionsGroup> d_alignment; ///< Alignment of the frame in the view
+    Data<int> d_viewportSize; ///< Size of the viewport where the frame is rendered
 
     OglSceneFrame();
 
     void init() override;
     void reinit() override;
     void draw(const core::visual::VisualParams*) override;
-    void updateVisual() override;
 
+    SOFA_ATTRIBUTE_DISABLED__RENDERING3D_DATA_WITH_PREFIX
+    DeprecatedAndRemoved drawFrame, style, alignment;
 
-protected:
-
-    GLUquadricObj *quadratic;
-
+private:
+    static void drawArrows(const core::visual::VisualParams* vparams);
+    static void drawCylinders(const core::visual::VisualParams* vparams);
+    static void drawCubeCones(const core::visual::VisualParams* vparams);
 };
 
 } // namespace sofa::gl::component::rendering3d

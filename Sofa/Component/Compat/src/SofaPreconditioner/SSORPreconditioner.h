@@ -23,7 +23,7 @@
 
 #include <sofa/component/linearsolver/preconditioner/SSORPreconditioner.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/SSORPreconditioner.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/SSORPreconditioner.h")
 
 namespace sofa::component::linearsolver
 {

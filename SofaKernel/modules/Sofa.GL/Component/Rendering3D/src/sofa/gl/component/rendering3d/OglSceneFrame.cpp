@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/component/rendering3d/config.h>
-#include <sofa/core/ObjectFactory.h>
-
 #include <sofa/gl/component/rendering3d/OglSceneFrame.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/gl/gl.h>
 
 namespace sofa::gl::component::rendering3d
 {
@@ -34,21 +33,23 @@ int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of 
 using namespace sofa::defaulttype;
 
 OglSceneFrame::OglSceneFrame()
-    : drawFrame(initData(&drawFrame, true,  "draw", "Display the frame or not"))
-    , style(initData(&style, "style", "Style of the frame"))
-    , alignment(initData(&alignment, "alignment", "Alignment of the frame in the view"))
-    , quadratic(nullptr)
+    : d_drawFrame(initData(&d_drawFrame, true,  "draw", "Display the frame or not"))
+    , d_style(initData(&d_style, "style", "Style of the frame"))
+    , d_alignment(initData(&d_alignment, "alignment", "Alignment of the frame in the view"))
+    , d_viewportSize(initData(&d_viewportSize, 150, "viewportSize", "Size of the viewport where the frame is rendered"))
 {
     sofa::helper::OptionsGroup styleOptions(3,"Arrows", "Cylinders", "CubeCones");
     styleOptions.setSelectedItem(1);
-    style.setValue(styleOptions);
+    d_style.setValue(styleOptions);
 
     sofa::helper::OptionsGroup alignmentOptions(4,"BottomLeft", "BottomRight", "TopRight", "TopLeft");
     alignmentOptions.setSelectedItem(1);
-    alignment.setValue(alignmentOptions);
+    d_alignment.setValue(alignmentOptions);
 }
+
 void OglSceneFrame::init()
 {
+    Inherit1::init();
     updateVisual();
 }
 
@@ -57,42 +58,92 @@ void OglSceneFrame::reinit()
     updateVisual();
 }
 
-
-void OglSceneFrame::updateVisual()
+void OglSceneFrame::drawArrows(const core::visual::VisualParams* vparams)
 {
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        vparams->drawTool()->drawArrow(
+             {}, {i == 0, i == 1, i == 2},
+            0.05f,
+            sofa::core::visual::DrawTool::RGBAColor(i == 0, i == 1, i == 2, 1.)
+        );
+    }
+}
 
+void OglSceneFrame::drawCylinders(const core::visual::VisualParams* vparams)
+{
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        vparams->drawTool()->drawCylinder(
+             {}, {i == 0, i == 1, i == 2},
+            0.05f,
+            sofa::core::visual::DrawTool::RGBAColor(i == 0, i == 1, i == 2, 1.)
+        );
+    }
+}
+
+void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
+{
+    using Vector3 = sofa::core::visual::DrawTool::Vector3;
+    using Real = Vector3::value_type;
+    static constexpr Real s = 0.25;
+    static constexpr Vector3 p0 {-s, -s, -s};
+    static constexpr Vector3 p1 {s, -s, -s};
+    static constexpr Vector3 p2 {s, s, -s};
+    static constexpr Vector3 p3 {-s, s, -s};
+    static constexpr Vector3 p4 {-s, -s, s};
+    static constexpr Vector3 p5 {s, -s, s};
+    static constexpr Vector3 p6 {s, s, s};
+    static constexpr Vector3 p7 {-s, s, s};
+
+    vparams->drawTool()->drawHexahedron(p0, p1, p2, p3, p4, p5, p6, p7,
+        sofa::core::visual::DrawTool::RGBAColor::darkgray());
+
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        vparams->drawTool()->drawCone(
+             s * Vector3{i == 0, i == 1, i == 2}, static_cast<Real>(3) * s * Vector3{i == 0, i == 1, i == 2},
+            0, s,
+            sofa::core::visual::DrawTool::RGBAColor(i == 0, i == 1, i == 2, 1.)
+        );
+        vparams->drawTool()->drawCone(
+             - s * Vector3{i == 0, i == 1, i == 2}, - static_cast<Real>(3) * s * Vector3{i == 0, i == 1, i == 2},
+            0, s,
+            sofa::core::visual::DrawTool::RGBAColor::gray()
+        );
+    }
 }
 
 void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 {
-    if (!drawFrame.getValue()) return;
+    if (!d_drawFrame.getValue()) return;
 
-    glPushAttrib( GL_ALL_ATTRIB_BITS);
+    vparams->drawTool()->saveLastState();
 
     const Viewport& viewport = vparams->viewport();
 
-    switch(alignment.getValue().getSelectedId())
+    const auto viewportSize = d_viewportSize.getValue();
+
+    switch(d_alignment.getValue().getSelectedId())
     {
-        case 0:
+        case 0: //BottomLeft
         default:
-            glViewport(0,0,150,150);
-            glScissor(0,0,150,150);
+            glViewport(0,0,viewportSize,viewportSize);
+            glScissor(0,0,viewportSize,viewportSize);
             break;
-        case 1:
-            glViewport(viewport[2]-150,0,150,150);
-            glScissor(viewport[2]-150,0,150,150);
+        case 1: //BottomRight
+            glViewport(viewport[2]-viewportSize,0,viewportSize,viewportSize);
+            glScissor(viewport[2]-viewportSize,0,viewportSize,viewportSize);
             break;
-        case 2:
-            glViewport(viewport[2]-150,viewport[3]-150,150,150);
-            glScissor(viewport[2]-150,viewport[3]-150,150,150);
+        case 2: //TopRight
+            glViewport(viewport[2]-viewportSize,viewport[3]-viewportSize,viewportSize,viewportSize);
+            glScissor(viewport[2]-viewportSize,viewport[3]-viewportSize,viewportSize,viewportSize);
             break;
-        case 3:
-            glViewport(0,viewport[3]-150,150,150);
-            glScissor(0,viewport[3]-150,150,150);
+        case 3: //TopLeft
+            glViewport(0,viewport[3]-viewportSize,viewportSize,viewportSize);
+            glScissor(0,viewport[3]-viewportSize,viewportSize,viewportSize);
             break;
     }
-
-
 
 
     glEnable(GL_SCISSOR_TEST);
@@ -100,12 +151,12 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     glClearColor (1.0f, 1.0f, 1.0f, 0.0f);
 
     glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
+    vparams->drawTool()->pushMatrix();
     glLoadIdentity();
     gluPerspective(60.0, 1.0, 0.5, 10.0);
 
     GLdouble matrix[16];
-    glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
+    vparams->getModelViewMatrix(matrix);
 
     matrix[12] = 0;
     matrix[13] = 0;
@@ -113,173 +164,33 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     matrix[15] = 1;
 
     glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
+    vparams->drawTool()->pushMatrix();
     glLoadMatrixd(matrix);
 
-    if (!quadratic)
+    vparams->drawTool()->disableLighting();
+
+    switch (d_style.getValue().getSelectedId())
     {
-        quadratic = gluNewQuadric();
+    case 0:
+    default:
+        drawArrows(vparams);
+        break;
 
-        gluQuadricNormals(quadratic, GLU_SMOOTH);
-        gluQuadricTexture(quadratic, GL_TRUE);
-    }
+    case 1:
+        drawCylinders(vparams);
+        break;
 
-    glDisable(GL_LIGHTING);
-
-    if (quadratic)
-    {
-
-        switch (style.getValue().getSelectedId())
-        {
-            case 0:
-            default:
-                //X axis
-                glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-                glRotatef(90,0,1,0);
-                gluCylinder(quadratic,0.1f,0.1f,1.0f,32,32);
-                glRotatef(-90,0,1,0);
-
-                glTranslated(1.0f,0,0);
-                glRotatef(90,0,1,0);
-                gluDisk(quadratic,0,0.2f,32,32);
-                gluCylinder(quadratic,0.2f,0,0.2f,32,32);
-                glRotatef(-90,0,1,0);
-                glTranslated(-1.0f,0,0);
-
-                //Y axis
-                glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-                glRotatef(-90,1,0,0);
-                gluCylinder(quadratic,0.1f,0.1f,1.0f,32,32);
-                glRotatef(90,1,0,0);
-
-                glTranslated(0.0f, 1.0f, 0);
-                glRotatef(-90,1,0,0);
-                gluDisk(quadratic,0,0.2f,32,32);
-                gluCylinder(quadratic,0.2f,0,0.2f,32,32);
-                glRotatef(90,1,0,0);
-                glTranslated(0.0f, -1.0f, 0.0f);
-
-                //Z axis
-                glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-                gluCylinder(quadratic,0.1f,0.1f,1.0f,32,32);
-
-                glTranslated(0.0f, 0.0f, 1.0f);
-                gluDisk(quadratic,0,0.2f,32,32);
-                gluCylinder(quadratic,0.2f,0,0.2f,32,32);
-                glTranslated(0.0f, 0.0f, -1.0f);
-
-                break;
-
-            case 1:
-                //X axis
-                glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-                glRotatef(90,0,1,0);
-                gluCylinder(quadratic,0.05f,0.05f,1.0f,32,32);
-                glRotatef(-90,0,1,0);
-
-                //Y axis
-                glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-                glRotatef(-90,1,0,0);
-                gluCylinder(quadratic,0.05f,0.05f,1.0f,32,32);
-                glRotatef(90,1,0,0);
-
-                //Z axis
-                glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-                gluCylinder(quadratic,0.05f,0.05f,1.0f,32,32);
-
-                break;
-
-            case 2:
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-
-                GLfloat s = 0.25f;
-
-                glBegin(GL_QUADS);
-                    glVertex3f(-s, -s,  s);
-                    glVertex3f( s, -s,  s);
-                    glVertex3f( s,  s,  s);
-                    glVertex3f(-s,  s,  s);
-
-                    glVertex3f(-s, -s, -s);
-                    glVertex3f(-s,  s, -s);
-                    glVertex3f( s,  s, -s);
-                    glVertex3f( s, -s, -s);
-
-                    glVertex3f(-s,  s, -s);
-                    glVertex3f(-s,  s,  s);
-                    glVertex3f( s,  s,  s);
-                    glVertex3f( s,  s, -s);
-
-                    glVertex3f(-s, -s, -s);
-                    glVertex3f( s, -s, -s);
-                    glVertex3f( s, -s,  s);
-                    glVertex3f(-s, -s,  s);
-
-                    glVertex3f( s, -s, -s);
-                    glVertex3f( s,  s, -s);
-                    glVertex3f( s,  s,  s);
-                    glVertex3f( s, -s,  s);
-
-                    glVertex3f(-s, -s, -s);
-                    glVertex3f(-s, -s,  s);
-                    glVertex3f(-s,  s,  s);
-                    glVertex3f(-s,  s, -s);
-                glEnd();
-
-                //X axis
-                glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-                glTranslated(s,0,0);
-                glRotatef(90,0,1,0);
-                gluCylinder(quadratic,0,s,s*3.0f,32,32);
-                glRotatef(-90,0,1,0);
-                glTranslated(-s,0,0);
-
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-                glTranslated(-s,0,0);
-                glRotatef(-90,0,1,0);
-                gluCylinder(quadratic,0,s,s*3.0f,32,32);
-                glRotatef(90,0,1,0);
-                glTranslated(s,0,0);
-
-                //Y axis
-                glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-                glTranslated(0.0f, s, 0);
-                glRotatef(-90,1,0,0);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glRotatef(90,1,0,0);
-                glTranslated(0.0f, -s, 0.0f);
-
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-                glTranslated(0.0f, -s, 0);
-                glRotatef(90,1,0,0);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glRotatef(-90,1,0,0);
-                glTranslated(0.0f, s, 0.0f);
-
-                //Z axis
-                glColor4f( 0.0f, 0.0f, 1.0f, 1.0f );
-                glTranslated(0.0f, 0.0f, s);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glTranslated(0.0f, 0.0f, -s);
-
-                glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-                glTranslated(0.0f, 0.0f, -s);
-                glRotatef(-180,0,1,0);
-                gluCylinder(quadratic,0.0f,s,s*3.0f,32,32);
-                glRotatef(180,0,1,0);
-                glTranslated(0.0f, 0.0f, s);
-
-
-                break;
-        }
+    case 2:
+        drawCubeCones(vparams);
+        break;
     }
 
     glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
+    vparams->drawTool()->popMatrix();
     glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    vparams->drawTool()->popMatrix();
 
-    glPopAttrib();
+    vparams->drawTool()->restoreLastState();
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
 }

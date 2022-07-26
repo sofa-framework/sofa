@@ -99,6 +99,7 @@ class SOFA_GUI_QT_API RealGUI : public QMainWindow, public Ui::GUI, public sofa:
 
 //-----------------STATIC METHODS------------------------{
 public:
+    static void setupSurfaceFormat();
     static common::BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
@@ -403,6 +404,15 @@ protected slots:
     /// Update the viewerMap and create viewer if we haven't yet one (the first of the list)
     /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void updateViewerList();
+
+    /// Update the scenegraph and activate the automatic refresh.
+    virtual void onSceneGraphRefreshButtonClicked();
+
+    /// Update the SceneGraph update button to reflect the dirtyness status.
+    virtual void sceneGraphViewDirtynessChanged(bool isDirty);
+
+    /// Update the SceneGraph update button to reflect the locking status.
+    virtual void sceneGraphViewLockingChanged(bool isLocked);
 
     void propertyDockMoved(Qt::DockWidgetArea a);
 

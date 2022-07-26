@@ -23,7 +23,7 @@
 
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/DiscreteIntersection.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/DiscreteIntersection.h")
 
 namespace sofa::component::collision
 {

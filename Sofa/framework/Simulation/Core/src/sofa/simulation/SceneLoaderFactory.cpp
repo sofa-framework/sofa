@@ -20,7 +20,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderFactory.h"
+#include <sofa/simulation/SceneLoaderFactory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 

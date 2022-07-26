@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "GUIManager.h"
+#include <sofa/gui/common/GUIManager.h>
 
-#include "BaseGUI.h"
+#include <sofa/gui/common/BaseGUI.h>
 #include <sofa/gui/common/ArgumentParser.h>
 
 #include <sofa/helper/Utils.h>

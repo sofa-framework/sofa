@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Locale.h"
+#include <sofa/helper/system/Locale.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <clocale>
 

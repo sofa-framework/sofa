@@ -34,7 +34,7 @@ void initSofaGeneralAnimationLoop()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaGeneralAnimationLoop") << "SofaGeneralAnimationLoop is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix and Sofa.Component.AnimationLoop instead.";
+        msg_deprecated("SofaGeneralAnimationLoop") << "SofaGeneralAnimationLoop is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix and Sofa.Component.AnimationLoop instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping.MappedMatrix");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.AnimationLoop");

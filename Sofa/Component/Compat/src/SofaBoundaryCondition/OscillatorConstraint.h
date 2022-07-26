@@ -23,7 +23,7 @@
 
 #include <sofa/component/constraint/projective/OscillatorConstraint.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/OscillatorConstraint.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/OscillatorConstraint.h")
 
 namespace sofa::component::projectiveconstraintset
 {

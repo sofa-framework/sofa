@@ -6,7 +6,7 @@ set(SOFACOMPONENTTOPOLOGYCONTAINER_SOURCE_DIR "src/sofa/component/topology/conta
 set(SOFACOMPONENTTOPOLOGYCONTAINER_DIRS Constant Dynamic Grid)
 set(SOFACOMPONENTTOPOLOGYCONTAINER_TARGETS)
 foreach(container_dir ${SOFACOMPONENTTOPOLOGYCONTAINER_DIRS})
-	sofang_add_component_subdirectory(${container_dir} ${PROJECT_NAME}.${container_dir})
+	sofa_add_component_subdirectory(${container_dir} ${PROJECT_NAME}.${container_dir})
 	list(APPEND SOFACOMPONENTTOPOLOGYCONTAINER_TARGETS ${PROJECT_NAME}.${container_dir})
 endforeach()
 

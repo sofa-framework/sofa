@@ -19,39 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/helper/system/SofaOStream.h>
-#include <sstream>
-#include <iostream>
+#include <sofa/config.h>
 
-namespace sofa
-{
+#cmakedefine01 SOFAPHYSICSAPI_HAVE_SOFAVALIDATION
 
-namespace helper
-{
-
-namespace system
-{
-#if 0
-SofaOStreamContainer::~SofaOStreamContainer()
-{
-}
-
-SofaOStream::SofaOStream()
-    : parent(nullptr)
-{
-}
-
-SofaOStream::~SofaOStream()
-{
-}
-
-void SofaOStream::setParent(SofaOStreamContainer* p)
-{
-    parent = p;
-}
+#ifdef SOFA_BUILD_SOFAPHYSICSAPI
+#  define SOFA_SOFAPHYSICSAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAPHYSICSAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-
-}
-}
-}

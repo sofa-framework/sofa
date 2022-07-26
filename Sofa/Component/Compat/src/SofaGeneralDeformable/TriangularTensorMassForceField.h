@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h")
 
 namespace sofa::component::forcefield
 {

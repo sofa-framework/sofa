@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#include <sofa/core/init.h>
 
 #include <sofa/defaulttype/init.h>
 #include <sofa/helper/init.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 static bool s_initialized = false;
@@ -71,7 +68,4 @@ static const struct CleanupCheck
             helper::printLibraryNotCleanedUpWarning("SofaCore", "sofa::core::cleanup()");
     }
 } check;
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core

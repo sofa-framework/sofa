@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PipeProcess.h"
+#include <sofa/helper/system/PipeProcess.h>
 
 #ifdef WIN32
 #include <windows.h>

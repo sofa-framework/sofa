@@ -20,42 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gl/component/rendering3d/config.h>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/config.h>
+SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/component/visual/VisualGrid.h")
+
+#include <sofa/component/visual/VisualGrid.h>
 
 namespace sofa::gl::component::rendering3d
 {
-
-class OglGrid : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(OglGrid, VisualModel);
-
-    typedef sofa::type::Vector3 Vector3;
-
-    enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
-
-    Data<std::string> plane; ///< Plane of the grid
-    PLANE internalPlane;
-
-    Data<float> size; ///< Size of the squared grid
-    Data<int> nbSubdiv; ///< Number of subdivisions
-
-    Data<sofa::type::RGBAColor> color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
-    Data<float> thickness; ///< Thickness of the lines in the grid
-    Data<bool> draw; ///< Display the grid or not
-
-    OglGrid();
-
-    void init() override;
-    void reinit() override;
-    void drawVisual(const core::visual::VisualParams*) override;
-    void updateVisual() override;
-
-protected:
-
-};
-
-} // namespace sofa::gl::component::rendering3d
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "sofa::gl::component::rendering3d::OglGrid has been replaced by sofa::component::visual::VisualGrid")
+    using OglGrid = sofa::component::visual::VisualGrid;
+}

@@ -23,7 +23,7 @@
 
 #include <sofa/linearalgebra/EigenVector.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenVector.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenVector.h")
 
 namespace sofa::component::linearsolver
 {

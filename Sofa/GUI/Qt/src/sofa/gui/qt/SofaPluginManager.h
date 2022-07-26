@@ -26,6 +26,8 @@
 
 #include <set>
 
+#include <sofa/type/vector.h>
+
 
 namespace sofa::gui::qt
 {
@@ -53,6 +55,9 @@ public:
     void updatePluginsListView();
 private:
     void savePluginsToIniFile();
+
+    std::string m_pluginsIniFile; ///< path to the saved/loaded list of plugins by SofaPluginManager
+    type::vector<std::string> m_loadedPlugins; ///< list of plugins loaded by SofaPluginManager
     void loadPluginsFromIniFile();
 };
 

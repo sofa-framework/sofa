@@ -19,24 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POINTCONSTRAINT_CPP
-#include <sofa/component/constraint/projective/PointConstraint.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/simulation/Node.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::constraint::projective
+namespace sofa::component::visual
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
+class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(VisualGrid, VisualModel);
+
+    typedef sofa::type::Vector3 Vector3;
+
+    enum PLANE
+    {
+        PLANE_X = 0,
+        PLANE_Y = 1,
+        PLANE_Z = 2
+    };
+
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+
+    Data<std::string> d_plane; ///< Plane of the grid
 
 
-int PointConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-        .add< PointConstraint<Vec3Types> >()
+    Data<float> d_size; ///< Size of the squared grid
+    Data<int> d_nbSubdiv; ///< Number of subdivisions
 
-        ;
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
 
-template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PointConstraint<Vec3Types>;
+    VisualGrid();
+    ~VisualGrid() override = default;
 
-} // namespace sofa::component::constraint::projective
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams*) override;
+    void updateVisual() override;
+    void buildGrid();
+
+protected:
+
+    PLANE internalPlane;
+
+    ///< Pre-computed points used to draw the grid
+    sofa::type::vector<Vector3> m_drawnPoints;
+
+};
+
+} // namespace sofa::component::visual

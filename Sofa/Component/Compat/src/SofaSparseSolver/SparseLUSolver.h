@@ -23,7 +23,7 @@
 
 #include <sofa/component/linearsolver/direct/SparseLUSolver.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseLUSolver.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseLUSolver.h")
 
 namespace sofa::component::linearsolver
 {

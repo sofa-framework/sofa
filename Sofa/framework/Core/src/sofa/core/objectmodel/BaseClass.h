@@ -298,10 +298,7 @@ public:
 {                                                                   \
     return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
     (this, name, help);                                             \
-}                                                                   \
-    using Inherit1::sout;                                               \
-    using Inherit1::serr;                                               \
-    using Inherit1::sendl
+}
 
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                        \

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "SphereForceField.h"
+#include <sofa/component/mechanicalload/SphereForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/rmath.h>
@@ -114,8 +114,8 @@ void SphereForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *
     {
         const Contact& c = (this->contacts.getValue())[i];
         unsigned int p = c.index;
-        for (int l=0; l<Deriv::total_size; ++l)
-            for (int k=0; k<Deriv::total_size; ++k)
+        for (sofa::Index l=0; l<Deriv::total_size; ++l)
+            for (sofa::Index k=0; k<Deriv::total_size; ++k)
             {
                 SReal coef = (c.normal[l] * c.normal[k] * c.fact + (l==k ? (1 - c.fact) : (SReal)0.0)) * fact;
                 mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + k, coef);

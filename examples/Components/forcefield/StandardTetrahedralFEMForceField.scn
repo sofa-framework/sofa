@@ -15,7 +15,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [Visual3DText VisualStyle] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="showForceFields showBehaviorModels" />
     <DefaultPipeline verbose="0" />
@@ -23,7 +22,6 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager />
 
     <Node name="Corrotational">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />

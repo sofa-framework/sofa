@@ -253,7 +253,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation()
 {
-    int nbTetrahedra=m_topology->getNbTetrahedra();
+    sofa::Size nbTetrahedra=m_topology->getNbTetrahedra();
 
     helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
 

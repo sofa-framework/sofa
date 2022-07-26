@@ -8,7 +8,6 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" />
-    <DefaultCollisionGroupManager name="Group" />
     <Node name="Pendulum Static Mesh">
         <MechanicalObject template="Vec3d" name="DOF" position="0 0 -2 1 0 -2 2 0 -2 3 0 -2 4 0 -2 5 0 -2" />
         <UniformMass template="Vec3d" name="Mass" totalMass="1" />

@@ -35,7 +35,7 @@ void initSofaValidation()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaValidation") << "SofaValidation is deprecated. It will be removed at v23.06. For CompareState and CompareTopology, use Sofa.Component.Playback instead.";
+        msg_deprecated("SofaValidation") << "SofaValidation is deprecated. It will be removed at v23.06. For CompareState and CompareTopology, use Sofa.Component.Playback instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Playback");
 

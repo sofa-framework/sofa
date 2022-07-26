@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "STLExporter.h"
+#include <sofa/component/io/mesh/STLExporter.h>
 
 #include <fstream>
 

@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "FileMonitor.h"
+#include <sofa/helper/system/FileMonitor.h>
 
 //TIP: use GetFileAttributesEx for windows ?
 
-#include "FileSystem.h"
+#include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 
 #include <sofa/helper/system/thread/CTime.h>

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_GENERATEGRID_CPP
-#include "GenerateGrid.inl"
+#include <sofa/component/engine/generate/GenerateGrid.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 

@@ -19,34 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSDATAMONITOR_IMPL_H
-#define SOFAPHYSICSDATAMONITOR_IMPL_H
+#include "SofaSceneGraphWidget.h"
 
-#include "SofaPhysicsAPI.h"
-#include <SofaValidation/DataMonitor.h>
-
-class SofaPhysicsDataMonitor::Impl
+namespace sofa::gui::qt
 {
-public:
 
-    Impl();
-    ~Impl();
+void SofaSceneGraphWidget::setViewToDirty()
+{
+    if(!m_isLocked)
+        return;
 
-    std::string m_internalValue; ///< Store the textual representation of the internal value.
+    if(m_isDirty)
+        return;
 
-    const char* getName(); ///< (non-unique) name of this object
-    ID          getID();   ///< unique ID of this object
+    m_isDirty = true;
+    emit dirtynessChanged(m_isDirty);
+}
 
-    const char* getValue();   ///< Get the value of the associated variable
+bool SofaSceneGraphWidget::isDirty()
+{
+    return m_isDirty;
+}
 
-    typedef sofa::component::misc::DataMonitor SofaDataMonitor;
+bool SofaSceneGraphWidget::isLocked()
+{
+    return m_isLocked;
+}
 
-protected:
-    SofaDataMonitor::SPtr sObj;
+void SofaSceneGraphWidget::lock()
+{
+    if(m_isLocked)
+        return;
 
-public:
-    SofaDataMonitor* getObject() { return sObj.get(); }
-    void setObject(SofaDataMonitor* dm) { sObj = dm; }
-};
+    m_isLocked = true;
+    emit lockingChanged(m_isLocked);
+}
 
-#endif // SOFAPHYSICSDATAMONITOR_IMPL_H
+void SofaSceneGraphWidget::unLock()
+{
+    if(!m_isLocked)
+        return;
+
+    m_isLocked = false;
+
+    if(m_isDirty)
+        update();
+
+    emit lockingChanged(m_isLocked);
+}
+
+} //namespace sofa::gui::qt

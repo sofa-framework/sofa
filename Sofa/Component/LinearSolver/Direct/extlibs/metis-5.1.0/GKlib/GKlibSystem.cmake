@@ -19,7 +19,7 @@ option(METIS-GKLIB_PCRE "enable PCRE support" OFF)
 mark_as_advanced(METIS-GKLIB_PCRE)
 option(METIS-GKLIB_GKREGEX "enable GKREGEX support" OFF)
 mark_as_advanced(METIS-GKLIB_GKREGEX)
-option(METIS-GKLIB_GKRAND "enable GKRAND support" OFF)
+option(METIS-GKLIB_GKRAND "enable GKRAND support. GKRAND support allows the portability of random number generation accross different architectures" ON)
 mark_as_advanced(METIS-GKLIB_GKRAND)
 
 # Add compiler flags.

@@ -27,7 +27,7 @@
 #include <sofa/gl/component/rendering2d/OglViewport.h>
 #define SOFAGL_COMPONENT_OGLVIEWPORT
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering2d/OglViewport.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering2d/OglViewport.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering2d/OglViewport.h> instead of this one."

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "DifferenceEngine.h"
+#include <sofa/component/engine/transform/DifferenceEngine.h>
 #include <sofa/helper/logging/Messaging.h>
 
 

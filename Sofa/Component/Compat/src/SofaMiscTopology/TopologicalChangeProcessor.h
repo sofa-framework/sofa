@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/utility/TopologicalChangeProcessor.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/utility/TopologicalChangeProcessor.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/utility/TopologicalChangeProcessor.h")
 
 namespace sofa::component::misc
 {

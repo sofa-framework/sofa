@@ -74,8 +74,19 @@ void SofaPluginManager::updatePluginsListView()
         QString sname    = plugin.getModuleName();
         QString sversion = plugin.getModuleVersion();
         QString sfile    = (iter->first).c_str();
-        //QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins, sname, slicense, sversion, sfile);
+
         QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins);
+
+        if (std::find(m_loadedPlugins.begin(), m_loadedPlugins.end(), plugin.getModuleName()) != m_loadedPlugins.end() ||
+            std::find(m_loadedPlugins.begin(), m_loadedPlugins.end(), iter->first) != m_loadedPlugins.end())
+        {
+            for (unsigned int i = 0; i < 4; ++i)
+            {
+                item->setForeground(i, QColor::fromRgb(0, 0, 255));
+                item->setToolTip(i, QString(std::string{"This plugin has been loaded by the GUI from the file " + m_pluginsIniFile}.c_str()));
+            }
+        }
+
         item->setText(0, sname);
         item->setText(1, slicense);
         item->setText(2, sversion);
@@ -116,8 +127,9 @@ void SofaPluginManager::addLibrary()
 #endif
     std::stringstream sstream;
 
-    std::string pluginFile = std::string(sfile.toStdString());
-    if(sofa::helper::system::PluginManager::getInstance().loadPluginByPath(pluginFile,&sstream))
+    const std::string pluginFile = std::string(sfile.toStdString());
+    const auto status = sofa::helper::system::PluginManager::getInstance().loadPluginByPath(pluginFile,&sstream);
+    if(status == sofa::helper::system::PluginManager::PluginLoadStatus::SUCCESS)
     {
         typedef sofa::helper::system::Plugin    Plugin;
         if( ! sstream.str().empty())
@@ -150,6 +162,18 @@ void SofaPluginManager::addLibrary()
         //item->setSelectable(true);
         savePluginsToIniFile();
         emit( libraryAdded() );
+    }
+    else if (status == sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
+    {
+        if( !sstream.str().empty())
+        {
+            QMessageBox * mbox = new QMessageBox(this);
+            mbox->setWindowTitle("library loading warning");
+            mbox->setIcon(QMessageBox::Warning);
+            mbox->setText(sstream.str().c_str());
+            mbox->show();
+        }
+        savePluginsToIniFile();
     }
     else
     {
@@ -267,14 +291,15 @@ void SofaPluginManager::updateDescription()
 
 void SofaPluginManager::savePluginsToIniFile()
 {
-    const std::string pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
-    sofa::helper::system::PluginManager::getInstance().writeToIniFile(pluginsIniFile);
+    m_pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
+    sofa::helper::system::PluginManager::getInstance().writeToIniFile(m_pluginsIniFile);
 }
 
 void SofaPluginManager::loadPluginsFromIniFile()
 {
-    const std::string pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
-    sofa::helper::system::PluginManager::getInstance().readFromIniFile(pluginsIniFile);
+    m_pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
+    msg_info("SofaPluginManager") << "Loading automatically plugin list in " << m_pluginsIniFile;
+    sofa::helper::system::PluginManager::getInstance().readFromIniFile(m_pluginsIniFile, m_loadedPlugins);
 }
 
 

@@ -41,7 +41,7 @@ void initSofaExporter()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaExporter") << "SofaExporter is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh and/or Sofa.Component.Playback instead.";
+        msg_deprecated("SofaExporter") << "SofaExporter is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh and/or Sofa.Component.Playback instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Mesh");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Playback");

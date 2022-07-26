@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "MergeVisualModels.h"
+#include <sofa/gl/component/rendering3d/MergeVisualModels.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::gl::component::rendering3d
