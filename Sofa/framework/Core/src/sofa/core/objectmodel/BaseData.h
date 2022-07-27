@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_H
-#define SOFA_CORE_OBJECTMODEL_BASEDATA_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/DataLink.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 class Base;
@@ -271,7 +264,7 @@ public:
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(const BaseData *parent);
 
-    BaseData* getParent() { return parentData.getTarget(); }
+    BaseData* getParent() const { return parentData.getTarget(); }
 
     /// Update the value of this %Data
     void update() override;
@@ -287,7 +280,7 @@ public:
     ///
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
-    bool copyValueFrom(const BaseData* data);
+    virtual bool copyValueFrom(const BaseData* data);
     bool updateValueFromLink(const BaseData* data);
 
     /// Help message
@@ -342,7 +335,7 @@ private:
     virtual const void* doGetValueVoidPtr() const = 0;
     virtual void* doBeginEditVoidPtr() = 0;
     virtual void doEndEditVoidPtr() = 0;
-    virtual void doOnUpdate() {};
+    virtual void doOnUpdate() {}
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container
@@ -358,7 +351,7 @@ private:
 class WriteAccessWithRawPtr
 {
 public:
-    WriteAccessWithRawPtr(BaseData* data)
+    explicit WriteAccessWithRawPtr(BaseData* data)
     {
         m_data = data;
         ptr = data->beginEditVoidPtr();
@@ -369,16 +362,9 @@ public:
         m_data->endEditVoidPtr();
     }
 
-    void*     ptr;
+    void*     ptr { nullptr };
 private:
-    WriteAccessWithRawPtr(){}
-    BaseData* m_data;
+    WriteAccessWithRawPtr() = default;
+    BaseData* m_data { nullptr };
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::objectmodel
