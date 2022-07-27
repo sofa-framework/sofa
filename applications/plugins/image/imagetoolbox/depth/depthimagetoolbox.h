@@ -84,11 +84,11 @@ public:
     typedef type::vector< Layer > VecLayer;
     
     DepthImageToolBox():LabelImageToolBox()
-        , d_filename(initData(&d_filename,"filename",""))
-        , d_scnfilename(initData(&d_scnfilename,"scnfilename",""))
-        , d_transform(initData(&d_transform,TransformType(),"transform","Transform"))
-        , d_tagFilter(initData(&d_tagFilter,"tagfilter",""))
-        , d_image(initData(&d_image,ImageD(),"image",""))
+        , d_filename(initData("filename",""))
+        , d_scnfilename(initData("scnfilename",""))
+        , d_transform(initData(TransformType(),"transform","Transform"))
+        , d_tagFilter(initData("tagfilter",""))
+        , d_image(initData(ImageD(),"image",""))
         , wImage(this->d_image)
     {
     }

@@ -508,15 +508,15 @@ std::map<CudaDistanceGrid::CudaDistanceGridParams, CudaDistanceGrid*>& CudaDista
 
 CudaRigidDistanceGridCollisionModel::CudaRigidDistanceGridCollisionModel()
     : modified(true)
-    , fileCudaRigidDistanceGrid( initData( &fileCudaRigidDistanceGrid, "fileCudaRigidDistanceGrid", "load distance grid from specified file"))
-    , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
-    , sampling( initData( &sampling, 0.0, "sampling", "if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)"))
-    , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
-    , nx( initData( &nx, 64, "nx", "number of values on X axis") )
-    , ny( initData( &ny, 64, "ny", "number of values on Y axis") )
-    , nz( initData( &nz, 64, "nz", "number of values on Z axis") )
-    , dumpfilename( initData( &dumpfilename, "dumpfilename","write distance grid to specified file"))
-    , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
+    , fileCudaRigidDistanceGrid( initData("fileCudaRigidDistanceGrid", "load distance grid from specified file"))
+    , scale( initData(1.0, "scale", "scaling factor for input file"))
+    , sampling( initData(0.0, "sampling", "if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)"))
+    , box( initData("box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , nx( initData(64, "nx", "number of values on X axis") )
+    , ny( initData(64, "ny", "number of values on Y axis") )
+    , nz( initData(64, "nz", "number of values on Z axis") )
+    , dumpfilename( initData("dumpfilename","write distance grid to specified file"))
+    , usePoints( initData(true, "usePoints", "use mesh vertices for collision detection"))
 {
     rigid = NULL;
     addAlias(&fileCudaRigidDistanceGrid,"filename");

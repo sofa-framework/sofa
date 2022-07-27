@@ -144,15 +144,15 @@ public:
     typedef sofa::component::visual::VisualModelImpl VisuModelType;
 
     ImageViewer() : Inherited()
-      , image(initData(&image,ImageTypes(),"image","input image"))
-      , showSlicedModels(initData(&showSlicedModels, false, "slicedModels", "display visual models on cutPlanes"))
-      , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
-      , transform(initData(&transform, TransformType(), "transform" , ""))
-      , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
-      , points ( initData ( &points, type::vector<Coord> (), "points" , "" ) )
-      , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
-      , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
-      , display( initData(&display, true, "display", "true if image is displayed, false otherwise"))
+      , image(initData(ImageTypes(),"image","input image"))
+      , showSlicedModels(initData(false, "slicedModels", "display visual models on cutPlanes"))
+      , histo(initData(HistogramType(256,256,false),"histo",""))
+      , transform(initData(TransformType(), "transform" , ""))
+      , plane ( initData(ImagePlaneType(), "plane" , "" ) )
+      , points ( initData(type::vector<Coord> (), "points" , "" ) )
+      , vectorVisualization ( initData(defaulttype::VectorVis(), "vectorvis", ""))
+      , scroll( initData(int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
+      , display( initData(true, "display", "true if image is displayed, false otherwise"))
 
     {
         this->addAlias(&image, "outputImage");

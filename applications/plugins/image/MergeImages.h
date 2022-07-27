@@ -91,13 +91,13 @@ public:
     Data<TransformType> transform; ///< Transform
 
     MergeImages()    :   Inherited()
-        , overlap ( initData ( &overlap,"overlap","method for handling overlapping regions" ) )
-        , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
-        , nbImages ( initData ( &nbImages,(unsigned int)0,"nbImages","number of images to merge" ) )
+        , overlap ( initData("overlap","method for handling overlapping regions" ) )
+        , Interpolation( initData("interpolation","Interpolation method." ) )
+        , nbImages ( initData((unsigned int)0,"nbImages","number of images to merge" ) )
         , inputImages(this, "image", "input image")
         , inputTransforms(this, "transform", "input transform")
-        , image(initData(&image,ImageTypes(),"image","Image"))
-        , transform(initData(&transform,TransformType(),"transform","Transform"))
+        , image(initData(ImageTypes(),"image","Image"))
+        , transform(initData(TransformType(),"transform","Transform"))
     {
         inputImages.resize(nbImages.getValue());
         inputTransforms.resize(nbImages.getValue());

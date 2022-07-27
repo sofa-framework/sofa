@@ -91,14 +91,14 @@ public:
     Data< Real > minLength; ///< minimun edge length in pixels
 
     VoronoiToMeshEngine()    :   Inherited()
-      , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
-      , image(initData(&image,ImageTypes(),"image","Voronoi image"))
-      , background(initData(&background,ImageTypes(),"background","Optional Voronoi image of the background to surface details"))
-      , transform(initData(&transform,TransformType(),"transform",""))
-      , position(initData(&position,SeqPositions(),"position","output positions"))
-      , edges(initData(&edges,SeqEdges(),"edges","output edges"))
-      , triangles(initData(&triangles,SeqTriangles(),"triangles","output triangles"))
-      , minLength(initData(&minLength,(Real)2.,"minLength","minimun edge length in pixels"))
+      , showMesh(initData(false,"showMesh","show reconstructed mesh"))
+      , image(initData(ImageTypes(),"image","Voronoi image"))
+      , background(initData(ImageTypes(),"background","Optional Voronoi image of the background to surface details"))
+      , transform(initData(TransformType(),"transform",""))
+      , position(initData(SeqPositions(),"position","output positions"))
+      , edges(initData(SeqEdges(),"edges","output edges"))
+      , triangles(initData(SeqTriangles(),"triangles","output triangles"))
+      , minLength(initData((Real)2.,"minLength","minimun edge length in pixels"))
       , time((unsigned int)0)
     {
         image.setReadOnly(true);

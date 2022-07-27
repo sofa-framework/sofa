@@ -54,7 +54,7 @@ namespace _testresult_
 {
 
 TestResult::TestResult() :
-    m_result(initData(&m_result, std::string("Fail"), "result",""))
+    m_result(initData(std::string("Fail"), "result",""))
 {
 }
 

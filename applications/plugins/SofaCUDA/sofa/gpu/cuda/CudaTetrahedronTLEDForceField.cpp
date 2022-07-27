@@ -55,12 +55,12 @@ extern "C"
 // --------------------------------------------------------------------------------------
 CudaTetrahedronTLEDForceField::CudaTetrahedronTLEDForceField()
     : nbVertex(0), nbElementPerVertex(0)
-    , poissonRatio(initData(&poissonRatio,(Real)0.45,"poissonRatio","Poisson ratio in Hooke's law"))
-    , youngModulus(initData(&youngModulus,(Real)3000.,"youngModulus","Young modulus in Hooke's law"))
-    , timestep(initData(&timestep,(Real)0.001,"timestep","Simulation timestep"))
-    , isViscoelastic(initData(&isViscoelastic,(unsigned int)0,"isViscoelastic","Viscoelasticity flag"))
-    , isAnisotropic(initData(&isAnisotropic,(unsigned int)0,"isAnisotropic","Anisotropy flag"))
-    , preferredDirection(initData(&preferredDirection, "preferredDirection","Transverse isotropy direction"))
+    , poissonRatio(initData((Real)0.45,"poissonRatio","Poisson ratio in Hooke's law"))
+    , youngModulus(initData((Real)3000.,"youngModulus","Young modulus in Hooke's law"))
+    , timestep(initData((Real)0.001,"timestep","Simulation timestep"))
+    , isViscoelastic(initData((unsigned int)0,"isViscoelastic","Viscoelasticity flag"))
+    , isAnisotropic(initData((unsigned int)0,"isAnisotropic","Anisotropy flag"))
+    , preferredDirection(initData("preferredDirection","Transverse isotropy direction"))
 {
 }
 

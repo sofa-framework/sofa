@@ -44,10 +44,10 @@ public:
     typedef sofa::core::objectmodel::DataFileName DataFileName;
 
     LabelPointsBySectionImageToolBox():LabelImageToolBox()
-        , d_ip(initData(&d_ip, "imagepositions",""))
-        , d_p(initData(&d_p, "3Dpositions",""))
-        , d_axis(initData(&d_axis, (unsigned int)4,"axis",""))
-        , d_filename(initData(&d_filename,"filename",""))
+        , d_ip(initData("imagepositions",""))
+        , d_p(initData("3Dpositions",""))
+        , d_axis(initData((unsigned int)4,"axis",""))
+        , d_filename(initData("filename",""))
     {
     
     }

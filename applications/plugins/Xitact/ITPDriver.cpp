@@ -79,11 +79,11 @@ int ITPDriverClass = core::RegisterObject("Driver and Controller of ITP Xitact D
 
 
 ITPDriver::ITPDriver()
-    : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
-    , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
-    , indexTool(initData(&indexTool, (int)0,"toolIndex", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
-    , position(initData(&position, "position", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
-    , direction(initData(&direction, "direction", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
+    : Scale(initData(1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
+    , permanent(initData(false, "permanent" , "Apply the force feedback permanently"))
+    , indexTool(initData((int)0,"toolIndex", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
+    , position(initData("position", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
+    , direction(initData("direction", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
 //, heartManager(NULL)
     , operation(true)
     , contactReached(false)

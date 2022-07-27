@@ -61,13 +61,13 @@ public:
     typedef sofa::component::container::ImageContainer<ImageTypes> ImageContainer;
 
     ImageTransform()    :   Inherited()
-        ,_translation(initData(&_translation, Vec3(),"translation","Translation"))
-        ,_euler(initData(&_euler, Vec3(),"euler","Euler angles"))
-        ,_scale(initData(&_scale, Vec3(1,1,1),"scale","Voxel size"))
-        ,_isPerspective(initData(&_isPerspective, 0,"isPerspective","Is perspective?"))
-        ,_timeOffset(initData(&_timeOffset, (Real)0,"timeOffset","Time offset"))
-        ,_timeScale(initData(&_timeScale, (Real)1,"timeScale","Time scale"))
-        ,_update(initData(&_update, "update","Type of update"))
+        ,_translation(initData(Vec3(),"translation","Translation"))
+        ,_euler(initData(Vec3(),"euler","Euler angles"))
+        ,_scale(initData(Vec3(1,1,1),"scale","Voxel size"))
+        ,_isPerspective(initData(0,"isPerspective","Is perspective?"))
+        ,_timeOffset(initData((Real)0,"timeOffset","Time offset"))
+        ,_timeScale(initData((Real)1,"timeScale","Time scale"))
+        ,_update(initData("update","Type of update"))
     {
         _translation.setGroup("Transformation");
         _euler.setGroup("Transformation");

@@ -34,11 +34,11 @@ namespace controller
 {
     EnslavementForceFeedback::EnslavementForceFeedback( core::CollisionModel* collModel1, core::CollisionModel* collModel2 )
     : ContactListener( collModel1, collModel2)
-    , d_relativeStiffness(initData(&d_relativeStiffness, 4.0, "d_relativeStiffness", "Relative Stiffness"))
-    , d_attractionDistance(initData(&d_attractionDistance, 0.3, "d_attractionDistance", "Distance at which the Omni is attracted to the contact point."))
-    , d_normalsPointOut(initData(&d_normalsPointOut, true, "d_normalsPointOut", "True if the normals of objects point outwards, false if they point inwards."))
-    , d_contactScale(initData(&d_contactScale, 1.0, "d_contactScale", "Scales the maximum penetration depth."))
-    , d_penOffset(initData(&d_penOffset, 0.0, "penetrationOffset", "Distance at which there is no reaction force."))
+    , d_relativeStiffness(initData(4.0, "d_relativeStiffness", "Relative Stiffness"))
+    , d_attractionDistance(initData(0.3, "d_attractionDistance", "Distance at which the Omni is attracted to the contact point."))
+    , d_normalsPointOut(initData(true, "d_normalsPointOut", "True if the normals of objects point outwards, false if they point inwards."))
+    , d_contactScale(initData(1.0, "d_contactScale", "Scales the maximum penetration depth."))
+    , d_penOffset(initData(0.0, "penetrationOffset", "Distance at which there is no reaction force."))
     {
     }
 

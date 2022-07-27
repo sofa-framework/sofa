@@ -118,10 +118,10 @@ public:
     typedef type::vector<Label*> VecLabel;
 
     ImageToolBox() : Inherited()
-      , image(initData(&image,ImageTypes(),"image","input image"))
-      , toolbox(initData(&toolbox, "toolbox",""))
-      , transform(initData(&transform, TransformType(), "transform" , ""))
-      , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
+      , image(initData(ImageTypes(),"image","input image"))
+      , toolbox(initData("toolbox",""))
+      , transform(initData(TransformType(), "transform" , ""))
+      , histo(initData(HistogramType(256,256,false),"histo",""))
     {
         this->addAlias(&image, "outputImage");
         

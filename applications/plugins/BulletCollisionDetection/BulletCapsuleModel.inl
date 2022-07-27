@@ -12,14 +12,14 @@ namespace collision
 template <class TDataTypes>
 TBulletCapsuleModel<TDataTypes>::TBulletCapsuleModel()
     : TCapsuleModel<TDataTypes>()
-    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    , margin(initData((SReal)0.04, "margin","Margin used for collision detection within bullet"))
     ,_bt_cshape(0x0)
 {}
 
 template<class DataTypes>
 TBulletCapsuleModel<DataTypes>::TBulletCapsuleModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : TCapsuleModel<DataTypes>(_mstate)
-    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    , margin(initData((SReal)0.04, "margin","Margin used for collision detection within bullet"))
     ,_bt_cshape(0x0)
 {}
 

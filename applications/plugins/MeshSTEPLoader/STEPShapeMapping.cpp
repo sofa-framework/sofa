@@ -18,9 +18,9 @@ int STEPShapeExtractorClass = core::RegisterObject("Extract a shape from a MeshS
 
 
 STEPShapeExtractor::STEPShapeExtractor(MeshSTEPLoader* loader, MeshTopology* topology):
-    shapeNumber(initData(&shapeNumber,"shapeNumber", "Shape number to be loaded" ) )
-    ,indexBegin(initData(&indexBegin,(unsigned int)0,"indexBegin","The begin index for this shape with respect to the global mesh",true,true))
-    ,indexEnd(initData(&indexEnd,(unsigned int)0,"indexEnd","The end index for this shape with respect to the global mesh",true,true))
+    shapeNumber(initData("shapeNumber", "Shape number to be loaded" ) )
+    ,indexBegin(initData((unsigned int)0,"indexBegin","The begin index for this shape with respect to the global mesh",true,true))
+    ,indexEnd(initData((unsigned int)0,"indexEnd","The end index for this shape with respect to the global mesh",true,true))
     ,loader(initLink("input","Input MeshSTEPLoader to map"), loader)
     ,topology(initLink("output", "Output MeshTopology to map"), topology)
 {

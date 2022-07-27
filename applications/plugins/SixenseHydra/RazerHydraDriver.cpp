@@ -50,19 +50,19 @@ static bool controller_manager_screen_visible = true;
 std::string controller_manager_text_string;
 
 RazerHydraDriver::RazerHydraDriver()
-	: scale(initData(&scale, 1.0, "scale","Default scale applied to the Leap Motion Coordinates. "))
-	, positionBase(initData(&positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
-    , orientationBase(initData(&orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
-    , positionFirstTool(initData(&positionFirstTool, Vec3d(0,0,0), "positionFirstTool","Position of the first tool"))
-	, positionSecondTool(initData(&positionSecondTool, Vec3d(0,0,0), "positionSecondTool","Position of the second tool"))
-    , orientationFirstTool(initData(&orientationFirstTool, Quat(0,0,0,1), "orientationFirstTool","Orientation of the first tool"))
-    , orientationSecondTool(initData(&orientationSecondTool, Quat(0,0,0,1), "orientationSecondTool","Orientation of the second tool"))
-	, triggerJustPressedFirstTool(initData(&triggerJustPressedFirstTool, false, "triggerJustPressedFirstTool","Boolean passing to true when the trigger of the first tool is pressed"))
-	, triggerJustPressedSecondTool(initData(&triggerJustPressedSecondTool, false, "triggerJustPressedSecondTool","Boolean passing to true when the trigger of the second tool is pressed"))
-	, triggerValueFirstTool(initData(&triggerValueFirstTool, float(0.0), "triggerValueFirstTool","Trigger value of the first tool (between 0 and 1.0)"))
-	, triggerValueSecondTool(initData(&triggerValueSecondTool, float(0.0), "triggerValueSecondTool","Trigger value of the second tool (between 0 and 1.0)"))
-	, useBothTools(initData (&useBothTools, false, "useBothTools", "If true, the two controllers are used, otherwise only one controller is used"))
-	, displayTools(initData (&displayTools, false, "displayTools", "display the Razer Hydra Controller joysticks as tools"))
+	: scale(initData(1.0, "scale","Default scale applied to the Leap Motion Coordinates. "))
+	, positionBase(initData(Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
+    , orientationBase(initData(Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
+    , positionFirstTool(initData(Vec3d(0,0,0), "positionFirstTool","Position of the first tool"))
+	, positionSecondTool(initData(Vec3d(0,0,0), "positionSecondTool","Position of the second tool"))
+    , orientationFirstTool(initData(Quat(0,0,0,1), "orientationFirstTool","Orientation of the first tool"))
+    , orientationSecondTool(initData(Quat(0,0,0,1), "orientationSecondTool","Orientation of the second tool"))
+	, triggerJustPressedFirstTool(initData(false, "triggerJustPressedFirstTool","Boolean passing to true when the trigger of the first tool is pressed"))
+	, triggerJustPressedSecondTool(initData(false, "triggerJustPressedSecondTool","Boolean passing to true when the trigger of the second tool is pressed"))
+	, triggerValueFirstTool(initData(float(0.0), "triggerValueFirstTool","Trigger value of the first tool (between 0 and 1.0)"))
+	, triggerValueSecondTool(initData(float(0.0), "triggerValueSecondTool","Trigger value of the second tool (between 0 and 1.0)"))
+	, useBothTools(initData(false, "useBothTools", "If true, the two controllers are used, otherwise only one controller is used"))
+	, displayTools(initData(false, "displayTools", "display the Razer Hydra Controller joysticks as tools"))
 	
 {
 	this->f_listening.setValue(true);

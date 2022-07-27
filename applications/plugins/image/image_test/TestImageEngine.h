@@ -65,8 +65,8 @@ public:
     Data< ImageTypes > outputImage; ///< ouput image
 
     TestImageEngine() :   Inherited()
-        , inputImage(initData(&inputImage,ImageTypes(),"inputImage","input image"))
-        , outputImage(initData(&outputImage,ImageTypes(),"outputImage","ouput image"))
+        , inputImage(initData(ImageTypes(),"inputImage","input image"))
+        , outputImage(initData(ImageTypes(),"outputImage","ouput image"))
     {
         inputImage.setReadOnly(true);
     }

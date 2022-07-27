@@ -43,11 +43,11 @@ int MeshSTEPLoaderClass = core::RegisterObject("Specific mesh loader for STEP fi
         .add< MeshSTEPLoader >();
 
 MeshSTEPLoader::MeshSTEPLoader():MeshLoader()
-    , _uv(initData(&_uv, "uv", "UV coordinates"))
-    , _aDeflection(initData(&_aDeflection, "deflection", "Deflection parameter for tesselation"))
-    , _debug(initData(&_debug, "debug", "if true, print information for debug mode"))
-    , _keepDuplicate(initData(&_keepDuplicate, "keepDuplicate", "if true, keep duplicated vertices"))
-    , _indicesComponents(initData(&_indicesComponents, "indicesComponents", "Shape # | number of nodes | number of triangles"))
+    , _uv(initData("uv", "UV coordinates"))
+    , _aDeflection(initData("deflection", "Deflection parameter for tesselation"))
+    , _debug(initData("debug", "if true, print information for debug mode"))
+    , _keepDuplicate(initData("keepDuplicate", "if true, keep duplicated vertices"))
+    , _indicesComponents(initData("indicesComponents", "Shape # | number of nodes | number of triangles"))
 {
     _uv.setPersistent(false);
     _aDeflection.setValue(0.1);

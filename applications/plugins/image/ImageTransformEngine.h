@@ -66,12 +66,12 @@ public:
     Data<bool> inverse; ///< true to apply inverse transformation
 
     ImageTransformEngine()    :   Inherited()
-      , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
-      , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
-      , translation(initData(&translation, type::Vector3(0,0,0),"translation", "translation vector ") )
-      , rotation(initData(&rotation, type::Vector3(0,0,0), "rotation", "rotation vector ") )
-      , scale(initData(&scale, (Real)1.0,"scale", "scale factor") )
-      , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
+      , inputTransform(initData(TransformType(),"inputTransform",""))
+      , outputTransform(initData(TransformType(),"outputTransform",""))
+      , translation(initData(type::Vector3(0,0,0),"translation", "translation vector ") )
+      , rotation(initData(type::Vector3(0,0,0), "rotation", "rotation vector ") )
+      , scale(initData((Real)1.0,"scale", "scale factor") )
+      , inverse(initData(false, "inverse", "true to apply inverse transformation"))
     {
     }
 

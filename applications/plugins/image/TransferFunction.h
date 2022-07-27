@@ -128,10 +128,10 @@ public:
     Data< OutImageTypes > outputImage;
 
     TransferFunction()    :   Inherited()
-      , filter ( initData ( &filter,"filter","Filter" ) )
-      , param ( initData ( &param,"param","Parameters" ) )
-      , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
-      , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
+      , filter ( initData("filter","Filter" ) )
+      , param ( initData("param","Parameters" ) )
+      , inputImage(initData(InImageTypes(),"inputImage",""))
+      , outputImage(initData(OutImageTypes(),"outputImage",""))
     {
         inputImage.setReadOnly(true);
         outputImage.setReadOnly(true);

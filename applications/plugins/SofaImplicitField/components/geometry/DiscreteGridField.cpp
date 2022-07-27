@@ -40,12 +40,12 @@ namespace _discretegrid_
 {
 /**
 DiscreteGridField::DiscreteGridField()
-    : in_filename(initData(&in_filename,"filename","filename"))
-    , in_nx(initData(&in_nx,0,"nx","in_nx"))
-    , in_ny(initData(&in_ny,0,"ny","in_ny"))
-    , in_nz(initData(&in_nz,0,"nz","in_nz"))
-    , in_scale(initData(&in_scale,0.0,"scale","in_scale"))
-    , in_sampling(initData(&in_sampling,0.0,"sampling","in_sampling"))
+    : in_filename(initData("filename","filename"))
+    , in_nx(initData(0,"nx","in_nx"))
+    , in_ny(initData(0,"ny","in_ny"))
+    , in_nz(initData(0,"nz","in_nz"))
+    , in_scale(initData(0.0,"scale","in_scale"))
+    , in_sampling(initData(0.0,"sampling","in_sampling"))
 {
 }
 
@@ -73,11 +73,11 @@ void DiscreteGridField::init()
 
 DiscreteGridField::DiscreteGridField()
     : ScalarField(),
-      d_distanceMapHeader( initData( &d_distanceMapHeader, "file", "MHD file for the distance map" ) ),
-      d_maxDomains( initData( &d_maxDomains, 1, "maxDomains", "Number of domains available for caching" ) ),
-      dx( initData( &dx, 0.0, "dx", "x translation" ) ),
-      dy( initData( &dy, 0.0, "dy", "y translation" ) ),
-      dz( initData( &dz, 0.0, "dz", "z translation" ) )
+      d_distanceMapHeader( initData("file", "MHD file for the distance map" ) ),
+      d_maxDomains( initData(1, "maxDomains", "Number of domains available for caching" ) ),
+      dx( initData(0.0, "dx", "x translation" ) ),
+      dy( initData(0.0, "dy", "y translation" ) ),
+      dz( initData(0.0, "dz", "z translation" ) )
 {
     m_usedDomains = 0;
     m_imgData = nullptr;

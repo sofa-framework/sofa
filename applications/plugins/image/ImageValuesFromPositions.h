@@ -154,12 +154,12 @@ public:
     Data< Real > outValue; ///< default value outside image
 
     ImageValuesFromPositions()    :   Inherited()
-        , image(initData(&image,ImageTypes(),"image",""))
-        , transform(initData(&transform,TransformType(),"transform",""))
-        , position(initData(&position,SeqPositions(),"position","input positions"))
-        , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
-        , values( initData ( &values,"values","Interpolated values." ) )
-        , outValue(initData(&outValue,(Real)0,"outValue","default value outside image"))
+        , image(initData(ImageTypes(),"image",""))
+        , transform(initData(TransformType(),"transform",""))
+        , position(initData(SeqPositions(),"position","input positions"))
+        , Interpolation( initData("interpolation","Interpolation method." ) )
+        , values( initData("values","Interpolated values." ) )
+        , outValue(initData((Real)0,"outValue","default value outside image"))
         , time((unsigned int)0)
     {
         helper::OptionsGroup InterpolationOptions(3,"Nearest", "Linear", "Cubic");

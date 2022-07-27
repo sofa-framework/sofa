@@ -61,7 +61,7 @@ protected:
 
     PreassembledMass()
         : core::behavior::Mass<DataTypes>()
-        , d_massMatrix( initData(&d_massMatrix, "massMatrix", "AssembledMassMatrix") )
+        , d_massMatrix( initData("massMatrix", "AssembledMassMatrix") )
         , l_massNodes(initLink("massNodes", "Nodes to deactivate (that were only mapping a mass)"))
     {
         _instanciationNumber = s_instanciationCounter++;

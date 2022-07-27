@@ -12,9 +12,9 @@ int BulletCollisionDetectionClass = core::RegisterObject("Collision detection us
         ;
 
 BulletCollisionDetection::BulletCollisionDetection()
-    : useSimpleBroadPhase(initData(&useSimpleBroadPhase, false, "useSimpleBroadPhase", "enable/disable simple broad phase"))
-    , useSAP(initData(&useSAP, false, "useSAP", "enable/disable sweep and prune"))
-    , box(initData(&box, "SAP box", "box used if using sweep and prune"))
+    : useSimpleBroadPhase(initData(false, "useSimpleBroadPhase", "enable/disable simple broad phase"))
+    , useSAP(initData(false, "useSAP", "enable/disable sweep and prune"))
+    , box(initData("SAP box", "box used if using sweep and prune"))
 {
 }
 

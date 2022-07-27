@@ -84,14 +84,14 @@ public:
     //@}
 
     ImageToRigidMassEngine()    :   Inherited()
-      , image(initData(&image,ImageTypes(),"image",""))
-      , transform(initData(&transform,TransformType(),"transform",""))
-      , d_position(initData(&d_position,RigidCoord(),"position","position"))
-      , d_mass(initData(&d_mass,(Real)0,"mass","mass"))
-      , d_inertia(initData(&d_inertia,Coord(),"inertia","axis-aligned inertia tensor"))
-      , d_rigidMass(initData(&d_rigidMass,RigidMass(),"rigidMass","rigidMass"))
-      , d_density(initData(&d_density,(Real)1000.,"density","density (in kg/m^3)"))
-      , d_mult(initData(&d_mult,false,"multiply","multiply density by image intensity?"))
+      , image(initData(ImageTypes(),"image",""))
+      , transform(initData(TransformType(),"transform",""))
+      , d_position(initData(RigidCoord(),"position","position"))
+      , d_mass(initData((Real)0,"mass","mass"))
+      , d_inertia(initData(Coord(),"inertia","axis-aligned inertia tensor"))
+      , d_rigidMass(initData(RigidMass(),"rigidMass","rigidMass"))
+      , d_density(initData((Real)1000.,"density","density (in kg/m^3)"))
+      , d_mult(initData(false,"multiply","multiply density by image intensity?"))
       , time((unsigned int)0)
     {
         image.setReadOnly(true);

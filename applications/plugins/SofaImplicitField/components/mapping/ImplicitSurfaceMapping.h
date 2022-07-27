@@ -69,11 +69,11 @@ public:
 protected:
     ImplicitSurfaceMapping()
         : Inherit(),
-          mStep(initData(&mStep,0.5,"step","Step")),
-          mRadius(initData(&mRadius,2.0,"radius","Radius")),
-          mIsoValue(initData(&mIsoValue,0.5,"isoValue","Iso Value")),
-          mGridMin(initData(&mGridMin,InCoord(-100,-100,-100),"min","Grid Min")),
-          mGridMax(initData(&mGridMax,InCoord(100,100,100),"max","Grid Max"))
+          mStep(initData(0.5,"step","Step")),
+          mRadius(initData(2.0,"radius","Radius")),
+          mIsoValue(initData(0.5,"isoValue","Iso Value")),
+          mGridMin(initData(InCoord(-100,-100,-100),"min","Grid Min")),
+          mGridMax(initData(InCoord(100,100,100),"max","Grid Max"))
     {
     }
 

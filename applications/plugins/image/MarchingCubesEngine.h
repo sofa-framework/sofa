@@ -85,14 +85,14 @@ public:
     Data< SeqTriangles > triangles; ///< output triangles
 
     MarchingCubesEngine()    :   Inherited()
-        , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
-        , subdiv(initData(&subdiv,type::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
-        , invertNormals(initData(&invertNormals,true,"invertNormals","invert triangle vertex order"))
-        , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
-        , image(initData(&image,ImageTypes(),"image",""))
-        , transform(initData(&transform,TransformType(),"transform",""))
-        , position(initData(&position,SeqPositions(),"position","output positions"))
-        , triangles(initData(&triangles,SeqTriangles(),"triangles","output triangles"))
+        , isoValue(initData((Real)(1.0),"isoValue","pixel value to extract isosurface"))
+        , subdiv(initData(type::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
+        , invertNormals(initData(true,"invertNormals","invert triangle vertex order"))
+        , showMesh(initData(false,"showMesh","show reconstructed mesh"))
+        , image(initData(ImageTypes(),"image",""))
+        , transform(initData(TransformType(),"transform",""))
+        , position(initData(SeqPositions(),"position","output positions"))
+        , triangles(initData(SeqTriangles(),"triangles","output triangles"))
         , time((unsigned int)0)
     {
         image.setReadOnly(true);

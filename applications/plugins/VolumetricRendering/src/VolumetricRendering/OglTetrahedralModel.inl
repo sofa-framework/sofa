@@ -41,9 +41,9 @@ namespace visualmodel
 template<class DataTypes>
 OglTetrahedralModel<DataTypes>::OglTetrahedralModel()
     : m_topology(NULL)
-    , m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-    , depthTest(initData(&depthTest, (bool)false, "depthTest", "Set Depth Test"))
-    , blending(initData(&blending, (bool)false, "blending", "Set Blending"))
+    , m_positions(initData("position", "Vertices coordinates"))
+    , depthTest(initData((bool)false, "depthTest", "Set Depth Test"))
+    , blending(initData((bool)false, "blending", "Set Blending"))
     , modified(false)
     , lastMeshRev(-1)
     , useTopology(false)

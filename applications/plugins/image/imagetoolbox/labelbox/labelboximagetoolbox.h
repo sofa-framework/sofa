@@ -35,11 +35,11 @@ public:
 
     
     LabelBoxImageToolBox():LabelImageToolBox()
-        , d_ip(initData(&d_ip, "imagepositions",""))
-        , d_p(initData(&d_p, "3Dpositions",""))
-        , d_ipbox(initData(&d_ipbox,"imagepositionbox",""))
-        , d_pbox(initData(&d_pbox,"positionbox",""))
-        , d_filename(initData(&d_filename,"filename",""))
+        , d_ip(initData("imagepositions",""))
+        , d_p(initData("3Dpositions",""))
+        , d_ipbox(initData("imagepositionbox",""))
+        , d_pbox(initData("positionbox",""))
+        , d_filename(initData("filename",""))
     {
     
     }

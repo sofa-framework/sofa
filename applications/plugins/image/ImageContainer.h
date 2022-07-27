@@ -342,12 +342,12 @@ public:
     Data<unsigned int> nFrames; ///< The number of frames of the sequence to be loaded. Default is the entire sequence.
 
     ImageContainer() : Inherited()
-      , image(initData(&image,ImageTypes(),"image","image"))
-      , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
-      , m_filename(initData(&m_filename,"filename","Image file"))
-      , drawBB(initData(&drawBB,false,"drawBB","draw bounding box"))
-      , sequence(initData(&sequence, false, "sequence", "load a sequence of images"))
-      , nFrames (initData(&nFrames, "numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
+      , image(initData(ImageTypes(),"image","image"))
+      , transform(initData("transform" , "12-param vector for trans, rot, scale, ..."))
+      , m_filename(initData("filename","Image file"))
+      , drawBB(initData(false,"drawBB","draw bounding box"))
+      , sequence(initData(false, "sequence", "load a sequence of images"))
+      , nFrames (initData("numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
       , transformIsSet (false)
     {
         this->addAlias(&image, "inputImage");

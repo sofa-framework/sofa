@@ -128,7 +128,7 @@ private:
     }
 
 protected:
-    BulletIntersection() : contactDistance(initData(&contactDistance, (SReal)(0.2), "contactDistance", "Maximum distance between points when contact is created")){
+    BulletIntersection() : contactDistance(initData((SReal)(0.2), "contactDistance", "Maximum distance between points when contact is created")){
         //intersectors.add<BulletTriangleModel,BulletTriangleModel>(this);
         addCollisionDetection<BulletTriangleModel,BulletTriangleModel>();
         addCollisionDetection<BulletSphereModel,BulletSphereModel>();

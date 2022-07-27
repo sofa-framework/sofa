@@ -38,9 +38,9 @@ namespace _sphericalfield_
 {
 
 SphericalField::SphericalField()
-    : d_inside(initData(&d_inside, false, "inside", "If true the field is oriented inside (resp. outside) the sphere. (default = false)"))
-    , d_radiusSphere(initData(&d_radiusSphere, 1.0, "radius", "Radius of Sphere emitting the field. (default = 1)"))
-    , d_centerSphere(initData(&d_centerSphere, Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface. (default=0 0 0)" ))
+    : d_inside(initData(false, "inside", "If true the field is oriented inside (resp. outside) the sphere. (default = false)"))
+    , d_radiusSphere(initData(1.0, "radius", "Radius of Sphere emitting the field. (default = 1)"))
+    , d_centerSphere(initData(Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface. (default=0 0 0)" ))
 {init();
     }
 

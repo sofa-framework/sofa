@@ -38,9 +38,9 @@ using namespace sofa::defaulttype;
 template<class TCoord, class TDeriv, class TReal>
 OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::OglTetrahedralModel()
     : needUpdateTopology(true)
-    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Set Depth Test"))
-    , blending(initData(&blending, (bool) true, "blending", "Set Blending"))
-    , useVBO( initData( &useVBO, false, "useVBO", "true to activate Vertex Buffer Object") )
+    , depthTest(initData((bool) true, "depthTest", "Set Depth Test"))
+    , blending(initData((bool) true, "blending", "Set Blending"))
+    , useVBO( initData(false, "useVBO", "true to activate Vertex Buffer Object") )
 {
 }
 

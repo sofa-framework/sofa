@@ -30,11 +30,11 @@ namespace sofa::component::geometry::_StarShapedField_
 
 
 StarShapedField::StarShapedField()
-    : d_inside(initData(&d_inside, false, "inside", "If true the field is oriented inside (resp. outside) the sphere. (default = false)"))
-    , d_radiusSphere(initData(&d_radiusSphere, 1.0, "radius", "Radius of Sphere emitting the field. (default = 1)"))
-    , d_centerSphere(initData(&d_centerSphere, Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface. (default=0 0 0)" ))
-    , d_branches(initData(&d_branches, 1.0, "branches", "Number of branches of the star. (default=1)" ))
-    , d_branchesRadius(initData(&d_branchesRadius, 1.0, "branchesRadius", "Size of the branches of the star. (default=1)" ))
+    : d_inside(initData(false, "inside", "If true the field is oriented inside (resp. outside) the sphere. (default = false)"))
+    , d_radiusSphere(initData(1.0, "radius", "Radius of Sphere emitting the field. (default = 1)"))
+    , d_centerSphere(initData(Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface. (default=0 0 0)" ))
+    , d_branches(initData(1.0, "branches", "Number of branches of the star. (default=1)" ))
+    , d_branchesRadius(initData(1.0, "branchesRadius", "Size of the branches of the star. (default=1)" ))
 {
     init();
     addUpdateCallback("myUpdateCallback", {&d_inside, &d_radiusSphere, &d_centerSphere, &d_branches, &d_branchesRadius}, [this](const core::DataTracker& t)

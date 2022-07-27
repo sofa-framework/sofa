@@ -112,12 +112,12 @@ public:
     Data< TransformType > outputTransform;
 
     ImageFilter()    :   Inherited()
-      , filter ( initData ( &filter,"filter","Filter" ) )
-      , param ( initData ( &param,"param","Parameters" ) )
-      , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
-      , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
-      , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
-      , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
+      , filter ( initData("filter","Filter" ) )
+      , param ( initData("param","Parameters" ) )
+      , inputImage(initData(InImageTypes(),"inputImage",""))
+      , inputTransform(initData(TransformType(),"inputTransform",""))
+      , outputImage(initData(OutImageTypes(),"outputImage",""))
+      , outputTransform(initData(TransformType(),"outputTransform",""))
     {
         inputImage.setReadOnly(true);
         inputTransform.setReadOnly(true);

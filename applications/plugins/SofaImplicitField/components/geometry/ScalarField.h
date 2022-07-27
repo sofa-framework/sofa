@@ -120,7 +120,7 @@ public:
 protected:
     Data< double > d_epsilon; ///< Tolerance when evaluating the gradient and/or the hessian of the implicit surface numerically
     ScalarField( )
-        : d_epsilon(initData(&d_epsilon,0.00001,"epsilon","Tolerance when evaluating the gradient and/or the hessian of the implicit surface numerically"))
+        : d_epsilon(initData(0.00001,"epsilon","Tolerance when evaluating the gradient and/or the hessian of the implicit surface numerically"))
     {
     }
     ~ScalarField() override { }

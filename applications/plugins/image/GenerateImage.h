@@ -59,8 +59,8 @@ public:
     Data< ImageTypes > image;
 
     GenerateImage()    :   Inherited()
-      , dimxyzct(initData(&dimxyzct,"dim","dimensions (x,y,z,c,t)",""))
-      , image(initData(&image,ImageTypes(),"image",""))
+      , dimxyzct(initData("dim","dimensions (x,y,z,c,t)",""))
+      , image(initData(ImageTypes(),"image",""))
     {
         this->addAlias(&dimxyzct, "dimensions");
     }

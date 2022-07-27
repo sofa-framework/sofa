@@ -78,17 +78,17 @@ public:
     typedef type::vector< InterpolationItem > VecII;
     
     LabelGridImageToolBoxNoTemplated():LabelImageToolBox()
-        //, d_ip(initData(&d_ip, "imageposition",""))
-        //, d_p(initData(&d_p, "3Dposition",""))
-        , d_reso(initData(&d_reso, Vec2ui(10,10),"resolution",""))
-        , d_filename(initData(&d_filename,"filename",""))
-        , d_transform(initData(&d_transform,TransformType(),"transform","Transform"))
-        , d_outQuads(initData(&d_outQuads,"outQuads",""))
-        , d_outEdges(initData(&d_outEdges,"outEdges",""))
-        , d_outImagePosition(initData(&d_outImagePosition,"outImagePosition",""))
-        //, d_outNormalImagePosition(initData(&d_outNormalImagePosition,"outNormalImagePosition",""))
-        , d_outNormalImagePositionBySection(initData(&d_outNormalImagePositionBySection,"outNormalImagePositionBySection",""))
-        , d_tagFilter(initData(&d_tagFilter,"tagfilter",""))
+        //, d_ip(initData("imageposition",""))
+        //, d_p(initData("3Dposition",""))
+        , d_reso(initData(Vec2ui(10,10),"resolution",""))
+        , d_filename(initData("filename",""))
+        , d_transform(initData(TransformType(),"transform","Transform"))
+        , d_outQuads(initData("outQuads",""))
+        , d_outEdges(initData("outEdges",""))
+        , d_outImagePosition(initData("outImagePosition",""))
+        //, d_outNormalImagePosition(initData("outNormalImagePosition",""))
+        , d_outNormalImagePositionBySection(initData("outNormalImagePositionBySection",""))
+        , d_tagFilter(initData("tagfilter",""))
     {
     
     }
@@ -881,7 +881,7 @@ public:
 
 
     LabelGridImageToolBox():LabelGridImageToolBoxNoTemplated()
-        , d_image(initData(&d_image,ImageTypes(),"image","Input image"))
+        , d_image(initData(ImageTypes(),"image","Input image"))
     {
 
     }

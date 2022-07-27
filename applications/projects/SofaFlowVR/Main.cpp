@@ -152,7 +152,7 @@ public:
 
 
     FlowVRObject()
-        : modName(initData(&modName, "module", "Name of FlowVR Module"))
+        : modName(initData("module", "Name of FlowVR Module"))
         , mod(NULL)
     {
         f_listening.setValue(true);
@@ -264,11 +264,11 @@ public:
     bool step;
     FlowVRModule()
         : module(NULL)
-        , f_dt(initData(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
-        , f_scale(initData(&f_scale,1.0f,"scale","scale"))
-        , f_trans(initData(&f_trans,Vec3f(0,0,0),"translation","translation"))
-        , f_inputPorts(initData(&f_inputPorts,"inputPorts","additional input ports to be defined"))
-        , f_outputPorts(initData(&f_outputPorts,"outputPorts","additional output ports to be defined"))
+        , f_dt(initData(0.0,"dt","simulation time interval between flowvr iteration"))
+        , f_scale(initData(1.0f,"scale","scale"))
+        , f_trans(initData(Vec3f(0,0,0),"translation","translation"))
+        , f_inputPorts(initData("inputPorts","additional input ports to be defined"))
+        , f_outputPorts(initData("outputPorts","additional output ports to be defined"))
         , it(-1)
         , lasttime(0.0), step(false)
     {
@@ -402,8 +402,8 @@ public:
 
     FlowVRInputMesh()
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
-        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( initData(false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( initData(1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , newPointsNode(nullptr)
         , newPointsCM(nullptr)
         , intersection(nullptr)
@@ -728,8 +728,8 @@ public:
         , stampP0("P0", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampDP("DP", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampBB("BB", flowvr::TypeArray::create(6, flowvr::TypeInt::create()))
-        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( initData(false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( initData(1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , mscale(1.0f), distanceLastIt(-20), matrixLastIt(-20), motionLastTime(-1000), curDistGrid(NULL), emptyGrid(NULL)
         , grid(NULL) //, rigid(NULL)
     {
@@ -1252,9 +1252,9 @@ public:
     int lastNormRev;
 
     FlowVRRenderMesh()
-        : vShader(initData(&vShader, std::string(""), "vshader", "vertex shader name"))
-        , pShader(initData(&pShader, std::string(""), "pshader", "pixel shader name"))
-        , useTangent(initData(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
+        : vShader(initData(std::string(""), "vshader", "vertex shader name"))
+        , pShader(initData(std::string(""), "pshader", "pixel shader name"))
+        , useTangent(initData(false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
         , idP(0)
         , idVB(0)
         , idVBN(0)

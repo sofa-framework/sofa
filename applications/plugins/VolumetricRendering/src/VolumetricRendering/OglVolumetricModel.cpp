@@ -41,12 +41,12 @@ int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for O
 
 
 OglVolumetricModel::OglVolumetricModel()
-    : d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra to draw"))
-    , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Hexahedra to draw"))
-    , d_volumeScale(initData(&d_volumeScale, (float)1.0, "volumeScale", "Scale for each volumetric primitive"))
-    , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
-    , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
-    , d_defaultColor(initData(&d_defaultColor, type::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
+    : d_tetrahedra(initData("tetrahedra", "Tetrahedra to draw"))
+    , d_hexahedra(initData("hexahedra", "Hexahedra to draw"))
+    , d_volumeScale(initData((float)1.0, "volumeScale", "Scale for each volumetric primitive"))
+    , d_depthTest(initData((bool)false, "depthTest", "Set Depth Test"))
+    , d_blending(initData((bool)false, "blending", "Set Blending"))
+    , d_defaultColor(initData(type::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
     , b_modified(false)
     , b_useTopology(false)
     , b_tboCreated(false)

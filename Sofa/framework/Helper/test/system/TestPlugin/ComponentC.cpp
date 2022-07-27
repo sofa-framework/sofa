@@ -35,8 +35,8 @@ namespace behaviormodel
 
 
 MyBehaviorModel::MyBehaviorModel():
-    customUnsignedData(initData(&customUnsignedData, (unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget")),
-    regularUnsignedData(initData(&regularUnsignedData, (unsigned)1,"Unsigned Data","Example of unsigned data with standard widget"))
+    customUnsignedData(initData((unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget")),
+    regularUnsignedData(initData((unsigned)1,"Unsigned Data","Example of unsigned data with standard widget"))
 {
     customUnsignedData.setWidget("widget_myData");
 }

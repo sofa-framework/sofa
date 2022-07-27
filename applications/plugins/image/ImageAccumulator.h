@@ -77,11 +77,11 @@ public:
     Data< TransformType > outputTransform;
 
     ImageAccumulator()    :   Inherited()
-        , accumulate(initData(&accumulate,false,"accumulate","accumulate ?"))
-        , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))
-        , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
-        , outputImage(initData(&outputImage,ImageTypes(),"outputImage",""))
-        , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
+        , accumulate(initData(false,"accumulate","accumulate ?"))
+        , inputImage(initData(ImageTypes(),"inputImage",""))
+        , inputTransform(initData(TransformType(),"inputTransform",""))
+        , outputImage(initData(ImageTypes(),"outputImage",""))
+        , outputTransform(initData(TransformType(),"outputTransform",""))
         , SimuTime(0.0)
         , count(0)
     {

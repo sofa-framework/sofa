@@ -101,13 +101,13 @@ void HaptionDriver::haptic_callback(VirtContext, void *param)
 
 //constructeur
 HaptionDriver::HaptionDriver()
-    :scale(initData(&scale, 100.0, "Scale","Default scale applied to the Haption Coordinates. ")),
-     state_button(initData(&state_button, false, "state_button","state of the first button")),
-     haptionVisu(initData(&haptionVisu, false, "haptionVisu","Visualize the position of the interface in the virtual scene")),
-     posBase(initData(&posBase, "positionBase","Position of the interface base in the scene world coordinates")),
-     torqueScale(initData(&torqueScale, 0.5, "torqueScale","Default scale applied to the Haption torque. ")),
-     forceScale(initData(&forceScale, 1.0, "forceScale","Default scale applied to the Haption force. ")),
-     ip_haption(initData(&ip_haption,std::string("localhost"),"ip_haption","ip of the device")),
+    :scale(initData(100.0, "Scale","Default scale applied to the Haption Coordinates. ")),
+     state_button(initData(false, "state_button","state of the first button")),
+     haptionVisu(initData(false, "haptionVisu","Visualize the position of the interface in the virtual scene")),
+     posBase(initData("positionBase","Position of the interface base in the scene world coordinates")),
+     torqueScale(initData(0.5, "torqueScale","Default scale applied to the Haption torque. ")),
+     forceScale(initData(1.0, "forceScale","Default scale applied to the Haption force. ")),
+     ip_haption(initData(std::string("localhost"),"ip_haption","ip of the device")),
      m_speedFactor(1.0),
      m_forceFactor(1.0),
      haptic_time_step(0.003f),

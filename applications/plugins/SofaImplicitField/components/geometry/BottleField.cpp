@@ -31,12 +31,12 @@ namespace sofa::component::geometry::_BottleField_
 using sofa::type::Vec2;
 
 BottleField::BottleField()
-    : d_inside(initData(&d_inside, false, "inside", "If true the field is oriented inside (resp. outside) the bottle-shaped object. (default = false)"))
-    , d_radiusSphere(initData(&d_radiusSphere, 1.0, "radius", "Radius of Sphere emitting the field. (default = 1)"))
-    , d_centerSphere(initData(&d_centerSphere, Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface. (default=0 0 0)" ))
-    , d_shift(initData(&d_shift, 1.0, "shift", "How much the top ellipsoid is shifted from the bottom sphere. (default=1)" ))
-    , d_ellipsoidRadius(initData(&d_ellipsoidRadius, 1.0, "ellipsoidRadius", "Radius of the ellipsoid whose intersection with the sphere is taken off" ))
-    , d_excentricity(initData(&d_excentricity, 1.0, "excentricity", "excentricity of ellipsoid" ))
+    : d_inside(initData(false, "inside", "If true the field is oriented inside (resp. outside) the bottle-shaped object. (default = false)"))
+    , d_radiusSphere(initData(1.0, "radius", "Radius of Sphere emitting the field. (default = 1)"))
+    , d_centerSphere(initData(Vec3d(0.0,0.0,0.0), "center", "Position of the Sphere Surface. (default=0 0 0)" ))
+    , d_shift(initData(1.0, "shift", "How much the top ellipsoid is shifted from the bottom sphere. (default=1)" ))
+    , d_ellipsoidRadius(initData(1.0, "ellipsoidRadius", "Radius of the ellipsoid whose intersection with the sphere is taken off" ))
+    , d_excentricity(initData(1.0, "excentricity", "excentricity of ellipsoid" ))
 {
     init();
     addUpdateCallback("myUpdateCallback", {&d_inside, &d_radiusSphere, &d_centerSphere, &d_shift, &d_ellipsoidRadius, &d_excentricity}, [this](const core::DataTracker& t)

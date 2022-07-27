@@ -48,14 +48,14 @@ public:
     ZoneGeneratorImageToolBoxNoTemplated():LabelImageToolBox()
 
 
-       /* , d_ip(initData(&d_ip, "imageposition",""))
-        , d_p(initData(&d_p, "3Dposition",""))
-        , d_axis(initData(&d_axis, (unsigned int)4,"axis",""))
-        , d_value(initData(&d_value,"value",""))
-        , d_vecCoord(initData(&d_vecCoord,"out","Output list of space position of each pixel on contour"))
-        , d_vecPixCoord(initData(&d_vecPixCoord,"out2","Output list of image position of each pixel on contour"))
-        , threshold(initData(&threshold,"threshold",""))
-        , radius(initData(&radius,"radius",""))*/
+       /* , d_ip(initData("imageposition",""))
+        , d_p(initData("3Dposition",""))
+        , d_axis(initData((unsigned int)4,"axis",""))
+        , d_value(initData("value",""))
+        , d_vecCoord(initData("out","Output list of space position of each pixel on contour"))
+        , d_vecPixCoord(initData("out2","Output list of image position of each pixel on contour"))
+        , threshold(initData("threshold",""))
+        , radius(initData("radius",""))*/
     {
     
     }
@@ -131,12 +131,12 @@ public:
 
     
     ZoneGeneratorImageToolBox():ZoneGeneratorImageToolBoxNoTemplated(),
-      d_image(initData(&d_image, "imageIn", "Input image")),
-      d_imageOut(initData(&d_imageOut, "imageOut", "OutputImage")),
-      d_size(initData(&d_size,Vec2d(1,1), "size","")),
-      d_seed(initData(&d_seed, (unsigned int)0 , "seed","")),
-      d_radius(initData(&d_radius, (float)0.1 , "radius","")),
-      d_k(initData(&d_k, (unsigned int)100 , "k",""))
+      d_image(initData("imageIn", "Input image")),
+      d_imageOut(initData("imageOut", "OutputImage")),
+      d_size(initData(Vec2d(1,1), "size","")),
+      d_seed(initData((unsigned int)0 , "seed","")),
+      d_radius(initData((float)0.1 , "radius","")),
+      d_k(initData((unsigned int)100 , "k",""))
     {
     
     }

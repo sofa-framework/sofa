@@ -241,12 +241,12 @@ public:
     Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
     ImageExporter()	: Inherited()
-        , image(initData(&image,ImageTypes(),"image","image"))
-        , transform(initData(&transform, TransformType(), "transform" , ""))
-        , m_filename( initData(&m_filename, "filename", "output file"))
-        , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
-        , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
-        , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
+        , image(initData(ImageTypes(),"image","image"))
+        , transform(initData(TransformType(), "transform" , ""))
+        , m_filename( initData("filename", "output file"))
+        , exportEveryNbSteps( initData((unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
+        , exportAtBegin( initData(false, "exportAtBegin", "export file at the initialization"))
+        , exportAtEnd( initData(false, "exportAtEnd", "export file when the simulation is finished"))
         , stepCounter(0)
         , time(0)
     {

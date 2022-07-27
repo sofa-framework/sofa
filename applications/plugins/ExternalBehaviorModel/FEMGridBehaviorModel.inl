@@ -48,10 +48,10 @@ namespace externalBehaviorModel
 
 template <class DataTypes>
 FEMGridBehaviorModel<DataTypes>::FEMGridBehaviorModel() : Inherited()
-        , _youngModulus( initData( &_youngModulus, (Real)50000, "youngModulus", "Uniform Young modulus" ) )
-        , _poissonRatio( initData( &_poissonRatio, (Real)0.3, "poissonRatio", "Uniform Poisson ratio" ) )
-        , _totalMass( initData( &_totalMass, (Real)1, "totalMass", "Total Mass (lumped and uniformly distributed on particles" ) )
-        , _subdivisions( initData( &_subdivisions, (unsigned)1, "subdivisions", "nb grid subdivisions" ) )
+        , _youngModulus( initData((Real)50000, "youngModulus", "Uniform Young modulus" ) )
+        , _poissonRatio( initData((Real)0.3, "poissonRatio", "Uniform Poisson ratio" ) )
+        , _totalMass( initData((Real)1, "totalMass", "Total Mass (lumped and uniformly distributed on particles" ) )
+        , _subdivisions( initData((unsigned)1, "subdivisions", "nb grid subdivisions" ) )
 {
 }
 

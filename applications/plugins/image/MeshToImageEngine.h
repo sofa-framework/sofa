@@ -126,13 +126,13 @@ public:
     Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
 
     MeshToImageEngine()    :   Inherited()
-      , voxelSize(initData(&voxelSize,type::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
-      , nbVoxels(initData(&nbVoxels,type::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
-      , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
-      , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))
-      , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
-      , image(initData(&image,ImageTypes(),"image",""))
-      , transform(initData(&transform,TransformType(),"transform",""))
+      , voxelSize(initData(type::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
+      , nbVoxels(initData(type::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
+      , rotateImage(initData(false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
+      , padSize(initData((unsigned int)(0),"padSize","size of border in number of voxels"))
+      , subdiv(initData((unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
+      , image(initData(ImageTypes(),"image",""))
+      , transform(initData(TransformType(),"transform",""))
       , vf_positions(this, "position", "input positions for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
       , vf_edges(this,"edges", "input edges for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
       , vf_triangles(this,"triangles", "input triangles for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
@@ -141,10 +141,10 @@ public:
       , vf_InsideValues(this,"insideValue", "pixel value inside the mesh", core::objectmodel::DataEngineDataType::DataEngineInput, (ValueType)1.0)
       , vf_roiIndices(this,"roiIndices", "List of Regions Of Interest, vertex indices", core::objectmodel::DataEngineDataType::DataEngineInput)
       , vf_roiValue(this,"roiValue", "pixel value for ROIs, list of values", core::objectmodel::DataEngineDataType::DataEngineInput)
-      , backgroundValue(initData(&backgroundValue,0.,"backgroundValue","pixel value at background"))
-      , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
-      , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
-      , worldGridAligned(initData(&worldGridAligned, false, "worldGridAligned", "perform rasterization on a world aligned grid using nbVoxels and voxelSize"))
+      , backgroundValue(initData(0.,"backgroundValue","pixel value at background"))
+      , f_nbMeshes( initData((unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
+      , gridSnap(initData(true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
+      , worldGridAligned(initData(false, "worldGridAligned", "perform rasterization on a world aligned grid using nbVoxels and voxelSize"))
     {
         vf_positions.resize(f_nbMeshes.getValue());
         vf_edges.resize(f_nbMeshes.getValue());

@@ -96,11 +96,11 @@ public:
 	waTransform* outT;
 
     CollisionToCarvingEngine()    :   Inherited()
-		, inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
-		, inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
-		, outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
-		, outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
-		, trackedPosition(initData(&trackedPosition, Vector3(),"trackedPosition","Position de test pour la collision"))
+		, inputImage(initData(InImageTypes(),"inputImage",""))
+		, inputTransform(initData(TransformType(),"inputTransform",""))
+		, outputImage(initData(OutImageTypes(),"outputImage",""))
+		, outputTransform(initData(TransformType(),"outputTransform",""))
+		, trackedPosition(initData(Vector3(),"trackedPosition","Position de test pour la collision"))
     {
 		inputImage.setReadOnly(true);
         inputTransform.setReadOnly(true);

@@ -69,7 +69,7 @@ GeomagicEmulatorTask::MemoryAlloc GeomagicEmulatorTask::run()
 //constructeur
 GeomagicEmulator::GeomagicEmulator()
     : GeomagicDriver()
-    , d_speedFactor(initData(&d_speedFactor, SReal(0.1), "speedFactor", "factor to increase/decrease the movements speed"))
+    , d_speedFactor(initData(SReal(0.1), "speedFactor", "factor to increase/decrease the movements speed"))
     , _taskScheduler(nullptr)
     , m_terminate(false)
  {

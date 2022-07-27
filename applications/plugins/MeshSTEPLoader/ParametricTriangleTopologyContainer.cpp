@@ -17,7 +17,7 @@ int ParametricTriangleTopologyContainerClass = RegisterObject("Topology containe
 
 ParametricTriangleTopologyContainer::ParametricTriangleTopologyContainer()
     : container::dynamic::TriangleSetTopologyContainer()
-    ,d_uv(initData(&d_uv,"uv","The uv coordinates for every triangle vertices."))
+    ,d_uv(initData("uv","The uv coordinates for every triangle vertices."))
 {
 }
 

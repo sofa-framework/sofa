@@ -48,9 +48,9 @@ public:
     typedef _Type Type;
 
     MergedCatchAllVector()    :   Inherited()
-        ,_data(initData(&_data,"data_out","data_out"))
-        ,_data1(initData(&_data1,"data_in1","data_in1"))
-        ,_data2(initData(&_data2,"data_in2","data_in2"))
+        ,_data(initData("data_out","data_out"))
+        ,_data1(initData("data_in1","data_in1"))
+        ,_data2(initData("data_in2","data_in2"))
 
     {
 

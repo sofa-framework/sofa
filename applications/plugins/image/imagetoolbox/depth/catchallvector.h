@@ -48,7 +48,7 @@ public:
     typedef _Type Type;
 
     CatchAllVector()    :   Inherited()
-        ,_data(initData(&_data,"data","data"))
+        ,_data(initData("data","data"))
     {
 
     }

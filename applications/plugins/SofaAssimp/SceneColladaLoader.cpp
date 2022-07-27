@@ -84,14 +84,14 @@ int SceneColladaLoaderClass = core::RegisterObject("Specific scene loader for Co
 SceneColladaLoader::SceneColladaLoader() : SceneLoader()
   , subSceneRoot()
   , importer()
-  , animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
-  , generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
+  , animationSpeed(initData(1.0f, "animationSpeed", "animation speed"))
+  , generateCollisionModels(initData(true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
   #if COLLADASCENELOADER_HAVE_FLEXIBLE
-  , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
+  , useFlexible(initData(false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
   #endif
   #if COLLADASCENELOADER_HAVE_IMAGE
-  , generateShapeFunction(initData(&generateShapeFunction, false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
-  , voxelSize(initData(&voxelSize, (SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
+  , generateShapeFunction(initData(false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
+  , voxelSize(initData((SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
   #endif
 {
 

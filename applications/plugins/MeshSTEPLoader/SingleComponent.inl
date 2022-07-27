@@ -44,18 +44,18 @@ using namespace std;
 
 template <class DataTypes>
 SingleComponent<DataTypes>::SingleComponent()
-    : _positionsI(initData(&_positionsI, "positionsI", "input: vertices position of whole mesh"))
-    , _positionsO(initData(&_positionsO, "positionsO", "output: vertices position of the component"))
-    , _edgesI(initData(&_edgesI, "edgesI", "input: edges of whole mesh"))
-    , _edgesO(initData(&_edgesO, "edgesO", "output: edges of the component"))
-    , _trianglesI(initData(&_trianglesI, "trianglesI", "input: triangles of whole mesh"))
-    , _trianglesO(initData(&_trianglesO, "trianglesO", "output: triangles of the component"))
-    , _normalsI(initData(&_normalsI, "normalsI", "input: normals of the whole mesh"))
-    , _normalsO(initData(&_normalsO, "normalsO", "output: normals of the component"))
-    , _uvI(initData(&_uvI, "uvI", "input: UV coordinates of the whole mesh"))
-    , _uvO(initData(&_uvO, "uvO", "output: UV coordinates of the component"))
-    , _indicesComponents(initData(&_indicesComponents, "indicesComponents", "Shape # | number of nodes | number of triangles"))
-    , _numberShape(initData(&_numberShape, "numberShape", "Shape number to be loaded (see Outputs tab of STEPLoader for a description of the shapes)"))
+    : _positionsI(initData("positionsI", "input: vertices position of whole mesh"))
+    , _positionsO(initData("positionsO", "output: vertices position of the component"))
+    , _edgesI(initData("edgesI", "input: edges of whole mesh"))
+    , _edgesO(initData("edgesO", "output: edges of the component"))
+    , _trianglesI(initData("trianglesI", "input: triangles of whole mesh"))
+    , _trianglesO(initData("trianglesO", "output: triangles of the component"))
+    , _normalsI(initData("normalsI", "input: normals of the whole mesh"))
+    , _normalsO(initData("normalsO", "output: normals of the component"))
+    , _uvI(initData("uvI", "input: UV coordinates of the whole mesh"))
+    , _uvO(initData("uvO", "output: UV coordinates of the component"))
+    , _indicesComponents(initData("indicesComponents", "Shape # | number of nodes | number of triangles"))
+    , _numberShape(initData("numberShape", "Shape number to be loaded (see Outputs tab of STEPLoader for a description of the shapes)"))
 {
     addAlias(&_positionsO,"position");
     addAlias(&_trianglesO,"triangles");

@@ -67,9 +67,9 @@ public:
     Data<type::SVector<type::SVector<To> > > VoxelData; ///< Data associed to each non null input voxel
 
     ImageDataDisplay()    :   Inherited()
-      , inputImage(initData(&inputImage,InImageTypes(),"inputImage",""))
-      , outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
-      , VoxelData(initData(&VoxelData,"VoxelData","Data associed to each non null input voxel"))
+      , inputImage(initData(InImageTypes(),"inputImage",""))
+      , outputImage(initData(OutImageTypes(),"outputImage",""))
+      , VoxelData(initData("VoxelData","Data associed to each non null input voxel"))
     {
         inputImage.setReadOnly(true);
         outputImage.setReadOnly(true);

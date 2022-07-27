@@ -126,11 +126,11 @@ SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolverInvertData::SparsePARDI
 
 template<class TMatrix, class TVector>
 SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolver()
-    : f_symmetric( initData(&f_symmetric,1,"symmetric","0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_exportDataToDir( initData(&f_exportDataToDir, std::string(""), "exportDataToDir", "export data (matrix, RHS, solution) to files in given directory"))
-    , f_iterativeSolverNumbering( initData(&f_iterativeSolverNumbering,false,"iterativeSolverNumbering","if true, the naming convention is incN_itM where N is the time step and M is the iteration inside the step") )
-    , f_saveDataToFile( initData(&f_saveDataToFile,false,"saveDataToFile","if true, export the data to the current directory (if exportDataToDir not set)") )
+    : f_symmetric( initData(1,"symmetric","0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix") )
+    , f_verbose( initData(false,"verbose","Dump system state at each iteration") )
+    , f_exportDataToDir( initData(std::string(""), "exportDataToDir", "export data (matrix, RHS, solution) to files in given directory"))
+    , f_iterativeSolverNumbering( initData(false,"iterativeSolverNumbering","if true, the naming convention is incN_itM where N is the time step and M is the iteration inside the step") )
+    , f_saveDataToFile( initData(false,"saveDataToFile","if true, export the data to the current directory (if exportDataToDir not set)") )
 {
 }
 

@@ -73,10 +73,10 @@ public:
     Data< ImageTypes > outputImage;
 
     ImageOperation()    :   Inherited()
-      , operation ( initData ( &operation,"operation","operation" ) )
-      , inputImage1(initData(&inputImage1,ImageTypes(),"inputImage1",""))
-      , inputImage2(initData(&inputImage2,ImageTypes(),"inputImage2",""))
-      , outputImage(initData(&outputImage,ImageTypes(),"outputImage",""))
+      , operation ( initData("operation","operation" ) )
+      , inputImage1(initData(ImageTypes(),"inputImage1",""))
+      , inputImage2(initData(ImageTypes(),"inputImage2",""))
+      , outputImage(initData(ImageTypes(),"outputImage",""))
     {
         inputImage1.setReadOnly(true);  this->addAlias(&inputImage1, "image1");
         inputImage2.setReadOnly(true);  this->addAlias(&inputImage2, "image2");

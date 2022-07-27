@@ -31,10 +31,10 @@ public:
     SOFA_CLASS(LabelPointImageToolBox,LabelImageToolBox);
     
     LabelPointImageToolBox():LabelImageToolBox()
-        , d_ip(initData(&d_ip, "imageposition",""))
-        , d_p(initData(&d_p, "3Dposition",""))
-        , d_axis(initData(&d_axis, (unsigned int)4,"axis",""))
-        , d_value(initData(&d_value,"value",""))
+        , d_ip(initData("imageposition",""))
+        , d_p(initData("3Dposition",""))
+        , d_axis(initData((unsigned int)4,"axis",""))
+        , d_value(initData("value",""))
     {
     
     }

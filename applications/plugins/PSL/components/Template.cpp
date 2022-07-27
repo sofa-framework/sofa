@@ -68,7 +68,7 @@ using sofa::core::objectmodel::BaseNode ;
 using sofa::simulation::Node ;
 
 Template::Template() : BaseObject(),
-    m_template(initData(&m_template, std::string(""), "psl_source", "Current template source" , true, false))
+    m_template(initData(std::string(""), "psl_source", "Current template source" , true, false))
 {
     m_template.setGroup("PSL");
 }

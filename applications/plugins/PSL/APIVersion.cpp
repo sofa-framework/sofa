@@ -74,7 +74,7 @@ private:
 };
 
 APIVersion::APIVersion() :
-     d_level ( initData(&d_level, 0, "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+     d_level ( initData(0, "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
 {
 }
 
