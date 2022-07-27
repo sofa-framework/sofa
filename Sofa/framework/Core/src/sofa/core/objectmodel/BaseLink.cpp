@@ -352,7 +352,9 @@ bool BaseLink::updateLinks()
         {
             ptr = PathResolver::FindBaseFromClassAndPath(getOwner(), getDestClass(), path);
             if(!ptr)
+            {
                 ok = false;
+            }
             else
             {
                 msg_info(this->getOwner()) << "Link '" << this->getName() << "' successfully updated";
