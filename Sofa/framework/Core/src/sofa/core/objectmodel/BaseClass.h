@@ -370,7 +370,6 @@ protected:
         for (int i=0; i<TClassParents<Parents>::nb(); ++i)
             parents[i] = TClassParents<Parents>::get(i);
     }
-    ~TClass() override {}
 
     Base* dynamicCast(Base* obj) const override
     {
@@ -384,10 +383,20 @@ protected:
 
 public:
 
+    ~TClass() override {}
+
     static const BaseClass* get()
     {
-        static TClass<T, Parents> *theClass=new TClass<T, Parents>();
-        return theClass;
+        if constexpr (std::is_abstract_v<T>)
+        {
+            static TClass<T, Parents> *theClass = new TClass<T, Parents>();
+            return theClass;
+        }
+        else
+        {
+            static TClass<T, Parents> theClass;
+            return &theClass;
+        }
     }
 };
 
