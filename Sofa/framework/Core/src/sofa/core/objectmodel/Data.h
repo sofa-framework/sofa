@@ -221,6 +221,9 @@ public:
 
     static constexpr bool isCopyOnWrite(){ return !std::is_scalar_v<T>; }
 
+    Data(const Data& ) = delete;
+    Data& operator=(const Data& ) = delete;
+
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
 
@@ -228,8 +231,7 @@ protected:
     ValueType m_value;
 
 private:
-    Data(const Data& );
-    Data& operator=(const Data& );
+
 
     bool doIsExactSameDataType(const BaseData* parent) override;
     bool doCopyValueFrom(const BaseData* parent) override;
