@@ -122,8 +122,15 @@ public:
         if(!clicked)	this->currentpos=pos;
         else
         {
-            if(cimg_library::cimg::abs(clamp[1]-pos)<cimg_library::cimg::abs(pos-clamp[0])) this->clamp[1]=pos;
-            else this->clamp[0]=pos;
+            if(cimg_library::cimg::abs(clamp[1]-pos)<cimg_library::cimg::abs(pos-clamp[0]))
+            {
+                this->clamp[1]=pos;
+            }
+            else
+            {
+                this->clamp[0]=pos;
+            }
+
             emit clampModified();
         }
 
