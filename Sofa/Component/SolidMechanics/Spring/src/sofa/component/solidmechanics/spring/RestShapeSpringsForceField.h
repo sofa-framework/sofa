@@ -114,11 +114,6 @@ public:
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
-    static constexpr bool isRigid()
-    {
-        return std::string_view(DataTypes::Name()).find("Rigid") != std::string_view::npos;
-    }
-
 protected :
 
     void recomputeIndices();

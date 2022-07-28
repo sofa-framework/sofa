@@ -29,6 +29,31 @@
 #include <sofa/type/RGBAColor.h>
 
 #include <string_view>
+#include <type_traits>
+
+namespace // anonymous
+{
+    // Boiler-plate code to test if a type implements a method
+    // explanation https://stackoverflow.com/a/30848101
+    
+    template <typename...>
+    using void_t = void;
+
+    // Primary template handles all types not supporting the operation.
+    template <typename, template <typename> class, typename = void_t<>>
+    struct detect : std::false_type {};
+
+    // Specialization recognizes/validates only types supporting the archetype.
+    template <typename T, template <typename> class Op>
+    struct detect<T, Op, void_t<Op<T>>> : std::true_type {};
+
+    // Actual test if DataType::Coord implements getOrientation() (hence is a RigidType)
+    template <typename T>
+    using isRigid_t = decltype(std::declval<typename T::Coord>().getOrientation());
+
+    template <typename T>
+    using isRigidType = detect<T, isRigid_t>;
+} // anonymous
 
 namespace sofa::component::solidmechanics::spring
 {
@@ -136,7 +161,8 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     /// Compile time condition to check if we are working with a Rigid3Types or a type that does not
     /// need the Angular Stiffness parameters.
-    if constexpr (isRigid())
+    //if constexpr (isRigid())
+    if constexpr (isRigidType<DataTypes>())
     {
         sofa::helper::ReadAccessor<Data<VecReal>> s = d_stiffness;
         sofa::helper::WriteOnlyAccessor<Data<VecReal>> as = d_angularStiffness;
@@ -314,7 +340,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             ext_index = m_ext_indices[i];
 
         // rigid case
-        if constexpr (isRigid())
+        if constexpr (isRigidType<DataTypes>())
         {
             // translation
             if (i >= m_pivots.size())
@@ -371,7 +397,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
         const sofa::Index curIndex = m_indices[i];
-        if constexpr (isRigid())
+        if constexpr (isRigidType<DataTypes>())
         {
             getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * ((i < k.size()) ? k[i] : k[0]) * kFactor;
             getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * (i < k_a.size() ? k_a[i] : k_a[0]) * kFactor;
@@ -450,7 +476,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         }
 
         // rotation (if applicable)
-        if constexpr (isRigid())
+        if constexpr (isRigidType<DataTypes>())
         {
             for (int i = 3; i < 6; i++)
             {
