@@ -36,4 +36,4 @@ const int CudaLinearSolverConstraintCorrectionClass = core::RegisterObject("Supp
 .add< LinearSolverConstraintCorrection< CudaVec3f1Types > >()
 ;
 
-} // namespace sofa::component::constraintset
+} // namespace sofa::component::constraint::lagrangian::correction
