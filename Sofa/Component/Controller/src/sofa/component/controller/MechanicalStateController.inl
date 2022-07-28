@@ -230,17 +230,4 @@ void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::Mouse
 
 }
 
-
-
-template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1Types>::applyController();
-
-template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
-
-template <>
-SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
-
-
-
-} //namespace sofa::component::collision
+} // namespace sofa::component::controller
