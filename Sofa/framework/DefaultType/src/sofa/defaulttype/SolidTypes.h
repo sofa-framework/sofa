@@ -405,7 +405,7 @@ public:
 
     static ArticulatedInertia dyad ( const SpatialVector& u, const SpatialVector& v );
 
-    static const char* Name()
+    static constexpr const char* Name()
     {
         return "Solid";
     }
