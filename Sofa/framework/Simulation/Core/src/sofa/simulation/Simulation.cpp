@@ -161,8 +161,10 @@ void Simulation::init ( Node* root )
 
     if (!root->getAnimationLoop())
     {
-        msg_warning(root) <<
-            "Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning";
+        msg_warning(root) << "An animation loop is required, but has not been found. Add an animation loop in the root "
+                            "of your scene to fix this warning. The list of available animation loop components is: ["
+        << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
+        << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
         
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
         aloop->setName(root->getNameHelper().resolveName(aloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
@@ -171,8 +173,10 @@ void Simulation::init ( Node* root )
 
     if(!root->getVisualLoop())
     {
-        msg_warning(root) <<
-            "Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning";
+        msg_info(root) << "A visual loop is required, but has not been found. Add a visual loop in the root "
+                            "of your scene to fix this warning. The list of available visual loop components is: ["
+        << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
+        << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
@@ -443,8 +447,17 @@ Node::SPtr Simulation::load ( const std::string& filename, bool reload, const st
 
     if (loader) return loader->load(filename, reload, sceneArgs);
 
-    // unable to load file
-    msg_error() << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename.c_str())<<") not handled";
+    const std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    if (extension == "py" || extension == "py3"
+        || extension == "pyscn" || extension == "py3scn") //special case for Python extensions
+    {
+        msg_error() << "Cannot load file '" << filename << "': extension (" << extension << ") is only supported if the"
+            " plugin SofaPython3 is loaded. SofaPython3 must be loaded first before being able to load the file.";
+    }
+    else
+    {
+        msg_error() << "Cannot load file '" << filename << "': extension (" << extension << ") not supported";
+    }
     return nullptr;
 }
 

@@ -23,4 +23,4 @@
 
 #include <sofa/core/topology/TopologySubsetData.inl>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologySubsetData.inl")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologySubsetData.inl")

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_POLYNOMIAL_SPRINGS_FORCEFIELD_CPP
 
-#include "PolynomialSpringsForceField.inl"
+#include <sofa/component/solidmechanics/spring/PolynomialSpringsForceField.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

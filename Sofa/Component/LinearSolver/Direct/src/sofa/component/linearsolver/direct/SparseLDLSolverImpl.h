@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
-#define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
+#pragma once
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -39,6 +38,8 @@ namespace sofa::component::linearsolver::direct
 template<class VecInt,class VecReal>
 class SparseLDLImplInvertData : public MatrixInvertData {
 public :
+    ~SparseLDLImplInvertData() override = default;
+
     int n, P_nnz, L_nnz;
     VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
     VecInt perm, invperm;
@@ -138,7 +139,6 @@ public :
     SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolverImpl,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager));
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector, TThreadManager> Inherit;
 
-public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef TThreadManager ThreadManager;
@@ -146,12 +146,14 @@ public:
 
 protected :
 
-    Data<bool> d_useSymbolicDecomposition ;
-    Data<bool> d_applyPermutation ;
+    Data<bool> d_precomputeSymbolicDecomposition; ///< If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step.
+    Data<bool> d_applyPermutation; ///< If true the solver will apply a fill-reducing permutation to the matrix of the system.
+    Data<int> d_L_nnz; ///< Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.
 
-    SparseLDLSolverImpl() : Inherit() 
-    , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
+    SparseLDLSolverImpl() : Inherit()
+    , d_precomputeSymbolicDecomposition(initData(&d_precomputeSymbolicDecomposition, true ,"precomputeSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
     , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
+    , d_L_nnz(initData(&d_L_nnz, 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
     {}
 
     template<class VecInt,class VecReal>
@@ -243,7 +245,7 @@ protected :
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
-        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() )
+        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() )
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("symbolic_factorization");
             msg_info() << "Recomputing new factorization" ;
@@ -270,6 +272,7 @@ protected :
                          data->perm.data(),data->invperm.data(),data->Parent.data());
 
             data->L_nnz = data->L_colptr[data->n];
+            d_L_nnz.setValue(data->L_nnz);
 
             data->L_rowind.clear();data->L_rowind.fastResize(data->L_nnz);
             data->L_values.clear();data->L_values.fastResize(data->L_nnz);
@@ -297,7 +300,7 @@ protected :
 
         // split the bloc diag in data->Bdiag
 
-        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
+        if (data->new_factorization_needed  || !d_precomputeSymbolicDecomposition.getValue() ) {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
@@ -333,5 +336,3 @@ protected : //the following variables are used during the factorization they can
 };
 
 } // namespace sofa::component::linearsolver::direct
-
-#endif

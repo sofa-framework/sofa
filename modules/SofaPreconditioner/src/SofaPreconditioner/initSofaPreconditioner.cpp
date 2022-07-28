@@ -37,7 +37,7 @@ void initSofaPreconditioner()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaPreconditioner") << "SofaPreconditioner is deprecated. It will be removed at v23.06. Use Sofa.Component.LinearSolver.Preconditioner and Sofa.Component.LinearSolver.Iterative instead.";
+        msg_deprecated("SofaPreconditioner") << "SofaPreconditioner is deprecated. It will be removed at v23.06. Use Sofa.Component.LinearSolver.Preconditioner and Sofa.Component.LinearSolver.Iterative instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.LinearSolver.Preconditioner");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.LinearSolver.Iterative");

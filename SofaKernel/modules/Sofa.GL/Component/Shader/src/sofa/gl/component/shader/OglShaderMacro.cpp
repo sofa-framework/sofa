@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "OglShaderMacro.h"
+#include <sofa/gl/component/shader/OglShaderMacro.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::gl::component::shader

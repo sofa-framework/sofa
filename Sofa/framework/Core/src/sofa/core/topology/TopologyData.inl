@@ -60,7 +60,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     this->m_topologyHandler->init();
 
     // Register the TopologyHandler
-    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
+    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology, sofa::helper::logging::notMuted(this->getOwner()));
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);
@@ -211,6 +211,13 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<I
     helper::WriteOnlyAccessor<Data< container_type > > data = this;
     if (data.size() > 0)
     {
+        // make sure m_lastElementIndex is up to date before removing
+        this->m_lastElementIndex = data.size() - 1;
+
+        // Loop over the indices to remove. As in topology process when removing elements:
+        // 1- propagate event by calling callback if it has been set.
+        // 2- really remove element using swap + pop_back. 
+        // 3- Update m_lastElementIndex in case it is used in callback while removing several elements
         for (std::size_t i = 0; i < index.size(); ++i)
         {
             if (p_onDestructionCallback)
@@ -234,10 +241,15 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     const sofa::type::vector<sofa::type::vector<SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
+    SOFA_UNUSED(ancestorElems);
+
     std::size_t nbElements = index.size();
-    if (nbElements == 0) return;
+    if (nbElements == 0) 
+        return;
+
     // Using default values
     helper::WriteOnlyAccessor<Data< container_type > > data = this;
+    
     std::size_t i0 = data.size();
     if (i0 != index[0])
     {
@@ -248,19 +260,30 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
             << " while vector size is " << i0;
         i0 = index[0];
     }
+
+
+    // As in topology process when adding elements:
+    // 1- Add new element. Using Data default constructors
+    // 2- Update m_lastElementIndex in case it is used in callback while adding several elements
+    // 3- propagate event by calling callback if it has been set.
     data.resize(i0 + nbElements);
-    this->m_lastElementIndex += sofa::Index(nbElements);
 
     if (p_onCreationCallback)
     {
         for (Index i = 0; i < nbElements; ++i)
         {
-            value_type& t = data[i0 + i];
+            Index newElemId = i0 + i;
+            value_type& t = data[newElemId];
+            this->m_lastElementIndex = newElemId;
 
-            p_onCreationCallback(Index(i0 + i), t, elems[i],
+            p_onCreationCallback(newElemId, t, elems[i],
                 (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
                 (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i]);
         }
+    }
+    else
+    {
+        this->m_lastElementIndex = data.size() - 1;
     }
 }
 

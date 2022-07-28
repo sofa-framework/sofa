@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/RealGUI">
+        <file alias="collapseAll">icons/collapseAll.svg</file>
+        <file alias="expandAll">icons/expandAll.svg</file>
+        <file alias="sceneGraphRefresh-locked">icons/sceneGraphRefresh-locked.svg</file>
+        <file alias="sceneGraphRefresh-dirty">icons/sceneGraphRefresh-dirty.svg</file>
+        <file alias="sceneGraphRefresh-unlocked">icons/sceneGraphRefresh-unlocked.svg</file>
+    </qresource>
+</RCC>

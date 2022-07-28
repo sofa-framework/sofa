@@ -25,7 +25,7 @@
 *******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP
 
-#include "QuadBendingFEMForceField.inl"
+#include <sofa/component/solidmechanics/fem/elastic/QuadBendingFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 

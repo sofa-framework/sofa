@@ -3,7 +3,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/State.h>
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 #include "SingleComponent.h"
 #include "MeshSTEPLoader.h"
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -22,7 +22,7 @@ public:
 public:
 
     typedef sofa::core::topology::Topology::Triangle Triangle;
-    STEPShapeExtractor(loader::MeshSTEPLoader* loader=NULL,topology::MeshTopology* topology=NULL);
+    STEPShapeExtractor(loader::MeshSTEPLoader* loader=NULL,topology::container::constant::MeshTopology* topology=NULL);
 
     void init() override;
     void doUpdate() override;
@@ -47,7 +47,7 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         loader::MeshSTEPLoader* loader = NULL;
-        topology::MeshTopology* topology = NULL;
+        topology::container::constant::MeshTopology* topology = NULL;
 
         std::string inPath, outPath;
 
@@ -63,13 +63,13 @@ public:
 
         if (loader == NULL)
         {
-            context->serr << "Cannot create "<<sofa::helper::NameDecoder::getClassName<T>()<<" as input model is missing or invalid." << context->sendl;
+            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::helper::NameDecoder::getClassName<T>() << " as input model is missing or invalid.";
             return false;
         }
 
         if (topology == NULL)
         {
-            context->serr << "Cannot create "<<sofa::helper::NameDecoder::getClassName<T>()<<" as output model is missing or invalid." << context->sendl;
+            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::helper::NameDecoder::getClassName<T>() << " as output model is missing or invalid.";
             return false;
         }
 
@@ -108,7 +108,7 @@ public:
 
 protected:
     SingleLink<STEPShapeExtractor, loader::MeshSTEPLoader, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> loader;
-    SingleLink<STEPShapeExtractor, topology::MeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> topology;
+    SingleLink<STEPShapeExtractor, topology::container::constant::MeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> topology;
 
 };
 

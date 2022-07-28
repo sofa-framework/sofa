@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/component/controller/Controller.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/controller/Controller.h")
-
-namespace sofa::component::controller
-{ 
-    using Controller = sofa::component::controller::Controller;
-
-} // namespace sofa::component::controller
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/controller/Controller.h")

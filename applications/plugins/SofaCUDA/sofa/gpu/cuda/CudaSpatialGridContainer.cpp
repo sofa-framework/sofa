@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaSpatialGridContainer.inl>
-#include <SofaBaseMechanics/MechanicalObject.inl>
+#include <sofa/component/statecontainer/MechanicalObject.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

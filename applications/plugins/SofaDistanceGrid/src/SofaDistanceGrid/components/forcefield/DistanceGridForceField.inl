@@ -403,8 +403,8 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::Mechanica
             const int p = c.index;
             const Real fact = (Real)(c.fact * -kFactor);
             const Deriv& normal = c.normal;
-            for (int l=0; l<Deriv::total_size; ++l)
-                for (int c=0; c<Deriv::total_size; ++c)
+            for (sofa::Size l=0; l<Deriv::total_size; ++l)
+                for (sofa::Size c=0; c<Deriv::total_size; ++c)
                 {
                     SReal coef = normal[l] * fact * normal[c];
                     mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);

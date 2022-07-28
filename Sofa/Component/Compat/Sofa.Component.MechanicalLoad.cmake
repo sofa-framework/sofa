@@ -1,4 +1,5 @@
 set(SOFABOUNDARYCONDITION_SRC src/SofaBoundaryCondition)
+set(SOFAGENERALOBJECTINTERACTION_SRC src/SofaGeneralObjectInteraction)
 
 list(APPEND HEADER_FILES
     ${SOFABOUNDARYCONDITION_SRC}/ConicalForceField.h
@@ -31,4 +32,6 @@ list(APPEND HEADER_FILES
     ${SOFABOUNDARYCONDITION_SRC}/TrianglePressureForceField.inl
     ${SOFABOUNDARYCONDITION_SRC}/UniformVelocityDampingForceField.h
     ${SOFABOUNDARYCONDITION_SRC}/UniformVelocityDampingForceField.inl
+    ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.h
+    ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.inl
 )

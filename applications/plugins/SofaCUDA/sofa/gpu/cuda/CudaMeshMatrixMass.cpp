@@ -23,15 +23,15 @@
 #define SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
 
 #include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
-#include <SofaMiscForceField/MeshMatrixMass.inl>
+#include <sofa/component/mass/MeshMatrixMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/behavior/ForceField.inl>
 
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

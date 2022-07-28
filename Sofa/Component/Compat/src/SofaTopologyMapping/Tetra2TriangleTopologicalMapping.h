@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/mapping/Tetra2TriangleTopologicalMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/Tetra2TriangleTopologicalMapping.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/Tetra2TriangleTopologicalMapping.h")
 
 namespace sofa::component::topology
 {

@@ -133,116 +133,116 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     size_t i;
 
     qpa.clear();
-    varray[0]=0.2386191860831969086305017; warray[0]=0.4679139345726910473898703;
-    varray[1]=0.6612093864662645136613996;	warray[1]=0.3607615730481386075698335;
-    varray[2]=0.9324695142031520278123016; warray[2]=0.1713244923791703450402961;
+    varray[0] = static_cast<Real>(0.2386191860831969086305017); warray[0] = static_cast<Real>(0.4679139345726910473898703);
+    varray[1] = static_cast<Real>(0.6612093864662645136613996); warray[1] = static_cast<Real>(0.3607615730481386075698335);
+    varray[2] = static_cast<Real>(0.9324695142031520278123016); warray[2] = static_cast<Real>(0.1713244923791703450402961);
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1+ varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1- varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,6,qpa);
     /// integration with  accuracy of order 7.
     qpa.clear();
-    warray0=0.4179591836734693877551020;
-    varray[0]=0.4058451513773971669066064;	warray[0]=0.3818300505051189449503698;
-    varray[1]=0.7415311855993944398638648;	warray[1]=0.2797053914892766679014678;
-    varray[2]=0.9491079123427585245261897;	warray[2]=0.1294849661688696932706114;
+    warray0 = static_cast<Real>(0.4179591836734693877551020);
+    varray[0] = static_cast<Real>(0.4058451513773971669066064);	warray[0] = static_cast<Real>(0.3818300505051189449503698);
+    varray[1] = static_cast<Real>(0.7415311855993944398638648);	warray[1] = static_cast<Real>(0.2797053914892766679014678);
+    varray[2] = static_cast<Real>(0.9491079123427585245261897);	warray[2] = static_cast<Real>(0.1294849661688696932706114);
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1+ varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1- varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
     }
     v=BarycentricCoordinatesType(div2);
-    qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
+    qpa.push_back(QuadraturePoint(v,warray0/2));
     edgeNumericalIntegration.addQuadratureMethod(m,7,qpa);
     /// integration with  accuracy of order 8.
     qpa.clear();
-    varray[0]=0.1834346424956498049394761; warray[0]=	0.3626837833783619829651504;
-    varray[1]=0.5255324099163289858177390; warray[1]=	0.3137066458778872873379622;
-    varray[2]=0.7966664774136267395915539; warray[2]=	0.2223810344533744705443560;
-    varray[3]=0.9602898564975362316835609; warray[3]=	0.1012285362903762591525314;
+    varray[0]= static_cast<Real>(0.1834346424956498049394761); warray[0]= static_cast<Real>(0.3626837833783619829651504);
+    varray[1]= static_cast<Real>(0.5255324099163289858177390); warray[1]= static_cast<Real>(0.3137066458778872873379622);
+    varray[2]= static_cast<Real>(0.7966664774136267395915539); warray[2]= static_cast<Real>(0.2223810344533744705443560);
+    varray[3]= static_cast<Real>(0.9602898564975362316835609); warray[3]= static_cast<Real>(0.1012285362903762591525314);
     nbIPs=4;
 
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1+ varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1- varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,8,qpa);
     /// integration with  accuracy of order 9
     qpa.clear();
-    warray0=	0.3302393550012597631645251;
-    varray[0]=0.3242534234038089290385380;	warray[0]=0.3123470770400028400686304;
-    varray[1]=0.6133714327005903973087020;	warray[1]=	0.2606106964029354623187429;
-    varray[2]=0.8360311073266357942994298;	warray[2]=0.1806481606948574040584720;
-    varray[3]=0.9681602395076260898355762;	warray[3]=	0.0812743883615744119718922;
+    warray0= static_cast<Real>(0.3302393550012597631645251);
+    varray[0]= static_cast<Real>(0.3242534234038089290385380);	warray[0]=static_cast<Real>(0.3123470770400028400686304);
+    varray[1]= static_cast<Real>(0.6133714327005903973087020);	warray[1]=static_cast<Real>(0.2606106964029354623187429);
+    varray[2]= static_cast<Real>(0.8360311073266357942994298);	warray[2]=static_cast<Real>(0.1806481606948574040584720);
+    varray[3]= static_cast<Real>(0.9681602395076260898355762);	warray[3]=static_cast<Real>(0.0812743883615744119718922);
 
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1+ varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1- varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
     }
     v=BarycentricCoordinatesType(div2);
-    qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
+    qpa.push_back(QuadraturePoint(v,warray0/2));
     edgeNumericalIntegration.addQuadratureMethod(m,9,qpa);
 
     /// integration with accuracy of order 10.
     qpa.clear();
-    varray[0]=0.1488743389816312108848260; warray[0]=	0.2955242247147528701738930;
-    varray[1]=0.4333953941292471907992659; warray[1]=	0.2692667193099963550912269;
-    varray[2]=0.6794095682990244062343274; warray[2]=	0.2190863625159820439955349;
-    varray[3]=0.8650633666889845107320967; warray[3]=	0.1494513491505805931457763;
-    varray[4]=0.9739065285171717200779640; warray[4]=	0.0666713443086881375935688;
+    varray[0] = static_cast<Real>(0.1488743389816312108848260); warray[0]= static_cast<Real>(0.2955242247147528701738930);
+    varray[1] = static_cast<Real>(0.4333953941292471907992659); warray[1]= static_cast<Real>(0.2692667193099963550912269);
+    varray[2] = static_cast<Real>(0.6794095682990244062343274); warray[2]= static_cast<Real>(0.2190863625159820439955349);
+    varray[3] = static_cast<Real>(0.8650633666889845107320967); warray[3]= static_cast<Real>(0.1494513491505805931457763);
+    varray[4] = static_cast<Real>(0.9739065285171717200779640); warray[4]= static_cast<Real>(0.0666713443086881375935688);
     nbIPs=5;
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1+ varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1- varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);
     /// integration with accuracy of order 11.
     qpa.clear();
-    warray0=0.2729250867779006307144835;
-    varray[0]=0.2695431559523449723315320;	warray[0]=	0.2628045445102466621806889;
-    varray[1]=0.5190961292068118159257257;	warray[1]=0.2331937645919904799185237;
-    varray[2]=0.7301520055740493240934163;	warray[2]=	0.1862902109277342514260976;
-    varray[3]=0.8870625997680952990751578;	warray[3]=	0.1255803694649046246346943;
-    varray[4]=0.9782286581460569928039380;	warray[4]=	0.0556685671161736664827537;
+    warray0 = static_cast<Real>(0.2729250867779006307144835);
+    varray[0] = static_cast<Real>(0.2695431559523449723315320);	warray[0] = static_cast<Real>(0.2628045445102466621806889);
+    varray[1] = static_cast<Real>(0.5190961292068118159257257);	warray[1] = static_cast<Real>(0.2331937645919904799185237);
+    varray[2] = static_cast<Real>(0.7301520055740493240934163);	warray[2] = static_cast<Real>(0.1862902109277342514260976);
+    varray[3] = static_cast<Real>(0.8870625997680952990751578);	warray[3] = static_cast<Real>(0.1255803694649046246346943);
+    varray[4] = static_cast<Real>(0.9782286581460569928039380);	warray[4] = static_cast<Real>(0.0556685671161736664827537);
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1+ varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1- varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
     }
     v=BarycentricCoordinatesType(div2);
-    qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
+    qpa.push_back(QuadraturePoint(v,warray0/2));
     edgeNumericalIntegration.addQuadratureMethod(m,11,qpa);
     /// integration with accuracy of order 12.
-    varray[0]=0.1252334085114689154724414;	warray[0]=	0.2491470458134027850005624;
-    varray[1]=0.3678314989981801937526915;	warray[1]=	0.2334925365383548087608499;
-    varray[2]=0.5873179542866174472967024;	warray[2]=	0.2031674267230659217490645;
-    varray[3]=0.7699026741943046870368938;	warray[3]=	0.1600783285433462263346525;
-    varray[4]=0.9041172563704748566784659;	warray[4]=	0.1069393259953184309602547;
-    varray[5]=0.9815606342467192506905491;	warray[5]=	0.0471753363865118271946160;
+    varray[0] = static_cast<Real>(0.1252334085114689154724414);	warray[0] = static_cast<Real>(0.2491470458134027850005624);
+    varray[1] = static_cast<Real>(0.3678314989981801937526915);	warray[1] = static_cast<Real>(0.2334925365383548087608499);
+    varray[2] = static_cast<Real>(0.5873179542866174472967024);	warray[2] = static_cast<Real>(0.2031674267230659217490645);
+    varray[3] = static_cast<Real>(0.7699026741943046870368938);	warray[3] = static_cast<Real>(0.1600783285433462263346525);
+    varray[4] = static_cast<Real>(0.9041172563704748566784659);	warray[4] = static_cast<Real>(0.1069393259953184309602547);
+    varray[5] = static_cast<Real>(0.9815606342467192506905491);	warray[5] = static_cast<Real>(0.0471753363865118271946160);
     nbIPs=6;
 
     for (i=0;i<nbIPs;++i) {
-        v=BarycentricCoordinatesType(div2*(1+ (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-        v=BarycentricCoordinatesType(div2*(1- (Real)varray[i]));
-        qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1+ varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
+        v=BarycentricCoordinatesType(div2*(1- varray[i]));
+        qpa.push_back(QuadraturePoint(v,warray[i]/2));
     }
     edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);
 }
@@ -351,7 +351,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgeD
 template<class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::type::Vec<3,Real> &pt, const EdgeID ind_e) const
 {
-    const Real ZERO = 1e-12;
+    constexpr Real ZERO = static_cast<Real>(1e-12);
 
     sofa::type::Vec<3,Real> p0 = pt;
 
@@ -378,7 +378,7 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
     PointID ind_p1,
     PointID ind_p2) const -> sofa::type::vector< SReal >
 {
-    const Real ZERO = 1e-6;
+    constexpr Real ZERO = static_cast<Real>(1e-6);
 
     sofa::type::vector< SReal > baryCoefs;
 
@@ -469,7 +469,7 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
     PointID ind_p1,
     PointID ind_p2) const -> sofa::type::vector<SReal>
 {
-    const Real ZERO = 1e-6;
+    constexpr Real ZERO = static_cast<Real>(1e-6);
 
     sofa::type::vector< SReal > baryCoefs;
 
@@ -641,7 +641,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 
     int ind1 = -1;
     int ind2 = -1;
-    Real epsilon = 0.0001;
+    constexpr Real epsilon = static_cast<Real>(0.0001);
     Real lambda = 0.0;
     Real alpha = 0.0;
 
@@ -703,6 +703,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 {
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+    vparams->drawTool()->saveLastState();
+
     // Draw Edges indices
     if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
     {        
@@ -749,6 +751,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
     }
 
+    vparams->drawTool()->restoreLastState();
 }
 
 
@@ -758,7 +761,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
 {
     const VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue()); // point positions
 
-    sofa::type::vector<type::Vector3> edgeVec;                  // 3D edges
+    sofa::type::vector<sofa::type::Vec<3, Real> > edgeVec;                  // 3D edges
 
     numEdges.clear();
     vertexEdges.clear();
@@ -771,7 +774,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
         numEdges.push_back(sofa::Size(ve.size()));            // number of edges attached to this point
-        sofa::type::Mat<3,3,Real> EEt,L;
+        sofa::type::Mat<3, 3, Real> EEt, L;
 
         // Solve E.W = I , where each column of E is an adjacent edge vector, W are the desired weights, and I is the 3x3 identity
         // Each row of W corresponds to an edge, and encode the contribution of the edge to the basis vectors x,y,z
@@ -784,8 +787,8 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
         {
             Edge edge = edges[ve[e]];
             vertexEdges.push_back(edge);              // concatenate
-            CPos p0 = DataTypes::getCPos(pos[edge[0]]);
-            CPos p1 = DataTypes::getCPos(pos[edge[1]]);
+            const CPos& p0 = DataTypes::getCPos(pos[edge[0]]);
+            const CPos& p1 = DataTypes::getCPos(pos[edge[1]]);
             edgeVec[e] = p1 - p0;
             // each edge vector adds e.et to the matrix
             for(unsigned j=0; j<3; j++)
@@ -943,5 +946,10 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     return is_intersect;
 }
 
+template <class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return ( (this->m_topology->getNbEdges() != 0 && (d_drawEdges.getValue() || showEdgeIndices.getValue())) || Inherit1::mustComputeBBox() );
+}
 
 } //namespace sofa::component::topology::container::dynamic

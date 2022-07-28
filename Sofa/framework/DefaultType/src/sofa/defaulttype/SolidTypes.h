@@ -32,8 +32,6 @@
 #include <iostream>
 #include <map>
 
-typedef double GLdouble;
-
 namespace sofa
 {
 
@@ -71,10 +69,11 @@ public:
     class SOFA_DEFAULTTYPE_API SpatialVector
     {
     public:
-        Vec lineVec;
-        Vec freeVec;
+        Vec lineVec{ type::NOINIT };
+        Vec freeVec{ type::NOINIT };
+
         void clear();
-        SpatialVector();
+        SpatialVector() = default;
         /**
         \param l The line vector: angular velocity, or force
         \param f The free vector: linear velocity, or torque
@@ -287,7 +286,7 @@ public:
         /// Project a spatial vector from parent to child (the inverse of operator *). This method computes (*this).inversed()*sv without inverting (*this).
         SpatialVector operator / (const SpatialVector& sv ) const;
         /// Write an OpenGL matrix encoding the transformation of the coordinate system of the child wrt the coordinate system of the parent.
-        void writeOpenGlMatrix( GLdouble *m ) const;
+        void writeOpenGlMatrix( double *m ) const;
         /// Draw the axes of the child coordinate system in the parent coordinate system
         /// Print the origin of the child in the parent coordinate system and the quaternion defining the orientation of the child wrt the parent
         inline friend std::ostream& operator << (std::ostream& out, const Transform& t )
@@ -406,7 +405,7 @@ public:
 
     static ArticulatedInertia dyad ( const SpatialVector& u, const SpatialVector& v );
 
-    static const char* Name()
+    static constexpr const char* Name()
     {
         return "Solid";
     }

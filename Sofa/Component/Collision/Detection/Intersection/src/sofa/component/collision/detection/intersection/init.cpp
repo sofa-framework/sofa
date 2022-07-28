@@ -24,28 +24,34 @@
 namespace sofa::component::collision::detection::intersection
 {
 
-    extern "C" {
-        SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    }
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+}
 
-    void initExternalModule()
-    {
-        static bool first = true;
-        if (first)
-        {
-            first = false;
-        }
-    }
+void initExternalModule()
+{
+    init();
+}
 
-    const char* getModuleName()
-    {
-        return MODULE_NAME;
-    }
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
 
-    void init()
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
+
+void init()
+{
+    static bool first = true;
+    if (first)
     {
-        initExternalModule();
+        first = false;
     }
+}
 
 } // namespace sofa::component::collision::detection::intersection

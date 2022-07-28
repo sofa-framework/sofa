@@ -108,6 +108,10 @@ macro(sofa_add_generic directory name type)
             set(active ON)
         endif()
 
+        # https://cmake.org/cmake/help/latest/policy/CMP0127.html
+        if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.22)
+            cmake_policy(SET CMP0127 NEW)
+	endif()
         if(NOT "${ARG_WHEN_TO_SHOW}" STREQUAL "" AND NOT "${ARG_VALUE_IF_HIDDEN}" STREQUAL "")
             cmake_dependent_option(${option} "Build the ${name} ${type_lower}." ${active} "${ARG_WHEN_TO_SHOW}" ${ARG_VALUE_IF_HIDDEN})
         else()
@@ -175,6 +179,17 @@ macro(sofa_add_application directory app_name)
     sofa_add_generic(${directory} ${app_name} "Application" DEFAULT_VALUE "${ARGV2}" ${ARGN})
 endmacro()
 
+macro(sofa_add_component_subdirectory DirectoryArg FullDirectoryArg)
+    set(DirectoryName ${FullDirectoryArg})
+
+    string(TOUPPER ${DirectoryName} UpperDirectoryName)
+    string(REPLACE "." "_" UpperDirectoryName ${UpperDirectoryName})
+
+    option(SOFA_ENABLE_${UpperDirectoryName} "Build ${DirectoryName}." ON)
+    if(SOFA_ENABLE_${UpperDirectoryName})
+        add_subdirectory(${DirectoryArg})
+    endif()
+endmacro()
 
 ### External projects management
 # Thanks to http://crascit.com/2015/07/25/cmake-gtest/

@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/statecontainer/MechanicalObject.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/statecontainer/MechanicalObject.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/statecontainer/MechanicalObject.h")
 
 namespace sofa::component::container
 {

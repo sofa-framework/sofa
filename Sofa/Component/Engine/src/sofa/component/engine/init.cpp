@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/engine/config.h>
+#include <sofa/component/engine/init.h>
 
 #include <sofa/component/engine/analyze/init.h>
 #include <sofa/component/engine/generate/init.h>
@@ -32,13 +32,29 @@ namespace sofa::component::engine
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
 }
 
 void initExternalModule()
 {
+    init();
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
+
+void init()
+{
     static bool first = true;
     if (first)
-    {        
+    {
         // force dependencies at compile-time
         sofa::component::engine::analyze::init();
         sofa::component::engine::generate::init();
@@ -47,16 +63,6 @@ void initExternalModule()
 
         first = false;
     }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
 }
 
 } // namespace sofa::component::engine

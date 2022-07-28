@@ -34,10 +34,11 @@ void initSofaGeneralObjectInteraction()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaGeneralObjectInteraction") << "SofaGeneralObjectInteraction is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SolidMechanics.Spring and ofa.Component.Constraint.Projective instead.";
+        msg_deprecated("SofaGeneralObjectInteraction") << "SofaGeneralObjectInteraction is being deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring, Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.Spring");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Projective");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.MechanicalLoad");
 
         first = false;
     }

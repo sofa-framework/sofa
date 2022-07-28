@@ -5,6 +5,8 @@ set(SOFAGLSRC_ROOT "src/sofa/gl")
 
 sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)
 sofa_find_package(GLEW BOTH_SCOPES REQUIRED)
+sofa_find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Sofa.DefaultType REQUIRED)
 
 set(HEADER_FILES
     ${SOFAGLSRC_ROOT}/config.h.in
@@ -58,7 +60,7 @@ if(GLEW_FOUND)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType)
 
 if(TARGET OpenGL::GL AND TARGET OpenGL::GLU) # Imported targets defined since CMake 3.8
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL OpenGL::GLU)
@@ -84,7 +86,7 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
 
-sofang_add_component_subdirectory(Component ${PROJECT_NAME}.Component)
+sofa_add_component_subdirectory(Component ${PROJECT_NAME}.Component)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled

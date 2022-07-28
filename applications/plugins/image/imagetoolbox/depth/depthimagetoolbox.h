@@ -238,10 +238,10 @@ public:
                         def=projection;
                     }
 
-                    for(unsigned int i=0;i<3;i++)
+                    for(unsigned int kk=0; kk < 3; kk++)
                     {
-                        double d = (projection-c[i]).norm();
-                        if(d<minDistanceProjPos)
+                        double d = (projection-c[kk]).norm();
+                        if (d < minDistanceProjPos)
                         {
                             minDistanceProjPos = d;
                             def=projection;
@@ -1219,9 +1219,9 @@ public:
         saveSCN_grid(out, meshs.veclayer[index].grid2,name);
     }
 
-    void saveSCN_grid(QTextStream &out, MeshDataImageToolBox::VecIndex4 &grid, QString &name)
+    void saveSCN_grid(QTextStream &out, MeshDataImageToolBox::VecIndex4 &grid, QString &meshName)
     {
-        out << " <Mesh name=\"" << name << "\"";
+        out << " <Mesh name=\"" << meshName << "\"";
         saveSCN_position(out);
         saveSCN_indexQuad(out,grid);
         out << "/> \n";

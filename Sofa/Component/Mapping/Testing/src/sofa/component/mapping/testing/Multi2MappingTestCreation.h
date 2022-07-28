@@ -29,9 +29,9 @@ using sofa::testing::NumericTest;
 
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/linearalgebra/FullVector.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/MultiMapping.h>

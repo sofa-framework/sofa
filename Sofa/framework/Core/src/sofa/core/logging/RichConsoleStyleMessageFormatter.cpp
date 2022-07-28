@@ -25,7 +25,7 @@
 ******************************************************************************/
 
 
-#include "RichConsoleStyleMessageFormatter.h"
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 
 #include <sofa/helper/logging/Message.h>
 

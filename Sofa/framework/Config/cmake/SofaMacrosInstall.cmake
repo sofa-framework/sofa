@@ -424,6 +424,14 @@ macro(sofa_auto_set_target_include_directories)
             set(target ${aliased_target})
         endif()
 
+        get_target_property(target_sources ${target} SOURCES)
+        list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
+        if(NOT target_sources)
+            # target has no header
+            # setting include directories is not needed
+            continue()
+        endif()
+
         # Set target include directories (if not already set manually)
         set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..") # default but bad practice
         if(ARG_INCLUDE_SOURCE_DIR)
@@ -1095,7 +1103,7 @@ endmacro()
 # set(SOURCES_FILES  initExamplePlugin.cpp myComponent.cpp )
 # set(HEADER_FILES   initExamplePlugin.h myComponent.h )
 # add_library( ${PROJECT_NAME} SHARED ${SOURCE_FILES})
-# target_link_libraries(${PROJECT_NAME} SofaCore)
+# target_link_libraries(${PROJECT_NAME} Sofa.Core)
 # sofa_generate_package(NAME ${PROJECT_NAME} VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_INSTALL_DIR "sofa/custom/install/dir" INCLUDE_SOURCE_DIR src )
 #
 function(sofa_generate_package)

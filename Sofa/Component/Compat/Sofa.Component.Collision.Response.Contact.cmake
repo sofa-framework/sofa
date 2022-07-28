@@ -3,6 +3,7 @@ set(SOFAMESHCOLLISION_SRC src/SofaMeshCollision)
 set(SOFACONSTRAINT_SRC src/SofaConstraint)
 set(SOFAUSERINTERACTION_SRC src/SofaUserInteraction)
 set(SOFAOBJECTINTERACTION_SRC src/SofaObjectInteraction)
+set(SOFAMISCCOLLISION_SRC src/SofaMiscCollision)
 
 list(APPEND HEADER_FILES
     ${SOFABASECOLLISION_SRC}/ContactListener.h
@@ -17,4 +18,7 @@ list(APPEND HEADER_FILES
     ${SOFAUSERINTERACTION_SRC}/RayContact.h
     ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.h
     ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.inl
+    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.h
+    ${SOFAMISCCOLLISION_SRC}/BarycentricStickContact.inl
+    ${SOFAMISCCOLLISION_SRC}/RuleBasedContactManager.h
 )

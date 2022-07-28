@@ -30,19 +30,12 @@ namespace sofa::component::collision::detection
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
 }
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::collision::detection::algorithm::init();
-        sofa::component::collision::detection::intersection::init();
-
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -50,9 +43,22 @@ const char* getModuleName()
     return MODULE_NAME;
 }
 
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
+
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::component::collision::detection::algorithm::init();
+        sofa::component::collision::detection::intersection::init();
+
+        first = false;
+    }
 }
 
 } // namespace sofa::component::collision::detection

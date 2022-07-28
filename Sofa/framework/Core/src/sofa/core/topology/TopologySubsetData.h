@@ -56,10 +56,19 @@ public:
     /// Getter of the vector map indices
     sofa::type::vector<Index>& getMap2Elements() { return m_map2Elements; }
 
-    bool getSparseDataStatus() { return m_isConcerned; }
-
-    void activateSparseData() { m_isConcerned = true; }
-    void desactivateSparseData() { m_isConcerned = false; }
+    /** Method to activate/unactivate the @sa m_addNewElements option. To allow this TopologySubsetData to add new elements.
+    * By default @sa m_addNewElements is set to false. 
+    * @param {bool} to change m_addNewElements value. 
+    */
+    void supportNewTopologyElements(bool value)
+    {
+        SOFA_UNUSED(value);
+        m_addNewElements = true;
+    }
+    
+    /// Getter to the option @sa m_addNewElements
+    bool isNewTopologyElementsSupported() const { return m_addNewElements; }
+    
 
     /** Method to return the index position of an element inside the vector map @sa m_map2Elements
     * @param {Index} element index of the full Data vector to find in the vector map
@@ -126,9 +135,9 @@ protected:
 
     /**
     * Internal method called at the end of @sa add method to apply internal mechanism, such as updating the map size.
-    * @param nbElements Number of element added
+    * @param dataLastId Index of the last element id in the TopologyData tracked
     */
-    virtual void addPostProcess(sofa::Size nbElements);
+    virtual void addPostProcess(sofa::Index dataLastId);
 
     /**
     * Internal method to update the last element of this Data and/or map when the topology buffer is reduced.
@@ -140,8 +149,10 @@ protected:
     /// same size as this SubsetData but contains id of element link to each data[]
     sofa::type::vector<Index> m_map2Elements;
 
-    /// boolen to set subdata as concerne, will allow to add element
-    bool m_isConcerned;
+    /** Boolen to allow this TopologySubsetData to add new elements. If true, for every new Element added in the topology container
+    * linked by this TopologyData, the index of the new element will be added into this TopologySubsetData.
+    */
+    bool m_addNewElements = false;
 };
 
 

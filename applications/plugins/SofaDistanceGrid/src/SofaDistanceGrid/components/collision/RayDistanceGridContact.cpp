@@ -20,10 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaUserInteraction/RayContact.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
+
+#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/response/contact/RayContact.h>
+
 #include "DistanceGridCollisionModel.h"
 
 namespace sofa
@@ -36,6 +38,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::component::collision::response::contact;
 
 Creator<core::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass("RayContact",true);
 Creator<core::collision::Contact::Factory, RayContact<FFDDistanceGridCollisionModel> > RayFFDDistanceGridContactClass("RayContact",true);

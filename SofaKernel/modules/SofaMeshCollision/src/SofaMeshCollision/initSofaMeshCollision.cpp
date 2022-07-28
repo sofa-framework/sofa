@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaMeshCollision/initSofaMeshCollision.h>
-#include <SofaMeshCollision/MeshNewProximityIntersection.h>
+
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
 
 #include <sofa/helper/system/PluginManager.h>
 
@@ -39,7 +40,7 @@ void initSofaMeshCollision()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMeshCollision") << "SofaMeshCollision is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Mapper and Sofa.Component.Collision.Response.Contact instead.";
+        msg_deprecated("SofaMeshCollision") << "SofaMeshCollision is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Mapper and Sofa.Component.Collision.Response.Contact instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Geometry");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");
@@ -49,7 +50,7 @@ void initSofaMeshCollision()
         first = false;
     }
 
-    core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
+    core::collision::IntersectorCreator<collision::detection::intersection::NewProximityIntersection, collision::detection::intersection::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::detection::intersection::NewProximityIntersection, collision::detection::intersection::MeshNewProximityIntersection>("Mesh");
     (void)pMeshNewProximityIntersectors;
 }
 

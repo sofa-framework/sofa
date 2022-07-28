@@ -42,6 +42,11 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
+
+# https://cmake.org/cmake/help/latest/policy/CMP0127.html
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.22)
+    cmake_policy(SET CMP0127 NEW)
+endif()
 cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
     "Compile SOFA using precompiled header (to accelerate the build process)" OFF
     "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
@@ -162,45 +167,58 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 ### Extlibs
 add_subdirectory(extlibs)
 
-# SOFA-NG
+
+### Compatibility
+option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
+
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    message("Using legacy headers is enabled.")
+    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
+
+    add_subdirectory(Sofa/framework/Compat)
+    add_subdirectory(Sofa/Component/Compat)
+endif()
+
+### SOFA (framework and components)
 add_subdirectory(Sofa)
 
-# Deprecated (hollow) modules
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
-
-# SOFA-NG Plugins
 option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
 if(SOFA_WITH_OPENGL)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
 endif()
 
-
-
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
-add_subdirectory(modules)
-
-# This is all the applications GUI stuff. As there is a dependency to this one
-# In scene creator ...it is located here.
+add_subdirectory(Sofa/GUI)
+# SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
 add_subdirectory(SofaGui)
 
-## Collections
-## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
-# SofaAdvanced is legacy and deprecated since 20.06
-set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS ${SOFA_KERNEL_SOURCE_DIR}/SofaCommon SofaGeneral SofaAdvanced SofaMisc)
-option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
-if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
-    foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})
-        add_subdirectory(${deprecated_collection})
-    endforeach()
+### Compatibility
+option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
+
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    # Deprecated (hollow) framework and component modules
+    # some modules still contains (maybe useful) components still not in Sofa/
+    # TODO: finally empty those remnants
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase) 
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
+    add_subdirectory(modules)
+
+    ## Collections
+    ## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
+    # SofaAdvanced is legacy and deprecated since 20.06
+    set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS ${SOFA_KERNEL_SOURCE_DIR}/SofaCommon SofaGeneral SofaAdvanced SofaMisc)
+    option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
+    if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
+        foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})
+            add_subdirectory(${deprecated_collection})
+        endforeach()
+    endif()
+
+    ## Customized collections
+    # SofaComponentAll is a convenient collection to get all Sofa features
+    add_subdirectory(applications/collections)
 endif()
-## Customized collections
-# SofaComponentAll is a convenient collection to get all Sofa features
-add_subdirectory(applications/collections)
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)

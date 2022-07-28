@@ -29,27 +29,42 @@
 #include "CudaSphereModel.h"
 #include "CudaPointModel.h"
 
-#include <SofaUserInteraction/MouseInteractor.inl>
-#include <SofaBaseCollision/NewProximityIntersection.inl>
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
-#include <SofaUserInteraction/RayDiscreteIntersection.h>
-#include <SofaUserInteraction/RayDiscreteIntersection.inl>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaUserInteraction/ComponentMouseInteraction.inl>
-#include <SofaUserInteraction/AttachBodyPerformer.inl>
-#include <SofaUserInteraction/FixParticlePerformer.inl>
-#include <SofaUserInteraction/RayContact.h>
-#include <SofaMeshCollision/BarycentricPenalityContact.inl>
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
-#include <SofaObjectInteraction/PenalityContactForceField.h>
+#include <sofa/gui/component/performer/MouseInteractor.inl>
+#include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
+#include <sofa/gui/component/performer/AttachBodyPerformer.inl>
+#include <sofa/gui/component/performer/FixParticlePerformer.inl>
+
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
+
+#include <sofa/component/collision/response/contact/RayContact.h>
+#include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
+
 #include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
+
 #include <sofa/gl/gl.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/Mapping.inl>
 #include <fstream>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
+    template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
+    template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
+    template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
+#endif
 
 using namespace sofa::gpu::cuda;
 using namespace sofa::component::collision;
@@ -68,7 +83,7 @@ template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
 template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
 #endif
 
-response::mapper::ContactMapperCreator< response::mapper::ContactMapper<geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("PenalityContactForceField", true);
+response::mapper::ContactMapperCreator< response::mapper::ContactMapper<sofa::component::collision::geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("PenalityContactForceField", true);
 
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
@@ -82,10 +97,10 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePe
 
 using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types>;
 
-int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>);
+int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<sofa::component::collision::geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<sofa::component::collision::geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
+} // namespace sofa::gui::component::performer
 
-} // sofa::component::collision
 
 
 namespace sofa::gpu::cuda
@@ -93,6 +108,9 @@ namespace sofa::gpu::cuda
 
 using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
+using namespace sofa::component::collision::detection::intersection;
+using namespace sofa::component::collision::response::contact;
+using namespace sofa::gui::component::performer;
 
 
 int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
@@ -102,21 +120,21 @@ int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction 
 #endif
         ;
 
-class CudaProximityIntersection : public sofa::component::collision::NewProximityIntersection
+class CudaProximityIntersection : public NewProximityIntersection
 {
 public:
-    SOFA_CLASS(CudaProximityIntersection,sofa::component::collision::NewProximityIntersection);
+    SOFA_CLASS(CudaProximityIntersection, NewProximityIntersection);
 
     virtual void init() override
     {
-        using CudaSphereCollisionModel = sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>;
+        using CudaSphereCollisionModel = SphereCollisionModel<gpu::cuda::CudaVec3Types>;
 
         sofa::component::collision::NewProximityIntersection::init();
         intersectors.add<CudaSphereCollisionModel, CudaSphereCollisionModel, NewProximityIntersection>(this);
         RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
         intersectors.add<RayCollisionModel,        CudaSphereCollisionModel,   RayDiscreteIntersection>(rayIntersector);
         MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
-        intersectors.add<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
+        intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
     }
 
 };
@@ -126,6 +144,6 @@ int CudaProximityIntersectionClass = core::RegisterObject("GPGPU Proximity Inter
         .add< CudaProximityIntersection >()
         ;
 
-sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);
+sofa::helper::Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);
 
 } // namespace sofa::gpu::cuda

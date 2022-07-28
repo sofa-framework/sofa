@@ -28,9 +28,9 @@ using sofa::testing::BaseTest;
 #include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 using sofa::component::collision::DefaultCollisionGroupManager;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -89,7 +89,7 @@ bool DefaultCollisionGroupManager_test::combineSingleObject()
     auto* baseObject = root->getTreeNode("Cube1")->getObject("mechanicalObject");
     EXPECT_NE(baseObject, nullptr);
 
-    auto* mechanicalObject = dynamic_cast<sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(baseObject);
+    auto* mechanicalObject = dynamic_cast<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types>*>(baseObject);
     EXPECT_NE(mechanicalObject, nullptr);
 
     const auto position = mechanicalObject->readPositions();

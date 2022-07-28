@@ -53,7 +53,6 @@ bool EdgeSetTopology_test::testEmptyContainer()
     
     EXPECT_EQ(edgeContainer->d_initPoints.getValue().size(), 0);
     EXPECT_EQ(edgeContainer->getNbPoints(), 0);
-    EXPECT_EQ(edgeContainer->getPoints().size(), 0);
 
     return true;
 }
@@ -142,9 +141,7 @@ bool EdgeSetTopology_test::testVertexBuffers()
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
     EXPECT_EQ(topoCon->getNbPoints(), nbrVertex); 
-    EXPECT_EQ(topoCon->getPoints().size(), nbrVertex);
-
-
+    
     // check EdgesAroundVertex buffer access
     EXPECT_EQ(edgeAroundVertices.size(), nbrVertex);
     const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertex = edgeAroundVertices[0];

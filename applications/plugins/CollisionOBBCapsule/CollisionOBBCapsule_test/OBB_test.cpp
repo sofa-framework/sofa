@@ -26,7 +26,7 @@
 
 #include <sofa/component/collision/geometry/TriangleModel.h>
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;

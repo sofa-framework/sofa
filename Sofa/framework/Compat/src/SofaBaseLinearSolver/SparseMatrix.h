@@ -21,14 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/SparseMatrix.h>
-
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/SparseMatrix.h")
-
-namespace sofa::component::linearsolver
-{
-
-    template<typename T>
-    using SparseMatrix = sofa::linearalgebra::SparseMatrix<T>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/SparseMatrix.h")

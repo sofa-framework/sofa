@@ -5,8 +5,12 @@ cmake_minimum_required(VERSION 3.12)
 @PACKAGE_INIT@
 
 set(SOFAFRAMEWORK_MODULES @SOFAFRAMEWORK_MODULES@)
+set(SOFAFRAMEWORK_LEGACYMODULES @SOFAFRAMEWORK_LEGACYMODULES@)
 
 foreach(module ${SOFAFRAMEWORK_MODULES})
+    find_package(${module} QUIET REQUIRED)
+endforeach()
+foreach(module ${SOFAFRAMEWORK_LEGACYMODULES})
     find_package(${module} QUIET REQUIRED)
 endforeach()
 

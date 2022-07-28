@@ -221,6 +221,22 @@ TEST(QuaterTest, QuaterdRotateVec)
     EXPECT_NEAR(4.580932858428164, rp[0], errorThreshold);
     EXPECT_NEAR(3.448650396246470, rp[1], errorThreshold);
     EXPECT_NEAR(9.649967077199914, rp[2], errorThreshold);
+
+    // Compare with previous implementation of Quat::rotate()
+    auto previousRotateImpl = [](const Quat<double>& _q, const sofa::type::Vec3d& v)
+    {
+        return  sofa::type::Vec3d(
+            ((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2])) * v[0] + (2.0f * (_q[0] * _q[1] - _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] + _q[1] * _q[3])) * v[2]),
+            ((2.0f * (_q[0] * _q[1] + _q[2] * _q[3])) * v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0])) * v[1] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3])) * v[2]),
+            ((2.0f * (_q[2] * _q[0] - _q[1] * _q[3])) * v[0] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3])) * v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0])) * v[2])
+        );
+    };
+
+    const auto& previousRotateRes = previousRotateImpl(quat, p);
+
+    EXPECT_NEAR(0.0, rp[0] - previousRotateRes[0], errorThreshold);
+    EXPECT_NEAR(0.0, rp[1] - previousRotateRes[1], errorThreshold);
+    EXPECT_NEAR(0.0, rp[2] - previousRotateRes[2], errorThreshold);
 }
 
 TEST(QuaterTest, QuaterdInvRotateVec)
@@ -234,6 +250,22 @@ TEST(QuaterTest, QuaterdInvRotateVec)
     EXPECT_NEAR(3.077954984157941, rp[0], errorThreshold);
     EXPECT_NEAR(8.272072482340949, rp[1], errorThreshold);
     EXPECT_NEAR(6.935344977893669, rp[2], errorThreshold);
+
+    // Compare with previous implementation of Quat::inverseRotate()
+    auto previousInverseRotateImpl = [](const Quat<double>& _q, const sofa::type::Vec3d& v)
+    {
+        return sofa::type::Vec3(
+            ((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2])) * v[0] + (2.0f * (_q[0] * _q[1] + _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] - _q[1] * _q[3])) * v[2]),
+            ((2.0f * (_q[0] * _q[1] - _q[2] * _q[3])) * v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0])) * v[1] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3])) * v[2]),
+            ((2.0f * (_q[2] * _q[0] + _q[1] * _q[3])) * v[0] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3])) * v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0])) * v[2])
+        );
+    };
+
+    const auto& previousInverseRotateRes = previousInverseRotateImpl(quat, p);
+
+    EXPECT_NEAR(0.0, rp[0] - previousInverseRotateRes[0], errorThreshold);
+    EXPECT_NEAR(0.0, rp[1] - previousInverseRotateRes[1], errorThreshold);
+    EXPECT_NEAR(0.0, rp[2] - previousInverseRotateRes[2], errorThreshold);
 }
 
 TEST(QuaterTest, QuaterdOperatorAdd)

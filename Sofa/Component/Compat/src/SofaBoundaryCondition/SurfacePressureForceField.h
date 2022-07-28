@@ -23,7 +23,7 @@
 
 #include <sofa/component/mechanicalload/SurfacePressureForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/SurfacePressureForceField.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/SurfacePressureForceField.h")
 
 namespace sofa::component::forcefield
 {

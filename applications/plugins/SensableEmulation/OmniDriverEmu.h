@@ -22,8 +22,9 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 #define SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 
-#include <SofaUserInteraction/Controller.h>
-#include <SofaOpenglVisual/OglModel.h>
+#include <sofa/component/controller/Controller.h>
+#include <sofa/component/haptics/ForceFeedback.h>
+#include <sofa/gl/component/rendering3d/OglModel.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -33,21 +34,21 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <thread>
 #include <SensableEmulation/config.h>
+#include <sofa/simulation/fwd.h>
 
-
-namespace sofa
+namespace sofa::gl::component::rendering3d
 {
+    class OglModel;
 
-namespace simulation { class Node; }
+} // namespace sofa::gl::component::rendering3d
 
-namespace component
+namespace sofa::component::haptics
 {
-namespace visualModel { class OglModel; }
+    class ForceFeedback;
+}
 
-namespace controller
+namespace sofa::component::controller
 {
-
-class ForceFeedback;
 
 /** Holds data retrieved from HDAPI. */
 typedef struct
@@ -62,7 +63,7 @@ typedef struct
 
 typedef struct
 {
-    type::vector<ForceFeedback*> forceFeedbacks;
+    type::vector<haptics::ForceFeedback*> forceFeedbacks;
     int forceFeedbackIndice;
     simulation::Node *context;
 
@@ -123,7 +124,7 @@ public:
     void draw(const core::visual::VisualParams*) override;
 
     int initDevice(OmniData& data);
-    void setForceFeedbacks(type::vector<ForceFeedback*> ffs);
+    void setForceFeedbacks(type::vector<haptics::ForceFeedback*> ffs);
 
     void setDataValue();
 
@@ -153,7 +154,7 @@ private:
 
     void copyDeviceDataCallback(OmniData *pUserData);
     void stopCallback(OmniData *pUserData);
-    component::visualmodel::OglModel::SPtr visu_base, visu_end;
+    gl::component::rendering3d::OglModel::SPtr visu_base, visu_end;
     bool noDevice;
 
     bool moveOmniBase;
@@ -167,10 +168,6 @@ private:
 };
 
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::controller
 
 #endif // SOFA_COMPONENT_CONTROLLER_OMNIEMU_H

@@ -34,7 +34,7 @@ void initSofaGeneralSimpleFem()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaGeneralSimpleFem") << "SofaGeneralSimpleFem is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.FEM.Elastic instead.";
+        msg_deprecated("SofaGeneralSimpleFem") << "SofaGeneralSimpleFem is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.FEM.Elastic instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
 
@@ -63,7 +63,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return sofa_tostring(SOFASOFAGENERALSIMPLEFEM_VERSION);
+    return sofa_tostring(SOFAGENERALSIMPLEFEM_VERSION);
 }
 
 const char* getModuleLicense()

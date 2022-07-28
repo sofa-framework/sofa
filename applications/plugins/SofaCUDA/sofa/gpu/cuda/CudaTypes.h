@@ -34,7 +34,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
-#include <SofaBaseMechanics/MassType.h>
+#include <sofa/component/mass/MassType.h>
 #include <iostream>
 
 namespace sofa
@@ -93,9 +93,9 @@ public:
     typedef CudaVector<Real> VecReal;
     typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef Coord CPos;
     static const CPos& getCPos(const Coord& c) { return c; }
@@ -215,7 +215,7 @@ public:
         return coord;
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 };
 
 typedef sofa::type::Vec3f Vec3f;
@@ -433,7 +433,7 @@ typedef CudaVectorTypes<Vec3f,Vec3f,float> CudaVec3fTypes;
 typedef CudaVec3fTypes CudaVec3Types;
 
 template<>
-inline const char* CudaVec3fTypes::Name()
+constexpr const char* CudaVec3fTypes::Name()
 {
     return "CudaVec3f";
 }
@@ -443,7 +443,7 @@ typedef CudaVectorTypes<Vec1f,Vec1f,float> CudaVec1fTypes;
 typedef CudaVec1fTypes CudaVec1Types;
 
 template<>
-inline const char* CudaVec1fTypes::Name()
+constexpr const char* CudaVec1fTypes::Name()
 {
     return "CudaVec1f";
 }
@@ -452,7 +452,7 @@ typedef CudaVectorTypes<Vec2f,Vec2f,float> CudaVec2fTypes;
 typedef CudaVec2fTypes CudaVec2Types;
 
 template<>
-inline const char* CudaVec2fTypes::Name()
+constexpr const char* CudaVec2fTypes::Name()
 {
     return "CudaVec2f";
 }
@@ -460,7 +460,7 @@ inline const char* CudaVec2fTypes::Name()
 typedef CudaVectorTypes<Vec3f1,Vec3f1,float> CudaVec3f1Types;
 
 template<>
-inline const char* CudaVec3f1Types::Name()
+constexpr const char* CudaVec3f1Types::Name()
 {
     return "CudaVec3f1";
 }
@@ -469,7 +469,7 @@ typedef CudaVectorTypes<Vec6f,Vec6f,float> CudaVec6fTypes;
 typedef CudaVec6fTypes CudaVec6Types;
 
 template<>
-inline const char* CudaVec6fTypes::Name()
+constexpr const char* CudaVec6fTypes::Name()
 {
     return "CudaVec6f";
 }
@@ -492,9 +492,9 @@ public:
     typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
     typedef Vec3 AngularVector;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
@@ -616,7 +616,7 @@ public:
         return d;
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     /// double cross product: a * ( b * c )
     static Vec3 crosscross ( const Vec3& a, const Vec3& b, const Vec3& c)
@@ -629,7 +629,7 @@ typedef CudaRigidTypes<3,float> CudaRigid3fTypes;
 typedef CudaRigid3fTypes CudaRigid3Types;
 
 template<>
-inline const char* CudaRigid3fTypes::Name()
+constexpr const char* CudaRigid3fTypes::Name()
 {
     return "CudaRigid3f";
 }
@@ -649,7 +649,7 @@ typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
 //typedef CudaVec3dTypes CudaVec3Types;
 
 template<>
-inline const char* CudaVec3dTypes::Name()
+constexpr const char* CudaVec3dTypes::Name()
 {
     return "CudaVec3d";
 }
@@ -658,7 +658,7 @@ typedef CudaVectorTypes<Vec1d,Vec1d,double> CudaVec1dTypes;
 //typedef CudaVec1dTypes CudaVec1Types;
 
 template<>
-inline const char* CudaVec1dTypes::Name()
+constexpr const char* CudaVec1dTypes::Name()
 {
     return "CudaVec1d";
 }
@@ -667,7 +667,7 @@ typedef CudaVectorTypes<Vec2d,Vec2d,double> CudaVec2dTypes;
 //typedef CudaVec2dTypes CudaVec2Types;
 
 template<>
-inline const char* CudaVec2dTypes::Name()
+constexpr const char* CudaVec2dTypes::Name()
 {
     return "CudaVec2d";
 }
@@ -675,7 +675,7 @@ inline const char* CudaVec2dTypes::Name()
 typedef CudaVectorTypes<Vec3d1,Vec3d1,double> CudaVec3d1Types;
 
 template<>
-inline const char* CudaVec3d1Types::Name()
+constexpr const char* CudaVec3d1Types::Name()
 {
     return "CudaVec3d1";
 }
@@ -684,7 +684,7 @@ typedef CudaVectorTypes<Vec6d,Vec6d,double> CudaVec6dTypes;
 // typedef CudaVec6dTypes CudaVec6Types;
 
 template<>
-inline const char* CudaVec6dTypes::Name()
+constexpr const char* CudaVec6dTypes::Name()
 {
     return "CudaVec6d";
 }
@@ -694,7 +694,7 @@ typedef CudaRigidTypes<3,double> CudaRigid3dTypes;
 //typedef CudaRigid3dTypes CudaRigid3Types;
 
 template<>
-inline const char* CudaRigid3dTypes::Name()
+constexpr const char* CudaRigid3dTypes::Name()
 {
     return "CudaRigid3d";
 }

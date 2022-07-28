@@ -24,7 +24,7 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/container/grid/GridTopology.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -1349,6 +1349,13 @@ void TetrahedronFEMForceField<DataTypes>::init()
         if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
     }
 
+    const Real& poissonRatio = _poissonRatio.getValue();
+    if (poissonRatio < 0 || poissonRatio >= 0.5)
+    {
+        _poissonRatio.setValue((poissonRatio < 0)? 0.0 : 0.499);
+        msg_warning() << "FEM Poisson's Ratio in Hooke's law should be in [0,0.5[. Clamping the value to " << poissonRatio << ".";
+    }
+
     if (_updateStiffness.getValue() || isComputeVonMisesStressMethodSet())
     {
         this->f_listening.setValue(true);
@@ -1412,7 +1419,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         int nx = 2;
         int ny = 1;
         {
-            topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(m_topology);
+            auto* grid = dynamic_cast<topology::container::grid::GridTopology*>(m_topology);
             if (grid != nullptr)
             {
                 nx = grid->getNx()-1;

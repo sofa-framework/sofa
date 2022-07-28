@@ -23,10 +23,10 @@
 using sofa::testing::BaseTest;
 
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 
 namespace sofa {
 
@@ -47,16 +47,7 @@ struct LoadScene_test: public BaseTest
        std::string fileName = std::string(SOFASIMULATION_TEST_SCENES_DIR) + "/" + sceneName;
        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
-       // Test if load has succeeded
-       sofa::simulation::SceneLoaderXML scene;
-       
-       if(!root || !scene.loadSucceed)
-       {  
-           ADD_FAILURE() << "Error while loading the scene: " << sceneName << std::endl;
-           return false;   
-       }
-
-       return true;
+       return root != nullptr;
    }
 
    bool initScene (std::string sceneName)
@@ -80,11 +71,18 @@ struct LoadScene_test: public BaseTest
 
 };
 
-TEST_F( LoadScene_test,PatchTestConstraint)
+TEST_F(LoadScene_test, PatchTestConstraint)
 {
     ASSERT_TRUE(this->LoadScene("PatchTestConstraint.scn"));
     ASSERT_TRUE(this->initScene("PatchTestConstraint.scn"));
     ASSERT_NO_THROW(this->initScene("PatchTestConstraint.scn"));
+}
+
+TEST_F(LoadScene_test, PythonExtension)
+{
+    EXPECT_MSG_EMIT(Error);
+    ASSERT_FALSE(this->LoadScene("fakeFile.py"));
+    ASSERT_FALSE(this->LoadScene("fakeFile.pyscn"));
 }
 
 }// namespace sofa

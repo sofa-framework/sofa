@@ -34,7 +34,7 @@
 
 #include <ArticulatedSystemPlugin/config.h>
 
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 
 #include <ArticulatedSystemPlugin/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/BaseObject.h>

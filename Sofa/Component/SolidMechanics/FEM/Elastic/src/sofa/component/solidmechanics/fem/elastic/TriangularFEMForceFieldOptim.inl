@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
-#include <SofaBaseLinearSolver/BlocMatrixWriter.h>
+#include <sofa/core/behavior/BlocMatrixWriter.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <limits>
@@ -555,7 +555,7 @@ type::fixed_array <typename TriangularFEMForceFieldOptim<DataTypes>::Coord, 3> T
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
     type::fixed_array <Coord, 3> positions;
-    if (elemId < 0 && elemId >= triInfo.size())
+    if (elemId >= triInfo.size())
     {
         msg_warning() << "Method getRotatedInitialElement called with element index: " << elemId
             << " which is out of bounds: [0, " << triInfo.size() << "]. Returning default empty array of coordinates.";
@@ -575,7 +575,7 @@ template<class DataTypes>
 typename TriangularFEMForceFieldOptim<DataTypes>::Transformation TriangularFEMForceFieldOptim<DataTypes>::getRotationMatrix(Index elemId)
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
-    if (elemId >= 0 && elemId < triState.size())
+    if (elemId < triState.size())
         return triState[elemId].frame;
 
     msg_warning() << "Method getRotationMatrix called with element index: "
@@ -588,7 +588,7 @@ template<class DataTypes>
 typename TriangularFEMForceFieldOptim<DataTypes>::MaterialStiffness TriangularFEMForceFieldOptim<DataTypes>::getMaterialStiffness(Index elemId)
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
-    if (elemId < 0 && elemId >= triInfo.size())
+    if (elemId >= triInfo.size())
     {
         msg_warning() << "Method getMaterialStiffness called with element index: "
             << elemId << " which is out of bounds: [0, " << triInfo.size() << "]. Returning default empty matrix.";
@@ -614,7 +614,7 @@ template<class DataTypes>
 sofa::type::Vec3 TriangularFEMForceFieldOptim<DataTypes>::getStrainDisplacementFactors(Index elemId)
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
-    if (elemId < 0 && elemId >= triInfo.size())
+    if (elemId >= triInfo.size())
     {
         msg_warning() << "Method getStrainDisplacementFactors called with element index: "
             << elemId << " which is out of bounds: [0, " << triInfo.size() << "]. Returning default empty displacements.";
@@ -629,7 +629,7 @@ template<class DataTypes>
 typename TriangularFEMForceFieldOptim<DataTypes>::Real TriangularFEMForceFieldOptim<DataTypes>::getTriangleFactor(Index elemId)
 {
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
-    if (elemId < 0 && elemId >= triInfo.size())
+    if (elemId >= triInfo.size())
     {
         msg_warning() << "Method getTriangleFactor called with element index: "
             << elemId << " which is out of bounds: [0, " << triInfo.size() << "]. Returning 0.";

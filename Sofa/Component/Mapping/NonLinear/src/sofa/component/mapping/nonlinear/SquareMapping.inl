@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "SquareMapping.h"
+#include <sofa/component/mapping/nonlinear/SquareMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>

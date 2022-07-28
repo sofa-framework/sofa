@@ -34,7 +34,7 @@ void initSofaBaseTopology()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaBaseTopology") << "SofaBaseTopology is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Constant, Sofa.Component.Topology.Container.Grid and/or Sofa.Component.Topology.Container.Dynamic instead.";
+        msg_deprecated("SofaBaseTopology") << "SofaBaseTopology is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Constant, Sofa.Component.Topology.Container.Grid and/or Sofa.Component.Topology.Container.Dynamic instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Container.Constant");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Container.Grid");

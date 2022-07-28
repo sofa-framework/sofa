@@ -20,62 +20,65 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
-#include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/vector.h>
+#include <mutex>
+#include <algorithm>
 
-namespace sofa
+namespace sofa::helper
 {
 
-namespace helper
+class TagList
 {
+protected:
+    /// the list of the tag names. the Ids are the indices in the vector
+    type::vector<std::string> m_tagsList;
 
-TagFactory::TagFactory()
-{
-    tagsList.push_back(std::string("0")); // ID 0 == "0" or empty string
-    // Add standard tags
-    tagsList.push_back(std::string("Visual"));
-}
+public:
+    TagList() = default;
+    explicit TagList(type::vector<std::string> tagsList) : m_tagsList(std::move(tagsList)) {}
 
-unsigned int TagFactory::getID(std::string name)
+    std::size_t getID(const std::string& name);
+    std::string getName(std::size_t id);
+};
+
+std::size_t TagList::getID(const std::string& name)
 {
     if (name.empty()) return 0;
-    TagFactory * tagfac = TagFactory::getInstance();
-    std::vector<std::string>::iterator it = tagfac->tagsList.begin();
-    unsigned int i=0;
 
-    while(it != tagfac->tagsList.end() && (*it)!= name)
+    const auto it = std::find(m_tagsList.begin(), m_tagsList.end(), name);
+    if (it != m_tagsList.end())
     {
-        ++it;
-        i++;
+        return std::distance(m_tagsList.begin(), it);
     }
 
-    if (it!=tagfac->tagsList.end())
-        return i;
-    else
-    {
-#ifndef NDEBUG
-        msg_info("TagFactory") <<"creating new tag "<<i<<": "<<name;
-#endif
-        tagfac->tagsList.push_back(name);
-        return i;
-    }
+    m_tagsList.push_back(name);
+    return m_tagsList.size() - 1;
 }
 
-std::string TagFactory::getName(unsigned int id)
+std::string TagList::getName(const std::size_t id)
 {
-    if( id < getInstance()->tagsList.size() )
-        return getInstance()->tagsList[id];
-    else
-        return "";
+    if( id < m_tagsList.size() )
+        return m_tagsList[id];
+    return "";
 }
 
-TagFactory* TagFactory::getInstance()
+// Mutex used to restrict the usage of the tag list in a multi-threaded context. Usable only in this translation unit
+std::mutex kMutex;
+
+// Global tag list. Usable only in this translation unit
+TagList kTagList { {"0", "Visual"} };
+
+std::size_t TagFactory::getID(const std::string& name)
 {
-    static TagFactory instance;
-    return &instance;
+    std::lock_guard lock(kMutex);
+    return kTagList.getID(name);
 }
 
+std::string TagFactory::getName(const std::size_t id)
+{
+    std::lock_guard lock(kMutex);
+    return kTagList.getName(id);
+}
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_CPP
 
-#include "SimpleTesselatedTetraMechanicalMapping.inl"
+#include <sofa/component/mapping/linear/SimpleTesselatedTetraMechanicalMapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 

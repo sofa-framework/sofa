@@ -31,19 +31,16 @@ using std::vector;
 
 #include <runSofaValidation.h>
 
-#include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
-#include <SofaSimulationCommon/init.h>
-#include <SofaSimulationGraph/init.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/graph/init.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
-#include <SofaGraphComponent/SceneCheckerListener.h>
-using sofa::simulation::scenechecking::SceneCheckerListener;
-
-#include <SofaBase/initSofaBase.h>
+#include <SceneChecking/SceneCheckerListener.h>
+using sofa::scenechecking::SceneCheckerListener;
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>
@@ -69,6 +66,8 @@ using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
 using sofa::gui::BatchGUI;
+
+#include <sofa/gui/BaseGUI.h>
 using sofa::gui::BaseGUI;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
@@ -159,6 +158,7 @@ int main(int argc, char** argv)
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
+    unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
     string    computationTimeOutputType="stdout";
@@ -306,6 +306,12 @@ int main(int argc, char** argv)
         "argv",
         "forward extra args to the python interpreter"
     );
+    argParser->addArgument(
+        cxxopts::value<unsigned int>(nbMSSASamples)
+        ->default_value("1"),
+        "msaa",
+        "Number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
+    );
 
     addGUIParameters(argParser);
     argParser->parse();
@@ -320,7 +326,6 @@ int main(int argc, char** argv)
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
-    sofa::component::initSofaBase();
 
     if (simulationType == "tree")
         msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
@@ -389,11 +394,11 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
-
     if (!noAutoloadPlugins)
     {
+        std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
+        std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
+
         if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
@@ -405,15 +410,24 @@ int main(int argc, char** argv)
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
+        {
             msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+        }
     }
     else
+    {
         msg_info("runSofa") << "Automatic plugin loading disabled.";
+    }
 
     PluginManager::getInstance().init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
+    {
+        sofa::simulation::common::cleanup();
+        sofa::simulation::graph::cleanup();
+
         return err;
+    }
 
     if (fileName.empty())
     {

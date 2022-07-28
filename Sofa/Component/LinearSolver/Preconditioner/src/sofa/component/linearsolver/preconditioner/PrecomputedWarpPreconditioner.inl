@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "PrecomputedWarpPreconditioner.h"
+#include <sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -37,7 +37,7 @@
 
 #include <sofa/type/Quat.h>
 
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
 #if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
@@ -138,7 +138,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     dt = this->getContext()->getDt();
 
 
-    sofa::component::odesolver::EulerImplicitSolver* EulerSolver;
+    sofa::component::odesolver::backward::EulerImplicitSolver* EulerSolver;
     this->getContext()->get(EulerSolver);
     factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
@@ -281,7 +281,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
-    sofa::component::odesolver::EulerImplicitSolver* EulerSolver;
+    sofa::component::odesolver::backward::EulerImplicitSolver* EulerSolver;
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0

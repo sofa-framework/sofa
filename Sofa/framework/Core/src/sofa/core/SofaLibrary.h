@@ -22,7 +22,7 @@
 #ifndef SOFA_SOFALIBRARY_H
 #define SOFA_SOFALIBRARY_H
 
-#include "CategoryLibrary.h"
+#include <sofa/core/CategoryLibrary.h>
 
 
 namespace sofa

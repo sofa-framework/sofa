@@ -179,7 +179,23 @@ void UniformMass<DataTypes>::initDefaultImpl()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         d_indices.createTopologyHandler(meshTopology);
-        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo) {
+        d_indices.supportNewTopologyElements(true);
+
+        // Need to create a call back to assign index of new point into the topologySubsetData. Deletion is automatically handle.
+        d_indices.setCreationCallback([](Index dataIndex, Index& valueIndex,
+            const core::topology::BaseMeshTopology::Point& point,
+            const sofa::type::vector< Index >& ancestors,
+            const sofa::type::vector< SReal >& coefs)
+        {
+            SOFA_UNUSED(point);
+            SOFA_UNUSED(ancestors);
+            SOFA_UNUSED(coefs);
+            valueIndex = dataIndex;
+        });
+
+        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo)
+        {
+            SOFA_UNUSED(eventTopo);
             updateMassOnResize(d_indices.getValue().size());
         });
     }
@@ -611,7 +627,7 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
         points.push_back ( p );        
         gravityCenter += x[indices[i]];
     }
-    vparams->drawTool()->drawSpheres(points, 0.01, sofa::type::RGBAColor::yellow());
+    vparams->drawTool()->drawSpheres(points, 0.01f, sofa::type::RGBAColor::yellow());
     
     {
         gravityCenter /= indices.size();

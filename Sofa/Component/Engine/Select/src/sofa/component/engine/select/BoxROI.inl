@@ -87,7 +87,7 @@ BoxROI<DataTypes>::BoxROI()
     , d_drawTetrahedra( initData(&d_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra. (default = false)") )
     , d_drawHexahedra( initData(&d_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra. (default = false)") )
     , d_drawQuads( initData(&d_drawQuads,false,"drawQuads","Draw Quads. (default = false)") )
-    , d_drawSize( initData(&d_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
+    , d_drawSize( initData(&d_drawSize,1.0,"drawSize","rendering size for box and topological elements") )
     , d_doUpdate( initData(&d_doUpdate,(bool)true,"doUpdate","If true, updates the selection at the beginning of simulation steps. (default = true)") )
 
     /// In case you add a new attribute please also add it into to the BoxROI_test.cpp::attributesTests
