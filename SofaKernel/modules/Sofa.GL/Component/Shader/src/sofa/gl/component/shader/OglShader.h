@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/gl/template.h>
 #include <sofa/gl/GLSLShader.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/DataFileNameVector.h>
 
 namespace sofa::gl::component::shader
 {

@@ -26,27 +26,84 @@
 
 using sofa::helper::system::DataRepository ;
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 namespace fs = sofa::helper::system;
 
-DataFileNameVector::~DataFileNameVector()
+DataFileName::DataFileName(const std::string& helpMsg, bool isDisplayed, bool isReadOnly): Inherit(helpMsg, isDisplayed, isReadOnly),
+    m_pathType(PathType::FILE)
 {
 }
 
+DataFileName::DataFileName(const std::string& value, const std::string& helpMsg, bool isDisplayed,
+                           bool isReadOnly): Inherit(value, helpMsg, isDisplayed, isReadOnly),
+                                             m_pathType(PathType::FILE)
+{
+    updatePath();
+}
+
+DataFileName::DataFileName(const BaseData::BaseInitData& init): Inherit(init),
+                                                                m_pathType(PathType::FILE)
+{
+}
+
+DataFileName::DataFileName(const Inherit::InitData& init): Inherit(init),
+                                                           m_pathType(PathType::FILE)
+{
+    updatePath();
+}
+
+void DataFileName::setPathType(PathType pathType)
+{
+    m_pathType = pathType;
+}
+
+PathType DataFileName::getPathType() const
+{
+    return m_pathType;
+}
 
 bool DataFileName::read(const std::string& s )
 {
-    bool ret = Inherit::read(s);
+    const bool ret = Inherit::read(s);
     if (ret) updatePath();
     return ret;
+}
+
+void DataFileName::endEdit()
+{
+    updatePath();
+    Data::notifyEndEdit();
+}
+
+const std::string& DataFileName::getRelativePath() const
+{
+    this->updateIfDirty();
+    return m_relativepath ;
+}
+
+const std::string& DataFileName::getFullPath() const
+{
+    this->updateIfDirty();
+    return m_fullpath;
+}
+
+const std::string& DataFileName::getAbsolutePath() const
+{
+    this->updateIfDirty();
+    return m_fullpath;
+}
+
+const std::string& DataFileName::getExtension() const
+{
+    this->updateIfDirty();
+    return m_extension;
+}
+
+void DataFileName::doOnUpdate()
+{
+    updatePath();
 }
 
 void DataFileName::updatePath()
@@ -104,44 +161,4 @@ void DataFileName::updatePath()
         }
     }
 }
-
-void DataFileNameVector::updatePath()
-{
-    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());
-    if (parentDataFileNameVector)
-    {
-        if (getPathType() != PathType::BOTH && getPathType() != parentDataFileNameVector->getPathType())
-        {
-            msg_error(this->getName()) << "Cannot retrieve DataFileNames from Parent value: this DataFileName only accepts " << (getPathType() == PathType::DIRECTORY ? "directories" : "files");
-            return;
-        }
-    }
-    m_fullpath = m_value.getValue();
-    if (!m_fullpath.empty())
-    {
-        for (unsigned int i=0 ; i<m_fullpath.size() ; i++)
-        {
-            if (parentDataFileNameVector)
-            {
-                m_fullpath[i] = parentDataFileNameVector->getFullPath(i);
-            }
-            else
-            {
-                std::ostringstream tempOss;
-                DataRepository.findFile(m_fullpath[i], "", &tempOss);
-                if (getPathType() != PathType::BOTH && (fs::FileSystem::exists(m_fullpath[i]) && ((getPathType() == PathType::DIRECTORY) != fs::FileSystem::isDirectory(m_fullpath[i]))))
-                {
-                    msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == PathType::DIRECTORY ? "directories" : "files");
-                    m_fullpath[i] = "";
-                }
-
-            }
-        }
-    }
-}
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel
