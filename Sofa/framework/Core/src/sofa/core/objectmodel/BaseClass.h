@@ -267,6 +267,7 @@ public:
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
 { return GetClass(); }                                              \
     static const char* HeaderFileLocation() { return __FILE__; }        \
+    using Base::initData;                                               \
     ::sofa::core::objectmodel::BaseLink::InitLink<MyType>               \
     initLink(const char* name, const char* help)                        \
 {                                                                   \
