@@ -460,7 +460,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
-    const sofa::Size N = Coord::total_size;
+    constexpr const sofa::Size N = (isRigidType<DataTypes>()) ? Coord::spatial_dimensions * 2 : Coord::spatial_dimensions;
 
     sofa::Index curIndex = 0;
 
@@ -469,19 +469,19 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         curIndex = m_indices[index];
 
         // translation
+        const auto vt = -kFact * (index < k.size() ? k[index] : k[0]);
         for (int i = 0; i < 3; i++)
         {
-            const auto v = -kFact * (index < k.size() ? k[index] : k[0]);
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, v);
+            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, vt);
         }
 
         // rotation (if applicable)
+        const auto vr = -kFact * (index < k_a.size() ? k_a[index] : k_a[0]);
         if constexpr (isRigidType<DataTypes>())
         {
             for (int i = 3; i < 6; i++)
             {
-                const auto v = -kFact * (index < k_a.size() ? k_a[index] : k_a[0]);
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, v);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, vr);
             }
         }
     }
