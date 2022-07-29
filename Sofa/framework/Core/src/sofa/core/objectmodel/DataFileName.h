@@ -25,13 +25,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/SVector.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 enum class PathType {
@@ -83,9 +77,7 @@ public:
         updatePath();
     }
 
-    virtual ~DataFileName()
-    {
-    }
+    ~DataFileName() override = default;
 
 
     void setPathType(PathType pathType)
@@ -93,7 +85,7 @@ public:
         m_pathType = pathType;
     }
 
-    PathType getPathType()
+    PathType getPathType() const
     {
         return m_pathType;
     }
@@ -140,11 +132,11 @@ protected:
     std::string m_fullpath;
     std::string m_relativepath;
     std::string m_extension;
-    PathType    m_pathType; //< used to determine how file dialogs should be opened
+    PathType    m_pathType; ///< used to determine how file dialogs should be opened
 
-private:
-    DataFileName(const Inherit& d);
-    DataFileName& operator=(const DataFileName&);
+public:
+    DataFileName(const Inherit& d) = delete;
+    DataFileName& operator=(const DataFileName&) = delete;
 };
 
 
@@ -160,7 +152,7 @@ public:
     {
     }
 
-    DataFileNameVector( const sofa::type::vector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
+    DataFileNameVector( const sofa::type::SVector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(value, helpMsg, isDisplayed, isReadOnly),
           m_pathType(PathType::FILE)
     {
@@ -212,7 +204,7 @@ public:
 
     bool read(const std::string& s ) override
     {
-        bool ret = Inherit::read(s);
+        const bool ret = Inherit::read(s);
         if (ret || m_fullpath.empty()) updatePath();
         return ret;
     }
@@ -239,7 +231,7 @@ public:
         m_pathType = pathType;
     }
 
-    PathType getPathType()
+    PathType getPathType() const
     {
         return m_pathType;
     }
@@ -248,17 +240,12 @@ protected:
     void updatePath();
 
     sofa::type::vector<std::string> m_fullpath;
-    PathType m_pathType; //< used to determine how file dialogs should be opened
+    PathType m_pathType; ///< used to determine how file dialogs should be opened
 
-private:
-    DataFileNameVector(const Inherit& d);
-    DataFileNameVector& operator=(const DataFileNameVector&);
+public:
+    DataFileNameVector(const Inherit& d) = delete;
+    DataFileNameVector& operator=(const DataFileNameVector&) = delete;
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel
 
 #endif
