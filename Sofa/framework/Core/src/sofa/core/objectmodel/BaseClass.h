@@ -267,32 +267,6 @@ public:
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
 { return GetClass(); }                                              \
     static const char* HeaderFileLocation() { return __FILE__; }        \
-    template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
-    initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
-    ::sofa::core::objectmodel::BaseData::DataFlags dataflags)  \
-{                                                                   \
-    ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
-    this->initData0(field, res, name, help, dataflags);             \
-    return res;                                                     \
-}                                                                   \
-    template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
-    initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
-    bool isDisplayed=true, bool isReadOnly=false)              \
-{                                                                   \
-    ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
-    this->initData0(field, res, name, help,                         \
-    isDisplayed, isReadOnly);                       \
-    return res;                                                     \
-}                                                                   \
-    template<class SOFA_T> typename ::sofa::core::objectmodel::Data<SOFA_T>::InitData initData(    \
-    ::sofa::core::objectmodel::Data<SOFA_T>* field, const SOFA_T& value, const char* name,     \
-    const char* help, bool isDisplayed=true, bool isReadOnly=false) \
-{                                                                   \
-    typename ::sofa::core::objectmodel::Data<SOFA_T>::InitData res; \
-    this->initData0(field, res, value, name, help,                  \
-    isDisplayed, isReadOnly);                       \
-    return res;                                                     \
-}                                                                   \
     ::sofa::core::objectmodel::BaseLink::InitLink<MyType>               \
     initLink(const char* name, const char* help)                        \
 {                                                                   \
