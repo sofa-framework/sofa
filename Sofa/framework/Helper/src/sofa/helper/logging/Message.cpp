@@ -24,7 +24,7 @@
 * in the TextMessaging.h file.
 ******************************************************************************/
 #define SOFA_MESSAGE_CPP
-#include "Message.h"
+#include <sofa/helper/logging/Message.h>
 
 using std::endl ;
 using std::string ;

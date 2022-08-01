@@ -24,7 +24,7 @@
 
 #include <sofa/simulation/graph/init.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/graph/init.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/graph/init.h")
 
 namespace sofasimulationgraph
 {

@@ -24,8 +24,8 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include "Message.h"
-#include "SilentMessageHandler.h"
+#include <sofa/helper/logging/Message.h>
+#include <sofa/helper/logging/SilentMessageHandler.h>
 
 
 namespace sofa

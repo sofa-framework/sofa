@@ -23,7 +23,7 @@
 
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/BarycentricContactMapper.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/BarycentricContactMapper.h")
 
 #include <SofaBaseCollision/BaseContactMapper.h>
 

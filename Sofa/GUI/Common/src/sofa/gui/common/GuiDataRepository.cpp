@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "GuiDataRepository.h"
+#include <sofa/gui/common/GuiDataRepository.h>
 #include <sofa/helper/Utils.h>
 
 using sofa::helper::system::FileRepository;

@@ -34,7 +34,7 @@ void initSofaBaseLinearSolver()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaBaseLinearSolver") << "SofaBaseLinearSolver is deprecated. It will be removed at v23.06. Use Sofa.Component.LinearSolver.Iterative instead.";
+        msg_deprecated("SofaBaseLinearSolver") << "SofaBaseLinearSolver is deprecated. It will be removed at v23.06. Use Sofa.Component.LinearSolver.Iterative instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.LinearSolver.Iterative");
 

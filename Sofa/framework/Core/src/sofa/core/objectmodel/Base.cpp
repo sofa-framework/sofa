@@ -47,8 +47,6 @@ static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
     : ref_counter(0)
-    , serr(_serr)
-    , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
@@ -63,7 +61,6 @@ Base::Base()
     f_bbox.setReadOnly(true);
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
-    sendl.setParent(this);
 
     /// name change => component state update
     addUpdateCallback("name", {&name}, [this](const DataTracker&){
@@ -250,28 +247,6 @@ void Base::setName(const std::string& n, int counter)
     std::ostringstream o;
     o << n << counter;
     setName(o.str());
-}
-
-void Base::processStream(std::ostream& out)
-{
-    if (serr==out)
-    {
-        MessageDispatcher::log(serr.messageClass(),
-                               serr.messageType(), sofa::helper::logging::getComponentInfo(this),
-                               serr.fileInfo()) << serr.str() ;
-        serr.clear();
-    }
-    else if (sout==out)
-    {
-        if (f_printLog.getValue())
-        {
-            MessageDispatcher::log(sout.messageClass(),
-                                   sout.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                   sout.fileInfo()) << sout.str();
-        }
-
-        sout.clear();
-    }
 }
 
 void Base::addMessage(const Message &m) const

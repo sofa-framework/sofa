@@ -63,9 +63,9 @@ public:
     typedef sofa::Size Size;
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to static_size and size() method)
-    enum { total_size = N };
+    static constexpr Size total_size = N;
     /// Compile-time constant specifying the number of dimensions of space (equivalent to total_size here)
-    enum { spatial_dimensions = N };
+    static constexpr Size spatial_dimensions = N;
 
     /// Default constructor: sets all values to 0.
     constexpr Vec()
@@ -123,7 +123,7 @@ public:
     {
         constexpr Size maxN = std::min( N, N2 );
         for(Size i=0; i<maxN; i++)
-            this->elems[i] = (ValueType)v[i];
+            this->elems[i] = static_cast<ValueType>(v[i]);
         for(Size i=maxN; i<N ; i++)
             this->elems[i] = defaultvalue;
     }
@@ -153,7 +153,7 @@ public:
     constexpr Vec(const Vec<N, real2>& p) noexcept
     {
         for(Size i=0; i<N; i++)
-            this->elems[i] = (ValueType)p(i);
+            this->elems[i] = static_cast<ValueType>(p(i));
     }
 
     /// Constructor from an array of values.
@@ -161,7 +161,7 @@ public:
     explicit constexpr Vec(const real2* p) noexcept
     {
         for(Size i=0; i<N; i++)
-            this->elems[i] = (ValueType)p[i];
+            this->elems[i] = static_cast<ValueType>(p[i]);
     }
 
     /// Special access to first element.

@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/FrameSpringForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/FrameSpringForceField.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/FrameSpringForceField.h")
 
 namespace sofa::component::interactionforcefield
 {

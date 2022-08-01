@@ -258,14 +258,6 @@ public:
 
     }
 
-    void emitSerrSoutMessages(){
-        f_printLog.setValue(true); // to print sout
-        serr<<"regular serr"<<sendl;
-        sout<<"regular sout"<<sendl;
-        serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
-        sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
-    }
-
     void emitMessages(){
         msg_info(this) << "an info message" ;
         msg_warning(this) << "a warning message" ;
@@ -273,90 +265,6 @@ public:
     }
 };
 
-
-
-
-TEST(LoggingTest, checkBaseObjectSerr)
-{
-    MessageDispatcher::clearHandlers() ;
-    MyMessageHandler h;
-    MessageDispatcher::addHandler(&h) ;
-
-
-    MyComponent c;
-
-    c.emitSerrSoutMessages();
-    /// the constructor of MyComponent is sending 4 messages
-    EXPECT_EQ( h.numMessages(), 4u ) ;
-
-    c.serr<<"regular external serr"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, 0 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, sofa::helper::logging::s_unknownFile ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
-    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
-
-    c.serr<<sofa::helper::logging::Message::Error<<"external serr as Error"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, 0 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, sofa::helper::logging::s_unknownFile ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
-    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
-
-    c.sout<<"regular external sout"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, 0 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, sofa::helper::logging::s_unknownFile ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Info );
-    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
-
-    c.sout<<sofa::helper::logging::Message::Error<<"external sout as Error"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, 0 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, sofa::helper::logging::s_unknownFile ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
-    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
-
-
-    c.serr<<SOFA_FILE_INFO<<"external serr with fileinfo"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, __LINE__-1 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, __FILE__ ) );
-
-    c.sout<<SOFA_FILE_INFO<<"external sout with fileinfo"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, __LINE__-1 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, __FILE__ ) );
-
-    c.serr<<SOFA_FILE_INFO<<sofa::helper::logging::Message::Error<<"external serr as Error with fileinfo"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, __LINE__-1 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, __FILE__ ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
-
-    c.sout<<sofa::helper::logging::Message::Error<<SOFA_FILE_INFO<<"external sout as Error with fileinfo"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, __LINE__-1 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, __FILE__ ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
-    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
-
-    c.serr<<"serr with sendl that comes in a second time";
-    c.serr<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, 0 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, sofa::helper::logging::s_unknownFile ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
-
-    c.serr<<"\n serr with \n end of "<<std::endl<<" lines"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo()->line, 0 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo()->filename, sofa::helper::logging::s_unknownFile ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
-
-    c.serr<<sofa::helper::logging::Message::Dev<<sofa::helper::logging::Message::Error<<"external Dev serr"<<c.sendl;
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
-    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Dev );
-
-
-    EXPECT_EQ( h.numMessages(), 15u ) ;
-
-    // an empty message should not be processed
-    c.serr<<c.sendl;
-
-    EXPECT_EQ( h.numMessages(), 15u ) ;
-
-}
 
 TEST(LoggingTest, checkBaseObjectMsgAPI)
 {
@@ -441,33 +349,6 @@ TEST(LoggingTest, checkBaseObjectQueueSize)
         c.emitMessages();
     }
     EXPECT_EQ(c.getLoggedMessages().size(), 100u);
-}
-
-TEST(LoggingTest, checkBaseObjectSoutSerr)
-{
-    /// We install the handler that copy the message into the component.
-    MessageDispatcher::clearHandlers() ;
-    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
-
-    MyComponent c;
-    c.emitSerrSoutMessages();
-
-    /// Well serr message are routed through warning while
-    /// Sout are routed to the Info ones.
-    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Error}).empty());
-    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Fatal}).empty());
-    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Warning}).empty());
-    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Error,
-                                              Message::Warning,
-                                              Message::Fatal}).empty());
-
-    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Deprecated}).empty());
-    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Advice}).empty());
-    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Info}).empty());
-    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Info,
-                                              Message::Deprecated,
-                                              Message::Advice}).empty());
-
 }
 
 

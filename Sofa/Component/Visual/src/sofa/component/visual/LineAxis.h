@@ -19,39 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/helper/system/SofaOStream.h>
-#include <sstream>
-#include <iostream>
+#include <sofa/core/visual/VisualModel.h>
 
-namespace sofa
+namespace sofa::component::visual
 {
 
-namespace helper
+class SOFA_COMPONENT_VISUAL_API LineAxis : public core::visual::VisualModel
 {
+public:
+    SOFA_CLASS(LineAxis, VisualModel);
 
-namespace system
-{
-#if 0
-SofaOStreamContainer::~SofaOStreamContainer()
-{
-}
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-SofaOStream::SofaOStream()
-    : parent(nullptr)
-{
-}
+    Data<std::string> d_axis; ///< Axis to draw
+    Data<float> d_size; ///< Size of the squared grid
+    Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<bool> d_draw; ///< Display the grid or not
 
-SofaOStream::~SofaOStream()
-{
-}
+    LineAxis();
 
-void SofaOStream::setParent(SofaOStreamContainer* p)
-{
-    parent = p;
-}
-#endif
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams*) override;
+    void updateVisual() override;
 
-}
-}
-}
+protected:
+
+    bool m_drawX;
+    bool m_drawY;
+    bool m_drawZ;
+
+};
+
+} // namespace sofa::component::visual

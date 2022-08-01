@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/sceneutility/MessageHandlerComponent.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/MessageHandlerComponent.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/MessageHandlerComponent.h")
 
 namespace sofa::component::logging
 {

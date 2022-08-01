@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.h")
 
 namespace sofa::component::mapping::_topologybarycentricmapper_
 {

@@ -23,7 +23,7 @@
 
 #include <sofa/component/mechanicalload/ConstantForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/ConstantForceField.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/ConstantForceField.h")
 
 namespace sofa::component::forcefield
 {

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP
 
-#include "SquareDistanceMapping.inl"
+#include <sofa/component/mapping/nonlinear/SquareDistanceMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping::nonlinear

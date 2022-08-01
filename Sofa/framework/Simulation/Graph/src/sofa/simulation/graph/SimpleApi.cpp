@@ -44,7 +44,8 @@ namespace sofa::simpleapi
 
 bool importPlugin(const std::string& name)
 {
-    return PluginManager::getInstance().loadPlugin(name) ;
+    const auto status = PluginManager::getInstance().loadPlugin(name);
+    return status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED;
 }
 
 void dumpScene(Node::SPtr root)

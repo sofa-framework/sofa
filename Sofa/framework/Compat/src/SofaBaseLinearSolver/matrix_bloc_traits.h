@@ -21,16 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/matrix_bloc_traits.h>
-
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/matrix_bloc_traits.h")
-
-namespace sofa::component::linearsolver
-{
-    template<Size TN, typename T> 
-    using bloc_index_func = sofa::linearalgebra::bloc_index_func<TN, T>;
-
-    template<class T, typename IndexType>
-    using matrix_bloc_traits = sofa::linearalgebra::matrix_bloc_traits<T, IndexType>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/matrix_bloc_traits.h")

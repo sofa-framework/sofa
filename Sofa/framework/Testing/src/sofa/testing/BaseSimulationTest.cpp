@@ -40,7 +40,8 @@ namespace sofa::testing
 
 bool BaseSimulationTest::importPlugin(const std::string& name)
 {
-    return PluginManager::getInstance().loadPlugin(name) ;
+    const auto status = PluginManager::getInstance().loadPlugin(name);
+    return status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED;
 }
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const std::string& desc)

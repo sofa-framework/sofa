@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/RigidMapping.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/RigidMapping.h")
 
 namespace sofa::component::mapping
 {

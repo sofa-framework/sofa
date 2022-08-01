@@ -21,19 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/DiagonalMatrix.h>
-
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/DiagonalMatrix.h")
-// BlockDiagonalMatrix was located in DiagonalMatrix previously
-#include <sofa/linearalgebra/BlockDiagonalMatrix.h>
-
-namespace sofa::component::linearsolver
-{
-
-    template<typename T>
-    using DiagonalMatrix = sofa::linearalgebra::DiagonalMatrix<T>;
-
-    template<std::size_t LC, typename T = double>
-    using BlockDiagonalMatrix = sofa::linearalgebra::BlockDiagonalMatrix<LC, T>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/DiagonalMatrix.h")

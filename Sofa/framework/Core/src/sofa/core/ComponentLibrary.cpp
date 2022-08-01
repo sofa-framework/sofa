@@ -20,13 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "ComponentLibrary.h"
-#include "CategoryLibrary.h"
+#include <sofa/core/ComponentLibrary.h>
+#include <sofa/core/CategoryLibrary.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 std::string caseInsensitive(const std::string &text)
@@ -108,5 +105,4 @@ void ComponentLibrary::endConstruction()
 {
 }
 
-}
 }

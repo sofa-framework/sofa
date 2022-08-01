@@ -23,7 +23,7 @@
 
 #include <sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.h")
 
 namespace sofa::component::linearsolver
 {

@@ -158,7 +158,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/system/PipeProcess.cpp
     ${SRC_ROOT}/system/PluginManager.cpp
     ${SRC_ROOT}/system/SetDirectory.cpp
-    ${SRC_ROOT}/system/SofaOStream.cpp
     ${SRC_ROOT}/system/console.cpp
     ${SRC_ROOT}/system/thread/CTime.cpp
     ${SRC_ROOT}/system/thread/CircularQueue.cpp

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "gl.h"
+#include <sofa/gl/gl.h>
 
 SOFA_GL_API const char* GetGlExtensionsList()
 {

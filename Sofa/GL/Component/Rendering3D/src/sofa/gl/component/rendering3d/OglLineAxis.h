@@ -20,37 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gl/component/rendering3d/config.h>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/config.h>
+SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/component/visual/LineAxis.h")
+
+#include <sofa/component/visual/LineAxis.h>
 
 namespace sofa::gl::component::rendering3d
 {
-
-class OglLineAxis : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(OglLineAxis, VisualModel);
-
-    Data<std::string> axis; ///< Axis to draw
-    Data<float> size; ///< Size of the squared grid
-    Data<float> thickness; ///< Thickness of the lines in the grid
-    Data<bool> draw; ///< Display the grid or not
-
-    OglLineAxis();
-
-    void init() override;
-    void reinit() override;
-    void drawVisual(const core::visual::VisualParams*) override;
-    void updateVisual() override;
-
-protected:
-
-    bool drawX;
-    bool drawY;
-    bool drawZ;
-
-};
-
-} // namespace sofa::gl::component::rendering3d
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "sofa::gl::component::rendering3d::OglLineAxis has been replaced by sofa::component::visual::LineAxis")
+    using OglLineAxis = sofa::component::visual::LineAxis;
+}

@@ -60,7 +60,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     this->m_topologyHandler->init();
 
     // Register the TopologyHandler
-    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
+    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology, sofa::helper::logging::notMuted(this->getOwner()));
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);
@@ -241,6 +241,8 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     const sofa::type::vector<sofa::type::vector<SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
+    SOFA_UNUSED(ancestorElems);
+
     std::size_t nbElements = index.size();
     if (nbElements == 0) 
         return;

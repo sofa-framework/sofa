@@ -113,10 +113,20 @@ public:
     void toHomogeneousMatrix(Mat4x4 &m) const;
 
     /// Apply the rotation to a given vector
-    auto rotate( const Vec3& v ) const -> Vec3;
+    constexpr auto rotate( const Vec3& v ) const -> Vec3
+    {
+        const Vec3 qxyz{ _q[0], _q[1] , _q[2] };
+        const auto t = qxyz.cross(v) * 2;
+        return (v + _q[3] * t + qxyz.cross(t));
+    }
 
     /// Apply the inverse rotation to a given vector
-    auto inverseRotate( const Vec3& v ) const -> Vec3;
+    constexpr auto inverseRotate( const Vec3& v ) const -> Vec3
+    {
+        const Vec3 qxyz{ -_q[0], -_q[1] , -_q[2] };
+        const auto t = qxyz.cross(v) * 2;
+        return (v + _q[3] * t + qxyz.cross(t));
+    }
 
     /// Given two quaternions, add them together to get a third quaternion.
     /// Adding quaternions to get a compound rotation is analagous to adding
@@ -215,14 +225,14 @@ public:
     bool operator==(const Quat& q) const;
     bool operator!=(const Quat& q) const;
 
-    enum { static_size = 4 };
-    static unsigned int size() {return 4;}
+    static constexpr Size static_size = 4;
+    static Size size() {return static_size;}
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 4 };
+    static constexpr Size total_size = 4;
 
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for quaternions)
-    enum { spatial_dimensions = 3 };
+    static constexpr Size spatial_dimensions = 3;
 };
 
 /// write to an output stream

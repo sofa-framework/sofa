@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "DiagonalVelocityDampingForceField.h"
+#include <sofa/component/mechanicalload/DiagonalVelocityDampingForceField.h>
 #include <sofa/core/MechanicalParams.h>
 
 

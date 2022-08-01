@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/common/config.h>
-#include "OperationFactory.h"
+#include <sofa/gui/common/OperationFactory.h>
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Node.h>

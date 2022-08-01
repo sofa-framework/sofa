@@ -26,7 +26,7 @@
 #ifndef SILENTMESSAGEHANDLER_H
 #define SILENTMESSAGEHANDLER_H
 
-#include "MessageHandler.h"
+#include <sofa/helper/logging/MessageHandler.h>
 
 namespace sofa
 {

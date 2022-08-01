@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "DisplacementMatrixEngine.h"
+#include <sofa/component/engine/transform/DisplacementMatrixEngine.h>
 
 
 namespace sofa::component::engine::transform

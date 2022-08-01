@@ -109,6 +109,11 @@ macro(sofa_add_generic directory name type)
             set(active ON)
         endif()
 
+        # https://cmake.org/cmake/help/latest/policy/CMP0127.html
+        if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.22)
+            cmake_policy(SET CMP0127 NEW)
+	    endif()
+
         # Hide/show sub-options depending on this option
         set(${name}_OPTION "${option}" CACHE INTERNAL "${name} option string")
         set(${name}_ENABLED "${${option}}" CACHE INTERNAL "${name} option value")

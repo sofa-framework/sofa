@@ -23,7 +23,7 @@
 
 #include <SofaGraphComponent/config.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/behavior/Mass.h>
 
 
@@ -63,8 +63,7 @@ public:
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
 
-    typedef component::container::MechanicalObject<DataTypes> Dofs;
-
+    typedef component::statecontainer::MechanicalObject<DataTypes> Dofs;
 
     /// call when initializing the simulation
     virtual void init() override

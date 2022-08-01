@@ -13,10 +13,10 @@ set(SOURCE_FILES
     initManualMapping.cpp
 )
 
-find_package(SofaBase REQUIRED)
+find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBase)
+target_link_libraries(${PROJECT_NAME} Sofa.Core)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
 
 sofa_create_package_with_targets(

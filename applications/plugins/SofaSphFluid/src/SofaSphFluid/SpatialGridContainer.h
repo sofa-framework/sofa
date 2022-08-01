@@ -357,15 +357,6 @@ public:
     }
     bool sortPoints();
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SpatialGridContainer<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 };

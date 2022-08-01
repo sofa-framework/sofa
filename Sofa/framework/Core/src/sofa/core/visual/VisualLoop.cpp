@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "VisualLoop.h"
+#include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
+namespace sofa::core::visual
 {
 
 bool VisualLoop::insertInNode( objectmodel::BaseNode* node )
@@ -44,13 +38,5 @@ bool VisualLoop::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-
-
-
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::visual
 

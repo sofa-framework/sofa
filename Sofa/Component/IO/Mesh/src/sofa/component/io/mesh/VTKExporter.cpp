@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "VTKExporter.h"
+#include <sofa/component/io/mesh/VTKExporter.h>
 
 #include <sofa/core/ObjectFactory.h>
 

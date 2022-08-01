@@ -24,7 +24,7 @@
 
 #include <sofa/linearalgebra/BaseVector.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/BaseVector.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/BaseVector.h")
 
 namespace sofa::defaulttype
 {

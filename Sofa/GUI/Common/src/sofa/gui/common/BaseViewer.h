@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/gui/common/config.h>
 
-#include "ColourPickingVisitor.h"
+#include <sofa/gui/common/ColourPickingVisitor.h>
 
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
