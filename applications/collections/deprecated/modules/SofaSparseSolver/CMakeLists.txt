@@ -26,5 +26,5 @@ sofa_create_package_with_targets(
     TARGETS SofaSparseSolver AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaSparseSolver"
-    RELOCATABLE "plugins"
+    RELOCATABLE "collections"
 )

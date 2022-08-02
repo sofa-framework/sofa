@@ -268,6 +268,8 @@ endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
 install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
+file(WRITE "${CMAKE_BINARY_DIR}/collections/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
+install(DIRECTORY ${CMAKE_BINARY_DIR}/collections/ DESTINATION collections COMPONENT resources)
 
 sofa_install_git_infos(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 

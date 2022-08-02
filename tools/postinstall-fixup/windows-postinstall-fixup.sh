@@ -42,20 +42,7 @@ for plugin in \
         THMPGSpatialHashing   \
         SofaCarving           \
         RigidScale            \
-                              \
         LMConstraint          \
-        SofaHaptics           \
-        SofaValidation        \
-        SofaNonUniformFem     \
-        SofaExporter          \
-        SofaPreconditioner    \
-        SofaMiscTopology      \
-        SofaMiscExtra         \
-        SofaMiscForceField    \
-        SofaMiscEngine        \
-        SofaMiscSolver        \
-        SofaMiscFem           \
-        SofaMiscMapping       \
     ; do
     disabled_plugins=$disabled_plugins'\|'$plugin
 done
@@ -63,5 +50,10 @@ grep -v $disabled_plugins "$INSTALL_DIR_BIN/plugin_list.conf.default" >> "$INSTA
 
 # Copy all plugin libs in install/bin to make them easily findable
 cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
+    cp "$lib" "$INSTALL_DIR_BIN"
+done
+
+# Copy all collection libs in install/bin to make them easily findable
+cd "$INSTALL_DIR" && find -name "*.dll" -path "*/collections/*" | while read lib; do
     cp "$lib" "$INSTALL_DIR_BIN"
 done
