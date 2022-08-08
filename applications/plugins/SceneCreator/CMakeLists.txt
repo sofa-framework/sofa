@@ -36,7 +36,12 @@ sofa_create_package_with_targets(
     )
 
 ## Add example project to use sceneCreator
-add_subdirectory(sceneCreatorExamples)
+sofa_find_package(Sofa.GUI.Common QUIET)
+if(Sofa.GUI.Common_FOUND)
+    add_subdirectory(sceneCreatorExamples)
+else()
+    message(STATUS "${PROJECT_NAME}: Sofa.GUI.Common not found, sceneCreatorExamples will not be built.")
+endif()
 
 ## Add test project
 if(SOFA_BUILD_TESTS)
