@@ -6,8 +6,10 @@ set(SOFACOMPONENTCOLLISIONRESPONSE_SOURCE_DIR "src/sofa/component/collision/resp
 set(SOFACOMPONENTCOLLISIONRESPONSE_DIRS Mapper Contact)
 set(SOFACOMPONENTCOLLISIONRESPONSE_TARGETS)
 foreach(response_dir ${SOFACOMPONENTCOLLISIONRESPONSE_DIRS})
-	sofa_add_component_subdirectory(${response_dir} ${PROJECT_NAME}.${response_dir})
-    list(APPEND SOFACOMPONENTCOLLISIONRESPONSE_TARGETS ${PROJECT_NAME}.${response_dir})
+    sofa_add_subdirectory(module ${response_dir} ${PROJECT_NAME}.${response_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${response_dir})
+        list(APPEND SOFACOMPONENTCOLLISIONRESPONSE_TARGETS ${PROJECT_NAME}.${response_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES
