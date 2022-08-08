@@ -97,6 +97,8 @@ protected:
     SphereCollisionModel();
 
     SphereCollisionModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
+
+    virtual void updateFromTopology();
 public:
     void init() override;
 
@@ -113,7 +115,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
 
     const VecReal& getR() const { return this->radius.getValue(); }
 
@@ -162,11 +164,19 @@ public:
     Data< SReal > defaultRadius; ///< Default Radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
-
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
+    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
+    {
+        return l_topology.get();
+    }
+
 protected:
-    core::behavior::MechanicalState<DataTypes>* mstate;
+    core::behavior::MechanicalState<DataTypes>* m_mstate;
+    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the corresponding Topology
+    bool m_needsUpdate; ///< parameter storing the info boundingTree has to be recomputed.
+    int m_topologyRevision; ///< internal revision number to check if topology has changed.
+
     SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 };
 
@@ -182,28 +192,28 @@ inline TSphere<DataTypes>::TSphere(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const { return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::center() const { return DataTypes::getCPos(this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]); }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord & TSphere<DataTypes>::rigidCenter() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index];}
+inline const typename DataTypes::Coord & TSphere<DataTypes>::rigidCenter() const { return this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[this->index];}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return DataTypes::getCPos(this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]);}
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::p() const { return DataTypes::getCPos(this->model->m_mstate->read(core::ConstVecCoordId::position())->getValue()[this->index]);}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->m_mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(Index index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
+inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(Index index) const { return DataTypes::getDPos(m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
 
 template<class DataTypes>
-inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]); }
+inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]); }
 
 template<class DataTypes>
 inline typename DataTypes::Real TSphere<DataTypes>::r() const { return (Real) this->model->getRadius((unsigned)this->index); }
 
 template<class DataTypes>
-inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+inline bool TSphere<DataTypes>::hasFreePosition() const { return this->model->m_mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
 using RigidSphere = TSphere<sofa::defaulttype::Rigid3Types>;

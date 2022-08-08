@@ -36,7 +36,11 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(nullptr)
+    , l_topology(initLink("topology", "link to the topology container"))
+    , m_mstate(nullptr)
+    , m_topology(nullptr)
+    , m_needsUpdate(true)
+    , m_topologyRevision(-1)
 {
     enum_type = SPHERE_TYPE;
 }
@@ -46,7 +50,7 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::Mechanical
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(_mstate)
+    , m_mstate(_mstate)
 {
     enum_type = SPHERE_TYPE;
 }
@@ -78,10 +82,26 @@ void SphereCollisionModel<DataTypes>::init()
     if(d_componentState.getValue() == ComponentState::Valid){
         msg_warning(this) << "Calling an already fully initialized component. You should use reinit instead." ;
     }
+    
+    if (l_topology.empty())
+    {
+        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (!m_topology)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". SphereCollisionModel<sofa::defaulttype::Vec3Types> requires a Point Topology";
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (mstate==nullptr)
+    m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+    if (m_mstate==nullptr)
     {
         //TODO(dmarchal): The previous message was saying this only work for a vec3 mechanicalstate but there
         // it seems that a mechanicalstate will work we well...where is the truth ?
@@ -93,12 +113,24 @@ void SphereCollisionModel<DataTypes>::init()
         return;
     }
 
-    const auto npoints = mstate->getSize();
+    const auto npoints = m_mstate->getSize();
     resize(npoints);
 
     d_componentState.setValue(ComponentState::Valid) ;
 }
 
+template<class DataTypes>
+void SphereCollisionModel<DataTypes>::updateFromTopology()
+{
+    int revision = m_topology->getRevision();
+    if (revision == m_topologyRevision)
+        return;
+
+    m_topologyRevision = revision;
+
+    // topology has changed, force boudingTree recomputation
+    m_needsUpdate = true;
+}
 
 template<class DataTypes>
 void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index)
@@ -129,7 +161,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
         vparams->drawTool()->setPolygonMode(0,false);
 
         // Check topological modifications
-        const auto npoints = mstate->getSize();
+        const auto npoints = m_mstate->getSize();
 
         std::vector<Vector3> points;
         std::vector<float> radius;
@@ -167,17 +199,20 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
-    bool updated = false;
-    if (npoints != size)
-    {
-        resize(npoints);
-        updated = true;
-        cubeModel->resize(0);
-    }
 
-    if (!isMoving() && !cubeModel->empty() && !updated)
-        return; // No need to recompute BBox if immobile
+    // check first that topology didn't changed
+    if (m_topology->getRevision() != m_topologyRevision)
+        updateFromTopology();
+
+    if (m_needsUpdate && !cubeModel->empty())
+        cubeModel->resize(0);
+
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate)
+        return; // No need to recompute BBox if immobile nor if mesh didn't change.
+
+    // set to false to avoid excesive loop
+    m_needsUpdate=false;
+
 
     cubeModel->resize(size);
     if (!empty())
@@ -207,17 +242,16 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
-    bool updated = false;
-    if (npoints != size)
-    {
-        resize(npoints);
-        updated = true;
-        cubeModel->resize(0);
-    }
 
-    if (!isMoving() && !cubeModel->empty() && !updated)
-        return; // No need to recompute BBox if immobile
+    // check first that topology didn't changed
+    if (m_topology->getRevision() != m_topologyRevision)
+        updateFromTopology();
+
+    if (m_needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
+
+    m_needsUpdate=false;
+
 
     Vector3 minElem, maxElem;
 
@@ -266,11 +300,15 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     if( !onlyVisible )
         return;
 
+    // check first that topology didn't changed
+    if (m_topology->getRevision() != m_topologyRevision)
+        updateFromTopology();
+
     static const Real max_real = std::numeric_limits<Real>::max();
     Real maxBBox[3] = {-max_real,-max_real,-max_real}; //Warning: minimum of float/double is 0, not -inf
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    const auto npoints = mstate->getSize();
+    const auto npoints = m_mstate->getSize();
 
     for(Size i = 0 ; i < npoints ; ++i )
     {
@@ -287,5 +325,6 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
 
     this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
+
 
 } // namespace sofa::component::collision::geometry
