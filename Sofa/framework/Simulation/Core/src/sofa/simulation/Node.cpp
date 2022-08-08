@@ -650,7 +650,7 @@ core::topology::BaseMeshTopology* Node::getMeshTopologyLink(SearchDirection dir)
     if (this->meshTopology)
         return this->meshTopology;
     else
-        return get<core::topology::BaseMeshTopology>(SearchParents);
+        return get<core::topology::BaseMeshTopology>(dir);
 }
 
 /// Degrees-of-Freedom
