@@ -89,7 +89,7 @@ void CarvingManager::init()
     {
         // We look for a CollisionModel identified with the CarvingSurface Tag.
         std::vector<core::CollisionModel*> models;
-        getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
+        getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchDown);
     
         // If topological mapping, iterate into child Node to find mapped topology
 	    sofa::core::topology::TopologicalMapping* topoMapping;
@@ -97,7 +97,9 @@ void CarvingManager::init()
         {
             core::CollisionModel* m = models[i];
             m->getContext()->get(topoMapping);
-            if (topoMapping == NULL) continue;
+            if (topoMapping == NULL) {
+                msg_error() << "CarvingSurface on collision model " << m->name.getValue() << " does not have a topological mapping (e.g. IdentityTopologicalMapping) and none were found in the child nodes. Make sure this is correct.";
+            }
                         
             m_surfaceCollisionModels.push_back(m);
         }
@@ -189,6 +191,7 @@ void CarvingManager::doCarve()
             if (c.value < d_carvingDistance.getValue())
             {
                 auto triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                // TODO generalize this for non-triangle collision models
                 elemsToRemove.push_back(triangleIdx);
             }
         }
