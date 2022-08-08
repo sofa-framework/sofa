@@ -8,8 +8,6 @@
     <BVHNarrowPhase/>
     <DefaultContactManager />
     <MinProximityIntersection alarmDistance="0.5" contactDistance="0.2" />
-    <!-- Component Creating dynamic collision group -->
-    <DefaultCollisionGroupManager />
     <Node name="CubeSphere1">
         <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="CG Solver"/>
