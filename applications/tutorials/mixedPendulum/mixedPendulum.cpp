@@ -23,27 +23,25 @@
 // scene data structure
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaGraphComponent/Gravity.h>
-#include <SofaRigid/RigidMapping.h>
-#include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <SofaImplicitOdeSolver/StaticSolver.h>
-#include <SofaBaseVisual/VisualStyle.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
+#include <sofa/component/odesolver/forward/EulerSolver.h>
+#include <sofa/component/visual/VisualStyle.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 // gui
 #include <sofa/gui/GUIManager.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/accessor.h>
-#include <SofaComponentAll/initSofaComponentAll.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/component/init.h>
+#include <sofa/simulation/graph/init.h>
 #include <SofaGui/initSofaGui.h>
 
 
-typedef sofa::component::odesolver::EulerExplicitSolver Solver;
+typedef sofa::component::odesolver::forward::EulerExplicitSolver Solver;
 using sofa::core::objectmodel::Data;
 using sofa::helper::ReadAccessor;
 using sofa::helper::WriteAccessor;
@@ -52,8 +50,8 @@ using sofa::core::VecId;
 int main(int argc, char** argv)
 {
 
-    //force load SofaComponentAll
-    sofa::component::initSofaComponentAll();
+    //force load all components
+    sofa::component::init();
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
@@ -78,7 +76,7 @@ int main(int argc, char** argv)
 
     //-------------------- Deformable body
 
-    using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
+    using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types>;
     sofa::simulation::Node::SPtr deformableBody = groot.get()->createChild("deformableBody");
     // degrees of freedom
     MechanicalObject3::SPtr DOF = sofa::core::objectmodel::New<MechanicalObject3>();
@@ -98,7 +96,7 @@ int main(int argc, char** argv)
     mass->setName("M1");
 
     // Fixed point
-    using FixedConstraint3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::Vec3Types>;
+    using FixedConstraint3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::Vec3Types>;
     auto constraints = sofa::core::objectmodel::New<FixedConstraint3>();
     deformableBody->addObject(constraints);
     constraints->setName("C");
@@ -106,7 +104,7 @@ int main(int argc, char** argv)
 
 
     // force field
-    using StiffSpringForceField3 = sofa::component::interactionforcefield::StiffSpringForceField<sofa::defaulttype::Vec3Types>;
+    using StiffSpringForceField3 = sofa::component::solidmechanics::spring::StiffSpringForceField<sofa::defaulttype::Vec3Types>;
     auto spring = sofa::core::objectmodel::New<StiffSpringForceField3>();
     deformableBody->addObject(spring);
     spring->setName("F1");
@@ -116,7 +114,7 @@ int main(int argc, char** argv)
     //-------------------- Rigid body
     sofa::simulation::Node::SPtr rigidBody = groot.get()->createChild("rigidBody");
 
-    using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<sofa::defaulttype::RigidTypes>;
+    using MechanicalObjectRigid3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::RigidTypes>;
     // degrees of freedom
     MechanicalObjectRigid3::SPtr rigidDOF = sofa::core::objectmodel::New<MechanicalObjectRigid3>();
     rigidBody->addObject(rigidDOF);
@@ -155,7 +153,7 @@ int main(int argc, char** argv)
     rp_x[0] = { attach,0,0 };
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
-    using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
+    using RigidMappingRigid3_to_3 = sofa::component::mapping::nonlinear::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
     auto rigidMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
     rigidMapping->setModels(rigidDOF.get(),rigidParticleDOF.get());
 
@@ -180,7 +178,7 @@ int main(int argc, char** argv)
 
 
     // Display Flags
-    sofa::component::visualmodel::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visualmodel::VisualStyle>();
+    sofa::component::visual::VisualStyle::SPtr style = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
     groot->addObject(style);
     sofa::core::visual::DisplayFlags& flags = *style->displayFlags.beginEdit();
     flags.setShowNormals(false);
