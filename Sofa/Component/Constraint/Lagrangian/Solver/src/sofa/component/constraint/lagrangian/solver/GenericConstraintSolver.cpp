@@ -259,116 +259,138 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
 
-    // UnbuiltGaussSeidel
-    if (d_resolutionMethod.getValue().getSelectedId() == 1)
+    // Resolution depending on the method selected
+    switch ( d_resolutionMethod.getValue().getSelectedId() )
     {
-        for (auto* cc : constraintCorrections)
-        {
-            if (!cc->isActive()) continue;
-            cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
+        // ProjectedGaussSeidel
+        case 0: {
+            buildSystem_matrixAssembly(cParams);
+            break;
         }
-
-        sofa::linearalgebra::SparseMatrix<SReal>* Wdiag = &current_cp->Wdiag;
-        Wdiag->resize(numConstraints, numConstraints);
-
-        // for each contact, the constraint corrections that are involved with the contact are memorized
-        current_cp->cclist_elems.clear();
-        current_cp->cclist_elems.resize(numConstraints);
-        int nbCC = constraintCorrections.size();
-        for (unsigned int i = 0; i < numConstraints; i++)
-            current_cp->cclist_elems[i].resize(nbCC, nullptr);
-
-        unsigned int nbObjects = 0;
-        for (unsigned int c_id = 0; c_id < numConstraints;)
-        {
-            bool foundCC = false;
-            nbObjects++;
-            unsigned int l = current_cp->constraintsResolutions[c_id]->getNbLines();
-
-            for (unsigned int j = 0; j < constraintCorrections.size(); j++)
-            {
-                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[j];
-                if (!cc->isActive()) continue;
-                if (cc->hasConstraintNumber(c_id))
-                {
-                    current_cp->cclist_elems[c_id][j] = cc;
-                    cc->getBlockDiagonalCompliance(Wdiag, c_id, c_id + l - 1);
-                    foundCC = true;
-                }
-            }
-
-            if (!foundCC)
-                msg_error() << "WARNING: no constraintCorrection found for constraint" << c_id ;
-
-            SReal** w =  current_cp->getW();
-            for(unsigned int m = c_id; m < c_id + l; m++)
-                for(unsigned int n = c_id; n < c_id + l; n++)
-                    w[m][n] = Wdiag->element(m, n);
-
-            c_id += l;
+        // UnbuiltGaussSeidel
+        case 1: {
+            buildSystem_matrixFree(numConstraints);
+            break;
         }
-
-        current_cp->change_sequence = false;
-        if(current_cp->constraints_sequence.size() == nbObjects)
-            current_cp->change_sequence=true;
-    }
-    else
-    {
-        sofa::helper::ScopedAdvancedTimer getComplianceTimer("Get Compliance");
-        msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
-
-        if(d_multithreading.getValue())
-        {
-            simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
-            simulation::CpuTask::Status status;
-
-            type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
-            sofa::Index nbTasks = constraintCorrections.size();
-            tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
-            sofa::Index dim = current_cp->W.rowSize();
-
-            for (sofa::Index i=0; i<nbTasks; i++)
-            {
-                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-                if (!cc->isActive())
-                    continue;
-
-                tasks[i].set(cc, *cParams, dim);
-                taskScheduler->addTask(&tasks[i]);
-            }
-            taskScheduler->workUntilDone(&status);
-
-            auto & W = current_cp->W;
-
-            // Accumulate the contribution of each constraints
-            // into the system's compliant matrix W
-            for (sofa::Index i = 0; i < nbTasks; i++) {
-                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-                if (!cc->isActive())
-                    continue;
-
-                const auto & Wi = tasks[i].W;
-
-                for (sofa::Index j = 0; j < dim; ++j)
-                    for (sofa::Index l = 0; l < dim; ++l)
-                        W.add(j, l, Wi.element(j,l));
-            }
-
-        } else {
-            for (auto* cc : constraintCorrections)
-            {
-                if (!cc->isActive())
-                    continue;
-
-                sofa::helper::ScopedAdvancedTimer addComplianceInConstraintSpaceTimer("Object name: "+cc->getName());
-                cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
-            }
+        // NonsmoothNonlinearConjugateGradient
+        case 2: {
+            buildSystem_matrixAssembly(cParams);
+            break;
         }
-
-        msg_info() << " computeCompliance_done "  ;
+        default:
+            msg_error() << "Wrong \"resolutionMethod\" given";
     }
 
     return true;
+}
+
+void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints)
+{
+    for (auto* cc : constraintCorrections)
+    {
+        if (!cc->isActive()) continue;
+        cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
+    }
+
+    sofa::linearalgebra::SparseMatrix<SReal>* Wdiag = &current_cp->Wdiag;
+    Wdiag->resize(numConstraints, numConstraints);
+
+    // for each contact, the constraint corrections that are involved with the contact are memorized
+    current_cp->cclist_elems.clear();
+    current_cp->cclist_elems.resize(numConstraints);
+    int nbCC = constraintCorrections.size();
+    for (unsigned int i = 0; i < numConstraints; i++)
+        current_cp->cclist_elems[i].resize(nbCC, nullptr);
+
+    unsigned int nbObjects = 0;
+    for (unsigned int c_id = 0; c_id < numConstraints;)
+    {
+        bool foundCC = false;
+        nbObjects++;
+        unsigned int l = current_cp->constraintsResolutions[c_id]->getNbLines();
+
+        for (unsigned int j = 0; j < constraintCorrections.size(); j++)
+        {
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[j];
+            if (!cc->isActive()) continue;
+            if (cc->hasConstraintNumber(c_id))
+            {
+                current_cp->cclist_elems[c_id][j] = cc;
+                cc->getBlockDiagonalCompliance(Wdiag, c_id, c_id + l - 1);
+                foundCC = true;
+            }
+        }
+
+        if (!foundCC)
+            msg_error() << "WARNING: no constraintCorrection found for constraint" << c_id ;
+
+        SReal** w =  current_cp->getW();
+        for(unsigned int m = c_id; m < c_id + l; m++)
+            for(unsigned int n = c_id; n < c_id + l; n++)
+                w[m][n] = Wdiag->element(m, n);
+
+        c_id += l;
+    }
+
+    current_cp->change_sequence = false;
+    if(current_cp->constraints_sequence.size() == nbObjects)
+        current_cp->change_sequence=true;
+}
+
+void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintParams *cParams)
+{
+    sofa::helper::ScopedAdvancedTimer getComplianceTimer("Get Compliance");
+    msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
+
+    if(d_multithreading.getValue())
+    {
+        simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
+        simulation::CpuTask::Status status;
+
+        type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
+        sofa::Index nbTasks = constraintCorrections.size();
+        tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
+        sofa::Index dim = current_cp->W.rowSize();
+
+        for (sofa::Index i=0; i<nbTasks; i++)
+        {
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            if (!cc->isActive())
+                continue;
+
+            tasks[i].set(cc, *cParams, dim);
+            taskScheduler->addTask(&tasks[i]);
+        }
+        taskScheduler->workUntilDone(&status);
+
+        auto & W = current_cp->W;
+
+        // Accumulate the contribution of each constraints
+        // into the system's compliant matrix W
+        for (sofa::Index i = 0; i < nbTasks; i++) {
+            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            if (!cc->isActive())
+                continue;
+
+            const auto & Wi = tasks[i].W;
+
+            for (sofa::Index j = 0; j < dim; ++j)
+                for (sofa::Index l = 0; l < dim; ++l)
+                    W.add(j, l, Wi.element(j,l));
+        }
+
+    } else {
+        for (auto* cc : constraintCorrections)
+        {
+            if (!cc->isActive())
+                continue;
+
+            sofa::helper::ScopedAdvancedTimer addComplianceInConstraintSpaceTimer("Object name: "+cc->getName());
+            cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
+        }
+    }
+
+    msg_info() << " computeCompliance_done "  ;
 }
 
 void GenericConstraintSolver::rebuildSystem(SReal massFactor, SReal forceFactor)
@@ -1132,7 +1154,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     {
         // peform one iteration of ProjectedGaussSeidel
         bool constraintsAreVerified = true;
-        std::copy(force, force + dimension, std::begin(m_lam));
+        std::copy_n(force, dimension, std::begin(m_lam));
 
         gaussSeidel_increment(false, dfree, force, w, tol, d, dimension, constraintsAreVerified, error, tabErrors);
 
