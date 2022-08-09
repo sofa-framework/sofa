@@ -15,5 +15,5 @@ sofa_add_subdirectory(library Core Sofa.Core ON)
 sofa_add_subdirectory(library Simulation Sofa.Simulation ON)
 sofa_add_subdirectory(library Testing Sofa.Testing ON)
 
-# Collection gathering all framework libraries
-sofa_add_subdirectory(collection Framework Sofa.Framework ON)
+# Library gathering all framework libraries
+sofa_add_subdirectory(library Framework Sofa.Framework ON)
