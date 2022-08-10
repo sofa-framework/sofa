@@ -22,36 +22,34 @@ fi
 echo "" > "$INSTALL_DIR/lib/plugin_list.conf"
 disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaEulerianFluid     \
-        SofaDistanceGrid      \
-        SofaImplicitField     \
-        MultiThreading        \
-        DiffusionSolver       \
-        image                 \
-        Compliant             \
-        SofaPython            \
-        Flexible              \
-        Registration          \
-        ExternalBehaviorModel \
-        ManifoldTopologies    \
-        ManualMapping         \
-        THMPGSpatialHashing   \
-        SofaCarving           \
-        RigidScale            \
-                              \
-        LMConstraint          \
-        SofaHaptics           \
-        SofaValidation        \
-        SofaNonUniformFem     \
-        SofaExporter          \
-        SofaPreconditioner    \
-        SofaMiscTopology      \
-        SofaMiscExtra         \
-        SofaMiscForceField    \
-        SofaMiscEngine        \
-        SofaMiscSolver        \
-        SofaMiscFem           \
-        SofaMiscMapping       \
+        ArticulatedSystemPlugin   \
+        CollisionOBBCapsule       \
+        Compliant                 \
+        DiffusionSolver           \
+        ExternalBehaviorModel     \
+        Flexible                  \
+        Geomagic                  \
+        image                     \
+        InvertibleFVM             \
+        LMConstraint              \
+        ManifoldTopologies        \
+        ManualMapping             \
+        MultiThreading            \
+        OptiTrackNatNet           \
+        PluginExample             \
+        Registration              \
+        RigidScale                \
+        SensableEmulation         \
+        SofaAssimp                \
+        SofaCUDA                  \
+        SofaCarving               \
+        SofaDistanceGrid          \
+        SofaEulerianFluid         \
+        SofaImplicitField         \
+        SofaPython                \
+        SofaSimpleGUI             \
+        SofaSphFluid              \
+        THMPGSpatialHashing       \
     ; do
     disabled_plugins=$disabled_plugins'\|'$plugin
 done

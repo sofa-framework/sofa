@@ -224,7 +224,7 @@
              <bool>true</bool>
             </property>
             <property name="toolTip">
-             <string>Reload the Simulation  (t=0)</string>
+             <string>Reload the simulation file</string>
             </property>
             <property name="text">
              <string>&amp;Reload Scene</string>

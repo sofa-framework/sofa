@@ -435,7 +435,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         set(CPACK_NSIS_MENU_LINKS
             "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
             "https://www.sofa-framework.org/api/" "SOFA Developper API"
-            "https://www.sofa-framework.org/community/forum/" "SOFA Forum")
+            "https://github.com/sofa-framework/sofa/discussions" "SOFA Support")
     endif()
     #######################
 
