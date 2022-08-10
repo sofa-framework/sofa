@@ -26,23 +26,34 @@ echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
 echo "" > "$INSTALL_DIR_BIN/plugin_list.conf"
 disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaEulerianFluid     \
-        SofaDistanceGrid      \
-        SofaImplicitField     \
-        MultiThreading        \
-        DiffusionSolver       \
-        image                 \
-        Compliant             \
-        SofaPython            \
-        Flexible              \
-        Registration          \
-        ExternalBehaviorModel \
-        ManifoldTopologies    \
-        ManualMapping         \
-        THMPGSpatialHashing   \
-        SofaCarving           \
-        RigidScale            \
-        LMConstraint          \
+        ArticulatedSystemPlugin   \
+        CollisionOBBCapsule       \
+        Compliant                 \
+        DiffusionSolver           \
+        ExternalBehaviorModel     \
+        Flexible                  \
+        Geomagic                  \
+        image                     \
+        InvertibleFVM             \
+        LMConstraint              \
+        ManifoldTopologies        \
+        ManualMapping             \
+        MultiThreading            \
+        OptiTrackNatNet           \
+        PluginExample             \
+        Registration              \
+        RigidScale                \
+        SensableEmulation         \
+        SofaAssimp                \
+        SofaCUDA                  \
+        SofaCarving               \
+        SofaDistanceGrid          \
+        SofaEulerianFluid         \
+        SofaImplicitField         \
+        SofaPython                \
+        SofaSimpleGUI             \
+        SofaSphFluid              \
+        THMPGSpatialHashing       \
     ; do
     disabled_plugins=$disabled_plugins'\|'$plugin
 done
