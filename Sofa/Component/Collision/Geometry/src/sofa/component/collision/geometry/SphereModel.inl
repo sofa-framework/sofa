@@ -61,6 +61,7 @@ void SphereCollisionModel<DataTypes>::resize(Size size)
 {
     this->core::CollisionModel::resize(size);
 
+    // TODO should this be a WriteAccessor<PointData>? r then has no attribute size()
     helper::WriteAccessor< Data<VecReal> > r = radius;
 
     if (r.size() < size)

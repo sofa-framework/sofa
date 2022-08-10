@@ -26,6 +26,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/TopologyData.h>
+
 
 namespace sofa::component::collision::geometry
 {
@@ -89,6 +91,7 @@ public:
 
     typedef typename DataTypes::CPos Coord;
     //typedef typename DataTypes::Coord Coord;
+    typedef typename sofa::core::topology::PointData<sofa::type::vector<Real>> PointData;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
     typedef TSphere<DataTypes> Element;
@@ -160,7 +163,7 @@ public:
     }
 
     //TODO(dmarchal) guideline de sofa.
-    Data< VecReal > radius; ///< Radius of each sphere
+    PointData radius; ///< Radius of each sphere
     Data< SReal > defaultRadius; ///< Default Radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
