@@ -266,9 +266,13 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
 endif()
 
-file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
+file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"
+    "This folder will be automatically scanned by the Plugin Manager.\n"
+    "For all info about plugins, see https://www.sofa-framework.org/community/doc/using-sofa/lexicography/#plugin")
 install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
-file(WRITE "${CMAKE_BINARY_DIR}/collections/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
+file(WRITE "${CMAKE_BINARY_DIR}/collections/README.txt"
+    "This folder will be automatically scanned by the Plugin Manager.\n"
+    "For all info about collections, see https://www.sofa-framework.org/community/doc/using-sofa/lexicography/#collection")
 install(DIRECTORY ${CMAKE_BINARY_DIR}/collections/ DESTINATION collections COMPONENT resources)
 
 sofa_install_git_infos(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
