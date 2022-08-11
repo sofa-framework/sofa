@@ -132,19 +132,6 @@ public:
         return *this;
     }
 
-    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
-    int aspectID() const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
-    ExecParams& setAspectID(int) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
-    static int currentAspect() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT("You can safely remove this function from your code.")
-    static int currentAspect(const core::ExecParams*) = delete;
-
 };
 
 } // namespace core

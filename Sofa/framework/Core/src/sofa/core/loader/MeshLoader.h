@@ -231,61 +231,6 @@ protected:
 
     /// Temporary method that will copy all buffers from a io::Mesh into the corresponding Data. Will be removed as soon as work on unifying meshloader is finished
     void copyMeshToData(helper::io::Mesh& _mesh);
-
-    /// Deprecation with pointer versions
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPosition(type::vector< sofa::type::Vec3 >* pPositions, const sofa::type::Vec3& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPosition(type::vector<sofa::type::Vec3 >* pPositions, SReal x, SReal y, SReal z) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPolyline(type::vector<Polyline>* pPolylines, Polyline p) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addEdge(type::vector<Edge>* pEdges, const Edge& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addEdge(type::vector<Edge>* pEdges, Topology::EdgeID p0, Topology::EdgeID p1) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addTriangle(type::vector<Triangle>* pTriangles, const Triangle& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addTriangle(type::vector<Triangle>* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addQuad(type::vector<Quad>* pQuads, const Quad& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addQuad(type::vector<Quad>* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPolygon(type::vector< type::vector <Topology::ElemID> >* pPolygons, const type::vector<Topology::ElemID>& p) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, const Tetrahedron& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addTetrahedron(type::vector<Tetrahedron>* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addHexahedron(type::vector< Hexahedron>* pHexahedra, const Hexahedron& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addHexahedron(type::vector< Hexahedron>* pHexahedra,
-        Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
-        Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPentahedron(type::vector< Pentahedron>* pPentahedra, const Pentahedron& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPentahedron(type::vector< Pentahedron>* pPentahedra,
-        Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
-        Topology::ElemID p4, Topology::ElemID p5) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPyramid(type::vector< Pyramid>* pPyramids, const Pyramid& p) = delete;
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPyramid(type::vector< Pyramid>* pPyramids,
-        Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void copyMeshToData(helper::io::Mesh* _mesh) = delete;
 };
 
 } // namespace sofa::core::loader
