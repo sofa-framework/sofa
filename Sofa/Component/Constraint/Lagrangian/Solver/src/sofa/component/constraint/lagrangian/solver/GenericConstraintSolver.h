@@ -29,6 +29,7 @@
 #include <sofa/helper/map.h>
 
 #include <sofa/simulation/CpuTask.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -40,7 +41,7 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem :
 public:
     sofa::linearalgebra::FullVector<SReal> _d;
     std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
-    bool scaleTolerance, allVerified, unbuilt;
+    bool scaleTolerance, allVerified;
     SReal sor;
     SReal sceneTime;
     SReal currentError;
@@ -57,7 +58,7 @@ public:
     std::vector< ConstraintCorrections > cclist_elems;
 
 
-    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), unbuilt(false), sor(1.0)
+    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
       , sceneTime(0.0), currentError(0.0), currentIterations(0)
       , change_sequence(false) {}
     ~GenericConstraintProblem() override { freeConstraintResolutions(); }
@@ -66,11 +67,27 @@ public:
     void freeConstraintResolutions();
     void solveTimed(SReal tol, int maxIt, SReal timeout) override;
 
+    /// Projective Gauss Seidel method building the compliance matrix
     void gaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
+    /// Projective Gauss Seidel unbuilt method
     void unbuiltGaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
+    /// Method from:
+    /// A nonsmooth nonlinear conjugate gradient method for interactive contact force problems
+    /// - 2010, Silcowitz, Morten and Niebe, Sarah and Erleben, Kenny
+    void NNCG(GenericConstraintSolver* solver = nullptr, int iterationNewton = 1);
+
+    void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const;
+    void result_output(SReal *force, SReal error, int iterCount, bool convergence);
 
     int getNumConstraints();
     int getNumConstraintGroups();
+
+protected:
+    sofa::linearalgebra::FullVector<SReal> m_lam;
+    sofa::linearalgebra::FullVector<SReal> m_deltaF;
+    sofa::linearalgebra::FullVector<SReal> m_deltaF_new;
+    sofa::linearalgebra::FullVector<SReal> m_p;
+
 };
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintSolver : public ConstraintSolverImpl
@@ -90,6 +107,8 @@ public:
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    void buildSystem_matrixFree(unsigned int numConstraints);
+    void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
     void rebuildSystem(SReal massFactor, SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
@@ -98,13 +117,14 @@ public:
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
+    Data< sofa::helper::OptionsGroup > d_resolutionMethod; ///< Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\"
+
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<SReal> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<SReal> sor; ///< Successive Over Relaxation parameter (0-2)
     Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
-    Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
-    Data<bool> unbuilt; ///< Compliance is not fully built
+    Data<int> d_newtonIterations; ///< Maximum iteration number of Newton (for the NNCG solver only)
     Data<bool> d_multithreading; ///< Compliances built concurrently
     Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > graphErrors; ///< Sum of the constraints' errors at each iteration
@@ -119,6 +139,20 @@ public:
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
+
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data schemeCorrection was unused therefore removed.")
+    DeprecatedAndRemoved schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3053)", "v23.06", "Make the \"unbuild\" option as an option group \"resolutionMethod\".")
+    Data<bool> unbuilt; ///< Compliance is not fully built  (for the PGS solver only)
+    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3053)", "v23.06", "Make the \"unbuild\" option as an option group \"resolutionMethod\".")
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit1::parse(arg);
+        if (arg->getAttribute("unbuilt"))
+        {
+            msg_warning() << "String data \"unbuilt\" is now an option group \"resolutionMethod\" (PR #3053)" << msgendl << "Use: resolutionMethod=\"UnbuildGaussSeidel\"";
+        }
+    }
 
     sofa::core::MultiVecDerivId getLambda() const override;
     sofa::core::MultiVecDerivId getDx() const override;
