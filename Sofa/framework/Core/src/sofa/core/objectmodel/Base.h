@@ -275,6 +275,16 @@ public:
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
+    BaseData::BaseInitData initData(::sofa::core::objectmodel::Data<T>* field, const char* name, const char* help,
+    ::sofa::core::objectmodel::BaseData::DataFlags dataflags)
+    {
+        ::sofa::core::objectmodel::BaseData::BaseInitData res;
+        this->initData0(field, res, name, help, dataflags);
+        return res;
+    }
+
+    /// Helper method used to initialize a data field containing a value of type T
+    template<class T>
     BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
         BaseData::BaseInitData res;
