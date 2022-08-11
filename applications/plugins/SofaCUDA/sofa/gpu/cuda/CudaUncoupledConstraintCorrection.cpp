@@ -19,23 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaPenalityContactForceField.inl"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.h>
+#include <sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.inl>
+#include <sofa/core/behavior/ConstraintCorrection.inl>
 
-namespace sofa::component::collision::response::contact
+namespace sofa::component::constraint::lagrangian::correction
 {
 using namespace sofa::gpu::cuda;
-template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3f1Types>;
 
-} // sofa::component::collision::response::contact
+template class SOFA_GPU_CUDA_API UncoupledConstraintCorrection< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API UncoupledConstraintCorrection< CudaVec3f1Types >;
+
+} // namespace sofa::component::constraint::lagrangian::correction
+
 namespace sofa::gpu::cuda
 {
+using namespace sofa::component::constraint::lagrangian::correction;
 
-int PenalityContactForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3fTypes> >()
-        .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3f1Types> >()
-        ;
+const int CudaUncoupledConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
+.add< UncoupledConstraintCorrection< CudaVec3fTypes > >()
+.add< UncoupledConstraintCorrection< CudaVec3f1Types > >()
+;
 
 } // namespace sofa::gpu::cuda
