@@ -69,15 +69,19 @@ void EdgeSetTopologyContainer::init()
 
     PointSetTopologyContainer::init();
 
-    // only init if edges are present at init.
-    if (!m_edge.empty())
-        initTopology();
+    // will init cross element buffers and number of points
+    initTopology();
 }
 
 void EdgeSetTopologyContainer::initTopology()
 {
-    // force computation of neighborhood elements
-    createEdgesAroundVertexArray();
+    PointSetTopologyContainer::initTopology();
+
+    if (!d_edge.getValue().empty())
+    {
+        // force computation of neighborhood elements
+        createEdgesAroundVertexArray();
+    }
 }
 
 void EdgeSetTopologyContainer::addEdge(Index a, Index b)

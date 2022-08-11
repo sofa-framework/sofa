@@ -73,6 +73,14 @@ Size PointSetTopologyContainer::getNumberOfElements() const
     return nbPoints.getValue();
 }
 
+void PointSetTopologyContainer::initTopology()
+{
+    std::size_t _nbPoints = nbPoints.getValue();
+    std::size_t _nbInitPoints = d_initPoints.getValue().size();
+    if (_nbPoints != _nbInitPoints) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(_nbInitPoints);
+}
+
 bool PointSetTopologyContainer::checkTopology() const
 {
     return true;
