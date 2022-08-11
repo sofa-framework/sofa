@@ -6,7 +6,6 @@ set_property(CACHE PLUGIN_IMAGE_COMPILE_SET PROPERTY STRINGS none standard full)
 
 find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Component.Visual REQUIRED)
-#find_package(SofaGeneralVisual REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
 
 sofa_find_package(Sofa.GL QUIET)
