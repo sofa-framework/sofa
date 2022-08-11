@@ -106,4 +106,5 @@ sofa_create_package_with_targets(
     PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_INSTALL_DIR "SofaComponentAll"
+    RELOCATABLE "collections"
     )
