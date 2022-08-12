@@ -147,7 +147,12 @@ macro(sofa_add_generic directory name type)
                 set(target ${aliased_target})
             endif()
 
-            set_target_properties(${target} PROPERTIES FOLDER ${type}s) # IDE folder
+            set(ide_foldername "${type}s")
+            if(${type} MATCHES "library")
+                set(ide_foldername "libraries")
+            endif()
+            
+            set_target_properties(${target} PROPERTIES FOLDER ${ide_foldername}) # IDE folder
             set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
 
             if("${type_lower}" STREQUAL "module" OR "${type_lower}" STREQUAL "plugin")
