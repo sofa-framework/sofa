@@ -20,13 +20,15 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <VisualStyle displayFlags="showForceFields" />
+    <DefaultVisualManagerLoop />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>
+    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" resolutionMethod="UnbuiltGaussSeidel" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
     <DefaultContactManager name="Response" response="FrictionContactConstraint" />
+
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />
         <Node name="Visu">

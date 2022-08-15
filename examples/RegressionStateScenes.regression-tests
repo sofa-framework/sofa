@@ -13,7 +13,9 @@ Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
 
 ### Components scenes ###
 Components/collision/RuleBasedContactManager.scn 100 1e-4 0 1
-Components/constraint/BilateralInteractionConstraint.scn 100 1e-4 0 1
+Components/constraint/BilateralInteractionConstraint_NNCG.scn 100 1e-4 0 1
+Components/constraint/BilateralInteractionConstraint_PGS.scn 100 1e-4 0 1
+Components/constraint/BilateralInteractionConstraint_UGS.scn 100 1e-4 0 1
 Components/constraint/FixedConstraint.scn 100 1e-4 0 1
 Components/constraint/FrictionContact.scn 100 1e-4 0 1
 Components/forcefield/BeamFEMForceField.scn 100 1e-4 0 1

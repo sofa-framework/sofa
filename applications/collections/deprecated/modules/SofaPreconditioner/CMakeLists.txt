@@ -26,5 +26,5 @@ sofa_create_package_with_targets(
     TARGETS SofaPreconditioner AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "SofaPreconditioner"
-    RELOCATABLE "plugins"
+    RELOCATABLE "collections"
     )

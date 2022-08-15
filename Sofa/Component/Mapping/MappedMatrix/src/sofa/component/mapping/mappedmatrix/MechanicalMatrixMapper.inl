@@ -103,6 +103,7 @@ MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
       d_skipJ2tKJ2(initData(&d_skipJ2tKJ2,false,"skipJ2tKJ2","Boolean to choose whether to skip J2tKJ2 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used")),
       d_fastMatrixProduct(initData(&d_fastMatrixProduct, true, "fastMatrixProduct", "If true, an accelerated method to compute matrix products based on the pre-computation of the matrices intersection is used. Regular matrix product otherwise.")),
       d_parallelTasks(initData(&d_parallelTasks, true, "parallelTasks", "Execute some tasks in parallel for better performances")),
+      d_forceFieldAndMass(initData(&d_forceFieldAndMass, false, "forceFieldAndMass", "If true, allows forceField and mass to be in the same component.")),
       l_mechanicalState(initLink("mechanicalState","The mechanicalState with which the component will work on (filled automatically during init)")),
       l_mappedMass(initLink("mass","mass with which the component will work on (filled automatically during init)")),
       l_forceField(initLink("forceField","The ForceField(s) attached to this node (filled automatically during init)"))
@@ -200,7 +201,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation:
     msg_info() << "parsing node:";
     for(BaseForceField* forcefield : node->forceField)
     {
-        if (forcefield->name.getValue() != massName)
+        if (forcefield->name.getValue() != massName || d_forceFieldAndMass.getValue())
         {
             bool found = true;
             if (!empty)
