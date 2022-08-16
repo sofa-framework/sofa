@@ -62,7 +62,7 @@ void GenericConstraintCorrection::bwdInit()
 {
     BaseContext* context = this->getContext();
 
-    // Find linear solvers
+    // Find linear solver
     if (l_linearSolver.empty())
     {
         msg_info() << "Link \"linearSolver\" to the desired linear solver should be set to ensure right behavior." << msgendl

@@ -94,7 +94,7 @@ public:
     /// @{
 
     Data< bool > wire_optimization; ///< constraints are reordered along a wire-like topology (from tip to base)
-    SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solvers used to compute the compliance matrix, requiring the inverse of the linear system matrices
+    SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
     SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
 
 
