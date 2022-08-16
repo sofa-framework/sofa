@@ -96,8 +96,6 @@ public:
 
 private :
 
-    core::behavior::LinearSolver* m_linearSolver = nullptr;
-
     int updateSystemSize,currentSystemSize;
 
     int indexwork;

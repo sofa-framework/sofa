@@ -80,7 +80,6 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
             else
             {
                 msg_info() << "Preconditioner path used: '" << l_preconditioner.getLinkedPath() << "'";
-                m_preconditioner = l_preconditioner.get();
             }
         }
     }
@@ -99,11 +98,11 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
 
     sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix");
 
-    if (m_preconditioner==nullptr) return;
+    if (l_preconditioner.get()==nullptr) return;
 
     if (first) //We initialize all the preconditioners for the first step
     {
-        m_preconditioner->setSystemMBKMatrix(mparams);
+        l_preconditioner.get()->setSystemMBKMatrix(mparams);
         first = false;
         next_refresh_step = 1;
     }
@@ -116,7 +115,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
         {
             if (next_refresh_step>=f_update_step.getValue())
             {
-                m_preconditioner->setSystemMBKMatrix(mparams);
+                l_preconditioner.get()->setSystemMBKMatrix(mparams);
                 next_refresh_step=1;
             }
             else
@@ -126,7 +125,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
         }
     }
 
-    m_preconditioner->updateSystemMatrix();
+    l_preconditioner.get()->updateSystemMatrix();
 }
 
 template<>
@@ -172,7 +171,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     Vector& w = *vtmp.createTempVector();
     Vector& s = *vtmp.createTempVector();
 
-    bool apply_precond = m_preconditioner!=nullptr && f_use_precond.getValue();
+    bool apply_precond = l_preconditioner.get()!=nullptr && f_use_precond.getValue();
 
     double b_norm = b.dot(b);
     double tol = f_tolerance.getValue() * b_norm;
@@ -183,9 +182,9 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     if (apply_precond)
     {
         helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
-        m_preconditioner->setSystemLHVector(w);
-        m_preconditioner->setSystemRHVector(r);
-        m_preconditioner->solveSystem();
+        l_preconditioner.get()->setSystemLHVector(w);
+        l_preconditioner.get()->setSystemRHVector(r);
+        l_preconditioner.get()->solveSystem();
     }
     else
     {
@@ -208,9 +207,9 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         if (apply_precond)
         {
             helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
-            m_preconditioner->setSystemLHVector(s);
-            m_preconditioner->setSystemRHVector(r);
-            m_preconditioner->solveSystem();
+            l_preconditioner.get()->setSystemLHVector(s);
+            l_preconditioner.get()->setSystemRHVector(r);
+            l_preconditioner.get()->solveSystem();
         }
         else
         {

@@ -72,7 +72,6 @@ public:
 
 private :
     unsigned next_refresh_step;
-    sofa::core::behavior::LinearSolver* m_preconditioner = nullptr;
     bool first;
     int newton_iter;
 
