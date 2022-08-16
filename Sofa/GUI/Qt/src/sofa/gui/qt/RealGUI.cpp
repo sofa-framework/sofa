@@ -246,7 +246,7 @@ void RealGUI::setupSurfaceFormat()
 
         if (mArgumentParser)
         {
-            unsigned int viewerMSAANbSampling;
+            unsigned int viewerMSAANbSampling = 0;
             mArgumentParser->getValueFromKey("msaa", viewerMSAANbSampling);
             if (viewerMSAANbSampling > 1)
             {
