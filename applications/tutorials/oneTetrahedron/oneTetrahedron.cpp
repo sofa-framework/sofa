@@ -34,30 +34,30 @@ using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
 
-#include <SofaComponentAll/initSofaComponentAll.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/component/init.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/graph/init.h>
 
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-using CGLinearSolver = sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
-#include <SofaBaseMechanics/BarycentricMapping.h>
-using BarycentricMapping3 = sofa::component::mapping::BarycentricMapping<Vec3Types, Vec3Types>;
-#include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types>;
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+using CGLinearSolver = sofa::component::linearsolver::iterative::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector>;
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
+using BarycentricMapping3 = sofa::component::mapping::linear::BarycentricMapping<Vec3Types, Vec3Types>;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<Vec3Types>;
+#include <sofa/component/mass/UniformMass.h>
 using UniformMass3 = sofa::component::mass::UniformMass<Vec3Types>;
-#include <SofaBaseTopology/MeshTopology.h>
-using sofa::component::topology::MeshTopology;
-#include <SofaBaseVisual/VisualStyle.h>
-using sofa::component::visualmodel::VisualStyle;
-#include <SofaBoundaryCondition/FixedConstraint.h>
-using FixedConstraint3 = sofa::component::projectiveconstraintset::FixedConstraint<Vec3Types>;
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-using sofa::component::odesolver::EulerImplicitSolver;
-#include <SofaOpenglVisual/OglModel.h>
-using sofa::component::visualmodel::OglModel;
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
-using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+using sofa::component::topology::container::constant::MeshTopology;
+#include <sofa/component/visual/VisualStyle.h>
+using sofa::component::visual::VisualStyle;
+#include <sofa/component/constraint/projective/FixedConstraint.h>
+using FixedConstraint3 = sofa::component::constraint::projective::FixedConstraint<Vec3Types>;
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+using sofa::component::odesolver::backward::EulerImplicitSolver;
+#include <sofa/gl/component/rendering3d/OglModel.h>
+using sofa::gl::component::rendering3d::OglModel;
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
+using TetrahedronFEMForceField3 = sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<Vec3Types>;
 
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::New;
@@ -78,8 +78,8 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
 
-    //force load SofaComponentAll
-    sofa::component::initSofaComponentAll();
+    //force load all components
+    sofa::component::init();
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
