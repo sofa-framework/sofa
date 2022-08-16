@@ -93,7 +93,6 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
         else
         {
             msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
-            m_linearSolver = l_linearSolver.get();
         }
     }
 
@@ -118,7 +117,6 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     else
     {
         msg_info() << "ODESolver path used: '" << l_ODESolver.getLinkedPath() << "'";
-        m_ODESolver = l_ODESolver.get();
     }
 
 
@@ -178,12 +176,12 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     {
     case core::ConstraintParams::POS_AND_VEL :
     case core::ConstraintParams::POS :
-        factor = m_ODESolver->getPositionIntegrationFactor();
+        factor = l_ODESolver.get()->getPositionIntegrationFactor();
         break;
 
     case core::ConstraintParams::ACC :
     case core::ConstraintParams::VEL :
-        factor = m_ODESolver->getVelocityIntegrationFactor();
+        factor = l_ODESolver.get()->getVelocityIntegrationFactor();
         break;
 
     default :
@@ -194,15 +192,15 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     this->computeJ(W, cparams->readJ(this->mstate)->getValue());
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    m_linearSolver->setSystemLHVector(sofa::core::MultiVecDerivId::null());
-    m_linearSolver->addJMInvJt(W, &J, factor);
+    l_linearSolver.get()->setSystemLHVector(sofa::core::MultiVecDerivId::null());
+    l_linearSolver.get()->addJMInvJt(W, &J, factor);
 }
 
 
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(double massFactor, double forceFactor)
 {
-    m_linearSolver->rebuildSystem(massFactor, forceFactor);
+    l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
 
 template<class DataTypes>
@@ -211,7 +209,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalge
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    const double factor = m_ODESolver->getPositionIntegrationFactor();
+    const double factor = l_ODESolver.get()->getPositionIntegrationFactor();
 
     const unsigned int numDOFs = mstate->getSize();
     const unsigned int N = Deriv::size();
@@ -227,17 +225,17 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalge
     Minv->resize(numDOFReals,numDOFReals);
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    m_linearSolver->addJMInvJt(Minv, &J, factor);
+    l_linearSolver.get()->addJMInvJt(Minv, &J, factor);
 }
 
 template< class DataTypes >
 void LinearSolverConstraintCorrection< DataTypes >::computeMotionCorrection(const core::ConstraintParams* /*cparams*/, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
-    if (mstate && m_linearSolver)
+    if (mstate && l_linearSolver.get())
     {
-        m_linearSolver->setSystemRHVector(f);
-        m_linearSolver->setSystemLHVector(dx);
-        m_linearSolver->solveSystem();
+        l_linearSolver.get()->setSystemRHVector(f);
+        l_linearSolver.get()->setSystemLHVector(dx);
+        l_linearSolver.get()->solveSystem();
     }
 }
 
@@ -256,8 +254,8 @@ void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const 
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
-        const double positionFactor = m_ODESolver->getPositionIntegrationFactor();
-        const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
+        const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
+        const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
@@ -283,7 +281,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(cons
         const VecDeriv& correction = correction_d.getValue();
         const VecCoord& x_free = cparams->readX(mstate)->getValue();
 
-        const double positionFactor = m_ODESolver->getPositionIntegrationFactor();
+        const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
         for (unsigned int i = 0; i < numDOFs; i++)
         {
             const Deriv dxi = correction[i] * positionFactor;
@@ -307,7 +305,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
         const VecDeriv& correction = correction_d.getValue();
         const VecDeriv& v_free = cparams->readV(mstate)->getValue();
 
-        const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
+        const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
@@ -361,17 +359,17 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
             }
         }
     }
-    m_linearSolver->setSystemRHVector(forceID);
-    m_linearSolver->setSystemLHVector(dxID);
-    m_linearSolver->solveSystem();
+    l_linearSolver.get()->setSystemRHVector(forceID);
+    l_linearSolver.get()->setSystemLHVector(dxID);
+    l_linearSolver.get()->solveSystem();
 
     //TODO: tell the solver not to recompute the matrix
 
     // use the OdeSolver to get the position integration factor
-    const double positionFactor = m_ODESolver->getPositionIntegrationFactor();
+    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
 
     // use the OdeSolver to get the position integration factor
-    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
+    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
     Data<VecCoord>& xData     = *mstate->write(core::VecCoordId::position());
     Data<VecDeriv>& vData     = *mstate->write(core::VecDerivId::velocity());
@@ -531,13 +529,13 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::VecDerivId::dx();
 
-    m_linearSolver->setSystemRHVector(forceID);
-    m_linearSolver->setSystemLHVector(dxID);
+    l_linearSolver.get()->setSystemRHVector(forceID);
+    l_linearSolver.get()->setSystemLHVector(dxID);
 
 
-    systemMatrix_buf   = m_linearSolver->getSystemBaseMatrix();
-    systemRHVector_buf = m_linearSolver->getSystemRHBaseVector();
-    systemLHVector_buf = m_linearSolver->getSystemLHBaseVector();
+    systemMatrix_buf   = l_linearSolver.get()->getSystemBaseMatrix();
+    systemRHVector_buf = l_linearSolver.get()->getSystemRHBaseVector();
+    systemLHVector_buf = l_linearSolver.get()->getSystemLHBaseVector();
 
     const unsigned int derivDim = Deriv::size();
     const unsigned int systemSize = mstate->getSize() * derivDim;
@@ -551,7 +549,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     }
 
     // Init the internal data of the solver for partial solving
-    m_linearSolver->init_partial_solve();
+    l_linearSolver.get()->init_partial_solve();
 
 
     ///////// new : precalcul des liste d'indice ///////
@@ -582,11 +580,11 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
     last_disp = begin;
 
 
-    m_linearSolver->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
+    l_linearSolver.get()->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
 
     _new_force = false;
 
-    const auto positionIntegrationFactor = m_ODESolver->getPositionIntegrationFactor();
+    const auto positionIntegrationFactor = l_ODESolver.get()->getPositionIntegrationFactor();
     // TODO => optimisation => for each bloc store J[bloc,dof]
     for (int i = begin; i <= end; i++)
     {
@@ -666,7 +664,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
         return ;
 
     // use the OdeSolver to get the position integration factor
-    const double factor = m_ODESolver->getPositionIntegrationFactor(); //*m_ODESolver->getPositionIntegrationFactor(); // dt*dt
+    const double factor = l_ODESolver.get()->getPositionIntegrationFactor(); //*m_ODESolver->getPositionIntegrationFactor(); // dt*dt
 
     const unsigned int numDOFs = mstate->getSize();
     const unsigned int N = Deriv::size();
@@ -712,7 +710,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     }
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    m_linearSolver->addJMInvJt(W, &J, factor);
+    l_linearSolver.get()->addJMInvJt(W, &J, factor);
 
     // construction of  Vec_I_list_dof : vector containing, for each constraint block, the list of dof concerned
 

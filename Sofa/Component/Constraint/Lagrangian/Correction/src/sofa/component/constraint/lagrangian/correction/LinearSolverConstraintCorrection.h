@@ -124,10 +124,6 @@ public:
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
 protected:
-
-    sofa::core::behavior::OdeSolver* m_ODESolver = nullptr;
-    sofa::core::behavior::LinearSolver* m_linearSolver = nullptr;
-
     linearalgebra::SparseMatrix<SReal> J; ///< constraint matrix
     linearalgebra::FullVector<SReal> F; ///< forces computed from the constraints
 

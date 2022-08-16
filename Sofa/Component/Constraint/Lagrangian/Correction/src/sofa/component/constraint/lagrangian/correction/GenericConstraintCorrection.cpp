@@ -87,7 +87,6 @@ void GenericConstraintCorrection::bwdInit()
         else
         {
             msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
-            m_linearSolver = l_linearSolver.get();
         }
     }
 
@@ -112,7 +111,6 @@ void GenericConstraintCorrection::bwdInit()
     else
     {
         msg_info() << "ODESolver path used: '" << l_ODESolver.getLinkedPath() << "'";
-        m_ODESolver = l_ODESolver.get();
     }
 
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
@@ -140,12 +138,12 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 
 void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
 {    
-    m_linearSolver->rebuildSystem(massFactor, forceFactor);
+    l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
 
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
     const double complianceFactor = d_complianceFactor.getValue();
 
     // use the OdeSolver to get the position integration factor
@@ -155,12 +153,12 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     {
         case ConstraintParams::POS_AND_VEL :
         case ConstraintParams::POS :
-            factor = m_ODESolver->getPositionIntegrationFactor();
+            factor = l_ODESolver.get()->getPositionIntegrationFactor();
             break;
 
         case ConstraintParams::ACC :
         case ConstraintParams::VEL :
-            factor = m_ODESolver->getVelocityIntegrationFactor();
+            factor = l_ODESolver.get()->getVelocityIntegrationFactor();
             break;
 
         default :
@@ -169,12 +167,12 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     factor *= complianceFactor;
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    m_linearSolver->buildComplianceMatrix(cparams, W, factor);
+    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor);
 }
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
 {
-    m_linearSolver->applyConstraintForce(cparams, dx, lambda);
+    l_linearSolver.get()->applyConstraintForce(cparams, dx, lambda);
 }
 
 void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* cparams,
@@ -185,8 +183,8 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         double positionFactor,
                                                         double velocityFactor)
 {
-    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolver->getSystemMultiMatrixAccessor());
-    m_linearSolver->getContext()->executeVisitor(&v);
+    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, l_linearSolver.get()->getSystemMultiMatrixAccessor());
+    l_linearSolver.get()->getContext()->executeVisitor(&v);
 }
 
 void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams * cparams,
@@ -195,11 +193,11 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams *
                                                         MultiVecDerivId dxId,
                                                         ConstMultiVecDerivId correction)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
     const double complianceFactor = d_complianceFactor.getValue();
 
-    const double positionFactor = m_ODESolver->getPositionIntegrationFactor() * complianceFactor;
-    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor() * complianceFactor;
+    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
+    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor() * complianceFactor;
 
     applyMotionCorrection(cparams, xId, vId, dxId, correction, positionFactor, velocityFactor);
 }
@@ -209,10 +207,10 @@ void GenericConstraintCorrection::applyPositionCorrection(const ConstraintParams
                                                           MultiVecDerivId dxId,
                                                           ConstMultiVecDerivId correctionId)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
 
     const double complianceFactor = d_complianceFactor.getValue();
-    const double positionFactor = m_ODESolver->getPositionIntegrationFactor() * complianceFactor;
+    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
 
     applyMotionCorrection(cparams, xId, VecDerivId::null(), dxId, correctionId, positionFactor, 0);
 }
@@ -222,16 +220,16 @@ void GenericConstraintCorrection::applyVelocityCorrection(const ConstraintParams
                                                           MultiVecDerivId dvId,
                                                           ConstMultiVecDerivId correctionId)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
 
-    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
+    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
     applyMotionCorrection(cparams, VecCoordId::null(), vId, dvId, correctionId, 0, velocityFactor);
 }
 
 void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
 
     ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
 
@@ -242,13 +240,13 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
 {
-    m_linearSolver->computeResidual(params, lambda);
+    l_linearSolver.get()->computeResidual(params, lambda);
 }
 
 
 void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {
-    if (!m_ODESolver)
+    if (!l_ODESolver.get())
         return;
 
     ConstraintParams cparams(*sofa::core::execparams::defaultInstance());

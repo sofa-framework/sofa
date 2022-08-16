@@ -92,9 +92,6 @@ protected:
 
     void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
                                core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);
-
-    sofa::core::behavior::OdeSolver* m_ODESolver = nullptr;
-    sofa::core::behavior::LinearSolver* m_linearSolver = nullptr;
 };
 
 } //namespace sofa::component::constraint::lagrangian::correction
