@@ -40,7 +40,7 @@
 using std::endl;
 using std::cout;
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 //#include <SofaSimpleGUI/SofaGLScene.h>
 #include <SofaSimpleGUI/SofaScene.h>
 #include <SofaSimpleGUI/SofaGL.h>

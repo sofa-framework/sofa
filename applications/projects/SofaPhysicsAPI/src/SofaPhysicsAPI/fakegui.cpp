@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "fakegui.h"
-#include <sofa/gui/BaseGUI.h>
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/BaseGUI.h>
+#include <sofa/gui/common/GUIManager.h>
 
 
-static sofa::gui::BaseGUI* CreateFakeGUI(const char* /*name*/, sofa::simulation::Node::SPtr /*groot*/, const char* /*filename*/)
+static sofa::gui::common::BaseGUI* CreateFakeGUI(const char* /*name*/, sofa::simulation::Node::SPtr /*groot*/, const char* /*filename*/)
 {
     return new FakeGUI();
 }
@@ -32,9 +32,9 @@ static sofa::gui::BaseGUI* CreateFakeGUI(const char* /*name*/, sofa::simulation:
 void FakeGUI::Create()
 {
     // sofa FakeGUI
-    sofa::gui::GUIManager::RegisterGUI("fake", CreateFakeGUI, NULL);
-    sofa::gui::GUIManager::Init(nullptr,"fake");
-    sofa::gui::GUIManager::createGUI(NULL,NULL);
+    sofa::gui::common::GUIManager::RegisterGUI("fake", CreateFakeGUI, NULL);
+    sofa::gui::common::GUIManager::Init(nullptr,"fake");
+    sofa::gui::common::GUIManager::createGUI(NULL,NULL);
 }
 
 void FakeGUI::sendMessage(const std::string & msgType,const std::string & msgValue)

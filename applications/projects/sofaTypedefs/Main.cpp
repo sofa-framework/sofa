@@ -3,7 +3,7 @@
 #include <SofaMain/init.h>
 #include <sofa/type/vector.h>
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/helper/system/SetDirectory.h>
 

@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -252,9 +252,9 @@ int main(int argc, char** argv)
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
-    if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
-    if (int err=sofa::gui::GUIManager::createGUI(NULL)) return err;
-    sofa::gui::GUIManager::SetDimension(800,600);
+    if (int err = sofa::gui::common::GUIManager::Init(argv[0],"")) return err;
+    if (int err=sofa::gui::common::GUIManager::createGUI(NULL)) return err;
+    sofa::gui::common::GUIManager::SetDimension(800,600);
 
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
@@ -263,16 +263,16 @@ int main(int argc, char** argv)
     //=================================================
 
     sofa::simulation::getSimulation()->init(groot.get());
-    sofa::gui::GUIManager::SetScene(groot);
+    sofa::gui::common::GUIManager::SetScene(groot);
 
     groot->setAnimate(true);
 
     // Run the main loop
-    if (int err = sofa::gui::GUIManager::MainLoop(groot))
+    if (int err = sofa::gui::common::GUIManager::MainLoop(groot))
         return err;
 
     sofa::simulation::getSimulation()->unload(groot);
-    sofa::gui::GUIManager::closeGUI();
+    sofa::gui::common::GUIManager::closeGUI();
 
     sofa::simulation::graph::cleanup();
     return 0;
