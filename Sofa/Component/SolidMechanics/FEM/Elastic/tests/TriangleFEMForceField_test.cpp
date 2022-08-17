@@ -450,7 +450,6 @@ public:
                 
                 Real factor = triFEM->getTriangleFactor(id); // ((Real)0.5)/(ti.bx*ti.cy); -> 1/(2 * det) = 1/area                
                 Real correctiveFactorStiff = 1 / (4 * factor); // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
-                Real correctiveFactorStrainD = factor * 2; // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
 
                 for (int i = 0; i < 3; ++i)
                 {
