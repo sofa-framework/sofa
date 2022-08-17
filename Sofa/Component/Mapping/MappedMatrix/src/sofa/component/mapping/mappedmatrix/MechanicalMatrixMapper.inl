@@ -276,17 +276,17 @@ void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<d
     /// Structure complying with the expected interface of SparseMatrix::setFromTriplets
     struct IndexedBlocProxy
     {
-        explicit IndexedBlocProxy(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it) : m_iterator(it) {}
+        explicit IndexedBlocProxy(const typename CompressedRowSparseMatrix<T>::VecIndexedBlock::const_iterator& it) : m_iterator(it) {}
         T value() const { return m_iterator->value; }
         typename CompressedRowSparseMatrix< T >::Index row() const { return m_iterator->l; }
         typename CompressedRowSparseMatrix< T >::Index col() const { return m_iterator->c; }
 
-        typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator m_iterator;
+        typename CompressedRowSparseMatrix<T>::VecIndexedBlock::const_iterator m_iterator;
     };
     /// Iterator provided to SparseMatrix::setFromTriplets giving access to an interface similar to Eigen::Triplet
     struct IndexedBlocIterator
     {
-        explicit IndexedBlocIterator(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it)
+        explicit IndexedBlocIterator(const typename CompressedRowSparseMatrix<T>::VecIndexedBlock::const_iterator& it)
             : m_proxy(it) {}
         bool operator!=(const IndexedBlocIterator& rhs) const { return m_proxy.m_iterator != rhs.m_proxy.m_iterator; }
         IndexedBlocIterator& operator++() { ++m_proxy.m_iterator; return *this; }
