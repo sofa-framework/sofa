@@ -3,15 +3,9 @@ project(Sofa.Component.Engine LANGUAGES CXX)
 
 set(SOFACOMPONENTENGINE_SOURCE_DIR "src/sofa/component/engine")
 
-set(SOFACOMPONENTENGINE_DIRS Analyze Generate Select Transform)
-set(SOFACOMPONENTENGINE_TARGETS)
-foreach(engine_dir ${SOFACOMPONENTENGINE_DIRS})
-    sofa_add_subdirectory(module ${engine_dir} ${PROJECT_NAME}.${engine_dir} ON)
-    if(TARGET ${PROJECT_NAME}.${engine_dir})
-        list(APPEND SOFACOMPONENTENGINE_TARGETS ${PROJECT_NAME}.${engine_dir})
-    endif()
-endforeach()
-
+sofa_add_subdirectory_modules(SOFACOMPONENTENGINE_TARGETS
+    DIRECTORIES Analyze Generate Select Transform
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTENGINE_SOURCE_DIR}/config.h.in

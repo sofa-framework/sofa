@@ -3,15 +3,9 @@ project(Sofa.Component.Constraint LANGUAGES CXX)
 
 set(SOFACOMPONENTCONSTRAINT_SOURCE_DIR "src/sofa/component/constraint")
 
-set(SOFACOMPONENTCONSTRAINT_DIRS Lagrangian Projective)
-set(SOFACOMPONENTCONSTRAINT_TARGETS)
-foreach(constraint_dir ${SOFACOMPONENTCONSTRAINT_DIRS})
-    sofa_add_subdirectory(module ${constraint_dir} ${PROJECT_NAME}.${constraint_dir} ON)
-    if(TARGET ${PROJECT_NAME}.${constraint_dir})
-        list(APPEND SOFACOMPONENTCONSTRAINT_TARGETS ${PROJECT_NAME}.${constraint_dir})
-    endif()
-endforeach()
-
+sofa_add_subdirectory_modules(SOFACOMPONENTCONSTRAINT_TARGETS
+    DIRECTORIES Lagrangian Projective
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTCONSTRAINT_SOURCE_DIR}/config.h.in

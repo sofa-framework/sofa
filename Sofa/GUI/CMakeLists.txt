@@ -3,23 +3,34 @@ project(Sofa.GUI LANGUAGES CXX)
 
 set(SOFAGUI_SOURCE_DIR "src/sofa/gui")
 
+set(SOFAGUI_TARGETS)
+set(SOFAGUI_MISSINGTARGETS)
+
 sofa_add_subdirectory(module Component ${PROJECT_NAME}.Component ON)
 if(TARGET ${PROJECT_NAME}.Component)
     list(APPEND SOFAGUI_TARGETS ${PROJECT_NAME}.Component)
+else()
+    list(APPEND SOFAGUI_MISSINGTARGETS ${PROJECT_NAME}.Component)
 endif()
 
 set(SOFAGUI_DIRS Common Batch Qt)
-set(SOFAGUI_TARGETS)
 foreach(dir ${SOFAGUI_DIRS})
     sofa_add_subdirectory(library ${dir} ${PROJECT_NAME}.${dir} ON)
     if(TARGET ${PROJECT_NAME}.${dir})
         list(APPEND SOFAGUI_TARGETS ${PROJECT_NAME}.${dir})
+    else()
+        list(APPEND SOFAGUI_MISSINGTARGETS ${PROJECT_NAME}.${dir})
     endif()
 endforeach()
 
 sofa_add_subdirectory(library HeadlessRecorder ${PROJECT_NAME}.HeadlessRecorder OFF)
 if(TARGET ${PROJECT_NAME}.HeadlessRecorder)
     list(APPEND SOFAGUI_TARGETS ${PROJECT_NAME}.HeadlessRecorder)
+endif()
+
+if(SOFAGUI_MISSINGTARGETS)
+    message("${PROJECT_NAME}: package and library will not be created because some dependencies are missing or disabled: ${SOFAGUI_MISSINGTARGETS}")
+    return()
 endif()
 
 set(HEADER_FILES
