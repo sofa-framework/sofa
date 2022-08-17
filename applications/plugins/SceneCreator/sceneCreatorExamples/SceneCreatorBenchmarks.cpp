@@ -21,10 +21,10 @@
 ******************************************************************************/
 
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 
 #include <sofa/gui/common/init.h>
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/init.h>
@@ -105,7 +105,7 @@ int main(int argc, char** argv)
 
     bool showHelp = false;
     unsigned int idExample = 0;
-    auto* argParser = new sofa::gui::ArgumentParser(argc, argv);
+    auto* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
     argParser->addArgument(
         cxxopts::value<bool>(showHelp)
         ->default_value("false")
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
         ->default_value("0"),
         "example,e",
         "Example Number to enter from (0 - 9)",
-        [](const sofa::gui::ArgumentParser* parser, const std::string& strVal)
+        [](const sofa::gui::common::ArgumentParser* parser, const std::string& strVal)
         {
             SOFA_UNUSED(strVal);
             unsigned int value = 0;
@@ -141,7 +141,7 @@ int main(int argc, char** argv)
 
     // init GUI
     sofa::gui::common::init();
-    sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::Init(argv[0]);
 
     // Create simulation tree
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
@@ -179,7 +179,7 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    sofa::gui::GUIManager::MainLoop(root);
+    sofa::gui::common::GUIManager::MainLoop(root);
 
     sofa::simulation::graph::cleanup();
 
