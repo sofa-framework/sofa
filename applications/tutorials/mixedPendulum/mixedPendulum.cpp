@@ -32,7 +32,7 @@
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 // gui
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/accessor.h>
@@ -49,6 +49,7 @@ using sofa::core::VecId;
 
 int main(int argc, char** argv)
 {
+    SOFA_UNUSED(argc);
 
     //force load all components
     sofa::component::init();
@@ -56,9 +57,9 @@ int main(int argc, char** argv)
     sofa::gui::initSofaGui();
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
-    sofa::gui::GUIManager::SetDimension(800, 600);
+    sofa::gui::common::GUIManager::SetDimension(800, 600);
 
-    sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::Init(argv[0]);
     //=========================== Build the scene
     double endPos = 1.;
     double attach = -1.;
@@ -195,16 +196,16 @@ int main(int argc, char** argv)
 
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
-    sofa::gui::GUIManager::SetDimension(800, 600);
+    sofa::gui::common::GUIManager::SetDimension(800, 600);
 
     //=========================== Init the scene
     sofa::simulation::getSimulation()->init(groot.get());
-    sofa::gui::GUIManager::SetScene(groot);
+    sofa::gui::common::GUIManager::SetScene(groot);
 
     groot->setAnimate(true);
 
     //=========================== Run the main loop
-    sofa::gui::GUIManager::MainLoop(groot);
+    sofa::gui::common::GUIManager::MainLoop(groot);
 
     if (groot != NULL)
         sofa::simulation::getSimulation()->unload(groot);
