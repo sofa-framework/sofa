@@ -2,8 +2,8 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <ShewchukPCGLinearSolver name="PCG" iterations="1000" preconditioners="preconditioner" update_step="1"/>
-    <WarpPreconditioner name="preconditioner" solverName="factorization" update_step="15"/>
+    <ShewchukPCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner" update_step="1"/>
+    <WarpPreconditioner name="preconditioner" linearSolver="@factorization" update_step="15"/>
     <AsyncSparseLDLSolver name="factorization" template="CompressedRowSparseMatrixMat3x3d"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
