@@ -119,7 +119,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec
             EXPECT_NE(std::find_if(matEntries.begin(), matEntries.end(),
                 [&col, &row](const auto& el )
                 {
-                    return col.index() == el.col() && row.index() == col.row() && col.val().front() == el.value();
+                    return col.index() == (unsigned int)el.col() && row.index() == col.row() && col.val().front() == el.value();
                 }), matEntries.end());
             ++indexEntry;
         }

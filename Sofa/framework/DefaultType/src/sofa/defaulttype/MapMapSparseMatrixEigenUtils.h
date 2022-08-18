@@ -210,7 +210,7 @@ void addMultTransposeEigen(MapMapSparseMatrix<LhsDeriv>& lhs, const Eigen::Spars
                     // check the next LhsDeriv::total_size rows for potential non zero values
                     // inside the block [k, bCol, k+LhsDeriv::total_size, bCol+RhsDeriv::total_size]
                     bool blockEmpty = true;
-                    for (int j = 0; j < LhsDeriv::total_size; ++j)
+                    for (int j = 0; j < (int)LhsDeriv::total_size; ++j)
                     {
                         typename EigenSparseMatrix::InnerIterator it(jacobianT, k+j);
                         // advance until we are either invalid or inside the block
