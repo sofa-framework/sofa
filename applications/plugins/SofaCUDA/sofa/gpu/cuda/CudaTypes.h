@@ -474,6 +474,10 @@ constexpr const char* CudaVec6fTypes::Name()
     return "CudaVec6f";
 }
 
+//=============================================================================
+// 3D Rigids
+//=============================================================================
+
 template<int N, typename real>
 class CudaRigidTypes;
 
@@ -634,6 +638,163 @@ constexpr const char* CudaRigid3fTypes::Name()
     return "CudaRigid3f";
 }
 
+//=============================================================================
+// 2D Rigids
+//=============================================================================
+
+template<typename real>
+class CudaRigidTypes<2, real>
+{
+public:
+    typedef real Real;
+    typedef typename sofa::defaulttype::StdRigidTypes<2,Real>::Vec2 Vec2;
+
+    typedef sofa::defaulttype::RigidDeriv<2,real> Deriv;
+    typedef sofa::defaulttype::RigidCoord<2,real> Coord;
+    typedef Real AngularVector;
+
+    enum { spatial_dimensions = Coord::spatial_dimensions };
+    enum { coord_total_size = Coord::total_size };
+    enum { deriv_total_size = Deriv::total_size };
+
+    typedef typename Coord::Pos CPos;
+    typedef typename Coord::Rot CRot;
+    static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
+    static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
+    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+
+    typedef typename sofa::defaulttype::StdRigidTypes<2,Real>::DPos DPos;
+    typedef real DRot;
+    static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
+    static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
+    static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
+    static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
+
+    static const char* Name();
+
+    typedef CudaVector<Coord> VecCoord;
+    typedef CudaVector<Deriv> VecDeriv;
+    typedef CudaVector<Real> VecReal;
+
+    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+
+    template<typename T>
+    static void set(Coord& c, T x, T y, T)
+    {
+        c.getCenter()[0] = (Real)x;
+        c.getCenter()[1] = (Real)y;
+    }
+
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Coord& c)
+    {
+        x = (T)c.getCenter()[0];
+        y = (T)c.getCenter()[1];
+        z = (T)0;
+    }
+
+    template<typename T>
+    static void add(Coord& c, T x, T y, T)
+    {
+        c.getCenter()[0] += (Real)x;
+        c.getCenter()[1] += (Real)y;
+    }
+
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T)
+    {
+        c.getVCenter()[0] = (Real)x;
+        c.getVCenter()[1] = (Real)y;
+    }
+
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Deriv& c)
+    {
+        x = (T)c.getVCenter()[0];
+        y = (T)c.getVCenter()[1];
+        z = (T)0;
+    }
+
+    // Set linear and angular velocities, in 6D for uniformity with 3D
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T, T vrot, T, T )
+    {
+        c.getVCenter()[0] = (Real)x;
+        c.getVCenter()[1] = (Real)y;
+        c.getVOrientation() = (Real) vrot;
+    }
+
+    template<typename T>
+    static void add(Deriv& c, T x, T y, T)
+    {
+        c.getVCenter()[0] += (Real)x;
+        c.getVCenter()[1] += (Real)y;
+    }
+
+    /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
+    static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
+    {
+        Deriv result;
+        set( result, Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)),
+                     Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)));
+        return result;
+    }
+
+    static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
+        {
+            c += ancestors[i] * coefs[i];
+        }
+
+        return c;
+    }
+
+    static Deriv interpolate(const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Deriv d;
+
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
+        {
+            d += ancestors[i] * coefs[i];
+        }
+
+        return d;
+    }
+
+    /// specialized version of the double cross product: a * ( b * c ) for the variation of torque applied to the frame due to a small rotation with constant force.
+    static Real crosscross ( const Vec2& f, const Real& dtheta, const Vec2& OP)
+    {
+        return dtheta * dot( f,OP );
+    }
+
+    /// specialized version of the double cross product: a * ( b * c ) for point acceleration
+    static Vec2 crosscross ( const Real& omega, const Real& dtheta, const Vec2& OP)
+    {
+        return OP * omega * (-dtheta);
+    }
+
+    /// create a rotation from Euler angles (only the first is used). For homogeneity with 3D.
+    static CRot rotationEuler( Real x, Real , Real ){ return CRot(x); }
+
+};
+
+typedef CudaRigidTypes<2,float> CudaRigid2fTypes;
+typedef CudaRigid2fTypes CudaRigid2Types;
+
+template<>
+inline const char* CudaRigid2fTypes::Name()
+{
+    return "CudaRigid2f";
+}
+
 
 // support for double precision
 //#define SOFA_GPU_CUDA_DOUBLE
@@ -698,6 +859,16 @@ constexpr const char* CudaRigid3dTypes::Name()
 {
     return "CudaRigid3d";
 }
+
+typedef CudaRigidTypes<2,double> CudaRigid2dTypes;
+//typedef CudaRigid2dTypes CudaRigid2Types;
+
+template<>
+inline const char* CudaRigid2dTypes::Name()
+{
+    return "CudaRigid2d";
+}
+
 #endif
 
 
