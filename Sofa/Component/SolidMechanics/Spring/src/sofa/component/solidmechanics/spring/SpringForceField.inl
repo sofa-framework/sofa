@@ -89,20 +89,6 @@ void SpringForceField<DataTypes>::reinit()
     }
 }
 
-template <class DataTypes>
-void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
-{
-    auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
-    auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
-    indices1.clear();
-    indices2.clear();
-    for (const auto& spring : sofa::helper::getReadAccessor(springs))
-    {
-        indices1.push_back(spring.m1);
-        indices2.push_back(spring.m2);
-    }
-    areSpringIndicesDirty = false;
-}
 
 template <class DataTypes>
 void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId)
@@ -165,8 +151,6 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
                 id = pntId;
             }
         }
-
-        areSpringIndicesDirty = true;
     }
 }
 
@@ -177,11 +161,6 @@ void SpringForceField<DataTypes>::init()
     if (!fileSprings.getValue().empty())
         load(fileSprings.getFullPath().c_str());
     this->Inherit::init();
-
-    initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
-    initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
-
-    updateTopologyIndicesFromSprings();
 }
 
 template <class DataTypes>
@@ -198,15 +177,6 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
                 msg_info(this) << "Removed points: [" << pointsRemoved->getArray() << "]";
                 applyRemovedPoints(pointsRemoved, mstateId);
-            });
-        indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
-            [this](const core::topology::TopologyChange*)
-            {
-                if (areSpringIndicesDirty)
-                {
-                    msg_info(this) << "Update topology indices from springs";
-                    updateTopologyIndicesFromSprings();
-                }
             });
     }
 }
@@ -480,9 +450,6 @@ void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SRea
 {
     springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
     springs.endEdit();
-
-    sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(m1);
-    sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(m2);
 }
 
 template <class DataTypes>
@@ -490,9 +457,6 @@ void SpringForceField<DataTypes>::addSpring(const Spring& spring)
 {
     springs.beginEdit()->push_back(spring);
     springs.endEdit();
-
-    sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(spring.m1);
-    sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(spring.m2);
 }
 
 template<class DataTypes>
