@@ -27,8 +27,10 @@ set(SOFACOMPONENT_DIRS
 )
 set(SOFACOMPONENT_TARGETS)
 foreach(component_dir ${SOFACOMPONENT_DIRS})
-	sofa_add_component_subdirectory(${component_dir} ${PROJECT_NAME}.${component_dir})
-	list(APPEND SOFACOMPONENT_TARGETS ${PROJECT_NAME}.${component_dir})
+    sofa_add_subdirectory(module ${component_dir} ${PROJECT_NAME}.${component_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${component_dir})
+        list(APPEND SOFACOMPONENT_TARGETS ${PROJECT_NAME}.${component_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES

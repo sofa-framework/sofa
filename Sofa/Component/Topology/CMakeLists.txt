@@ -6,8 +6,10 @@ set(SOFACOMPONENTTOPOLOGY_SOURCE_DIR "src/sofa/component/topology")
 set(SOFACOMPONENTTOPOLOGY_DIRS Container Mapping Utility)
 set(SOFACOMPONENTTOPOLOGY_TARGETS)
 foreach(topology_dir ${SOFACOMPONENTTOPOLOGY_DIRS})
-	sofa_add_component_subdirectory(${topology_dir} ${PROJECT_NAME}.${topology_dir})
-	list(APPEND SOFACOMPONENTTOPOLOGY_TARGETS ${PROJECT_NAME}.${topology_dir})
+    sofa_add_subdirectory(module ${topology_dir} ${PROJECT_NAME}.${topology_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${topology_dir})
+        list(APPEND SOFACOMPONENTTOPOLOGY_TARGETS ${PROJECT_NAME}.${topology_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES

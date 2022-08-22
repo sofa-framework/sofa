@@ -98,31 +98,6 @@ public:
 
     virtual Base* dynamicCast(Base* obj) const = 0;
     virtual bool isInstance(Base* obj) const = 0;
-
-    /// Helper method to decode the type name
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeFullName(const std::type_info& t) = delete;
-
-    /// Helper method to decode the type name to a more readable form if possible
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeTypeName(const std::type_info& t) = delete;
-
-    /// Helper method to extract the class name (removing namespaces and templates)
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeClassName(const std::type_info& t) = delete;
-
-    /// Helper method to extract the namespace (removing class name and templates)
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeNamespaceName(const std::type_info& t) = delete;
-
-    /// Helper method to extract the template name (removing namespaces and class name)
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string decodeTemplateName(const std::type_info& t) = delete;
-
-    /// Helper method to get the type name
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string defaultTypeName(const T* = nullptr) = delete;
 };
 
 class SOFA_CORE_API DeprecatedBaseClass : public BaseClass
@@ -267,32 +242,7 @@ public:
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
 { return GetClass(); }                                              \
     static const char* HeaderFileLocation() { return __FILE__; }        \
-    template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
-    initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
-    ::sofa::core::objectmodel::BaseData::DataFlags dataflags)  \
-{                                                                   \
-    ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
-    this->initData0(field, res, name, help, dataflags);             \
-    return res;                                                     \
-}                                                                   \
-    template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
-    initData(::sofa::core::objectmodel::Data<SOFA_T>* field, const char* name, const char* help,   \
-    bool isDisplayed=true, bool isReadOnly=false)              \
-{                                                                   \
-    ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
-    this->initData0(field, res, name, help,                         \
-    isDisplayed, isReadOnly);                       \
-    return res;                                                     \
-}                                                                   \
-    template<class SOFA_T> typename ::sofa::core::objectmodel::Data<SOFA_T>::InitData initData(    \
-    ::sofa::core::objectmodel::Data<SOFA_T>* field, const SOFA_T& value, const char* name,     \
-    const char* help, bool isDisplayed=true, bool isReadOnly=false) \
-{                                                                   \
-    typename ::sofa::core::objectmodel::Data<SOFA_T>::InitData res; \
-    this->initData0(field, res, value, name, help,                  \
-    isDisplayed, isReadOnly);                       \
-    return res;                                                     \
-}                                                                   \
+    using ::sofa::core::objectmodel::Base::initData;                    \
     ::sofa::core::objectmodel::BaseLink::InitLink<MyType>               \
     initLink(const char* name, const char* help)                        \
 {                                                                   \

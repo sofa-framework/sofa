@@ -6,8 +6,10 @@ set(SOFACOMPONENTLINEARSOLVER_SOURCE_DIR "src/sofa/component/linearsolver")
 set(SOFACOMPONENTLINEARSOLVER_DIRS Iterative Direct Preconditioner)
 set(SOFACOMPONENTLINEARSOLVER_TARGETS)
 foreach(linearsolver_dir ${SOFACOMPONENTLINEARSOLVER_DIRS})
-    sofa_add_component_subdirectory(${linearsolver_dir} ${PROJECT_NAME}.${linearsolver_dir})
-    list(APPEND SOFACOMPONENTLINEARSOLVER_TARGETS ${PROJECT_NAME}.${linearsolver_dir})
+    sofa_add_subdirectory(module ${linearsolver_dir} ${PROJECT_NAME}.${linearsolver_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${linearsolver_dir})
+        list(APPEND SOFACOMPONENTLINEARSOLVER_TARGETS ${PROJECT_NAME}.${linearsolver_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES

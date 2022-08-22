@@ -147,13 +147,14 @@ void TopologyHandler::addCallBack(core::topology::TopologyChangeType type, Topol
     m_callbackMap[type] = callback;
 }
 
-bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _topology)
+bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _topology, bool printLog)
 {
     m_topology = dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
     if (m_topology == nullptr)
     {
-        msg_info("TopologyHandler") << "Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        msg_info_when(printLog, "TopologyHandler") << "The " << m_prefix << " managing the TopologyData '" << m_data_name
+            << "' won't be registered because linked topology '" << _topology->getName() << "' is not dynamic. Topological changes won't be supported by this Data.";
         return false;
     }
 

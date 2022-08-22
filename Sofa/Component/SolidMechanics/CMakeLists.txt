@@ -5,8 +5,10 @@ set(SOFACOMPONENTSOLIDMECHANICS_SOURCE_DIR "src/sofa/component/solidmechanics")
 
 set(SOFACOMPONENTSOLIDMECHANICS_DIRS Spring FEM TensorMass)
 foreach(solidmechanics_dir ${SOFACOMPONENTSOLIDMECHANICS_DIRS})
-    sofa_add_component_subdirectory(${solidmechanics_dir} ${PROJECT_NAME}.${solidmechanics_dir})
-    list(APPEND SOFACOMPONENTSOLIDMECHANICS_TARGETS ${PROJECT_NAME}.${solidmechanics_dir})
+    sofa_add_subdirectory(module ${solidmechanics_dir} ${PROJECT_NAME}.${solidmechanics_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${solidmechanics_dir})
+        list(APPEND SOFACOMPONENTSOLIDMECHANICS_TARGETS ${PROJECT_NAME}.${solidmechanics_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES

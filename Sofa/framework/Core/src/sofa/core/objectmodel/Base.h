@@ -275,6 +275,16 @@ public:
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
+    BaseData::BaseInitData initData(::sofa::core::objectmodel::Data<T>* field, const char* name, const char* help,
+    ::sofa::core::objectmodel::BaseData::DataFlags dataflags)
+    {
+        ::sofa::core::objectmodel::BaseData::BaseInitData res;
+        this->initData0(field, res, name, help, dataflags);
+        return res;
+    }
+
+    /// Helper method used to initialize a data field containing a value of type T
+    template<class T>
     BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
         BaseData::BaseInitData res;
@@ -395,47 +405,7 @@ protected:
 
 public:
 
-    /// Helper method & type for the NameDecoder class to it can detect inherited instances
-    /// The following code is only needed since #PR1283 to smooth the deprecation process.
-    /// Remove that after the 01.01.2021.
-    bool IsInheritingFromBase(){return true;}
     typedef Base BaseType;
-
-    /// Helper method to get the type name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
-    /// This way derived classes can redefine the typeName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string typeName(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the class name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::className<B>(); \endcode
-    /// This way derived classes can redefine the className method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string className(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the namespace name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::namespaceName<T>(); \endcode
-    /// This way derived classes can redefine the namespaceName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string namespaceName(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the template name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::templateName<B>); \endcode
-    /// This way derived classes can redefine the templateName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string templateName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the shortname of a type derived from this class.
     /// The default implementation return the class name.

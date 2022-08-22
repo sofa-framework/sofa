@@ -6,8 +6,10 @@ set(SOFACOMPONENTCONSTRAINT_SOURCE_DIR "src/sofa/component/constraint")
 set(SOFACOMPONENTCONSTRAINT_DIRS Lagrangian Projective)
 set(SOFACOMPONENTCONSTRAINT_TARGETS)
 foreach(constraint_dir ${SOFACOMPONENTCONSTRAINT_DIRS})
-	sofa_add_component_subdirectory(${constraint_dir} ${PROJECT_NAME}.${constraint_dir})
-	list(APPEND SOFACOMPONENTCONSTRAINT_TARGETS ${PROJECT_NAME}.${constraint_dir})
+    sofa_add_subdirectory(module ${constraint_dir} ${PROJECT_NAME}.${constraint_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${constraint_dir})
+        list(APPEND SOFACOMPONENTCONSTRAINT_TARGETS ${PROJECT_NAME}.${constraint_dir})
+    endif()
 endforeach()
 
 

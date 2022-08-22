@@ -6,8 +6,10 @@ set(SOFACOMPONENTCOLLISION_SOURCE_DIR "src/sofa/component/collision")
 set(SOFACOMPONENTCOLLISION_DIRS Geometry Detection Response)
 set(SOFACOMPONENTCOLLISION_TARGETS)
 foreach(collision_dir ${SOFACOMPONENTCOLLISION_DIRS})
-	sofa_add_component_subdirectory(${collision_dir} ${PROJECT_NAME}.${collision_dir})
-	list(APPEND SOFACOMPONENTCOLLISION_TARGETS ${PROJECT_NAME}.${collision_dir})
+    sofa_add_subdirectory(module ${collision_dir} ${PROJECT_NAME}.${collision_dir} ON)
+    if(TARGET ${PROJECT_NAME}.${collision_dir})
+        list(APPEND SOFACOMPONENTCOLLISION_TARGETS ${PROJECT_NAME}.${collision_dir})
+    endif()
 endforeach()
 
 set(HEADER_FILES
