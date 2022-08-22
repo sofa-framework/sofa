@@ -121,7 +121,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     lambda.resize(nb-1);
     B.resize(nb);
 
-    /////////////////////////// d_subpartSolve init ////////////
+    /////////////////////////// subpartSolve init ////////////
 
     if(d_subpartSolve.getValue() )
     {
