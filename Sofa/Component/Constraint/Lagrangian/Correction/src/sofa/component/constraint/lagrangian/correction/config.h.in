@@ -36,3 +36,11 @@ namespace sofa::component::constraint::lagrangian::correction
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::constraint::lagrangian::correction
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION
+#define SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
+#else
+#define SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12 (#3152)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+#endif // SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION

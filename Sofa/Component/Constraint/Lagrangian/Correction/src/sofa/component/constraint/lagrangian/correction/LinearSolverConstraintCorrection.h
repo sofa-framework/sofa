@@ -98,9 +98,9 @@ public:
     SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
 
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the LinearSolverConstraintCorrection were replaced by explicit links")
+    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
     Data< type::vector< std::string > >  solverName; ///< name of the constraint solver
-    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the LinearSolverConstraintCorrection were replaced by explicit links")
+    //SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         Inherit1::parse(arg);
