@@ -56,11 +56,11 @@ public:
     typedef typename TCoord::Size Size;
 
     typedef Coord CPos;
-    static const CPos& getCPos(const Coord& c) { return c; }
-    static void setCPos(Coord& c, const CPos& v) { c = v; }
+    static constexpr const CPos& getCPos(const Coord& c) { return c; }
+    static constexpr void setCPos(Coord& c, const CPos& v) { c = v; }
     typedef Deriv DPos;
-    static const DPos& getDPos(const Deriv& d) { return d; }
-    static void setDPos(Deriv& d, const DPos& v) { d = v; }
+    static constexpr const DPos& getDPos(const Deriv& d) { return d; }
+    static constexpr void setDPos(Deriv& d, const DPos& v) { d = v; }
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
@@ -73,7 +73,7 @@ protected:
     template<Size N, class T>
     struct Impl
     {
-        static void set( Coord& c, T x, T y, T z )
+        static constexpr void set( Coord& c, T x, T y, T z )
         {
             if constexpr (N > 2)
             {
@@ -95,7 +95,7 @@ protected:
             }
         }
 
-        static void get( T& x, T& y, T& z, const Coord& c )
+        static constexpr void get( T& x, T& y, T& z, const Coord& c )
         {
             if constexpr(N > 2)
             {
@@ -120,7 +120,7 @@ protected:
             }
         }
 
-        static void add( Coord& c, T x, T y, T z )
+        static constexpr void add( Coord& c, T x, T y, T z )
         {
             if constexpr (N > 2)
             {
@@ -150,32 +150,32 @@ protected:
 public:
 
     template<typename T>
-    static void set(Coord& c, T x, T y, T z)
+    static constexpr void set(Coord& c, T x, T y, T z)
     {
         Impl<spatial_dimensions,T>::set(c,x,y,z);
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Coord& c)
+    static constexpr void get(T& x, T& y, T& z, const Coord& c)
     {
         Impl<spatial_dimensions,T>::get(x,y,z,c);
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
+    static constexpr Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
     {
         Deriv result;
         set( result, Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)) );
         return result;
     }
 
-    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    static constexpr Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         return (Deriv)(c1-c2);
     }
 
     template<typename T>
-    static void add(Coord& c, T x, T y, T z)
+    static constexpr void add(Coord& c, T x, T y, T z)
     {
         Impl<spatial_dimensions,T>::add(c,x,y,z);
     }
