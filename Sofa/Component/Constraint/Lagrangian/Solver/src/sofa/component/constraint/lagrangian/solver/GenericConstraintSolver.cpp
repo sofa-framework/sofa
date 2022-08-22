@@ -1142,7 +1142,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     {
         if(!constraintsResolutions[i])
         {
-            msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+            msg_error(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
             break;
         }
         constraintsResolutions[i]->init(i, w, force);
