@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_RIGIDTYPES_H
-#define SOFA_DEFAULTTYPE_RIGIDTYPES_H
+#pragma once
 
 #include <sofa/defaulttype/fwd.h>
 #include <sofa/type/Vec.h>
@@ -30,7 +29,8 @@
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <cstdlib>
 #include <cmath>
 
@@ -38,10 +38,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #endif
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 //=============================================================================
@@ -1943,10 +1940,4 @@ static constexpr void rigidTransform ( V1& points, V2& velocities, SReal tx, SRe
 }
 //@}
 
-
-}
-
-} // namespace sofa
-
-
-#endif
+} // namespace sofa:: defaulttype

@@ -19,24 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_VECTYPES_H
-#define SOFA_DEFAULTTYPE_VECTYPES_H
+#pragma once
 
 #include <sofa/defaulttype/fwd.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/random.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <algorithm>
 #include <memory>
-#include <sofa/helper/logging/Messaging.h>
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa:: defaulttype
 {
-
 
 template<class TCoord, class TDeriv, class TReal>
 class StdVectorTypes
@@ -240,8 +236,4 @@ typedef StdVectorTypes<type::Vec2, type::Vec2, type::Vec2::value_type> Vec2Types
 typedef StdVectorTypes<type::Vec1, type::Vec1, type::Vec1::value_type> Vec1Types;
 
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa:: defaulttype
