@@ -21,8 +21,53 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/accessor/ReadAccessor.h>
-#include <sofa/helper/accessor/ReadAccessorVector.h>
-#include <sofa/helper/accessor/WriteAccessor.h>
-#include <sofa/helper/accessor/WriteAccessorVector.h>
-#include <sofa/helper/accessor/WriteOnlyAccessor.h>
+#include <ostream>
+
+namespace sofa::helper
+{
+
+
+/** A ReadAccessor is a proxy class, holding a reference to a given container
+ *  and providing access to its data, using an unified interface (similar to
+ *  std::vector), hiding API differences within containers.
+ *
+ *  Other advantadges of using a ReadAccessor are :
+ *
+ *  - It can be faster that the default methods and operators of the container,
+ *  as verifications and changes notifications can be handled in the accessor's
+ *  constructor and destructor instead of at each item access.
+ *
+ *  - No modifications to the container will be done by mistake
+ *
+ *  - Accesses can be logged for debugging or task dependencies analysis.
+ *
+ *  The default implementation provides only minimal set of methods and
+ *  operators, sufficient for scalar types but which should be overloaded for
+ *  more complex types.
+ *  Various template specializations are typically used, especially for core::objectmodel::Data<T>
+ */
+template<class T, class Enable = void>
+class ReadAccessor
+{
+public:
+    typedef T container_type;
+    typedef T value_type;
+    typedef value_type& reference;
+    typedef value_type* pointer;
+    typedef const value_type& const_reference;
+    typedef const value_type* const_pointer;
+
+protected:
+    const container_type* vref;
+
+public:
+    explicit ReadAccessor(const container_type& container) : vref(&container) {}
+
+    const_reference ref() const { return *vref; }
+
+    operator  const_reference () const { return  *vref; }
+    const_pointer   operator->() const { return vref; }
+    const_reference operator* () const { return  *vref; }
+};
+
+}

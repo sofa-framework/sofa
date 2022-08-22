@@ -19,10 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <gtest/gtest.h>
 
-#include <sofa/helper/accessor/ReadAccessor.h>
-#include <sofa/helper/accessor/ReadAccessorVector.h>
-#include <sofa/helper/accessor/WriteAccessor.h>
-#include <sofa/helper/accessor/WriteAccessorVector.h>
-#include <sofa/helper/accessor/WriteOnlyAccessor.h>
+#include <sofa/type/vector.h>
+#include <sofa/core/objectmodel/Data.h>
+
+namespace sofa
+{
+
+TEST(ReadAccessor, DataPrimitiveTypes)
+{
+    const Data<float> float_value { 12.f };
+    const sofa::helper::ReadAccessor float_accessor(float_value);
+    EXPECT_FLOAT_EQ(float_accessor.ref(), 12.f);
+
+    const Data<std::size_t> size_t_value = 8;
+    const sofa::helper::ReadAccessor size_t_accessor(size_t_value);
+    EXPECT_EQ(size_t_accessor.ref(), 8);
+}
+
+TEST(ReadAccessor, DataVectorTypes)
+{
+    const Data<sofa::type::vector<float> > vector { sofa::type::vector<float> { 0.f, 1.f, 2.f, 3.f, 4.f} };
+    const sofa::helper::ReadAccessor accessor(vector);
+
+    EXPECT_EQ(accessor.size(), vector.getValue().size());
+    EXPECT_EQ(accessor.size(), 5);
+    EXPECT_EQ(accessor.empty(), vector.getValue().empty());
+    EXPECT_EQ(accessor.begin(), vector.getValue().begin());
+    EXPECT_EQ(accessor.end(), vector.getValue().end());
+}
+
+
+}

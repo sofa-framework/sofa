@@ -19,10 +19,64 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <gtest/gtest.h>
 
-#include <sofa/helper/accessor/ReadAccessor.h>
-#include <sofa/helper/accessor/ReadAccessorVector.h>
-#include <sofa/helper/accessor/WriteAccessor.h>
-#include <sofa/helper/accessor/WriteAccessorVector.h>
-#include <sofa/helper/accessor/WriteOnlyAccessor.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/type/vector.h>
+
+namespace sofa
+{
+
+TEST(WriteAccessor, PrimitiveTypes)
+{
+    float float_value { 12.f };
+    sofa::helper::WriteAccessor float_accessor(float_value);
+    EXPECT_FLOAT_EQ(float_accessor.ref(), 12.f);
+    float_accessor.wref() = 14.f;
+    EXPECT_FLOAT_EQ(float_accessor.ref(), 14.f);
+    EXPECT_FLOAT_EQ(float_accessor, 14.f);
+    EXPECT_FLOAT_EQ(float_value, 14.f);
+
+    std::size_t size_t_value { 8 };
+    sofa::helper::WriteAccessor size_t_accessor(size_t_value);
+    EXPECT_EQ(size_t_accessor.ref(), 8);
+    size_t_accessor.wref() = 9;
+    EXPECT_EQ(size_t_accessor.ref(), 9);
+    EXPECT_EQ(size_t_accessor, 9);
+    EXPECT_EQ(size_t_value, 9);
+}
+
+TEST(WriteAccessor, VectorTypes)
+{
+    sofa::type::vector<float> vector { 0.f, 1.f, 2.f, 3.f, 4.f};
+    sofa::helper::WriteAccessor accessor(vector);
+
+    EXPECT_EQ(accessor.size(), vector.size());
+    EXPECT_EQ(accessor.empty(), vector.empty());
+    EXPECT_EQ(accessor.begin(), vector.begin());
+    EXPECT_EQ(accessor.end(), vector.end());
+
+    for(auto& v : accessor)
+    {
+        ++v;
+    }
+
+    EXPECT_FLOAT_EQ(vector[0], 1.f);
+    EXPECT_FLOAT_EQ(vector[1], 2.f);
+    EXPECT_FLOAT_EQ(vector[2], 3.f);
+    EXPECT_FLOAT_EQ(vector[3], 4.f);
+    EXPECT_FLOAT_EQ(vector[4], 5.f);
+
+    EXPECT_FLOAT_EQ(accessor[0], 1.f);
+    EXPECT_FLOAT_EQ(accessor[1], 2.f);
+    EXPECT_FLOAT_EQ(accessor[2], 3.f);
+    EXPECT_FLOAT_EQ(accessor[3], 4.f);
+    EXPECT_FLOAT_EQ(accessor[4], 5.f);
+
+    accessor[3] = 6.f;
+    EXPECT_FLOAT_EQ(accessor[3], 6.f);
+    EXPECT_FLOAT_EQ(vector[3], 6.f);
+}
+
+
+}
