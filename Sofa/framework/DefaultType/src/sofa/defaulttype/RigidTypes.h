@@ -411,7 +411,7 @@ public:
         const Vec3 omega = dg.getVOrientation() / 2;
         const real theta = omega.norm();
 
-        static const real epsilon = std::numeric_limits<real>::epsilon();
+        constexpr const real epsilon = std::numeric_limits<real>::epsilon();
 
         if( theta < epsilon ) {
             // fallback to gnomonic projection
@@ -888,8 +888,8 @@ public:
         c.getLinear()[1] = static_cast<Real>(y);
         c.getLinear()[2] = static_cast<Real>(z);
         c.getAngular()[0] = static_cast<Real>(rx);
-        c.getAngular()[1] = static_cast<Real>(xy);
-        c.getAngular()[2] = static_cast<Real>(xz);
+        c.getAngular()[1] = static_cast<Real>(ry);
+        c.getAngular()[2] = static_cast<Real>(rz);
     }
 
     template<typename T>
@@ -942,8 +942,8 @@ public:
         // Transformation between c2 and c1 frames
         quat = quat1*quat2.inverse();
         quat.normalize();
-        type::Vec3 axis; 
-        type::Quat<SReal>::value_type angle; 
+        type::Vec3 axis(type::NOINIT);
+        type::Quat<SReal>::value_type angle{};
         quat.quatToAxis(axis, angle);
         axis*=angle;
         return Deriv(vCenter, axis);
