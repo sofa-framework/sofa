@@ -28,6 +28,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
+#include <sofa/type/trait/Rebind.h>
 
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -110,8 +111,8 @@ public:
 
 public:
     /// Topology Data
-    typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other VecTetrahedronRestInformation;
-    typedef typename VecCoord::template rebind <Mat3x3>::other VecMat3x3;
+    using VecTetrahedronRestInformation = sofa::type::rebind_to<VecCoord, TetrahedronRestInformation>;
+    using VecMat3x3 = sofa::type::rebind_to<VecCoord, Mat3x3>;
 
     core::topology::PointData<VecMat3x3 > pointInfo; ///< Internal point data
     core::topology::EdgeData<VecMat3x3 > edgeInfo; ///< Internal edge data
