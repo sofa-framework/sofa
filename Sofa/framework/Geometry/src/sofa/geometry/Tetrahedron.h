@@ -33,7 +33,7 @@ namespace sofa::geometry
 
 struct Tetrahedron
 {
-    static const sofa::Size NumberOfNodes = 4;
+    static constexpr sofa::Size NumberOfNodes = 4;
 
     Tetrahedron() = delete;
 
