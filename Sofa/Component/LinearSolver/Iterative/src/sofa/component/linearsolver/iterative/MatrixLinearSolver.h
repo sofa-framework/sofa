@@ -175,6 +175,8 @@ class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinea
 public:
 
     friend class solverTask<Matrix,Vector>;
+    
+    Data<bool> d_multithread;
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(MatrixLinearSolver,Matrix,Vector,NoThreadManager), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
 

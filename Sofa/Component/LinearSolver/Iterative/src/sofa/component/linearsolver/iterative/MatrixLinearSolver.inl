@@ -47,6 +47,7 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     , invertData()
     , linearSystem()
     , currentMFactor(), currentBFactor(), currentKFactor()
+    , d_multithread(initData(&d_multithread, true, "Multithreading", "Enable multithreading for the assembly of the compliance matrix. Sparse solver only."))
 {
 }
 
@@ -246,17 +247,28 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
 {
     auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
 
-    if (taskScheduler->getThreadCount() < 1)
+    if( d_multithread.getValue() )
     {
-        taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+        if (taskScheduler->getThreadCount() < 1)
+        {
+            taskScheduler->init(0);
+            msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+        }
+        else
+        {
+            msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+        }
     }
     else
     {
-        msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+        taskScheduler->init(1);
     }
+
+    
     std::vector< solverTask<Matrix,Vector> > taskList;
-    taskList.reserve( J->rowSize() );
+    
+    if( d_multithread.getValue() )  taskList.reserve( J->rowSize() );
+    
     sofa::simulation::CpuTask::Status status;
     
     
@@ -278,9 +290,17 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");
         // one task per column of Jt
         for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
-        {     
-            taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
-            taskScheduler->addTask( &(taskList.back()) );  
+        {   
+            if( d_multithread.getValue() ) 
+            {
+                taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
+                taskScheduler->addTask( &(taskList.back()) ); 
+            }
+            else
+            {
+                solverTask<Matrix,Vector> task(col , &listRH[col] , &listLH[col], &status , J , this  );
+                task.run();
+            }
         }
         taskScheduler->workUntilDone(&status);
     }
@@ -288,8 +308,10 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     // STEP 3 : compute the matricial product L*MinvJt
     
     sofa::linearalgebra::FullMatrix<double> product(J->rowSize(),J->rowSize());
+
+
     std::vector< productTask<Matrix,Vector> > productTaskList;
-    productTaskList.reserve(J->rowSize());
+    if( d_multithread.getValue() )  productTaskList.reserve(J->rowSize());
 
     {
         sofa::helper::ScopedAdvancedTimer productTimer("product");
@@ -298,8 +320,16 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         
         for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
             {
-                productTaskList.emplace_back(row, &listLH[row], J , &product , &status);
-                taskScheduler->addTask( &(productTaskList.back()) );
+                if( d_multithread.getValue() )
+                {
+                    productTaskList.emplace_back(row, &listLH[row], J , &product , &status);
+                    taskScheduler->addTask( &(productTaskList.back()) );
+                }
+                else
+                {
+                    productTask<Matrix,Vector> prodTask(row, &listLH[row], J , &product , &status);
+                    prodTask.run();
+                }
             }
             taskScheduler->workUntilDone(&status);
         }
