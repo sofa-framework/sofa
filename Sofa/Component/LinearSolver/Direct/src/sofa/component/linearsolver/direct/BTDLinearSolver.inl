@@ -688,9 +688,9 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
             normR += (Result->asub(i,bsize)).norm();
         }
 
-        std::ostringstream oss;
         if (normDR > ((1.0e-7)*normR + 1.0e-20) )
         {
+            std::ostringstream oss;
             oss <<"++++++++++++++++ WARNING +++++++++++\n \n Found solution for bloc OUT :";
             for (Index i=MinIdBloc_OUT; i<=MaxIdBloc_OUT; i++)
             {
@@ -704,8 +704,8 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
                 oss <<"     ["<<i<<"] "<<Result->asub(i,bsize);
             }
             oss << "\n";
+            msg_warning() << oss.str();
         }
-        msg_info() << oss.str();
 
         delete(Result_partial_Solve);
         delete(Result);
