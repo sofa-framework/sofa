@@ -22,7 +22,5 @@
 #pragma once
 
 #include <sofa/helper/accessor/ReadAccessor.h>
-#include <sofa/helper/accessor/ReadAccessorVector.h>
 #include <sofa/helper/accessor/WriteAccessor.h>
-#include <sofa/helper/accessor/WriteAccessorVector.h>
 #include <sofa/helper/accessor/WriteOnlyAccessor.h>

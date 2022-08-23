@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <ostream>
+#include <sofa/helper/accessor/ReadAccessorVector.h>
 
 namespace sofa::helper
 {
@@ -68,6 +68,17 @@ public:
     operator  const_reference () const { return  *vref; }
     const_pointer   operator->() const { return vref; }
     const_reference operator* () const { return  *vref; }
+};
+
+template<class VectorLikeType>
+class ReadAccessor<VectorLikeType,
+                   std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value> >
+    : public ReadAccessorVector< VectorLikeType >
+{
+public:
+    typedef ReadAccessorVector< VectorLikeType > Inherit;
+    typedef typename Inherit::container_type container_type;
+    ReadAccessor(const container_type& c) : Inherit(c) {}
 };
 
 }

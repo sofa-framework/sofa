@@ -29,7 +29,7 @@ namespace sofa::helper
 ////////////////////////// ReadAccessor for wrapping around vector like object //////////////////////
 /// ReadAccessor implementation class for vector types
 template<class T>
-class ReadAccessor<T, std::enable_if_t<sofa::type::trait::is_vector<T>::value > >
+class ReadAccessorVector
 {
 public:
     typedef T container_type;
@@ -45,7 +45,7 @@ protected:
     const container_type* vref;
 
 public:
-    ReadAccessor(const container_type& container) : vref(&container) {}
+    ReadAccessorVector(const container_type& container) : vref(&container) {}
 
     bool empty() const { return vref->empty(); }
     Size size() const { return vref->size(); }

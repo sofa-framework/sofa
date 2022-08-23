@@ -21,18 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/trait/is_vector.h>
-
 namespace sofa::helper
 {
 
 /// WriteAccessor implementation class for vector types
 template<class T>
-class WriteAccessor<T, std::enable_if_t<sofa::type::trait::is_vector<T>::value> >
+class WriteAccessorVector
 {
 public:
-    static_assert(!std::is_const_v<T>, "Trying to have write access on a const type");
-
     typedef T container_type;
     typedef const T const_container_type;
     typedef typename container_type::Size Size;
@@ -46,7 +42,7 @@ protected:
     container_type* vref;
 
 public:
-    WriteAccessor(container_type& container) : vref(&container) {}
+    WriteAccessorVector(container_type& container) : vref(&container) {}
 
     bool empty() const { return vref->empty(); }
     Size size() const { return vref->size(); }

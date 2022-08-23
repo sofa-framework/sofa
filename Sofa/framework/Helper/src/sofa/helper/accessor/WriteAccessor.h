@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <iosfwd>
+#include <sofa/helper/accessor/WriteAccessorVector.h>
 
 namespace sofa::helper
 {
@@ -79,6 +79,17 @@ public:
     {
         vref = &v;
     }
+};
+
+template<class VectorLikeType>
+class WriteAccessor<VectorLikeType,
+                    std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value>>
+    : public WriteAccessorVector< VectorLikeType >
+{
+public:
+    typedef WriteAccessorVector< VectorLikeType > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
 }
