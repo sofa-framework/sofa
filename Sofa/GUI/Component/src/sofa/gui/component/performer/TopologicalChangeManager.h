@@ -29,6 +29,7 @@
 
 #include <sofa/component/collision/geometry/SphereModel.h>
 #include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
 #include <sofa/component/collision/geometry/TriangleModel.h>
 
 #include <sofa/type/Vec.h>
@@ -136,6 +137,7 @@ private:
 
     Index removeItemsFromTriangleModel(sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
     Index removeItemsFromPointModel(sofa::component::collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromLineModel(sofa::component::collision::geometry::LineCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
     Index removeItemsFromSphereModel(sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
 
 

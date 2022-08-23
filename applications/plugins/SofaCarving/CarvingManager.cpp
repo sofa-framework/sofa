@@ -97,8 +97,6 @@ void CarvingManager::init()
         {
             core::CollisionModel* m = models[i];
             m->getContext()->get(topoMapping);
-            if (topoMapping == NULL) continue;
-                        
             m_surfaceCollisionModels.push_back(m);
         }
     }
@@ -188,8 +186,8 @@ void CarvingManager::doCarve()
 
             if (c.value < d_carvingDistance.getValue())
             {
-                auto triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
-                elemsToRemove.push_back(triangleIdx);
+                auto elementIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                elemsToRemove.push_back(elementIdx);
             }
         }
 
