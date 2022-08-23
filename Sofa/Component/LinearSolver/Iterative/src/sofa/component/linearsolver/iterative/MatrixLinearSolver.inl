@@ -261,7 +261,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     }
     else
     {
-        taskScheduler->init(1);
+        if (taskScheduler->getThreadCount() != 1) taskScheduler->init(1);
     }
 
     
