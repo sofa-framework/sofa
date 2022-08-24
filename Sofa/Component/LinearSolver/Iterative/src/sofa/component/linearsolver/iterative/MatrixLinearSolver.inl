@@ -267,38 +267,47 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     
     std::vector< solverTask<Matrix,Vector> > taskList;
     
-    if( d_multithread.getValue() )  taskList.reserve( J->rowSize() );
+    if( d_multithread.getValue() )
+    {
+        taskList.reserve( J->rowSize() );
+    }
     
     sofa::simulation::CpuTask::Status status;
     
     
         
     sofa::type::vector< Vector  > listRH(J->rowSize()) ; // columns of Jt
-    for(int i=0;i<J->rowSize();i++) listRH[i].resize(J->colSize());
+    for (auto& rh : listRH)
+    {
+        rh.resize(J->colSize());
+    }
 
-    sofa::type::vector< Vector  > listLH(J->rowSize()); // columns of MinvJt
-    for(int i=0;i<J->rowSize();i++) listLH[i].resize(J->colSize());
+    sofa::type::vector< Vector > listLH(J->rowSize()); // columns of MinvJt
+    for (auto& lh : listLH)
+    {
+        lh.resize(J->colSize());
+    }
 
     if (this->linearSystem.needInvert)
-        {
-            this->invert(*(this->linearSystem.systemMatrix));
-            this->linearSystem.needInvert = false;
-        }
+    {
+        this->invert(*(this->linearSystem.systemMatrix));
+        this->linearSystem.needInvert = false;
+    }
 
     //STEPS 1&2: Copy Jt and compute Minv*Jt
     {
         sofa::helper::ScopedAdvancedTimer solveTimer("solve");
         // one task per column of Jt
         for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
-        {   
-            if( d_multithread.getValue() ) 
+        {
+            if ( d_multithread.getValue() )
             {
-                taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
+                taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this );
                 taskScheduler->addTask( &(taskList.back()) ); 
             }
             else
             {
-                solverTask<Matrix,Vector> task(col , &listRH[col] , &listLH[col], &status , J , this  );
+                solverTask<Matrix,Vector> task(col , &listRH[col] , &listLH[col], &status , J , this );
                 task.run();
             }
         }
@@ -311,14 +320,17 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
 
 
     std::vector< productTask<Matrix,Vector> > productTaskList;
-    if( d_multithread.getValue() )  productTaskList.reserve(J->rowSize());
+    if ( d_multithread.getValue() )
+    {
+        productTaskList.reserve(J->rowSize());
+    }
 
     {
         sofa::helper::ScopedAdvancedTimer productTimer("product");
         if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
         {
         
-        for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+            for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
             {
                 if( d_multithread.getValue() )
                 {
@@ -342,15 +354,15 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
 
     //STEP 4 : project the result
     for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+    {
+        const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J);
+        const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
+        for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
         {
-            const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J);
-                const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
-                for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
-                {
-                    auto row2 = jit->first;
-                    result->add(row2,row, fact*product.element(row2,row) );
-                }
+            auto row2 = jit->first;
+            result->add(row2,row, fact*product.element(row2,row) );
         }
+    }
 
     return true;
 }
