@@ -57,6 +57,8 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
 
+        createObject(m_root, "DefaultAnimationLoop");
+
         std::string loaderType = "MeshOBJLoader";
         if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
             loaderType = "MeshGmshLoader";
