@@ -244,6 +244,10 @@ public:
     */
     [[nodiscard]] bool addTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
 
+    /** \brief Remove a TopologyHandler, linked to a certain type of Element.
+    */
+    void removeTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
+
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *

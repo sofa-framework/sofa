@@ -104,7 +104,12 @@ bool TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler, so
     return res;
 }
 
-const std::set<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
+void TopologyContainer::removeTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType)
+{
+    m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].remove(_TopologyHandler);
+}
+
+const std::list<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
 {
     return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
 }
