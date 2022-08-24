@@ -37,10 +37,38 @@ public:
     bool testEdgeBuffers();
     bool testVertexBuffers();
     bool checkTopology();
+private:
+    bool loadTopologyContainer(const std::string& filename);
+
+    std::unique_ptr<fake_TopologyScene> m_scene;
+    EdgeSetTopologyContainer::SPtr m_topoCon = nullptr;
+
 
     int nbrEdge = 45;
     int nbrVertex = 20;
 };
+
+
+bool EdgeSetTopology_test::loadTopologyContainer(const std::string& filename)
+{
+    m_scene = std::make_unique<fake_TopologyScene>(filename, sofa::core::topology::TopologyElementType::EDGE);
+
+    if (m_scene == nullptr) {
+        msg_error("EdgeSetTopology_test") << "Fake Topology creation failed.";
+        return false;
+    }
+
+    auto root = m_scene->getNode().get();
+    m_topoCon = root->get<EdgeSetTopologyContainer>(sofa::core::objectmodel::BaseContext::SearchDown);
+
+    if (m_topoCon == nullptr)
+    {
+        msg_error("EdgeSetTopology_test") << "EdgeSetTopologyContainer not found in scene.";
+        return false;
+    }
+
+    return true;
+}
 
 
 bool EdgeSetTopology_test::testEmptyContainer()
@@ -60,24 +88,17 @@ bool EdgeSetTopology_test::testEmptyContainer()
 
 bool EdgeSetTopology_test::testEdgeBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
-    EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
-
-    if (topoCon == nullptr)
-    {
-        if (scene != nullptr)
-            delete scene;
+    if (!loadTopologyContainer("mesh/square1_edges.obj"))
         return false;
-    }
-
+    
     // Check creation of the container
-    EXPECT_EQ((topoCon->getName()), std::string("topoCon"));
+    EXPECT_EQ((m_topoCon->getName()), std::string("topoCon"));
 
     // Check edge container buffers size
-    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
-    EXPECT_EQ(topoCon->getNumberOfElements(), nbrEdge);
-    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
-    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(m_topoCon->getNumberOfElements(), nbrEdge);
+    EXPECT_EQ(m_topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(m_topoCon->getEdges().size(), nbrEdge);
 
     //// The first 2 edges in this file should be :
     sofa::type::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
@@ -85,7 +106,7 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
 
     //// check edge buffer
-    const sofa::type::vector<EdgeSetTopologyContainer::Edge>& edges = topoCon->getEdgeArray();
+    const sofa::type::vector<EdgeSetTopologyContainer::Edge>& edges = m_topoCon->getEdgeArray();
     if (edges.empty())
         return false;
     
@@ -98,26 +119,22 @@ bool EdgeSetTopology_test::testEdgeBuffers()
     
     // TODO epernod 2018-07-05: method missing EdgeSetTopologyContainer::getVertexIndexInEdge
     // check edge indices
-    //int vertexID = topoCon->getVertexIndexInEdge(tri0, triTruth0[1]);
+    //int vertexID = m_topoCon->getVertexIndexInEdge(tri0, triTruth0[1]);
     //EXPECT_EQ(vertexID, 1);
-    //vertexID = topoCon->getVertexIndexInEdge(tri0, triTruth0[2]);
+    //vertexID = m_topoCon->getVertexIndexInEdge(tri0, triTruth0[2]);
     //EXPECT_EQ(vertexID, 2);
-    //vertexID = topoCon->getVertexIndexInEdge(tri0, 120);
+    //vertexID = m_topoCon->getVertexIndexInEdge(tri0, 120);
     //EXPECT_EQ(vertexID, -1);
 
 
     // Check edge buffer access    
-    const EdgeSetTopologyContainer::Edge& edge1 = topoCon->getEdge(1);
+    const EdgeSetTopologyContainer::Edge& edge1 = m_topoCon->getEdge(1);
     for (int i = 0; i<2; ++i)
         EXPECT_EQ(edge1[i], edgeTruth1[i]);
 
-    const EdgeSetTopologyContainer::Edge& edge2 = topoCon->getEdge(1000);
+    const EdgeSetTopologyContainer::Edge& edge2 = m_topoCon->getEdge(1000);
     for (int i = 0; i<2; ++i)
         EXPECT_EQ(edge2[i], sofa::InvalidID);
-
-
-    if(scene != nullptr)
-        delete scene;
 
     return true;
 }
@@ -125,27 +142,20 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
 bool EdgeSetTopology_test::testVertexBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
-    EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
-
-    if (topoCon == nullptr)
-    {
-        if (scene != nullptr)
-            delete scene;
+    if (!loadTopologyContainer("mesh/square1_edges.obj"))
         return false;
-    }
 
     // create and check vertex buffer
-    const sofa::type::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
+    const sofa::type::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = m_topoCon->getEdgesAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
-    EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
-    EXPECT_EQ(topoCon->getNbPoints(), nbrVertex); 
+    EXPECT_EQ(m_topoCon->d_initPoints.getValue().size(), nbrVertex);
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex); 
     
     // check EdgesAroundVertex buffer access
     EXPECT_EQ(edgeAroundVertices.size(), nbrVertex);
     const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertex = edgeAroundVertices[0];
-    const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertexM = topoCon->getEdgesAroundVertex(0);
+    const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertexM = m_topoCon->getEdgesAroundVertex(0);
     
     EXPECT_EQ(edgeAVertex.size(), edgeAVertexM.size());
     for (size_t i = 0; i < edgeAVertex.size(); i++)
@@ -163,20 +173,11 @@ bool EdgeSetTopology_test::testVertexBuffers()
 
 bool EdgeSetTopology_test::checkTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE);
-    EdgeSetTopologyContainer* topoCon = dynamic_cast<EdgeSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
-
-    if (topoCon == nullptr)
-    {
-        if (scene != nullptr)
-            delete scene;
+    if (!loadTopologyContainer("mesh/square1_edges.obj"))
         return false;
-    }
 
-    bool res = topoCon->checkTopology();
+    bool res = m_topoCon->checkTopology();
     
-    if (scene != nullptr)
-        delete scene;
     
     return res;
 }
