@@ -256,6 +256,11 @@ public:
     */
     virtual bool linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
+    /** \ brief Generic function to link potential data (related to a type of element) with a topologyHandler
+    *
+    */
+    virtual bool unlinkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
+
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
 

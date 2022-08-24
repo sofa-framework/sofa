@@ -119,6 +119,16 @@ bool TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandl
     return false;
 }
 
+bool TopologyContainer::unlinkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    // default implementation dont do anything
+    // as it does not hold any data itself
+    SOFA_UNUSED(topologyHandler);
+    SOFA_UNUSED(elementType);
+
+    return false;
+}
+
 std::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
 {
     return (m_changeList.getValue()).end();
