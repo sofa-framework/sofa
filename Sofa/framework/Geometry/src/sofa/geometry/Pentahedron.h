@@ -28,7 +28,7 @@ namespace sofa::geometry
 
 struct Pentahedron
 {
-    static const sofa::Size NumberOfNodes = 6;
+    static constexpr sofa::Size NumberOfNodes = 6;
 
     Pentahedron() = delete;
 };
