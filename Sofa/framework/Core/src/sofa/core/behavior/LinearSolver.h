@@ -74,12 +74,6 @@ public:
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
 
-    ///
-    virtual void init_partial_solve() { msg_warning() << "partial_solve is not implemented yet."; }
-
-    ///
-    virtual void partial_solve(std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Disp*/, std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Dforce*/, bool /*NewIn*/) { msg_warning() << "partial_solve is not implemented yet"; }
-
     /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
     virtual void invertSystem() {}
 
@@ -163,8 +157,6 @@ public:
 
     /// Ask the solver to no longer update the system matrix
     virtual void freezeSystemMatrix() { frozen = true; }
-
-
 
 protected:
 

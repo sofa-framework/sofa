@@ -27,6 +27,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/behavior/PartialLinearSolver.h>
 
 #include <sstream>
 #include <list>
@@ -90,10 +91,16 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
             sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
-        else
+
+        m_partialLinearSolver = dynamic_cast<sofa::core::behavior::PartialLinearSolver*>(l_linearSolver.get());
+        if (!m_partialLinearSolver)
         {
-            msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
+            msg_error() << "Can not use the solver " << l_linearSolver.get()->getName() << " because it does not implement PartialLinearSolver API.";
+            d_componentState.setValue(ComponentState::Invalid);
+            return;
         }
+
+        msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
     }
 
     // Find ODE solver
@@ -549,7 +556,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     }
 
     // Init the internal data of the solver for partial solving
-    l_linearSolver.get()->init_partial_solve();
+    m_partialLinearSolver->init_partial_solve();
 
 
     ///////// new : precalcul des liste d'indice ///////
@@ -579,8 +586,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
     last_disp = begin;
 
-
-    l_linearSolver.get()->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
+    m_partialLinearSolver->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
 
     _new_force = false;
 

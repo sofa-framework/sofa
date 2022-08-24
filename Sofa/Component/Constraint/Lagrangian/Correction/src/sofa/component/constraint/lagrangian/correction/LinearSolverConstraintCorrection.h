@@ -26,6 +26,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/PartialLinearSolver.h>
 
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
@@ -150,6 +151,8 @@ private:
     linearalgebra::BaseVector* systemRHVector_buf;
     linearalgebra::BaseVector* systemLHVector_buf;
 
+    // cache to call Partial Linear Solver API from the Linear Solver
+    sofa::core::behavior::PartialLinearSolver* m_partialLinearSolver{ nullptr };
 
     // par un vecteur de listes precaclues pour chaque contrainte
     std::vector< ListIndex > Vec_I_list_dof;   // vecteur donnant la liste des indices des dofs par block de contrainte

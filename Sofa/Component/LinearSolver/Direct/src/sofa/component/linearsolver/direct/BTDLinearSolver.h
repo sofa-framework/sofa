@@ -23,6 +23,7 @@
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/PartialLinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/BTDMatrix.h>
@@ -40,7 +41,7 @@ namespace sofa::component::linearsolver::direct
 /// http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
 /// http://www4.ncsu.edu/eos/users/w/white/www/white/ma580/chap2.5.PDF
 template<class Matrix, class Vector>
-class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>
+class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>, public sofa::core::behavior::PartialLinearSolver
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BTDLinearSolver, Matrix, Vector), SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector));
@@ -117,8 +118,6 @@ public:
     /// Solve Mx=b
     void solve (Matrix& /*M*/, Vector& x, Vector& b) override;
 
-
-
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
     /// @param result the variable where the result will be added
@@ -126,24 +125,10 @@ public:
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
-
-    /// Init the partial solve
     void init_partial_solve() override;
-
-    using MatrixLinearSolver<Matrix,Vector>::partial_solve;
-    /// partial solve :
-    /// b is accumulated
-    /// db is a sparse vector that is added to b
-    /// partial_x is a sparse vector (with sparse map given) that provide the result of M x = b+db
-    /// Solve Mx=b
-    //void partial_solve_old(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
     void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn) override;
 
-
-
     void init_partial_inverse(const Index &nb, const Index &bsize);
-
-
 
     template<class RMatrix, class JMatrix>
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);

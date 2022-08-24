@@ -84,6 +84,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/PairStateAccessor.h
+    ${SRC_ROOT}/behavior/PartialLinearSolver.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationFinder.h
