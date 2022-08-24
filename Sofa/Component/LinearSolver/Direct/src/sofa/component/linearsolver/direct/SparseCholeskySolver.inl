@@ -206,6 +206,7 @@ css* SparseCholeskySolver<TMatrix,TVector>::symbolic_Chol(cs *A)
 template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::init()
 {
+    Inherit1::init();
     permutationId = d_typePermutation.getValue().getSelectedId() ; 
 }
 
