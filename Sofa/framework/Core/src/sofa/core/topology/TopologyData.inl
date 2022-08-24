@@ -43,6 +43,18 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
 {
 }
 
+template <typename TopologyElementType, typename VecT>
+TopologyData <TopologyElementType, VecT>::~TopologyData()
+{ 
+    if (m_isTopologyDynamic) {
+        dmsg_info(this->getOwner()) << "TopologyData: " << this->getName() << " removed from dynamic topology: " << this->m_topology->getClassName();
+        removeTopologyHandler();
+    }
+    else {
+        dmsg_info(this->getOwner()) << "TopologyData: " << this->getName() << " removed from static topology without TopologyHandler.";
+    }
+}
+
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology)
@@ -66,6 +78,13 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
         this->linkToElementDataArray((TopologyElementType*)nullptr);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology.";
     }
+}
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::removeTopologyHandler()
+{
+    this->m_topologyHandler->unlinkToElementDataArray((TopologyElementType*)nullptr);
 }
 
 

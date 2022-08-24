@@ -65,9 +65,15 @@ public:
     /// Constructor
     TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
+    /// Default Destructor
+    ~TopologyData();
+
 
     /// Function to create topology handler to manage this Data. @param Pointer to dynamic topology is needed.
     virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology);
+
+    /// Method to properly remove TopologyHandler @sa m_topologyHandler from dynamic Topology container lists
+    void removeTopologyHandler();
     
     /// Link Data to topology arrays
     void linkToPointDataArray();

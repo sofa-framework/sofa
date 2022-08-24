@@ -92,6 +92,97 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
 }
 
 
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType, VecT>::unlinkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*)
+{
+    if (m_topology->unlinkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::POINT))
+    {
+        m_topology->removeTopologyHandler(this, sofa::core::topology::TopologyElementType::POINT);
+        m_pointsLinked = false;
+    }
+    else
+    {
+        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to unlink with a Point Data Array, Data '" << m_data_name << "' won't be unlinked.";
+        return;
+    }
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType, VecT>::unlinkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*)
+{
+    if (m_topology->unlinkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::EDGE))
+    {
+        m_topology->removeTopologyHandler(this, sofa::core::topology::TopologyElementType::EDGE);
+        m_edgesLinked = false;
+    }
+    else
+    {
+        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to unlink with a Edge Data Array, Data '" << m_data_name << "' won't be unlinked.";
+        return;
+    }
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType, VecT>::unlinkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*)
+{
+    if (m_topology->unlinkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::TRIANGLE))
+    {
+        m_topology->removeTopologyHandler(this, sofa::core::topology::TopologyElementType::TRIANGLE);
+        m_trianglesLinked = false;
+    }
+    else
+    {
+        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to unlink with a Triangle Data Array, Data '" << m_data_name << "' won't be unlinked.";
+        return;
+    }
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType, VecT>::unlinkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*)
+{
+    if (m_topology->unlinkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::QUAD))
+    {
+        m_topology->removeTopologyHandler(this, sofa::core::topology::TopologyElementType::QUAD);
+        m_quadsLinked = false;
+    }
+    else
+    {
+        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to unlink with a Quad Data Array, Data '" << m_data_name << "' won't be unlinked.";
+        return;
+    }
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType, VecT>::unlinkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*)
+{
+    if (m_topology->unlinkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::TETRAHEDRON))
+    {
+        m_topology->removeTopologyHandler(this, sofa::core::topology::TopologyElementType::TETRAHEDRON);
+        m_tetrahedraLinked = false;
+    }
+    else
+    {
+        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to unlink with a Tetrahedron Data Array, Data '" << m_data_name << "' won't be unlinked.";
+        return;
+    }
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType, VecT>::unlinkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*)
+{
+    if (m_topology->unlinkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::HEXAHEDRON))
+    {
+        m_topology->removeTopologyHandler(this, sofa::core::topology::TopologyElementType::HEXAHEDRON);
+        m_hexahedraLinked = false;
+    }
+    else
+    {
+        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to unlink with a Hexahedron Data Array, Data '" << m_data_name << "' won't be unlinked.";
+        return;
+    }
+}
+
+
 /// Apply swap between indices elements.
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EIndicesSwap* event)
