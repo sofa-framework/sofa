@@ -134,11 +134,11 @@ namespace
 // Define the list of DataTypes to instanciate
 using ::testing::Types;
 typedef Types<
-	defaulttype::Vec1Types,
-	defaulttype::Vec2Types,
+    defaulttype::Vec1Types,
+    defaulttype::Vec2Types,
     defaulttype::Vec3Types,
-	defaulttype::Rigid2Types,
-	defaulttype::Rigid3Types
+    defaulttype::Rigid2Types,
+    defaulttype::Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
