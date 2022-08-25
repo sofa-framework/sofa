@@ -3,14 +3,9 @@ project(Sofa.Component.ODESolver LANGUAGES CXX)
 
 set(SOFACOMPONENTODESOLVER_SOURCE_DIR "src/sofa/component/odesolver")
 
-set(SOFACOMPONENTODESOLVER_DIRS Forward Backward)
-set(SOFACOMPONENTODESOLVER_TARGETS)
-foreach(odesolver_dir ${SOFACOMPONENTODESOLVER_DIRS})
-    sofa_add_subdirectory(module ${odesolver_dir} ${PROJECT_NAME}.${odesolver_dir} ON)
-    if(TARGET ${PROJECT_NAME}.${odesolver_dir})
-        list(APPEND SOFACOMPONENTODESOLVER_TARGETS ${PROJECT_NAME}.${odesolver_dir})
-    endif()
-endforeach()
+sofa_add_subdirectory_modules(SOFACOMPONENTODESOLVER_TARGETS
+    DIRECTORIES Forward Backward
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTODESOLVER_SOURCE_DIR}/config.h.in
