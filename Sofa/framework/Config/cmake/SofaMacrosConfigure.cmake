@@ -300,6 +300,31 @@ macro(sofa_add_subdirectory type directory name)
 endmacro()
 
 
+
+macro(sofa_add_subdirectory_modules output_targets)
+    set(optionArgs)
+    set(oneValueArgs)
+    set(multiValueArgs DIRECTORIES)
+    cmake_parse_arguments("ARG" "${optionArgs}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    set(${output_targets})
+    set(missing_targets)
+    foreach(dir ${ARG_DIRECTORIES})
+        set(subdir_name "${PROJECT_NAME}.${dir}")
+        sofa_add_subdirectory(module ${dir} ${subdir_name} ON)
+        if(TARGET ${subdir_name})
+            list(APPEND ${output_targets} ${subdir_name})
+        else()
+            list(APPEND missing_targets ${subdir_name})
+        endif()
+    endforeach()
+    if(missing_targets)
+        message("${PROJECT_NAME}: package and library will not be created because some dependencies are missing or disabled: ${missing_targets}")
+        return()
+    endif()
+endmacro()
+
+
 # sofa_set_01
 #
 # Defines a variable to
