@@ -124,12 +124,13 @@ public:
     std::string getTypeName() const ;
 
     /// Get the class name of this object
-    /// To specify custom class name you need to implement a single
+    /// To specify custom static class name you need to implement a single
     /// static std::string GetCustomClassName(){} method.
-    std::string getClassName() const ;
+    /// Override only if the class name cannot be known at compile-time (e.g. Python).
+    virtual std::string getClassName() const ;
 
     /// Get the template type names (if any) used to instantiate this object
-    /// To specify custom class name you need to implement a single
+    /// To specify custom static template name you need to implement a single
     /// static std::string GetCustomTemplateName(){} method.
     std::string getTemplateName() const ;
 
