@@ -211,7 +211,6 @@ public:
         this->setValue(value);
     }
 
-    bool copyValueFrom(const BaseData* data) override { return doCopyValueFrom(data); }
     bool copyValueFrom(const Data<T>* data);
 
     static constexpr bool isCopyOnWrite(){ return !std::is_scalar_v<T>; }

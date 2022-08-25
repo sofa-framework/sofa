@@ -280,7 +280,7 @@ public:
     ///
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
-    virtual bool copyValueFrom(const BaseData* data);
+    bool copyValueFrom(const BaseData* data);
     bool updateValueFromLink(const BaseData* data);
 
     /// Help message
