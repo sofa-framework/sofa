@@ -3,13 +3,9 @@ project(Sofa.Component.SolidMechanics LANGUAGES CXX)
 
 set(SOFACOMPONENTSOLIDMECHANICS_SOURCE_DIR "src/sofa/component/solidmechanics")
 
-set(SOFACOMPONENTSOLIDMECHANICS_DIRS Spring FEM TensorMass)
-foreach(solidmechanics_dir ${SOFACOMPONENTSOLIDMECHANICS_DIRS})
-    sofa_add_subdirectory(module ${solidmechanics_dir} ${PROJECT_NAME}.${solidmechanics_dir} ON)
-    if(TARGET ${PROJECT_NAME}.${solidmechanics_dir})
-        list(APPEND SOFACOMPONENTSOLIDMECHANICS_TARGETS ${PROJECT_NAME}.${solidmechanics_dir})
-    endif()
-endforeach()
+sofa_add_subdirectory_modules(SOFACOMPONENTSOLIDMECHANICS_TARGETS
+    DIRECTORIES Spring FEM TensorMass
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTSOLIDMECHANICS_SOURCE_DIR}/config.h.in
