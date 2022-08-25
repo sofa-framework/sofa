@@ -109,9 +109,22 @@ public:
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<bool> use_file; ///< Dump system matrix in a file
     Data<bool> share_matrix; ///< Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)
-    Data <std::string> solverName; ///< Name of the solver to use to precompute the first matrix
+    SingleLink<PrecomputedWarpPreconditioner, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to precompute the first matrix
     Data<bool> use_rotations; ///< Use Rotations around the preconditioner
     Data<double> draw_rotations_scale; ///< Scale rotations in draw function
+
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the PrecomputedWarpPreconditioner were replaced by an explicit link")
+    Data <std::string> solverName;
+    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the PrecomputedWarpPreconditioner were replaced by an explicit link")
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit1::parse(arg);
+        if (arg->getAttribute("solverName"))
+        {
+            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3155)";
+        }
+    }
+
 
     MState * mstate;
 protected:

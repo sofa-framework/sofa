@@ -189,35 +189,6 @@ public:
         return m_value.getValue();
     }
 
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
-    void virtualSetLink(const BaseData& bd) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using setValue().")
-    void virtualSetValue(const T& v) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using getValue().")
-    const T& virtualGetValue() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using beginEdit().")
-    T* virtualBeginEdit() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using endEdit().")
-    void virtualEndEdit() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    void endEdit(const core::ExecParams*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    T* beginWriteOnly(const core::ExecParams*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    T* beginEdit(const core::ExecParams*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    void setValue(const core::ExecParams*, const T& value) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    const T& getValue(const core::ExecParams*) const = delete;
     /// @}
 
     /// Get info about the value type of the associated variable
@@ -239,12 +210,6 @@ public:
         out<<df.getValue();
         return out;
     }
-
-    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
-    bool operator ==( const T& value ) const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
-    bool operator!=( const T& value ) const = delete;
 
     void operator =( const T& value )
     {
@@ -494,11 +459,6 @@ template<class T>
 SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) = delete;
 
-template<class T>
-SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
-
-
 
 /// Returns a read accessor from the provided Data<>
 /// Example of use:
@@ -512,10 +472,6 @@ ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmode
 template<class T>
 SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data) = delete;
-
-template<class T>
-SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
 /// Returns a write only accessor from the provided Data<>
 /// WriteOnly accessors are faster than WriteAccessor because

@@ -71,19 +71,7 @@ using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::mapper;
 
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
-#endif
-
-response::mapper::ContactMapperCreator< response::mapper::ContactMapper<sofa::component::collision::geometry::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > CudaSphereContactMapperClass("PenalityContactForceField", true);
+sofa::component::collision::response::mapper::ContactMapperCreator< sofa::component::collision::response::mapper::ContactMapper<CudaSphereCollisionModel> > CudaSphereContactMapperClass("PenalityContactForceField",true);
 
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);

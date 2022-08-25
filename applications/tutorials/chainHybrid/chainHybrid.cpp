@@ -37,26 +37,26 @@ using sofa::defaulttype::Rigid3Mass;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-#include <SofaGeneralLoader/MeshGmshLoader.h>
-using sofa::component::loader::MeshGmshLoader;
-#include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types>;
-using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<Rigid3Types>;
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/io/mesh/MeshGmshLoader.h>
+using sofa::component::io::mesh::MeshGmshLoader;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<Vec3Types>;
+using MechanicalObjectRigid3 = sofa::component::statecontainer::MechanicalObject<Rigid3Types>;
+#include <sofa/component/mass/UniformMass.h>
 using UniformMass3 = sofa::component::mass::UniformMass<Vec3Types>;
 using UniformMassRigid3 = sofa::component::mass::UniformMass<Rigid3Types>;
-#include <SofaBaseTopology/MeshTopology.h>
-using sofa::component::topology::MeshTopology;
-#include <SofaBaseTopology/RegularGridTopology.h>
-using sofa::component::topology::RegularGridTopology;
-#include <SofaDeformable/MeshSpringForceField.h>
-using MeshSpringForceField3 = sofa::component::interactionforcefield::MeshSpringForceField<Vec3Types>;
-#include <SofaGeneralDeformable/RegularGridSpringForceField.h>
-using RegularGridSpringForceField3 = sofa::component::interactionforcefield::RegularGridSpringForceField<Vec3Types>;
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
-using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
-#include <SofaSimulationGraph/SimpleApi.h>
-#include <SofaComponentAll/initSofaComponentAll.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+using sofa::component::topology::container::constant::MeshTopology;
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+using sofa::component::topology::container::grid::RegularGridTopology;
+#include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
+using MeshSpringForceField3 = sofa::component::solidmechanics::spring::MeshSpringForceField<Vec3Types>;
+#include <sofa/component/solidmechanics/spring/RegularGridSpringForceField.h>
+using RegularGridSpringForceField3 = sofa::component::solidmechanics::spring::RegularGridSpringForceField<Vec3Types>;
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
+using TetrahedronFEMForceField3 = sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<Vec3Types>;
+#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/component/init.h>
 
 using sofa::core::objectmodel::New;
 #include <SceneCreator/SceneCreator.h>
@@ -237,7 +237,7 @@ int main(int argc, char** argv)
     argParser.parse();
 
     //force load SofaComponentAll
-    sofa::component::initSofaComponentAll();
+    sofa::component::init();
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
@@ -247,7 +247,6 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation( simulation.get() );
 
     // The graph root node
-    sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaMiscCollision");
     Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     root->setGravity( Coord3(0,0,-10) );
 

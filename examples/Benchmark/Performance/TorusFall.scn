@@ -57,7 +57,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus0Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus0CC" solverName="Linear0" />
+      <GenericConstraintCorrection name="Torus0CC" linearSolver="@Linear0" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -79,7 +79,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus1Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus1CC" solverName="Linear1" />
+      <GenericConstraintCorrection name="Torus1CC" linearSolver="@Linear1" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -101,7 +101,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus2Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus2CC" solverName="Linear2" />
+      <GenericConstraintCorrection name="Torus2CC" linearSolver="@Linear2" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -123,7 +123,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus3Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus3CC" solverName="Linear3" />
+      <GenericConstraintCorrection name="Torus3CC" linearSolver="@Linear3" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -145,7 +145,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus4Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus4CC" solverName="Linear4"/>
+      <GenericConstraintCorrection name="Torus4CC" linearSolver="@Linear4"/>
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -167,7 +167,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus5Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus5CC" solverName="Linear5"/>
+      <GenericConstraintCorrection name="Torus5CC" linearSolver="@Linear5"/>
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -189,7 +189,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus6Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus6CC" solverName="Linear6"/>
+      <GenericConstraintCorrection name="Torus6CC" linearSolver="@Linear6"/>
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -211,7 +211,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus7Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus7CC" solverName="Linear7" />
+      <GenericConstraintCorrection name="Torus7CC" linearSolver="@Linear7" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -233,7 +233,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus8Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus8CC" solverName="Linear8" />
+      <GenericConstraintCorrection name="Torus8CC" linearSolver="@Linear8" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />
@@ -255,7 +255,7 @@
       <TetrahedronSetGeometryAlgorithms name="Torus9Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
-      <GenericConstraintCorrection name="Torus9CC" solverName="Linear9" />
+      <GenericConstraintCorrection name="Torus9CC" linearSolver="@Linear9" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
         <MechanicalObject template="Vec3d" />

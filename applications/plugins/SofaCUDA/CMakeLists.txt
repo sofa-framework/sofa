@@ -156,7 +156,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSphereModel.cpp
     sofa/gpu/cuda/CudaTriangleModel.cpp
 
-    ### Constraints
+    ### Constraints  
     sofa/gpu/cuda/CudaFixedConstraint.cpp
     sofa/gpu/cuda/CudaFixedTranslationConstraint.cpp
     sofa/gpu/cuda/CudaLinearMovementConstraint.cpp
@@ -168,6 +168,11 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSphereROI.cpp
 
     sofa/gpu/cuda/CudaIndexValueMapper.cpp
+    
+    ### ConstraintCorrection
+    sofa/gpu/cuda/CudaLinearSolverConstraintCorrection.cpp
+    sofa/gpu/cuda/CudaPrecomputedConstraintCorrection.cpp
+    sofa/gpu/cuda/CudaUncoupledConstraintCorrection.cpp
 )
 
 set(CUDA_SOURCES
@@ -240,6 +245,7 @@ sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.HyperElastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.TensorMass REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
@@ -403,6 +409,7 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.SolidMechanics.TensorMass
     Sofa.Component.MechanicalLoad
     Sofa.Component.Collision.Response.Contact
+    Sofa.Component.Collision.Detection.Algorithm
     Sofa.Component.Collision.Detection.Intersection
     Sofa.Component.StateContainer
     Sofa.Component.Constraint.Projective
