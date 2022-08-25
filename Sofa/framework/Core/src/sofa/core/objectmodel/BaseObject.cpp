@@ -110,7 +110,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
         }
         else
         {
-            msg_info(this->getClassName()) << "Link \"src\" to " << valueString << " could not be set now. Will try later";
+            msg_info(this) << "Link \"src\" to " << valueString << " could not be set.";
         }
     }
     Base::parse(arg);
@@ -189,38 +189,6 @@ Base* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string
     else
         return this->getContext()->findLinkDestClass(destType, path, link);
 }
-
-void BaseObject::updateLinks(bool logErrors)
-{
-    for (BaseLink* iLink : m_vecLink)
-    {
-        const Base* previousTarget = iLink->getLinkedBase();
-        const bool ok = iLink->updateLinks();
-
-        if (!ok && iLink->storePath())
-        {
-            msg_warning_when(logErrors) << "Link update failed for " << iLink->getName() << " = " << iLink->getValueString() ;
-        }
-        else
-        {
-            const Base* currentTarget = iLink->getLinkedBase();
-            if (currentTarget && currentTarget != previousTarget)
-            {
-                if (iLink->getName() == "src")
-                {
-                    const std::string relativePath = BaseLink::CreateString(iLink->getLinkedBase(0), this);
-                    Base* target = iLink->getLinkedBase();
-                    if (const auto* targetObject = dynamic_cast<BaseObject*>(target))
-                    {
-                        this->setSrc(iLink->getLinkedPath(), targetObject, nullptr);
-                    }
-                }
-            }
-        }
-    }
-
-}
-
 
 const BaseContext* BaseObject::getContext() const
 {
