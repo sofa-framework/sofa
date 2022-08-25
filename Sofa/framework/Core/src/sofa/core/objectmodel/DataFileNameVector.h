@@ -20,76 +20,61 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/type/SVector.h>
 
 namespace sofa::core::objectmodel
 {
 
-enum class PathType {
-    FILE,
-    DIRECTORY,
-    BOTH
-};
-
-/**
- *  \brief Data specialized to store filenames, potentially relative to the current directory at the time it was specified.
- *
- */
-class SOFA_CORE_API DataFileName : public sofa::core::objectmodel::Data<std::string>
+class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::type::SVector<std::string> >
 {
 public:
+    typedef sofa::core::objectmodel::Data<sofa::type::SVector<std::string> > Inherit;
 
+    DataFileNameVector( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false);
 
-    typedef sofa::core::objectmodel::Data<std::string> Inherit;
-
-    DataFileName( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false );
-
-    DataFileName( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false );
+    DataFileNameVector( const sofa::type::SVector<std::string>& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false );
 
     /** Constructor
         this constructor should be used through the initData() methods
      */
-    explicit DataFileName(const BaseData::BaseInitData& init);
+    explicit DataFileNameVector(const BaseData::BaseInitData& init);
 
     /** Constructor
         this constructor should be used through the initData() methods
      */
-    explicit DataFileName(const Inherit::InitData& init);
+    explicit DataFileNameVector(const Inherit::InitData& init);
 
-    ~DataFileName() override = default;
+    ~DataFileNameVector() override = default;
 
+    void endEdit() override;
+
+    void addPath(const std::string& v, bool clear = false);
+
+    void setValueAsString(const std::string& v);
+
+    bool read(const std::string& s ) override;
+
+    virtual const std::string& getRelativePath(unsigned int i);
+    virtual const std::string& getFullPath(unsigned int i) const;
+
+    virtual const std::string& getAbsolutePath(unsigned int i) const;
+
+    void doOnUpdate() override;
 
     void setPathType(PathType pathType);
 
     PathType getPathType() const;
 
-    bool read(const std::string& s ) override;
-
-    void endEdit() override;
-
-
-    virtual const std::string& getRelativePath() const;
-
-    virtual const std::string& getFullPath() const;
-
-    virtual const std::string& getAbsolutePath() const;
-
-    virtual const std::string& getExtension() const;
-
-    void doOnUpdate() override;
-
 protected:
     void updatePath();
 
-    std::string m_fullpath;
-    std::string m_relativepath;
-    std::string m_extension;
-    PathType    m_pathType; ///< used to determine how file dialogs should be opened
+    sofa::type::vector<std::string> m_fullpath;
+    PathType m_pathType; ///< used to determine how file dialogs should be opened
 
 public:
-    DataFileName(const Inherit& d) = delete;
-    DataFileName& operator=(const DataFileName&) = delete;
+    DataFileNameVector(const Inherit& d) = delete;
+    DataFileNameVector& operator=(const DataFileNameVector&) = delete;
 };
 
-} // namespace sofa::core::objectmodel
+}
