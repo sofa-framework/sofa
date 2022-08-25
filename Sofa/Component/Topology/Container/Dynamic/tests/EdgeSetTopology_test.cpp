@@ -33,17 +33,36 @@ using namespace sofa::testing;
 class EdgeSetTopology_test : public BaseTest
 {
 public:
+    using Edge = EdgeSetTopologyContainer::Edge;
+    using EdgeID = EdgeSetTopologyContainer::EdgeID;
+    using EdgesAroundVertex = EdgeSetTopologyContainer::EdgesAroundVertex;
+
+    /// Method to test @sa EdgeSetTopologyContainer creation and initialisation buffers without inputs.
     bool testEmptyContainer();
+
+    /// Method to test @sa EdgeSetTopologyContainer Edge creation and initialisation with a mesh as input.
     bool testEdgeBuffers();
+
+    /// Method to test @sa EdgeSetTopologyContainer EdgesAroundVertex creation and initialisation with a mesh as input.
     bool testVertexBuffers();
+
+    /// Method to test @sa EdgeSetTopologyContainer checkTopology method.
     bool checkTopology();
 private:
+    /// <summary>
+    /// Method to factorize the creation and loading of the @sa m_scene and retrieve Topology container @sa m_topoCon
+    /// </summary>
+    /// <param name="filename">Path string of the mesh to load</param>
+    /// <returns>Bool True if loaded success</returns>
     bool loadTopologyContainer(const std::string& filename);
 
+    /// Pointer to the basic scene created with a topology for the tests
     std::unique_ptr<fake_TopologyScene> m_scene;
+    
+    /// Pointer to the topology container created in the scene @sa m_scene
     EdgeSetTopologyContainer::SPtr m_topoCon = nullptr;
 
-
+    /// GroundTruth values of reference mesh used in test: square1_edges.obj
     int nbrEdge = 45;
     int nbrVertex = 20;
 };
@@ -106,12 +125,12 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
 
     //// check edge buffer
-    const sofa::type::vector<EdgeSetTopologyContainer::Edge>& edges = m_topoCon->getEdgeArray();
+    const sofa::type::vector<Edge>& edges = m_topoCon->getEdgeArray();
     if (edges.empty())
         return false;
     
     // check edge 
-    const EdgeSetTopologyContainer::Edge& edge0 = edges[0];
+    const Edge& edge0 = edges[0];
     EXPECT_EQ(edge0.size(), 2u);
     
     for (int i = 0; i<2; ++i)
@@ -128,11 +147,11 @@ bool EdgeSetTopology_test::testEdgeBuffers()
 
 
     // Check edge buffer access    
-    const EdgeSetTopologyContainer::Edge& edge1 = m_topoCon->getEdge(1);
+    const Edge& edge1 = m_topoCon->getEdge(1);
     for (int i = 0; i<2; ++i)
         EXPECT_EQ(edge1[i], edgeTruth1[i]);
 
-    const EdgeSetTopologyContainer::Edge& edge2 = m_topoCon->getEdge(1000);
+    const Edge& edge2 = m_topoCon->getEdge(1000);
     for (int i = 0; i<2; ++i)
         EXPECT_EQ(edge2[i], sofa::InvalidID);
 
@@ -146,7 +165,7 @@ bool EdgeSetTopology_test::testVertexBuffers()
         return false;
 
     // create and check vertex buffer
-    const sofa::type::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = m_topoCon->getEdgesAroundVertexArray();
+    const sofa::type::vector< EdgesAroundVertex >& edgeAroundVertices = m_topoCon->getEdgesAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(m_topoCon->d_initPoints.getValue().size(), nbrVertex);
@@ -154,8 +173,8 @@ bool EdgeSetTopology_test::testVertexBuffers()
     
     // check EdgesAroundVertex buffer access
     EXPECT_EQ(edgeAroundVertices.size(), nbrVertex);
-    const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertex = edgeAroundVertices[0];
-    const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertexM = m_topoCon->getEdgesAroundVertex(0);
+    const EdgesAroundVertex& edgeAVertex = edgeAroundVertices[0];
+    const EdgesAroundVertex& edgeAVertexM = m_topoCon->getEdgesAroundVertex(0);
     
     EXPECT_EQ(edgeAVertex.size(), edgeAVertexM.size());
     for (size_t i = 0; i < edgeAVertex.size(); i++)
