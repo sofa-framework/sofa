@@ -307,6 +307,7 @@ struct TClassParents<void>
     }
     static const BaseClass* get(const std::size_t i)
     {
+        SOFA_UNUSED(i);
         return nullptr;
     }
 };
