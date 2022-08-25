@@ -80,24 +80,21 @@ void HexahedronSetTopologyContainer::init()
         }
     }
 
-    // will init cross element buffers and lower topology buffers
-    initTopology();
+    if (!m_hexahedron.empty())
+        initTopology();
 }
 
 void HexahedronSetTopologyContainer::initTopology()
 {
     QuadSetTopologyContainer::initTopology();
 
-    if (!d_hexahedron.getValue().empty())
-    {
-        // Create hexahedron cross element buffers.
-        createQuadsInHexahedronArray();
-        createEdgesInHexahedronArray();
+    // Create tetrahedron cross element buffers.
+    createQuadsInHexahedronArray();
+    createEdgesInHexahedronArray();
 
-        createHexahedraAroundQuadArray();
-        createHexahedraAroundEdgeArray();
-        createHexahedraAroundVertexArray();
-    }
+    createHexahedraAroundQuadArray();
+    createHexahedraAroundEdgeArray();
+    createHexahedraAroundVertexArray();
 }
 
 void HexahedronSetTopologyContainer::createHexahedronSetArray()

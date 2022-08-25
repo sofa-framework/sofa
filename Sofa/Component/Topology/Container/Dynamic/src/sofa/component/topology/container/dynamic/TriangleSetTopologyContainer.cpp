@@ -69,8 +69,9 @@ void TriangleSetTopologyContainer::init()
         }
     }
 
-    // will init cross element buffers and lower topology buffers
-    initTopology();
+    // only init if triangles are present at init.
+    if (!m_triangle.empty())
+        initTopology();
 }
 
 void TriangleSetTopologyContainer::initTopology()
@@ -78,13 +79,10 @@ void TriangleSetTopologyContainer::initTopology()
     // Force creation of Edge Neighboordhood buffers.
     EdgeSetTopologyContainer::initTopology();
 
-    if (!d_triangle.getValue().empty())
-    {
-        // Create triangle cross element buffers.
-        createEdgesInTriangleArray();
-        createTrianglesAroundVertexArray();
-        createTrianglesAroundEdgeArray();
-    }
+    // Create triangle cross element buffers.
+    createEdgesInTriangleArray();
+    createTrianglesAroundVertexArray();
+    createTrianglesAroundEdgeArray();
 }
 
 void TriangleSetTopologyContainer::reinit()

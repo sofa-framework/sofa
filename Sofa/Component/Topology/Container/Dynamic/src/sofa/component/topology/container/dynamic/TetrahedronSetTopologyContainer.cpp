@@ -75,24 +75,21 @@ void TetrahedronSetTopologyContainer::init()
         }
     }
 
-    // will init cross element buffers and lower topology buffers
-    initTopology();
+    if (!m_tetrahedron.empty())
+        initTopology();
 }
 
 void TetrahedronSetTopologyContainer::initTopology()
 {
     TriangleSetTopologyContainer::initTopology();
 
-    if (!d_tetrahedron.getValue().empty())
-    {
-        // Create tetrahedron cross element buffers.
-        createTrianglesInTetrahedronArray();
-        createEdgesInTetrahedronArray();
+    // Create tetrahedron cross element buffers.
+    createTrianglesInTetrahedronArray();
+    createEdgesInTetrahedronArray();
 
-        createTetrahedraAroundTriangleArray();
-        createTetrahedraAroundEdgeArray();
-        createTetrahedraAroundVertexArray();
-    }
+    createTetrahedraAroundTriangleArray();
+    createTetrahedraAroundEdgeArray();
+    createTetrahedraAroundVertexArray();
 }
 
 void TetrahedronSetTopologyContainer::createTetrahedronSetArray()

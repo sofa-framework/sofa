@@ -69,8 +69,9 @@ void QuadSetTopologyContainer::init()
         }
     }
 
-    // will init cross element buffers and lower topology buffers
-    initTopology();
+    // only init if triangles are present at init.
+    if (!m_quads.empty())
+        initTopology();
 }
 
 void QuadSetTopologyContainer::initTopology()
@@ -78,13 +79,10 @@ void QuadSetTopologyContainer::initTopology()
     // Force creation of Edge Neighboordhood buffers.
     EdgeSetTopologyContainer::initTopology();
 
-    if (!d_quad.getValue().empty())
-    {
-        // Create quad cross element buffers.
-        createEdgesInQuadArray();
-        createQuadsAroundVertexArray();
-        createQuadsAroundEdgeArray();
-    }
+    // Create triangle cross element buffers.
+    createEdgesInQuadArray();
+    createQuadsAroundVertexArray();
+    createQuadsAroundEdgeArray();
 }
 
 void QuadSetTopologyContainer::createQuadSetArray()

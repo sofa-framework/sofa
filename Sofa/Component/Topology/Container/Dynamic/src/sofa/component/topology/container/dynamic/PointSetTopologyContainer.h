@@ -94,9 +94,6 @@ public:
     /// Dynamic Topology API
     /// @{
 
-    /// Method called by component Init method or upper topology element.
-    void initTopology();
-
     /** \brief Checks if the Topology is coherent
      *
      */
