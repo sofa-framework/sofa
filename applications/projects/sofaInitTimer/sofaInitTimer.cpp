@@ -28,7 +28,7 @@
 #include <sofa/helper/system/thread/TimeoutWatchdog.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <iostream>

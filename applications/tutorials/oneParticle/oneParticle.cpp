@@ -29,7 +29,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/component/collision/geometry/SphereModel.h>
 #include <sofa/core/VecId.h>
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 
 #include <sofa/helper/accessor.h>
 
@@ -51,15 +51,17 @@ using sofa::core::objectmodel::New;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    SOFA_UNUSED(argc);
+
     //force load SofaComponentAll
     sofa::component::init();
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
-    sofa::gui::GUIManager::SetDimension(800, 600);
+    sofa::gui::common::GUIManager::SetDimension(800, 600);
 
-    sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::Init(argv[0]);
 
     // The graph root node
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
@@ -116,15 +118,15 @@ int main(int argc, char** argv)
 
     //======================================
     // Set up the GUI
-    sofa::gui::GUIManager::Init(argv[0]);
-    sofa::gui::GUIManager::createGUI(groot);
-    sofa::gui::GUIManager::SetDimension(800,700);
-//    sofa::gui::GUIManager::SetFullScreen();  // why does this not work ?
+    sofa::gui::common::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::createGUI(groot);
+    sofa::gui::common::GUIManager::SetDimension(800,700);
+//    sofa::gui::common::GUIManager::SetFullScreen();  // why does this not work ?
 
 
     //=======================================
     // Run the main loop
-    sofa::gui::GUIManager::MainLoop(groot);
+    sofa::gui::common::GUIManager::MainLoop(groot);
 
     sofa::simulation::graph::cleanup();
     return 0;

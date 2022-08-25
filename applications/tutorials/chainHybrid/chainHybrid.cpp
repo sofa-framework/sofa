@@ -29,9 +29,9 @@ using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Rigid3Mass;
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/Node.h>
@@ -232,8 +232,8 @@ Node *createChainHybrid(Node *root)
 
 int main(int argc, char** argv)
 {
-    sofa::gui::ArgumentParser argParser(argc, argv);
-    sofa::gui::GUIManager::RegisterParameters(&argParser);
+    sofa::gui::common::ArgumentParser argParser(argc, argv);
+    sofa::gui::common::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
 
     //force load SofaComponentAll
@@ -241,7 +241,7 @@ int main(int argc, char** argv)
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
-    sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::Init(argv[0]);
 
     auto simulation = sofa::simpleapi::createSimulation();
     sofa::simulation::setSimulation( simulation.get() );
@@ -260,6 +260,6 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    sofa::gui::GUIManager::MainLoop(root);
+    sofa::gui::common::GUIManager::MainLoop(root);
     return 0;
 }

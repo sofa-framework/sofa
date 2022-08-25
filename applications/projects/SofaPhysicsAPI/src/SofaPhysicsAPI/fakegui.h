@@ -22,11 +22,11 @@
 #ifndef FAKEGUI_H
 #define FAKEGUI_H
 
-#include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/common/BaseGUI.h>
 #include <sofa/simulation/Node.h>
 
 /// this fake GUI is only meant to manage "sendMessage" from python scripts
-class FakeGUI : public sofa::gui::BaseGUI
+class FakeGUI : public sofa::gui::common::BaseGUI
 {
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
