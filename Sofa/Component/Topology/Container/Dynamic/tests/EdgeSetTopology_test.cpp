@@ -23,6 +23,8 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/component/topology/testing/fake_TopologyScene.h>
 #include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
+#include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/helper/system/FileRepository.h>
 
 
@@ -48,6 +50,21 @@ public:
 
     /// Method to test @sa EdgeSetTopologyContainer checkTopology method.
     bool checkTopology();
+
+
+    /// Method to test @sa EdgeSetTopologyModifier removeVertices method and check edge buffers.
+    bool testRemovingVertices();
+
+    /// Method to test @sa EdgeSetTopologyModifier removeEdges method with isolated vertices and check edge buffers.
+    bool testRemovingEdges();
+
+    /// Method to test @sa EdgeSetTopologyModifier addEdges method and check edge buffers.
+    bool testAddingEdges();
+
+    /// Method to check EdgeSetTopologyContainer list of TopologyHandlers and TopologyData from other components.
+    bool checkEdgeDataGraph();
+   
+
 private:
     /// <summary>
     /// Method to factorize the creation and loading of the @sa m_scene and retrieve Topology container @sa m_topoCon
@@ -197,9 +214,145 @@ bool EdgeSetTopology_test::checkTopology()
 
     bool res = m_topoCon->checkTopology();
     
-    
     return res;
 }
+
+
+bool EdgeSetTopology_test::testRemovingVertices()
+{
+    if (!loadTopologyContainer("mesh/square1_edges.obj"))
+        return false;
+
+    // Check edge buffer access
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex);
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge);
+
+    // Get access to the Edge modifier
+    auto root = m_scene->getNode().get();
+    EdgeSetTopologyModifier::SPtr edgeModifier = root->get<EdgeSetTopologyModifier>(sofa::core::objectmodel::BaseContext::SearchDown);
+
+    if (edgeModifier == nullptr)
+        return false;
+
+    // Check edge around point to be removed
+    sofa::type::vector< EdgeID > vIds = { 0, 1, 2 };
+    const EdgesAroundVertex& edgeAVertex = m_topoCon->getEdgesAroundVertex(0);
+    auto nbrE = edgeAVertex.size();
+
+    edgeModifier->removePoints(vIds);
+
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex - vIds.size());
+    // TODO epernod 2022-08-24: Edge are not deleted when removing vertices. This might create errors.
+    //EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge - nbrE); 
+
+    return true;
+}
+
+
+bool EdgeSetTopology_test::testRemovingEdges()
+{
+    if (!loadTopologyContainer("mesh/square1_edges.obj"))
+        return false;
+
+    // Check edge buffer access
+    const sofa::type::vector<Edge>& edges = m_topoCon->getEdgeArray();
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex);
+    EXPECT_EQ(edges.size(), nbrEdge);
+
+    // Get access to the Edge modifier
+    auto root = m_scene->getNode().get();
+    EdgeSetTopologyModifier::SPtr edgeModifier = root->get<EdgeSetTopologyModifier>(sofa::core::objectmodel::BaseContext::SearchDown);
+
+    if (edgeModifier == nullptr)
+        return false;
+
+    // Check first the swap + pop_back method
+    Edge lastEdge = edges.back();
+    sofa::type::vector< EdgeID > edgeIds = { 0 };
+    
+    // Remove first edge from the buffer
+    edgeModifier->removeEdges(edgeIds);
+    
+    // Check size of the new edge buffer
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge - 1);
+
+    // Check that first edge is now the previous last edge
+    Edge newEdge = m_topoCon->getEdge(0);
+    EXPECT_EQ(lastEdge[0], newEdge[0]);
+    EXPECT_EQ(lastEdge[1], newEdge[1]);
+
+
+    // Check isolate vertex removal
+    const EdgesAroundVertex& edgeALastVertex = m_topoCon->getEdgesAroundVertex(nbrVertex - 1);
+    auto nbr = nbrEdge - 1 - edgeALastVertex.size();
+
+    edgeModifier->removeEdges(edgeALastVertex);
+    
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbr);
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex - 1);
+        
+    return true;
+}
+
+
+bool EdgeSetTopology_test::testAddingEdges()
+{
+    if (!loadTopologyContainer("mesh/square1_edges.obj"))
+        return false;
+
+    // Check edge buffer access
+    EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex);
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge);
+
+    // Get access to the Edge modifier
+    auto root = m_scene->getNode().get();
+    EdgeSetTopologyModifier::SPtr edgeModifier = root->get<EdgeSetTopologyModifier>(sofa::core::objectmodel::BaseContext::SearchDown);
+
+    if (edgeModifier == nullptr)
+        return false;
+
+    sofa::type::vector< Edge > edgesToAdd;
+    edgesToAdd.push_back(Edge(0, 5));
+    
+    // Add edges
+    edgeModifier->addEdges(edgesToAdd);
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge + edgesToAdd.size());
+
+    // Add same edge again
+    edgeModifier->addEdges(edgesToAdd);
+    // TODO epernod 2022-08-24: There is no check to add duplicated edges
+    EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge + edgesToAdd.size() * 2); 
+
+    return true;
+}
+
+
+bool EdgeSetTopology_test::checkEdgeDataGraph()
+{
+    if (!loadTopologyContainer("mesh/square1_edges.obj"))
+        return false;
+    
+    // Get the number of TopologyData linked to the topology buffer (one from Mass and one from VectorSpringFF)
+    auto& outputs = m_topoCon->d_edge.getOutputs();
+    EXPECT_EQ(outputs.size(), 2);
+
+    auto edgeHandlers = m_topoCon->getTopologyHandlerList(sofa::core::topology::TopologyElementType::EDGE);
+    auto vertexHandlers = m_topoCon->getTopologyHandlerList(sofa::core::topology::TopologyElementType::POINT);
+    
+    EXPECT_EQ(vertexHandlers.size(), 1);
+    EXPECT_EQ(edgeHandlers.size(), 2);
+
+    sofa::core::topology::TopologyHandler* vertexH0 = vertexHandlers.front();
+    sofa::core::topology::TopologyHandler* edgeH0 = edgeHandlers.front();
+    sofa::core::topology::TopologyHandler* edgeH1 = edgeHandlers.back();
+
+    EXPECT_EQ(vertexH0->getName(), "TopologyDataHandler( MeshMatrixMass )vertexMass");
+    EXPECT_EQ(edgeH0->getName(), "TopologyDataHandler( MeshMatrixMass )edgeMass");
+    EXPECT_EQ(edgeH1->getName(), "TopologyDataHandler( VectorSpringForceField )springs");
+    
+    return true;
+}
+
 
 
 
@@ -224,6 +377,25 @@ TEST_F(EdgeSetTopology_test, checkTopology)
 }
 
 
+TEST_F(EdgeSetTopology_test, testRemovingVertices)
+{
+    ASSERT_TRUE(testRemovingVertices());
+}
+
+TEST_F(EdgeSetTopology_test, testRemovingEdges)
+{
+    ASSERT_TRUE(testRemovingEdges());
+}
+
+TEST_F(EdgeSetTopology_test, testAddingEdges)
+{
+    ASSERT_TRUE(testAddingEdges());
+}
+
+TEST_F(EdgeSetTopology_test, checkEdgeDataGraph)
+{
+    ASSERT_TRUE(checkEdgeDataGraph());
+}
+
 // TODO epernod 2018-07-05: test element on Border
-// TODO epernod 2018-07-05: test Edge add/remove
 // TODO epernod 2018-07-05: test check connectivity
