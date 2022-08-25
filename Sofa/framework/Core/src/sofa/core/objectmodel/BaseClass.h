@@ -135,7 +135,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 2 base classes
 #define SOFA_CLASS2(T,Parent1,Parent2) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,Parent2> > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     SOFA_CLASS_DECL
@@ -143,7 +143,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 2 base classes
 #define SOFA_ABSTRACT_CLASS2(T,Parent1,Parent2) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,Parent2> > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     SOFA_ABSTRACT_CLASS_DECL
@@ -151,7 +151,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 3 base classes
 #define SOFA_CLASS3(T,Parent1,Parent2,Parent3) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,std::pair<Parent2,Parent3> > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -160,7 +160,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 3 base classes
 #define SOFA_ABSTRACT_CLASS3(T,Parent1,Parent2,Parent3) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,std::pair<Parent2,Parent3> > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -169,7 +169,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
 #define SOFA_CLASS4(T,Parent1,Parent2,Parent3,Parent4) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,Parent4> > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3, Parent4> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -179,7 +179,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
 #define SOFA_ABSTRACT_CLASS4(T,Parent1,Parent2,Parent3,Parent4) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,Parent4> > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3, Parent4> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -189,7 +189,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_CLASS5(T,Parent1,Parent2,Parent3,Parent4,Parent5) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,std::pair<Parent4,Parent5> > > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3, Parent4, Parent5> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -200,7 +200,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_ABSTRACT_CLASS5(T,Parent1,Parent2,Parent3,Parent4,Parent5) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,std::pair<Parent4,Parent5> > > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3, Parent4, Parent5> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -211,7 +211,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_CLASS6(T,Parent1,Parent2,Parent3,Parent4,Parent5,Parent6) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<std::pair<Parent3,Parent4>,std::pair<Parent5,Parent6> > > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3, Parent4, Parent5, Parent6> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -223,7 +223,7 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_ABSTRACT_CLASS6(T,Parent1,Parent2,Parent3,Parent4,Parent5,Parent6) \
     typedef T MyType;                                               \
-    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<std::pair<Parent3,Parent4>,std::pair<Parent5,Parent6> > > > MyClass; \
+    typedef ::sofa::core::objectmodel::TClass< T, ::sofa::core::objectmodel::Parents<Parent1, Parent2, Parent3, Parent4, Parent5, Parent6> > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
@@ -256,51 +256,71 @@ public:
     \
     friend class sofa::core::objectmodel::New<MyType>
 
-template <class Parents>
-class TClassParents
+/**
+ * Represents a list of types with ability to get the number of types, and the ith type BaseClass
+ */
+template<class T, class ...Types>
+struct Parents
 {
-public:
-    static int nb()
+    static constexpr std::size_t nb = sizeof...(Types) + 1;
+
+    static const BaseClass* get(const std::size_t i)
+    {
+        if (i == 0)
+        {
+            return T::GetClass();
+        }
+        if constexpr (sizeof...(Types) == 0)
+        {
+            return nullptr;
+        }
+        else
+        {
+            return Parents<Types...>::get(i-1);
+        }
+    }
+};
+
+template <typename Parent>
+struct TClassParents
+{
+    static constexpr std::size_t nb()
     {
         return 1;
     }
-    static const BaseClass* get(int i)
+    static const BaseClass* get(const std::size_t i)
     {
         if (i==0)
-            return Parents::GetClass();
-        else
-            return nullptr;
+        {
+            return Parent::GetClass();
+        }
+        return nullptr;
     }
 };
 
 template<>
-class TClassParents<void>
+struct TClassParents<void>
 {
-public:
-    static int nb()
+    static constexpr std::size_t nb()
     {
         return 0;
     }
-    static const BaseClass* get(int)
+    static const BaseClass* get(const std::size_t i)
     {
         return nullptr;
     }
 };
 
-template<class P1, class P2>
-class TClassParents< std::pair<P1,P2> >
+template<typename ...Types>
+struct TClassParents<Parents<Types...> >
 {
-public:
-    static int nb()
+    static constexpr std::size_t nb()
     {
-        return TClassParents<P1>::nb() + TClassParents<P2>::nb();
+        return Parents<Types...>::nb;
     }
-    static const BaseClass* get(int i)
+    static const BaseClass* get(const std::size_t i)
     {
-        if (i<TClassParents<P1>::nb())
-            return TClassParents<P1>::get(i);
-        else
-            return TClassParents<P2>::get(i-TClassParents<P1>::nb());
+        return Parents<Types...>::get(i);
     }
 };
 
@@ -317,8 +337,10 @@ protected:
         shortName = NameDecoder::getShortName<T>();
 
         parents.resize(TClassParents<Parents>::nb());
-        for (int i=0; i<TClassParents<Parents>::nb(); ++i)
+        for (std::size_t i = 0; i < TClassParents<Parents>::nb(); ++i)
+        {
             parents[i] = TClassParents<Parents>::get(i);
+        }
     }
     ~TClass() override {}
 
@@ -336,8 +358,8 @@ public:
 
     static const BaseClass* get()
     {
-        static TClass<T, Parents> *theClass=new TClass<T, Parents>();
-        return theClass;
+        static TClass<T, Parents> theClass;
+        return &theClass;
     }
 };
 
