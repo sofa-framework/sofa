@@ -120,6 +120,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
                = (L^-1 *J^t)^t * D^-1 * (L^-1*J^t )
     */
 
+
+    const bool mutlithread  = this->d_multithreading.getValue() ;
+
     if (J->rowSize()==0) return true;
 
     Jlocal2global.clear();
@@ -153,18 +156,26 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
     auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
 
-    if (taskScheduler->getThreadCount() < 1)
+    if( mutlithread )
     {
-        taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+        if (taskScheduler->getThreadCount() < 1)
+        {
+            taskScheduler->init(0);
+            msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+        }
+        else
+        {
+            msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+        }
     }
     else
     {
-        msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+       if (taskScheduler->getThreadCount() != 1) taskScheduler->init(1);
     }
 
     std::vector< SolverTask<TMatrix,TVector> > solveTaskList;
-    solveTaskList.reserve( JlocalRowSize );
+    if( mutlithread ) solveTaskList.reserve( JlocalRowSize );
+
     sofa::simulation::CpuTask::Status status;
 
     if (this->linearSystem.needInvert)
@@ -182,10 +193,19 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
             SReal* row = JLTinv[c];
             SReal* rowD = JLTinvDinv[c] ;
 
-            // CSC Lt <-> CSR L
-            solveTaskList.emplace_back( data->n, c,row , rowD ,data->LT_colptr.data(), data->LT_rowind.data() ,
-                                        data->LT_values.data(), data->invD.data(), &status );
-            taskScheduler->addTask( &(solveTaskList.back()) ); 
+            if( mutlithread )
+            {
+                // CSC Lt <-> CSR L
+                solveTaskList.emplace_back( data->n, c,row , rowD ,data->LT_colptr.data(), data->LT_rowind.data() ,
+                                            data->LT_values.data(), data->invD.data(), &status );
+                taskScheduler->addTask( &(solveTaskList.back()) );
+            }
+            else
+            {
+                SolverTask<Matrix,Vector> solTask( data->n, c,row , rowD ,data->LT_colptr.data(), data->LT_rowind.data() ,
+                                            data->LT_values.data(), data->invD.data(), &status );
+                solTask.run();
+            }
         }
 
         taskScheduler->workUntilDone(&status);
@@ -193,8 +213,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
 
     sofa::linearalgebra::FullMatrix<Real> JMinvJt( JlocalRowSize, JlocalRowSize );
+    
     std::vector< MultiplyTask<TMatrix,TVector> > multiplyTaskList;
-    multiplyTaskList.reserve( JlocalRowSize );
+    if( mutlithread ) multiplyTaskList.reserve( JlocalRowSize );
 
     {
 
@@ -205,8 +226,16 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
             Real* lineJ = JLTinvDinv[j];
             int globalRowJ = Jlocal2global[j];
 
-            multiplyTaskList.emplace_back(data->n, JlocalRowSize, j, &JLTinvDinv, &JLTinv, &JMinvJt, Jlocal2global.data(), &status );
-            taskScheduler->addTask( &(multiplyTaskList.back()) ); 
+            if( mutlithread )
+            {
+                multiplyTaskList.emplace_back(data->n, JlocalRowSize, j, &JLTinvDinv, &JLTinv, &JMinvJt, Jlocal2global.data(), &status );
+                taskScheduler->addTask( &(multiplyTaskList.back()) );
+            }
+            else
+            {
+                MultiplyTask<Matrix,Vector> mulTask(data->n, JlocalRowSize, j, &JLTinvDinv, &JLTinv, &JMinvJt, Jlocal2global.data(), &status );
+                mulTask.run();
+            } 
         }
         taskScheduler->workUntilDone(&status);
     }

@@ -43,6 +43,7 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     , invertData()
     , linearSystem()
     , currentMFactor(), currentBFactor(), currentKFactor()
+    , d_multithreading(initData(&d_multithreading, true, "Multithreading", "Enable multithreading for the assembly of the compliance matrix. Sparse solver only."))
 {
 }
 
