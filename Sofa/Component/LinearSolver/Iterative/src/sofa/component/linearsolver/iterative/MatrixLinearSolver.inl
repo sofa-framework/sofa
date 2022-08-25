@@ -246,9 +246,10 @@ template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, SReal fact)
 {
     auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    const bool multithread = d_multithread.getValue();
 
-    if( d_multithread.getValue() )
-    {
+    if( multithread)
+    {      
         if (taskScheduler->getThreadCount() < 1)
         {
             taskScheduler->init(0);
@@ -265,21 +266,18 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     }
 
     
-    std::vector< solverTask<Matrix,Vector> > taskList;
+    sofa::type::vector< ComputeColumnTask<Matrix,Vector> > taskList;
     
-    if( d_multithread.getValue() )
-    {
-        taskList.reserve( J->rowSize() );
-    }
+    if( multithread )  taskList.reserve( J->rowSize() );
     
     sofa::simulation::CpuTask::Status status;
     
     
         
     sofa::type::vector< Vector  > listRH(J->rowSize()) ; // columns of Jt
-    for (auto& rh : listRH)
+    for(int i=0;i<J->rowSize();i++) 
     {
-        rh.resize(J->colSize());
+        listRH[i].resize(J->colSize());
     }
 
     sofa::type::vector< Vector > listLH(J->rowSize()); // columns of MinvJt
@@ -295,35 +293,31 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     }
 
     //STEPS 1&2: Copy Jt and compute Minv*Jt
-    {
-        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-        // one task per column of Jt
-        for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
+
+    // one task per column of Jt
+    for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
+    {   
+        if( multithread ) 
         {
-            if ( d_multithread.getValue() )
-            {
-                taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this );
-                taskScheduler->addTask( &(taskList.back()) ); 
-            }
-            else
-            {
-                solverTask<Matrix,Vector> task(col , &listRH[col] , &listLH[col], &status , J , this );
-                task.run();
-            }
+            taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
+            taskScheduler->addTask( &(taskList.back()) ); 
         }
-        taskScheduler->workUntilDone(&status);
+        else
+        {
+            ComputeColumnTask<Matrix,Vector> task(col , &listRH[col] , &listLH[col], &status , J , this  );
+            task.run();
+        }
     }
+    taskScheduler->workUntilDone(&status);
+
 
     // STEP 3 : compute the matricial product L*MinvJt
     
     sofa::linearalgebra::FullMatrix<double> product(J->rowSize(),J->rowSize());
 
 
-    std::vector< productTask<Matrix,Vector> > productTaskList;
-    if ( d_multithread.getValue() )
-    {
-        productTaskList.reserve(J->rowSize());
-    }
+    std::vector< ProductTask<Matrix,Vector> > ProductTaskList;
+    if( multithread )  ProductTaskList.reserve(J->rowSize());
 
     {
         sofa::helper::ScopedAdvancedTimer productTimer("product");
@@ -332,14 +326,14 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         
             for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
             {
-                if( d_multithread.getValue() )
+                if( multithread )
                 {
-                    productTaskList.emplace_back(row, &listLH[row], J , &product , &status);
-                    taskScheduler->addTask( &(productTaskList.back()) );
+                    ProductTaskList.emplace_back(row, &listLH[row], J , &product , &status);
+                    taskScheduler->addTask( &(ProductTaskList.back()) );
                 }
                 else
                 {
-                    productTask<Matrix,Vector> prodTask(row, &listLH[row], J , &product , &status);
+                    ProductTask<Matrix,Vector> prodTask(row, &listLH[row], J , &product , &status);
                     prodTask.run();
                 }
             }

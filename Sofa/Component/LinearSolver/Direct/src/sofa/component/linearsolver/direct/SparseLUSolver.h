@@ -46,7 +46,7 @@ public :
     bool notSameShape;
     SparseLUInvertData()
     {
-        S=nullptr; N=nullptr; //tmp=nullptr;
+        S=nullptr; N=nullptr;
     }
 
     ~SparseLUInvertData()

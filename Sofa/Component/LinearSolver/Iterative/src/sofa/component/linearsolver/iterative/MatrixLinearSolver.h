@@ -167,16 +167,16 @@ template<class Matrix, class Vector, class ThreadManager = NoThreadManager>
 class MatrixLinearSolver;
 
 template<class Matrix, class Vector>
-class solverTask;
+class ComputeColumnTask;
 
 template<class Matrix, class Vector>
 class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>
 {
 public:
 
-    friend class solverTask<Matrix,Vector>;
+    friend class ComputeColumnTask<Matrix,Vector>;
     
-    Data<bool> d_multithread;
+    Data<bool> d_multithread;//< enable multhreading for the assembly of the compliance matrix, sparse solver only
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(MatrixLinearSolver,Matrix,Vector,NoThreadManager), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
 

@@ -247,6 +247,7 @@ css* SparseLUSolver<TMatrix,TVector,TThreadManager>::symbolic_LU(cs *A)
 template<class TMatrix, class TVector,class TThreadManager>
 void SparseLUSolver<TMatrix,TVector,TThreadManager>::init()
 {
+    Inherit1::init();
     permutationId = d_typePermutation.getValue().getSelectedId() ; 
 }
 
