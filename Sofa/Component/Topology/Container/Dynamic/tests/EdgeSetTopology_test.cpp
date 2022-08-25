@@ -31,7 +31,9 @@
 using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::testing;
 
-
+/// <summary>
+/// Class to test @sa EdgeSetTopologyContainer and @sa EdgeSetTopologyModifier methods
+/// </summary>
 class EdgeSetTopology_test : public BaseTest
 {
 public:
@@ -290,7 +292,7 @@ bool EdgeSetTopology_test::testRemovingEdges()
     
     EXPECT_EQ(m_topoCon->getNbEdges(), nbr);
     EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex - 1);
-        
+
     return true;
 }
 
