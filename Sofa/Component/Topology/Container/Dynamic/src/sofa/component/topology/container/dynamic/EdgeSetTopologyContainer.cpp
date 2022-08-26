@@ -74,10 +74,10 @@ void EdgeSetTopologyContainer::init()
 
     // only init if edges are present at init.
     if (!m_edge.empty())
-        initTopology();
+        initContainers();
 }
 
-void EdgeSetTopologyContainer::initTopology()
+void EdgeSetTopologyContainer::initContainers()
 {
     // force computation of neighborhood elements
     createEdgesAroundVertexArray();

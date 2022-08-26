@@ -222,8 +222,8 @@ public:
     /// Dynamic Topology API
     /// @{
 
-    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see TriangleSetTopologyContainer::initTopology()
-    void initTopology();
+    /// Method called by component Init method. Will create all the topology neighboorhood buffers and call @see QuadSetTopologyContainer::initContainers()
+    void initContainers() override;
 
     /** \brief Checks if the topology is coherent
      *

@@ -98,7 +98,7 @@ public:
     /// Dynamic Topology API
     /// @{
     /// Method called by component Init method. Will create all the topology neighboorhood buffers.
-    void initTopology();
+    void initContainers() override;
 
     /** \brief Checks if the topology is coherent
      *
