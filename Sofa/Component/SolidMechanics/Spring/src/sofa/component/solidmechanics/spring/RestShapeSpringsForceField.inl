@@ -354,7 +354,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
                 CPos rotatedPivot = p1[index].getOrientation().rotate(localPivot);
                 CPos pivot2 = p1[index].getCenter() + rotatedPivot;
                 CPos dx = pivot2 - m_pivots[i];
-                getVCenter(f1[index]) -= dx * (i < k.size() ? k[i] : k[0]);
+                getVCenter(f1[index]) -= dx * k[(i < k.size()) * i];
             }
 
             // rotation
@@ -372,7 +372,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (dq[3] < 1.0)
                 dq.quatToAxis(dir, angle);
 
-            getVOrientation(f1[index]) -= dir * angle * (i < k_a.size() ? k_a[i] : k_a[0]);
+            getVOrientation(f1[index]) -= dir * angle * k_a[(i < k_a.size()) * i];
         }
         else // non-rigid implementation 
         {
@@ -380,7 +380,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             const sofa::Index ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            f1[index] -= dx * ((i < k.size()) ? k[i] : k[0]);
+            f1[index] -= dx * k[(i < k.size()) * i];
         }
     }
 }
@@ -399,12 +399,12 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
         const sofa::Index curIndex = m_indices[i];
         if constexpr (isRigidType<DataTypes>())
         {
-            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * ((i < k.size()) ? k[i] : k[0]) * kFactor;
-            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * (i < k_a.size() ? k_a[i] : k_a[0]) * kFactor;
+            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * k[(i < k.size()) * i] * kFactor;
+            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * k_a[(i < k_a.size()) * i] * kFactor;
         }
         else
         {
-            df1[m_indices[i]] -= dx1[m_indices[i]] * ((i < k.size()) ? k[i] : k[0]) * kFactor;
+            df1[m_indices[i]] -= dx1[m_indices[i]] * k[(i < k.size()) * i] * kFactor;
         }
     }
 
@@ -471,7 +471,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         curIndex = m_indices[index];
 
         // translation
-        const auto vt = -kFact * (index < k.size() ? k[index] : k[0]);
+        const auto vt = -kFact * k[(index < k.size()) * index];
         for (int i = 0; i < space_size; i++)
         {
             mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
@@ -480,7 +480,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         // rotation (if applicable)
         if constexpr (isRigidType<DataTypes>())
         {
-            const auto vr = -kFact * (index < k_a.size() ? k_a[index] : k_a[0]);
+            const auto vr = -kFact * k_a[(index < k_a.size()) * index];
             for (int i = space_size; i < total_size; i++)
             {
                 mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
