@@ -85,6 +85,9 @@ protected:
 public:
     void init() override;
 
+    /// Method to be overriden by child class to create all the topology buffers
+    virtual void initContainers() {}
+
     /// Load the topology from a file.
     ///
     /// The default implementation supports the following formats: obj, gmsh, mesh (custom simple text file), xs3 (deprecated description of mass-springs networks).

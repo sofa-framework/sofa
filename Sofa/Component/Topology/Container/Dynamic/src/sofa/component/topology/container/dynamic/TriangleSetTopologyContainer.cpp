@@ -73,13 +73,13 @@ void TriangleSetTopologyContainer::init()
 
     // only init if triangles are present at init.
     if (!m_triangle.empty())
-        initTopology();
+        initContainers();
 }
 
-void TriangleSetTopologyContainer::initTopology()
+void TriangleSetTopologyContainer::initContainers()
 {
     // Force creation of Edge Neighborhood buffers.
-    EdgeSetTopologyContainer::initTopology();
+    EdgeSetTopologyContainer::initContainers();
 
     // Create triangle cross element buffers.
     createEdgesInTriangleArray();
