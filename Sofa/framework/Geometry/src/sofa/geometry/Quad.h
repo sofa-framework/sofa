@@ -30,7 +30,7 @@ namespace sofa::geometry
 
 struct Quad
 {
-    static const sofa::Size NumberOfNodes = 4;
+    static constexpr sofa::Size NumberOfNodes = 4;
 
     Quad() = delete;
 

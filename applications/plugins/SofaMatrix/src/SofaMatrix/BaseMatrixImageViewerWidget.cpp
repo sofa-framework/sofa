@@ -104,6 +104,7 @@ void BaseMatrixImageViewerGraphWidget::fitInView()
 
 void BaseMatrixImageViewerGraphWidget::resizeEvent(QResizeEvent* resize_event)
 {
+    SOFA_UNUSED(resize_event);
     this->fitInView();
 }
 

@@ -28,7 +28,7 @@ namespace sofa::geometry
 
 struct Point
 {
-    static const sofa::Size NumberOfNodes = 1;
+    static constexpr sofa::Size NumberOfNodes = 1;
 
     Point() = delete;
 };

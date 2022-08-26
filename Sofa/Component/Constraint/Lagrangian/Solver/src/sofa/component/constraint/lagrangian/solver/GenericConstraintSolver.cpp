@@ -822,7 +822,7 @@ void GenericConstraintProblem::gaussSeidel(SReal timeout, GenericConstraintSolve
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", currentIterations);
 
-    result_output(force, error, iterCount, convergence);
+    result_output(solver, force, error, iterCount, convergence);
 
     if(showGraphs)
     {
@@ -1064,7 +1064,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(SReal timeout, GenericConstrai
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", currentIterations);
 
-    result_output(force, error, iter, convergence);
+    result_output(solver, force, error, iter, convergence);
 
     if(showGraphs)
     {
@@ -1142,7 +1142,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
     {
         if(!constraintsResolutions[i])
         {
-            msg_error("GenericConstraintSolver") << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
+            msg_error(solver) << "Bad size of constraintsResolutions in GenericConstraintProblem" ;
             break;
         }
         constraintsResolutions[i]->init(i, w, force);
@@ -1223,7 +1223,7 @@ void GenericConstraintProblem::NNCG(GenericConstraintSolver* solver, int iterati
         }
     }
 
-    result_output(force, error, iterCount, convergence);
+    result_output(solver, force, error, iterCount, convergence);
 }
 
 void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const
@@ -1306,7 +1306,7 @@ void GenericConstraintProblem::gaussSeidel_increment(bool measureError, SReal *d
     }
 }
 
-void GenericConstraintProblem::result_output(SReal *force, SReal error, int iterCount, bool convergence)
+void GenericConstraintProblem::result_output(GenericConstraintSolver *solver, SReal *force, SReal error, int iterCount, bool convergence)
 {
     currentError = error;
     currentIterations = iterCount+1;
@@ -1315,11 +1315,11 @@ void GenericConstraintProblem::result_output(SReal *force, SReal error, int iter
 
     if(!convergence)
     {
-        msg_info("GenericConstraintSolver") << "No convergence : error = " << error ;
+        msg_info(solver) << "No convergence : error = " << error ;
     }
     else
     {
-        msg_info("GenericConstraintSolver") << "Convergence after " << currentIterations << " iterations " ;
+        msg_info(solver) << "Convergence after " << currentIterations << " iterations " ;
     }
 
     for(int i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())

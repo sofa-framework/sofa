@@ -58,3 +58,11 @@ namespace sofa::component::linearsolver::direct
     SOFA_ATTRIBUTE_DISABLED( \
     "v22.06 (PR#2725)", "v22.12", "It is no longer possible to export the linear system matrix from within SparseLDLSolver. Instead, use the component GlobalSystemMatrixExporter.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_DIRECT
+#define SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME(msg)
+#else
+#define SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME(msg) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.06", "v22.12", msg)
+#endif // SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME

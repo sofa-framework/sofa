@@ -36,11 +36,11 @@
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
 #include <sofa/helper/init.h>
 
-#include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/common/BaseGUI.h>
 #include "fakegui.h"
 
 #include <sofa/type/Vec.h>
@@ -226,13 +226,13 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
 
           char* argv[]= { const_cast<char*>("a") };
 
-          if (sofa::gui::GUIManager::Init(argv[0],"qt"))
-              std::cerr << "ERROR in sofa::gui::GUIManager::Init()" << std::endl;
+          if (sofa::gui::common::GUIManager::Init(argv[0],"qt"))
+              std::cerr << "ERROR in sofa::gui::common::GUIManager::Init()" << std::endl;
 
-          if (sofa::gui::GUIManager::createGUI(NULL))
-              std::cerr << "ERROR in sofa::gui::GUIManager::CreateGUI()" << std::endl;
+          if (sofa::gui::common::GUIManager::createGUI(NULL))
+              std::cerr << "ERROR in sofa::gui::common::GUIManager::CreateGUI()" << std::endl;
 
-          sofa::gui::GUIManager::SetDimension(600,600);
+          sofa::gui::common::GUIManager::SetDimension(600,600);
         }
         first = false;
     }    
@@ -271,13 +271,13 @@ SofaPhysicsSimulation::~SofaPhysicsSimulation()
 
     if ( useGUI ) {
       // GUI Cleanup
-      //groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
+      //groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::common::GUIManager::CurrentSimulation() );
 
       //if (groot!=NULL)
       //  sofa::simulation::getSimulation()->unload(groot);
 
 
-      //sofa::gui::GUIManager::closeGUI();
+      //sofa::gui::common::GUIManager::closeGUI();
     }
 }
 
@@ -303,7 +303,7 @@ bool SofaPhysicsSimulation::load(const char* cfilename)
         updateOutputMeshes();
 
         if ( useGUI ) {
-          sofa::gui::GUIManager::SetScene(m_RootNode.get(),cfilename);
+          sofa::gui::common::GUIManager::SetScene(m_RootNode.get(),cfilename);
         }
     }
     else
@@ -492,7 +492,7 @@ void SofaPhysicsSimulation::step()
     getSimulation()->animate(groot);
     getSimulation()->updateVisual(groot);
     if ( useGUI ) {
-      sofa::gui::BaseGUI* gui = sofa::gui::GUIManager::getGUI();
+      sofa::gui::common::BaseGUI* gui = sofa::gui::common::GUIManager::getGUI();
       gui->stepMainLoop();
       if (GUIFramerate)
       {
@@ -535,7 +535,7 @@ void SofaPhysicsSimulation::updateCurrentFPS()
             currentFPS = ((double)timeTicks / (curtime - stepTime[i]))*(frameCounter<100?frameCounter:100);
             stepTime[i] = curtime;
             if ( useGUI ) {
-                sofa::gui::BaseGUI* gui = sofa::gui::GUIManager::getGUI();
+                sofa::gui::common::BaseGUI* gui = sofa::gui::common::GUIManager::getGUI();
                 gui->showFPS(currentFPS);
             }
         }

@@ -145,6 +145,7 @@ protected:
     }
     void consume(int n)
     {
+        SOFA_UNUSED(n);
 
         for(std::atomic<int> value = 0; value != ExitToken; ++counter)
         {

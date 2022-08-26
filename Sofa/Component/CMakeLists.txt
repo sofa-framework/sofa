@@ -3,35 +3,29 @@ project(Sofa.Component LANGUAGES CXX)
 
 set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
-set(SOFACOMPONENT_DIRS
-    ODESolver
-    IO
-    Playback
-    SceneUtility
-    Topology
-    Visual
-    LinearSolver
-    Mass
-    Diffusion
-    Mapping
-    SolidMechanics
-    StateContainer
-    Constraint
-    AnimationLoop
-    MechanicalLoad
-    Collision
-    Setting
-    Controller
-    Engine
-    Haptics
+sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
+    DIRECTORIES
+        ODESolver
+        IO
+        Playback
+        SceneUtility
+        Topology
+        Visual
+        LinearSolver
+        Mass
+        Diffusion
+        Mapping
+        SolidMechanics
+        StateContainer
+        Constraint
+        AnimationLoop
+        MechanicalLoad
+        Collision
+        Setting
+        Controller
+        Engine
+        Haptics
 )
-set(SOFACOMPONENT_TARGETS)
-foreach(component_dir ${SOFACOMPONENT_DIRS})
-    sofa_add_subdirectory(module ${component_dir} ${PROJECT_NAME}.${component_dir} ON)
-    if(TARGET ${PROJECT_NAME}.${component_dir})
-        list(APPEND SOFACOMPONENT_TARGETS ${PROJECT_NAME}.${component_dir})
-    endif()
-endforeach()
 
 set(HEADER_FILES
     ${SOFACOMPONENT_SOURCE_DIR}/config.h.in

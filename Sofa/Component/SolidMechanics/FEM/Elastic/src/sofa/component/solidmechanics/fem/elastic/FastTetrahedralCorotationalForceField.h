@@ -111,8 +111,8 @@ public:
 
 public:
     /// Topology Data
-    using VecTetrahedronRestInformation = sofa::type::rebind_to<VecCoord, TetrahedronRestInformation>;
-    using VecMat3x3 = sofa::type::rebind_to<VecCoord, Mat3x3>;
+    using VecTetrahedronRestInformation = type::rebind_to<VecCoord, TetrahedronRestInformation>;
+    using VecMat3x3 = type::rebind_to<VecCoord, Mat3x3>;
 
     core::topology::PointData<VecMat3x3 > pointInfo; ///< Internal point data
     core::topology::EdgeData<VecMat3x3 > edgeInfo; ///< Internal edge data
