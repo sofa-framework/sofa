@@ -64,12 +64,12 @@ public:
     Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
     Data< type::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
     Data< std::string >                    d_ODESolverName; ///< name of the ode solver
 
-    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3152)", "v23.06", "String data of the GenericConstraintCorrection were replaced by explicit links")
+    //SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         Inherit1::parse(arg);

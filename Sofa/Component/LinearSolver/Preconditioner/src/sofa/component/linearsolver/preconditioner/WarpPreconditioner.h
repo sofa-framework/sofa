@@ -56,9 +56,9 @@ public:
     Data<unsigned> f_useRotationFinder; ///< Which rotation Finder to use
     Data<unsigned> d_updateStep; ///< Number of steps before the next refresh of the system matrix in the main solver
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the WarpPreconditioner were replaced by an explicit link")
+    SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK()
     Data <std::string> solverName; ///< Name of the solver/preconditioner to warp
-    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3155)", "v23.06", "String data of the ShewchukPCGLinearSolver were replaced by an explicit link")
+    //SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK()
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         Inherit1::parse(arg);
