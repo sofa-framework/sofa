@@ -21,34 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-
-#include <list>
+#include <sofa/core/behavior/PartialLinearSolver.h>
 
 namespace sofa::core::behavior
 {
 
-/**
- *  \brief Interface describing partial linear solvers API
- *
- */
-class SOFA_CORE_API PartialLinearSolver : public virtual sofa::core::objectmodel::BaseObject
+PartialLinearSolver::~PartialLinearSolver()
 {
-public:
-    SOFA_ABSTRACT_CLASS(PartialLinearSolver, objectmodel::BaseObject);
-
-    ~PartialLinearSolver() override;
-
-    /// Init the partial solve
-    virtual void initPartialSolve() = 0;
-    
-    /// partial solve :
-    /// b is accumulated
-    /// db is a sparse vector that is added to b
-    /// partial_x is a sparse vector (with sparse map given) that provide the result of M x = b+db
-    /// Solve Mx=b
-    virtual void partialSolve(std::list<sofa::SignedIndex>& /*I_last_Disp*/, std::list<sofa::SignedIndex>& /*I_last_Dforce*/, bool /*NewIn*/) = 0;
-};
+}
 
 } // namespace sofa::core::behavior

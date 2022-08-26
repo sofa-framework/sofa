@@ -223,6 +223,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/PairInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp
+    ${SRC_ROOT}/behavior/PartialLinearSolver.cpp
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/SingleMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/fwd.cpp
