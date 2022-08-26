@@ -145,22 +145,7 @@ void ParallelBVHNarrowPhase::initializeTopology(sofa::core::topology::BaseMeshTo
     auto insertionIt = m_initializedTopology.insert(topology);
     if (insertionIt.second)
     {
-        // The following calls force the creation of some topology arrays before the concurrent computing.
-        // Those arrays cannot be created on the fly, in a concurrent environment,
-        // due to possible race conditions.
-        // Depending on the scene graph, it is possible that those calls are not enough.
-        if (topology->getNbPoints())
-        {
-            topology->getTrianglesAroundVertex(0);
-        }
-        if (topology->getNbTriangles())
-        {
-            topology->getEdgesInTriangle(0);
-        }
-        if (topology->getNbEdges())
-        {
-            topology->getTrianglesAroundEdge(0);
-        }
+        topology->initContainers();
     }
 }
 
