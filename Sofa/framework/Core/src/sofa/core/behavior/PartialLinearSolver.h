@@ -41,7 +41,6 @@ public:
     /// Init the partial solve
     virtual void init_partial_solve() = 0;
     
-    /// Init the partial solve
     /// partial solve :
     /// b is accumulated
     /// db is a sparse vector that is added to b
