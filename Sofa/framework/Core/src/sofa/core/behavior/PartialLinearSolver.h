@@ -39,14 +39,14 @@ public:
     SOFA_ABSTRACT_CLASS(PartialLinearSolver, objectmodel::BaseObject);
 
     /// Init the partial solve
-    virtual void init_partial_solve() = 0;
+    virtual void initPartialSolve() = 0;
     
     /// partial solve :
     /// b is accumulated
     /// db is a sparse vector that is added to b
     /// partial_x is a sparse vector (with sparse map given) that provide the result of M x = b+db
     /// Solve Mx=b
-    virtual void partial_solve(std::list<sofa::SignedIndex>& /*I_last_Disp*/, std::list<sofa::SignedIndex>& /*I_last_Dforce*/, bool /*NewIn*/) = 0;
+    virtual void partialSolve(std::list<sofa::SignedIndex>& /*I_last_Disp*/, std::list<sofa::SignedIndex>& /*I_last_Dforce*/, bool /*NewIn*/) = 0;
 };
 
 } // namespace sofa::core::behavior

@@ -125,8 +125,8 @@ public:
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
-    void init_partial_solve() override;
-    void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn) override;
+    void initPartialSolve() override;
+    void partialSolve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn) override;
 
     void init_partial_inverse(const Index &nb, const Index &bsize);
 

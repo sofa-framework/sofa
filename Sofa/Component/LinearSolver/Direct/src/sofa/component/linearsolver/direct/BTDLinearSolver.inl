@@ -171,7 +171,7 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         H.insert( make_pair(  IndexPair(nb-1, nb-1), iHi  ) );
 
         // on calcule les blocks diagonaux jusqu'au bout!!
-        // TODO : ajouter un compteur "first_block" qui évite de descendre les déplacements jusqu'au block 0 dans partial_solve si ce block n'a pas été appelé
+        // TODO : ajouter un compteur "first_block" qui évite de descendre les déplacements jusqu'au block 0 dans partialSolve si ce block n'a pas été appelé
         computeMinvBlock(0, 0);
     }
 }
@@ -252,7 +252,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     SignedIndex j0 = i-nBlockComputedMinv[i];
 
 
-    /////////////// ADD : Calcul pour faire du partial_solve //////////
+    /////////////// ADD : Calcul pour faire du partialSolve //////////
     // first iHj is initiallized to iHj0+1 (that is supposed to be already computed)
     SubMatrix iHj ;
     if(subpartSolve.getValue() )
@@ -387,7 +387,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_inverse(const Index &/*nb*/, c
 }
 
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
+void BTDLinearSolver<Matrix,Vector>::initPartialSolve()
 {
 
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
@@ -605,7 +605,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(Index indMaxBloc)
 }
 
 template<class Matrix, class Vector>
-void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn)  ///*Matrix& M, Vector& result, Vector& rh, */
+void BTDLinearSolver<Matrix,Vector>::partialSolve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn)  ///*Matrix& M, Vector& result, Vector& rh, */
 {
 
     Index MinIdBloc_OUT = Iout.front();

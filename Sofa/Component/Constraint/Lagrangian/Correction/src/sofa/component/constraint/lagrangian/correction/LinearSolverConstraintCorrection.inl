@@ -556,7 +556,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     }
 
     // Init the internal data of the solver for partial solving
-    m_partialLinearSolver->init_partial_solve();
+    m_partialLinearSolver->initPartialSolve();
 
 
     ///////// new : precalcul des liste d'indice ///////
@@ -586,7 +586,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
     last_disp = begin;
 
-    m_partialLinearSolver->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
+    m_partialLinearSolver->partialSolve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
 
     _new_force = false;
 
