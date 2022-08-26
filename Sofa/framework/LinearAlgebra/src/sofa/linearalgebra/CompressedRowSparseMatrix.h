@@ -39,7 +39,6 @@ class CompressedRowSparseMatrix : public linearalgebra::BaseMatrix
 public:
     typedef CompressedRowSparseMatrix<TBlock,TVecBlock,TVecIndex> Matrix;
     typedef TBlock Block;
-    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef matrix_bloc_traits<Block, Matrix::Index> traits;
     typedef typename traits::Real Real;
     enum { NL = traits::NL };  ///< Number of rows of a block
@@ -51,7 +50,6 @@ public:
     enum { operand = 1 };
 
     typedef TVecBlock VecBlock;
-    using VecBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = VecBlock;
     typedef TVecIndex VecIndex;
     struct IndexedBlock
     {
@@ -85,9 +83,7 @@ public:
             return (l != b.l) || (c != b.c);
         }
     };
-    using IndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = IndexedBlock;
     typedef type::vector<IndexedBlock> VecIndexedBlock;
-    using VecIndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = VecIndexedBlock;
 
     static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL, Index>::split(index, modulo); }
     static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC, Index>::split(index, modulo); }

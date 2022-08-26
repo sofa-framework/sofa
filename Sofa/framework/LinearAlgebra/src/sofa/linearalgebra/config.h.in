@@ -43,14 +43,6 @@
 
 // DEPRECATION MACROS
 
-#define SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
-#define SOFA_ATTRIBUTE_DISABLED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
 #define SOFA_MATRIXMANIPULATOR_DEPRECATED() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v22.06", "v22.12", "")
