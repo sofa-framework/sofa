@@ -295,6 +295,9 @@ public:
 
 protected:
 
+    SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "LinearSolver does not offer any partial_solve anymore. Please refer to core::behavior::PartialLinearSolver if you wish to use partial solving features.")
+    virtual void partial_solve(Matrix& /*M*/, Vector& /*partial_solution*/, Vector& /*sparse_rh*/, ListIndex& /* indices_solution*/, ListIndex& /* indices input */) = delete;
+
     class TempVectorContainer
     {
     public:

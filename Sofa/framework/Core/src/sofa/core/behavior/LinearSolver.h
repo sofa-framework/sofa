@@ -74,6 +74,12 @@ public:
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
 
+    SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "LinearSolver does not offer any partial_solve anymore. Please refer to core::behavior::PartialLinearSolver if you wish to use partial solving features.")
+    virtual void init_partial_solve() = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "LinearSolver does not offer any partial_solve anymore. Please refer to core::behavior::PartialLinearSolver if you wish to use partial solving features.")
+    virtual void partial_solve(std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Disp*/, std::list<linearalgebra::BaseMatrix::Index>& /*I_last_Dforce*/, bool /*NewIn*/) = delete;
+
     /// Invert the system, this method is optional because it's called when solveSystem() is called for the first time
     virtual void invertSystem() {}
 
