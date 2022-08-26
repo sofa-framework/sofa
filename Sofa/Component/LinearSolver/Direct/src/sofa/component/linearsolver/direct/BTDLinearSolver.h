@@ -46,7 +46,7 @@ class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver
 public:
     SOFA_CLASS2(SOFA_TEMPLATE2(BTDLinearSolver, Matrix, Vector), 
                 SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector),
-                sofa::core::behavior::PartialLinearSolver,
+                sofa::core::behavior::PartialLinearSolver
     );
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
