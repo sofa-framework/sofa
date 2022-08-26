@@ -73,7 +73,6 @@ using namespace sofa::component::collision::response::mapper;
 
 sofa::component::collision::response::mapper::ContactMapperCreator< sofa::component::collision::response::mapper::ContactMapper<CudaSphereCollisionModel> > CudaSphereContactMapperClass("PenalityContactForceField",true);
 
-
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<CudaVec3fTypes> >  FixParticlePerformerCudaVec3fClass("FixParticle",true);
@@ -88,8 +87,8 @@ using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types
 
 int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<sofa::component::collision::geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<sofa::component::collision::geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
-
 } // namespace sofa::gui::component::performer
+
 
 
 namespace sofa::gpu::cuda
