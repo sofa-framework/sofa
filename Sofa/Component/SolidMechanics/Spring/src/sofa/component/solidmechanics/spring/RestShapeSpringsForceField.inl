@@ -339,6 +339,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         if (useRestMState)
             ext_index = m_ext_indices[i];
 
+        const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
+
         // rigid case
         if constexpr (isRigidType<DataTypes>())
         {
@@ -346,7 +348,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (i >= m_pivots.size())
             {
                 CPos dx = p1[index].getCenter() - p0[ext_index].getCenter();
-                getVCenter(f1[index]) -= dx * (i < k.size() ? k[i] : k[0]);
+                getVCenter(f1[index]) -= dx * stiffness;
             }
             else
             {
@@ -354,7 +356,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
                 CPos rotatedPivot = p1[index].getOrientation().rotate(localPivot);
                 CPos pivot2 = p1[index].getCenter() + rotatedPivot;
                 CPos dx = pivot2 - m_pivots[i];
-                getVCenter(f1[index]) -= dx * k[(i < k.size()) * i];
+                getVCenter(f1[index]) -= dx * stiffness;
             }
 
             // rotation
@@ -372,7 +374,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (dq[3] < 1.0)
                 dq.quatToAxis(dir, angle);
 
-            getVOrientation(f1[index]) -= dir * angle * k_a[(i < k_a.size()) * i];
+            const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
+            getVOrientation(f1[index]) -= dir * angle * angularStiffness;
         }
         else // non-rigid implementation 
         {
@@ -380,7 +383,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             const sofa::Index ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            f1[index] -= dx * k[(i < k.size()) * i];
+            f1[index] -= dx * stiffness;
         }
     }
 }
@@ -397,10 +400,14 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
         const sofa::Index curIndex = m_indices[i];
+        const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
+
         if constexpr (isRigidType<DataTypes>())
         {
-            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * k[(i < k.size()) * i] * kFactor;
-            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * k_a[(i < k_a.size()) * i] * kFactor;
+            const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
+
+            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * stiffness * kFactor;
+            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * angularStiffness * kFactor;
         }
         else
         {
