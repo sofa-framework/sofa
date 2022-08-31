@@ -142,8 +142,8 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 {
     BaseObject* obj = this;
 
-    std::multimap < std::string, BaseData*> dataLoaderMap(loader->m_aliasData);
-    std::multimap < std::string, BaseData*>::iterator it_map;
+    BaseObject::MapData dataLoaderMap = loader->m_aliasData;
+    BaseObject::MapData::iterator it_map;
 
     if (attributeList != nullptr)
     {
