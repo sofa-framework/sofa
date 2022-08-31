@@ -144,19 +144,25 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
         return drawLines(points, size, RGBAColor::red());
     }
 
-    glLineWidth(size);
-    if (getLightEnabled()) disableLighting();
-    glBegin(GL_LINES);
+    // gather lines with same colors
+    std::map<RGBAColor, std::vector<Vector3> > colorPointsMap;
+    for (std::size_t i = 0; i < colors.size(); ++i)
     {
-        for (std::size_t i=0; i<points.size()/2; ++i)
+        if (colorPointsMap.find(colors[i]) == colorPointsMap.end())
         {
-            setMaterial(colors[i]);
-            internalDrawLine(points[2*i],points[2*i+1], colors[i] );
-            resetMaterial(colors[i]);
+            colorPointsMap.insert({ colors[i] , {} });
         }
-    } glEnd();
-    if (getLightEnabled()) enableLighting();
-    glLineWidth(1);
+
+        colorPointsMap[colors[i]].push_back(points[2 * i]);
+        colorPointsMap[colors[i]].push_back(points[2 * i + 1]);
+    }
+
+    // call the drawLine method which takes only one color
+    for (auto [color, points] : colorPointsMap)
+    {
+        drawLines(points, size, color);
+    }
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
