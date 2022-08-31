@@ -19,17 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "TemplatesAliases.h"
+#include <sofa/defaulttype/TemplatesAliases.h>
 
 #include <iostream>
 #include <map>
 #include <sofa/helper/logging/Messaging.h>
-#include "VecTypes.h"
-#include "RigidTypes.h"
-namespace sofa
-{
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 typedef std::map<std::string, TemplateAlias> TemplateAliasesMap;
@@ -129,8 +127,4 @@ static RegisterTemplateAlias Vec3dAlias("Vec3d", sofa::defaulttype::Vec3Types::N
 static RegisterTemplateAlias Vec6dAlias("Vec6d", sofa::defaulttype::Vec6Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid2dAlias("Rigid2d", sofa::defaulttype::Rigid2Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid3dAlias("Rigid3d", sofa::defaulttype::Rigid3Types::Name(), isSRealFloat());
-
-
-}// defaulttype
-
-}// sofa
+} // namespace sofa::defaulttype

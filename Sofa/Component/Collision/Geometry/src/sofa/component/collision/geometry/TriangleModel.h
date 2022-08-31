@@ -102,7 +102,7 @@ using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
  * The class \sa TTriangle is used to access specific triangle of this collision Model.
  */
 template<class TDataTypes>
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleCollisionModel : public core::CollisionModel
+class TriangleCollisionModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes), core::CollisionModel);

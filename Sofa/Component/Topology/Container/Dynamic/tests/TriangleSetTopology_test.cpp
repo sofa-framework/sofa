@@ -59,7 +59,6 @@ bool TriangleSetTopology_test::testEmptyContainer()
 
     EXPECT_EQ(triangleContainer->d_initPoints.getValue().size(), 0);
     EXPECT_EQ(triangleContainer->getNbPoints(), 0);
-    EXPECT_EQ(triangleContainer->getPoints().size(), 0);
 
     return true;
 }
@@ -247,8 +246,6 @@ bool TriangleSetTopology_test::testVertexBuffers()
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
     EXPECT_EQ(topoCon->getNbPoints(), nbrVertex);
-    EXPECT_EQ(topoCon->getPoints().size(), nbrVertex);
-
 
     // check TrianglesAroundVertex buffer access
     EXPECT_EQ(triAroundVertices.size(), nbrVertex);

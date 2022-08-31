@@ -19,10 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ROIValueMapper_CPP_
-
-#include "ROIValueMapper.h"
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/component/engine/transform/ROIValueMapper.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::transform

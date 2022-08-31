@@ -75,91 +75,22 @@ bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
 Quat<SReal> QtViewer::_mouseInteractorNewQuat;
 
-#if defined(QT_VERSION) && QT_VERSION >= 0x050400
-QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
-{
-    QSurfaceFormat f = QSurfaceFormat::defaultFormat();
-
-    //Multisampling
-    if(nbMSAASamples > 1)
-    {
-        msg_info("QtViewer") <<"QtViewer: Set multisampling anti-aliasing (MSSA) with " << nbMSAASamples << " samples." ;
-        f.setSamples(static_cast<int>(nbMSAASamples));
-    }
-
-    if(!SOFAGUI_ENABLE_NATIVE_MENU)
-    {
-        f.setSwapInterval(0); // disable vertical refresh sync
-    }
-
-    int vmajor = 3, vminor = 2;
-    f.setVersion(vmajor,vminor);
-    f.setProfile(QSurfaceFormat::CompatibilityProfile);
-    f.setOption(QSurfaceFormat::DeprecatedFunctions, true);
-
-    f.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-
-    return f;
-}
-#else
-QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
-{
-    QGLFormat f = QGLFormat::defaultFormat();
-
-    if(nbMSAASamples > 1)
-    {
-        std::cout <<"QtViewer: Set multisampling anti-aliasing (MSSA) with " << nbMSAASamples << " samples." << std::endl;
-        f.setSampleBuffers(true);
-        f.setSamples(nbMSAASamples);
-    }
-
-//    int val = 0;
-
-#if defined(QT_VERSION) && QT_VERSION >= 0x040200
-    f.setSwapInterval(0); // disable vertical refresh sync
-#endif
-#if defined(QT_VERSION) && QT_VERSION >= 0x040700
-    int vmajor = 3, vminor = 2;
-    //int vmajor = 4, vminor = 2;
-    //std::cout << "QtViewer: Trying to open an OpenGL " << vmajor << "." << vminor << " compatibility profile context" << std::endl;
-    f.setVersion(vmajor,vminor);
-    f.setProfile(QGLFormat::CompatibilityProfile);
-#endif
-    //f.setOption(QGL::SampleBuffers);
-    return f;
-}
-
-#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
-
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
-QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-#if defined(QT_VERSION) && QT_VERSION >= 0x050400
+QtViewer::QtViewer(QWidget* parent, const char* name)
     : QOpenGLWidget(parent)
- #else
-    : QOpenGLWidget(setupGLFormat(nbMSAASamples), parent)
-#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 {
     m_backend.reset(new GLBackend());
     pick = new GLPickHandler();
 
     this->setObjectName(name);
 
-#if defined(QT_VERSION) && QT_VERSION >= 0x050400
-    this->setFormat(setupGLFormat(nbMSAASamples));
-#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
-
     groot = nullptr;
     initTexturesDone = false;
     backgroundColour[0] = 1.0f;
     backgroundColour[1] = 1.0f;
     backgroundColour[2] = 1.0f;
-
-    // setup OpenGL mode for the window
-    //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
-    timerAnimate = new QTimer(this);
-    //connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
     _video = false;
     m_bShowAxis = false;
@@ -188,7 +119,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
-    connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
+    connect( &captureTimer, &QTimer::timeout, this, &QtViewer::captureEvent );
 }
 
 // ---------------------------------------------------------
@@ -759,8 +690,8 @@ void QtViewer::drawScene(void)
     int height = _H;
     bool stereo = currentCamera->getStereoEnabled();
     bool twopass = stereo;
-    sofa::component::visualmodel::BaseCamera::StereoMode smode = currentCamera->getStereoMode();
-    sofa::component::visualmodel::BaseCamera::StereoStrategy sStrat = currentCamera->getStereoStrategy();
+    sofa::component::visual::BaseCamera::StereoMode smode = currentCamera->getStereoMode();
+    sofa::component::visual::BaseCamera::StereoStrategy sStrat = currentCamera->getStereoStrategy();
     double sShift = currentCamera->getStereoShift();
     bool stencil = false;
     bool viewport = false;
@@ -770,29 +701,29 @@ void QtViewer::drawScene(void)
     {
         if(stereo)
         {
-            if (smode == sofa::component::visualmodel::BaseCamera::STEREO_AUTO)
+            if (smode == sofa::component::visual::BaseCamera::STEREO_AUTO)
         {
             // auto-detect stereo mode
-            static int prevsmode = sofa::component::visualmodel::BaseCamera::STEREO_AUTO;
+            static int prevsmode = sofa::component::visual::BaseCamera::STEREO_AUTO;
             if ((_W <= 1280 && _H == 1470) || (_W <= 1920 && _H == 2205))
             {
                 // standard HDMI 1.4 stereo frame packing format
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING;
+                smode = sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Frame Packing" << std::endl;
             }
             else if (_W >= 2 * _H)
             {
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE;
+                smode = sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side" << std::endl;
             }
             else if (_H > _W)
             {
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM;
+                smode = sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Top Bottom" << std::endl;
             }
             else
             {
-                smode = sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED;
+                smode = sofa::component::visual::BaseCamera::STEREO_INTERLACED;
                 if (smode != prevsmode) std::cout << "AUTO Stereo mode: Interlaced" << std::endl;
                 //smode = STEREO_SYDE_BY_SIDE_HALF;
                 //if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side Half" << std::endl;
@@ -801,43 +732,43 @@ void QtViewer::drawScene(void)
         }
             switch (smode)
             {
-            case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
+            case sofa::component::visual::BaseCamera::STEREO_INTERLACED:
             {
                 stencil = true;
                 glEnable(GL_STENCIL_TEST);
                 MakeStencilMask();
                 break;
             }
-            case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
-            case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
+            case sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE:
+            case sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
             {
                 width /= 2;
                 viewport = true;
                 vpleft = sofa::type::make_array(0,0,width,height);
                 vpright = sofa::type::make_array(_W-width,0,width,height);
-                if (smode == sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF)
+                if (smode == sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE_HALF)
                     width = _W; // keep the original ratio for camera
                 break;
             }
-            case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
-            case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
-            case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
+            case sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING:
+            case sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM:
+            case sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM_HALF:
             {
-                if (smode == sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING && _H == 1470) // 720p format
+                if (smode == sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING && _H == 1470) // 720p format
                     height = 720;
-                else if (smode == sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING && _H == 2205) // 1080p format
+                else if (smode == sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING && _H == 2205) // 1080p format
                     height = 1080;
                 else // other resolutions
                     height /= 2;
                 viewport = true;
                 vpleft = sofa::type::make_array(0,0,width,height);
                 vpright = sofa::type::make_array(0,_H-height,width,height);
-                if (smode == sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF)
+                if (smode == sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM_HALF)
                     height = _H; // keep the original ratio for camera
                 break;
             }
-            case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
-            case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
+            case sofa::component::visual::BaseCamera::STEREO_AUTO:
+            case sofa::component::visual::BaseCamera::STEREO_NONE:
             default:
                 twopass = false;
                 break;
@@ -881,11 +812,11 @@ void QtViewer::drawScene(void)
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            if(sStrat == sofa::component::visualmodel::BaseCamera::PARALLEL)
+            if(sStrat == sofa::component::visual::BaseCamera::PARALLEL)
             {
                 glTranslated(sShift/2,0,0);
             }
-            else if(sStrat == sofa::component::visualmodel::BaseCamera::TOEDIN)
+            else if(sStrat == sofa::component::visual::BaseCamera::TOEDIN)
             {
                 double distance = currentCamera ? currentCamera->getDistance() : 10*sShift;
                 double angle = atan2(sShift,distance)*180.0/M_PI;
@@ -901,7 +832,7 @@ void QtViewer::drawScene(void)
 
     if (_renderingMode == GL_RENDER)
     {
-        currentCamera->setCurrentSide(sofa::component::visualmodel::BaseCamera::LEFT);
+        currentCamera->setCurrentSide(sofa::component::visual::BaseCamera::LEFT);
         DisplayOBJs();
     }
     if(supportStereo)
@@ -933,12 +864,12 @@ void QtViewer::drawScene(void)
         glPushMatrix();
         glLoadIdentity();
 
-        if(sStrat == sofa::component::visualmodel::BaseCamera::PARALLEL) {glTranslated(-sShift/2,0,0);}
+        if(sStrat == sofa::component::visual::BaseCamera::PARALLEL) {glTranslated(-sShift/2,0,0);}
 
         glMultMatrixd(mat);
         if (_renderingMode == GL_RENDER)
         {
-            currentCamera->setCurrentSide(sofa::component::visualmodel::BaseCamera::RIGHT);
+            currentCamera->setCurrentSide(sofa::component::visual::BaseCamera::RIGHT);
             DisplayOBJs();
         }
         if (stereo)

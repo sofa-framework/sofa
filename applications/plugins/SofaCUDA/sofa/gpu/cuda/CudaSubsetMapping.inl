@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaSubsetMapping.h>
-#include <SofaBaseMechanics/SubsetMapping.inl>
+#include <sofa/component/mapping/linear/SubsetMapping.inl>
 #include <sofa/core/topology/TopologySubsetData.inl>
 
 namespace sofa::gpu::cuda

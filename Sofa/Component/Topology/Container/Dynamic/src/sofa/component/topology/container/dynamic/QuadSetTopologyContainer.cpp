@@ -772,7 +772,7 @@ bool QuadSetTopologyContainer::linkTopologyHandlerToData(core::topology::Topolog
 {
     if (elementType == sofa::geometry::ElementType::QUAD)
     {
-        d_edge.addOutput(topologyHandler);
+        d_quad.addOutput(topologyHandler);
         return true;
     }
     else

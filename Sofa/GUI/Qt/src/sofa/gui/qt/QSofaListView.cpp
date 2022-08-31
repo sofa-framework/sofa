@@ -22,19 +22,19 @@
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
 #include "GraphListenerQListView.h"
-#include "AddObject.h"
 #include "ModifyObject.h"
 #include "GenGraphForm.h"
 #include "RealGUI.h"
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
-#include <SofaSimulationCommon/TransformationVisitor.h>
-#include <SofaSimulationCommon/xml/BaseElement.h>
-#include <SofaSimulationCommon/xml/XML.h>
+#include <sofa/simulation/common/TransformationVisitor.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/cast.h>
 #include <QMenu>
 #include <QtGlobal> // version macro
 #include <QMessageBox>
+#include <QApplication>
 
 #include <QDesktopServices>
 #include <QFileInfo>
@@ -50,10 +50,10 @@ namespace sofa::gui::qt
 {
 
 QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
-        QWidget* parent,
-        const char* name,
-        Qt::WindowFlags f):
-    QTreeWidget(parent),
+                             QWidget* parent,
+                             const char* name,
+                             Qt::WindowFlags f):
+    SofaSceneGraphWidget(parent),
     graphListener_(nullptr),
     AddObjectDialog_(nullptr),
     attribute_(attribute),
@@ -77,10 +77,6 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
         end.close();
     }
 
-    //Creation of the file dialog
-    AddObjectDialog_ = new AddObject ( &list_object, this );
-    AddObjectDialog_->hide();
-
     this->setColumnCount(2);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     header()->setResizeMode(0, QHeaderView::Interactive);
@@ -99,10 +95,9 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     graphListener_ = new GraphListenerQListView(this);
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this,SIGNAL(customContextMenuRequested(const QPoint&)) ,this,SLOT(RunSofaRightClicked(const QPoint&)) );
-    connect(this,SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int )), this, SLOT(RunSofaDoubleClicked(QTreeWidgetItem*, int)) );
-    connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int) ), this, SLOT(updateMatchingObjectmodel(QTreeWidgetItem*, int)) );
-
+    connect(this, &QSofaListView::customContextMenuRequested ,this, &QSofaListView::RunSofaRightClicked);
+    connect(this, &QSofaListView::itemDoubleClicked, this, &QSofaListView::RunSofaDoubleClicked);
+    connect(this, &QSofaListView::itemClicked, this, [&](QTreeWidgetItem *item, int){ updateMatchingObjectmodel(item); });
 }
 
 QSofaListView::~QSofaListView()
@@ -110,8 +105,10 @@ QSofaListView::~QSofaListView()
     delete graphListener_;
 }
 
-void QSofaListView::Clear(Node* rootNode)
+
+void QSofaListView::Clear(Node* /*rootNode*/)
 {
+    /*
     if(graphListener_ != nullptr)
     {
         delete graphListener_;
@@ -124,13 +121,12 @@ void QSofaListView::Clear(Node* rootNode)
     this->setSortingEnabled(false);
 
     rootNode->addListener(graphListener_);
-    graphListener_->onBeginAddChild ( nullptr, rootNode );
-    graphListener_->freeze ( rootNode );
-    std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
+    update();
 
+    std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
     for (graph_iterator = graphListener_->items.begin();
-            graph_iterator != graphListener_->items.end();
-            ++graph_iterator)
+         graph_iterator != graphListener_->items.end();
+         ++graph_iterator)
     {
         Node* node = dynamic_cast< Node* >(graph_iterator->first);
         if (node!=nullptr && !node->isActive())
@@ -140,12 +136,12 @@ void QSofaListView::Clear(Node* rootNode)
             emit RequestActivation(object_.ptr.Node, node->isActive());
         }
     }
-
+    */
 }
 
 void QSofaListView::CloseAllDialogs()
 {
-    emit( Close() );
+    emit Close();
     assert( map_modifyObjectWindow.empty() );
     assert( map_modifyDialogOpened.empty() );
 
@@ -192,12 +188,9 @@ void QSofaListView::getExpandedNodes(QTreeWidgetItem* item, std::vector<std::str
 
 void QSofaListView::getExpandedNodes(std::vector<std::string>& pathes)
 {
-    emit Lock(true);
-
+    LockContextManager lock(this, true);
     QTreeWidgetItem* rootitem = this->topLevelItem(0) ;
     getExpandedNodes(rootitem,pathes) ;
-
-    emit Lock(false);
 }
 
 void QSofaListView::collapseNode()
@@ -208,14 +201,14 @@ void QSofaListView::collapseNode()
 void QSofaListView::collapseNode(QTreeWidgetItem* item)
 {
     if (!item) return;
-    emit Lock(true);
+
+    LockContextManager lock(this, true);
     for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem* child = item->child(i);
         child->setExpanded(false);
     }
     item->setExpanded ( true );
-    emit Lock(false);
 }
 
 void QSofaListView::expandPath(const std::string& path)
@@ -247,14 +240,11 @@ void QSofaListView::expandPath(const std::string& path)
 
 void QSofaListView::expandPathFrom(const std::vector<std::string>& pathes)
 {
-    emit Lock(true);
-
+    LockContextManager lock(this, true);
     for(auto& path : pathes)
     {
         expandPath(path) ;
     }
-
-    emit Lock(false);
 }
 
 
@@ -265,8 +255,10 @@ void QSofaListView::expandNode()
 
 void QSofaListView::expandNode(QTreeWidgetItem* item)
 {
-    if (!item) return;
-    emit Lock(true);
+    if (!item)
+        return;
+
+    LockContextManager lock(this, true);
     item->setExpanded ( true );
 
     for(int i=0 ; i<item->childCount() ; i++)
@@ -276,7 +268,45 @@ void QSofaListView::expandNode(QTreeWidgetItem* item)
         expandNode(child);
     }
 
-    emit Lock(false);
+}
+
+void QSofaListView::setRoot(Node* root)
+{
+    if(!root)
+        return;
+
+    CloseAllDialogs();
+    clear();
+
+    if(graphListener_)
+        delete graphListener_;
+    graphListener_ = new GraphListenerQListView(this);
+
+    setSortingEnabled(false);
+
+    bool lockStatus = m_isLocked;
+    m_isLocked=false;
+    root->addListener(graphListener_);
+    graphListener_->onBeginAddChild(nullptr, root);
+    m_isLocked=lockStatus;
+    m_isDirty=false;
+
+    emit dirtynessChanged(m_isDirty);
+}
+
+void QSofaListView::update()
+{
+    if(!m_isDirty)
+        return;
+
+    m_isDirty=false;
+
+    if(!graphListener_ || !this->topLevelItem(0))
+    {
+        emit dirtynessChanged(m_isDirty);
+        return;
+    }
+    emit dirtynessChanged(m_isDirty);
 }
 
 void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item, int)
@@ -321,6 +351,7 @@ void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item)
 
     addInPropertyWidget(item, true);
 }
+
 void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
 {
     if(!item)
@@ -338,25 +369,6 @@ void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
     }
 }
 
-void QSofaListView::Freeze()
-{
-    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
-    graphListener_->freeze(groot);
-}
-
-void QSofaListView::Unfreeze()
-{
-    if(!graphListener_)
-        return;
-    if(!graphListener_->findObject(this->topLevelItem(0)))
-        return;
-
-    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
-    if(!groot)
-        return;
-    graphListener_->unfreeze(groot);
-}
-
 void QSofaListView::contextMenuEvent(QContextMenuEvent *event)
 {
     event->accept();
@@ -368,12 +380,12 @@ void QSofaListView::focusObject()
         emit( focusChanged(object_.ptr.Object));
 
 }
+
 void QSofaListView::focusNode()
 {
     if( object_.isNode())
         emit( focusChanged(object_.ptr.Node));
 }
-
 
 /*****************************************************************************************************************/
 void QSofaListView::RunSofaRightClicked( const QPoint& point)
@@ -437,7 +449,6 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
 
         if ( attribute_ == SIMULATION)
         {
-            act = contextMenu->addAction("Add Node", this,SLOT(RaiseAddObject()));
             act = contextMenu->addAction("Remove Node", this,SLOT(RemoveNode()));
             //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
             if ( !isNodeErasable ( object_.ptr.Node ) )
@@ -447,17 +458,6 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
         }
     }
     act = contextMenu->addAction("Modify", this,SLOT(Modify()));
-    if(object_hasData)
-    {
-        if(item->childCount() > 0)
-        {
-            act = contextMenu->addAction("Hide Data", this,SLOT(HideDatas()));
-        }
-        else
-        {
-            act = contextMenu->addAction("Show Data", this,SLOT(ShowDatas()));
-        }
-    }
 
     if( object_.isBase() )
     {
@@ -484,7 +484,6 @@ void QSofaListView::RunSofaDoubleClicked(QTreeWidgetItem* item, int /*index*/)
 
     item->setExpanded( !item->isExpanded());
     Modify();
-
 }
 
 /*****************************************************************************************************************/
@@ -528,46 +527,31 @@ void QSofaListView::SaveNode()
 {
     if( object_.ptr.Node != nullptr)
     {
-        emit Lock(true);
+        LockContextManager lock(this, true);
         Node * node = object_.ptr.Node;
         emit RequestSaving(node);
-        emit Lock(false);
-
     }
 }
 void QSofaListView::exportOBJ()
 {
     if( object_.ptr.Node != nullptr)
     {
-        emit Lock(true);
+        LockContextManager lock(this, true);
         Node * node = object_.ptr.Node;
         emit RequestExportOBJ(node,true);
-        emit Lock(false);
     }
 }
-void QSofaListView::RaiseAddObject()
-{
-    emit Lock(true);
-    assert(AddObjectDialog_);
 
-    std::string path( (dynamic_cast<RealGUI*>(QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
-    AddObjectDialog_->setPath ( path );
-    AddObjectDialog_->show();
-    AddObjectDialog_->raise();
-    emit Lock(false);
-
-}
 void QSofaListView::RemoveNode()
 {
     if( object_.type == typeNode)
     {
-        emit Lock(true);
+        LockContextManager lock(this, true);
         Node::SPtr node = object_.ptr.Node;
         if ( node == node->getRoot() )
         {
             if ( QMessageBox::warning ( this, "Removing root", "root node cannot be removed" ) )
                 return;
-
         }
         else
         {
@@ -575,14 +559,13 @@ void QSofaListView::RemoveNode()
             node->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
             emit NodeRemoved();
         }
-        emit Lock(false);
     }
 }
+
 void QSofaListView::Modify()
 {
     void *current_Id_modifyDialog = nullptr;
-    emit Lock(true);
-
+    LockContextManager lock(this, true);
     if ( currentItem() != nullptr )
     {
         ModifyObjectFlags dialogFlags = ModifyObjectFlags();
@@ -610,10 +593,8 @@ void QSofaListView::Modify()
         {
             //Object already being modified: no need to open a new window
             (*testWindow).second->raise();
-            emit Lock(false);
             return;
         }
-
 
         dialogModifyObject = new ModifyObject(current_Id_modifyDialog,currentItem(),this,dialogFlags,currentItem()->text(0).toStdString().c_str());
         if(object_.type == typeData)
@@ -625,16 +606,14 @@ void QSofaListView::Modify()
 
         map_modifyDialogOpened.insert( std::make_pair ( current_Id_modifyDialog, currentItem()) );
         map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModifyObject));
-        connect ( dialogModifyObject, SIGNAL( objectUpdated() ), this, SIGNAL( Updated() ));
-        connect ( this, SIGNAL( Close() ), dialogModifyObject, SLOT( closeNow() ) );
-        connect ( dialogModifyObject, SIGNAL( dialogClosed(void *) ) , this, SLOT( modifyUnlock(void *)));
-        connect ( dialogModifyObject, SIGNAL( nodeNameModification(simulation::Node*) ) , this, SLOT( nodeNameModification(simulation::Node*) ));
-        connect ( dialogModifyObject, SIGNAL( dataModified(QString) ), this, SIGNAL( dataModified(QString) ) );
+        connect ( dialogModifyObject, &ModifyObject::objectUpdated, this, &QSofaListView::Updated );
+        connect ( this, &QSofaListView::Close, dialogModifyObject, &ModifyObject::closeNow );
+        connect ( dialogModifyObject, &ModifyObject::dialogClosed, this, &QSofaListView::modifyUnlock );
+        connect ( dialogModifyObject, &ModifyObject::nodeNameModification, this, &QSofaListView::nodeNameModification );
+        connect ( dialogModifyObject, &ModifyObject::dataModified, this, &QSofaListView::dataModified );
         dialogModifyObject->show();
         dialogModifyObject->raise();
-
     }
-    emit Lock(false);
 }
 
 void QSofaListView::UpdateOpenedDialogs()
@@ -650,18 +629,6 @@ void QSofaListView::UpdateOpenedDialogs()
 void QSofaListView::ExpandRootNodeOnly()
 {
     this->expandToDepth(0);
-}
-
-void QSofaListView::HideDatas()
-{
-    if( object_.type == typeObject )
-    {
-        emit Lock(true);
-        Unfreeze();
-        graphListener_->removeDatas(object_.ptr.Object);
-        Freeze();
-        emit Lock(false);
-    }
 }
 
 /// @brief Open a file at given path and line number using an external editor.
@@ -735,18 +702,6 @@ void QSofaListView::copyFilePathToClipBoard()
     QApplication::clipboard()->setText(finfo.absoluteFilePath()) ;
 }
 
-
-void QSofaListView::ShowDatas()
-{
-    if ( object_.type == typeObject )
-    {
-        emit Lock(true);
-        Unfreeze();
-        graphListener_->addDatas(object_.ptr.Object);
-        Freeze();
-        emit Lock(false);
-    }
-}
 /*****************************************************************************************************************/
 // Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
 bool QSofaListView::isNodeErasable ( BaseNode* node)
@@ -790,92 +745,5 @@ void QSofaListView::Export()
     form->filename->setText(gname.c_str());
     form->show();
 }
-
-
-void QSofaListView::loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale )
-{
-    emit Lock(true);
-    //Verify if the file exists
-    if ( !sofa::helper::system::DataRepository.findFile ( path ) ) return;
-    path = sofa::helper::system::DataRepository.getFile ( path );
-
-    //If we add the object without clicking on the graph (direct use of the method),
-    //the object will be added to the root node
-    if ( currentItem() == nullptr )
-    {
-        for ( std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = graphListener_->items.begin() ;
-                it != graphListener_->items.end() ; ++ it )
-        {
-            if ( ( *it ).second->parent() == nullptr ) //Root node position
-            {
-                object_.ptr.Node = dynamic_cast< sofa::simulation::Node *> ( ( *it ).first );
-                object_.type = typeNode;
-                break;
-            }
-        }
-        assert(object_.ptr.Node != nullptr);
-    }
-
-    //We allow unlock the graph to make all the changes now
-    graphListener_->unfreeze ( object_.ptr.Node );
-
-    //Loading of the xml file
-    simulation::xml::BaseElement* xml = simulation::xml::loadFromFile ( path.c_str() );
-    if ( xml == nullptr ) return;
-
-    if ( !xml->init() )
-        dmsg_error("QSofaListView") << "Objects initialization failed." ;
-
-    BaseNode* new_basenode = xml->getObject()->toBaseNode();
-    if ( new_basenode == nullptr )
-    {
-        dmsg_error("QSofaListView") << "Objects initialization failed.";
-        delete xml;
-        return ;
-    }
-
-    Node* new_node = down_cast<Node> ( new_basenode );
-
-    new_node->addListener(graphListener_);
-    if ( object_.ptr.Node && new_node)
-    {
-        if ( object_.ptr.Node->child.empty() &&  object_.ptr.Node->object.empty() )
-        {
-            //Temporary Root : the current graph is empty, and has only a single node "Root"
-            object_.ptr.Node->detachFromGraph();
-            graphListener_->onBeginAddChild ( nullptr, new_node );
-            simulation::getSimulation()->init(new_node);
-            emit RootNodeChanged(new_node, path.c_str());
-        }
-        else
-        {
-            object_.ptr.Node->addChild (new_node );
-            simulation::getSimulation()->init(new_node);
-            emit NodeAdded();
-        }
-    }
-    graphListener_->freeze(object_.ptr.Node);
-    transformObject ( new_node, dx, dy, dz, rx,ry,rz,scale );
-    emit Lock(false);
-    object_.ptr.Node =  nullptr;
-}
-
-void QSofaListView::transformObject ( Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
-{
-    if ( node == nullptr )
-        return;
-    TransformationVisitor transform(sofa::core::execparams::defaultInstance());
-    transform.setTranslation(dx,dy,dz);
-    transform.setRotation(rx,ry,rz);
-    transform.setScale(scale,scale,scale);
-    transform.execute(node);
-}
-
-
-
-
-
-
-
 
 } //namespace sofa::gui::qt

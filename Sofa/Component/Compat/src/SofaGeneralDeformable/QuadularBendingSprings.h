@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/QuadularBendingSprings.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/QuadularBendingSprings.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/QuadularBendingSprings.h")
 
 namespace sofa::component::forcefield
 {

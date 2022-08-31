@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
-
+#include <sofa/testing/NumericTest.h>
 #include <sofa/type/Vec.h>
 
 #include <SofaDistanceGrid/DistanceGrid.h>
@@ -37,7 +35,7 @@ namespace _distancegrid_
 {
 using sofa::type::Vector3 ;
 
-struct DistanceGrid_test : public Sofa_test<SReal>
+struct DistanceGrid_test : public sofa::testing::NumericTest<SReal>
 {
     void chekcValidConstructorsCube(){
         EXPECT_MSG_NOEMIT(Warning, Error) ;

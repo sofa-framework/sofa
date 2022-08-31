@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define INDEXVALUEMAPPER_CPP_
 
-#include "IndexValueMapper.inl"
+#include <sofa/component/engine/transform/IndexValueMapper.inl>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 

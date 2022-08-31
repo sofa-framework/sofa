@@ -22,9 +22,10 @@
 #ifndef SOFA_COMPONENT_MISC_PARTICLESOURCE_INL
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_INL
 #include <SofaSphFluid/config.h>
+
 #include <SofaSphFluid/ParticleSource.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
 namespace sofa
@@ -208,7 +209,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
     if (i0 == 1) // ignore the first point if it is the only one
     {
         i0 = 0;
-        sofa::component::topology::PointSetTopologyContainer* pointCon;
+        sofa::component::topology::container::dynamic::PointSetTopologyContainer* pointCon;
         this->getContext()->get(pointCon);
         if (pointCon != nullptr)
         {
@@ -271,7 +272,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         if (nbParticlesToCreate <= 0)
             return;
 
-        sofa::component::topology::PointSetTopologyModifier* pointMod;
+        sofa::component::topology::container::dynamic::PointSetTopologyModifier* pointMod;
         this->getContext()->get(pointMod);
         
         // Particles creation.

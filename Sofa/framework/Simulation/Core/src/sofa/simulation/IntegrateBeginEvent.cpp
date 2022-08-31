@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "IntegrateBeginEvent.h"
+#include <sofa/simulation/IntegrateBeginEvent.h>
 
 namespace sofa
 {

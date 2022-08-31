@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "TopologicalChangeManager.h"
+#include <sofa/gui/component/performer/TopologicalChangeManager.h>
 
 
 #include <sofa/simulation/Node.h>

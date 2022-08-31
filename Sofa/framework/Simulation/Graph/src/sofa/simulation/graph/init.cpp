@@ -64,7 +64,7 @@ static const struct CleanupCheck
     ~CleanupCheck()
     {
         if (simulation::graph::isInitialized() && !simulation::graph::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaSimulationGraph", "sofa::simulation::graph::cleanup()");
+            helper::printLibraryNotCleanedUpWarning("Sofa.Simulation.Graph", "sofa::simulation::graph::cleanup()");
     }
 } check;
 

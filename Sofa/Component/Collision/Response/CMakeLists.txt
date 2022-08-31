@@ -3,12 +3,9 @@ project(Sofa.Component.Collision.Response LANGUAGES CXX)
 
 set(SOFACOMPONENTCOLLISIONRESPONSE_SOURCE_DIR "src/sofa/component/collision/response")
 
-set(SOFACOMPONENTCOLLISIONRESPONSE_DIRS Mapper Contact)
-set(SOFACOMPONENTCOLLISIONRESPONSE_TARGETS)
-foreach(response_dir ${SOFACOMPONENTCOLLISIONRESPONSE_DIRS})
-	sofang_add_component_subdirectory(${response_dir} ${PROJECT_NAME}.${response_dir})
-    list(APPEND SOFACOMPONENTCOLLISIONRESPONSE_TARGETS ${PROJECT_NAME}.${response_dir})
-endforeach()
+sofa_add_subdirectory_modules(SOFACOMPONENTCOLLISIONRESPONSE_TARGETS
+    DIRECTORIES Mapper Contact
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTCOLLISIONRESPONSE_SOURCE_DIR}/config.h.in

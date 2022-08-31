@@ -1,19 +1,31 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.Component LANGUAGES CXX)
 
-# force Compat if already not activated
-if(NOT TARGET Sofa.Component.Compat)
-	add_subdirectory(Compat)
-endif()
-
 set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
-set(SOFACOMPONENT_DIRS ODESolver IO Playback SceneUtility Topology Visual LinearSolver Mass Diffusion Mapping SolidMechanics StateContainer Constraint AnimationLoop MechanicalLoad Collision Setting Controller Engine)
-set(SOFACOMPONENT_TARGETS)
-foreach(component_dir ${SOFACOMPONENT_DIRS})
-	sofang_add_component_subdirectory(${component_dir} ${PROJECT_NAME}.${component_dir})
-	list(APPEND SOFACOMPONENT_TARGETS ${PROJECT_NAME}.${component_dir})
-endforeach()
+sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
+    DIRECTORIES
+        ODESolver
+        IO
+        Playback
+        SceneUtility
+        Topology
+        Visual
+        LinearSolver
+        Mass
+        Diffusion
+        Mapping
+        SolidMechanics
+        StateContainer
+        Constraint
+        AnimationLoop
+        MechanicalLoad
+        Collision
+        Setting
+        Controller
+        Engine
+        Haptics
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENT_SOURCE_DIR}/config.h.in

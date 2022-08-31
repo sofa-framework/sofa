@@ -29,9 +29,9 @@ using namespace sofa::defaulttype ;
 
 using sofa::component::mass::UniformMass ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
@@ -44,7 +44,7 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::core::ExecParams ;
 using sofa::component::statecontainer::MechanicalObject ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/testing/BaseTest.h>

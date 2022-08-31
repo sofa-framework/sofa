@@ -22,13 +22,13 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation;
 using sofa::simulation::Simulation ;
 using sofa::core::objectmodel::New ;
 
-#include <SofaGeneralEngine/MergePoints.h>
-using sofa::component::engine::MergePoints ;
+#include <sofa/component/engine/generate/MergePoints.h>
+using sofa::component::engine::generate::MergePoints ;
 
 using std::vector;
 using std::string;

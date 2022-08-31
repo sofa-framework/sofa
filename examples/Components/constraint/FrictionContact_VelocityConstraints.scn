@@ -15,7 +15,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     <VisualStyle displayFlags="showVisual" />
     <GenericConstraintSolver tolerance="1e-6" maxIterations="1000"/>
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="1" />
@@ -27,7 +26,6 @@
     <Node>
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <DefaultCollisionGroupManager name="Group" />
         <Node name="CUBE_1_1">
             <MechanicalObject template="Rigid3d" scale="0.3" dx="-2.8" dy="-1.5" dz="0.0" rx="0" />
             <UniformMass totalMass="100.0" />

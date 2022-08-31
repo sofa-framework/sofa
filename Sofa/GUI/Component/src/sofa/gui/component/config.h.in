@@ -34,4 +34,5 @@
 namespace sofa::gui::component
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::gui::component

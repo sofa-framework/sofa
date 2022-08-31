@@ -23,7 +23,7 @@
 
 #include <MultiThreading/config.h>
 
-#include <SofaBaseCollision/BruteForceBroadPhase.h>
+#include <sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h>
 #include <sofa/simulation/CpuTask.h>
 
 namespace sofa::core::collision
@@ -43,10 +43,10 @@ class BruteForcePairTest;
  * The work is divided into n tasks executed in parallel. n is the number of threads available in
  * the global thread pool.
  */
-class SOFA_MULTITHREADING_PLUGIN_API ParallelBruteForceBroadPhase : public BruteForceBroadPhase
+class SOFA_MULTITHREADING_PLUGIN_API ParallelBruteForceBroadPhase : public detection::algorithm::BruteForceBroadPhase
 {
 public:
-    SOFA_CLASS(ParallelBruteForceBroadPhase, BruteForceBroadPhase);
+    SOFA_CLASS(ParallelBruteForceBroadPhase, detection::algorithm::BruteForceBroadPhase);
 
     void init() override;
 

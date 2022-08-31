@@ -286,6 +286,12 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
     myfile.close();
 }
 
+template <class DataTypes>
+bool QuadSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return ((_drawQuads.getValue() || showQuadIndices.getValue()) && this->m_topology->getNbQuads() != 0) || Inherit1::mustComputeBBox();
+}
+
 template<class Coord>
 bool is_point_in_quad(const Coord& p,
         const Coord& a, const Coord& b,
@@ -341,6 +347,8 @@ template<class DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
+
+    vparams->drawTool()->saveLastState();
 
     // Draw Quads indices
     if (showQuadIndices.getValue() && this->m_topology->getNbQuads() != 0)
@@ -446,6 +454,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
     }
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

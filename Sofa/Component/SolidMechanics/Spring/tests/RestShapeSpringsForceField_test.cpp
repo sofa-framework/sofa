@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 using namespace sofa::simpleapi;
 
 #include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.h>

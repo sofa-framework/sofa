@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#include <sofa/helper/init.h>
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/logging/Messaging.h>

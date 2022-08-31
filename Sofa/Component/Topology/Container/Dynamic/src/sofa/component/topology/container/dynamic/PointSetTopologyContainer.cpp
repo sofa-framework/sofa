@@ -59,24 +59,12 @@ PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
     , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
     , nbPoints (initData(&nbPoints, npoints, "nbPoints", "Number of points"))
-    , points(initData(&points, "points","List of point indices"))
 {
     addAlias(&d_initPoints,"points");
 }
 
 void PointSetTopologyContainer::setNbPoints(Size n)
 {
-
-    int diffSize = n - nbPoints.getValue();
-    sofa::helper::WriteAccessor< sofa::Data< sofa::type::vector<PointID> > > points = this->points;
-    points.resize(n);
-
-    if( diffSize > 0 )
-    {
-        GeneratePointID generator( PointID( nbPoints.getValue() ) );
-        std::generate( points.begin()+nbPoints.getValue(), points.end(), generator );
-    }
-
     nbPoints.setValue(n);  
 }
 
@@ -95,8 +83,6 @@ void PointSetTopologyContainer::clear()
     nbPoints.setValue(0);
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
-    sofa::helper::WriteAccessor< sofa::Data< sofa::type::vector<PointID> > > points = this->points;
-    points.clear();
 }
 
 void PointSetTopologyContainer::addPoint(SReal px, SReal py, SReal pz)
@@ -177,11 +163,6 @@ void PointSetTopologyContainer::removePoint()
 {
     //nbPoints.setValue(nbPoints.getValue()-1);
     setNbPoints( nbPoints.getValue() - 1 );
-}
-
-const sofa::type::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
-{
-    return points.getValue();
 }
 
 void PointSetTopologyContainer::setPointTopologyToDirty()

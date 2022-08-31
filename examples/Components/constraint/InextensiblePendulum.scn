@@ -2,7 +2,7 @@
 
 <!-- A pendulum made of a string of particles connected by distance constraints -->
 <!-- Inspired by the CompliantPendulum.scn from the Compliant plugin -->
-<Node   name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
+<Node name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01">
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [GenericConstraintCorrection] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [UniformConstraint] -->
@@ -19,8 +19,10 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
+    <DefaultVisualManagerLoop/>
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-    <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" />
+
+    <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" computeBoundingBox="false"/>
     <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
     <!-- resolution = number of particles (including the fixed one) -->
     <!-- scale = total length of the pendulum -->
@@ -38,7 +40,7 @@
         <GenericConstraintCorrection />
 
         <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3d" showObject="1" />
+        <MechanicalObject name="defoDOF" template="Vec3d" />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
         <!-- 1 g for the total mass of the wire -->
@@ -59,7 +61,7 @@
         <!-- resolution = number of particles (including the fixed one) -->
         <!-- scale = total length of the pendulum -->
         <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3d"  />
+        <MechanicalObject name="defoDOF" template="Vec3d" />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
         <!-- 1 g for the total mass of the wire -->
@@ -67,7 +69,7 @@
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1d"  name="extensionsDOF" />
             <DistanceMapping  name="distanceMapping" />
-            <UniformConstraint template="Vec1d" iterative="false" /> 
+            <UniformConstraint template="Vec1d" iterative="false" />
         </Node>
     </Node>
     

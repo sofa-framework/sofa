@@ -26,8 +26,8 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/defaulttype/VecTypes.h>
 #include <thread>
 
-#include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
-using sofa::component::engine::RandomPointDistributionInSurface;
+#include <sofa/component/engine/generate/RandomPointDistributionInSurface.h>
+using sofa::component::engine::generate::RandomPointDistributionInSurface;
 
 namespace sofa
 {

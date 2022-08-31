@@ -313,16 +313,6 @@ public:
 
     virtual const sofa::type::vector<PointID>& getPointsOnBorder();
 
-
-    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
-    std::list<TopologyHandler*>::const_iterator beginTopologyHandler() const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
-    std::list<TopologyHandler*>::const_iterator endTopologyHandler() const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed from this Base class as it is common to static topology and is now in TopologyContainer.")
-    void addTopologyHandler(TopologyHandler* _TopologyHandler) = delete;
 protected:
 
     sofa::core::objectmodel::DataFileName fileTopology;

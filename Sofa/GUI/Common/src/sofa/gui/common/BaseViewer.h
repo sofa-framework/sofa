@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/gui/common/config.h>
 
-#include "ColourPickingVisitor.h"
+#include <sofa/gui/common/ColourPickingVisitor.h>
 
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -31,7 +31,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/component/visual/BaseCamera.h>
 
 #include <string>
 
@@ -128,7 +128,7 @@ protected:
     /// the sofa root note of the current scene
     sofa::simulation::Node::SPtr groot;
 
-    sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
+    sofa::component::visual::BaseCamera::SPtr currentCamera;
 
     std::string sceneFileName;
 

@@ -22,7 +22,8 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaIdentityMapping.h>
-#include <SofaBaseMechanics/IdentityMapping.inl>
+#include <sofa/component/mapping/linear//IdentityMapping.inl>
+
 
 namespace sofa::gpu::cuda
 {
@@ -37,7 +38,7 @@ extern "C"
 
 } // namespace sofa::gpu::cuda
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
@@ -136,4 +137,4 @@ void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::ap
 
 
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear

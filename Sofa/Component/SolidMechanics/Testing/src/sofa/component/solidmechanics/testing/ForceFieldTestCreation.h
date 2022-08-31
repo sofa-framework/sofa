@@ -27,17 +27,15 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
-#include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
+#include <sofa/core/behavior/SingleMatrixAccessor.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SceneCreator/SceneUtils.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/behavior/BaseForceField.h>
-
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalComputeDfVisitor;
@@ -160,11 +158,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
      * The  change of force is compared to the change computed by function addDForce, and to the product of the position change with the stiffness matrix.
      */
     void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
-    {        
-        sofa::component::initSofaBaseMechanics();
-
+    {
         if( !(flags & TEST_POTENTIAL_ENERGY) ) msg_warning("ForceFieldTest") << "Potential energy is not tested";
-
 
         if( deltaRange.second / errorMax <= sofa::testing::g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
@@ -206,8 +201,6 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         // store current force
         VecDeriv curF;
         sofa::testing::copyFromData( curF, dof->readForces() );
-
-
 
         // Get potential Energy before applying a displacement to dofs
         SReal potentialEnergyBeforeDisplacement = (flags & TEST_POTENTIAL_ENERGY) ? ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams) : 0;
@@ -272,7 +265,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         // check stiffness matrix: compare its product with dx to actual force change
         typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
         Sqmat K( n*DataTypes::deriv_total_size, n*DataTypes::deriv_total_size );
-        component::linearsolver::SingleMatrixAccessor accessor( &K );
+        sofa::core::behavior::SingleMatrixAccessor accessor( &K );
         mparams.setKFactor(1.0);
         force->addKToMatrix( &mparams, &accessor);
         K.compress();

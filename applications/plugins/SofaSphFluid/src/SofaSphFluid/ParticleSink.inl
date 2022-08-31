@@ -116,7 +116,7 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
             msg_info() << "Remove: " << remove.size() << " out of: " << n <<" particles using PointSetTopologyModifier.";
             m_topoModifier->removePoints(remove);
         }
-        else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate.get()))
+        else if(statecontainer::MechanicalObject<DataTypes>* object = dynamic_cast<statecontainer::MechanicalObject<DataTypes>*>(this->mstate.get()))
         {
             msg_info() << "Remove "<<remove.size()<<" particles using MechanicalObject.";
             // deleting the vertices

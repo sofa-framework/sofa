@@ -50,9 +50,9 @@
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
 
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 
-int SimpleGUIClass = sofa::gui::GUIManager::RegisterGUI("glut", &sofa::gui::glut::SimpleGUI::CreateGUI, NULL, 0);
+int SimpleGUIClass = sofa::gui::common::GUIManager::RegisterGUI("glut", &sofa::gui::glut::SimpleGUI::CreateGUI, NULL, 0);
 
 namespace sofa
 {

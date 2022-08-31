@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "QTransformationWidget.h"
-#include <SofaSimulationCommon/TransformationVisitor.h>
+#include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <QHBoxLayout>
 #include <QVBoxLayout>

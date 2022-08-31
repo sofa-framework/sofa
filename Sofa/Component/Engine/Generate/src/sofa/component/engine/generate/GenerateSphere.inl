@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "GenerateSphere.h"
+#include <sofa/component/engine/generate/GenerateSphere.h>
 #include <sofa/helper/rmath.h> //M_PI
 #include <sofa/core/topology/Topology.h>
 

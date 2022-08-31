@@ -24,18 +24,12 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include "ClangStyleMessageFormatter.h"
-#include "Message.h"
+#include <sofa/helper/logging/ClangStyleMessageFormatter.h>
+#include <sofa/helper/logging/Message.h>
 
 #include <sofa/type/fixed_array.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 std::string ClangStyleMessageFormatter::getPrefixText(unsigned int type) const {
@@ -69,8 +63,4 @@ void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& ou
 
     }
 }
-
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging

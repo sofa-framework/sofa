@@ -545,39 +545,35 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
-
-    if (!vparams->displayFlags().getShowMappings()) return;
-    std::vector< sofa::type::Vector3 > points;
-    std::vector< sofa::type::Vector3 > pointsLine;
-
-    auto ac = articulationCenters.begin();
-    auto acEnd = articulationCenters.end();
-    unsigned int i=0;
-    for (; ac != acEnd; ac++)
+    if (vparams->displayFlags().getShowMappings())
     {
-        type::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
-        auto a = articulations.begin();
-        auto aEnd = articulations.end();
-        for (; a != aEnd; a++)
+        vparams->drawTool()->saveLastState();
+
+        std::vector< sofa::type::Vector3 > points;
+        std::vector< sofa::type::Vector3 > pointsLine;
+
+        unsigned int i=0;
+        for (const auto & ac: articulationCenters)
         {
+            type::vector< sofa::component::container::Articulation* > articulations = ac->getArticulations();
+            for (const auto & a: articulations)
+            {
+                // Articulation Pos and Axis are based on the configuration of the parent
+                int ind= a->articulationIndex.getValue();
+                points.push_back(ArticulationPos[ind]);
 
-            // Articulation Pos and Axis are based on the configuration of the parent
-            int ind= (*a)->articulationIndex.getValue();
-            points.push_back(ArticulationPos[ind]);
+                pointsLine.push_back(ArticulationPos[ind]);
+                sofa::type::Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
+                pointsLine.push_back(Pos_axis);
 
-            pointsLine.push_back(ArticulationPos[ind]);
-            sofa::type::Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
-            pointsLine.push_back(Pos_axis);
-
-            i++;
+                i++;
+            }
         }
+
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawLines(pointsLine, 1, sofa::type::RGBAColor::blue());
+
+        vparams->drawTool()->restoreLastState();
     }
-
-    vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
-    vparams->drawTool()->drawLines(pointsLine, 1, sofa::type::RGBAColor::blue());
-
-    vparams->drawTool()->restoreLastState();
 }
-
 } //namespace sofa::component::mapping

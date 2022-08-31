@@ -22,13 +22,13 @@
 #pragma once
 
 #include "CudaTypes.h"
-#include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::component::mapping::linear
@@ -50,10 +50,10 @@ protected:
     gpu::cuda::CudaVector<CubeData> map;
     std::size_t maxNOut;
     gpu::cuda::CudaVector< std::pair<int,float> > mapT;
-    topology::RegularGridTopology* topology;
+    topology::container::grid::RegularGridTopology* topology;
     void calcMapT();
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
+    BarycentricMapperRegularGridTopology(topology::container::grid::RegularGridTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
         : Inherit(fromTopology, toTopology)
         , maxNOut(0), topology(fromTopology)
     {}
@@ -63,7 +63,7 @@ public:
     Index addPointInCube(const Index cubeIndex, const SReal* baryCoords);
 
     bool isEmpty() { return map.size() == 0; }
-    void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }
+    void setTopology(topology::container::grid::RegularGridTopology* _topology) { topology = _topology; }
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
@@ -99,7 +99,7 @@ public:
     using Index = sofa::Index;
 protected:
     gpu::cuda::CudaVector<CubeData> map;
-    topology::SparseGridTopology* topology;
+    topology::container::grid::SparseGridTopology* topology;
     bool bHexa;
     bool bTrans;
     unsigned sizeout;
@@ -112,7 +112,7 @@ protected:
     void buildTranslate(unsigned outsize);
 
 public:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
+    BarycentricMapperSparseGridTopology(topology::container::grid::SparseGridTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
         : Inherit(fromTopology, toTopology)
         , topology(fromTopology), bHexa(true), bTrans(true)
     {}
@@ -122,7 +122,7 @@ public:
     Index addPointInCube(const Index cubeIndex, const SReal* baryCoords);
 
     bool isEmpty() { return map.size() == 0; }
-    void setTopology(topology::SparseGridTopology* _topology) { topology = _topology; }
+    void setTopology(topology::container::grid::SparseGridTopology* _topology) { topology = _topology; }
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );

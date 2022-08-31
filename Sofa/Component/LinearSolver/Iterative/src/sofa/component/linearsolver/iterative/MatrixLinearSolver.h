@@ -44,7 +44,11 @@
 namespace sofa::component::linearsolver
 {
 
-class MatrixInvertData {};
+class MatrixInvertData
+{
+public:
+    virtual ~MatrixInvertData() = default;
+};
 
 template<class Matrix, class Vector>
 class BaseMatrixLinearSolver : public sofa::core::behavior::LinearSolver

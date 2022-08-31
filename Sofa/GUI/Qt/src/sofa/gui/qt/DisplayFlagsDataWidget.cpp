@@ -161,12 +161,9 @@ bool DisplayFlagsDataWidget::createWidgets()
     flags = new DisplayFlagWidget(this);
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(flags);
-    connect(flags, SIGNAL(clicked()), this, SLOT(setWidgetDirty()));
-    //flags->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
-    //flags->setMinimumSize(QSize(50,400));
+    connect(flags, &DisplayFlagWidget::clicked, [=](){ setWidgetDirty(true); });
     setMinimumSize(QSize(50,400));
     layout->setContentsMargins(2,2,4,4);
-    //setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     return true;
 }
 

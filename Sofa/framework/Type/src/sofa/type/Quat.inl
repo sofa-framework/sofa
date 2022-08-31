@@ -36,12 +36,6 @@ namespace sofa::type
 #define RENORMCOUNT 50
 constexpr double quaternion_equality_thresold=1e-6;
 
-// Constructor
-template<class Real>
-Quat<Real>::Quat()
-{
-    clear();
-}
 
 template<class Real>
 Quat<Real>::Quat(Real x, Real y, Real z, Real w)
@@ -80,7 +74,7 @@ auto Quat<Real>::operator+(const Quat &q1) const -> Quat
 
     Real		t1[4], t2[4], t3[4];
     Real		tf[4];
-    Quat    	ret;
+    Quat    	ret(QNOINIT);
 
     t1[0] = _q[0] * q1._q[3];
     t1[1] = _q[1] * q1._q[3];
@@ -115,7 +109,7 @@ auto Quat<Real>::operator+(const Quat &q1) const -> Quat
 template<class Real>
 auto Quat<Real>::operator*(const Quat& q1) const -> Quat
 {
-    Quat	ret;
+    Quat	ret(QNOINIT);
 
     ret._q[3] = _q[3] * q1._q[3] -
             (_q[0] * q1._q[0] +
@@ -140,7 +134,7 @@ auto Quat<Real>::operator*(const Quat& q1) const -> Quat
 template<class Real>
 auto Quat<Real>::operator*(const Real& r) const -> Quat
 {
-    Quat  ret;
+    Quat  ret(QNOINIT);
     ret[0] = _q[0] * r;
     ret[1] = _q[1] * r;
     ret[2] = _q[2] * r;
@@ -151,7 +145,7 @@ auto Quat<Real>::operator*(const Real& r) const -> Quat
 template<class Real>
 auto Quat<Real>::operator/(const Real& r) const -> Quat
 {
-    Quat  ret;
+    Quat  ret(QNOINIT);
     ret[0] = _q[0] / r;
     ret[1] = _q[1] / r;
     ret[2] = _q[2] / r;
@@ -162,7 +156,6 @@ auto Quat<Real>::operator/(const Real& r) const -> Quat
 template<class Real>
 void Quat<Real>::operator*=(const Real& r)
 {
-    Quat  ret;
     _q[0] *= r;
     _q[1] *= r;
     _q[2] *= r;
@@ -173,7 +166,6 @@ void Quat<Real>::operator*=(const Real& r)
 template<class Real>
 void Quat<Real>::operator/=(const Real& r)
 {
-    Quat ret;
     _q[0] /= r;
     _q[1] /= r;
     _q[2] /= r;
@@ -184,7 +176,7 @@ void Quat<Real>::operator/=(const Real& r)
 template<class Real>
 auto Quat<Real>::quatVectMult(const Vec3& vect) const -> Quat
 {
-    Quat	ret;
+    Quat ret(QNOINIT);
     ret._q[3] = -(_q[0] * vect[0] + _q[1] * vect[1] + _q[2] * vect[2]);
     ret._q[0] = _q[3] * vect[0] + _q[1] * vect[2] - _q[2] * vect[1];
     ret._q[1] = _q[3] * vect[1] + _q[2] * vect[0] - _q[0] * vect[2];
@@ -196,7 +188,7 @@ auto Quat<Real>::quatVectMult(const Vec3& vect) const -> Quat
 template<class Real>
 auto Quat<Real>::vectQuatMult(const Vec3& vect) const -> Quat
 {
-    Quat ret;
+    Quat ret(QNOINIT);
     ret[3] = -(vect[0] * _q[0] + vect[1] * _q[1] + vect[2] * _q[2]);
     ret[0] =   vect[0] * _q[3] + vect[1] * _q[2] - vect[2] * _q[1];
     ret[1] =   vect[1] * _q[3] + vect[2] * _q[0] - vect[0] * _q[2];
@@ -207,7 +199,7 @@ auto Quat<Real>::vectQuatMult(const Vec3& vect) const -> Quat
 template<class Real>
 auto Quat<Real>::inverse() const -> Quat
 {
-    Quat	ret;
+    Quat	ret(QNOINIT);
     Real		norm	= sqrt(_q[0] * _q[0] +
             _q[1] * _q[1] +
             _q[2] * _q[2] +
@@ -567,7 +559,7 @@ void Quat<Real>::slerp(const Quat& a, const Quat& b, Real t, bool allowFlip)
 template<class Real>
 auto Quat<Real>::slerp(const Quat &q1, Real t) const -> Quat
 {
-    Quat q0_1;
+    Quat q0_1(QNOINIT);
     for (unsigned int i = 0 ; i<3 ; i++)
         q0_1[i] = -_q[i];
 
@@ -575,7 +567,7 @@ auto Quat<Real>::slerp(const Quat &q1, Real t) const -> Quat
 
     q0_1 = q1 * q0_1;
 
-    Vec3 axis, temp;
+    Vec3 axis(NOINIT), temp(NOINIT);
     Real angle;
 
     q0_1.quatToAxis(axis, angle);
@@ -594,7 +586,7 @@ template<class Real>
 auto Quat<Real>::slerp2(const Quat &q1, Real t) const -> Quat
 {
     // quaternion to return
-    Quat qm;
+    Quat qm(QNOINIT);
 
     // Calculate angle between them.
     double cosHalfTheta = _q[3] * q1[3] + _q[0] * q1[0] + _q[1] * q1[1] + _q[2] * q1[2];
@@ -631,7 +623,7 @@ auto Quat<Real>::slerp2(const Quat &q1, Real t) const -> Quat
 template<class Real>
 auto Quat<Real>::createQuaterFromFrame(const Vec3 &lox, const Vec3 &loy,const Vec3 &loz) -> Quat
 {
-    Quat q;
+    Quat q(QNOINIT);
     Mat3x3 m;
 
     for (unsigned int i=0 ; i<3 ; i++)
@@ -811,26 +803,6 @@ void Quat<Real>::toHomogeneousMatrix(Mat<4,4,Real>& m) const
     m[3][1] = 0.0f;
     m[3][2] = 0.0f;
     m[3][3] = 1.0f;
-}
-
-/// Apply the rotation to a given vector
-template<class Real>
-auto Quat<Real>::rotate( const Vec3& v ) const -> Vec3
-{
-    return Vec3(((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] - _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] + _q[1] * _q[3])) * v[2]),
-            ((2.0f * (_q[0] * _q[1] + _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[2]),
-            ((2.0f * (_q[2] * _q[0] - _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
-            );
-}
-
-template<class Real>
-auto Quat<Real>::inverseRotate( const Vec3& v ) const -> Vec3
-{
-    return Vec3(
-                ((1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]))*v[0] + (2.0f * (_q[0] * _q[1] + _q[2] * _q[3])) * v[1] + (2.0f * (_q[2] * _q[0] - _q[1] * _q[3])) * v[2]),
-            ((2.0f * (_q[0] * _q[1] - _q[2] * _q[3]))*v[0] + (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]))*v[1] + (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]))*v[2]),
-            ((2.0f * (_q[2] * _q[0] + _q[1] * _q[3]))*v[0] + (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]))*v[1] + (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]))*v[2])
-            );
 }
 
 template<class Real>

@@ -207,12 +207,11 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         helper_button->setToolTip(QString(final_str.c_str()));
         helper_button->setAutoDefault(false);
         layout->addWidget(helper_button, 0, Qt::AlignLeft);
-        connect(helper_button, SIGNAL( clicked() ), this, SLOT( linkModification()));
+        connect(helper_button, &QPushButton::clicked, this, &QDisplayDataInfoWidget::linkModification);
         if (!ownerClass.empty())
             helper_button->setToolTip( ("Data from "+ownerClass).c_str());
-            //QToolTip::add(helper_button, ("Data from "+ownerClass).c_str());
     }
-    if(modifiable || data->getParent())
+    if(data->getParent())
     {
         std::string linkvalue = data->getParent()->getLinkPath();
         linkpath_edit = new QLineEdit(this);
@@ -222,9 +221,9 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         layout->addWidget(linkpath_edit);
         linkpath_edit->setVisible(!linkvalue.empty());
         if(modifyObjectFlags.PROPERTY_WIDGET_FLAG)
-            connect(linkpath_edit, SIGNAL( textChanged(const QString&)), this, SIGNAL( WidgetDirty()));
+            connect(linkpath_edit, &QLineEdit::textChanged, [=](){ WidgetDirty(); });
         else
-            connect(linkpath_edit, SIGNAL( editingFinished()), this, SLOT( linkEdited()));
+            connect(linkpath_edit, &QLineEdit::editingFinished, this, &QDisplayDataInfoWidget::linkEdited);
     }
     else
     {

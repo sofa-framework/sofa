@@ -65,6 +65,8 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
+
     /** return the centroid of the set of points */
     Coord getPointSetCenter() const;
 
@@ -121,6 +123,10 @@ protected:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointSetGeometryAlgorithms<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+
+    /// Return true if the visibility parameters are showing the object in any way whatsoever, false otherwise
+    virtual bool mustComputeBBox() const;
+
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)

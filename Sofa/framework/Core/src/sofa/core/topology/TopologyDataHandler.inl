@@ -46,7 +46,7 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
-
+    SOFA_UNUSED(defaultValue);
 }
 
 
@@ -239,8 +239,6 @@ bool TopologyDataHandler<TopologyElementType, VecT>::isTopologyDataRegistered()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const EAdded* event)
 {
-    //this->add(event->getNbAddedElements(), event->getElementArray(),
-    //    event->ancestorsList, event->coefs);
     m_topologyData->add(event->getIndexArray(), event->getElementArray(),
         event->ancestorsList, event->coefs, event->ancestorElems);
 }

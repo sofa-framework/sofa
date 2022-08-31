@@ -703,6 +703,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 {
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+    vparams->drawTool()->saveLastState();
+
     // Draw Edges indices
     if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
     {        
@@ -749,6 +751,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
     }
 
+    vparams->drawTool()->restoreLastState();
 }
 
 
@@ -943,5 +946,10 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     return is_intersect;
 }
 
+template <class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return ( (this->m_topology->getNbEdges() != 0 && (d_drawEdges.getValue() || showEdgeIndices.getValue())) || Inherit1::mustComputeBBox() );
+}
 
 } //namespace sofa::component::topology::container::dynamic

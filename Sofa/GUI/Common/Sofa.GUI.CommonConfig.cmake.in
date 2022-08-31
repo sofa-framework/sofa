@@ -5,12 +5,13 @@
 
 set(SOFA_GUI_COMMON_HAVE_SOFA_GL @SOFA_GUI_COMMON_HAVE_SOFA_GL@)
 
-find_package(SofaSimulationCommon REQUIRED)
+find_package(Sofa.Simulation.Common REQUIRED)
 find_package(Sofa.Component.Setting QUIET REQUIRED)
 find_package(Sofa.Component.Collision.Response.Contact QUIET REQUIRED)
 find_package(Sofa.GUI.Component QUIET REQUIRED)
-sofa_find_package(cxxopts QUIET REQUIRED)
-
+if(NOT TARGET cxxopts)
+    find_package(cxxopts QUIET REQUIRED)
+endif()
 
 if(SOFA_GUI_COMMON_HAVE_SOFA_GL)
     find_package(Sofa.GL QUIET REQUIRED)

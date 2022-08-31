@@ -438,6 +438,14 @@ macro(sofa_auto_set_target_include_directories)
             set(target ${aliased_target})
         endif()
 
+        get_target_property(target_sources ${target} SOURCES)
+        list(FILTER target_sources INCLUDE REGEX ".*(\\.h\\.in|\\.h|\\.inl)$") # keep only headers
+        if(NOT target_sources)
+            # target has no header
+            # setting include directories is not needed
+            continue()
+        endif()
+
         # Set target include directories (if not already set manually)
         set(include_source_root "${CMAKE_CURRENT_SOURCE_DIR}/..") # default but bad practice
         if(ARG_INCLUDE_SOURCE_DIR)
@@ -708,8 +716,16 @@ endfunction()
 function(sofa_set_project_install_relocatable project_name binary_dir install_dir)
     # Set RELOCATABLE_INSTALL_DIR property, even if building out-of-SOFA
     if(TARGET ${project_name})
-        #message("${project_name}: RELOCATABLE_INSTALL_DIR = ${install_dir}/${project_name}")
-        set_target_properties(${project_name} PROPERTIES RELOCATABLE_INSTALL_DIR "${install_dir}/${project_name}")
+        string(REGEX REPLACE "^[/\\.]+\(.*\)" "\\1" install_dir_from_root "${install_dir}")
+        if(install_dir_from_root)
+            set(reloc_install_dir "${install_dir_from_root}/${project_name}")
+        else()
+            set(reloc_install_dir "${install_dir}/${project_name}")
+            message(WARNING "${project_name}: RELOCATABLE_INSTALL_DIR property was set to \"${reloc_install_dir}\" "
+                "which is not what is usually done (plugins/${project_name} or collections/${project_name})."
+                "  The RELOCATABLE parameter must be wrong.")
+        endif()
+        set_target_properties(${project_name} PROPERTIES RELOCATABLE_INSTALL_DIR "${reloc_install_dir}")
         set_target_properties(${project_name} PROPERTIES EXPORT_PROPERTIES "RELOCATABLE_INSTALL_DIR")
     endif()
 

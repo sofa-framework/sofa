@@ -136,7 +136,7 @@ void HexahedronFEMForceField<DataTypes>::init()
         return;
     }
 
-    _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
+    _sparseGrid = dynamic_cast<topology::container::grid::SparseGridTopology*>(m_topology);
     m_potentialEnergy = 0;
 
     this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
@@ -166,7 +166,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     {
     case LARGE :
     {
-        unsigned int i=0;
+        sofa::Index i=0;
         typename VecElement::const_iterator it;
         for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
@@ -177,7 +177,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     }
     case POLAR :
     {
-        unsigned int i=0;
+        sofa::Index i=0;
         typename VecElement::const_iterator it;
         for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
@@ -188,7 +188,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     }
     case SMALL :
     {
-        unsigned int i=0;
+        sofa::Index i=0;
         typename VecElement::const_iterator it;
         for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
         {
@@ -736,7 +736,7 @@ void HexahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Di
 ////////////// small displacements method
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::initSmall(int i, const Element &elem)
+void HexahedronFEMForceField<DataTypes>::initSmall(sofa::Index i, const Element &elem)
 {
     // Rotation matrix identity
     Transformation t; t.identity();
@@ -801,7 +801,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv
 /////////////////////////////////////////////////
 ////////////// large displacements method
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
+void HexahedronFEMForceField<DataTypes>::initLarge(sofa::Index i, const Element &elem)
 {
     // Rotation matrix (initial Tetrahedre/world)
     // edges mean on 3 directions
@@ -904,7 +904,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
 /////////////////////////////////////////////////
 ////////////// polar decomposition method
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
+void HexahedronFEMForceField<DataTypes>::initPolar(sofa::Index i, const Element& elem)
 {
     type::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)

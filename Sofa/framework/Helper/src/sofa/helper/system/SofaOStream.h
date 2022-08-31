@@ -26,7 +26,7 @@
 #include <sstream>
 #include <sofa/helper/logging/Message.h>
 
-// SOFA_DEPRECATED_HEADER_NOT_REPLACED("v21.12 (PR#2292)", "v22.06")
+SOFA_DISABLED_HEADER_NOT_REPLACED("v21.12 (PR#2292)", "v22.06")
 
 // The methods in SofaOStream have been deprecated, but we still want it to work.
 // Its usage in Base.h would generate warnings.

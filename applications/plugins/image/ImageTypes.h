@@ -39,8 +39,8 @@
 //(imports + Image data structure + others) are in here
 #include <image/CImgData.h>
 
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/component/visual/VisualModelImpl.h>
+#include <sofa/component/visual/VisualStyle.h>
 
 namespace sofa
 {
@@ -156,7 +156,7 @@ struct ImagePlane
     typedef ImageTransform<Real> TransformTypes;
     typedef typename TransformTypes::Coord Coord;
 
-    typedef typename sofa::component::visualmodel::VisualModelImpl VisualModelTypes;
+    typedef typename sofa::component::visual::VisualModelImpl VisualModelTypes;
     typedef std::vector<VisualModelTypes*> VecVisualModel;
 
     //    const VectorVis* vectorvis; //! A reference to the VectorVis data allows the plane images to switch between RGB or greyscale norms, as the user changes the options in the GUI
@@ -294,7 +294,7 @@ public:
 
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
-            sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->getContext()->template get<sofa::component::visualmodel::VisualStyle>();
+            sofa::component::visual::VisualStyle::SPtr ptr = visualModels[m]->getContext()->template get<sofa::component::visual::VisualStyle>();
             if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
 
             const sofa::type::vector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();

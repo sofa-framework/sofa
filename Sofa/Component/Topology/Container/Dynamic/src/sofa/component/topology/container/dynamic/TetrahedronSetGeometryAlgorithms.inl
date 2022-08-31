@@ -3228,7 +3228,11 @@ int TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronWithPla
     return 0;
 }
 
-
+template <class DataTypes>
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return ((d_showTetrahedraIndices.getValue() || d_drawTetrahedra.getValue()) && this->m_topology->getNbTetrahedra() != 0) || Inherit1::mustComputeBBox();
+}
 
 
 template<class DataTypes>
@@ -3238,6 +3242,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         return;
 
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
+
+    vparams->drawTool()->saveLastState();
 
     const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
     //Draw tetra indices
@@ -3337,6 +3343,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0, false);
     }
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

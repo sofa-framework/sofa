@@ -3,8 +3,8 @@
     <RequiredPlugin pluginName="image"/>
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
-    <OglGrid size="50"/>
-    <OglLineAxis size="50"/>
+    <VisualGrid size="50"/>
+    <LineAxis size="50"/>
     <OglSceneFrame/>
     
     <Node name="Average">

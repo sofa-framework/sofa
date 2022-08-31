@@ -23,18 +23,18 @@
 #include "CudaTypes.h"
 #include <sofa/core/Mapping.inl>
 
-#include <SofaMiscMapping/BarycentricMappingRigid.inl>
-#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.inl>
+#include <sofa/component/mapping/linear/BarycentricMappingRigid.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperQuadSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperEdgeSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperSparseGridTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperRegularGridTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTopologyContainer.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapper.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

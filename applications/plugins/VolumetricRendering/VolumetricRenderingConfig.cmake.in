@@ -3,8 +3,8 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaFramework REQUIRED)
-find_package(Sofa.GL REQUIRED)
+find_package(Sofa.Helper QUIET REQUIRED)
+find_package(Sofa.GL.Component QUIET REQUIRED)
 
 
 if(NOT TARGET VolumetricRendering)

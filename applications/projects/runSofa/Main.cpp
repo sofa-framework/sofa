@@ -31,17 +31,16 @@ using std::vector;
 
 #include <runSofaValidation.h>
 
-#include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
-#include <SofaSimulationCommon/init.h>
-#include <SofaSimulationGraph/init.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/graph/init.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
-#include <SofaGraphComponent/SceneCheckerListener.h>
-using sofa::simulation::scenechecking::SceneCheckerListener;
+#include <SceneChecking/SceneCheckerListener.h>
+using sofa::scenechecking::SceneCheckerListener;
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>
@@ -52,11 +51,11 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/gui/GUIManager.h>
-using sofa::gui::GUIManager;
+#include <sofa/gui/common/GUIManager.h>
+using sofa::gui::common::GUIManager;
 
 #include <SofaGui/initSofaGui.h>
-#include <sofa/gui/BatchGUI.h>  // For the default number of iterations
+#include <sofa/gui/batch/BatchGUI.h>  // For the default number of iterations
 
 using sofa::core::ExecParams ;
 
@@ -66,10 +65,10 @@ using sofa::helper::Utils;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
-using sofa::gui::BatchGUI;
+using sofa::gui::batch::BatchGUI;
 
-#include <sofa/gui/BaseGUI.h>
-using sofa::gui::BaseGUI;
+#include <sofa/gui/common/BaseGUI.h>
+using sofa::gui::common::BaseGUI;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
@@ -82,8 +81,8 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <sofa/gui/GuiDataRepository.h>
-using sofa::gui::GuiDataRepository ;
+#include <sofa/gui/common/GuiDataRepository.h>
+using sofa::gui::common::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
@@ -98,11 +97,11 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 
 
 
-void addGUIParameters(sofa::gui::ArgumentParser* argumentParser)
+void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
 {
     GUIManager::RegisterParameters(argumentParser);
 }
@@ -121,7 +120,7 @@ int main(int argc, char** argv)
         dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
         if(FileSystem::isDirectory(dir))
         {
-            sofa::gui::GuiDataRepository.addFirstPath(dir);
+            sofa::gui::common::GuiDataRepository.addFirstPath(dir);
         }
     }
 
@@ -159,6 +158,7 @@ int main(int argc, char** argv)
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
+    unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
     string    computationTimeOutputType="stdout";
@@ -185,7 +185,7 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
-    sofa::gui::ArgumentParser* argParser = new sofa::gui::ArgumentParser(argc, argv);
+    sofa::gui::common::ArgumentParser* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
 
     argParser->addArgument(
         cxxopts::value<bool>(showHelp)
@@ -306,6 +306,12 @@ int main(int argc, char** argv)
         "argv",
         "forward extra args to the python interpreter"
     );
+    argParser->addArgument(
+        cxxopts::value<unsigned int>(nbMSSASamples)
+        ->default_value("1"),
+        "msaa",
+        "Number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
+    );
 
     addGUIParameters(argParser);
     argParser->parse();
@@ -388,11 +394,11 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
-
     if (!noAutoloadPlugins)
     {
+        std::string configPluginPath = sofa_tostring(CONFIG_PLUGIN_FILENAME);
+        std::string defaultConfigPluginPath = sofa_tostring(DEFAULT_CONFIG_PLUGIN_FILENAME);
+
         if (PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
@@ -404,15 +410,24 @@ int main(int argc, char** argv)
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
+        {
             msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+        }
     }
     else
+    {
         msg_info("runSofa") << "Automatic plugin loading disabled.";
+    }
 
     PluginManager::getInstance().init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
+    {
+        sofa::simulation::common::cleanup();
+        sofa::simulation::graph::cleanup();
+
         return err;
+    }
 
     if (fileName.empty())
     {
@@ -443,7 +458,7 @@ int main(int argc, char** argv)
         sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
     }
 
-    const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
+    const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
     Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");

@@ -26,12 +26,12 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaBaseTopology/SparseGridTopology.h>
-#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mapping/linear/IdentityMapping.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -444,14 +444,14 @@ protected:
     core::behavior::MechanicalState<defaulttype::Vec3Types>* ffd;
     core::topology::BaseMeshTopology* ffdMesh;
     //topology::RegularGridTopology* ffdGrid;
-    topology::RegularGridTopology* ffdRGrid;
-    topology::SparseGridTopology* ffdSGrid;
+    topology::container::grid::RegularGridTopology* ffdRGrid;
+    topology::container::grid::SparseGridTopology* ffdSGrid;
 
     void updateGrid();
 public:
     typedef defaulttype::Vec3Types InDataTypes;
     typedef defaulttype::Vec3Types DataTypes;
-    typedef topology::RegularGridTopology Topology;
+    typedef topology::container::grid::RegularGridTopology Topology;
     typedef FFDDistanceGridCollisionElement Element;
 
     Data< bool > usePoints; ///< use mesh vertices for collision detection
@@ -543,14 +543,14 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints")
     {
-        using sofa::component::mapping::IdentityMapping;
+        using sofa::component::mapping::linear::IdentityMapping;
 
         MMechanicalState* outmodel = Inherit::createMapping(name);
         if (this->child!=NULL && this->mapping==NULL)
         {
             //TODO(dmarchal):2017-05-26 This comment may become a conditional code.
             // add velocity visualization
-            /*        sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
+            /*        sofa::component::visual::DrawV* visu = new sofa::component::visual::DrawV;
                     this->child->addObject(visu);
                     visu->useAlpha.setValue(true);
                     visu->vscale.setValue(this->model->getContext()->getDt());

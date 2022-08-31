@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscMapping/SubsetMultiMapping.inl>
+#include <sofa/component/mapping/linear/SubsetMultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
 
@@ -36,7 +36,7 @@ namespace sofa::gpu::cuda
     ;
 }
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
     using namespace sofa::gpu::cuda;
 
@@ -46,4 +46,4 @@ namespace sofa::component::mapping
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;
 
 
-}//namespace sofa::component::mapping::linear
+} // namespace sofa::component::mapping::linear

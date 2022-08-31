@@ -102,36 +102,15 @@ public:
     Moved(const std::string& sinceVersion, const std::string& fromPlugin, const std::string& toPlugin)
     {
         std::stringstream output;
-        output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ". "
+        output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ".\n"
             << "To continue using this component you may need to update your scene "
-            << "by adding <RequiredPlugin name='" << toPlugin << "'/>";
+            << "by adding\n<RequiredPlugin name='" << toPlugin << "'/>";
         m_message = output.str();
         m_changeVersion = sinceVersion;
     }
-};
-
-class SOFA_HELPER_API CreatableMoved : public ComponentChange
-{
-public:
-    explicit CreatableMoved(const std::string& sinceVersion, const std::string& fromPlugin, const std::string& toPlugin)
-        : fromPlugin(fromPlugin)
-        , toPlugin(toPlugin)
-    {
-        std::stringstream output;
-        output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ". "
-                << "You can still use this component because " << fromPlugin << " loaded " << toPlugin <<". "
-               <<  "It is advised to directly load " << toPlugin << " from now on, e.g. you may add:"
-               <<  "<RequiredPlugin name='" << toPlugin << "'/>";
-        m_message = output.str();
-        m_changeVersion = sinceVersion;
-    }
-
-    std::string fromPlugin;
-    std::string toPlugin;
 };
 
 extern SOFA_HELPER_API const std::map< std::string, Deprecated, std::less<> > deprecatedComponents;
 extern SOFA_HELPER_API const std::map< std::string, ComponentChange, std::less<> > uncreatableComponents;
-extern SOFA_HELPER_API const std::map< std::string, CreatableMoved, std::less<> > movedComponents;
 
 } // namespace sofa::helper::lifecycle

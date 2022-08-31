@@ -156,7 +156,7 @@ using enableStd = typename std::enable_if<
     std::ostream &>::type;
 
 #define __CONSOLE_INTERNAL__
-#include "console_internal.h"
+#include <sofa/helper/system/console_internal.h>
 #undef __CONSOLE_INTERNAL__
 
 /// Enable or disable colors in stdout / stderr.

@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/controller/MechanicalStateController.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/controller/MechanicalStateController.h")
-
-namespace sofa::component::controller
-{ 
-    template<class DataTypes>
-    using MechanicalStateController = sofa::component::controller::MechanicalStateController<DataTypes>;
-    
-} // namespace sofa::component::controller
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/controller/MechanicalStateController.h")

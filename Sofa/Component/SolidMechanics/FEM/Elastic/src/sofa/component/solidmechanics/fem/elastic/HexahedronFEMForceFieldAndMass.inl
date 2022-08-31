@@ -20,10 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.h>
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.inl>
-#include <SofaBaseTopology/SparseGridTopology.h>
-
 
 namespace sofa::component::solidmechanics::fem::elastic
 {

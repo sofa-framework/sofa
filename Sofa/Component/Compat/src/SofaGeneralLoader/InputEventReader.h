@@ -23,7 +23,7 @@
 
 #include <sofa/component/playback/InputEventReader.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/InputEventReader.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/InputEventReader.h")
 
 namespace sofa::component::misc
 {

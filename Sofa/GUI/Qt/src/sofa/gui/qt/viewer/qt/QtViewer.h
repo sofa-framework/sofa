@@ -50,7 +50,7 @@
 #include <sofa/gl/Texture.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/simulation/common/xml/Element.h>
 
 // allow catheter navigation using the tracking system (very simple version, surely will be modified)
 //#define TRACKING
@@ -134,8 +134,8 @@ public:
         common::BaseViewerArgument* pArg = &arg;
         common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
         return viewerArg ?
-                new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
-                new QtViewer(nullptr, pArg->getName().c_str(), pArg->getNbMSAASamples() )
+                new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
+                new QtViewer(nullptr, pArg->getName().c_str() )
                 ;
     }
 
@@ -159,12 +159,7 @@ public:
     /// and can be used to unregister classes associated with in the ObjectFactory.
     static int DisableViewer();
 
-#if defined(QT_VERSION) && QT_VERSION >= 0x050400
-    static QSurfaceFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
-#else
-    static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
-#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
-    QtViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
+    QtViewer( QWidget* parent, const char* name="");
     ~QtViewer() override;
 
     QWidget* getQWidget() override { return this; }

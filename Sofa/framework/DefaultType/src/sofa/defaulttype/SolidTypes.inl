@@ -34,12 +34,6 @@ namespace defaulttype
 {
 
 template<class R>
-SolidTypes<R>::SpatialVector::SpatialVector()
-{}
-
-
-
-template<class R>
 SolidTypes<R>::SpatialVector::SpatialVector( const Vec& l, const Vec& f ):lineVec(l),freeVec(f)
 {}
 
@@ -112,8 +106,10 @@ typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::operator * (
 
 template<class R>
 SolidTypes<R>::Transform::Transform()
+    : orientation_() // default constructor set to identity
+    , origin_() // default constructor set to {0, 0, 0}
 {
-    *this = this->identity();
+
 }
 
 /// Define using Featherstone's conventions
@@ -317,7 +313,7 @@ typename SolidTypes<R>::Transform SolidTypes<R>::Transform::inversed() const
 }
 
 template<class R>
-void SolidTypes<R>::Transform::writeOpenGlMatrix( GLdouble *m ) const
+void SolidTypes<R>::Transform::writeOpenGlMatrix( double *m ) const
 {
     orientation_.writeOpenGlMatrix(m);
     Vec t = getOrigin();

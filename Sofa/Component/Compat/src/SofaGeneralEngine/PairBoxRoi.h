@@ -23,7 +23,7 @@
 
 #include <sofa/component/engine/select/PairBoxRoi.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/PairBoxRoi.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/PairBoxRoi.h")
 
 namespace sofa::component::engine
 {

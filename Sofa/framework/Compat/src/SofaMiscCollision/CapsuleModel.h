@@ -27,7 +27,7 @@
 #include <CollisionCapsuleCapsule/geometry/CapsuleModel.h>
 #define COLLISIONOBBCAPSULE_CAPSULEMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionCapsuleCapsule/geometry/CapsuleModel.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionCapsuleCapsule/geometry/CapsuleModel.h")
 
 #else
 #error "Capsule and Capsule-related contents has been moved to CollisionCapsuleCapsule. Include <CollisionCapsuleCapsule/geometry/CapsuleModel.h> instead of this one."

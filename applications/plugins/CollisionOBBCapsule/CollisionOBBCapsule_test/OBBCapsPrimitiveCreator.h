@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <CollisionOBBCapsule/geometry/CapsuleModel.h>
@@ -35,8 +35,8 @@ using sofa::simulation::Node;
 using sofa::type::Quat;
 using sofa::type::Vec3;
 
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::New;
@@ -142,7 +142,7 @@ inline collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::V
     cap->addObject(capDOF);
 
     //creating a topology necessary for capsule
-    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
+    sofa::component::topology::container::constant::MeshTopology::SPtr bmt = New<sofa::component::topology::container::constant::MeshTopology>();
     bmt->addEdge(0, 1);
     cap->addObject(bmt);
 

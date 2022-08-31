@@ -19,32 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDABARYCENTRICMAPPING_INL
-#define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPING_INL
+#pragma once
 
 #include "CudaBarycentricMapping.h"
 #include <sofa/core/Mapping.inl>
-#include <SofaBaseMechanics/BarycentricMapping.inl>
-#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.inl>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMapping.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapper.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTopologyContainer.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperRegularGridTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperSparseGridTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperQuadSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperEdgeSetTopology.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -92,14 +85,9 @@ extern "C"
     void MeshMapperCuda3f1_3f_applyPEq(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::linear
 {
 
 using namespace gpu::cuda;
@@ -266,7 +254,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 
     for (unsigned i=0; i<this->topology->getHexahedra().size(); i++)
     {
-        const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron(i);
+        const auto cube = this->topology->getHexahedron(i);
         for (int c=0; c<8; c++) CudaHexa.push_back(cube[c]);
     }
 
@@ -287,7 +275,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 
     for (unsigned i=0; i<map.size(); i++)
     {
-        const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron(map[i].in_index);
+        const auto cube = this->topology->getHexahedron(map[i].in_index);
         for (int c=0; c<8; c++) CudaTnb[cube[c]]++;
     }
 
@@ -305,7 +293,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 
     for (unsigned i=0; i<map.size(); i++)
     {
-        const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron(map[i].in_index);
+        const auto cube = this->topology->getHexahedron(map[i].in_index);
 
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
@@ -481,7 +469,7 @@ typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, 
 BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInLine(const typename Out::Coord& p, Index lineIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[1];
-    const topology::MeshTopology::Line& elem = topology->getLine(lineIndex);
+    const auto& elem = topology->getLine(lineIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     typename In::Coord pos = p - p0;
@@ -494,7 +482,7 @@ typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, 
 BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInTriangle(const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
-    const topology::MeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
+    const auto& elem = topology->getTriangle(triangleIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     const typename In::Coord pB = (*points)[elem[2]] - p0;
@@ -513,7 +501,7 @@ typename BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn, VecIn, 
 BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::createPointInQuad(const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points)
 {
     SReal baryCoords[2];
-    const topology::MeshTopology::Quad& elem = topology->getQuad(quadIndex);
+    const auto& elem = topology->getQuad(quadIndex);
     const typename In::Coord p0 = (*points)[elem[0]];
     const typename In::Coord pA = (*points)[elem[1]] - p0;
     const typename In::Coord pB = (*points)[elem[3]] - p0;
@@ -537,11 +525,11 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
 {
     int outside = 0;
 
-    const topology::MeshTopology::SeqTetrahedra& tetras = topology->getTetrahedra();
-    const topology::MeshTopology::SeqHexahedra& cubes = topology->getHexahedra();
+    const auto& tetras = topology->getTetrahedra();
+    const auto& cubes = topology->getHexahedra();
 
-    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
+    const auto& triangles = topology->getTriangles();
+    const auto& quads = topology->getQuads();
     sofa::type::vector<type::Matrix3> bases;
     sofa::type::vector<type::Vector3> centers;
     clear(out.size()); // reserve space for mapping
@@ -719,13 +707,5 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
     }
 }
 
+} // namespace sofa::component::mapping::linear
 
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ObjectFactory.h"
+#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -63,8 +63,8 @@ std::string ObjectFactory::shortName(std::string classname)
         ClassEntry::SPtr entry = it->second;
         if(!entry->creatorMap.empty())
         {
-            CreatorMap::iterator it = entry->creatorMap.begin();
-            Creator::SPtr c = it->second;
+            CreatorMap::iterator myit = entry->creatorMap.begin();
+            Creator::SPtr c = myit->second;
             shortname = c->getClass()->shortName;
         }
     }
@@ -208,9 +208,10 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if(it == registry.end())
         {
             arg->logError("The object is not in the factory.");
-            if( uncreatableComponents.find(classname) != uncreatableComponents.end() )
+            auto uuncreatableComponent = uncreatableComponents.find(classname);
+            if( uuncreatableComponent != uncreatableComponents.end() )
             {
-                arg->logError( uncreatableComponents.at(classname).getMessage() );
+                arg->logError( uuncreatableComponent->second.getMessage() );
             }
         }
         else
@@ -301,7 +302,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
     }
     else if (creators.size() > 1)
-    {	// There were multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
+    {    // There were multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
         std::string w = "Template '" + templatename + std::string("' incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
         for(unsigned int i = 0; i < creators.size(); ++i)
             w += std::string("\n\t* ") + creators[i].first;
@@ -424,8 +425,8 @@ void ObjectFactory::dump(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "  aliases :";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-                out << " " << *it;
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+                out << " " << *myit;
             out << "\n";
         }
         if (!entry->description.empty())
@@ -466,8 +467,8 @@ void ObjectFactory::dumpXML(std::ostream& out)
         ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
-        for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-            out << "<alias>" << xmlencode(*it) << "</alias>\n";
+        for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+            out << "<alias>" << xmlencode(*myit) << "</alias>\n";
         if (!entry->description.empty())
             out << "<description>"<<entry->description<<"</description>\n";
         if (!entry->authors.empty())
@@ -498,8 +499,8 @@ void ObjectFactory::dumpHTML(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "<li>Aliases:<i>";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-                out << " " << xmlencode(*it);
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+                out << " " << xmlencode(*myit);
             out << "</i></li>\n";
         }
         if (!entry->authors.empty())

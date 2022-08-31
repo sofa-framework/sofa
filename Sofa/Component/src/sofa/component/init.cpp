@@ -22,6 +22,27 @@
 
 #include <sofa/component/init.h>
 
+#include <sofa/component/animationloop/init.h>
+#include <sofa/component/collision/init.h>
+#include <sofa/component/constraint/init.h>
+#include <sofa/component/controller/init.h>
+#include <sofa/component/diffusion/init.h>
+#include <sofa/component/engine/init.h>
+#include <sofa/component/haptics/init.h>
+#include <sofa/component/io/init.h>
+#include <sofa/component/linearsolver/init.h>
+#include <sofa/component/mapping/init.h>
+#include <sofa/component/mass/init.h>
+#include <sofa/component/mechanicalload/init.h>
+#include <sofa/component/odesolver/init.h>
+#include <sofa/component/playback/init.h>
+#include <sofa/component/sceneutility/init.h>
+#include <sofa/component/setting/init.h>
+#include <sofa/component/solidmechanics/init.h>
+#include <sofa/component/statecontainer/init.h>
+#include <sofa/component/topology/init.h>
+#include <sofa/component/visual/init.h>
+
 namespace sofa::component
 {
     
@@ -33,11 +54,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -52,7 +69,32 @@ const char* getModuleVersion()
 
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        sofa::component::animationloop::init();
+        sofa::component::collision::init();
+        sofa::component::constraint::init();
+        sofa::component::controller::init();
+        sofa::component::diffusion::init();
+        sofa::component::engine::init();
+        sofa::component::haptics::init();
+        sofa::component::io::init();
+        sofa::component::linearsolver::init();
+        sofa::component::mapping::init();
+        sofa::component::mass::init();
+        sofa::component::mechanicalload::init();
+        sofa::component::odesolver::init();
+        sofa::component::playback::init();
+        sofa::component::sceneutility::init();
+        sofa::component::setting::init();
+        sofa::component::solidmechanics::init();
+        sofa::component::statecontainer::init();
+        sofa::component::topology::init();
+        sofa::component::visual::init();
+
+        first = false;
+    }
 }
 
 } // namespace sofa::component

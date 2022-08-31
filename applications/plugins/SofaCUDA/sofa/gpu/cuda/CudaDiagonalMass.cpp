@@ -27,11 +27,11 @@
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.inl>
 
 namespace sofa
 {

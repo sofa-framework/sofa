@@ -22,9 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_PARALLEL_H
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_PARALLEL_H
 
-
-#include <SofaMiscMapping/BeamLinearMapping.h>
-
+#include <sofa/component/mapping/linear/BeamLinearMapping.h>
 
 #include <sofa/simulation/CpuTask.h>
 
@@ -41,10 +39,10 @@ namespace mapping
 
     
     template <class TIn, class TOut>
-    class BeamLinearMapping_mt : public BeamLinearMapping<TIn, TOut>
+    class BeamLinearMapping_mt : public linear::BeamLinearMapping<TIn, TOut>
     {
     public:
-        SOFA_CLASS(SOFA_TEMPLATE2(BeamLinearMapping_mt,TIn,TOut), SOFA_TEMPLATE2(BeamLinearMapping,TIn,TOut) );
+        SOFA_CLASS(SOFA_TEMPLATE2(BeamLinearMapping_mt,TIn,TOut), SOFA_TEMPLATE2(linear::BeamLinearMapping,TIn,TOut) );
         
         typedef core::Mapping<TIn, TOut> Inherit;
         typedef TIn In;
@@ -60,7 +58,7 @@ namespace mapping
         
         typedef typename Coord::value_type Real;
         
-        typedef BeamLinearMapping<TIn, TOut> BeamLinearMappingInOut;
+        typedef linear::BeamLinearMapping<TIn, TOut> BeamLinearMappingInOut;
         enum { N    = BeamLinearMappingInOut::N    };
         enum { NIn  = BeamLinearMappingInOut::NIn  };
         enum { NOut = BeamLinearMappingInOut::NOut };
@@ -106,8 +104,8 @@ namespace mapping
         class applyTask : public simulation::CpuTask
         {
             
-            typedef typename BeamLinearMapping<TIn,TOut>::Out::VecCoord  VecCoord;
-            typedef typename BeamLinearMapping<TIn,TOut>::In::VecCoord  InVecCoord;
+            typedef typename linear::BeamLinearMapping<TIn,TOut>::Out::VecCoord  VecCoord;
+            typedef typename linear::BeamLinearMapping<TIn,TOut>::In::VecCoord  InVecCoord;
             
         public:
             
@@ -134,8 +132,8 @@ namespace mapping
         class applyJTask : public simulation::CpuTask
         {
             
-            typedef typename BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
-            typedef typename BeamLinearMapping<TIn,TOut>::In::VecDeriv  InVecDeriv;
+            typedef typename linear::BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
+            typedef typename linear::BeamLinearMapping<TIn,TOut>::In::VecDeriv  InVecDeriv;
             
         public:
             
@@ -159,8 +157,8 @@ namespace mapping
         
         class applyJTmechTask : public simulation::CpuTask
         {
-            typedef typename BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
-            typedef typename BeamLinearMapping<TIn,TOut>::In::VecDeriv  InVecDeriv;
+            typedef typename linear::BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
+            typedef typename linear::BeamLinearMapping<TIn,TOut>::In::VecDeriv  InVecDeriv;
             
         public:
             

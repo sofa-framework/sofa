@@ -21,17 +21,11 @@
 ******************************************************************************/
 
 
-#include "FileAccess.h"
+#include <sofa/helper/io/FileAccess.h>
 
 #include <iostream>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 FileAccess::FileAccess() : BaseFileAccess(),
@@ -79,10 +73,5 @@ void FileAccess::write(const std::string& data)
 {
     myFile.write(data.data(), data.size());
 }
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io
 

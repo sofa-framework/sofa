@@ -158,6 +158,8 @@ protected:
     Data<sofa::type::RGBAColor> d_drawColorHexahedra; ///< RGB code color used to draw hexahedra.
 	/// include cubature points
 	NumericalIntegrationDescriptor<Real,3> hexahedronNumericalIntegration;
+
+	bool mustComputeBBox() const override;
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)

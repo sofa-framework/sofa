@@ -105,7 +105,7 @@ protected:
 
     void doUpdate() override
     {
-        size_t nb = nbROIs.getValue();
+        const unsigned int nb = nbROIs.getValue();
         f_indices.resize(nb);
         f_value.resize(nb);
         if(!nb) return;
@@ -119,14 +119,11 @@ protected:
             helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices[j];
             const Real& value = f_value[j]->getValue();
 
-            for(size_t i=0 ; i<indices.size() ; i++)
+            for (const Index ind : indices)
             {
-                Index ind = indices[i];
                 if (ind >= outputValues.size())
                 {
-                    size_t oldSize = outputValues.size();
-                    outputValues.resize(ind+1);
-                    for (size_t j=oldSize ; j<ind+1 ; j++) outputValues[j] = defaultValue;
+                    outputValues.wref().resize(ind+1, defaultValue);
                 }
                 outputValues[ind] = value;
             }

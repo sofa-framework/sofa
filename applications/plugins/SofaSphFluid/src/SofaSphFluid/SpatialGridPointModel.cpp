@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaSphFluid/SpatialGridPointModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 
@@ -33,6 +33,8 @@ namespace component
 
 namespace collision
 {
+
+using namespace sofa::component::collision::geometry;
 
 int SpatialGridPointModelClass = core::RegisterObject("Collision model which represents a set of points, spatially grouped using a SpatialGridContainer")
         .add< SpatialGridPointModel >()

@@ -3,13 +3,9 @@ project(Sofa.Component.Constraint.Lagrangian LANGUAGES CXX)
 
 set(SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR "src/sofa/component/constraint/lagrangian")
 
-set(SOFACOMPONENTCONSTRAINTLAGRANGIAN_DIRS Model Correction Solver)
-set(SOFACOMPONENTCONSTRAINTLAGRANGIAN_TARGETS)
-foreach(lagrangian_dir ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_DIRS})
-	sofang_add_component_subdirectory(${lagrangian_dir} ${PROJECT_NAME}.${lagrangian_dir})
-	list(APPEND SOFACOMPONENTCONSTRAINTLAGRANGIAN_TARGETS ${PROJECT_NAME}.${lagrangian_dir})
-endforeach()
-
+sofa_add_subdirectory_modules(SOFACOMPONENTCONSTRAINTLAGRANGIAN_TARGETS
+    DIRECTORIES Model Correction Solver
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/config.h.in

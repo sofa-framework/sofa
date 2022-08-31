@@ -5,7 +5,6 @@
 	<VisualStyle name="displayFlags"  displayFlags="showAll" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<DefaultContactManager name="Response"  response="PenalityContactForceField" />
-	<DefaultCollisionGroupManager name="Group" />
 	<EulerImplicitSolver name="Implicit Euler Solver"  rayleighMass="0"  rayleighStiffness="0.1" />
 	<CGLinearSolver template="GraphScattered" iterations="25" tolerance="1e-5" threshold="1e-5" name="Conjugate Gradient"/>
 	<BulletIntersection name="1"  contactDistance="0.04" />

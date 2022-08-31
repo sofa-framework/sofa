@@ -24,7 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaMatrix/BaseMatrixImageProxy.h>
-#include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
 namespace sofa::component::constraintset
 {
@@ -49,7 +49,7 @@ protected:
     void handleEvent(core::objectmodel::Event *event) override;
 
     Data< type::BaseMatrixImageProxy > d_bitmap; ///< A proxy to visualize the produced image in the GUI through a DataWidget
-    SingleLink<ComplianceMatrixImage, sofa::component::constraintset::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
+    SingleLink<ComplianceMatrixImage, sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 };
 
 } //namespace sofa::component::constraintset

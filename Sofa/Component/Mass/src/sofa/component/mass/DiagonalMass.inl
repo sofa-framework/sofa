@@ -746,7 +746,7 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 {
     if (l_topology.empty())
     {
-        msg_warning() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
@@ -763,7 +763,7 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 
     if (l_geometryState.empty())
     {
-        msg_warning() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
+        msg_info() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
         sofa::core::behavior::BaseMechanicalState::SPtr baseState;
         l_topology->getContext()->get(baseState);
 
@@ -1430,7 +1430,6 @@ void DiagonalMass<DataTypes, GeometricalTypes>::draw(const core::visual::VisualP
 
     std::vector<  sofa::type::Vector3 > points;
 
-    constexpr auto dimensions = std::min(static_cast<std::size_t>(GeometricalTypes::spatial_dimensions), static_cast<std::size_t>(3));
     for (unsigned int i = 0; i < x.size(); i++)
     {
         sofa::type::Vector3 p;

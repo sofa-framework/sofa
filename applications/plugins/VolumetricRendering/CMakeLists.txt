@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(VolumetricRendering VERSION 0.1)
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED)
-find_package(SofaOpenglVisual REQUIRED)
+find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Sofa.GL.Component REQUIRED)
 
 set(HEADER_FILES
     src/VolumetricRendering/config.h.in
@@ -20,7 +19,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} Sofa.Helper SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} Sofa.Helper Sofa.GL.Component)
 
 # Add the include DIR from OpenHaptics to target
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${OPENHAPTICS_INCLUDE_DIR}>")

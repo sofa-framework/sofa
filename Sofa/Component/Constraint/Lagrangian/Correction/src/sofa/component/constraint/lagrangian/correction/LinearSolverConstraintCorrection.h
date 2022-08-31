@@ -94,7 +94,22 @@ public:
     /// @{
 
     Data< bool > wire_optimization; ///< constraints are reordered along a wire-like topology (from tip to base)
+    SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
+    SingleLink<LinearSolverConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
+
+
+    SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
     Data< type::vector< std::string > >  solverName; ///< name of the constraint solver
+    //SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit1::parse(arg);
+        if (arg->getAttribute("solverName"))
+        {
+            msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3152)";
+        }
+    }
+
 
     void verify_constraints();
 
@@ -109,10 +124,6 @@ public:
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
 protected:
-
-    sofa::core::behavior::OdeSolver* odesolver;
-    std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
-
     linearalgebra::SparseMatrix<SReal> J; ///< constraint matrix
     linearalgebra::FullVector<SReal> F; ///< forces computed from the constraints
 
@@ -144,7 +155,6 @@ private:
     std::vector< ListIndex > Vec_I_list_dof;   // vecteur donnant la liste des indices des dofs par block de contrainte
     int last_force, last_disp; //last_force indice du dof le plus petit portant la force/le dpt qui a ?t? modifi? pour la derni?re fois (wire optimisation only?)
     bool _new_force; // if true, a "new" force was added in setConstraintDForce which is not yet integrated by a new computation in addConstraintDisplacements
-
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP)

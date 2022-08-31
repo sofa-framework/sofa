@@ -29,7 +29,8 @@
 #include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <sofa/component/collision/geometry/SphereModel.h>
 #include <sofa/component/collision/geometry/RayModel.h>
-#include <SofaUserInteraction/FixParticlePerformer.h>
+#include <sofa/gui/component/performer/FixParticlePerformer.h>
+
 
 namespace collisionobbcapsule::detection::intersection
 {
@@ -70,7 +71,7 @@ CapsuleMeshDiscreteIntersection::CapsuleMeshDiscreteIntersection(NewProximityInt
 }
 
 // add CapsuleModel to the list of supported collision models for FixParticlePerformer
-using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<defaulttype::Vec3Types>;
+using FixParticlePerformer3d = sofa::gui::component::performer::FixParticlePerformer<defaulttype::Vec3Types>;
 
 int capsuleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>(
     []

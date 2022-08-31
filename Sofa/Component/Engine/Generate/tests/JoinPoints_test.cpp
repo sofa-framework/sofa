@@ -25,8 +25,8 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaGeneralEngine/JoinPoints.h>
-using sofa::component::engine::JoinPoints;
+#include <sofa/component/engine/generate/JoinPoints.h>
+using sofa::component::engine::generate::JoinPoints;
 
 namespace sofa
 {

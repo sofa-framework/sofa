@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SquareMapping_CPP
 
-#include "SquareMapping.inl"
+#include <sofa/component/mapping/nonlinear/SquareMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping::nonlinear

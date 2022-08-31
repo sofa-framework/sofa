@@ -26,16 +26,10 @@
 #ifndef CLANGSTYLEMESSAGEFORMATTER_H
 #define CLANGSTYLEMESSAGEFORMATTER_H
 #include <sstream>
-#include "MessageFormatter.h"
+#include <sofa/helper/logging/MessageFormatter.h>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 class Message;
@@ -60,10 +54,6 @@ private:
     ClangStyleMessageFormatter(const ClangStyleMessageFormatter&);
     void operator=(const ClangStyleMessageFormatter&);
 };
-
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 
 #endif // CLANGSTYLEMESSAGEFORMATTER_H

@@ -26,7 +26,7 @@
 #include <sofa/gui/common/PickHandler.h>
 
 #include <sofa/gui/common/ColourPickingVisitor.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/gl/FrameBufferObject.h>
 
 namespace sofa::component::collision::model
@@ -41,7 +41,7 @@ class SOFA_GUI_QT_API GLPickHandler : public common::PickHandler
 {
     typedef PickHandler Inherit;
     typedef sofa::component::collision::model::RayCollisionModel MouseCollisionModel;
-    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
+    typedef sofa::component::statecontainer::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
 
 public:
     enum PickingMethod

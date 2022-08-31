@@ -148,6 +148,15 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/DAGNode.h
     ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/DAGSimulation.h
     ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/SimpleApi.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheck.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckAPIChange.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckCollisionResponse.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckDeprecatedComponents.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckDuplicatedName.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckMissingRequiredPlugin.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckUsingAlias.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckerListener.h
+    ${SOFACOMPATSRC_ROOT}/SofaGraphComponent/SceneCheckerVisitor.h
 )
 
 set(SOURCE_FILES

@@ -75,6 +75,13 @@ public:
         clear();
     }
 
+    explicit RigidDeriv(type::NoInit)
+        : vCenter(type::NOINIT)
+        , vOrientation(type::NOINIT)
+    {
+
+    }
+
     RigidDeriv(const Vec3 &velCenter, const Vec3 &velOrient)
         : vCenter(velCenter), vOrientation(velOrient)
     {}
@@ -219,9 +226,10 @@ public:
     }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 6 };
+    static constexpr sofa::Size total_size = 6;
+
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 3 };
+    static constexpr sofa::Size spatial_dimensions = 3;
 
     real* ptr() { return vCenter.ptr(); }
     const real* ptr() const { return vCenter.ptr(); }
@@ -664,9 +672,9 @@ public:
     }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 7 };
+    static constexpr sofa::Size total_size = 7;
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 3 };
+    static constexpr sofa::Size spatial_dimensions = 3;
 
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
@@ -825,9 +833,9 @@ public:
     typedef typename Coord::Quat Quat;
     typedef type::Vec<3,Real> AngularVector;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
@@ -909,7 +917,7 @@ public:
         getVCenter(c)[2] += (Real)z;
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
     static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude)
@@ -1017,8 +1025,8 @@ typedef StdRigidTypes<3,float> Rigid3fTypes;
 typedef RigidMass<3,float> Rigid3fMass;
 
 /// We now use template aliases so we do not break backward compatibility.
-template<> inline const char* Rigid3dTypes::Name() { return "Rigid3d"; }
-template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
+template<> constexpr const char* Rigid3dTypes::Name() { return "Rigid3d"; }
+template<> constexpr const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 
 typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
 typedef StdRigidTypes<3,SReal> RigidTypes;   ///< alias (beurk)
@@ -1046,6 +1054,13 @@ private:
 
 public:
     friend class RigidCoord<2,real>;
+
+    explicit RigidDeriv(type::NoInit)
+        : vCenter(type::NOINIT)
+        , vOrientation(type::NOINIT)
+    {
+
+    }
 
     RigidDeriv()
     {
@@ -1536,9 +1551,10 @@ public:
     }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 3 };
+    static constexpr sofa::Size total_size = 3;
+
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 2 };
+    static constexpr sofa::Size spatial_dimensions = 2;
 
     real* ptr() { return center.ptr(); }
     const real* ptr() const { return center.ptr(); }
@@ -1708,9 +1724,9 @@ public:
     typedef RigidCoord<2,Real> Coord;
     typedef Real AngularVector;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
@@ -1726,7 +1742,7 @@ public:
     static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
     static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     typedef type::vector<Coord> VecCoord;
     typedef type::vector<Deriv> VecDeriv;
@@ -1844,8 +1860,8 @@ public:
 
 
 
-template<> inline const char* Rigid2dTypes::Name() { return "Rigid2d"; }
-template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
+template<> constexpr const char* Rigid2dTypes::Name() { return "Rigid2d"; }
+template<> constexpr const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 
 /// \endcond
 

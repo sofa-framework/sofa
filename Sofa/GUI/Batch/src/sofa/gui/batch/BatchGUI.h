@@ -68,6 +68,8 @@ public:
     static const signed int DEFAULT_NUMBER_OF_ITERATIONS;
     /// @}
 
+    bool canBeDefaultGUI() const override { return false; }
+
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     ~BatchGUI() override;

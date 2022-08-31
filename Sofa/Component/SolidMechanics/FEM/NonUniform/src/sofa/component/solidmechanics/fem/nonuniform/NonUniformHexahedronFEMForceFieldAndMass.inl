@@ -73,7 +73,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
         return;
     }
 
-    this->_sparseGrid = dynamic_cast<topology::SparseGridTopology*>(this->m_topology);
+    this->_sparseGrid = dynamic_cast<topology::container::grid::SparseGridTopology*>(this->m_topology);
 
 
 

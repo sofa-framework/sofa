@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_SIMPLE_SIMPLEGUI_H
 #define SOFA_GUI_SIMPLE_SIMPLEGUI_H
 
-#include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/common/BaseGUI.h>
 
 #include "glut.h"
 
@@ -60,7 +60,7 @@ using namespace sofa::gl;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
-class SimpleGUI : public sofa::gui::BaseGUI
+class SimpleGUI : public sofa::gui::common::BaseGUI
 {
 
 public:
@@ -239,7 +239,7 @@ public:
     int _mouseInteractorSavedPosY;
 
     static int     InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/);
-    static sofa::gui::BaseGUI* CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename);
+    static sofa::gui::common::BaseGUI* CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename);
 private:
 
     void	InitGFX();

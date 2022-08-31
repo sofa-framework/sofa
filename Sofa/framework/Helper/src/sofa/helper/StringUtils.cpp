@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <cstring>
-#include "StringUtils.h"
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa
 {

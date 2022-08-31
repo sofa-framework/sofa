@@ -3,14 +3,13 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SOFASPHFLUID_HAVE_SOFAOPENGLVISUAL @SOFASPHFLUID_HAVE_SOFAOPENGLVISUAL@)
 set(SOFASPHFLUID_HAVE_SOFA_GL @SOFASPHFLUID_HAVE_SOFA_GL@)
 
-find_package(SofaFramework REQUIRED)
-
-if(SOFASPHFLUID_HAVE_SOFAOPENGLVISUAL)
-    find_package(SofaOpenglVisual QUIET REQUIRED)
-endif()
+find_package(Sofa.Core QUIET REQUIRED)
+find_package(Sofa.Component.Topology.Container.Constant QUIET REQUIRED)
+find_package(Sofa.Component.Topology.Container.Dynamic QUIET REQUIRED)
+find_package(Sofa.Component.Collision.Geometry QUIET REQUIRED)
+find_package(Sofa.Component.StateContainer QUIET REQUIRED)
 
 if(SOFASPHFLUID_HAVE_SOFA_GL)
     find_package(Sofa.GL QUIET REQUIRED)

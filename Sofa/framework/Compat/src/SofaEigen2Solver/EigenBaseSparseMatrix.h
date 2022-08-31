@@ -23,7 +23,7 @@
 
 #include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenBaseSparseMatrix.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenBaseSparseMatrix.h")
 #include <sofa/core/behavior/MultiMatrixAccessor.h> // some code was using implicitely MultiMatrixAccessor
 
 namespace sofa::component::linearsolver

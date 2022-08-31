@@ -1,12 +1,12 @@
 #include "MeanComputation.h"
 
-//#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::behavior;
-using namespace sofa::component::container;
+using namespace sofa::component::statecontainer;
 
 namespace sofa
 {
@@ -32,8 +32,8 @@ namespace sofa
 
                 helper::ReadAccessor< Data<VecCoord> > output = d_result;
 
-                std::vector<component::container::MechanicalObject<DataTypes>*> mechObjs;
-                this->getContext()->template get<component::container::MechanicalObject<DataTypes> >(
+                std::vector<MechanicalObject<DataTypes>*> mechObjs;
+                this->getContext()->template get<MechanicalObject<DataTypes> >(
                     &mechObjs,
                     BaseContext::Local);
 

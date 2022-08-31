@@ -208,7 +208,7 @@ typename CapsuleCollisionModel<DataTypes>::Real CapsuleCollisionModel<DataTypes>
 
 template <class DataTypes>
 inline const typename CapsuleCollisionModel<DataTypes>::Coord & CapsuleCollisionModel<DataTypes>::point(Index i)const{
-    return this->_mstate->read(core::ConstVecCoordId::position())->getValue()[i];
+    return DataTypes::getCPos(this->_mstate->read(core::ConstVecCoordId::position())->getValue()[i]);
 }
 
 template <class DataTypes>
@@ -265,7 +265,7 @@ typename CapsuleCollisionModel<DataTypes>::Deriv CapsuleCollisionModel<DataTypes
                                                                                        (_mstate->read(core::ConstVecDerivId::velocity())->getValue())[_capsule_points[index].second])/2.0;}
 
 template<class DataTypes>
-typename TCapsule<DataTypes>::Coord TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
+typename TCapsule<DataTypes>::Deriv TCapsule<DataTypes>::v() const {return this->model->velocity(this->index);}
 
 template<class DataTypes>
 typename CapsuleCollisionModel<DataTypes>::Coord CapsuleCollisionModel<DataTypes>::axis(Index index) const {
