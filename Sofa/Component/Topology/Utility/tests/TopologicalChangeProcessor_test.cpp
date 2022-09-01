@@ -219,7 +219,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
         // check topology at start
         EXPECT_EQ(topoCon->getNbTriangles(), 0);
         EXPECT_EQ(topoCon->getNbEdges(), 0);
-        EXPECT_EQ(topoCon->getNbPoints(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         // to test incise animates the scene at least 1.2s
         for (int i = 0; i < 100; i++)
@@ -330,7 +330,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
         EXPECT_EQ(topoCon->getNbTetrahedra(), 0);
         EXPECT_EQ(topoCon->getNbTriangles(), 0);
         EXPECT_EQ(topoCon->getNbEdges(), 0);
-        EXPECT_EQ(topoCon->getNbPoints(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         for (int i = 0; i < 41; i++)
         {
