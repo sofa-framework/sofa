@@ -370,12 +370,6 @@ public:
 
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
 /// Read/Write Accessor.
@@ -407,11 +401,6 @@ public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
     ~WriteAccessor() { data.endEdit(); }
 };
 
@@ -437,12 +426,6 @@ public:
 
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 
 

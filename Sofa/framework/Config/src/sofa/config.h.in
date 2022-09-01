@@ -197,30 +197,9 @@ class DeprecatedAndRemoved {};
 // for every disabled attribute.
 #define SOFA_ATTRIBUTE_DISABLED(deprecateDate, disableDate, toFixMsg)
 
-#define SOFA_ATTRIBUTE_DEPRECATED__BASEDATA_OWNERCLASS_ACCESSOR(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.06 (PR#1890)", "v21.12", \
-        "BaseData API has changed. " msg)
-
-#define SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.06 (PR#1753)", "v21.12", \
-        "Data API has changed. " msg)
-
-#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v20.06 (PR#1269)", "v21.12", \
-        "Aspects have been removed. " msg)
-
-#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS() \
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT( \
-        "ExecParams are not needed anymore. " \
-        "Remove the ExecParams argument from your call. ")
-
-
-#define SOFA_ATTRIBUTE_DEPRECATED__QUAT_API(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.06 (PR#1878)", "v21.12", \
+#define SOFA_ATTRIBUTE_DISABLED__QUAT_API(msg) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.12", "v23.06", \
         "Quat was refactored. " msg)
 
 #define SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR() \

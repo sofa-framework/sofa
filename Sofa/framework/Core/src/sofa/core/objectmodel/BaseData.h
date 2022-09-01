@@ -152,14 +152,6 @@ public:
     /// Set the help message.
     void setHelp(const std::string& val) { help = val; }
 
-    /// Get owner class
-    SOFA_ATTRIBUTE_DEPRECATED__BASEDATA_OWNERCLASS_ACCESSOR("Replace getOwnerClass() by getOwner()->getClassName().")
-    const std::string& getOwnerClass() const { return ownerClass; }
-
-    /// Set owner class
-    SOFA_ATTRIBUTE_DEPRECATED__BASEDATA_OWNERCLASS_ACCESSOR("This feature will be totally removed. You are not supposed to change Owner's type name.")
-    void setOwnerClass(const char* val) { ownerClass = val; }
-
     /// Get group
     const std::string& getGroup() const { return group; }
 
@@ -171,10 +163,6 @@ public:
 
     /// Set widget
     void setWidget(const char* val) { widget = val; }
-
-    /// True if the counter of modification gives valid information.
-    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Data<> must have, by design, their counter valid.")
-    bool isCounterValid() const { return true; }
 
     /// @name Flags
     /// @{
@@ -242,25 +230,18 @@ public:
     /// @{
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
-    /// (even if the parent's value has not been modified)s
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    bool isSet(const core::ExecParams*) const { return isSet(); }
+    /// (even if the parent's value has not been modified)
+    [[nodiscard]]
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    void unset(const core::ExecParams*) { unset(); }
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    void forceSet(const core::ExecParams*) { forceSet(); }
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    int getCounter(const core::ExecParams*) const { return getCounter(); }
     int getCounter() const { return m_counter; }
     /// @}
 
@@ -275,13 +256,6 @@ public:
 
     /// Update the value of this %Data
     void update() override;
-
-    /// Copy the value from another Data.
-    ///
-    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
-    /// @return true if the copy was successful.
-    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Use copyValueFrom() instead.")
-    bool copyValue(const BaseData* data){ return copyValueFrom(data); }
 
     /// Copy the value from another Data.
     ///
