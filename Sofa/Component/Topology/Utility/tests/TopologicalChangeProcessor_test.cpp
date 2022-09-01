@@ -229,7 +229,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
 
         EXPECT_EQ(topoCon->getNbTriangles(), 24);
         EXPECT_EQ(topoCon->getNbEdges(), 42);
-        EXPECT_EQ(topoCon->getNbPoints(), 18);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         return true;
     }
@@ -340,7 +340,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
         EXPECT_EQ(topoCon->getNbTetrahedra(), 8);
         EXPECT_EQ(topoCon->getNbTriangles(), 24);
         EXPECT_EQ(topoCon->getNbEdges(), 25);
-        EXPECT_EQ(topoCon->getNbPoints(), 14);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         return true;
     }
