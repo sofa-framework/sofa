@@ -164,17 +164,39 @@ bool CollisionModel::canCollideWith(CollisionModel* model)
 {
     if (model->getContext() == this->getContext()) // models are in the Node -> is self collision activated?
         return bSelfCollision.getValue();
-    else if( this->group.getValue().empty() || model->group.getValue().empty() ) // one model has no group -> always collide
-        return true;
-    else
-    {
-        std::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
-        for( ; it != itend ; ++it )
-            if( model->group.getValue().count(*it)>0 ) // both models are included in the same group -> do not collide
-                return false;
 
+    const auto& myGroups = this->group.getValue();
+    if (myGroups.empty()) // a collision model without any group always collides
         return true;
+
+    const auto& modelGroups = model->group.getValue();
+    if (modelGroups.empty()) // a collision model without any group always collides
+        return true;
+
+    std::set<int>::const_iterator myGroupsFirst = myGroups.cbegin();
+    const std::set<int>::const_iterator myGroupsLast = myGroups.cend();
+
+    std::set<int>::const_iterator modelGroupsFirst = modelGroups.cbegin();
+    const std::set<int>::const_iterator modelGroupsLast = modelGroups.cend();
+
+    // Collision models don't collide if they have a common group
+    while (myGroupsFirst != myGroupsLast && modelGroupsFirst != modelGroupsLast)
+    {
+        if (*myGroupsFirst < *modelGroupsFirst)
+        {
+            ++myGroupsFirst;
+        }
+        else if (*myGroupsFirst > *modelGroupsFirst)
+        {
+            ++modelGroupsFirst;
+        }
+        else
+        {
+            return false;
+        }
     }
+
+    return true;
 }
 
 
