@@ -60,7 +60,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     this->m_topologyHandler->init();
 
     // Register the TopologyHandler
-    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
+    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology, sofa::helper::logging::notMuted(this->getOwner()));
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);

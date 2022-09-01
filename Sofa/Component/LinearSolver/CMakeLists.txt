@@ -3,12 +3,9 @@ project(Sofa.Component.LinearSolver LANGUAGES CXX)
 
 set(SOFACOMPONENTLINEARSOLVER_SOURCE_DIR "src/sofa/component/linearsolver")
 
-set(SOFACOMPONENTLINEARSOLVER_DIRS Iterative Direct Preconditioner)
-set(SOFACOMPONENTLINEARSOLVER_TARGETS)
-foreach(linearsolver_dir ${SOFACOMPONENTLINEARSOLVER_DIRS})
-    sofa_add_component_subdirectory(${linearsolver_dir} ${PROJECT_NAME}.${linearsolver_dir})
-    list(APPEND SOFACOMPONENTLINEARSOLVER_TARGETS ${PROJECT_NAME}.${linearsolver_dir})
-endforeach()
+sofa_add_subdirectory_modules(SOFACOMPONENTLINEARSOLVER_TARGETS
+    DIRECTORIES Iterative Direct Preconditioner
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTLINEARSOLVER_SOURCE_DIR}/config.h.in

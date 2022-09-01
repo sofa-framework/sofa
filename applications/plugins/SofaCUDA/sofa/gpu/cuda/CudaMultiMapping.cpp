@@ -36,4 +36,4 @@ namespace sofa::core
     template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec3Types >;
     template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec6Types >;
     template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaRigid3Types >;
-}//namespace sofa::component::mapping
+} // namespace sofa::core

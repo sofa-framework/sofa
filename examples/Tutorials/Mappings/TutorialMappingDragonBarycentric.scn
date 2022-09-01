@@ -19,7 +19,6 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
-    <TreeCollisionGroupManager name="Group" />
     <Node name="Springs" gravity="0 -9.81 0">
         <EulerImplicitSolver name="default13" rayleighStiffness="0.5" rayleighMass="0.5" vdamping="0" />
         <CGLinearSolver template="GraphScattered" name="default14" iterations="25" tolerance="1e-05" threshold="1e-08" />

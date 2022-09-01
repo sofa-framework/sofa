@@ -180,7 +180,7 @@ public:
         Impl<spatial_dimensions,T>::add(c,x,y,z);
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     static Coord interpolate(const type::vector< Coord > &ancestors, const type::vector< Real > &coefs)
     {
@@ -200,35 +200,35 @@ public:
 
 /// 3D DOFs, double precision
 typedef StdVectorTypes<type::Vec3d,type::Vec3d,double> Vec3dTypes;
-template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
+template<> constexpr const char* Vec3dTypes::Name() { return "Vec3d"; }
 
 /// 2D DOFs, double precision
 typedef StdVectorTypes<type::Vec2d, type::Vec2d,double> Vec2dTypes;
-template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
+template<> constexpr const char* Vec2dTypes::Name() { return "Vec2d"; }
 
 /// 1D DOFs, double precision
 typedef StdVectorTypes<type::Vec1d, type::Vec1d,double> Vec1dTypes;
-template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
+template<> constexpr const char* Vec1dTypes::Name() { return "Vec1d"; }
 
 /// 6D DOFs, double precision
 typedef StdVectorTypes<type::Vec6d, type::Vec6d,double> Vec6dTypes;
-template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
+template<> constexpr const char* Vec6dTypes::Name() { return "Vec6d"; }
 
 /// 3f DOFs, single precision
 typedef StdVectorTypes<type::Vec3f, type::Vec3f,float> Vec3fTypes;
-template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
+template<> constexpr const char* Vec3fTypes::Name() { return "Vec3f"; }
 
 /// 2f DOFs, single precision
 typedef StdVectorTypes<type::Vec2f, type::Vec2f,float> Vec2fTypes;
-template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
+template<> constexpr const char* Vec2fTypes::Name() { return "Vec2f"; }
 
 /// 1f DOFs, single precision
 typedef StdVectorTypes<type::Vec1f, type::Vec1f,float> Vec1fTypes;
-template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
+template<> constexpr const char* Vec1fTypes::Name() { return "Vec1f"; }
 
 /// 6f DOFs, single precision
 typedef StdVectorTypes<type::Vec6f, type::Vec6f,float> Vec6fTypes;
-template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
+template<> constexpr const char* Vec6fTypes::Name() { return "Vec6f"; }
 
 /// 6D DOFs, double precision (default)
 typedef StdVectorTypes<type::Vec6, type::Vec6, type::Vec6::value_type> Vec6Types;

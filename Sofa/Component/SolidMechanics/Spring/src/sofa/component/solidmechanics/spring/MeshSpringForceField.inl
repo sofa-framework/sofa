@@ -213,6 +213,11 @@ void MeshSpringForceField<DataTypes>::init()
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid || !mstate1 || !mstate2)
+        return ;
+
+    vparams->drawTool()->saveLastState();
+
     if(vparams->displayFlags().getShowForceFields())
     {
         typedef typename Inherit1::Spring  Spring;
@@ -264,6 +269,8 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
 
             vparams->drawTool()->drawLines(points, float(drawSpringSize), sofa::type::RGBAColor{ float(R), float(G), float(B), 1.f });
         }
+
+        vparams->drawTool()->restoreLastState();
     }
 }
 

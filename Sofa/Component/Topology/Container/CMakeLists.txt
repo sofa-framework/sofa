@@ -3,12 +3,9 @@ project(Sofa.Component.Topology.Container LANGUAGES CXX)
 
 set(SOFACOMPONENTTOPOLOGYCONTAINER_SOURCE_DIR "src/sofa/component/topology/container")
 
-set(SOFACOMPONENTTOPOLOGYCONTAINER_DIRS Constant Dynamic Grid)
-set(SOFACOMPONENTTOPOLOGYCONTAINER_TARGETS)
-foreach(container_dir ${SOFACOMPONENTTOPOLOGYCONTAINER_DIRS})
-	sofa_add_component_subdirectory(${container_dir} ${PROJECT_NAME}.${container_dir})
-	list(APPEND SOFACOMPONENTTOPOLOGYCONTAINER_TARGETS ${PROJECT_NAME}.${container_dir})
-endforeach()
+sofa_add_subdirectory_modules(SOFACOMPONENTTOPOLOGYCONTAINER_TARGETS
+    DIRECTORIES Constant Dynamic Grid
+)
 
 set(HEADER_FILES
     ${SOFACOMPONENTTOPOLOGYCONTAINER_SOURCE_DIR}/config.h.in

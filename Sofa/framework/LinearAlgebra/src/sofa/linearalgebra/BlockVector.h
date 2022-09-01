@@ -62,7 +62,6 @@ public:
             type::Vec<N,T>::fill(v);
         }
     };
-    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
 
     typedef Block SubVectorType;
 

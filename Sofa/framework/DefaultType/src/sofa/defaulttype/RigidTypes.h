@@ -917,7 +917,7 @@ public:
         getVCenter(c)[2] += (Real)z;
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
     static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude)
@@ -1025,8 +1025,8 @@ typedef StdRigidTypes<3,float> Rigid3fTypes;
 typedef RigidMass<3,float> Rigid3fMass;
 
 /// We now use template aliases so we do not break backward compatibility.
-template<> inline const char* Rigid3dTypes::Name() { return "Rigid3d"; }
-template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
+template<> constexpr const char* Rigid3dTypes::Name() { return "Rigid3d"; }
+template<> constexpr const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 
 typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
 typedef StdRigidTypes<3,SReal> RigidTypes;   ///< alias (beurk)
@@ -1742,7 +1742,7 @@ public:
     static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
     static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     typedef type::vector<Coord> VecCoord;
     typedef type::vector<Deriv> VecDeriv;
@@ -1860,8 +1860,8 @@ public:
 
 
 
-template<> inline const char* Rigid2dTypes::Name() { return "Rigid2d"; }
-template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
+template<> constexpr const char* Rigid2dTypes::Name() { return "Rigid2d"; }
+template<> constexpr const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 
 /// \endcond
 

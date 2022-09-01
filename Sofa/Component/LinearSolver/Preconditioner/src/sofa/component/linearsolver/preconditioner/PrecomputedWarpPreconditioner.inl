@@ -57,7 +57,7 @@ PrecomputedWarpPreconditioner<TDataTypes>::PrecomputedWarpPreconditioner()
     , f_verbose( initData(false,"verbose","Dump system state at each iteration") )
     , use_file( initData(true,"use_file","Dump system matrix in a file") )
     , share_matrix( initData(true,"share_matrix","Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)") )
-    , solverName(initData( std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
+    , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to precompute the first matrix"))
     , use_rotations( initData(true,"use_rotations","Use Rotations around the preconditioner") )
     , draw_rotations_scale( initData(0.0,"draw_rotations_scale","Scale rotations in draw function") )
 {
@@ -168,18 +168,20 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
         else
         {
             msg_info() << "Precompute : " << fname << " compliance.";
-            if (solverName.getValue().empty())
+            if (l_linearSolver.empty())
             {
 #if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
                 loadMatrixWithCSparse(M);
 #else
-                msg_error() << "solverName is empty, but is required to load matrix.";
+                msg_error() << "Link \"linearSolver\" is empty, but it is required to load matrix.";
                 this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
 #endif  // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE && !defined(SOFA_FLOAT)
             }
             else
+            {
                 loadMatrixWithSolver();
+            }
 
             if (use_file.getValue())
             {
@@ -292,18 +294,19 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     component::linearsolver::iterative::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
     core::behavior::LinearSolver* linearSolver;
 
-    if (solverName.getValue().empty())
+    if (l_linearSolver.get() == nullptr)
     {
-        this->getContext()->get(CGlinearSolver);
-        this->getContext()->get(linearSolver);
+        msg_error() << "No LinearSolver component found at path: " << l_linearSolver.getLinkedPath();
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
-    else
-    {
-        core::objectmodel::BaseObject* ptr = nullptr;
-        this->getContext()->get(ptr, solverName.getValue());
-        CGlinearSolver = dynamic_cast<component::linearsolver::iterative::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
-        linearSolver = ptr->toLinearSolver();
-    }
+
+    msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
+
+    core::objectmodel::BaseObject* ptr = l_linearSolver.get();
+    CGlinearSolver = dynamic_cast<component::linearsolver::iterative::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
+    linearSolver = ptr->toLinearSolver();
+
 
     if(EulerSolver && CGlinearSolver) {
         msg_info() << "use EulerImplicitSolver &  CGLinearSolver";

@@ -12,7 +12,7 @@ option(SOFADISTANCEGRID_USE_MESHCONV "Build meshconv, mainly used to generate Di
 if(SOFADISTANCEGRID_USE_MESHCONV)
     find_package(MiniFlowVR QUIET)
     if(MiniFlowVR_FOUND)
-        sofa_add_application(applications/meshconv meshconv OFF)
+        sofa_add_subdirectory(application applications/meshconv meshconv OFF)
     else()
         message(WARNING "meshconv needs miniFlowVR; enable SOFADISTANCEGRID_USE_MINIFLOWVR to build it.")
     endif()
