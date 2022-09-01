@@ -56,7 +56,6 @@ RestStiffSpringsForceField_test::~RestStiffSpringsForceField_test()
 
 sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const std::string& type)
 {
-    importPlugin("SofaComponentAll");
     auto theSimulation = createSimulation();
     auto theRoot = createRootNode(theSimulation, "root");
 

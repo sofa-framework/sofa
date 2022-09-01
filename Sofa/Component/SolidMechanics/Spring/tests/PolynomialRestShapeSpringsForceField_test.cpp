@@ -35,7 +35,6 @@ public:
     bool testSpringForce()
     {
         double dt = 0.01;
-        sofa::simpleapi::importPlugin("SofaComponentAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 

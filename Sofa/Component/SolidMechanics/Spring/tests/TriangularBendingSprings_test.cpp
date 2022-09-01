@@ -69,7 +69,6 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
         simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
     }
 

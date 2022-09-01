@@ -62,7 +62,6 @@ public:
     void testComponentState()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        importPlugin("SofaComponentAll") ;
         const std::string scene = R"(
             <?xml version='1.0'?>
             <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
