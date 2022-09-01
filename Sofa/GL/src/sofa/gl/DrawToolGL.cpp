@@ -148,17 +148,12 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
     std::map<RGBAColor, std::vector<Vector3> > colorPointsMap;
     for (std::size_t i = 0; i < colors.size(); ++i)
     {
-        if (colorPointsMap.find(colors[i]) == colorPointsMap.end())
-        {
-            colorPointsMap.insert({ colors[i] , {} });
-        }
-
         colorPointsMap[colors[i]].push_back(points[2 * i]);
         colorPointsMap[colors[i]].push_back(points[2 * i + 1]);
     }
 
     // call the drawLine method which takes only one color
-    for (auto [color, points] : colorPointsMap)
+    for (const auto& [color, points] : colorPointsMap)
     {
         drawLines(points, size, color);
     }
