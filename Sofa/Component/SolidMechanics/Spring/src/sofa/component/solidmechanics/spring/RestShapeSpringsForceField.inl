@@ -411,7 +411,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
         }
         else
         {
-            df1[m_indices[i]] -= dx1[m_indices[i]] * k[(i < k.size()) * i] * kFactor;
+            df1[m_indices[i]] -= dx1[m_indices[i]] * stiffness * kFactor;
         }
     }
 
