@@ -114,7 +114,7 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
 
     if (tab.empty())
         return;
-    
+
     core::topology::BaseMeshTopology* modifiedTopology;
     if (mstateId == 0)
     {
@@ -152,7 +152,7 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
         {
             springsValue.erase(springsValue.begin() + (*it));
         }
-        
+
         if (pntId == nbPoints) // no need to renumber springs as last pointId has just been removed
             continue;
 
@@ -473,6 +473,8 @@ void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
     sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
     springs.erase(springs.begin() +idSpring );
     this->springs.endEdit();
+
+    updateTopologyIndicesFromSprings();
 }
 
 template <class DataTypes>
