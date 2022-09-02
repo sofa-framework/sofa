@@ -278,7 +278,7 @@ Index TopologicalChangeManager::removeItemsFromPointModel(PointCollisionModel<so
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
     Index res = vitems.size();
-    
+
 
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
@@ -301,11 +301,17 @@ Index TopologicalChangeManager::removeItemsFromLineModel(LineCollisionModel<sofa
         return 0;
     }
 
+    // copy indices to have a mutable version of the vector
+    type::vector<Index> unique_indices = indices;
+    // sort followed by unique, to remove all duplicates
+    std::sort(unique_indices.begin(), unique_indices.end());
+    unique_indices.erase( std::unique(unique_indices.begin(), unique_indices.end()), unique_indices.end());
+
     simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
 
-    topoMod->removeItems(indices);
+    topoMod->removeItems(unique_indices);
 
     topoMod->notifyEndingEvent();
 
