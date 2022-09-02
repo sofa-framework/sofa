@@ -33,7 +33,7 @@ using std::vector;
 
 #include "SimpleGUI.h"
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -51,10 +51,10 @@ using sofa::simulation::Node;
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/gui/GUIManager.h>
-using sofa::gui::GUIManager;
+#include <sofa/gui/common/GUIManager.h>
+using sofa::gui::common::GUIManager;
 
-#include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/common/BaseGUI.h>
 #include <sofa/gl/gl.h>
 
 using sofa::core::ExecParams ;
@@ -65,7 +65,7 @@ using sofa::helper::Utils;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
-using sofa::gui::BaseGUI;
+using sofa::gui::common::BaseGUI;
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -144,7 +144,7 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
-    sofa::gui::ArgumentParser* argParser = new sofa::gui::ArgumentParser(argc, argv);
+    sofa::gui::common::ArgumentParser* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
 
     argParser->addArgument(cxxopts::value<bool>(showHelp)->default_value("false")->implicit_value("true"), "h,help", "Display this help message");
     argParser->addArgument(cxxopts::value<bool>(startAnim)->default_value("false")->implicit_value("true"), "a,start", "start the animation loop");

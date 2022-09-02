@@ -77,7 +77,7 @@ public:
     void NNCG(GenericConstraintSolver* solver = nullptr, int iterationNewton = 1);
 
     void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const;
-    void result_output(SReal *force, SReal error, int iterCount, bool convergence);
+    void result_output(GenericConstraintSolver* solver, SReal *force, SReal error, int iterCount, bool convergence);
 
     int getNumConstraints();
     int getNumConstraintGroups();
@@ -140,11 +140,11 @@ public:
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface.
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field.
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data schemeCorrection was unused therefore removed.")
+    SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_DATA("Data schemeCorrection was unused therefore removed.")
     DeprecatedAndRemoved schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3053)", "v23.06", "Make the \"unbuild\" option as an option group \"resolutionMethod\".")
+    SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_DATA("Make the \"unbuild\" option as an option group \"resolutionMethod\".")
     Data<bool> unbuilt; ///< Compliance is not fully built  (for the PGS solver only)
-    //SOFA_ATTRIBUTE_DEPRECATED("v22.12 (#3053)", "v23.06", "Make the \"unbuild\" option as an option group \"resolutionMethod\".")
+    //SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_DATA("Make the \"unbuild\" option as an option group \"resolutionMethod\".")
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         Inherit1::parse(arg);

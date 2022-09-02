@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DATA_H
-#define SOFA_CORE_OBJECTMODEL_DATA_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
@@ -30,11 +29,7 @@
 #include <sofa/core/objectmodel/DataContentValue.h>
 namespace sofa
 {
-
-namespace core
-{
-
-namespace objectmodel
+namespace core::objectmodel
 {
 
 /** \brief Container that holds a variable for a component.
@@ -145,7 +140,7 @@ public:
     }
 
     /// Destructor.
-    virtual ~Data() {}
+    ~Data() override {}
 
     /// @}
 
@@ -216,10 +211,12 @@ public:
         this->setValue(value);
     }
 
-    bool copyValueFrom(const BaseData* data){ return doCopyValueFrom(data); }
     bool copyValueFrom(const Data<T>* data);
 
     static constexpr bool isCopyOnWrite(){ return !std::is_scalar_v<T>; }
+
+    Data(const Data& ) = delete;
+    Data& operator=(const Data& ) = delete;
 
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
@@ -228,8 +225,7 @@ protected:
     ValueType m_value;
 
 private:
-    Data(const Data& );
-    Data& operator=(const Data& );
+
 
     bool doIsExactSameDataType(const BaseData* parent) override;
     bool doCopyValueFrom(const BaseData* parent) override;
@@ -277,7 +273,7 @@ bool Data<T>::read(const std::string& s)
 {
     if (s.empty())
     {
-        bool resized = getValueTypeInfo()->setSize( BaseData::beginEditVoidPtr(), 0 );
+        const bool resized = getValueTypeInfo()->setSize( BaseData::beginEditVoidPtr(), 0 );
         BaseData::endEditVoidPtr();
         return resized;
     }
@@ -348,10 +344,7 @@ extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 extern template class SOFA_CORE_API Data< bool >;
 #endif
-
-} // namespace objectmodel
-
-} // namespace core
+} // namespace core::objectmodel
 
 // Overload helper::ReadAccessor and helper::WriteAccessor
 
@@ -394,8 +387,8 @@ public:
     // these are forbidden (until c++11 move semantics) as they break
     // RAII encapsulation. the reference member 'data' prevents them
     // anyways, but the intent is more obvious like this.
-    WriteAccessor(const WriteAccessor& );
-    WriteAccessor& operator=(const WriteAccessor& );
+    WriteAccessor(const WriteAccessor& ) = delete;
+    WriteAccessor& operator=(const WriteAccessor& ) = delete;
 
 protected:
     data_container_type& data;
@@ -432,8 +425,8 @@ public:
     // these are forbidden (until c++11 move semantics) as they break
     // RAII encapsulation. the reference member 'data' prevents them
     // anyways, but the intent is more obvious like this.
-    WriteOnlyAccessor(const WriteOnlyAccessor& );
-    WriteOnlyAccessor& operator=(const WriteOnlyAccessor& );
+    WriteOnlyAccessor(const WriteOnlyAccessor& ) = delete;
+    WriteOnlyAccessor& operator=(const WriteOnlyAccessor& ) = delete;
 
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
@@ -491,6 +484,3 @@ WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::object
 using core::objectmodel::Data;
 
 } // namespace sofa
-
-#endif  // SOFA_CORE_OBJECTMODEL_DATA_H
-

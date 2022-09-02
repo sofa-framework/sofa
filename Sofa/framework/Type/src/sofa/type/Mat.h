@@ -621,7 +621,11 @@ public:
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         Mat<L,C,real> m = *this;
-        invertMatrix(m, *this);
+
+        const bool canInvert = invertMatrix(m, *this);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
+
         return m;
     }
 

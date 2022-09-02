@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaImplicitField VERSION 1.0)
 
+sofa_find_package(Sofa.Framework REQUIRED)
 sofa_find_package(SofaDistanceGrid REQUIRED)
 
 set(HEADER_FILES

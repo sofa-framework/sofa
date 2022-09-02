@@ -28,9 +28,9 @@ using sofa::core::VecId;
 using sofa::defaulttype::Vec3Types;
 using Coord3 = sofa::type::Vector3;
 using VecCoord3 = sofa::type::vector<Coord3>;
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
 
@@ -74,8 +74,8 @@ using sofa::simulation::Node;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    sofa::gui::ArgumentParser argParser(argc, argv);
-    sofa::gui::GUIManager::RegisterParameters(&argParser);
+    sofa::gui::common::ArgumentParser argParser(argc, argv);
+    sofa::gui::common::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
 
     //force load all components
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
-    sofa::gui::GUIManager::Init(argv[0]);
+    sofa::gui::common::GUIManager::Init(argv[0]);
 
     // The graph root node : gravity already exists in a GNode by default
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
     flags.setShowBehaviorModels(true);
     style->displayFlags.endEdit();
 
-    sofa::gui::GUIManager::SetScene(groot);
+    sofa::gui::common::GUIManager::SetScene(groot);
 
     // Init the scene
     sofa::simulation::getSimulation()->init(groot.get());
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    sofa::gui::GUIManager::MainLoop(groot);
+    sofa::gui::common::GUIManager::MainLoop(groot);
     sofa::simulation::graph::cleanup();
     return 0;
 }

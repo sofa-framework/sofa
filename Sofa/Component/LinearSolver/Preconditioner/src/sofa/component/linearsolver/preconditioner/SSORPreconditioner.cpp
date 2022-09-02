@@ -98,7 +98,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
         type::Vec<BlocSize, SReal> temp;
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
-        while (xi < rowRange.end() && (Index)colsIndex[xi] < jb) ++xi;
+        while (xi < rowRange.end() && static_cast<Index>(colsIndex[xi]) < jb) ++xi;
         // bloc on the diagonal
         const typename Matrix::Block& bdiag = colsValue[xi];
         // upper triangle matrix
@@ -106,9 +106,9 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
         {
             Index i0 = colsIndex[xi]*BlocSize;
             const typename Matrix::Block& b = colsValue[xi];
-            for (Index j1=0; j1<BlocSize; ++j1)
+            for (Index j1=0; j1<static_cast<Index>(BlocSize); ++j1)
             {
-                for (Index i1=0; i1<BlocSize; ++i1)
+                for (Index i1=0; i1<static_cast<Index>(BlocSize); ++i1)
                 {
                     Index i = i0+i1;
                     temp[j1] += z[i] * b[j1][i1];
@@ -121,7 +121,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
             for (Index j1=BlocSize-1; j1>=0; j1--)
             {
                 Index j = j0+j1;
-                for (Index i1=j1+1; i1<BlocSize; ++i1)
+                for (Index i1=j1+1; i1<static_cast<Index>(BlocSize); ++i1)
                 {
                     Index i = j0+i1;
                     temp[j1]+= z[i] * b[j1][i1];
@@ -139,13 +139,13 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
         // lower triangle matrix
-        for (; xi < rowRange.end() && (Index)colsIndex[xi] < jb; ++xi)
+        for (; xi < rowRange.end() && static_cast<Index>(colsIndex[xi]) < jb; ++xi)
         {
             Index i0 = colsIndex[xi]*BlocSize;
             const typename Matrix::Block& b = colsValue[xi];
-            for (Index j1=0; j1<BlocSize; ++j1)
+            for (Index j1=0; j1<static_cast<Index>(BlocSize); ++j1)
             {
-                for (Index i1=0; i1<BlocSize; ++i1)
+                for (Index i1=0; i1<static_cast<Index>(BlocSize); ++i1)
                 {
                     Index i = i0+i1;
                     temp[j1] += z[i] * b[j1][i1];
@@ -155,7 +155,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3
         // then the diagonal
         {
             const typename Matrix::Block& b = colsValue[xi];
-            for (Index j1=0; j1<BlocSize; ++j1)
+            for (Index j1=0; j1<static_cast<Index>(BlocSize); ++j1)
             {
                 Index j = j0+j1;
                 for (Index i1=0; i1<j1; ++i1)

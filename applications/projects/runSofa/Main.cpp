@@ -51,11 +51,11 @@ using sofa::scenechecking::SceneCheckerListener;
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/gui/GUIManager.h>
-using sofa::gui::GUIManager;
+#include <sofa/gui/common/GUIManager.h>
+using sofa::gui::common::GUIManager;
 
 #include <SofaGui/initSofaGui.h>
-#include <sofa/gui/BatchGUI.h>  // For the default number of iterations
+#include <sofa/gui/batch/BatchGUI.h>  // For the default number of iterations
 
 using sofa::core::ExecParams ;
 
@@ -65,10 +65,10 @@ using sofa::helper::Utils;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
-using sofa::gui::BatchGUI;
+using sofa::gui::batch::BatchGUI;
 
-#include <sofa/gui/BaseGUI.h>
-using sofa::gui::BaseGUI;
+#include <sofa/gui/common/BaseGUI.h>
+using sofa::gui::common::BaseGUI;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
@@ -81,8 +81,8 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <sofa/gui/GuiDataRepository.h>
-using sofa::gui::GuiDataRepository ;
+#include <sofa/gui/common/GuiDataRepository.h>
+using sofa::gui::common::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
@@ -97,11 +97,11 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 
 
 
-void addGUIParameters(sofa::gui::ArgumentParser* argumentParser)
+void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
 {
     GUIManager::RegisterParameters(argumentParser);
 }
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
         dir = SetDirectory::GetRelativeFromProcess(dir.c_str());
         if(FileSystem::isDirectory(dir))
         {
-            sofa::gui::GuiDataRepository.addFirstPath(dir);
+            sofa::gui::common::GuiDataRepository.addFirstPath(dir);
         }
     }
 
@@ -185,7 +185,7 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
-    sofa::gui::ArgumentParser* argParser = new sofa::gui::ArgumentParser(argc, argv);
+    sofa::gui::common::ArgumentParser* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
 
     argParser->addArgument(
         cxxopts::value<bool>(showHelp)
@@ -458,7 +458,7 @@ int main(int argc, char** argv)
         sofa::simulation::SceneLoader::addListener( SceneCheckerListener::getInstance() );
     }
 
-    const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
+    const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
     Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");

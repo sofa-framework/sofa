@@ -85,8 +85,8 @@ install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION
 install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
 
 sofa_add_targets_to_package(
-    PACKAGE_NAME SofaGui
+    PACKAGE_NAME Sofa.GUI
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
-    INCLUDE_INSTALL_DIR "SofaGui/runSofa"
+    INCLUDE_INSTALL_DIR "Sofa.GUI/runSofa"
     )

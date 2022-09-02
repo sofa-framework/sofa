@@ -30,8 +30,11 @@
 namespace sofa::type
 {
 
+struct qNoInit {};
+constexpr qNoInit QNOINIT;
+
 template<class Real>
-class SOFA_TYPE_API Quat
+class Quat
 {
     Real _q[4];
 
@@ -43,7 +46,16 @@ public:
     typedef Real value_type;
     typedef sofa::Size Size;
 
-    Quat();
+    constexpr Quat()
+    {
+        this->clear();
+    }
+
+    /// Fast constructor: no initialization
+    explicit constexpr Quat(qNoInit)
+    {
+    }
+
     ~Quat();
     Quat(Real x, Real y, Real z, Real w);
 
@@ -233,6 +245,19 @@ public:
 
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for quaternions)
     static constexpr Size spatial_dimensions = 3;
+};
+
+
+/// Same as Quat except the values are not initialized by default
+template<class Real>
+class QuatNoInit : public Quat<Real>
+{
+public:
+    constexpr QuatNoInit() noexcept
+        : Quat<Real>(QNOINIT)
+    {}
+    using Quat<Real>::Quat;
+
 };
 
 /// write to an output stream
