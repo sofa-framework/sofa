@@ -105,6 +105,46 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 }
 
 template <class DataTypes>
+void SpringForceField<DataTypes>::applyRemovedEdges(const sofa::core::topology::EdgesRemoved* edgesRemoved, sofa::Index mstateId)
+{
+    if (edgesRemoved == nullptr)
+        return;
+
+    const type::vector<sofa::core::topology::Topology::EdgeID>& edges = edgesRemoved->getArray();
+
+    if (edges.empty())
+        return;
+    
+    core::topology::BaseMeshTopology* modifiedTopology;
+    if (mstateId == 0)
+    {
+        modifiedTopology = this->getMState1()->getContext()->getMeshTopology();
+    }
+    else
+    {
+        modifiedTopology = this->getMState2()->getContext()->getMeshTopology();
+    }
+
+    if (modifiedTopology == nullptr)
+        return;
+
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    Size nbEdges = modifiedTopology->getNbEdges();
+
+    for (const auto edgeId : edges) // iterate on the edgeIds to remove
+    {
+        --nbEdges;
+
+        type::vector<sofa::Index> toDelete;
+        sofa::Index i {};
+        
+        // TODO logic to actually remove the affected springs.
+    }
+
+}
+
+
+template <class DataTypes>
 void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId)
 {
     if (pointsRemoved == nullptr)
@@ -135,7 +175,7 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     {
         --nbPoints;
 
-        sofa::type::vector<sofa::Index> toDelete;
+        type::vector<sofa::Index> toDelete;
         sofa::Index i {};
         for (const auto& spring : springsValue) // loop on the list of springs to find springs with targeted pointId
         {
@@ -198,6 +238,13 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
                 msg_info(this) << "Removed points: [" << pointsRemoved->getArray() << "]";
                 applyRemovedPoints(pointsRemoved, mstateId);
+            });
+        indices.addTopologyEventCallBack(core::topology::TopologyChangeType::EDGESREMOVED,
+            [this, mstateId](const core::topology::TopologyChange* change)
+            {
+                const auto* edgesRemoved = static_cast<const core::topology::EdgesRemoved*>(change);
+                msg_info(this) << "Removed edges: [" << edgesRemoved->getArray() << "]";
+                applyRemovedEdges(edgesRemoved, mstateId);
             });
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
             [this](const core::topology::TopologyChange*)
