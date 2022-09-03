@@ -48,11 +48,11 @@ helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
     if (it == castMap.end())
     {
         helper::TypeInfo t2 = t;
-        for (auto myit = classes.begin(); myit != classes.end(); ++myit)
+        for (auto classInfoIt = classes.begin(); classInfoIt != classes.end(); ++classInfoIt)
         {
-            if ((*myit)->isInstance(model))
+            if ((*classInfoIt)->isInstance(model))
             {
-                t2 = (*myit)->type();
+                t2 = (*classInfoIt)->type();
                 break;
             }
         }
