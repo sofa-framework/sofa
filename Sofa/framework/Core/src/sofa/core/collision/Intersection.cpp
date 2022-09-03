@@ -82,14 +82,14 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
 
 
     std::stringstream tmp;
-    for(auto myit = intersectorsMap.begin(), itEnd = intersectorsMap.end(); myit != itEnd; ++myit)
+    for(auto intersectorsMapIt = intersectorsMap.begin(), itEnd = intersectorsMap.end(); intersectorsMapIt != itEnd; ++intersectorsMapIt)
     {
-        auto typeInfo1 = myit->first.first;
-        auto typeInfo2 = myit->first.second;
+        auto typeInfo1 = intersectorsMapIt->first.first;
+        auto typeInfo2 = intersectorsMapIt->first.second;
         tmp << "  "
                 << gettypename(typeInfo1) << "-"
                 << gettypename(typeInfo2);
-        ElementIntersector* i = myit->second;
+        ElementIntersector* i = intersectorsMapIt->second;
         if (!i)
             tmp << "  nullptr";
         else
