@@ -87,8 +87,8 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
         auto tmpt1 = myit->first.first;
         auto tmpt2 = myit->first.second;
         tmp << "  "
-                << gettypename(tmpt1) << "-"
-                << gettypename(tmpt2);
+                << gettypename(typeInfo1) << "-"
+                << gettypename(typeInfo2);
         ElementIntersector* i = myit->second;
         if (!i)
             tmp << "  nullptr";
