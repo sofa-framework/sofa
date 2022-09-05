@@ -98,6 +98,11 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
     m_stateChangeList.endEdit();
 }
 
+const std::set<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
+{
+    return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
+}
+
 bool TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler, sofa::geometry::ElementType elementType)
 {
     auto [ptr, res] = m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].insert(_TopologyHandler);
@@ -106,12 +111,7 @@ bool TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler, so
 
 void TopologyContainer::removeTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType)
 {
-    m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].remove(_TopologyHandler);
-}
-
-const std::list<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
-{
-    return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
+    m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].erase(_TopologyHandler);
 }
 
 bool TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
