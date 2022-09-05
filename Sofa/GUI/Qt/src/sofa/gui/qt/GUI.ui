@@ -219,15 +219,15 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="ResetSceneButton">
+           <widget class="QPushButton" name="ReloadSceneButton">
             <property name="enabled">
              <bool>true</bool>
             </property>
             <property name="toolTip">
-             <string>Reset the Simulation  (t=0)</string>
+             <string>Reload the simulation file</string>
             </property>
             <property name="text">
-             <string>&amp;Reset Scene</string>
+             <string>&amp;Reload Scene</string>
             </property>
             <property name="shortcut">
              <string>Alt+R</string>

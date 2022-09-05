@@ -13,7 +13,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="hideBehaviorModels showForceFields showCollision showInteractionForceFields" />
 
@@ -23,8 +22,8 @@
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="Response" response="stick" />
-    <DefaultCollisionGroupManager name="Group" />
+
+    <DefaultContactManager name="Response" response="StickContactForceField" />
     <LocalMinDistance contactDistance="1" alarmDistance="2" />
     
     <Node name="cubeFEM">

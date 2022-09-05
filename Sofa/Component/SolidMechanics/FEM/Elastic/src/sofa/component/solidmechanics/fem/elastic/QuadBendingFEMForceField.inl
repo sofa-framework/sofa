@@ -25,7 +25,7 @@
 *******************************************************************************/
 #pragma once
 
-#include "QuadBendingFEMForceField.h"
+#include <sofa/component/solidmechanics/fem/elastic/QuadBendingFEMForceField.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 

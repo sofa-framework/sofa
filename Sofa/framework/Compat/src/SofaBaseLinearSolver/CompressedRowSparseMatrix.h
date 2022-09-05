@@ -21,14 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/CompressedRowSparseMatrix.h")
-
-namespace sofa::component::linearsolver
-{
-
-    template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index> >
-    using CompressedRowSparseMatrix = sofa::linearalgebra::CompressedRowSparseMatrix<TBloc, TVecBloc, TVecIndex>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/CompressedRowSparseMatrix.h")

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define MergeROIs_CPP_
 
-#include "MergeROIs.h"
+#include <sofa/component/engine/select/MergeROIs.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 

@@ -49,6 +49,7 @@
 #endif
 
 
+#include <mutex>
 #include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
@@ -226,8 +227,42 @@ public:
 
 //======================= STATIC METHODS ========================= {
 
+void RealGUI::setupSurfaceFormat()
+{
+    static std::once_flag flag;
+    std::call_once(flag, []
+    {
+        QSurfaceFormat format;
+        if(!SOFA_GUI_QT_ENABLE_VSYNC)
+        {
+            format.setSwapInterval(0); //Setting an interval value of 0 will turn the vertical refresh syncing off
+        }
+
+        static constexpr int vmajor = 3, vminor = 2;
+        format.setVersion(vmajor,vminor); //Sets the desired major and minor OpenGL versions.
+        format.setProfile(QSurfaceFormat::CompatibilityProfile); //Sets the desired OpenGL context profile. CompatibilityProfile = Functionality from earlier OpenGL versions is available.
+        format.setOption(QSurfaceFormat::DeprecatedFunctions, true); //Used to request that deprecated functions be included in the OpenGL context profile. If not specified, you should get a forward compatible context without support functionality marked as deprecated. This requires OpenGL version 3.0 or higher.
+        format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+
+        if (mArgumentParser)
+        {
+            unsigned int viewerMSAANbSampling = 0;
+            mArgumentParser->getValueFromKey("msaa", viewerMSAANbSampling);
+            if (viewerMSAANbSampling > 1)
+            {
+                msg_info("RealGUI") << "Set multisampling anti-aliasing (MSAA) with " << viewerMSAANbSampling << " samples." ;
+                format.setSamples(static_cast<int>(viewerMSAANbSampling));
+            }
+        }
+
+        QSurfaceFormat::setDefaultFormat(format);
+    });
+}
+
 BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
 {
+    setupSurfaceFormat();
+
     CreateApplication();
 
     // create interface
@@ -381,7 +416,7 @@ RealGUI::RealGUI ( const char* viewername)
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
     connect ( this, SIGNAL ( quit() ), this, SLOT ( fileExit() ) );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
-    connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
+    connect ( ReloadSceneButton, SIGNAL ( clicked() ), this, SLOT ( fileReload() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
     connect ( realTimeCheckBox, SIGNAL ( stateChanged ( int ) ), this, SLOT ( updateDtEditState() ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );

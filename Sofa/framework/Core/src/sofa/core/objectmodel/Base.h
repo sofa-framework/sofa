@@ -38,8 +38,6 @@
 #include <sofa/core/DataTrackerCallback.h>
 #include <sofa/type/fwd.h>
 
-#include <sofa/helper/system/SofaOStream.h>
-
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
 // it is not super elegant, but it is way more efficient than dynamic_cast
@@ -277,6 +275,16 @@ public:
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
+    BaseData::BaseInitData initData(::sofa::core::objectmodel::Data<T>* field, const char* name, const char* help,
+    ::sofa::core::objectmodel::BaseData::DataFlags dataflags)
+    {
+        ::sofa::core::objectmodel::BaseData::BaseInitData res;
+        this->initData0(field, res, name, help, dataflags);
+        return res;
+    }
+
+    /// Helper method used to initialize a data field containing a value of type T
+    template<class T>
     BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
         BaseData::BaseInitData res;
@@ -365,23 +373,10 @@ public:
 
 private:
     /// effective ostringstream for logging
-    mutable std::ostringstream _serr, _sout;
     mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
     mutable Data<int> d_messageLogCount;
-
-    /// write into component buffer + Message processedby message handlers
-    /// default message type = Warning
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
-    /// write into component buffer.
-    /// Message is processed by message handlers only if printLog==true
-    /// /// default message type = Info
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
-    /// runs the stream processing
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaEndl<Base> sendl;
-
-    void processStream(std::ostream& out);
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
     size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;
@@ -410,47 +405,7 @@ protected:
 
 public:
 
-    /// Helper method & type for the NameDecoder class to it can detect inherited instances
-    /// The following code is only needed since #PR1283 to smooth the deprecation process.
-    /// Remove that after the 01.01.2021.
-    bool IsInheritingFromBase(){return true;}
     typedef Base BaseType;
-
-    /// Helper method to get the type name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
-    /// This way derived classes can redefine the typeName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string typeName(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the class name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::className<B>(); \endcode
-    /// This way derived classes can redefine the className method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string className(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the namespace name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::namespaceName<T>(); \endcode
-    /// This way derived classes can redefine the namespaceName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string namespaceName(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the template name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::templateName<B>); \endcode
-    /// This way derived classes can redefine the templateName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string templateName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the shortname of a type derived from this class.
     /// The default implementation return the class name.

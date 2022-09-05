@@ -26,36 +26,34 @@ echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
 echo "" > "$INSTALL_DIR_BIN/plugin_list.conf"
 disabled_plugins='plugins_ignored_by_default'
 for plugin in \
-        SofaEulerianFluid     \
-        SofaDistanceGrid      \
-        SofaImplicitField     \
-        MultiThreading        \
-        DiffusionSolver       \
-        image                 \
-        Compliant             \
-        SofaPython            \
-        Flexible              \
-        Registration          \
-        ExternalBehaviorModel \
-        ManifoldTopologies    \
-        ManualMapping         \
-        THMPGSpatialHashing   \
-        SofaCarving           \
-        RigidScale            \
-                              \
-        LMConstraint          \
-        SofaHaptics           \
-        SofaValidation        \
-        SofaNonUniformFem     \
-        SofaExporter          \
-        SofaPreconditioner    \
-        SofaMiscTopology      \
-        SofaMiscExtra         \
-        SofaMiscForceField    \
-        SofaMiscEngine        \
-        SofaMiscSolver        \
-        SofaMiscFem           \
-        SofaMiscMapping       \
+        ArticulatedSystemPlugin   \
+        CollisionOBBCapsule       \
+        Compliant                 \
+        DiffusionSolver           \
+        ExternalBehaviorModel     \
+        Flexible                  \
+        Geomagic                  \
+        image                     \
+        InvertibleFVM             \
+        LMConstraint              \
+        ManifoldTopologies        \
+        ManualMapping             \
+        MultiThreading            \
+        OptiTrackNatNet           \
+        PluginExample             \
+        Registration              \
+        RigidScale                \
+        SensableEmulation         \
+        SofaAssimp                \
+        SofaCUDA                  \
+        SofaCarving               \
+        SofaDistanceGrid          \
+        SofaEulerianFluid         \
+        SofaImplicitField         \
+        SofaPython                \
+        SofaSimpleGUI             \
+        SofaSphFluid              \
+        THMPGSpatialHashing       \
     ; do
     disabled_plugins=$disabled_plugins'\|'$plugin
 done
@@ -63,5 +61,10 @@ grep -v $disabled_plugins "$INSTALL_DIR_BIN/plugin_list.conf.default" >> "$INSTA
 
 # Copy all plugin libs in install/bin to make them easily findable
 cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
+    cp "$lib" "$INSTALL_DIR_BIN"
+done
+
+# Copy all collection libs in install/bin to make them easily findable
+cd "$INSTALL_DIR" && find -name "*.dll" -path "*/collections/*" | while read lib; do
     cp "$lib" "$INSTALL_DIR_BIN"
 done

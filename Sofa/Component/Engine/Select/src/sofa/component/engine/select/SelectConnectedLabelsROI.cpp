@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SelectConnectedLabelsROI_CPP_
 
-#include "SelectConnectedLabelsROI.h"
+#include <sofa/component/engine/select/SelectConnectedLabelsROI.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 

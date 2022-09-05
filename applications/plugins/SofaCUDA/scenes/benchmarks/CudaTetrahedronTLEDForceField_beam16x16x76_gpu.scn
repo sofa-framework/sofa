@@ -15,7 +15,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="PenalityContactForceField" />
     <DiscreteIntersection/>
     
     <Node name="Beam">

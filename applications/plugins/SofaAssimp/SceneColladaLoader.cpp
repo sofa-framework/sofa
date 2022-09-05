@@ -22,19 +22,19 @@
 #include "SceneColladaLoader.h"
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaOpenglVisual/OglModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaRigid/RigidMapping.h>
-#include <SofaGeneralRigid/SkinningMapping.h>
-#include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+#include <sofa/gl/component/rendering3d/OglModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
+#include <sofa/component/mapping/linear/SkinningMapping.h>
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
+#include <sofa/component/mapping/linear/IdentityMapping.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/SkeletalMotionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <stack>
@@ -64,13 +64,17 @@ namespace loader
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
-using namespace sofa::component::container;
+using namespace sofa::component::statecontainer;
 using namespace sofa::component::mass;
 using namespace sofa::component::topology;
-using namespace sofa::component::visualmodel;
+using namespace sofa::component::topology::container::constant;
+using namespace sofa::gl::component::rendering3d;
 using namespace sofa::component::mapping;
+using namespace sofa::component::mapping::linear;
+using namespace sofa::component::mapping::nonlinear;
 using namespace sofa::component::collision;
-using namespace sofa::component::projectiveconstraintset;
+using namespace sofa::component::collision::geometry;
+using namespace sofa::component::constraint::projective;
 using namespace sofa::simulation;
 
 int SceneColladaLoaderClass = core::RegisterObject("Specific scene loader for Collada file format.")
@@ -108,9 +112,9 @@ void SceneColladaLoader::init()
     Node* parentNode = dynamic_cast<Node*>(currentContext);
     if(!parentNode)
     {
-        sout << "Error: SceneColladaLoader::init, loader " << name.getValue() << "has no parentNode" << sendl;
+        msg_info() << "Error: SceneColladaLoader::init, loader " << name.getValue() << "has no parentNode";
         if(currentContext)
-            sout << "Context is : " << currentContext->getName() << sendl;
+            msg_info() << "Context is : " << currentContext->getName();
 
         return;
     }
@@ -157,7 +161,7 @@ void SceneColladaLoader::init()
 
 bool SceneColladaLoader::load()
 {
-    sout << "Loading Collada (.dae) file: " << d_filename << sendl;
+    msg_info() << "Loading Collada (.dae) file: " << d_filename;
 
     bool fileRead = false;
 
@@ -167,7 +171,7 @@ bool SceneColladaLoader::load()
 
     if(!file.good())
     {
-        serr << "Error: SceneColladaLoader: Cannot read file '" << d_filename << "'." << sendl;
+        msg_error() << "Error: SceneColladaLoader: Cannot read file '" << d_filename << "'.";
         return false;
     }
 
@@ -180,7 +184,7 @@ bool SceneColladaLoader::load()
 
 bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filename*/)
 {
-    sout << "SceneColladaLoader::readDAE" << sendl;
+    msg_info() << "SceneColladaLoader::readDAE";
 
     // if a scene is already loaded with this importer, free it
     importer.FreeScene();
@@ -190,7 +194,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
     if(!currentAiScene)
     {
-        sout << "Collada import failed : " << importer.GetErrorString() << sendl;
+        msg_info() << "Collada import failed : " << importer.GetErrorString();
         return false;
     }
 
@@ -667,7 +671,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                                     if(vertexid >= currentAiMesh->mNumVertices)
                                     {
-                                        sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                        msg_info() << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName();
                                         return false;
                                     }
 
@@ -761,7 +765,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                                         if(vertexid >= currentAiMesh->mNumVertices)
                                         {
-                                            sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                            msg_info() << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName();
                                             return false;
                                         }
 
@@ -820,7 +824,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                                             if(vertexid >= currentAiMesh->mNumVertices)
                                             {
-                                                sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                                msg_info() << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName();
                                                 return false;
                                             }
 
@@ -930,12 +934,12 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
     return true;
 }
 
-bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, type::vector<projectiveconstraintset::SkeletonJoint<Rigid3Types> > &skeletonJoints, type::vector<SkeletonBone>& skeletonBones) const
+bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, type::vector<SkeletonJoint<Rigid3Types> > &skeletonJoints, type::vector<SkeletonBone>& skeletonBones) const
 {
     // return now if their is no scene, no mesh or no skeletonBones
     if(!scene || !mesh || !mesh->HasBones())
     {
-        sout << "no mesh to load !" << sendl;
+        msg_info() << "no mesh to load !";
         return false;
     }
 

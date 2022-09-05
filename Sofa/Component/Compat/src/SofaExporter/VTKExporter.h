@@ -23,7 +23,7 @@
 
 #include <sofa/component/io/mesh/VTKExporter.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/VTKExporter.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/VTKExporter.h")
 
 namespace sofa::component::_vtkexporter_
 {

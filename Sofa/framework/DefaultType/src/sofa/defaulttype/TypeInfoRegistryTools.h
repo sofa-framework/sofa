@@ -22,7 +22,7 @@
 #pragma once
 
 #include <iostream>
-#include "TypeInfoRegistry.h"
+#include <sofa/defaulttype/TypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {

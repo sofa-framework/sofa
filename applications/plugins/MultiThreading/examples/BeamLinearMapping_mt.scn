@@ -8,7 +8,6 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.03" contactDistance="0.02" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
-    <DefaultCollisionGroupManager name="Group" />
     <Node name="beam">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver bandWidth="11" printLog="false" verbose="false" />

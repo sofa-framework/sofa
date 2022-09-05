@@ -51,4 +51,7 @@ unsigned int ConstraintProblem::getProblemId()
     return problemId;
 }
 
+ConstraintSolverImpl::~ConstraintSolverImpl()
+{}
+
 } //namespace sofa::component::constraint::lagrangian::solver

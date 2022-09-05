@@ -16,13 +16,11 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer EdgeSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Triangle2EdgeTopologicalMapping] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 	<DefaultPipeline name="defaultPipeline1"  verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<DefaultContactManager name="defaultContactManager1"  response="PenalityContactForceField" />
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.8"  contactDistance="0.5" />
-	<DefaultCollisionGroupManager name="treeCollisionGroupManager1" />
 	<Node 	name="SquareGravity"  >
 		<EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.1"  rayleighMass="0.1"  vdamping="0"  />
 		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="100"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />

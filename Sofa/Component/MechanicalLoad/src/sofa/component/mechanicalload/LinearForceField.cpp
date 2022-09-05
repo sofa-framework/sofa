@@ -23,7 +23,7 @@
 
 #include <sofa/component/mechanicalload/config.h>
 #include <sofa/core/ObjectFactory.h>
-#include "LinearForceField.inl"
+#include <sofa/component/mechanicalload/LinearForceField.inl>
 
 namespace sofa::component::mechanicalload
 {

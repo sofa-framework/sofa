@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP
-#include "SmoothMeshEngine.inl"
+#include <sofa/component/engine/transform/SmoothMeshEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 

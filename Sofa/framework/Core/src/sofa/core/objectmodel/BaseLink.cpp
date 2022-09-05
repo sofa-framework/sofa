@@ -177,8 +177,7 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
             if (owner)
             {
                 msg_error(owner) << "Parsing Link \"" << text
-                                 << "\": bracket syntax can only be used for self-reference or preceding objects with a negative index."
-                                 << owner->sendl;
+                                 << "\": bracket syntax can only be used for self-reference or preceding objects with a negative index.";
             }
             else
             {

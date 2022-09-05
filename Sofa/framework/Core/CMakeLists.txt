@@ -132,6 +132,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/DataCallback.h
     ${SRC_ROOT}/objectmodel/DataContentValue.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
+    ${SRC_ROOT}/objectmodel/DataFileNameVector.h
     ${SRC_ROOT}/objectmodel/DataLink.h
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.h
     ${SRC_ROOT}/objectmodel/Event.h
@@ -259,6 +260,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/DataCallback.cpp
     ${SRC_ROOT}/objectmodel/DataContentValue.cpp
     ${SRC_ROOT}/objectmodel/DataFileName.cpp
+    ${SRC_ROOT}/objectmodel/DataFileNameVector.cpp
     ${SRC_ROOT}/objectmodel/DataLink.cpp
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.cpp
     ${SRC_ROOT}/objectmodel/Event.cpp

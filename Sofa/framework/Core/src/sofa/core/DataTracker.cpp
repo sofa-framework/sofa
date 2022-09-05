@@ -19,13 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "DataTracker.h"
-#include "objectmodel/BaseData.h"
-#include "objectmodel/Base.h"
+#include <sofa/core/DataTracker.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/Base.h>
 
-namespace sofa
-{
-namespace core
+namespace sofa::core
 {
 
 
@@ -108,7 +106,5 @@ void DataTrackerCallback::update()
     cleanDirty();
 }
 
-
-}
 
 }

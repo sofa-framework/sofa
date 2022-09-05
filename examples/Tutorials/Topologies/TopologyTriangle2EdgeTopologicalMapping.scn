@@ -16,7 +16,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Triangle2EdgeTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
@@ -24,7 +23,6 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
-    <DefaultCollisionGroupManager name="Group" />
     <Node name="Triangles Mesh">
         <CGImplicitSolver name="Solver" iterations="40" tolerance="1e-06" threshold="1e-10" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />

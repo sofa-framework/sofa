@@ -21,7 +21,7 @@
 ******************************************************************************/
 //#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_CPP
 
-#include "DisplacementMatrixEngine.inl"
+#include <sofa/component/engine/transform/DisplacementMatrixEngine.inl>
 
 #include <sofa/core/ObjectFactory.h>
 

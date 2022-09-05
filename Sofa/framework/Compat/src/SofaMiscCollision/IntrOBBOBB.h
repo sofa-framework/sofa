@@ -27,7 +27,7 @@
 #include <CollisionOBBCapsule/detection/intersection/IntrOBBOBB.h>
 #define COLLISIONOBBCAPSULE_INTROBBOBB
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrOBBOBB.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrOBBOBB.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/IntrOBBOBB.h> instead of this one."

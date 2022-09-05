@@ -65,7 +65,9 @@ protected:
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
 {
 public:
-    SOFA_CLASS(ConstraintSolverImpl, sofa::core::behavior::ConstraintSolver);
+    SOFA_ABSTRACT_CLASS(ConstraintSolverImpl, sofa::core::behavior::ConstraintSolver)
+
+    ~ConstraintSolverImpl() override;
 
     virtual ConstraintProblem* getConstraintProblem() = 0;
 

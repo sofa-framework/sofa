@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DATA_H
-#define SOFA_CORE_OBJECTMODEL_DATA_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
@@ -30,11 +29,7 @@
 #include <sofa/core/objectmodel/DataContentValue.h>
 namespace sofa
 {
-
-namespace core
-{
-
-namespace objectmodel
+namespace core::objectmodel
 {
 
 /** \brief Container that holds a variable for a component.
@@ -145,7 +140,7 @@ public:
     }
 
     /// Destructor.
-    virtual ~Data() {}
+    ~Data() override {}
 
     /// @}
 
@@ -189,35 +184,6 @@ public:
         return m_value.getValue();
     }
 
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using copyValueFrom() or setParent() depending on the expected behavior.")
-    void virtualSetLink(const BaseData& bd) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using setValue().")
-    void virtualSetValue(const T& v) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using getValue().")
-    const T& virtualGetValue() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using beginEdit().")
-    T* virtualBeginEdit() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Update your code by using endEdit().")
-    void virtualEndEdit() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    void endEdit(const core::ExecParams*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    T* beginWriteOnly(const core::ExecParams*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    T* beginEdit(const core::ExecParams*) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    void setValue(const core::ExecParams*, const T& value) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
-    const T& getValue(const core::ExecParams*) const = delete;
     /// @}
 
     /// Get info about the value type of the associated variable
@@ -240,21 +206,17 @@ public:
         return out;
     }
 
-    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData == aValue' with 'myData.getValue() == aValue'")
-    bool operator ==( const T& value ) const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR("Update your code by replacing 'myData != aValue' with 'myData.getValue() != aValue'")
-    bool operator!=( const T& value ) const = delete;
-
     void operator =( const T& value )
     {
         this->setValue(value);
     }
 
-    bool copyValueFrom(const BaseData* data){ return doCopyValueFrom(data); }
     bool copyValueFrom(const Data<T>* data);
 
     static constexpr bool isCopyOnWrite(){ return !std::is_scalar_v<T>; }
+
+    Data(const Data& ) = delete;
+    Data& operator=(const Data& ) = delete;
 
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
@@ -263,8 +225,7 @@ protected:
     ValueType m_value;
 
 private:
-    Data(const Data& );
-    Data& operator=(const Data& );
+
 
     bool doIsExactSameDataType(const BaseData* parent) override;
     bool doCopyValueFrom(const BaseData* parent) override;
@@ -312,7 +273,7 @@ bool Data<T>::read(const std::string& s)
 {
     if (s.empty())
     {
-        bool resized = getValueTypeInfo()->setSize( BaseData::beginEditVoidPtr(), 0 );
+        const bool resized = getValueTypeInfo()->setSize( BaseData::beginEditVoidPtr(), 0 );
         BaseData::endEditVoidPtr();
         return resized;
     }
@@ -383,10 +344,7 @@ extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 extern template class SOFA_CORE_API Data< bool >;
 #endif
-
-} // namespace objectmodel
-
-} // namespace core
+} // namespace core::objectmodel
 
 // Overload helper::ReadAccessor and helper::WriteAccessor
 
@@ -429,8 +387,8 @@ public:
     // these are forbidden (until c++11 move semantics) as they break
     // RAII encapsulation. the reference member 'data' prevents them
     // anyways, but the intent is more obvious like this.
-    WriteAccessor(const WriteAccessor& );
-    WriteAccessor& operator=(const WriteAccessor& );
+    WriteAccessor(const WriteAccessor& ) = delete;
+    WriteAccessor& operator=(const WriteAccessor& ) = delete;
 
 protected:
     data_container_type& data;
@@ -467,8 +425,8 @@ public:
     // these are forbidden (until c++11 move semantics) as they break
     // RAII encapsulation. the reference member 'data' prevents them
     // anyways, but the intent is more obvious like this.
-    WriteOnlyAccessor(const WriteOnlyAccessor& );
-    WriteOnlyAccessor& operator=(const WriteOnlyAccessor& );
+    WriteOnlyAccessor(const WriteOnlyAccessor& ) = delete;
+    WriteOnlyAccessor& operator=(const WriteOnlyAccessor& ) = delete;
 
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
@@ -494,11 +452,6 @@ template<class T>
 SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) = delete;
 
-template<class T>
-SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
-WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
-
-
 
 /// Returns a read accessor from the provided Data<>
 /// Example of use:
@@ -512,10 +465,6 @@ ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmode
 template<class T>
 SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data) = delete;
-
-template<class T>
-SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
-ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
 /// Returns a write only accessor from the provided Data<>
 /// WriteOnly accessors are faster than WriteAccessor because
@@ -535,6 +484,3 @@ WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::object
 using core::objectmodel::Data;
 
 } // namespace sofa
-
-#endif  // SOFA_CORE_OBJECTMODEL_DATA_H
-

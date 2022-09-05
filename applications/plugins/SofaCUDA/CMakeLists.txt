@@ -156,7 +156,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSphereModel.cpp
     sofa/gpu/cuda/CudaTriangleModel.cpp
 
-    ### Constraints
+    ### Constraints  
     sofa/gpu/cuda/CudaFixedConstraint.cpp
     sofa/gpu/cuda/CudaFixedTranslationConstraint.cpp
     sofa/gpu/cuda/CudaLinearMovementConstraint.cpp
@@ -167,8 +167,12 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaNearestPointROI.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
 
-    sofa/gpu/cuda/CudaExtraMonitor.cpp
     sofa/gpu/cuda/CudaIndexValueMapper.cpp
+    
+    ### ConstraintCorrection
+    sofa/gpu/cuda/CudaLinearSolverConstraintCorrection.cpp
+    sofa/gpu/cuda/CudaPrecomputedConstraintCorrection.cpp
+    sofa/gpu/cuda/CudaUncoupledConstraintCorrection.cpp
 )
 
 set(CUDA_SOURCES
@@ -236,11 +240,12 @@ endif()
 
 set(README_FILES README.md)
 
-find_package(Sofa.Component.Mass REQUIRED)
+sofa_find_package(Sofa.Component.Mass REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.HyperElastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.TensorMass REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
@@ -248,10 +253,9 @@ sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.NonLinear REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Transform REQUIRED)
-sofa_find_package(SofaValidation REQUIRED)
-sofa_find_package(VolumetricRendering QUIET)
-sofa_find_package(SofaGeneralObjectInteraction REQUIRED)
+sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
 
+sofa_find_package(VolumetricRendering QUIET)
 if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.inl)
@@ -268,9 +272,8 @@ if(Sofa.GUI.Qt_FOUND)
 endif()
 
 find_package(SofaDistanceGrid QUIET)
-sofa_find_package(MiniFlowVR QUIET)
-
 if(SofaDistanceGrid_FOUND)
+    sofa_find_package(MiniFlowVR QUIET)
     if(MiniFlowVR_FOUND)
         message(STATUS "SofaCUDA: MiniFlowVR enabled.")
     else()
@@ -294,39 +297,42 @@ else()
     message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
 
-if (PLUGIN_SOFASPHFLUID)
-    find_package(SofaSphFluid QUIET)
-    if(SofaSphFluid_FOUND)
-        list(APPEND HEADER_FILES
-            sofa/gpu/cuda/CudaParticleSource.h
-            sofa/gpu/cuda/CudaParticleSource.inl
-            sofa/gpu/cuda/CudaSPHFluidForceField.h
-            sofa/gpu/cuda/CudaSPHFluidForceField.inl
-            sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
-            sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
-            sofa/gpu/cuda/CudaSpatialGridContainer.h
-            sofa/gpu/cuda/CudaSpatialGridContainer.inl
-            )
-        list(APPEND SOURCE_FILES
-        sofa/gpu/cuda/CudaParticleSource.cpp
-        sofa/gpu/cuda/CudaSPHFluidForceField.cpp
-        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
-        sofa/gpu/cuda/CudaSpatialGridContainer.cpp
+find_package(SofaSphFluid QUIET)
+if(SofaSphFluid_FOUND)
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaParticleSource.h
+        sofa/gpu/cuda/CudaParticleSource.inl
+        sofa/gpu/cuda/CudaSPHFluidForceField.h
+        sofa/gpu/cuda/CudaSPHFluidForceField.inl
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
+        sofa/gpu/cuda/CudaSpatialGridContainer.h
+        sofa/gpu/cuda/CudaSpatialGridContainer.inl
         )
-        list(APPEND CUDA_SOURCES
-        sofa/gpu/cuda/CudaParticleSource.cu
-        sofa/gpu/cuda/CudaSPHFluidForceField.cu
-        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
-        sofa/gpu/cuda/CudaSpatialGridContainer.cu
-        )
-        message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
-    else()
-        message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
-    endif()
+    list(APPEND SOURCE_FILES
+    sofa/gpu/cuda/CudaParticleSource.cpp
+    sofa/gpu/cuda/CudaSPHFluidForceField.cpp
+    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
+    sofa/gpu/cuda/CudaSpatialGridContainer.cpp
+    )
+    list(APPEND CUDA_SOURCES
+    sofa/gpu/cuda/CudaParticleSource.cu
+    sofa/gpu/cuda/CudaSPHFluidForceField.cu
+    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
+    sofa/gpu/cuda/CudaSpatialGridContainer.cu
+    )
+    message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
 else()
-    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not enabled. ")
+    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
 endif()
 
+sofa_find_package(SofaValidation QUIET)
+if(SofaValidation_FOUND)
+    list(APPEND SOURCE_FILES
+        sofa/gpu/cuda/CudaExtraMonitor.cpp
+        )
+    message(STATUS "SofaCUDA: found SofaValidation, enabling CudaExtraMonitor (Warning: this component is being deprecated). ")
+endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 if(SOFACUDA_VERBOSE_PTXAS)
@@ -403,6 +409,7 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.SolidMechanics.TensorMass
     Sofa.Component.MechanicalLoad
     Sofa.Component.Collision.Response.Contact
+    Sofa.Component.Collision.Detection.Algorithm
     Sofa.Component.Collision.Detection.Intersection
     Sofa.Component.StateContainer
     Sofa.Component.Constraint.Projective
@@ -410,28 +417,36 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Mapping.NonLinear
     Sofa.Component.Engine.Select
     Sofa.Component.Engine.Transform
-    SofaGeneralObjectInteraction
-    SofaValidation
+    Sofa.Component.MechanicalLoad
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-if(SofaOpenglVisual_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
 
 if(SofaDistanceGrid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
-endif()
-
-if(MiniFlowVR_FOUND)
-    target_link_libraries(${PROJECT_NAME} miniFlowVR)
+    if(MiniFlowVR_FOUND)
+        target_link_libraries(${PROJECT_NAME} miniFlowVR)
+    endif()
 endif()
 
 if(Sofa.GUI.Qt_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GUI.Qt)
 endif()
 
+if(SofaValidation_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaValidation)
+endif()
+
+if(VolumetricRendering_FOUND)
+    target_link_libraries(${PROJECT_NAME} VolumetricRendering)
+endif()
+if(SofaSphFluid_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
+endif()
 
 if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})
@@ -440,12 +455,7 @@ endif()
 if(SOFACUDA_CUDPP)
     target_link_libraries(${PROJECT_NAME} cudpp)
 endif()
-if(VolumetricRendering_FOUND)
-    target_link_libraries(${PROJECT_NAME} VolumetricRendering)
-endif()
-if(SofaSphFluid_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
-endif()
+
 
 
 ## SofaCUDANvccFlags.cmake

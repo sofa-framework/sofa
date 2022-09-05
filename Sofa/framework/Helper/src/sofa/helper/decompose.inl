@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_DECOMPOSE_INL
 #define SOFA_HELPER_DECOMPOSE_INL
-#include "decompose.h"
+#include <sofa/helper/decompose.h>
 
 #include <limits>
 #include <sofa/helper/rmath.h>

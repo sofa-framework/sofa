@@ -115,8 +115,8 @@ public:
         {
             for (sofa::linearalgebra::BaseMatrix::Index j = 0; j < m_testedMatrix->colSize(); ++j)
             {
-                if ( i >= posRow && i < posRow + decltype(mat)::nbLines
-                  && j >= posCol && j < posCol + decltype(mat)::nbCols)
+                if ( i >= posRow && i < posRow + (sofa::linearalgebra::BaseMatrix::Index)decltype(mat)::nbLines
+                  && j >= posCol && j < posCol + (sofa::linearalgebra::BaseMatrix::Index)decltype(mat)::nbCols)
                 {
                     EXPECT_NEAR(m_testedMatrix->operator()(i,j), mat(i-posRow,j-posCol), Inherit::epsilon())
                         << "i = " << i << ", j = " << j << ", posRow = " << posRow << ", posCol = " << posCol << "\n"

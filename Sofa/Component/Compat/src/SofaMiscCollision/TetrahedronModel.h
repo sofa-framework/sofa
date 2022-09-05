@@ -23,7 +23,7 @@
 
 #include <sofa/component/collision/geometry/TetrahedronModel.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/TetrahedronModel.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/TetrahedronModel.h")
 
 // ContactMapper templated on Tetrahedron has been set in a dedicated file
 #include <sofa/component/collision/response/mapper/TetrahedronBarycentricContactMapper.h>

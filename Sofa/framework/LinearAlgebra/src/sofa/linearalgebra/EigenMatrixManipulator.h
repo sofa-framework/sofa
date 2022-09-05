@@ -22,7 +22,9 @@
 #pragma once
 #include <sofa/linearalgebra/config.h>
 
+#ifndef SOFA_BUILD_SOFA_LINEARALGEBRA
 SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.06", "v23.06")
+#endif // SOFA_BUILD_SOFA_LINEARALGEBRA
 
 #include <sofa/type/vector.h>
 

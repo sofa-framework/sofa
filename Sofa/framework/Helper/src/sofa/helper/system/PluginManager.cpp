@@ -89,6 +89,12 @@ PluginManager::~PluginManager()
 
 void PluginManager::readFromIniFile(const std::string& path)
 {
+    type::vector<std::string> loadedPlugins;
+    readFromIniFile(path, loadedPlugins);
+}
+
+void PluginManager::readFromIniFile(const std::string& path, type::vector<std::string>& listLoadedPlugins)
+{
     std::ifstream instream(path.c_str());
     std::string plugin, line, version;
     while(std::getline(instream, line))
@@ -101,16 +107,18 @@ void PluginManager::readFromIniFile(const std::string& path)
             msg_deprecated("PluginManager") << path << " file is using a deprecated syntax (version information missing). Please update it in the near future.";
         else
             is >> version; // information not used for now
-        if(loadPlugin(plugin))
+        if (loadPlugin(plugin) == PluginLoadStatus::SUCCESS)
         {
             Plugin* p = getPlugin(plugin);
             if(p) // should always be true as we are protected by if(loadPlugin(...))
             {
                 p->initExternalModule();
+                listLoadedPlugins.push_back(plugin);
             }
         }
     }
     instream.close();
+    msg_info("PluginManager") << listLoadedPlugins.size() << " plugins have been loaded from " << path;
 }
 
 void PluginManager::writeToIniFile(const std::string& path)
@@ -151,11 +159,13 @@ std::string PluginManager::getDefaultSuffix()
 #endif
 }
 
-bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog)
+PluginManager::PluginLoadStatus PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog)
 {
     if (pluginIsLoaded(pluginPath))
     {
-        return true;
+        const std::string msg = "Plugin '" + pluginPath + "' is already loaded";
+        if (errlog) (*errlog) << msg << std::endl;
+        return PluginLoadStatus::ALREADY_LOADED;
     }
 
     if (!FileSystem::exists(pluginPath))
@@ -163,7 +173,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
         const std::string msg = "File not found: " + pluginPath;
         msg_error("PluginManager") << msg;
         if (errlog) (*errlog) << msg << std::endl;
-        return false;
+        return PluginLoadStatus::PLUGIN_FILE_NOT_FOUND;
     }
 
     DynamicLibrary::Handle d  = DynamicLibrary::load(pluginPath);
@@ -173,7 +183,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
         const std::string msg = "Plugin loading failed (" + pluginPath + "): " + DynamicLibrary::getLastError();
         msg_error("PluginManager") << msg;
         if (errlog) (*errlog) << msg << std::endl;
-        return false;
+        return PluginLoadStatus::INVALID_LOADING;
     }
     else
     {
@@ -182,13 +192,13 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
             const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found";
             msg_error("PluginManager") << msg;
             if (errlog) (*errlog) << msg << std::endl;
-            return false;
+            return PluginLoadStatus::MISSING_SYMBOL;
         }
         getPluginEntry(p.getModuleName,d);
 
         if (checkDuplicatedPlugin(p, pluginPath))
         {
-            return true;
+            return PluginLoadStatus::ALREADY_LOADED;
         }
 
         getPluginEntry(p.getModuleDescription,d);
@@ -211,7 +221,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
             if (errlog) (*errlog) << msg << std::endl;
 
             unloadPlugin(pluginPath);
-            return false;
+            return PluginLoadStatus::INIT_ERROR;
         }
     }
 
@@ -225,7 +235,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
         }
     }
 
-    return true;
+    return PluginLoadStatus::SUCCESS;
 }
 
 void PluginManager::addOnPluginLoadedCallback(const std::string& key, std::function<void(const std::string&, const Plugin&)> callback)
@@ -253,34 +263,38 @@ std::string PluginManager::GetPluginNameFromPath(const std::string& pluginPath)
     return sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());;
 }
 
-bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
+auto PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase,
+                                     bool recursive, std::ostream* errlog) -> PluginLoadStatus
 {
-    std::string pluginPath = findPlugin(pluginName, suffix, ignoreCase, recursive);
+    const std::string pluginPath = findPlugin(pluginName, suffix, ignoreCase, recursive);
 
     if (!pluginPath.empty())
     {
         return loadPluginByPath(pluginPath, errlog);
     }
+
+    const std::string msg = "Plugin not found: \"" + pluginName + suffix + "\"";
+    if (errlog)
+    {
+        (*errlog) << msg << std::endl;
+    }
     else
     {
-        const std::string msg = "Plugin not found: \"" + pluginName + suffix + "\"";
-        if (errlog) (*errlog) << msg << std::endl;
-        else msg_error("PluginManager") << msg;
-
-        return false;
+        msg_error("PluginManager") << msg;
     }
+
+    return PluginLoadStatus::PLUGIN_FILE_NOT_FOUND;
 }
 
-bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
+auto PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive,
+                               std::ostream* errlog) -> PluginLoadStatus
 {
     if (FileSystem::isFile(plugin))
     {
         return loadPluginByPath(plugin,  errlog);
     }
-    else
-    {
-        return loadPluginByName(plugin, suffix, ignoreCase, recursive, errlog);
-    }
+
+    return loadPluginByName(plugin, suffix, ignoreCase, recursive, errlog);
 }
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
@@ -326,7 +340,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
             }
         }
 
-        msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin;
+        msg_warning("PluginManager") << "Plugin not found in loaded plugins: " << plugin;
         return nullptr;
     }
 }
@@ -336,13 +350,13 @@ Plugin* PluginManager::getPluginByName(const std::string& pluginName)
     for (PluginMap::iterator itP = m_pluginMap.begin(); itP != m_pluginMap.end(); ++itP)
     {
         std::string name(itP->second.getModuleName());
-        if (name.compare(pluginName) == 0)
+        if (name == pluginName)
         {
             return &itP->second;
         }
     }
 
-    msg_info("PluginManager") << "Plugin not found in loaded plugins: " << pluginName;
+    msg_warning("PluginManager") << "Plugin not found in loaded plugins: " << pluginName;
     return nullptr;
 }
 

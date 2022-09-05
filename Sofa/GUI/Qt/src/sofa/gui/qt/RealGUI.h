@@ -99,6 +99,7 @@ class SOFA_GUI_QT_API RealGUI : public QMainWindow, public Ui::GUI, public sofa:
 
 //-----------------STATIC METHODS------------------------{
 public:
+    static void setupSurfaceFormat();
     static common::BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);

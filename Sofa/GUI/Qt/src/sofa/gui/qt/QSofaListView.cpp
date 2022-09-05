@@ -106,7 +106,7 @@ QSofaListView::~QSofaListView()
 }
 
 
-void QSofaListView::Clear(Node* rootNode)
+void QSofaListView::Clear(Node* /*rootNode*/)
 {
     /*
     if(graphListener_ != nullptr)

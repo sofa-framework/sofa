@@ -25,7 +25,7 @@
 
 #if __has_include(<SofaNewmat/LULinearSolver.h>)
 #include <SofaNewmat/LULinearSolver.h>
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaNewmat/LULinearSolver.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "SofaNewmat/LULinearSolver.h")
 #else
 SOFA_PRAGMA_ERROR("LULinearSolver has moved into the SofaNewmat plugin since v21.12. You need to enable SofaNewmat in your configuration.")
 #endif

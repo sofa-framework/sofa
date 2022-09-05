@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h")
 
 namespace sofa::component::topology
 {

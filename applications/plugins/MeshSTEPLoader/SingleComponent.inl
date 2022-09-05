@@ -114,7 +114,7 @@ void SingleComponent<DataTypes>::loadMesh()
 
     if (my_numberShape >= my_indicesComponents.size())
     {
-        serr << "Number of the shape not valid" << sendl;
+        msg_error() << "Number of the shape not valid";
     }
     else
     {

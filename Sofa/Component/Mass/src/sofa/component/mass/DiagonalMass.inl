@@ -1400,7 +1400,6 @@ void DiagonalMass<DataTypes, GeometricalTypes>::draw(const core::visual::VisualP
 
     std::vector<  sofa::type::Vector3 > points;
 
-    constexpr auto dimensions = std::min(static_cast<std::size_t>(GeometricalTypes::spatial_dimensions), static_cast<std::size_t>(3));
     for (unsigned int i = 0; i < x.size(); i++)
     {
         sofa::type::Vector3 p;

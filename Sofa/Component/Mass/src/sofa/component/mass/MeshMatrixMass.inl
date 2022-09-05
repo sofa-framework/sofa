@@ -120,6 +120,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTriangleCreatio
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -176,6 +178,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTriangleCreation(
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -327,6 +331,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassQuadCreation(co
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::QUAD)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -384,6 +390,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassQuadCreation(cons
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::QUAD)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -541,6 +549,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTetrahedronCrea
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -598,6 +608,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTetrahedronCreati
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -753,6 +765,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassHexahedronCreat
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -814,6 +828,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronCreatio
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -2258,12 +2274,12 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
     Real totalMass=0.0;
 
     std::vector<  type::Vector3 > points;
-    constexpr auto dimensions = std::min(static_cast<std::size_t>(GeometricalTypes::spatial_dimensions), static_cast<std::size_t>(3));
+    constexpr sofa::Size dimensions = std::min(static_cast<sofa::Size>(GeometricalTypes::spatial_dimensions), static_cast<sofa::Size>(3));
     for (unsigned int i = 0; i < x.size(); i++)
     {
         const auto& position = GeometricalTypes::getCPos(x[i]);
         type::Vector3 p;
-        for (auto j = 0; j < dimensions; j++)
+        for (sofa::Index j = 0; j < dimensions; j++)
         {
             p[j] = position[j];
         }

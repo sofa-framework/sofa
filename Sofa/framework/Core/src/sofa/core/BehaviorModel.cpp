@@ -19,13 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BehaviorModel.h"
+#include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 
@@ -42,10 +39,5 @@ bool BehaviorModel::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core
 

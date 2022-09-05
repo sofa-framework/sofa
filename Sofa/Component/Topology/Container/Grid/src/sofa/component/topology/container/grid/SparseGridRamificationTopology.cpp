@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sstream>
-#include "SparseGridRamificationTopology.h"
+#include <sofa/component/topology/container/grid/SparseGridRamificationTopology.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::topology::container::grid

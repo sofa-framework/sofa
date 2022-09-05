@@ -69,10 +69,11 @@ public:
     class SOFA_DEFAULTTYPE_API SpatialVector
     {
     public:
-        Vec lineVec;
-        Vec freeVec;
+        Vec lineVec{ type::NOINIT };
+        Vec freeVec{ type::NOINIT };
+
         void clear();
-        SpatialVector();
+        SpatialVector() = default;
         /**
         \param l The line vector: angular velocity, or force
         \param f The free vector: linear velocity, or torque
@@ -404,7 +405,7 @@ public:
 
     static ArticulatedInertia dyad ( const SpatialVector& u, const SpatialVector& v );
 
-    static const char* Name()
+    static constexpr const char* Name()
     {
         return "Solid";
     }
