@@ -276,7 +276,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -314,7 +314,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -322,7 +322,7 @@ public:
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <DiagonalMass name='m_mass' massDensity='-1.0'/>                                        "
+                "            <DiagonalMass name='m_mass' massDensity='-1.0'/>                                       "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            " ;
 
@@ -346,7 +346,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -354,7 +354,7 @@ public:
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <DiagonalMass name='m_mass' totalMass='10.0'/>                                        "
+                "            <DiagonalMass name='m_mass' totalMass='10.0'/>                                         "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            " ;
 
@@ -385,7 +385,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -418,7 +418,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -426,7 +426,7 @@ public:
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='10.0'/>                                        "
+                "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='10.0'/>                      "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            " ;
 
@@ -451,7 +451,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -459,7 +459,7 @@ public:
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <DiagonalMass name='m_mass' massDensity='-10.0' totalMass='10.0'/>                                        "
+                "            <DiagonalMass name='m_mass' massDensity='-10.0' totalMass='10.0'/>                     "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            " ;
 
@@ -484,7 +484,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -492,7 +492,7 @@ public:
                 "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
                 "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
                 "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='-10.0'/>                                        "
+                "            <DiagonalMass name='m_mass' massDensity='10.0' totalMass='-10.0'/>                     "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            " ;
 
@@ -517,7 +517,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -556,7 +556,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -589,7 +589,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -736,7 +736,7 @@ public:
         static const string scene =
             "<?xml version='1.0'?>                                                                              "
             "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+            "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
             "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
             "    <Node name='Tetra' >                                                                           "
             "            <MechanicalObject position='@../grid.position' />                                      "
