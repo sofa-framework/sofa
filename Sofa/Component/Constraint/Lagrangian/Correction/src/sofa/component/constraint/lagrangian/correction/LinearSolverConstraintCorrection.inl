@@ -536,7 +536,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     systemMatrix_buf   = l_linearSolver.get()->getSystemBaseMatrix();
     systemRHVector_buf = l_linearSolver.get()->getSystemRHBaseVector();
     systemLHVector_buf = l_linearSolver.get()->getSystemLHBaseVector();
-    systemLHVector_buf_fullvector = dynamic_cast<linearalgebra::FullVector<Real>*>(systemLHVector_buf);
+    systemLHVector_buf_fullvector = dynamic_cast<linearalgebra::FullVector<Real>*>(systemLHVector_buf); // Cast checking whether the LH vector is a FullVector to improve performances
 
     constexpr const auto derivDim = Deriv::total_size;
     const unsigned int systemSize = mstate->getSize() * derivDim;
