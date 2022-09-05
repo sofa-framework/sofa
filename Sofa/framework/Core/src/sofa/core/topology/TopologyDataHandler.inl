@@ -30,8 +30,6 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
         sofa::core::topology::BaseMeshTopology *_topology, value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
-    , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
-    , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     SOFA_UNUSED(defaultValue);
     m_topology = dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
@@ -43,8 +41,6 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
     value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
-    , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
-    , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
     SOFA_UNUSED(defaultValue);
 }
@@ -63,7 +59,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::init()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::handleTopologyChange()
 {
-    if (!this->isTopologyDataRegistered() || m_topology == nullptr)
+    if (!m_isRegistered || m_topology == nullptr)
         return;
 
     sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_topology->m_changeList.getValue(), m_topology->getNbPoints());
@@ -75,17 +71,23 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
 {
     if (m_topology == nullptr)
     {
-        msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
+        msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Data Array.";
         return;
     }
 
     if (m_topology->linkTopologyHandlerToData(this, elementType))
     {
-        m_topology->addTopologyHandler(this, elementType);
+        bool res = m_topology->addTopologyHandler(this, elementType);
+        if (!res)
+        {
+            msg_warning(m_topologyData->getOwner()) << "TopologyHandler linked to Data '" << m_data_name << "' has already been registered.";
+        }
+
+        m_isRegistered = true;
     }
     else
     {
-        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a Hexahedron Data Array, Data '" << m_data_name << "' won't be linked.";
+        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a valid Data Array, Data '" << m_data_name << "' won't be linked.";
         return;
     }
 }
@@ -98,11 +100,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const 
     m_topologyData->swap(event->index[0], event->index[1]);
 }
 
-template<class TopologyElementType, class VecT>
-bool TopologyDataHandler<TopologyElementType, VecT>::isTopologyDataRegistered()
-{
-    return m_topologyData != nullptr;
-}
 
 /// Apply adding elements.
 template <typename TopologyElementType, typename VecT>

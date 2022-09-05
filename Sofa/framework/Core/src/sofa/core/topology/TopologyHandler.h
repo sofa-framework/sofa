@@ -137,9 +137,10 @@ public:
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Tetrahedron>::EMoved* /*event*/) {}
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Hexahedron>::EMoved* /*event*/) {}
 
-
-
-    virtual bool isTopologyDataRegistered() { return false; }
+    /// Method to notify that this topologyHandler is not anymore registerd into a Topology Container
+    void unRegisteredTopologyHandler() { m_isRegistered = false; }
+    /// Method to get the information if this topologyHandler is registered into a Topology Container
+    bool isTopologyHandlerRegistered() const { return m_isRegistered; }
 
 
     size_t getNumberOfTopologicalChanges();
@@ -164,6 +165,9 @@ protected:
     std::string m_prefix;
     /// use to define data handled name.
     std::string m_data_name;
+
+    /// Bool to store the information if this topology handler is registered into Topology handler lists
+    int m_isRegistered = false;
 
     sofa::core::topology::TopologyContainer* m_topology;
     std::map < core::topology::TopologyChangeType, TopologyChangeCallback> m_callbackMap;
