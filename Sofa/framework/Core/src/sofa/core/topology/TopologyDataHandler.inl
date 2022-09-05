@@ -95,6 +95,9 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType, VecT>::unlinkFromTopologyDataArray(sofa::geometry::ElementType elementType)
 {
+    if (!m_isRegistered) // Will be false if topology has already been deleted
+        return;
+
     if (m_topology->unlinkTopologyHandlerToData(this, elementType))
     {
         m_topology->removeTopologyHandler(this, elementType);
