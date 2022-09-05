@@ -166,5 +166,10 @@ void TopologyHandler::linkToTopologyDataArray(sofa::geometry::ElementType elemen
     SOFA_UNUSED(elementType);
 }
 
+void TopologyHandler::unlinkFromTopologyDataArray(sofa::geometry::ElementType elementType)
+{
+    SOFA_UNUSED(elementType);
+}
+
 } // namespace sofa
 
