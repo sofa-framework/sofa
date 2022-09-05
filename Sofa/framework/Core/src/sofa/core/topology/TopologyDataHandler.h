@@ -81,12 +81,7 @@ public:
 
 
     /// Function to link DataEngine with Data array from topology
-    void linkToPointDataArray() override;
-    void linkToEdgeDataArray() override;
-    void linkToTriangleDataArray() override;
-    void linkToQuadDataArray() override;
-    void linkToTetrahedronDataArray() override;
-    void linkToHexahedronDataArray() override;
+    void linkToTopologyDataArray(sofa::geometry::ElementType elementType) override;
 
     bool isTopologyDataRegistered() override;
 

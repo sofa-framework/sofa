@@ -70,149 +70,18 @@ void TopologyDataHandler<TopologyElementType,  VecT>::handleTopologyChange()
 }
 
 
-/// Function to link DataEngine with Data array from topology
 template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
+void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sofa::geometry::ElementType elementType)
 {
-    if (m_pointsLinked) // avoid second registration
-        return;
-
-    if (m_topology == nullptr)
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Point Data Array.";
-        return;
-    }
-
-    if (m_topology->linkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::POINT))
-    {
-        m_topology->addTopologyHandler(this, sofa::core::topology::TopologyElementType::POINT);
-        m_pointsLinked = true;
-    }
-    else
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a Point Data Array, Data '" << m_data_name << "' won't be linked.";
-        return;
-    }
-    
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler<TopologyElementType,  VecT>::linkToEdgeDataArray()
-{
-    if (m_edgesLinked) // avoid second registration
-        return;
-
-    if (m_topology == nullptr)
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Edge Data Array.";
-        return;
-    }
-
-    if (m_topology->linkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::EDGE))
-    {
-        m_topology->addTopologyHandler(this, sofa::core::topology::TopologyElementType::EDGE);
-        m_edgesLinked = true;
-    }
-    else
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a Edge Data Array, Data '" << m_data_name << "' won't be linked.";
-        return;
-    }
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler<TopologyElementType,  VecT>::linkToTriangleDataArray()
-{
-    if (m_trianglesLinked) // avoid second registration
-        return;
-
-    if (m_topology == nullptr)
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Triangle Data Array.";
-        return;
-    }
-
-    if (m_topology->linkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::TRIANGLE))
-    {
-        m_topology->addTopologyHandler(this, sofa::core::topology::TopologyElementType::TRIANGLE);
-        m_trianglesLinked = true;
-    }
-    else
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a Triangle Data Array, Data '" << m_data_name << "' won't be linked.";
-        return;
-    }
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler<TopologyElementType,  VecT>::linkToQuadDataArray()
-{
-    if (m_quadsLinked) // avoid second registration
-        return;
-
-    if (m_topology == nullptr)
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Quad Data Array.";
-        return;
-    }
-
-    if (m_topology->linkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::QUAD))
-    {
-        m_topology->addTopologyHandler(this, sofa::core::topology::TopologyElementType::QUAD);
-        m_quadsLinked = true;
-    }
-    else
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a Quad Data Array, Data '" << m_data_name << "' won't be linked.";
-        return;
-    }
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler<TopologyElementType,  VecT>::linkToTetrahedronDataArray()
-{
-    if (m_tetrahedraLinked) // avoid second registration
-        return;
-
-    if (m_topology == nullptr)
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Tetrahedron Data Array.";
-        return;
-    }
-
-    if (m_topology->linkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::TETRAHEDRON))
-    {
-        m_topology->addTopologyHandler(this, sofa::core::topology::TopologyElementType::TETRAHEDRON);
-        m_tetrahedraLinked = true;
-    }
-    else
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a Tetrahedron Data Array, Data '" << m_data_name << "' won't be linked.";
-        return;
-    }
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyDataHandler<TopologyElementType,  VecT>::linkToHexahedronDataArray()
-{
-    if (m_hexahedraLinked) // avoid second registration
-        return;
-
     if (m_topology == nullptr)
     {
         msg_error(m_topologyData->getOwner()) << "Owner topology has not been set. Data '" << m_data_name << "' won't be linked to Hexahedron Data Array.";
         return;
     }
 
-    if (m_topology->linkTopologyHandlerToData(this, sofa::core::topology::TopologyElementType::HEXAHEDRON))
+    if (m_topology->linkTopologyHandlerToData(this, elementType))
     {
-        m_topology->addTopologyHandler(this, sofa::core::topology::TopologyElementType::HEXAHEDRON);
-        m_hexahedraLinked = true;
+        m_topology->addTopologyHandler(this, elementType);
     }
     else
     {

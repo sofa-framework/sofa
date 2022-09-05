@@ -144,12 +144,8 @@ public:
 
     size_t getNumberOfTopologicalChanges();
 
-    virtual void linkToPointDataArray() {}
-    virtual void linkToEdgeDataArray() {}
-    virtual void linkToTriangleDataArray() {}
-    virtual void linkToQuadDataArray() {}
-    virtual void linkToTetrahedronDataArray() {}
-    virtual void linkToHexahedronDataArray() {}
+
+    virtual void linkToTopologyDataArray(sofa::geometry::ElementType elementType);
 
     void setNamePrefix(const std::string& s) { m_prefix = s; }
     std::string getName() { return m_prefix + m_data_name; }

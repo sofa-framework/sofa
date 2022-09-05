@@ -161,5 +161,10 @@ bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _
     return true;
 }
 
+void TopologyHandler::linkToTopologyDataArray(sofa::geometry::ElementType elementType)
+{
+    SOFA_UNUSED(elementType);
+}
+
 } // namespace sofa
 
