@@ -583,6 +583,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 
     _new_force = false;
 
+    // Lambda function adding the constraint displacement using [] if a FullVector is detected or element() else
     constexpr auto addConstraintDisplacement_impl = [](double* d, unsigned int id, auto* systemLHVector_buf, double positionIntegrationFactor, unsigned int dof, const Deriv& val)
     {
         constexpr const auto derivDim = Deriv::total_size;
