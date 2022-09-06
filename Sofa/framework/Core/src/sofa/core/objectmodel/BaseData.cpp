@@ -337,6 +337,35 @@ std::string BaseData::decodeTypeName(const std::type_info& t)
     return sofa::helper::NameDecoder::decodeTypeName(t);
 }
 
+bool BaseData::read(const std::string& s)
+{
+    if (s.empty())
+    {
+        doClear();
+        return true;
+    }
+
+    std::istringstream istr( s.c_str() );
+
+    // capture std::cerr output (if any)
+    std::stringstream cerrbuffer;
+    std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
+
+    doRead(istr);
+
+    // restore the previous cerr
+    std::cerr.rdbuf(old);
+
+    if( istr.fail() )
+    {
+        // transcript the std::cerr buffer into the Messaging system
+        msg_warning(this->getName()) << cerrbuffer.str();
+        return false;
+    }
+
+    return true;
+}
+
 } // namespace objectmodel
 
 } // namespace core
