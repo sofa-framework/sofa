@@ -25,7 +25,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
 
-#include <sofa/type/RGBAColor_fwd.h>
+//todo(dmarchal 2018-06-19) I really wonder why a collision model has a dependency to a RGBAColors.
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa
 {
