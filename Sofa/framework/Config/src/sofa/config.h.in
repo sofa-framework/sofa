@@ -207,13 +207,13 @@ class DeprecatedAndRemoved {};
         "v21.06 (PR#1753)", "v21.12", \
         "Data API has changed. " msg)
 
-#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+#define SOFA_ATTRIBUTE_DISABLED__ASPECT(msg) \
+    SOFA_ATTRIBUTE_DISABLED( \
         "v20.06 (PR#1269)", "v21.12", \
         "Aspects have been removed. " msg)
 
-#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS() \
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT( \
+#define SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS() \
+    SOFA_ATTRIBUTE_DISABLED__ASPECT( \
         "ExecParams are not needed anymore. " \
         "Remove the ExecParams argument from your call. ")
 

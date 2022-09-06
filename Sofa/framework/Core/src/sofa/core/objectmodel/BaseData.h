@@ -236,24 +236,24 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)s
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    bool isSet(const core::ExecParams*) const { return isSet(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS();
+    bool isSet(const core::ExecParams*) const = delete;
     bool isSet() const { return m_isSet; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    void unset(const core::ExecParams*) { unset(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    void unset(const core::ExecParams*) = delete;
     void unset() { m_isSet = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    void forceSet(const core::ExecParams*) { forceSet(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    void forceSet(const core::ExecParams*) = delete;
     void forceSet() { m_isSet = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    int getCounter(const core::ExecParams*) const { return getCounter(); }
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    int getCounter(const core::ExecParams*) const = delete;
     int getCounter() const { return m_counter; }
     /// @}
 
