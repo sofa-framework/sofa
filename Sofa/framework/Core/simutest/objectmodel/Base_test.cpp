@@ -65,6 +65,7 @@ public:
         const std::string scene = R"(
             <?xml version='1.0'?>
             <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+               <RequiredPlugin name='Sofa.Component.StateContainer'/>
                <DefaultAnimationLoop />
                <DefaultVisualManagerLoop />
                <Node name='child1'>

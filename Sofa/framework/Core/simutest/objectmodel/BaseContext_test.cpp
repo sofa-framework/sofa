@@ -38,6 +38,7 @@ public:
         const std::string scene = R"(
             <?xml version='1.0'?>
             <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+               <RequiredPlugin name='Sofa.Component.SceneUtility'/>
                <DefaultAnimationLoop />
                <DefaultVisualManagerLoop />
                <InfoComponent/>
@@ -72,10 +73,10 @@ public:
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
         /// getObjects()'s default search direction is SearchUp
         /// so it will get the current objects in the context + the ones upper
-        /// (here 3 in child1 + 3 in root itself)
+        /// (here 3 in child1 + 3 in root itself + 1 required plugin)
         /// So it will find 6 base objects in the scene.
         for(auto& m : context->getObjects() ) { SOFA_UNUSED(m); }
-        ASSERT_EQ( context->getObjects().size(), 6 ) ;
+        ASSERT_EQ( context->getObjects().size(), 7 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
         for(auto& m : context->getObjects(BaseContext::SearchDirection::SearchDown) ) { SOFA_UNUSED(m); }
