@@ -146,12 +146,12 @@ public:
     void setHelp(const std::string& val) { help = val; }
 
     /// Get owner class
-    SOFA_ATTRIBUTE_DEPRECATED__BASEDATA_OWNERCLASS_ACCESSOR("Replace getOwnerClass() by getOwner()->getClassName().")
-    const std::string& getOwnerClass() const { return ownerClass; }
+    SOFA_ATTRIBUTE_DISABLED__BASEDATA_OWNERCLASS_ACCESSOR("Replace getOwnerClass() by getOwner()->getClassName().")
+    const std::string& getOwnerClass() const = delete;
 
     /// Set owner class
-    SOFA_ATTRIBUTE_DEPRECATED__BASEDATA_OWNERCLASS_ACCESSOR("This feature will be totally removed. You are not supposed to change Owner's type name.")
-    void setOwnerClass(const char* val) { ownerClass = val; }
+    SOFA_ATTRIBUTE_DISABLED__BASEDATA_OWNERCLASS_ACCESSOR("This feature will be totally removed. You are not supposed to change Owner's type name.")
+    void setOwnerClass(const char* val) = delete;
 
     /// Get group
     const std::string& getGroup() const { return group; }
@@ -166,8 +166,8 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the counter of modification gives valid information.
-    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Data<> must have, by design, their counter valid.")
-    bool isCounterValid() const { return true; }
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Data<> must have, by design, their counter valid.")
+    bool isCounterValid() const = delete;
 
     /// @name Flags
     /// @{
@@ -273,8 +273,8 @@ public:
     ///
     /// Note that this is a one-time copy and not a permanent link (otherwise see setParent())
     /// @return true if the copy was successful.
-    SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA("Use copyValueFrom() instead.")
-    bool copyValue(const BaseData* data){ return copyValueFrom(data); }
+    SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA("Use copyValueFrom() instead.")
+    bool copyValue(const BaseData* data) = delete;
 
     /// Copy the value from another Data.
     ///
