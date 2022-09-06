@@ -42,6 +42,10 @@ public:
         root->setGravity(Vec3(0.0,0.0,0.0));
         root->setDt(dt);
 
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Forward");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
+
         Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
         sofa::simpleapi::createObject(childNode, "EulerExplicitSolver");
         auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject", {{"rest_position", "0 0 0"},{"position", "1.1 0 0"}});

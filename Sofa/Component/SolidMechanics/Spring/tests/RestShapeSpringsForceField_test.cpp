@@ -58,7 +58,11 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
 {
     auto theSimulation = createSimulation();
     auto theRoot = createRootNode(theSimulation, "root");
-
+    sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
+    sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+    sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+    
     createObject(theRoot, "DefaultAnimationLoop");
     createObject(theRoot, "EulerImplicitSolver");
     createObject(theRoot, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-5" }, {"threshold", "1e-5"}});
