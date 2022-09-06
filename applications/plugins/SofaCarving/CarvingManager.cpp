@@ -90,15 +90,10 @@ void CarvingManager::init()
         // We look for a CollisionModel identified with the CarvingSurface Tag.
         std::vector<core::CollisionModel*> models;
         getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
-    
-        // If topological mapping, iterate into child Node to find mapped topology
-	    sofa::core::topology::TopologicalMapping* topoMapping;
+
         for (size_t i=0;i<models.size();++i)
         {
             core::CollisionModel* m = models[i];
-            m->getContext()->get(topoMapping);
-            if (topoMapping == NULL) continue;
-                        
             m_surfaceCollisionModels.push_back(m);
         }
     }
@@ -188,8 +183,8 @@ void CarvingManager::doCarve()
 
             if (c.value < d_carvingDistance.getValue())
             {
-                auto triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
-                elemsToRemove.push_back(triangleIdx);
+                auto elementIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                elemsToRemove.push_back(elementIdx);
             }
         }
 
