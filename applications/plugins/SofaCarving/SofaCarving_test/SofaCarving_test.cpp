@@ -65,10 +65,11 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     m_root->setDt(0.01);
 
     // create collision pipeline
+    createObject(m_root, "DefaultAnimationLoop", { { "name","DefaultAnimationLoop " } });
     createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
     createObject(m_root, "BruteForceBroadPhase", { { "name","Broad Phase Detection" } });
     createObject(m_root, "BVHNarrowPhase", { { "name","Narrow Phase Detection" } });
-    createObject(m_root, "CollisionResponse", {
+    createObject(m_root, "DefaultContactManager", {
         { "name", "Contact Manager" },
         { "response", "PenalityContactForceField" }
     });
