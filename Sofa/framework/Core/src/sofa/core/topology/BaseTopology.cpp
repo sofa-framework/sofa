@@ -169,11 +169,6 @@ void TopologyContainer::resetTopologyHandlerList()
 {
     for (auto& topologyHandlerList : m_topologyHandlerListPerElement)
     {
-        std::for_each(topologyHandlerList.begin(), topologyHandlerList.end(), [](TopologyHandler* topoHandler) 
-        {
-            topoHandler = nullptr;
-        });
-
         topologyHandlerList.clear();
     }
 
