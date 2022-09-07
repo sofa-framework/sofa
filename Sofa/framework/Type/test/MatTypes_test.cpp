@@ -33,6 +33,40 @@ using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
+TEST(MatTypesTest, lineAccess)
+{
+    Matrix2 mat2;
+
+    mat2.x();
+    mat2.y();
+    //mat2.z(); // z is not available due to the size of the matrix
+
+    Matrix3 mat3;
+
+    mat3.x();
+    mat3.y();
+    mat3.z();
+    //mat3.w(); // z is not available due to the size of the matrix
+}
+
+TEST(MatTypesTest, mat3x3product)
+{
+    Matrix3 a{ Matrix3::Line{1., 2., 3.}, Matrix3::Line{4., 5., 6.}, Matrix3::Line{7., 8., 9.} };
+    const auto a2 = a * a;
+
+    EXPECT_FLOATINGPOINT_EQ(a2[0][0], 30.)
+    EXPECT_FLOATINGPOINT_EQ(a2[0][1], 36.)
+    EXPECT_FLOATINGPOINT_EQ(a2[0][2], 42.)
+
+    EXPECT_FLOATINGPOINT_EQ(a2[1][0], 66.)
+    EXPECT_FLOATINGPOINT_EQ(a2[1][1], 81.)
+    EXPECT_FLOATINGPOINT_EQ(a2[1][2], 96.)
+
+    EXPECT_FLOATINGPOINT_EQ(a2[2][0], 102.)
+    EXPECT_FLOATINGPOINT_EQ(a2[2][1], 126.)
+    EXPECT_FLOATINGPOINT_EQ(a2[2][2], 150.)
+}
+
 void test_transformInverse(Matrix4 const& M)
 {
     Matrix4 M_inv;
@@ -212,4 +246,17 @@ TEST(MatTypesTest, tensorProduct)
     Mat<2, 2, SReal> M(Mat<2, 2, SReal>::Line(0.,  0.),
                        Mat<2, 2, SReal>::Line( 1., 2.));
     EXPECT_EQ(M, Mtest);
+}
+
+TEST(MatTypesTest, identity)
+{
+    const sofa::type::Mat<3, 3, SReal>& id = sofa::type::Mat<3, 3, SReal>::Identity();
+
+    for (sofa::Index i = 0; i < 3; ++i)
+    {
+        for (sofa::Index j = 0; j < 3; ++j)
+        {
+            EXPECT_FLOATINGPOINT_EQ(id(i,j), static_cast<SReal>(i == j))
+        }
+    }
 }

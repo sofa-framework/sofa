@@ -239,18 +239,6 @@ public:
         return in;
     }
 
-    constexpr inline bool operator < (const fixed_array& v ) const noexcept
-    {
-        for( size_type i=0; i<N; i++ )
-        {
-            if( elems[i]<v[i] )
-                return true;  // (*this)<v
-            else if( elems[i]>v[i] )
-                return false; // (*this)>v
-        }
-        return false; // (*this)==v
-    }
-
 private:
 
     // check range (may be private because it is static)
@@ -267,6 +255,28 @@ template<typename... Ts>
 constexpr auto make_array(Ts&&... ts) -> fixed_array<std::common_type_t<Ts...>, sizeof...(Ts)>
 {
     return { std::forward<Ts>(ts)... };
+}
+
+/// Checks if v1 is lexicographically less than v2. Similar to std::lexicographical_compare
+template<typename T, sofa::Size N>
+constexpr bool
+operator<(const fixed_array<T, N>& v1, const fixed_array<T, N>& v2 ) noexcept
+{
+    for( sofa::Size i=0; i<N; i++ )
+    {
+        if( v1[i] < v2[i] )
+            return true;
+        if( v2[i] < v1[i] )
+            return false;
+    }
+    return false;
+}
+
+template<typename T, sofa::Size N>
+constexpr bool
+operator>(const fixed_array<T, N>& v1, const fixed_array<T, N>& v2 ) noexcept
+{
+    return v2 < v1;
 }
 
 #ifndef FIXED_ARRAY_CPP

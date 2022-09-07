@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,33 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/type/fixed_array.h>
+#include <gtest/gtest.h>
 
-#include <sofa/config.h>
+namespace sofa
+{
 
-#define SOFATYPE_VERSION @PROJECT_VERSION@
+TEST(fixed_array, operatorLess)
+{
+    sofa::type::fixed_array<sofa::Index, 2> edge1 { 0, 0};
+    sofa::type::fixed_array<sofa::Index, 2> edge2 { 1, 0};
+    EXPECT_LT(edge1, edge2);
+    EXPECT_GT(edge2, edge1);
+}
 
-#ifdef SOFA_BUILD_SOFA_TYPE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_TYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_TYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DEPRECATED__REBIND()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__REBIND() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.06", "v22.12", \
-        "As an alternative, use sofa::type::Rebind or sofa::type::rebind_to.")
-#endif
-
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.12", "v23.06", \
-        "As an alternative, use sofa::type::Mat<L,C,real>::Identity().")
-#endif
+}
