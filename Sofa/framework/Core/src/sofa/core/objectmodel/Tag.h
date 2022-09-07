@@ -64,7 +64,7 @@ protected:
     int id;
 };
 
-} // namespace core
+} //namespace sofa::core::objectmodel
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 namespace sofa::defaulttype
@@ -76,4 +76,4 @@ struct DataTypeInfo< sofa::core::objectmodel::Tag > : public TextTypeInfo<sofa::
     static const char* name() { return "Tag"; }
 };
 
-} // namespace sofa
+} //namespace sofa::defaulttype

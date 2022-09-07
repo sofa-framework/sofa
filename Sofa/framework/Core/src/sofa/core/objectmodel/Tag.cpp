@@ -61,4 +61,4 @@ std::istream& operator>>(std::istream& i, Tag& t)
     return i;
 }
 
-}
+} // namespace sofa::core::objectmodel

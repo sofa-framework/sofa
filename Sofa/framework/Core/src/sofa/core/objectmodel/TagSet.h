@@ -41,7 +41,7 @@ public:
     bool includes(const TagSet& t) const;
 };
 
-}
+} // namespace sofa::core::objectmodel
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 namespace sofa::defaulttype
@@ -53,4 +53,4 @@ struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa
     static const char* name() { return "TagSet"; }
 };
 
-}
+} // namespace sofa::defaulttype

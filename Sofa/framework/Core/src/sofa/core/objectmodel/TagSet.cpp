@@ -60,5 +60,4 @@ bool TagSet::includes(const TagSet& t) const
     return true;
 }
 
-
-}
+} //namespace sofa::core::objectmodel
