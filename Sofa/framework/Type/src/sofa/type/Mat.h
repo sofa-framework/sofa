@@ -312,9 +312,9 @@ public:
 
     /// Returns the identity matrix
     template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
-    static constexpr const Mat<L,L,real>& Identity() noexcept
+    static const Mat<L,L,real>& Identity() noexcept
     {
-        static constexpr Mat<L,L,real> s_identity = []()
+        static Mat<L,L,real> s_identity = []()
         {
             Mat<L,L,real> id(NOINIT);
             id.identity();
