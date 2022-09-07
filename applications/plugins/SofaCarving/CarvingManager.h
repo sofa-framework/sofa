@@ -34,13 +34,7 @@
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 /**
@@ -53,12 +47,8 @@ class SOFA_SOFACARVING_API CarvingManager : public core::behavior::BaseControlle
 {
 public:
 	SOFA_CLASS(CarvingManager,sofa::core::behavior::BaseController);
-
-	typedef defaulttype::Vec3Types DataTypes;
-    typedef DataTypes::Coord Coord;
-    typedef DataTypes::Real Real;
     
-    typedef type::vector<core::collision::DetectionOutput> ContactVector;
+    using ContactVector = type::vector<core::collision::DetectionOutput>;
     
     /// Sofa API init method of the component
     void init() override;
@@ -77,17 +67,22 @@ protected:
     CarvingManager();
 
     /// Default destructor
-    ~CarvingManager() override;
+    ~CarvingManager() override {};
 
 
 public:
     /// Tool model path
+    // link to the forceFeedBack component, if not set will search through graph and take first one encountered
+    SingleLink<CarvingManager, core::CollisionModel, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_toolModel;
+
+    //SingleLink<CarvingManager, core::CollisionModel, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceModel;
+
     Data < std::string > d_toolModelPath; 
     /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
 
     /// Collision distance at which cavring will start. Equal to contactDistance by default.
-    Data < Real > d_carvingDistance;
+    Data < SReal > d_carvingDistance;
     
     ///< Activate this object. Note that this can be dynamically controlled by using a key
     Data < bool > d_active;
@@ -104,25 +99,21 @@ public:
     
 protected:
     /// Pointer to the tool collision model
-    core::CollisionModel* m_toolCollisionModel;
+    core::CollisionModel* m_toolCollisionModel = nullptr;
 
     // Pointer to the target object collision model
     std::vector<core::CollisionModel*> m_surfaceCollisionModels;
 
     // Pointer to the scene intersection Method component
-    core::collision::Intersection* m_intersectionMethod;
+    core::collision::Intersection* m_intersectionMethod = nullptr;
     // Pointer to the scene detection Method component (Narrow phase only)
-    core::collision::NarrowPhaseDetection* m_detectionNP;
+    core::collision::NarrowPhaseDetection* m_detectionNP = nullptr;
 
     // Bool to store the information if component has well be init and can be used.
-    bool m_carvingReady;
+    bool m_carvingReady = false;
     
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision
 
 #endif

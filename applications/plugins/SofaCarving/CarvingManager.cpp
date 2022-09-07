@@ -34,22 +34,16 @@
 #include <sofa/gui/component/performer/TopologicalChangeManager.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-int CarvingManagerClass = core::RegisterObject("Manager handling carving operations between a tool and an object.")
+const int CarvingManagerClass = core::RegisterObject("Manager handling carving operations between a tool and an object.")
 .add< CarvingManager >()
 ;
 
 
 CarvingManager::CarvingManager()
-    : d_toolModelPath( initData(&d_toolModelPath, "toolModelPath", "Tool model path"))
+    : l_toolModel(initLink("toolModel", "link to the carving collision model, if not set, manager wi will search for a collision model with tag: CarvingTool"))
     , d_surfaceModelPath( initData(&d_surfaceModelPath, "surfaceModelPath", "TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path"))
     , d_carvingDistance( initData(&d_carvingDistance, 0.0, "carvingDistance", "Collision distance at which cavring will start. Equal to contactDistance by default."))
     , d_active( initData(&d_active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
@@ -58,30 +52,22 @@ CarvingManager::CarvingManager()
     , d_mouseEvent( initData(&d_mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
     , d_omniEvent( initData(&d_omniEvent, true, "omniEvent", "Activate carving with omni button") )
     , d_activatorName(initData(&d_activatorName, "button1", "activatorName", "Name to active the script event parsing. Will look for 'pressed' or 'release' keyword. For example: 'button1_pressed'"))
-    , m_toolCollisionModel(nullptr)
-    , m_intersectionMethod(nullptr)
-    , m_detectionNP(nullptr)
-    , m_carvingReady(false)
 {
     this->f_listening.setValue(true);
 }
 
 
-CarvingManager::~CarvingManager()
-{
-}
-
 
 void CarvingManager::init()
 {
     // Search for collision model corresponding to the tool.
-    if (d_toolModelPath.getValue().empty())
+    if (l_toolModel.empty())
     {
-        m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
+        m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchRoot);
     }
     else
     {
-        m_toolCollisionModel = getContext()->get<core::CollisionModel>(d_toolModelPath.getValue());
+        m_toolCollisionModel = l_toolModel.get();
     }
 
     // Search for the surface collision model.
@@ -89,7 +75,6 @@ void CarvingManager::init()
     {
         // We look for a CollisionModel identified with the CarvingSurface Tag.
         getContext()->get<core::CollisionModel>(&m_surfaceCollisionModels, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
-
     }
     else
     {
@@ -252,8 +237,4 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::collision
