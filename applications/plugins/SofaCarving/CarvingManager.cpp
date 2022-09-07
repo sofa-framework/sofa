@@ -88,14 +88,8 @@ void CarvingManager::init()
     if (d_surfaceModelPath.getValue().empty())
     {
         // We look for a CollisionModel identified with the CarvingSurface Tag.
-        std::vector<core::CollisionModel*> models;
-        getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
+        getContext()->get<core::CollisionModel>(&m_surfaceCollisionModels, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
 
-        for (size_t i=0;i<models.size();++i)
-        {
-            core::CollisionModel* m = models[i];
-            m_surfaceCollisionModels.push_back(m);
-        }
     }
     else
     {
