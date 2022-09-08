@@ -1,0 +1,556 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+#include <sofa/defaulttype/config.h>
+
+#include <sofa/defaulttype/fwd.h>
+
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/vector.h>
+#include <sofa/helper/rmath.h>
+#include <cmath>
+
+
+namespace sofa::defaulttype
+{
+
+template<typename real>
+class RigidDeriv<3, real>
+{
+public:
+    typedef real value_type;
+    typedef sofa::Size Size;
+    typedef real Real;
+    typedef type::Vec<3,Real> Pos;
+    typedef type::Vec<3,Real> Rot;
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> VecAll;
+    typedef type::Quat<Real> Quat;
+
+protected:
+    Vec3 vCenter;
+    Vec3 vOrientation;
+
+public:
+    friend class RigidCoord<3,real>;
+
+    RigidDeriv()
+    {
+        clear();
+    }
+
+    explicit RigidDeriv(type::NoInit)
+        : vCenter(type::NOINIT)
+        , vOrientation(type::NOINIT)
+    {
+
+    }
+
+    RigidDeriv(const Vec3 &velCenter, const Vec3 &velOrient)
+        : vCenter(velCenter), vOrientation(velOrient)
+    {}
+
+    template<typename real2>
+    RigidDeriv(const RigidDeriv<3,real2>& c)
+        : vCenter(c.getVCenter()), vOrientation(c.getVOrientation())
+    {}
+
+    template<typename real2>
+    RigidDeriv(const type::Vec<6,real2> &v)
+        : vCenter(type::Vec<3,real2>(v.data())), vOrientation(type::Vec<3,real2>(v.data()+3))
+    {}
+
+    template<typename real2>
+    RigidDeriv(const real2* ptr)
+        :vCenter(ptr),vOrientation(ptr+3)
+    {
+    }
+
+    void clear()
+    {
+        vCenter.clear();
+        vOrientation.clear();
+    }
+
+    template<typename real2>
+    void operator=(const RigidDeriv<3,real2>& c)
+    {
+        vCenter = c.getVCenter();
+        vOrientation = c.getVOrientation();
+    }
+
+    template<typename real2>
+    void operator=(const type::Vec<3,real2>& v)
+    {
+        vCenter = v;
+    }
+
+    template<typename real2>
+    void operator=(const type::Vec<6,real2>& v)
+    {
+        vCenter = v;
+        vOrientation = type::Vec<3,real2>(v.data()+3);
+    }
+
+    void operator+=(const RigidDeriv& a)
+    {
+        vCenter += a.vCenter;
+        vOrientation += a.vOrientation;
+    }
+
+    void operator-=(const RigidDeriv& a)
+    {
+        vCenter -= a.vCenter;
+        vOrientation -= a.vOrientation;
+    }
+
+    RigidDeriv<3,real> operator+(const RigidDeriv<3,real>& a) const
+    {
+        RigidDeriv d;
+        d.vCenter = vCenter + a.vCenter;
+        d.vOrientation = vOrientation + a.vOrientation;
+        return d;
+    }
+
+    template<typename real2>
+    void operator*=(real2 a)
+    {
+        vCenter *= a;
+        vOrientation *= a;
+    }
+
+    template<typename real2>
+    void operator/=(real2 a)
+    {
+        vCenter /= a;
+        vOrientation /= a;
+    }
+
+
+
+    RigidDeriv<3,real> operator-() const
+    {
+        return RigidDeriv(-vCenter, -vOrientation);
+    }
+
+    RigidDeriv<3,real> operator-(const RigidDeriv<3,real>& a) const
+    {
+        return RigidDeriv<3,real>(this->vCenter - a.vCenter, this->vOrientation-a.vOrientation);
+    }
+
+
+    /// dot product, mostly used to compute residuals as sqrt(x*x)
+    Real operator*(const RigidDeriv<3,real>& a) const
+    {
+        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
+                +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
+                +vOrientation[2]*a.vOrientation[2];
+    }
+
+
+    /// Euclidean norm
+    real norm() const
+    {
+        return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
+    }
+
+
+    Vec3& getVCenter() { return vCenter; }
+    Vec3& getVOrientation() { return vOrientation; }
+    const Vec3& getVCenter() const { return vCenter; }
+    const Vec3& getVOrientation() const { return vOrientation; }
+
+    Vec3& getLinear() { return vCenter; }
+    const Vec3& getLinear() const { return vCenter; }
+    Vec3& getAngular() { return vOrientation; }
+    const Vec3& getAngular() const { return vOrientation; }
+
+    VecAll getVAll() const
+    {
+        return VecAll(vCenter, vOrientation);
+    }
+
+    /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
+    Vec3 velocityAtRotatedPoint(const Vec3& p) const
+    {
+        return vCenter - cross(p, vOrientation);
+    }
+
+    /// write to an output stream
+    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<3,real>& v )
+    {
+        out<<v.vCenter<<" "<<v.vOrientation;
+        return out;
+    }
+    /// read from an input stream
+    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<3,real>& v )
+    {
+        in>>v.vCenter>>v.vOrientation;
+        return in;
+    }
+
+    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
+    static constexpr sofa::Size total_size = 6;
+
+    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+    static constexpr sofa::Size spatial_dimensions = 3;
+
+    real* ptr() { return vCenter.ptr(); }
+    const real* ptr() const { return vCenter.ptr(); }
+
+    static Size size() {return 6;}
+
+    /// Access to i-th element.
+    real& operator[](Size i)
+    {
+        if (i<3)
+            return this->vCenter(i);
+        else
+            return this->vOrientation(i-3);
+    }
+
+    /// Const access to i-th element.
+    const real& operator[](Size i) const
+    {
+        if (i<3)
+            return this->vCenter(i);
+        else
+            return this->vOrientation(i-3);
+    }
+
+    /// @name Tests operators
+    /// @{
+
+    bool operator==(const RigidDeriv<3,real>& b) const
+    {
+        return vCenter == b.vCenter && vOrientation == b.vOrientation;
+    }
+
+    bool operator!=(const RigidDeriv<3,real>& b) const
+    {
+        return vCenter != b.vCenter || vOrientation != b.vOrientation;
+    }
+
+    /// @}
+
+};
+
+template<typename real, typename real2>
+inline  RigidDeriv<3,real> operator*(RigidDeriv<3, real> r, real2 a)
+{
+    r*=a;
+    return r;
+}
+
+template<typename real, typename real2>
+inline RigidDeriv<3,real> operator/(RigidDeriv<3, real> r,real2 a)
+{
+    r/=a;
+    return r;
+}
+
+template<sofa::Size N,typename T>
+typename RigidDeriv<N,T>::Pos& getLinear(RigidDeriv<N,T>& v)
+{
+    return v.getLinear();
+}
+
+template<sofa::Size N, typename T>
+const typename RigidDeriv<N,T>::Pos& getLinear(const RigidDeriv<N,T>& v)
+{
+    return v.getLinear();
+}
+
+template<sofa::Size N, typename T>
+typename RigidDeriv<N,T>::Rot& getAngular(RigidDeriv<N,T>& v)
+{
+    return v.getAngular();
+}
+
+template<sofa::Size N, typename T>
+const typename RigidDeriv<N,T>::Rot& getAngular(const RigidDeriv<N,T>& v)
+{
+    return v.getAngular();
+}
+
+template<sofa::Size N,typename T>
+typename RigidDeriv<N,T>::Pos& getVCenter(RigidDeriv<N,T>& v)
+{
+    return v.getLinear();
+}
+
+template<sofa::Size N, typename T>
+const typename RigidDeriv<N,T>::Pos& getVCenter(const RigidDeriv<N,T>& v)
+{
+    return v.getLinear();
+}
+
+template<sofa::Size N, typename T>
+typename RigidDeriv<N,T>::Rot& getVOrientation(RigidDeriv<N,T>& v)
+{
+    return v.getAngular();
+}
+
+template<sofa::Size N, typename T>
+const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
+{
+    return v.getAngular();
+}
+
+/// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
+template<typename T, typename R>
+type::Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const type::Vec<3,T>& p)
+{
+    return getLinear(v) + cross( getAngular(v),p );
+}
+
+template<typename real>
+class RigidDeriv<2,real>
+{
+public:
+    typedef real value_type;
+    typedef sofa::Size Size;
+    typedef real Real;
+    typedef type::Vec<2,Real> Pos;
+    typedef Real Rot;
+    typedef type::Vec<2,Real> Vec2;
+    typedef type::Vec<3,Real> VecAll;
+
+private:
+    Vec2 vCenter;
+    Real vOrientation;
+
+public:
+    friend class RigidCoord<2,real>;
+
+    explicit RigidDeriv(type::NoInit)
+        : vCenter(type::NOINIT)
+        , vOrientation(type::NOINIT)
+    {
+
+    }
+
+    RigidDeriv()
+    {
+        clear();
+    }
+
+    template<typename real2>
+    RigidDeriv(const type::Vec<2,real2> &velCenter, const real2 &velOrient)
+        : vCenter(velCenter), vOrientation((Real)velOrient)
+    {}
+
+    template<typename real2>
+    RigidDeriv(const type::Vec<3,real2> &v)
+        : vCenter(type::Vec<2,real2>(v.data())), vOrientation((Real)v[2])
+    {}
+
+    void clear()
+    {
+        vCenter.clear();
+        vOrientation=0;
+    }
+
+    template<typename real2>
+    void operator=(const RigidDeriv<2,real2>& c)
+    {
+        vCenter = c.getVCenter();
+        vOrientation = (Real)c.getVOrientation();
+    }
+
+    template<typename real2>
+    void operator=(const type::Vec<2,real2>& v)
+    {
+        vCenter = v;
+    }
+
+    template<typename real2>
+    void operator=(const type::Vec<3,real2>& v)
+    {
+        vCenter = v;
+        vOrientation = (Real)v[2];
+    }
+
+    void operator+=(const RigidDeriv<2,real>& a)
+    {
+        vCenter += a.vCenter;
+        vOrientation += a.vOrientation;
+    }
+
+    void operator-=(const RigidDeriv<2,real>& a)
+    {
+        vCenter -= a.vCenter;
+        vOrientation -= a.vOrientation;
+    }
+
+    RigidDeriv<2,real> operator+(const RigidDeriv<2,real>& a) const
+    {
+        RigidDeriv<2,real> d;
+        d.vCenter = vCenter + a.vCenter;
+        d.vOrientation = vOrientation + a.vOrientation;
+        return d;
+    }
+
+    RigidDeriv<2,real> operator-(const RigidDeriv<2,real>& a) const
+    {
+        RigidDeriv<2,real> d;
+        d.vCenter = vCenter - a.vCenter;
+        d.vOrientation = vOrientation - a.vOrientation;
+        return d;
+    }
+
+    template<typename real2>
+    void operator*=(real2 a)
+    {
+        vCenter *= a;
+        vOrientation *= (Real)a;
+    }
+
+    template<typename real2>
+    void operator/=(real2 a)
+    {
+        vCenter /= a;
+        vOrientation /= (Real)a;
+    }
+
+
+
+    RigidDeriv<2,real> operator-() const
+    {
+        return RigidDeriv<2,real>(-vCenter, -vOrientation);
+    }
+
+    /// dot product, mostly used to compute residuals as sqrt(x*x)
+    Real operator*(const RigidDeriv<2,real>& a) const
+    {
+        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]
+                +vOrientation*a.vOrientation;
+    }
+
+    /// Euclidean norm
+    Real norm() const
+    {
+        return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
+    }
+
+    Vec2& getVCenter() { return vCenter; }
+    Real& getVOrientation() { return vOrientation; }
+    const Vec2& getVCenter() const { return vCenter; }
+    const Real& getVOrientation() const { return vOrientation; }
+
+    Vec2& getLinear() { return vCenter; }
+    Real& getAngular() { return vOrientation; }
+    const Vec2& getLinear() const { return vCenter; }
+    const Real& getAngular() const { return vOrientation; }
+
+    VecAll getVAll() const
+    {
+        return VecAll(vCenter, vOrientation);
+    }
+
+    /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
+    Vec2 velocityAtRotatedPoint(const Vec2& p) const
+    {
+        return vCenter + Vec2(-p[1], p[0]) * vOrientation;
+    }
+
+    /// write to an output stream
+    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<2,real>& v )
+    {
+        out<<v.vCenter<<" "<<v.vOrientation;
+        return out;
+    }
+    /// read from an input stream
+    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<2,real>& v )
+    {
+        in>>v.vCenter>>v.vOrientation;
+        return in;
+    }
+
+    /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
+    enum { total_size = 3 };
+    /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
+    enum { spatial_dimensions = 2 };
+
+    real* ptr() { return vCenter.ptr(); }
+    const real* ptr() const { return vCenter.ptr(); }
+
+    static Size size() {return 3;}
+
+    /// Access to i-th element.
+    real& operator[](Size i)
+    {
+        if (i<2)
+            return this->vCenter(i);
+        else
+            return this->vOrientation;
+    }
+
+    /// Const access to i-th element.
+    const real& operator[](Size i) const
+    {
+        if (i<2)
+            return this->vCenter(i);
+        else
+            return this->vOrientation;
+    }
+
+
+    /// @name Tests operators
+    /// @{
+
+    bool operator==(const RigidDeriv<2,real>& b) const
+    {
+        return vCenter == b.vCenter && vOrientation == b.vOrientation;
+    }
+
+    bool operator!=(const RigidDeriv<2,real>& b) const
+    {
+        return vCenter != b.vCenter || vOrientation != b.vOrientation;
+    }
+
+    /// @}
+};
+
+template<typename real, typename real2>
+inline RigidDeriv<2,real> operator*(RigidDeriv<2,real> r, real2 a)
+{
+    r *= a;
+    return r;
+}
+
+template<typename real, typename real2>
+inline RigidDeriv<2,real> operator/(RigidDeriv<2,real> r, real2 a)
+{
+    r /= a;
+    return r;
+}
+
+/// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
+template<typename R, typename T>
+type::Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const type::Vec<2,R>& p)
+{
+    return getVCenter(v) + type::Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
+}
+
+} // namespace sofa::defaulttype
