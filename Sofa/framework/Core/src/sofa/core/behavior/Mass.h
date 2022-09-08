@@ -25,9 +25,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
-
-// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
-#include <sofa/core/ObjectFactory.h> // TO REMOVE
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::core::behavior
 {
@@ -134,11 +132,6 @@ protected:
     std::ofstream* m_gnuplotFileEnergy;
 
 public:
-    bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); return true; }
-    bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); return true; }
-
-
-    // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
