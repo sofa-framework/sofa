@@ -406,12 +406,19 @@ public:
     }
 
 
-    bool isSymmetric() const
+    [[nodiscard]] bool isSymmetric() const
     {
-        for (Size i=0; i<L; i++)
-            for (Size j=i+1; j<C; j++)
-                if( rabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
-        return true;
+        if constexpr (L == C)
+        {
+            for (Size i=0; i<L; i++)
+                for (Size j=i+1; j<C; j++)
+                    if( rabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     bool isDiagonal() const noexcept
