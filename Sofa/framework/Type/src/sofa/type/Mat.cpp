@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_TYPE_MAT_CPP
 #include <sofa/type/Mat.h>
 
 namespace sofa::type
