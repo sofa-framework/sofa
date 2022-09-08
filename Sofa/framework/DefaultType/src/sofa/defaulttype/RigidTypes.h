@@ -182,7 +182,7 @@ public:
 
 
     /// Euclidean norm
-    constexpr real norm() const
+    real norm() const
     {
         return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
     }
@@ -404,7 +404,7 @@ public:
         center = p;
     }
 
-    constexpr void operator +=(const Deriv& dg) {
+    void operator +=(const Deriv& dg) {
         // R3 x SO(3) exponential integration
         center += dg.getVCenter();
 
@@ -506,7 +506,7 @@ public:
     }
 
     /// Euclidean norm
-    constexpr real norm() const
+    real norm() const
     {
         return helper::rsqrt(norm2());
     }
@@ -556,7 +556,7 @@ public:
 
     /// Set from the given matrix
     template<class Mat>
-    constexpr void fromMatrix(const Mat& m)
+    void fromMatrix(const Mat& m)
     {
         center[0] = m[0][3];
         center[1] = m[1][3];
@@ -567,7 +567,7 @@ public:
 
     /// Write to the given matrix
     template<class Mat>
-    constexpr void toMatrix( Mat& m) const
+    void toMatrix( Mat& m) const
     {
         m.identity();
         orientation.toMatrix(m);
@@ -598,7 +598,7 @@ public:
 
 
     template<class Mat>
-    constexpr void writeRotationMatrix( Mat& m) const
+    void writeRotationMatrix( Mat& m) const
     {
         orientation.toMatrix(m);
     }
@@ -760,7 +760,7 @@ public:
         return mass;
     }
     
-    constexpr void recalc()
+    void recalc()
     {
         inertiaMassMatrix = inertiaMatrix * mass;
         const bool canInvert1 = invInertiaMatrix.invert(inertiaMatrix);
@@ -935,7 +935,7 @@ public:
         return result;
     }
 
-    static constexpr Deriv coordDifference(const Coord& c1, const Coord& c2)
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         type::Vector3 vCenter = c1.getCenter() - c2.getCenter();
         type::Quat<SReal> quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
@@ -1167,7 +1167,7 @@ public:
     }
 
     /// Euclidean norm
-    constexpr Real norm() const
+    Real norm() const
     {
         return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
     }
@@ -1300,7 +1300,7 @@ public:
         clear(); 
     }
 
-    void clear() 
+    constexpr void clear()
     { 
         center.clear(); 
         orientation = 0; 
@@ -1394,14 +1394,14 @@ public:
     }
 
     /// Squared norm
-    constexpr Real norm2() const
+    Real norm2() const
     {
-        Real angle = fmod( (Real) orientation, (Real) M_PI*2 );
+        Real angle = fmod( (Real) orientation, (Real) M_PI*2 ); // fmod is constexpr in c++23
         return center*center + angle*angle;
     }
 
     /// Euclidean norm
-    constexpr real norm() const
+    real norm() const
     {
         return helper::rsqrt(norm2());
     }
@@ -1411,7 +1411,7 @@ public:
     constexpr const Vec2& getCenter () const { return center; }
     constexpr const Real& getOrientation () const { return orientation; }
 
-    constexpr Vec2 rotate(const Vec2& v) const
+    Vec2 rotate(const Vec2& v) const
     {
         Real s = sin(orientation);
         Real c = cos(orientation);
@@ -1419,7 +1419,7 @@ public:
                 s*v[0]+c*v[1]);
     }
     
-    constexpr Vec2 inverseRotate(const Vec2& v) const
+    Vec2 inverseRotate(const Vec2& v) const
     {
         Real s = sin(-orientation);
         Real c = cos(-orientation);
@@ -1434,7 +1434,7 @@ public:
 
     static constexpr RigidCoord<2,real> identity()
     {
-        RigidCoord<2,real> c;
+        static RigidCoord<2,real> c;
         return c;
     }
 
@@ -1455,7 +1455,7 @@ public:
     }
 
     template<class Mat>
-    constexpr void writeRotationMatrix( Mat& m) const
+    void writeRotationMatrix( Mat& m) const
     {
         m[0][0] = (typename Mat::Real)cos(orientation); m[0][1] = (typename Mat::Real)-sin(orientation);
         m[1][0] = (typename Mat::Real)sin(orientation); m[1][1] = (typename Mat::Real) cos(orientation);
@@ -1463,7 +1463,7 @@ public:
 
     /// Set from the given matrix
     template<class Mat>
-    constexpr void fromMatrix(const Mat& m)
+    void fromMatrix(const Mat& m)
     {
         center[0] = m[0][2];
         center[1] = m[1][2];
@@ -1472,7 +1472,7 @@ public:
 
     /// Write to the given matrix
     template<class Mat>
-    constexpr void toMatrix( Mat& m) const
+    void toMatrix( Mat& m) const
     {
         m.identity();
         writeRotationMatrix( m );
@@ -1626,7 +1626,7 @@ public:
     Real invInertiaMatrix;	  // inverse of inertiaMatrix
     Real invInertiaMassMatrix; // inverse of inertiaMassMatrix
     
-    constexpr RigidMass(Real m=1)
+    RigidMass(Real m=1)
     {
         mass = m;
         volume = 1;
@@ -1634,19 +1634,19 @@ public:
         recalc();
     }
     
-    constexpr void operator=(Real m)
+    void operator=(Real m)
     {
         mass = m;
         recalc();
     }
     
-    constexpr void operator+=(Real m)
+    void operator+=(Real m)
     {
         mass += m;
         recalc();
     }
     
-    constexpr void operator-=(Real m)
+    void operator-=(Real m)
     {
         mass -= m;
         recalc();
@@ -1659,7 +1659,7 @@ public:
     }
     
     /// Mass for a circle
-    constexpr RigidMass(Real m, Real radius)
+    RigidMass(Real m, Real radius)
     {
         mass = m;
         volume = radius*radius*R_PI;
@@ -1668,7 +1668,7 @@ public:
     }
 
     /// Mass for a rectangle
-    constexpr RigidMass(Real m, Real xwidth, Real ywidth)
+    RigidMass(Real m, Real xwidth, Real ywidth)
     {
         mass = m;
         volume = xwidth*xwidth + ywidth*ywidth;
@@ -1676,7 +1676,7 @@ public:
         recalc();
     }
 
-    constexpr void recalc()
+    void recalc()
     {
         inertiaMassMatrix = inertiaMatrix * mass;
         if (inertiaMatrix == 0.)
@@ -1929,7 +1929,7 @@ static constexpr void rotate( V1& v, Rot rotation )
 
 /// Apply a rigid transformation (translation, Euler angles) to the given points and their associated velocities.
 template<class V1, class V2>
-static constexpr void rigidTransform ( V1& points, V2& velocities, SReal tx, SReal ty, SReal tz, SReal rx, SReal ry, SReal rz )
+static void rigidTransform ( V1& points, V2& velocities, SReal tx, SReal ty, SReal tz, SReal rx, SReal ry, SReal rz )
 {
     typedef type::Vec3 Vec3;
     typedef type::Quat<SReal> Quat;

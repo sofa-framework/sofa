@@ -158,7 +158,7 @@ public:
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static constexpr Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
+    static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
     {
         Deriv result;
         set( result, Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)) );
