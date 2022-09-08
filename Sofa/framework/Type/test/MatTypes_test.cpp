@@ -51,8 +51,8 @@ TEST(MatTypesTest, lineAccess)
 
 TEST(MatTypesTest, mat3x3product)
 {
-    Matrix3 a{ Matrix3::Line{1., 2., 3.}, Matrix3::Line{4., 5., 6.}, Matrix3::Line{7., 8., 9.} };
-    const auto a2 = a * a;
+    static constexpr Matrix3 a{ Matrix3::Line{1., 2., 3.}, Matrix3::Line{4., 5., 6.}, Matrix3::Line{7., 8., 9.} };
+    static constexpr auto a2 = a * a;
 
     EXPECT_FLOATINGPOINT_EQ(a2[0][0], 30.)
     EXPECT_FLOATINGPOINT_EQ(a2[0][1], 36.)
@@ -65,6 +65,59 @@ TEST(MatTypesTest, mat3x3product)
     EXPECT_FLOATINGPOINT_EQ(a2[2][0], 102.)
     EXPECT_FLOATINGPOINT_EQ(a2[2][1], 126.)
     EXPECT_FLOATINGPOINT_EQ(a2[2][2], 150.)
+}
+
+TEST(MatTypesTest, multTranspose)
+{
+    sofa::type::Mat<3,4, int> a
+    {
+        sofa::type::Mat<3,4, int>::Line{1, 2, 3, 4},
+        sofa::type::Mat<3,4, int>::Line{5, 6, 7, 8},
+        sofa::type::Mat<3,4, int>::Line{9, 10, 11, 12}
+    };
+
+    sofa::type::Mat<3,2, int> b
+    {
+        sofa::type::Mat<3,2, int>::Line{1, 2},
+        sofa::type::Mat<3,2, int>::Line{3, 4},
+        sofa::type::Mat<3,2, int>::Line{5, 6}
+    };
+
+    sofa::type::Mat<4, 2, int> aTb = a.multTranspose(b);
+
+    EXPECT_EQ(aTb[0][0], 61);
+    EXPECT_EQ(aTb[0][1], 76);
+
+    EXPECT_EQ(aTb[1][0], 70);
+    EXPECT_EQ(aTb[1][1], 88);
+
+    EXPECT_EQ(aTb[2][0], 79);
+    EXPECT_EQ(aTb[2][1], 100);
+
+    EXPECT_EQ(aTb[3][0], 88);
+    EXPECT_EQ(aTb[3][1], 112);
+
+    sofa::type::Mat<3, 3, int> c
+    {
+        sofa::type::Mat<3, 3, int>::Line{1., 2., 3.},
+        sofa::type::Mat<3, 3, int>::Line{4., 5., 6.},
+        sofa::type::Mat<3, 3, int>::Line{7., 8., 9.}
+    };
+    sofa::type::Mat<3, 3, int> cTc = c.multTranspose(c);
+
+    EXPECT_EQ(cTc[0][0], 66);
+    EXPECT_EQ(cTc[0][1], 78);
+    EXPECT_EQ(cTc[0][2], 90);
+
+    EXPECT_EQ(cTc[1][0], 78);
+    EXPECT_EQ(cTc[1][1], 93);
+    EXPECT_EQ(cTc[1][2], 108);
+
+    EXPECT_EQ(cTc[2][0], 90);
+    EXPECT_EQ(cTc[2][1], 108);
+    EXPECT_EQ(cTc[2][2], 126);
+
+
 }
 
 void test_transformInverse(Matrix4 const& M)

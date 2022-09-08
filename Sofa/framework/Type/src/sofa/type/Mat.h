@@ -51,6 +51,11 @@ namespace // anonymous
 namespace sofa::type
 {
 
+template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
+constexpr Mat<C,P,real> multTranspose(const Mat<L,C,real>& m1, const Mat<L,P,real>& m2) noexcept;
+
+
+
 template <sofa::Size L, sofa::Size C, class real>
 class Mat : public fixed_array<VecNoInit<C,real>, L>
 {
@@ -426,21 +431,6 @@ public:
 
     // LINEAR ALGEBRA
 
-    /// Matrix multiplication operator.
-    template <Size P>
-    constexpr Mat<L,P,real> operator*(const Mat<C,P,real>& m) const noexcept
-    {
-        Mat<L,P,real> r(NOINIT);
-        for(Size i=0; i<L; i++)
-            for(Size j=0; j<P; j++)
-            {
-                r[i][j]=(*this)[i][0] * m[0][j];
-                for(Size k=1; k<C; k++)
-                    r[i][j] += (*this)[i][k] * m[k][j];
-            }
-        return r;
-    }
-
     /// Matrix addition operator.
     constexpr Mat<L,C,real> operator+(const Mat<L,C,real>& m) const noexcept
     {
@@ -507,18 +497,12 @@ public:
 
 
     /// Transposed Matrix multiplication operator.
+    /// Result = (*this)^T * m
+    /// Sizes: [L,C]^T * [L,P] = [C,L] * [L,P] = [C,P]
     template <Size P>
     constexpr Mat<C,P,real> multTranspose(const Mat<L,P,real>& m) const noexcept
     {
-        Mat<C,P,real> r(NOINIT);
-        for(Size i=0; i<C; i++)
-            for(Size j=0; j<P; j++)
-            {
-                r[i][j]=(*this)[0][i] * m[0][j];
-                for(Size k=1; k<L; k++)
-                    r[i][j] += (*this)[k][i] * m[k][j];
-            }
-        return r;
+        return ::sofa::type::multTranspose(*this, m);
     }
 
     /// Multiplication with the transposed of the given matrix operator \returns this * mt
@@ -1144,12 +1128,120 @@ constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real>& a, const Vec<L,Real>& b
     return m;
 }
 
-template<>
-template<> SOFA_TYPE_API
-constexpr Mat<3,3,float> Mat<3,3,float>::operator*(const Mat<3,3,float>& m) const noexcept;
+template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
+constexpr Mat<L,P,real> operator*(const Mat<L,C,real>& m1, const Mat<C,P,real>& m2) noexcept
+{
+    Mat<L,P,real> r(NOINIT);
+    for (Size i = 0; i<L; i++)
+    {
+        for (Size j = 0; j<P; j++)
+        {
+            r[i][j] = m1[i][0] * m2[0][j];
+            for (Size k = 1; k<C; k++)
+            {
+                r[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+    }
+    return r;
+}
 
-template<>
-template<> SOFA_TYPE_API
-constexpr Mat<3,3,double> Mat<3,3,double>::operator*(const Mat<3,3,double>& m) const noexcept;
+template<class real>
+constexpr Mat<3,3,real> operator*(const Mat<3,3,real>& m1, const Mat<3,3,real>& m2) noexcept
+{
+    Mat<3,3,real> r(NOINIT);
+
+    const auto A00 = m1[0][0];
+    const auto A01 = m1[0][1];
+    const auto A02 = m1[0][2];
+    const auto A10 = m1[1][0];
+    const auto A11 = m1[1][1];
+    const auto A12 = m1[1][2];
+    const auto A20 = m1[2][0];
+    const auto A21 = m1[2][1];
+    const auto A22 = m1[2][2];
+
+    const auto B00 = m2[0][0];
+    const auto B01 = m2[0][1];
+    const auto B02 = m2[0][2];
+    const auto B10 = m2[1][0];
+    const auto B11 = m2[1][1];
+    const auto B12 = m2[1][2];
+    const auto B20 = m2[2][0];
+    const auto B21 = m2[2][1];
+    const auto B22 = m2[2][2];
+
+    r[0][0] = A00 * B00 + A01 * B10 + A02 * B20;
+    r[0][1] = A00 * B01 + A01 * B11 + A02 * B21;
+    r[0][2] = A00 * B02 + A01 * B12 + A02 * B22;
+
+    r[1][0] = A10 * B00 + A11 * B10 + A12 * B20;
+    r[1][1] = A10 * B01 + A11 * B11 + A12 * B21;
+    r[1][2] = A10 * B02 + A11 * B12 + A12 * B22;
+
+    r[2][0] = A20 * B00 + A21 * B10 + A22 * B20;
+    r[2][1] = A20 * B01 + A21 * B11 + A22 * B21;
+    r[2][2] = A20 * B02 + A21 * B12 + A22 * B22;
+
+    return r;
+}
+
+template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
+constexpr Mat<C,P,real> multTranspose(const Mat<L,C,real>& m1, const Mat<L,P,real>& m2) noexcept
+{
+    Mat<C, P, real> r(NOINIT);
+    for (Size i = 0; i<C; i++)
+    {
+        for (Size j = 0; j<P; j++)
+        {
+            r[i][j] = m1[0][i] * m2[0][j];
+            for (Size k = 1; k<L; k++)
+            {
+                r[i][j] += m1[k][i] * m2[k][j];
+            }
+        }
+    }
+    return r;
+}
+
+template<class real>
+constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,real>& m2) noexcept
+{
+    Mat<3,3,real> r(NOINIT);
+
+    const auto A00 = m1[0][0];
+    const auto A01 = m1[0][1];
+    const auto A02 = m1[0][2];
+    const auto A10 = m1[1][0];
+    const auto A11 = m1[1][1];
+    const auto A12 = m1[1][2];
+    const auto A20 = m1[2][0];
+    const auto A21 = m1[2][1];
+    const auto A22 = m1[2][2];
+
+    const auto B00 = m2[0][0];
+    const auto B01 = m2[0][1];
+    const auto B02 = m2[0][2];
+    const auto B10 = m2[1][0];
+    const auto B11 = m2[1][1];
+    const auto B12 = m2[1][2];
+    const auto B20 = m2[2][0];
+    const auto B21 = m2[2][1];
+    const auto B22 = m2[2][2];
+
+    r[0][0] = A00 * B00 + A10 * B10 + A20 * B20;
+    r[0][1] = A00 * B01 + A10 * B11 + A20 * B21;
+    r[0][2] = A00 * B02 + A10 * B12 + A20 * B22;
+
+    r[1][0] = A01 * B00 + A11 * B10 + A21 * B20;
+    r[1][1] = A01 * B01 + A11 * B11 + A21 * B21;
+    r[1][2] = A01 * B02 + A11 * B12 + A21 * B22;
+
+    r[2][0] = A02 * B00 + A12 * B10 + A22 * B20;
+    r[2][1] = A02 * B01 + A12 * B11 + A22 * B21;
+    r[2][2] = A02 * B02 + A12 * B12 + A22 * B22;
+
+    return r;
+}
 
 } // namespace sofa::type
