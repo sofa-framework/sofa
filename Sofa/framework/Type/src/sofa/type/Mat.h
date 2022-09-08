@@ -28,7 +28,6 @@
 #include <sofa/type/Vec.h>
 
 #include <iostream>
-#include <type_traits>
 
 namespace // anonymous
 {
