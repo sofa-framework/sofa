@@ -28,6 +28,7 @@
 #include <sofa/type/Vec.h>
 
 #include <iostream>
+#include <type_traits>
 
 namespace // anonymous
 {
@@ -35,7 +36,7 @@ namespace // anonymous
     constexpr real rabs(const real r)
     {
         if constexpr (std::is_signed<real>())
-            return std::abs(r);
+            return r < 0 ? -r : r;
         else
             return r;
     }
