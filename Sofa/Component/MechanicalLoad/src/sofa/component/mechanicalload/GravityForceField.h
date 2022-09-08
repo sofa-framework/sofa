@@ -21,8 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
-//#include <sofa/component/mechanicalload/config.h> // TO UNCOMMENT
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/type/Vec.h>
@@ -62,10 +60,6 @@ public:
 
     /// Gravity force has null variation
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override;
-
-    /// Constant force has null variation
-    using Inherit::addKToMatrix;
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal kFact) ;
 
     SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 

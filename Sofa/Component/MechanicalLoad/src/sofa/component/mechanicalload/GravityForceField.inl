@@ -122,13 +122,5 @@ void GravityForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix 
 }
 
 
-template<class DataTypes>
-void GravityForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal kFact)
-{
-    // Derivative of a constant gravity field is null, no need to compute addKToMatrix nor addDForce
-    SOFA_UNUSED(matrix);
-    SOFA_UNUSED(kFact);
-}
-
 
 } // namespace sofa::component::mechanicalload

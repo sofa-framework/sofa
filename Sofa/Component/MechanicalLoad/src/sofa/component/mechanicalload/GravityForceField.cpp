@@ -21,10 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_GRAVITYFORCEFIELD_CPP
 
-// SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
-//#include <sofa/component/mechanicalload/GravityForceField.inl> // TO UNCOMMENT
-#include "GravityForceField.inl" // TO REMOVE
-
+#include "GravityForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
