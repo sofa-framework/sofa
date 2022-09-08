@@ -21,6 +21,34 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/accessor/ReadAccessor.h>
 #include <sofa/helper/accessor/WriteAccessor.h>
-#include <sofa/helper/accessor/WriteOnlyAccessor.h>
+
+namespace sofa::helper
+{
+
+/** Identical to WriteAccessor for default implementation, but different for some template specializations such as  core::objectmodel::Data<T>
+*/
+template<class T, class Enable = void>
+class WriteOnlyAccessor : public WriteAccessor<T, Enable>
+{
+protected:
+    typedef WriteAccessor<T> Inherit;
+    typedef typename Inherit::container_type container_type;
+
+public:
+    explicit WriteOnlyAccessor(container_type& container) : WriteAccessor<T, Enable>(container) {}
+};
+
+template<class VectorLikeType>
+class WriteOnlyAccessor<VectorLikeType,
+                        std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value> >
+    : public WriteAccessorVector< VectorLikeType >
+{
+public:
+    typedef WriteAccessorVector< VectorLikeType > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteOnlyAccessor(container_type& c) : Inherit(c) {}
+};
+
+
+}

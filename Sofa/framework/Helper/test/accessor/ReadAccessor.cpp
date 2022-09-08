@@ -19,8 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <gtest/gtest.h>
 
-#include <sofa/helper/accessor/ReadAccessor.h>
-#include <sofa/helper/accessor/WriteAccessor.h>
-#include <sofa/helper/accessor/WriteOnlyAccessor.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/type/vector.h>
+
+namespace sofa
+{
+
+TEST(ReadAccessor, PrimitiveTypes)
+{
+    const float float_value { 12.f };
+    const sofa::helper::ReadAccessor float_accessor(float_value);
+    EXPECT_FLOAT_EQ(float_accessor.ref(), 12.f);
+
+    const std::size_t size_t_value { 8 };
+    const sofa::helper::ReadAccessor size_t_accessor(size_t_value);
+    EXPECT_EQ(size_t_accessor.ref(), 8);
+}
+
+TEST(ReadAccessor, VectorTypes)
+{
+    const sofa::type::vector<float> vector { 0.f, 1.f, 2.f, 3.f, 4.f};
+    const sofa::helper::ReadAccessor accessor(vector);
+
+    EXPECT_EQ(accessor.size(), vector.size());
+    EXPECT_EQ(accessor.empty(), vector.empty());
+    EXPECT_EQ(accessor.begin(), vector.begin());
+    EXPECT_EQ(accessor.end(), vector.end());
+}
+
+
+}
