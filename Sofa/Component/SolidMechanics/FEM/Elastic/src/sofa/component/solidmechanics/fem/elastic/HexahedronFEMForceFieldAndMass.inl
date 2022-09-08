@@ -288,7 +288,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 template<class DataTypes>
 SReal HexahedronFEMForceFieldAndMass<DataTypes>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x  ) const
 {
-    HexahedronFEMForceFieldT::getPotentialEnergy(mparams, x);
+    return HexahedronFEMForceFieldT::getPotentialEnergy(mparams, x);
 }
 
 template<class DataTypes>
