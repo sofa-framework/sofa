@@ -33,15 +33,7 @@
 namespace sofa::type
 {
 
-#define RENORMCOUNT 50
-constexpr double quaternion_equality_thresold=1e-6;
-
-
-template<class Real>
-Quat<Real>::Quat(Real x, Real y, Real z, Real w)
-{
-    set(x,y,z,w);
-}
+static constexpr SReal quaternionEqualityThreshold=1e-6;
 
 template<class Real>
 Quat<Real>::Quat( const Vec3& axis, Real angle )
@@ -55,23 +47,13 @@ Quat<Real>::Quat(const Vec3& vFrom, const Vec3& vTo)
     setFromUnitVectors(vFrom, vTo);
 }
 
-// Destructor
-template<class Real>
-Quat<Real>::~Quat()
-{
-}
-
 /// Given two rotations, e1 and e2, expressed as quaternion rotations,
 /// figure out the equivalent single rotation and stuff it into dest.
-/// This routine also normalizes the result every RENORMCOUNT times it is
-/// called, to keep error from creeping in.
 ///   NOTE: This routine is written so that q1 or q2 may be the same
 ///  	   as dest (or each other).
 template<class Real>
 auto Quat<Real>::operator+(const Quat &q1) const -> Quat
 {
-    //    static int	count	= 0;
-
     Real		t1[4], t2[4], t3[4];
     Real		tf[4];
     Quat    	ret(QNOINIT);
@@ -103,96 +85,6 @@ auto Quat<Real>::operator+(const Quat &q1) const -> Quat
 
     ret.normalize();
 
-    return ret;
-}
-
-template<class Real>
-auto Quat<Real>::operator*(const Quat& q1) const -> Quat
-{
-    Quat	ret(QNOINIT);
-
-    ret._q[3] = _q[3] * q1._q[3] -
-            (_q[0] * q1._q[0] +
-            _q[1] * q1._q[1] +
-            _q[2] * q1._q[2]);
-    ret._q[0] = _q[3] * q1._q[0] +
-            _q[0] * q1._q[3] +
-            _q[1] * q1._q[2] -
-            _q[2] * q1._q[1];
-    ret._q[1] = _q[3] * q1._q[1] +
-            _q[1] * q1._q[3] +
-            _q[2] * q1._q[0] -
-            _q[0] * q1._q[2];
-    ret._q[2] = _q[3] * q1._q[2] +
-            _q[2] * q1._q[3] +
-            _q[0] * q1._q[1] -
-            _q[1] * q1._q[0];
-
-    return ret;
-}
-
-template<class Real>
-auto Quat<Real>::operator*(const Real& r) const -> Quat
-{
-    Quat  ret(QNOINIT);
-    ret[0] = _q[0] * r;
-    ret[1] = _q[1] * r;
-    ret[2] = _q[2] * r;
-    ret[3] = _q[3] * r;
-    return ret;
-}
-
-template<class Real>
-auto Quat<Real>::operator/(const Real& r) const -> Quat
-{
-    Quat  ret(QNOINIT);
-    ret[0] = _q[0] / r;
-    ret[1] = _q[1] / r;
-    ret[2] = _q[2] / r;
-    ret[3] = _q[3] / r;
-    return ret;
-}
-
-template<class Real>
-void Quat<Real>::operator*=(const Real& r)
-{
-    _q[0] *= r;
-    _q[1] *= r;
-    _q[2] *= r;
-    _q[3] *= r;
-}
-
-
-template<class Real>
-void Quat<Real>::operator/=(const Real& r)
-{
-    _q[0] /= r;
-    _q[1] /= r;
-    _q[2] /= r;
-    _q[3] /= r;
-}
-
-
-template<class Real>
-auto Quat<Real>::quatVectMult(const Vec3& vect) const -> Quat
-{
-    Quat ret(QNOINIT);
-    ret._q[3] = -(_q[0] * vect[0] + _q[1] * vect[1] + _q[2] * vect[2]);
-    ret._q[0] = _q[3] * vect[0] + _q[1] * vect[2] - _q[2] * vect[1];
-    ret._q[1] = _q[3] * vect[1] + _q[2] * vect[0] - _q[0] * vect[2];
-    ret._q[2] = _q[3] * vect[2] + _q[0] * vect[1] - _q[1] * vect[0];
-
-    return ret;
-}
-
-template<class Real>
-auto Quat<Real>::vectQuatMult(const Vec3& vect) const -> Quat
-{
-    Quat ret(QNOINIT);
-    ret[3] = -(vect[0] * _q[0] + vect[1] * _q[1] + vect[2] * _q[2]);
-    ret[0] =   vect[0] * _q[3] + vect[1] * _q[2] - vect[2] * _q[1];
-    ret[1] =   vect[1] * _q[3] + vect[2] * _q[0] - vect[0] * _q[2];
-    ret[2] =   vect[2] * _q[3] + vect[0] * _q[1] - vect[1] * _q[0];
     return ret;
 }
 
@@ -327,81 +219,6 @@ void Quat<Real>::fromMatrix(const Mat3x3 &m)
             _q[3] = (m.z().y() - m.y().z()) * s; // w OK
         }
     }
-}
-
-/// Build a rotation matrix, given a quaternion rotation.
-template<class Real>
-void Quat<Real>::buildRotationMatrix(Real m[4][4]) const
-{
-    m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
-    m[0][3] = 0;
-
-    m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
-    m[1][3] = 0;
-
-    m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[2][1] = (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2][2] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
-    m[2][3] = 0;
-
-    m[3][0] = 0;
-    m[3][1] = 0;
-    m[3][2] = 0;
-    m[3][3] = 1;
-}
-
-/// Write an OpenGL rotation matrix
-template<class Real>
-void Quat<Real>::writeOpenGlMatrix(double *m) const
-{
-    m[0*4+0] = (double)(1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[1*4+0] = (double)(2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[2*4+0] = (double)(2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
-    m[3*4+0] = (double)0.0;
-
-    m[0*4+1] = (double)(2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1*4+1] = (double)(1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[2*4+1] = (double)(2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
-    m[3*4+1] = (double)0.0;
-
-    m[0*4+2] = (double)(2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[1*4+2] = (double)(2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2*4+2] = (double)(1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
-    m[3*4+2] = (double)0.0;
-
-    m[0*4+3] = (double)0.0;
-    m[1*4+3] = (double)0.0;
-    m[2*4+3] = (double)0.0;
-    m[3*4+3] = (double)1.0;
-}
-
-/// Write an OpenGL rotation matrix
-template<class Real>
-void Quat<Real>::writeOpenGlMatrix(float *m) const
-{
-    m[0*4+0] = (float) (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[1*4+0] = (float) (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[2*4+0] = (float) (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
-    m[3*4+0] = 0.0f;
-
-    m[0*4+1] = (float) (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1*4+1] = (float) (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[2*4+1] = (float) (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
-    m[3*4+1] = 0.0f;
-
-    m[0*4+2] = (float) (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[1*4+2] = (float) (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2*4+2] = (float) (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
-    m[3*4+2] = 0.0f;
-
-    m[0*4+3] = 0.0f;
-    m[1*4+3] = 0.0f;
-    m[2*4+3] = 0.0f;
-    m[3*4+3] = 1.0f;
 }
 
 /// Given an axis and angle, compute quaternion.
@@ -700,28 +517,6 @@ void Quat<Real>::operator+=(const Quat& q2)
 }
 
 template<class Real>
-void Quat<Real>::operator*=(const Quat& q1)
-{
-    Quat q2 = *this;
-    _q[3] = q2._q[3] * q1._q[3] -
-            (q2._q[0] * q1._q[0] +
-            q2._q[1] * q1._q[1] +
-            q2._q[2] * q1._q[2]);
-    _q[0] = q2._q[3] * q1._q[0] +
-            q2._q[0] * q1._q[3] +
-            q2._q[1] * q1._q[2] -
-            q2._q[2] * q1._q[1];
-    _q[1] = q2._q[3] * q1._q[1] +
-            q2._q[1] * q1._q[3] +
-            q2._q[2] * q1._q[0] -
-            q2._q[0] * q1._q[2];
-    _q[2] = q2._q[3] * q1._q[2] +
-            q2._q[2] * q1._q[3] +
-            q2._q[0] * q1._q[1] -
-            q2._q[1] * q1._q[0];
-}
-
-template<class Real>
 Quat<Real> Quat<Real>::quatDiff(Quat a, const Quat& b)
 {
     // If the axes are not oriented in the same direction, flip the axis and angle of a to get the same convention than b
@@ -763,46 +558,6 @@ template<class Real>
 auto Quat<Real>::fromEuler( Real alpha, Real beta, Real gamma, EulerOrder order) -> Quat
 {
     return createQuaterFromEuler( {alpha, beta, gamma }, order );
-}
-
-template<class Real>
-void Quat<Real>::toMatrix(Mat<3,3,Real>& m) const
-{
-    m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
-
-    m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
-
-    m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[2][1] = (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2][2] = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
-}
-
-template<class Real>
-void Quat<Real>::toHomogeneousMatrix(Mat<4,4,Real>& m) const
-{
-    m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
-    m[0][3] = 0.0;
-
-    m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
-    m[1][3] = 0.0;
-
-    m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[2][1] = (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2][2] = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
-    m[2][3] = 0.0;
-
-    m[3][0] = 0.0f;
-    m[3][1] = 0.0f;
-    m[3][2] = 0.0f;
-    m[3][3] = 1.0f;
 }
 
 template<class Real>
@@ -880,7 +635,7 @@ template<class Real>
 bool Quat<Real>::operator==(const Quat& q) const
 {
     for (int i=0; i<4; i++)
-        if ( std::abs( _q[i] - q._q[i] ) > quaternion_equality_thresold ) return false;
+        if ( std::abs( _q[i] - q._q[i] ) > quaternionEqualityThreshold) return false;
     return true;
 }
 
@@ -888,27 +643,24 @@ template<class Real>
 bool Quat<Real>::operator!=(const Quat& q) const
 {
     for (int i=0; i<4; i++)
-        if ( std::abs( _q[i] - q._q[i] ) > quaternion_equality_thresold ) return true;
+        if ( std::abs( _q[i] - q._q[i] ) > quaternionEqualityThreshold) return true;
     return false;
 }
 
-
 /// write to an output stream
 template<class Real>
-std::ostream& operator << ( std::ostream& out, const Quat<Real>& v )
+std::ostream& operator << (std::ostream& out, const Quat<Real>& v)
 {
-    out<<v[0]<<" "<<v[1]<<" "<<v[2]<<" "<<v[3];
+    out << v[0] << " " << v[1] << " " << v[2] << " " << v[3];
     return out;
 }
 
 /// read from an input stream
 template<class Real>
-std::istream& operator >> ( std::istream& in, Quat<Real>& v )
+std::istream& operator >> (std::istream& in, Quat<Real>& v)
 {
-    in>>v[0]>>v[1]>>v[2]>>v[3];
+    in >> v[0] >> v[1] >> v[2] >> v[3];
     return in;
 }
-
-
 
 } // namespace sofa::type

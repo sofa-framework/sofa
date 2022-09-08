@@ -24,8 +24,39 @@
 #include <sofa/type/config.h>
 #include <sofa/type/fwd.h>
 
+#include <sofa/type/fixed_array.h>
+
 #include <iosfwd>
 #include <cassert>
+
+namespace // anonymous
+{
+
+template<typename QuatReal, typename OtherReal>
+constexpr void getOpenGlMatrix(const QuatReal& q, OtherReal* m)
+{
+    m[0 * 4 + 0] = static_cast<OtherReal>(1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]));
+    m[1 * 4 + 0] = static_cast<OtherReal>(2.0 * (q[0] * q[1] - q[2] * q[3]));
+    m[2 * 4 + 0] = static_cast<OtherReal>(2.0 * (q[2] * q[0] + q[1] * q[3]));
+    m[3 * 4 + 0] = static_cast<OtherReal>(0.0);
+
+    m[0 * 4 + 1] = static_cast<OtherReal>(2.0 * (q[0] * q[1] + q[2] * q[3]));
+    m[1 * 4 + 1] = static_cast<OtherReal>(1.0 - 2.0 * (q[2] * q[2] + q[0] * q[0]));
+    m[2 * 4 + 1] = static_cast<OtherReal>(2.0 * (q[1] * q[2] - q[0] * q[3]));
+    m[3 * 4 + 1] = static_cast<OtherReal>(0.0);
+
+    m[0 * 4 + 2] = static_cast<OtherReal>(2.0 * (q[2] * q[0] - q[1] * q[3]));
+    m[1 * 4 + 2] = static_cast<OtherReal>(2.0 * (q[1] * q[2] + q[0] * q[3]));
+    m[2 * 4 + 2] = static_cast<OtherReal>(1.0 - 2.0 * (q[1] * q[1] + q[0] * q[0]));
+    m[3 * 4 + 2] = static_cast<OtherReal>(0.0);
+
+    m[0 * 4 + 3] = static_cast<OtherReal>(0.0);
+    m[1 * 4 + 3] = static_cast<OtherReal>(0.0);
+    m[2 * 4 + 3] = static_cast<OtherReal>(0.0);
+    m[3 * 4 + 3] = static_cast<OtherReal>(1.0);
+}
+
+}
 
 namespace sofa::type
 {
@@ -36,7 +67,7 @@ constexpr qNoInit QNOINIT;
 template<class Real>
 class Quat
 {
-    Real _q[4];
+    sofa::type::fixed_array<Real, 4> _q{};
 
     typedef type::Vec<3, Real> Vec3;
     typedef type::Mat<3,3, Real> Mat3x3;
@@ -56,14 +87,25 @@ public:
     {
     }
 
-    ~Quat();
-    Quat(Real x, Real y, Real z, Real w);
+    ~Quat() = default;
+    constexpr Quat(Real x, Real y, Real z, Real w)
+    {
+        set(x, y, z, w);
+    }
 
     template<class Real2>
-    Quat(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
+    constexpr Quat(const Real2 q[])
+    { 
+        for (int i=0; i<4; i++) 
+            _q[i] = Real(q[i]); 
+    }
 
     template<class Real2>
-    Quat(const Quat<Real2>& q) { for (int i=0; i<4; i++) _q[i] = Real(q[i]); }
+    constexpr Quat(const Quat<Real2>& q) 
+    { 
+        for (int i=0; i<4; i++) 
+            _q[i] = Real(q[i]); 
+    }
 
     Quat( const Vec3& axis, Real angle );
 
@@ -88,13 +130,13 @@ public:
     /// Cast into a standard C array of elements.
     const Real* ptr() const
     {
-        return this->_q;
+        return this->_q.data();
     }
 
     /// Cast into a standard C array of elements.
     Real* ptr()
     {
-        return this->_q;
+        return &(this->_q[0]);
     }
 
     /// Returns true if norm of Quaternion is one, false otherwise.
@@ -115,14 +157,48 @@ public:
     void fromMatrix(const Mat3x3 &m);
 
     /// Convert the quaternion into an orientation matrix
-    void toMatrix(Mat3x3 &m) const;
+    void toMatrix(Mat3x3 &m) const
+    {
+        m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+        m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+        m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
+
+        m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+        m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+        m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
+
+        m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
+        m[2][1] = (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
+        m[2][2] = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    }
 
     SOFA_ATTRIBUTE_DEPRECATED__QUAT_API("Function toMatrix(mat4x4) will be removed. Use toHomogeneousMatrix() instead")
     void toMatrix(Mat4x4 &m) const { toHomogeneousMatrix(m); }
 
     /// Convert the quaternion into an orientation homogeneous matrix
     /// The homogeneous part is set to 0,0,0,1
-    void toHomogeneousMatrix(Mat4x4 &m) const;
+    constexpr void toHomogeneousMatrix(Mat4x4 &m) const
+    {
+        m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+        m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+        m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
+        m[0][3] = 0.0;
+
+        m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+        m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+        m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
+        m[1][3] = 0.0;
+
+        m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
+        m[2][1] = (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
+        m[2][2] = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
+        m[2][3] = 0.0;
+
+        m[3][0] = 0.0f;
+        m[3][1] = 0.0f;
+        m[3][2] = 0.0f;
+        m[3][3] = 1.0f;
+    }
 
     /// Apply the rotation to a given vector
     constexpr auto rotate( const Vec3& v ) const -> Vec3
@@ -144,24 +220,95 @@ public:
     /// Adding quaternions to get a compound rotation is analagous to adding
     /// translations to get a compound translation.
     auto operator+(const Quat &q1) const -> Quat;
-    auto operator*(const Quat &q1) const -> Quat;
+    constexpr auto operator*(const Quat& q1) const -> Quat
+    {
+        Quat	ret(QNOINIT);
 
-    auto operator*(const Real &r) const -> Quat;
-    auto operator/(const Real &r) const -> Quat;
-    void operator*=(const Real &r);
-    void operator/=(const Real &r);
+        ret._q[3] = _q[3] * q1._q[3] -
+            (_q[0] * q1._q[0] +
+                _q[1] * q1._q[1] +
+                _q[2] * q1._q[2]);
+        ret._q[0] = _q[3] * q1._q[0] +
+            _q[0] * q1._q[3] +
+            _q[1] * q1._q[2] -
+            _q[2] * q1._q[1];
+        ret._q[1] = _q[3] * q1._q[1] +
+            _q[1] * q1._q[3] +
+            _q[2] * q1._q[0] -
+            _q[0] * q1._q[2];
+        ret._q[2] = _q[3] * q1._q[2] +
+            _q[2] * q1._q[3] +
+            _q[0] * q1._q[1] -
+            _q[1] * q1._q[0];
+
+        return ret;
+    }
+
+    constexpr auto operator*(const Real &r) const -> Quat
+    {
+        Quat  ret(QNOINIT);
+        ret[0] = _q[0] * r;
+        ret[1] = _q[1] * r;
+        ret[2] = _q[2] * r;
+        ret[3] = _q[3] * r;
+        return ret;
+    }
+
+    auto operator/(const Real &r) const -> Quat
+    {
+        Quat  ret(QNOINIT);
+        ret[0] = _q[0] / r;
+        ret[1] = _q[1] / r;
+        ret[2] = _q[2] / r;
+        ret[3] = _q[3] / r;
+        return ret;
+    }
+
+    void operator*=(const Real &r)
+    {
+        _q[0] *= r;
+        _q[1] *= r;
+        _q[2] *= r;
+        _q[3] *= r;
+    }
+
+    void operator/=(const Real &r)
+    {
+        _q[0] /= r;
+        _q[1] /= r;
+        _q[2] /= r;
+        _q[3] /= r;
+    }
 
     /// Given two Quats, multiply them together to get a third quaternion.
-    auto quatVectMult(const Vec3& vect) const -> Quat;
-    auto vectQuatMult(const Vec3& vect) const -> Quat;
+    constexpr auto quatVectMult(const Vec3& vect) const -> Quat
+    {
+        Quat ret(QNOINIT);
+        ret._q[3] = -(_q[0] * vect[0] + _q[1] * vect[1] + _q[2] * vect[2]);
+        ret._q[0] = _q[3] * vect[0] + _q[1] * vect[2] - _q[2] * vect[1];
+        ret._q[1] = _q[3] * vect[1] + _q[2] * vect[0] - _q[0] * vect[2];
+        ret._q[2] = _q[3] * vect[2] + _q[0] * vect[1] - _q[1] * vect[0];
 
-    Real& operator[](Size index)
+        return ret;
+    }
+
+    constexpr auto vectQuatMult(const Vec3& vect) const -> Quat
+    {
+        Quat ret(QNOINIT);
+        ret[3] = -(vect[0] * _q[0] + vect[1] * _q[1] + vect[2] * _q[2]);
+        ret[0] = vect[0] * _q[3] + vect[1] * _q[2] - vect[2] * _q[1];
+        ret[1] = vect[1] * _q[3] + vect[2] * _q[0] - vect[0] * _q[2];
+        ret[2] = vect[2] * _q[3] + vect[0] * _q[1] - vect[1] * _q[0];
+        return ret;
+    }
+
+    constexpr Real& operator[](Size index)
     {
         assert(index < 4);
         return _q[index];
     }
 
-    const Real& operator[](Size index) const
+    constexpr const Real& operator[](Size index) const
     {
         assert(index < 4);
         return _q[index];
@@ -181,9 +328,38 @@ public:
 
     /// A useful function, builds a rotation matrix in Matrix based on
     /// given quaternion.
-    void buildRotationMatrix(Real m[4][4]) const;
-    void writeOpenGlMatrix( double* m ) const;
-    void writeOpenGlMatrix( float* m ) const;
+    constexpr void buildRotationMatrix(Real m[4][4]) const
+    {
+        m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+        m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+        m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
+        m[0][3] = 0;
+
+        m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+        m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+        m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
+        m[1][3] = 0;
+
+        m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
+        m[2][1] = (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
+        m[2][2] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
+        m[2][3] = 0;
+
+        m[3][0] = 0;
+        m[3][1] = 0;
+        m[3][2] = 0;
+        m[3][3] = 1;
+    }
+
+    constexpr void writeOpenGlMatrix(double* m) const
+    {
+        return getOpenGlMatrix<Quat, double>(*this, m);
+    }
+
+    constexpr void writeOpenGlMatrix(float* m) const
+    {
+        return getOpenGlMatrix<Quat, float>(*this, m);
+    }
 
     /// This function computes a quaternion based on an axis (defined by
     /// the given vector) and an angle about which to rotate.  The angle is
@@ -233,7 +409,27 @@ public:
     auto slerp2(const Quat &q1, Real t) const-> Quat;
 
     void operator+=(const Quat& q2);
-    void operator*=(const Quat& q2);
+    constexpr void operator*=(const Quat& q1)
+    {
+        Quat q2 = *this;
+        _q[3] = q2._q[3] * q1._q[3] -
+            (q2._q[0] * q1._q[0] +
+                q2._q[1] * q1._q[1] +
+                q2._q[2] * q1._q[2]);
+        _q[0] = q2._q[3] * q1._q[0] +
+            q2._q[0] * q1._q[3] +
+            q2._q[1] * q1._q[2] -
+            q2._q[2] * q1._q[1];
+        _q[1] = q2._q[3] * q1._q[1] +
+            q2._q[1] * q1._q[3] +
+            q2._q[2] * q1._q[0] -
+            q2._q[0] * q1._q[2];
+        _q[2] = q2._q[3] * q1._q[2] +
+            q2._q[2] * q1._q[3] +
+            q2._q[0] * q1._q[1] -
+            q2._q[1] * q1._q[0];
+    }
+
     bool operator==(const Quat& q) const;
     bool operator!=(const Quat& q) const;
 
