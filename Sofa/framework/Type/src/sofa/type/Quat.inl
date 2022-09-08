@@ -134,7 +134,7 @@ template<class Real>
 void Quat<Real>::normalize()
 {
     const Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
-    double epsilon = 1.0e-10;
+    Real epsilon = static_cast<Real>(1.0e-10);
     if (std::abs(mag - 1.0) > epsilon)
     {
         if( mag != 0)
@@ -170,7 +170,7 @@ void Quat<Real>::fromMatrix(const Mat3x3 &m)
     // check the diagonal
     if (tr > 0)
     {
-        s = (float)sqrt (tr + 1);
+        s = sqrt (tr + 1);
         _q[3] = s * 0.5f; // w OK
         s = 0.5f / s;
         _q[0] = (m.z().y() - m.y().z()) * s; // x OK
@@ -181,7 +181,7 @@ void Quat<Real>::fromMatrix(const Mat3x3 &m)
     {
         if (m.y().y() > m.x().x() && m.z().z() <= m.y().y())
         {
-            s = (Real)sqrt ((m.y().y() - (m.z().z() + m.x().x())) + 1.0f);
+            s = sqrt ((m.y().y() - (m.z().z() + m.x().x())) + 1.0f);
 
             _q[1] = s * 0.5f; // y OK
 
@@ -194,7 +194,7 @@ void Quat<Real>::fromMatrix(const Mat3x3 &m)
         }
         else if ((m.y().y() <= m.x().x()  &&  m.z().z() > m.x().x())  ||  (m.z().z() > m.y().y()))
         {
-            s = (Real)sqrt ((m.z().z() - (m.x().x() + m.y().y())) + 1.0f);
+            s = sqrt ((m.z().z() - (m.x().x() + m.y().y())) + 1.0f);
 
             _q[2] = s * 0.5f; // z OK
 
@@ -207,7 +207,7 @@ void Quat<Real>::fromMatrix(const Mat3x3 &m)
         }
         else
         {
-            s = (Real)sqrt ((m.x().x() - (m.y().y() + m.z().z())) + 1.0f);
+            s = sqrt ((m.x().x() - (m.y().y() + m.z().z())) + 1.0f);
 
             _q[0] = s * 0.5f; // x OK
 
@@ -227,22 +227,22 @@ auto Quat<Real>::axisToQuat(Vec3 a, Real phi) -> Quat
 {
     if( a.norm() < std::numeric_limits<Real>::epsilon() )
     {
-        _q[0] = _q[1] = _q[2] = (Real)0.0f;
-        _q[3] = (Real)1.0f;
+        _q[0] = _q[1] = _q[2] = Real(0.0);
+        _q[3] = Real(1.0);
 
         return Quat();
     }
 
     a = a / a.norm();
-    _q[0] = (Real)a.x();
-    _q[1] = (Real)a.y();
-    _q[2] = (Real)a.z();
+    _q[0] = a.x();
+    _q[1] = a.y();
+    _q[2] = a.z();
 
-    _q[0] = _q[0] * (Real)sin(phi / 2.0);
-    _q[1] = _q[1] * (Real)sin(phi / 2.0);
-    _q[2] = _q[2] * (Real)sin(phi / 2.0);
+    _q[0] = _q[0] * sin(phi / Real(2.0));
+    _q[1] = _q[1] * sin(phi / Real(2.0));
+    _q[2] = _q[2] * sin(phi / Real(2.0));
 
-    _q[3] = (Real)cos(phi / 2.0);
+    _q[3] = cos(phi / Real(2.0));
 
     return *this;
 }
@@ -261,7 +261,7 @@ void Quat<Real>::quatToAxis(Vec3 & axis, Real &angle) const
     if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
-        angle = (Real)(2.0 * asin(sin_half_theta));
+        angle = static_cast<Real>(2.0 * asin(sin_half_theta));
     }
     else
     {
@@ -295,7 +295,7 @@ auto Quat<Real>::quatToRotationVector() const -> Vec3
     if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
-        angle = (Real)(2.0 * asin(sin_half_theta));
+        angle = static_cast<Real>(2.0 * asin(sin_half_theta));
     }
     else
     {
@@ -345,7 +345,7 @@ auto Quat<Real>::toEulerVector() const -> Vec3
 template<class Real>
 void Quat<Real>::slerp(const Quat& a, const Quat& b, Real t, bool allowFlip)
 {
-    Real cosAngle =  (Real)(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]);
+    Real cosAngle =  static_cast<Real>(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]);
 
     Real c1, c2;
     // Linear interpolation for close orientations
@@ -357,10 +357,10 @@ void Quat<Real>::slerp(const Quat& a, const Quat& b, Real t, bool allowFlip)
     else
     {
         // Spherical interpolation
-        Real angle    = (Real)acos((Real)std::abs((Real)cosAngle));
-        Real sinAngle = (Real)sin((Real)angle);
-        c1 = (Real)sin(angle * (1.0f - t)) / sinAngle;
-        c2 = (Real)sin(angle * t) / sinAngle;
+        Real angle    = acos(std::abs(cosAngle));
+        Real sinAngle = sin(angle);
+        c1 = sin(angle * (1.0f - t)) / sinAngle;
+        c2 = sin(angle * t) / sinAngle;
     }
 
     // Use the shortest path
@@ -406,7 +406,7 @@ auto Quat<Real>::slerp2(const Quat &q1, Real t) const -> Quat
     Quat qm(QNOINIT);
 
     // Calculate angle between them.
-    double cosHalfTheta = _q[3] * q1[3] + _q[0] * q1[0] + _q[1] * q1[1] + _q[2] * q1[2];
+    Real cosHalfTheta = _q[3] * q1[3] + _q[0] * q1[0] + _q[1] * q1[1] + _q[2] * q1[2];
     // if qa=qb or qa=-qb then theta = 0 and we can return qa
     if (std::abs(cosHalfTheta) >= 1.0)
     {
@@ -414,25 +414,25 @@ auto Quat<Real>::slerp2(const Quat &q1, Real t) const -> Quat
         return qm;
     }
     // Calculate temporary values.
-    double halfTheta = acos(cosHalfTheta);
-    double sinHalfTheta = sqrt(1.0 - cosHalfTheta*cosHalfTheta);
+    Real halfTheta = acos(cosHalfTheta);
+    Real sinHalfTheta = static_cast<Real>(sqrt(1.0 - cosHalfTheta*cosHalfTheta));
     // if theta = 180 degrees then result is not fully defined
     // we could rotate around any axis normal to qa or qb
     if (std::abs(sinHalfTheta) < 0.001)
     {
-        qm[3] = (Real)(_q[3] * 0.5 + q1[3] * 0.5);
-        qm[0] = (Real)(_q[0] * 0.5 + q1[0] * 0.5);
-        qm[1] = (Real)(_q[1] * 0.5 + q1[1] * 0.5);
-        qm[2] = (Real)(_q[2] * 0.5 + q1[2] * 0.5);
+        qm[3] = static_cast<Real>(_q[3] * 0.5 + q1[3] * 0.5);
+        qm[0] = static_cast<Real>(_q[0] * 0.5 + q1[0] * 0.5);
+        qm[1] = static_cast<Real>(_q[1] * 0.5 + q1[1] * 0.5);
+        qm[2] = static_cast<Real>(_q[2] * 0.5 + q1[2] * 0.5);
         return qm;
     }
-    double ratioA = sin((1 - t) * halfTheta) / sinHalfTheta;
-    double ratioB = sin(t * halfTheta) / sinHalfTheta;
+    Real ratioA = sin((1 - t) * halfTheta) / sinHalfTheta;
+    Real ratioB = sin(t * halfTheta) / sinHalfTheta;
     //calculate Quatnion.
-    qm[3] = (Real)(_q[3] * ratioA + q1[3] * ratioB);
-    qm[0] = (Real)(_q[0] * ratioA + q1[0] * ratioB);
-    qm[1] = (Real)(_q[1] * ratioA + q1[1] * ratioB);
-    qm[2] = (Real)(_q[2] * ratioA + q1[2] * ratioB);
+    qm[3] = static_cast<Real>(_q[3] * ratioA + q1[3] * ratioB);
+    qm[0] = static_cast<Real>(_q[0] * ratioA + q1[0] * ratioB);
+    qm[1] = static_cast<Real>(_q[1] * ratioA + q1[1] * ratioB);
+    qm[2] = static_cast<Real>(_q[2] * ratioA + q1[2] * ratioB);
     return qm;
 
 }
