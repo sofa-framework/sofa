@@ -86,7 +86,7 @@ public:
     void addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true);
 
 
-    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Removing the separate gravity API.")
+    SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#2988)", "v23.12", "Removing the separate gravity API.")
     void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::VecDerivId::velocity() ) = delete;
 
     void computeContactForce(core::MultiVecDerivId result);
