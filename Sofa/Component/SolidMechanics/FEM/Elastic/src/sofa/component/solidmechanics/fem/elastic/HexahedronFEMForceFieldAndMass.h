@@ -126,6 +126,8 @@ public:
     bool insertInNode( core::objectmodel::BaseNode* node ) override { return HexahedronFEMForceFieldT::insertInNode(node); }
     bool removeInNode( core::objectmodel::BaseNode* node ) override { return HexahedronFEMForceFieldT::removeInNode(node); }
 
+    using HexahedronFEMForceFieldT::canCreate;
+
 protected :
 
     Data<VecElementMass> d_elementMasses; ///< mass matrices per element

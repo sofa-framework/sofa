@@ -113,8 +113,7 @@ public:
     void setDensity(Real d) {_density.setValue( d );}
     Real getDensity() {return _density.getValue();}
 
-
-
+    using HexahedralFEMForceFieldT::canCreate;
 
 protected:
     virtual void computeElementMasses( ); ///< compute the mass matrices
