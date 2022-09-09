@@ -137,10 +137,8 @@ void UniformMass<DataTypes>::initDefaultImpl()
     
     if(this->mstate==nullptr)
     {
-        msg_warning(this) << "Missing mechanical state. \n"
-                             "UniformMass need to be used with an object also having a MechanicalState. \n"
-                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
-                             " containing this <UniformMass/>";
+        msg_warning(this) << "Missing mechanical state. UniformMass need to be used with an object also having a MechanicalState." << msgendl
+                          << "To remove this warning: add a MechanicalObject to the parent node of the one containing this UniformMass";
         return;
     }
 
