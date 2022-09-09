@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/defaulttype/DataTypeOperations.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/Visitor.h>
@@ -1786,15 +1787,15 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
             {
                 helper::WriteOnlyAccessor< Data<VecCoord> >vv( *this->write(core::VecCoordId(v)) );
                 vv.resize(d_size.getValue());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = Coord();
+
+                sofa::defaulttype::resetDataTypeVec(vv.wref());
             }
             else
             {
                 helper::WriteOnlyAccessor< Data<VecDeriv> >vv( *this->write(core::VecDerivId(v)) );
                 vv.resize(d_size.getValue());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = Deriv();
+
+                sofa::defaulttype::resetDataTypeVec(vv.wref());
             }
         }
         else
@@ -1858,17 +1859,13 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
             {
                 helper::WriteOnlyAccessor< Data<VecCoord> > vv(*this->write(core::VecCoordId(v)) );
                 helper::ReadAccessor< Data<VecCoord> > va(*this->read(core::ConstVecCoordId(a)) );
-                vv.resize(va.size());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = va[i];
+                vv.wref() = va.ref();
             }
             else
             {
                 helper::WriteOnlyAccessor< Data<VecDeriv> > vv(*this->write(core::VecDerivId(v)) );
                 helper::ReadAccessor< Data<VecDeriv> > va(*this->read(core::ConstVecDerivId(a)) );
-                vv.resize(va.size());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = va[i];
+                vv.wref() = va.ref();
             }
         }
         else
@@ -2484,8 +2481,7 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
 
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
-        for (unsigned i = 0; i < f.size(); ++i)
-            f[i].clear();
+        sofa::defaulttype::resetDataTypeVec(f.wref());
     }
 }
 
@@ -2496,10 +2492,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > a( *this->write(aId) );
-        for (unsigned i = 0; i < a.size(); ++i)
-        {
-            a[i] = Deriv();
-        }
+        sofa::defaulttype::resetDataTypeVec(a.wref());
     }
 }
 
