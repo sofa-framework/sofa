@@ -191,7 +191,6 @@ protected:
     bool matrixIsDirty;                      ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$ needs to be recomputed
     type::vector< ElementMass > mbkMatrix; ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$
 
-protected:
     virtual void computeCorrection( ElementMass& ) {} ///< Limit the conditioning number of each mbkMatrix as defined by maxConditioning (in derived classes).
 };
 
