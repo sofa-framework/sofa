@@ -35,14 +35,14 @@ namespace sofa::component::contextobject
 {
 
 /** Override the default gravity */
-class     SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Gravity class has been removed") Gravity : public core::objectmodel::ContextObject
+class     SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#2988)", "v23.12", "Gravity class has been removed") Gravity : public core::objectmodel::ContextObject
 {
 public:
     SOFA_CLASS(Gravity, core::objectmodel::ContextObject);
 protected:
     Gravity() = default;
 public:
-    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Gravity class has been removed")
+    SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#2988)", "v23.12", "Gravity class has been removed")
     DeprecatedAndRemoved f_gravity; ///< Gravity in the world coordinate system
 
     void apply() override {};
