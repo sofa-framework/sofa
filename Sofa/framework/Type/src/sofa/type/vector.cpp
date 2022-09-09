@@ -27,6 +27,7 @@
 namespace sofa::type
 {
 
+[[noreturn]]
 void SOFA_TYPE_API vector_access_failure(const void* vec, const std::size_t size, const std::size_t i, const std::type_info& type)
 {
     std::ostringstream oss;
