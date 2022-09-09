@@ -32,7 +32,7 @@ namespace objectmodel
 
 Context::Context()
     : is_activated(initData(&is_activated, true, "activated", "To Activate a node"))
-    , worldGravity_(initData(&worldGravity_, Vec3(SReal(0),SReal(-9.81),SReal(0)),"gravity","Gravity in the world coordinate system"))
+    , worldGravity_(initData(&worldGravity_, Vec3(SReal(0.),SReal(0.),SReal(0.)),"worldGravity","Gravity in the world coordinate system"))
     , dt_(initData(&dt_,SReal(0.01),"dt","Time step"))
     , time_(initData(&time_,SReal(0.),"time","Current time"))
     , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))

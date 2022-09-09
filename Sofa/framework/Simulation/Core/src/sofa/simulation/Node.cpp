@@ -170,15 +170,17 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
         sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
     }
 
-    // SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#2988)", "v23.06", "Transition removing gravity and introducing GravityForceField")
+    // SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#2988)", "v23.12", "Transition removing gravity and introducing GravityForceField")
     const char* gravityStr = arg->getAttribute("gravity", nullptr);
     if (gravityStr != nullptr)
     {
-        msg_warning() << "A \"gravity\" data has been detected in the context of your node \"" << name << "\": this data is DEPRECATED since PR#2988." << msgendl
-                       "Note that the gravity should now be applied using a GravityForceField for each object." << msgendl
-                       "To remove this warning:" << msgendl
-                       "     - remove the \"gravity\" data from all nodes" << msgendl
-                       "     - add a GravityForceField with the data \"gravitationalAcceleration\" for each object undergoing the gravity";
+        msg_deprecated() << "The \"gravity\" data has been renamed \"worldGravity\" since PR#2988 and its default value is (0,0,0)." << msgendl
+                       "This change was made to explicit the fact that the gravity will affect all objects in the scene." << msgendl
+                       "To define a per-node gravity, please do not use the  \"worldGravity\" but a GravityForceField for each object instead.";
+        Vec3 g;
+        std::istringstream ss( gravityStr );
+        ss >> g ;
+        this->setGravity(g);
     }
 }
 
