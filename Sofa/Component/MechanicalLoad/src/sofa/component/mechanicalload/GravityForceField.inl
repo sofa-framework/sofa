@@ -34,8 +34,21 @@ using namespace sofa::type;
 template<class DataTypes>
 GravityForceField<DataTypes>::GravityForceField()
     : d_gravitationalAcceleration(initData(&d_gravitationalAcceleration, "gravitationalAcceleration", "Value corresponding to the gravitational acceleration"))
+    , d_worldGravity(initData(&d_worldGravity, "worldGravity", "Vector3 which can be linked to the worldGravity data of Node"))
     , l_mass(initLink("mass", "link to the mass"))
 {
+    // To avoid confusion, the data "d_worldGravity" used for the automatic creation of GravityForceField when using the Node gravity is hidden to the user
+    d_worldGravity.setDisplayed(false);
+
+    this->addUpdateCallback("connnectToWorldGravity", { &d_worldGravity}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+
+        setGravityFromRootNode();
+        checkGravityNorm();
+
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 
@@ -43,7 +56,7 @@ template<class DataTypes>
 void GravityForceField<DataTypes>::init()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-       
+
     if (l_mass.empty())
     {
         msg_info() << "link to the mass should be set to ensure right behavior. First mass found in current context will be used.";
@@ -52,22 +65,45 @@ void GravityForceField<DataTypes>::init()
         l_mass.set(p_mass);
     }
 
-    // temporary pointer to the mass
+    // Check if several GravityForceField in the current node
+    std::vector<GravityForceField<DataTypes>*> gravityFFVector;
+    this->getContext()->template get<GravityForceField>(&gravityFFVector, core::objectmodel::BaseContext::Local);
+    if(gravityFFVector.size()>1)
+    {
+        msg_warning() << "Several gravities seem to be defined in node " << this->getContext()->getName();
+    }
+
+    // Link to the mass component
     if (sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get())
     {
         msg_info() << "Mass path used: '" << l_mass.getLinkedPath() << "'";
     }
     else
     {
-        msg_error() << "No mass component found at path: " << l_mass.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        msg_error() << "No Mass component with template "<< this->getTemplateName() <<" found in current context: " << this->getContext()->name << ", nor any valid link to a Mass was given. No gravity will be applied.";
         return;
     }
+
+    // Check if norm is null
+    checkGravityNorm();
 
     // init from ForceField
     Inherit::init();
 
     // if all init passes, component is valid
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+}
+
+
+template<class DataTypes>
+void GravityForceField<DataTypes>::setGravityFromRootNode()
+{
+    const Vec3& gravityRootNode = d_worldGravity.getValue();
+    auto gravity = sofa::helper::getWriteAccessor(d_gravitationalAcceleration);
+    for(Size i=0; ( i<gravity.size() || i<3) ; i++ )
+    {
+        gravity[i] = gravityRootNode[i];
+    }
 }
 
 
@@ -79,11 +115,36 @@ void GravityForceField<DataTypes>::setGravitationalAcceleration(const DPos grav)
 
 
 template<class DataTypes>
+void GravityForceField<DataTypes>::checkGravityNorm()
+{
+    const DPos & gravity = d_gravitationalAcceleration.getValue();
+    const Real norm = gravity.norm();
+
+    if(norm == 0.0)
+    {
+        m_isNormNull = true;
+        msg_info() << "Gravitational acceleration is null";
+    }
+    else
+    {
+        m_isNormNull = false;
+    }
+}
+
+
+template<class DataTypes>
 void GravityForceField<DataTypes>::addForce(const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x1, const DataVecDeriv& v1)
 {
+    if(this->d_componentState.getValue() == core::objectmodel::ComponentState::Invalid)
+        return;
+
     sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get();
     Deriv gravity;
     DataTypes::setDPos(gravity, d_gravitationalAcceleration.getValue());
+
+    if(m_isNormNull)
+        return;
+
     _mass->addGravitationalForce(params,f,x1,v1,gravity);
 }
 
@@ -94,7 +155,8 @@ SReal GravityForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPar
     sofa::core::behavior::Mass<DataTypes>* _mass = l_mass.get();
     Deriv gravity;
     DataTypes::setDPos(gravity, d_gravitationalAcceleration.getValue());
-    if(_mass)
+
+    if(_mass && !m_isNormNull)
         return _mass->getGravitationalPotentialEnergy(params, x, gravity);
     else
         return 0.0;

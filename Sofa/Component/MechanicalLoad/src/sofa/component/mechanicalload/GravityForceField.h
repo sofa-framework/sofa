@@ -47,6 +47,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     Data< DPos > d_gravitationalAcceleration; ///< Value corresponding to the gravitational acceleration
+    Data< type::Vec3 > d_worldGravity; ///< Vector3 which can be linked to the worldGravity data of Node
     SingleLink<GravityForceField<DataTypes>, sofa::core::behavior::Mass<DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_mass; ///< Link to be set to the mass in the component graph
 
     /// Init function
@@ -66,8 +67,15 @@ public:
     /// Set the gravitational acceleration
     void setGravitationalAcceleration(const DPos grav);
 
+    /// Check the norm of the gravity
+    void checkGravityNorm();
+
+    /// Update gravitational acceleration from the gravity defined in root node
+    void setGravityFromRootNode();
+
 protected:
     GravityForceField();
+    bool m_isNormNull = false;
 };
 
 

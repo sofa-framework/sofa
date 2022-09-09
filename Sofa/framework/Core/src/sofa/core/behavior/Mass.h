@@ -132,6 +132,36 @@ protected:
     std::ofstream* m_gnuplotFileEnergy;
 
 public:
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    {
+        const std::string attributeName {"mstate"};
+        std::string mstateLink = arg->getAttribute(attributeName,"");
+        if (mstateLink.empty())
+        {
+            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
+                    "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
+                return false;
+            }
+        }
+        else
+        {
+            MechanicalState<DataTypes>* mstate = nullptr;
+            context->findLinkDest(mstate, mstateLink, nullptr);
+            if (!mstate)
+            {
+                arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
+                return false;
+            }
+        }
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    /// Automatic creation of a local GravityForceField if the worldGravity in the root node is defined
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
@@ -143,31 +173,26 @@ public:
         SReal gravityNorm = gravity.norm();
         if(gravityNorm!=0.0)
         {
+            // SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#2988)", "v23.12", "Transition removing gravity and introducing GravityForceField")
+            // to remove after v23.06 ...
             bool savePLog = context->f_printLog.getValue();
             context->f_printLog.setValue(true);
-            msg_info(context) << "A gravity seem to apply in the node \"" << context->getName() << "\" using the deprecated gravity mechanism (read more in PR#2988)." << msgendl
+            msg_info(context) << "A gravity seem to apply using the worldGravity in the root node (PR#2988)." << msgendl
                                << "A GravityForceField is automatically added in the node \"" << context->getName() << "\".";
             context->f_printLog.setValue(savePLog);
+            // until here
 
-            const sofa::Size dim = context->getMechanicalState()->getDerivDimension();
+
             const std::string templated = context->getMechanicalState()->getTemplateName();
-            std::string gravity_string;
-
-            if(dim == 1)
-                gravity_string = std::to_string(gravity[0]);
-            else if(dim == 2)
-                gravity_string = std::to_string(gravity[0])+" "+std::to_string(gravity[1]);
-            else
-                gravity_string = std::to_string(gravity[0])+" "+std::to_string(gravity[1])+" "+std::to_string(gravity[2]);
-
+            std::string gravity_string = "@"+ context->getRootContext()->getPathName()+".worldGravity";
 
             sofa::core::objectmodel::BaseObjectDescription desc("GravityForceField","GravityForceField");
             desc.setAttribute("template", templated);
-            desc.setAttribute("gravitationalAcceleration", gravity_string);
+            desc.setAttribute("worldGravity", gravity_string);
 
-            /// Create the object.
-            BaseObject::SPtr obj = sofa::core::ObjectFactory::getInstance()->createObject(context, &desc);
-            if (obj==nullptr)
+            /// Create the object
+            BaseObject::SPtr objGravityFF = sofa::core::ObjectFactory::getInstance()->createObject(context, &desc);
+            if (objGravityFF==nullptr)
             {
                 std::stringstream msg;
                 msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
