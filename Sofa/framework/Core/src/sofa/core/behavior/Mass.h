@@ -39,12 +39,13 @@ namespace sofa::core::behavior
  *
  *  It is also a ForceField, computing gravity-related forces.
  */
-template<class DataTypes>
-class Mass : public BaseMass, public SingleStateAccessor<DataTypes>
+template<class TDataTypes>
+class Mass : public BaseMass, public SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Mass,DataTypes), BaseMass);
+    SOFA_CLASS(SOFA_TEMPLATE(Mass,TDataTypes), BaseMass);
 
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord    VecCoord;
     typedef typename DataTypes::VecDeriv    VecDeriv;
     typedef typename DataTypes::Real        Real;
