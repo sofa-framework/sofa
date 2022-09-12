@@ -314,7 +314,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
-        sofa::type::vector<typename TLine<DataTypes>::Coord> points;
+        std::vector<typename TLine<DataTypes>::Coord> points;
         points.reserve(size * 2);
         for (Size i=0; i<size; i++)
         {
