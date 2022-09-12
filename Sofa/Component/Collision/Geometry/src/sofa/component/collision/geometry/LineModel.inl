@@ -314,15 +314,16 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
-        std::vector<typename TLine<DataTypes>::Coord> points;
+        std::vector<helper::visual::DrawTool::Vector3> points;
         points.reserve(size * 2);
         for (Size i=0; i<size; i++)
         {
             TLine<DataTypes> l(this,i);
             if(l.isActive())
             {
-                points.push_back(l.p1());
-                points.push_back(l.p2());
+                // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vector3, Coord>
+                points.emplace_back(helper::visual::DrawTool::Vector3{l.p1()});
+                points.emplace_back(helper::visual::DrawTool::Vector3{l.p2()});
             }
         }
 
