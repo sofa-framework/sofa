@@ -297,7 +297,7 @@ Index TopologicalChangeManager::removeItemsFromLineModel(LineCollisionModel<sofa
     topo_curr = model->getCollisionTopology();
 
     if(dynamic_cast<EdgeSetTopologyContainer*>(topo_curr) == nullptr){
-        msg_warning("TopologicalChangeManager") << " Topology is not an EdgeSetTopologyContainer. Only EdgeSetTopologyContainer implemented.";
+        msg_warning("TopologicalChangeManager") << "Topology is not an EdgeSetTopologyContainer. Only EdgeSetTopologyContainer implemented.";
         return 0;
     }
 
@@ -305,17 +305,19 @@ Index TopologicalChangeManager::removeItemsFromLineModel(LineCollisionModel<sofa
     type::vector<Index> unique_indices = indices;
     // sort followed by unique, to remove all duplicates
     std::sort(unique_indices.begin(), unique_indices.end());
-    unique_indices.erase( std::unique(unique_indices.begin(), unique_indices.end()), unique_indices.end());
+    unique_indices.erase(std::unique(unique_indices.begin(), unique_indices.end()), unique_indices.end());
 
-    simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
-    sofa::core::topology::TopologyModifier* topoMod;
-    topo_curr->getContext()->get(topoMod);
+    auto topo_mod = topo_curr->getContext()->get<sofa::core::topology::TopologyModifier>();
+    if(dynamic_cast<EdgeSetTopologyModifier*>(topo_mod) == nullptr){
+        msg_warning("TopologicalChangeManager") << "Cannot find an EdgeSetTopologyModifier to perform the changes.";
+        return 0;
+    }
 
-    topoMod->removeItems(unique_indices);
+    topo_mod->removeItems(unique_indices);
 
-    topoMod->notifyEndingEvent();
+    topo_mod->notifyEndingEvent();
 
-    topoMod->propagateTopologicalChanges();
+    topo_mod->propagateTopologicalChanges();
 
     return indices.size();
 }
