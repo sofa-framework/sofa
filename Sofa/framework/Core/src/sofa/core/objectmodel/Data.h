@@ -362,7 +362,6 @@ extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 #endif
 } // namespace core::objectmodel
 
-
 #include <sofa/core/datatype/Data[bool].h>
 #include <sofa/core/datatype/Data[RGBAColor].h>
 
