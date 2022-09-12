@@ -27,9 +27,8 @@
 #include <sofa/helper/accessor.h>
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
-namespace sofa
-{
-namespace core::objectmodel
+#include <sofa/defaulttype/TypeInfoRegistry.h>
+namespace sofa::core::objectmodel
 {
 
 /** \brief Container that holds a variable for a component.
@@ -91,9 +90,10 @@ public:
         T value;
     };
 
+    SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Method Data::templateName() is deprecated, to fix your code you need to use Data::GetValueTypeInfo()->getTypeName().")    
     static std::string templateName()
     {
-        return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
+        return GetValueTypeInfo()->getTypeName();
     }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
@@ -184,12 +184,33 @@ public:
         return m_value.getValue();
     }
 
+
     /// @}
 
-    /// Get info about the value type of the associated variable
+    /// Get info about the value 'T' type 
+    static const defaulttype::AbstractTypeInfo* GetValueTypeInfo()
+    {
+        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>());
+    }
+       
+    /// Get info about the value 'T' type 
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        return sofa::defaulttype::VirtualTypeInfo<T>::get();
+        auto *newinfo = GetValueTypeInfo();
+        auto *oldinfo = sofa::defaulttype::VirtualTypeInfo<T>::get(); 
+
+        // TRANSITIONAL STATE: If this is true, this means that 'T' has been correctly registered in type info system. 
+        if(newinfo->ValidInfo())
+            return newinfo;
+
+        // TRANSITIONAL STATE: If this is true, this means that 'T' has not been correctly registered in type info system but there exists 
+        // a correct typeinfo in this translation unit.          
+        if(oldinfo->ValidInfo())
+        {
+            dmsg_deprecated("Data") << "A valid TypeInfo exists for " << oldinfo->getTypeName() << " that is not yet registered in the TypeInfoRegistry";
+        }
+        
+        return oldinfo;
     }
 
     /** Try to read argument value from an input stream.
@@ -225,8 +246,6 @@ protected:
     ValueType m_value;
 
 private:
-
-
     bool doIsExactSameDataType(const BaseData* parent) override;
     bool doCopyValueFrom(const BaseData* parent) override;
     bool doSetValueFromLink(const BaseData* parent) override;
@@ -245,7 +264,6 @@ bool Data<std::string>::read( const std::string& str );
 template<>
 bool Data<bool>::read( const std::string& str );
 
-
 /// General case for printing default value
 template<class T>
 void Data<T>::printValue( std::ostream& out) const
@@ -263,9 +281,10 @@ std::string Data<T>::getValueString() const
 }
 
 template<class T>
+SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Use sofa::getValueTypeInfo()->getTypeName().")
 std::string Data<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&getValue());
+    return getValueTypeInfo()->getTypeName();
 }
 
 template <class T>
@@ -331,7 +350,6 @@ bool Data<T>::doSetValueFromLink(const BaseData* data)
     return true;
 }
 
-
 template <class T>
 bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 {
@@ -346,11 +364,16 @@ extern template class SOFA_CORE_API Data< bool >;
 #endif
 } // namespace core::objectmodel
 
-// Overload helper::ReadAccessor and helper::WriteAccessor
-
-namespace helper
+namespace sofa
 {
+    // the Data class is used everywhere
+    using core::objectmodel::Data;
+} // namespace sofa
 
+
+// Overload helper::ReadAccessor and helper::WriteAccessor
+namespace sofa::helper
+{
 
 /// @warning the Data is updated (if needed) only by the Accessor constructor
 template<class T>
@@ -478,9 +501,4 @@ WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::object
     return WriteOnlyAccessor<core::objectmodel::Data<T> >(data);
 }
 
-} // namespace helper
-
-// the Data class is used everywhere
-using core::objectmodel::Data;
-
-} // namespace sofa
+} // namespace sofa::helper
