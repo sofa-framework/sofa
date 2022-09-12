@@ -27,9 +27,8 @@
 #include <sofa/helper/accessor.h>
 #include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
-namespace sofa
-{
-namespace core::objectmodel
+#include <sofa/defaulttype/TypeInfoRegistry.h>
+namespace sofa::core::objectmodel
 {
 
 /** \brief Container that holds a variable for a component.
@@ -67,6 +66,8 @@ namespace core::objectmodel
  * <Foo bar="false"/>
  * \endcode
  */
+     
+
 template < class T = void* >
 class Data : public BaseData
 {
@@ -91,9 +92,10 @@ public:
         T value;
     };
 
+    SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Method Data::templateName() is deprecated, to fix your code you need to use Data::GetValueTypeInfo()->getTypeName().")    
     static std::string templateName()
     {
-        return sofa::core::objectmodel::BaseData::typeName<Data<T>>();
+        return GetValueTypeInfo()->getTypeName();
     }
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
@@ -184,12 +186,19 @@ public:
         return m_value.getValue();
     }
 
-    /// @}
 
-    /// Get info about the value type of the associated variable
+    /// @}
+    
+    /// Get info about the value 'T' type 
+    static const defaulttype::AbstractTypeInfo* GetValueTypeInfo()
+    {
+        return GetValueTypeInfoWithCompatibilityLayer();
+    }
+       
+    /// Get info about the value 'T' type 
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        return sofa::defaulttype::VirtualTypeInfo<T>::get();
+        return GetValueTypeInfoWithCompatibilityLayer();
     }
 
     /** Try to read argument value from an input stream.
@@ -225,26 +234,38 @@ protected:
     ValueType m_value;
 
 private:
-
-
     bool doIsExactSameDataType(const BaseData* parent) override;
     bool doCopyValueFrom(const BaseData* parent) override;
     bool doSetValueFromLink(const BaseData* parent) override;
     const void* doGetValueVoidPtr() const override { return &getValue(); }
     void* doBeginEditVoidPtr() override  { return beginEdit(); }
     void doEndEditVoidPtr() override  { endEdit(); }
+    
+    static bool AbstractTypeInfoRegistration()
+    {
+        auto info = sofa::defaulttype::VirtualTypeInfo<T>::get();
+        sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<T>(), info, sofa_tostring(SOFA_TARGET));
+        dmsg_deprecated("GET VALUE TYPE INFO WITH DEPRECTED_CODE") << info->getTypeName();         
+        return false;        
+    }
+    
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer()
+    { 
+        static bool __inited__ = AbstractTypeInfoRegistration();        
+        SOFA_UNUSED(__inited__);
+        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>()); 
+    }
 };
 
 class EmptyData : public Data<void*> {};
 
 /// Specialization for reading strings
 template<>
-bool Data<std::string>::read( const std::string& str );
-
-/// Specialization for reading booleans
-template<>
 bool Data<bool>::read( const std::string& str );
 
+/// Specialization for reading strings
+template<>
+bool Data<std::string>::read( const std::string& str );
 
 /// General case for printing default value
 template<class T>
@@ -263,9 +284,10 @@ std::string Data<T>::getValueString() const
 }
 
 template<class T>
+SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Use sofa::getValueTypeInfo()->getTypeName().")
 std::string Data<T>::getValueTypeString() const
 {
-    return BaseData::typeName(&getValue());
+    return getValueTypeInfo()->getTypeName();
 }
 
 template <class T>
@@ -331,7 +353,6 @@ bool Data<T>::doSetValueFromLink(const BaseData* data)
     return true;
 }
 
-
 template <class T>
 bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 {
@@ -339,18 +360,23 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 }
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+extern template class SOFA_CORE_API Data< bool >;
 extern template class SOFA_CORE_API Data< std::string >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
-extern template class SOFA_CORE_API Data< bool >;
 #endif
 } // namespace core::objectmodel
 
-// Overload helper::ReadAccessor and helper::WriteAccessor
-
-namespace helper
+namespace sofa
 {
+    // the Data class is used everywhere
+    using core::objectmodel::Data;
+} // namespace sofa
 
+
+// Overload helper::ReadAccessor and helper::WriteAccessor
+namespace sofa::helper
+{
 
 /// @warning the Data is updated (if needed) only by the Accessor constructor
 template<class T>
@@ -478,9 +504,4 @@ WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::object
     return WriteOnlyAccessor<core::objectmodel::Data<T> >(data);
 }
 
-} // namespace helper
-
-// the Data class is used everywhere
-using core::objectmodel::Data;
-
-} // namespace sofa
+} // namespace sofa::helper
