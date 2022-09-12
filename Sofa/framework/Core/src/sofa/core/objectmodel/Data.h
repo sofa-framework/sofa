@@ -66,6 +66,8 @@ namespace sofa::core::objectmodel
  * <Foo bar="false"/>
  * \endcode
  */
+     
+
 template < class T = void* >
 class Data : public BaseData
 {
@@ -239,24 +241,19 @@ private:
     void* doBeginEditVoidPtr() override  { return beginEdit(); }
     void doEndEditVoidPtr() override  { endEdit(); }
     
-    
-    static const defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer()
+    static bool AbstractTypeInfoRegistration()
     {
-        auto *newinfo =  sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>());
-        auto *oldinfo = sofa::defaulttype::VirtualTypeInfo<T>::get(); 
-
-        // TRANSITIONAL STATE: If this is true, this means that 'T' has been correctly registered in type info system. 
-        if(newinfo->ValidInfo())
-            return newinfo;
-
-        // TRANSITIONAL STATE: If this is true, this means that 'T' has not been correctly registered in type info system but there exists 
-        // a correct typeinfo in this translation unit.          
-        if(oldinfo->ValidInfo())
-        {
-            dmsg_deprecated("Data") << "A valid TypeInfo exists for " << oldinfo->getTypeName() << " that is not yet registered in the TypeInfoRegistry";
-        }
-        
-        return oldinfo;        
+        auto info = sofa::defaulttype::VirtualTypeInfo<T>::get();
+        sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<T>(), info, sofa_tostring(SOFA_TARGET));
+        dmsg_deprecated("GET VALUE TYPE INFO WITH DEPRECTED_CODE") << info->getTypeName();         
+        return false;        
+    }
+    
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer()
+    { 
+        static bool __inited__ = AbstractTypeInfoRegistration();        
+        SOFA_UNUSED(__inited__);
+        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>()); 
     }
 };
 
@@ -367,6 +364,7 @@ extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 
 
 #include <sofa/core/datatype/Data[bool].h>
+#include <sofa/core/datatype/Data[RGBAColor].h>
 
 namespace sofa
 {
