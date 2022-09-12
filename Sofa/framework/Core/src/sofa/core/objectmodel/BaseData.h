@@ -308,13 +308,15 @@ public:
     DataLink<BaseData> parentData;
 
     /// Helper method to decode the type name to a more readable form if possible
+    SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Use sofa::helper::NameDecoder::decodeTypeName(t) instead.")
     static std::string decodeTypeName(const std::type_info& t);
 
     /// Helper method to get the type name of type T
     template<class T>
+    SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Use sofa::helper::NameDecoder::decodeTypeName(t) or .... instead.")
     static std::string typeName(const T* = nullptr)
     {
-        if (defaulttype::DataTypeInfo<T>::ValidInfo)
+        if constexpr (defaulttype::DataTypeInfo<T>::ValidInfo)
             return defaulttype::DataTypeName<T>::name();
         else
             return decodeTypeName(typeid(T));

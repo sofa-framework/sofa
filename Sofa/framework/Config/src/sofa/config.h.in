@@ -238,6 +238,12 @@ class DeprecatedAndRemoved {};
         "v21.12 (PR#2292)", "v22.06", \
         "Use the Messaging API instead of using SofaOStream and sout/serr/sendl.")
 
+#define SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12 (PR#XXXX)", "v22.12", \
+        "BaseData typeinfo API has changed. " msg)
+
+
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
