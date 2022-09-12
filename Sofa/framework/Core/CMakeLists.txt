@@ -104,6 +104,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
     ${SRC_ROOT}/datatype/Data[bool].h
+    ${SRC_ROOT}/datatype/Data[RGBAColor].h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
     ${SRC_ROOT}/loader/MeshLoader.h
@@ -233,6 +234,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/collision/NarrowPhaseDetection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
     ${SRC_ROOT}/datatype/Data[bool].cpp
+    ${SRC_ROOT}/datatype/Data[RGBAColor].cpp
     ${SRC_ROOT}/loader/BaseLoader.cpp
     ${SRC_ROOT}/loader/MeshLoader.cpp
     ${SRC_ROOT}/loader/SceneLoader.cpp
