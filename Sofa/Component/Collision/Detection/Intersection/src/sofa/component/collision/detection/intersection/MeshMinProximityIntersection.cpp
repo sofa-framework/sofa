@@ -85,9 +85,9 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
+    const Line::Coord AB = e1.p2()-e1.p1();
+    const Line::Coord CD = e2.p2()-e2.p1();
+    const Line::Coord AC = e2.p1()-e1.p1();
     Matrix2 A;
     Vector2 b;
 
@@ -120,9 +120,9 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
+    const Line::Coord AB = e1.p2()-e1.p1();
+    const Line::Coord CD = e2.p2()-e2.p1();
+    const Line::Coord AC = e2.p1()-e1.p1();
     Matrix2 A;
     Vector2 b;
 
@@ -323,10 +323,10 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 
 bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
 {
-
+    static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Point::Coord AB = e2.p2()-e2.p1();
+    const auto AP = e1.p()-e2.p1();
 
     SReal A;
     SReal b;
@@ -349,20 +349,18 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
 
 int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
 {
+    static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
+
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const auto AP = e1.p()-e2.p1();
 
-    SReal A;
-    SReal b;
-    A = AB*AB;
-    b = AP*AB;
+    const Line::Coord::value_type A = AB * AB;
+    const Line::Coord::value_type b = AP * AB;
 
-    SReal alpha = 0.5;
+    Line::Coord Q(NOINIT);
 
-    Vector3 P,Q,QP;
-
-    alpha = b/A;
+    const Line::Coord::value_type alpha=b/A;
 
     if (alpha <= 0.0){
         Q = e2.p1();
@@ -374,8 +372,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
         Q = e2.p1() + AB * alpha;
     }
 
-    P = e1.p();
-    QP = P-Q;
+    const Point::Coord& P = e1.p();
+    const auto QP= P - Q;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;

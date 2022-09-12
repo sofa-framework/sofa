@@ -323,7 +323,7 @@ public:
     /// @{
 
     /// Get distance to the actual (visual) surface
-    SReal getProximity() { return proximity.getValue(); }
+    SReal getProximity() const { return proximity.getValue(); }
 
     /// Get contact stiffness
     SReal getContactStiffness(Index /*index*/) { return contactStiffness.getValue(); }

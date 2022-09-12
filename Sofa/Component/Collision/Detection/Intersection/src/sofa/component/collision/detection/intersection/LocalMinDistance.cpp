@@ -107,13 +107,14 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
         return false;
     }
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
-    Matrix2 A;
-    Vector2 b;
+    const Line::Coord AB = e1.p2()-e1.p1();
+    const Line::Coord CD = e2.p2()-e2.p1();
+    const Line::Coord AC = e2.p1()-e1.p1();
+
+    Mat<2, 2, Line::Coord::value_type> A;
+    Vec<2, Line::Coord::value_type> b;
 
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
@@ -121,10 +122,10 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
-    const double det = type::determinant(A);
+    const Line::Coord::value_type det = type::determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    Line::Coord::value_type alpha = 0.5;
+    Line::Coord::value_type beta = 0.5;
 
     if (det < -1.0e-30 || det > 1.0e-30)
     {
@@ -135,7 +136,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
             return false;
     }
 
-    const Vector3 PQ = AC + CD * beta - AB * alpha;
+    const Line::Coord PQ = AC+CD*beta-AB*alpha;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -146,7 +147,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
             if (!testValidity(e1, PQ))
                 return false;
 
-            const Vector3 QP = -PQ;
+            const Line::Coord QP = -PQ;
             return testValidity(e2, QP);
         }
 
@@ -170,9 +171,9 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
     // E1 => A-->B
     // E2 => C-->D
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
+    const Line::Coord AB = e1.p2()-e1.p1();
+    const Line::Coord CD = e2.p2()-e2.p1();
+    const Line::Coord AC = e2.p1()-e1.p1();
     Matrix2 A;
     Vector2 b;
 
@@ -586,13 +587,13 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 
 bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 {
-
+    static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return false;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
     double A;
     double b;
@@ -637,12 +638,13 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 
 int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
 {
+    static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return 0;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
     if (AB.norm()<0.000000000001*AP.norm())
     {
@@ -714,10 +716,10 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
 bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
 {
-
+    static_assert(std::is_same_v<Line::Coord, Sphere::Coord>, "Data mismatch");
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
     double A;
     double b;
@@ -762,9 +764,10 @@ bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
 
 int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* contacts)
 {
+    static_assert(std::is_same_v<Line::Coord, Sphere::Coord>, "Data mismatch");
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
     if (AB.norm()<0.000000000001*AP.norm())
     {
@@ -1294,10 +1297,10 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
 
     Vector3 n1;
 
-    const Vector3 &pt1 = l.p1();
-    const Vector3 &pt2 = l.p2();
+    const Line::Coord &pt1 = l.p1();
+    const Line::Coord &pt2 = l.p2();
 
-    Vector3 AB = pt2 - pt1;
+    Line::Coord AB = pt2 - pt1;
     AB.normalize();
 
     BaseMeshTopology* topology = l.getCollisionModel()->getCollisionTopology();
