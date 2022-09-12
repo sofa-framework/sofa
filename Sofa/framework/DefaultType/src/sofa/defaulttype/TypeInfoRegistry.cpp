@@ -38,6 +38,12 @@
 namespace sofa::defaulttype
 {
 
+static std::map<std::type_index, int>& getAccessMap()
+{
+    static std::map<std::type_index, int> mapToIndex;
+    return mapToIndex;
+}
+
 static std::vector<const AbstractTypeInfo*>& getStorage()
 {
     static std::vector<const AbstractTypeInfo*> typeinfos {NoTypeInfo::Get()};
@@ -59,29 +65,51 @@ std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const 
     return tmp;
 }
 
+// Get in the registry if a type already exists for this TypeInfoId
 const AbstractTypeInfo* TypeInfoRegistry::Get(const TypeInfoId& tid)
 {
     sofa::Size id = tid.id;
     auto& typeinfos = getStorage();
-
     if( id < typeinfos.size() && typeinfos[id] != nullptr)
         return typeinfos[id];
 
-    msg_error("TypeInfoRegistry") << "Missing typeinfo for '"<< sofa::helper::NameDecoder::decodeFullName(tid.nfo)
-                                  << "' (searching at index " << tid.id  << ")";
+    dmsg_error("TypeInfoRegistry") << "Missing typeinfo for '"<< sofa::helper::NameDecoder::decodeFullName(tid.nfo)
+                                   << "' (searching at index " << tid.id  << ")";
 
     return nullptr;
 }
 
+// This function has a non linear comlpexity but it should be called only once per static allocation of a type id. 
 int TypeInfoRegistry::AllocateNewTypeId(const std::type_info& nfo)
 {
     auto& typeinfos = getStorage();
+    auto& map = getAccessMap();
+    
+    // search in the map if there is not a type already an entry for that type_info
+    auto nfoInMap = map.find(std::type_index(nfo));
+    if( nfoInMap != map.end() )
+    {
+        // there is a match if a TypeInfoId has already been allocated for that type_info. 
+        // this can happens when TypeInfoId::Get is called for the same type in multiple different shared libraries.
+        // to be sure there is only one single "int" entry for a type we have to perform this check. 
+        dmsg_info("TypeInfoRegistry") << " Trying to register '"<< typeinfos[nfoInMap->second]->name() << " registered in " << typeinfos[nfoInMap->second]->getCompilationTarget();        
+        return nfoInMap->second;
+    }
+    
+    // create the name & typename 
     std::string name = sofa::helper::NameDecoder::decodeTypeName(nfo);
     std::string typeName = sofa::helper::NameDecoder::decodeTypeName(nfo);
+    
+    // register a minimal type "name only" type info. 
     typeinfos.push_back(new NameOnlyTypeInfo(name, typeName));
-    return typeinfos.size()-1;
+    
+    // get the type id
+    int id = typeinfos.size()-1;
+    
+    // store it in the access map for future checking of existence. 
+    map[std::type_index(nfo)] = 0;    
+    return id;
 }
-
 
 int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const std::string &compilationTarget)
 {
@@ -91,7 +119,7 @@ int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const s
     auto& typeinfos = getStorage();
     sofa::Size id = tid.id;
 
-    msg_info("TypeInfoRegistry") << " Trying to register '"<< info->name() << "/" << tid.nfo.name() << "' at index " << id << "";
+    dmsg_info("TypeInfoRegistry") << " Trying to register '"<< info->name() << "/" << tid.nfo.name() << "' at index " << id << "";
 
     info->setCompilationTarget(compilationTarget);
     if( id >= typeinfos.size() )
@@ -105,7 +133,7 @@ int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const s
         {
             if( (typeinfos[id] == NoTypeInfo::Get()) || !typeinfos[id]->ValidInfo())
             {
-                msg_info("TypeInfoRegistry") << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name();
+                dmsg_info("TypeInfoRegistry") << " Promoting typeinfo "<< id << " from " << typeinfos[id]->name() << " to " << info->name();
                 info->setCompilationTarget(compilationTarget);
                 typeinfos[id] = info;
                 return 2;
@@ -115,11 +143,11 @@ int TypeInfoRegistry::Set(const TypeInfoId& tid, AbstractTypeInfo* info, const s
     }
     if( info->ValidInfo() )
     {
-        msg_info("TypeInfoRegistry") << " Registering a complete type info at "  << id << " => " << info->name();
+        dmsg_info("TypeInfoRegistry") << " Registering a complete type info at "  << id << " => " << info->name();
     }
     else
     {
-        msg_warning("TypeInfoRegistry") << " Registering a partial new type info at "  << id << " => " << info->name();
+        dmsg_warning("TypeInfoRegistry") << " Registering a partial new type info at "  << id << " => " << info->name();
     }
     typeinfos[id] = info;
     return 1;
