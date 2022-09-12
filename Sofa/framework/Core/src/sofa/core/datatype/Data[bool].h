@@ -21,36 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <vector>
-#include <sofa/type/fixed_array.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <sofa/type/RGBAColor.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-//#include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
 
-namespace sofa::defaulttype
+namespace sofa::core::objectmodel
 {
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+template<> bool Data<bool>::read(const std::string& s);
+template<> bool Data<bool>::AbstractTypeInfoRegistration();
+template<> bool Data<sofa::type::vector<bool>>::AbstractTypeInfoRegistration();
 
-} /// namespace sofa::defaulttype
+#ifndef SOFA_CORE_DATATYPE_DATABOOL_DEFINITION
+extern template class SOFA_CORE_API Data<bool>;
+extern template class SOFA_CORE_API Data<sofa::type::vector<bool>>;
+#endif ///
+
+}

@@ -40,28 +40,8 @@ bool SOFA_CORE_API Data<std::string>::read( const std::string& str )
     return true;
 }
 
-/// Specialization for reading booleans
-template<>
-bool SOFA_CORE_API Data<bool>::read( const std::string& str )
-{
-    if (str.empty())
-        return false;
-    bool val;
-    if (str[0] == 'T' || str[0] == 't')
-        val = true;
-    else if (str[0] == 'F' || str[0] == 'f')
-        val = false;
-    else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-        val = (atoi(str.c_str()) != 0);
-    else
-        return false;
-    setValue(val);
-    return true;
-}
-
 template class SOFA_CORE_API Data< std::string >;
 template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
-template class SOFA_CORE_API Data< bool >;
 template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 
 } // objectmodel

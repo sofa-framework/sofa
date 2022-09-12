@@ -186,31 +186,17 @@ public:
 
 
     /// @}
-
+    
     /// Get info about the value 'T' type 
     static const defaulttype::AbstractTypeInfo* GetValueTypeInfo()
     {
-        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>());
+        return GetValueTypeInfoWithCompatibilityLayer();
     }
        
     /// Get info about the value 'T' type 
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
     {
-        auto *newinfo = GetValueTypeInfo();
-        auto *oldinfo = sofa::defaulttype::VirtualTypeInfo<T>::get(); 
-
-        // TRANSITIONAL STATE: If this is true, this means that 'T' has been correctly registered in type info system. 
-        if(newinfo->ValidInfo())
-            return newinfo;
-
-        // TRANSITIONAL STATE: If this is true, this means that 'T' has not been correctly registered in type info system but there exists 
-        // a correct typeinfo in this translation unit.          
-        if(oldinfo->ValidInfo())
-        {
-            dmsg_deprecated("Data") << "A valid TypeInfo exists for " << oldinfo->getTypeName() << " that is not yet registered in the TypeInfoRegistry";
-        }
-        
-        return oldinfo;
+        return GetValueTypeInfoWithCompatibilityLayer();
     }
 
     /** Try to read argument value from an input stream.
@@ -252,6 +238,26 @@ private:
     const void* doGetValueVoidPtr() const override { return &getValue(); }
     void* doBeginEditVoidPtr() override  { return beginEdit(); }
     void doEndEditVoidPtr() override  { endEdit(); }
+    
+    
+    static const defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer()
+    {
+        auto *newinfo =  sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>());
+        auto *oldinfo = sofa::defaulttype::VirtualTypeInfo<T>::get(); 
+
+        // TRANSITIONAL STATE: If this is true, this means that 'T' has been correctly registered in type info system. 
+        if(newinfo->ValidInfo())
+            return newinfo;
+
+        // TRANSITIONAL STATE: If this is true, this means that 'T' has not been correctly registered in type info system but there exists 
+        // a correct typeinfo in this translation unit.          
+        if(oldinfo->ValidInfo())
+        {
+            dmsg_deprecated("Data") << "A valid TypeInfo exists for " << oldinfo->getTypeName() << " that is not yet registered in the TypeInfoRegistry";
+        }
+        
+        return oldinfo;        
+    }
 };
 
 class EmptyData : public Data<void*> {};
@@ -259,10 +265,6 @@ class EmptyData : public Data<void*> {};
 /// Specialization for reading strings
 template<>
 bool Data<std::string>::read( const std::string& str );
-
-/// Specialization for reading booleans
-template<>
-bool Data<bool>::read( const std::string& str );
 
 /// General case for printing default value
 template<class T>
@@ -360,9 +362,11 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 extern template class SOFA_CORE_API Data< std::string >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
-extern template class SOFA_CORE_API Data< bool >;
 #endif
 } // namespace core::objectmodel
+
+
+#include <sofa/core/datatype/Data[bool].h>
 
 namespace sofa
 {
