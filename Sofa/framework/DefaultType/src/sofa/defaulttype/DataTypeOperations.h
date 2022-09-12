@@ -28,11 +28,13 @@ namespace sofa::defaulttype
 {
 
 /// Function resetting all the element of a container with its default constructor value type
-template<class Vec, typename = void>
+template<class Vec>
 void resetDataTypeVec(Vec& vec)
 {
     for (auto& v : vec)
-        v = {};
+    {
+        v = typename Vec::value_type{};
+    }
 }
 
 using sofa::type::Vec;
