@@ -356,14 +356,14 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 }
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
-extern template class SOFA_CORE_API Data< std::string >;
-extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
 extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 #endif
 } // namespace core::objectmodel
 
 #include <sofa/core/datatype/Data[bool].h>
+#include <sofa/core/datatype/Data[string].h>
 #include <sofa/core/datatype/Data[RGBAColor].h>
+#include <sofa/core/datatype/Data[Tag].h>
 
 namespace sofa
 {

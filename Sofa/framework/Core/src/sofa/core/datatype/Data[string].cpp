@@ -19,25 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#define SOFA_CORE_DATATYPE_DATASTRING_DEFINITION
+#include <sofa/core/datatype/Data[string].h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 
-#include <sofa/core/objectmodel/Data.h>
-
-namespace sofa
+namespace sofa::core::objectmodel
 {
 
-namespace core
+/// Specialization for reading booleans
+template<>
+bool SOFA_CORE_API Data<std::string>::read( const std::string& str )
+{        
+    setValue(str);
+    return true;
+}
+
+template<> bool Data<std::string>::AbstractTypeInfoRegistration()
 {
+    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<std::string>(), 
+                                             sofa::defaulttype::VirtualTypeInfo<std::string>::get(),
+                                             "Sofa.Core");
+    return true;
+}
 
-namespace objectmodel
+template<> bool Data<sofa::type::vector<std::string>>::AbstractTypeInfoRegistration()
 {
-
-template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
-
-} // objectmodel
-
-} // core
-
-} // sofa
+    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<sofa::type::vector<std::string>>(), 
+                                             sofa::defaulttype::VirtualTypeInfo<sofa::type::vector<std::string>>::get(),
+                                             "Sofa.Core");
+    return true;
+}
 
 
+template class SOFA_CORE_API Data<std::string>;
+template class SOFA_CORE_API Data<sofa::type::vector<std::string>>;
+
+}

@@ -19,25 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#define SOFA_CORE_DATATYPE_DATATAG_DEFINITION
+#include <sofa/core/datatype/Data[Tag].h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 
-#include <sofa/core/objectmodel/Data.h>
 
-namespace sofa
+namespace sofa::defaulttype
 {
 
-namespace core
+template<>
+struct DataTypeInfo< sofa::core::objectmodel::Tag > : public TextTypeInfo<sofa::core::objectmodel::Tag>
+{
+    static const char* name() { return "Tag"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa::core::objectmodel::TagSet>
+{
+    static const char* name() { return "TagSet"; }
+};
+
+} // namespace defaulttype
+
+
+
+namespace sofa::core::objectmodel
 {
 
-namespace objectmodel
+template<> bool Data<Tag>::AbstractTypeInfoRegistration()
 {
+    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<Tag>(), 
+                                             sofa::defaulttype::VirtualTypeInfo<Tag>::get(),
+                                             "Sofa.Core");
+    return true;
+}
 
-template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
+template<> bool Data<TagSet>::AbstractTypeInfoRegistration()
+{
+    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<TagSet>(), 
+                                             sofa::defaulttype::VirtualTypeInfo<TagSet>::get(),
+                                             "Sofa.Core");
+    return true;
+}
 
-} // objectmodel
 
-} // core
+template class SOFA_CORE_API Data<Tag>;
+template class SOFA_CORE_API Data<TagSet>;
 
-} // sofa
-
-
+}

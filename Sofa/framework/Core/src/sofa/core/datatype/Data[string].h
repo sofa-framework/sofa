@@ -19,25 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#pragma once
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/type/vector.h>
+#include <string>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
 
-namespace core
-{
+template<> bool Data<std::string>::read(const std::string& s);
+template<> bool Data<std::string>::AbstractTypeInfoRegistration();
+template<> bool Data<sofa::type::vector<std::string>>::AbstractTypeInfoRegistration();
 
-namespace objectmodel
-{
+#ifndef SOFA_CORE_DATATYPE_DATASTRING_DEFINITION
+extern template class SOFA_CORE_API Data<std::string>;
+extern template class SOFA_CORE_API Data<sofa::type::vector<std::string>>;
+#endif ///
 
-template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
-
-} // objectmodel
-
-} // core
-
-} // sofa
-
-
+}

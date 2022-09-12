@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#pragma once
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/Tag.h>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
 
-namespace core
-{
+template<> bool Data<Tag>::AbstractTypeInfoRegistration();
+template<> bool Data<TagSet>::AbstractTypeInfoRegistration();
 
-namespace objectmodel
-{
+#ifndef SOFA_CORE_DATATYPE_DATATAG_DEFINITION
+extern template class SOFA_CORE_API Data<Tag>;
+extern template class SOFA_CORE_API Data<TagSet>;
+#endif ///
 
-template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
-
-} // objectmodel
-
-} // core
-
-} // sofa
-
-
+}
