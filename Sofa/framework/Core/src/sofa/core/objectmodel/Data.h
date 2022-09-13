@@ -364,8 +364,11 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 
 #include <sofa/core/datatype/Data[bool].h>
 #include <sofa/core/datatype/Data[string].h>
+#include <sofa/core/datatype/Data[fixed_array].h>
 #include <sofa/core/datatype/Data[ComponentState].h>
 #include <sofa/core/datatype/Data[Integer].h>
+#include <sofa/core/datatype/Data[Mat].h>
+#include <sofa/core/datatype/Data[Quat].h>
 #include <sofa/core/datatype/Data[RGBAColor].h>
 #include <sofa/core/datatype/Data[Scalar].h>
 #include <sofa/core/datatype/Data[Tag].h>

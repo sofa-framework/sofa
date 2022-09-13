@@ -21,26 +21,40 @@
 ******************************************************************************/
 #pragma once
 
-#include <vector>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
 #include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
 
-namespace sofa::defaulttype
-{
+#ifndef SOFA_CORE_DATATYPE_DATAFIXEDARRAY_DEFINITION
+DATATYPEINFO_DECLARE(sofa::type::FixedArray1i);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray2i);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray3i);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray4i);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray6i);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray7i);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray8i);
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+DATATYPEINFO_DECLARE(sofa::type::FixedArray1I);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray2I);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray3I);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray4I);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray6I);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray7I);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray8I);
 
-} /// namespace sofa::defaulttype
+DATATYPEINFO_DECLARE(sofa::type::FixedArray1f);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray2f);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray3f);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray4f);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray6f);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray7f);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray8f);
+
+DATATYPEINFO_DECLARE(sofa::type::FixedArray1d);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray2d);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray3d);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray4d);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray6d);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray7d);
+DATATYPEINFO_DECLARE(sofa::type::FixedArray8d);
+#endif

@@ -19,28 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <vector>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
+#define SOFA_CORE_DATATYPE_DATAFIXEDARRAY_DEFINITION
+#include <sofa/core/datatype/Data[fixed_array].h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
 
-namespace sofa::defaulttype
-{
+DATATYPEINFO_DEFINE(sofa::type::FixedArray1i);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray2i);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray3i);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray4i);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray6i);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray7i);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray8i);
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+DATATYPEINFO_DEFINE(sofa::type::FixedArray1I);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray2I);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray3I);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray4I);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray6I);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray7I);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray8I);
 
-} /// namespace sofa::defaulttype
+DATATYPEINFO_DEFINE(sofa::type::FixedArray1f);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray2f);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray3f);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray4f);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray6f);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray7f);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray8f);
+
+DATATYPEINFO_DEFINE(sofa::type::FixedArray1d);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray2d);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray3d);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray4d);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray6d);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray7d);
+DATATYPEINFO_DEFINE(sofa::type::FixedArray8d);
