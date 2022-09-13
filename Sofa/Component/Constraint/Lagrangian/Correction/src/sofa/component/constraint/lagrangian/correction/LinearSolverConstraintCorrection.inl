@@ -615,13 +615,16 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
         {
             MatrixDerivColConstIterator rowEnd = rowIt.end();
 
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
+            if (systemLHVector_buf_fullvector)
             {
-                if (systemLHVector_buf_fullvector)
+                for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
                 {
                     addConstraintDisplacement_impl(d, i, systemLHVector_buf_fullvector, positionIntegrationFactor, colIt.index(), colIt.val());
                 }
-                else
+            }
+            else
+            {
+                for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
                 {
                     addConstraintDisplacement_impl(d, i, systemLHVector_buf, positionIntegrationFactor, colIt.index(), colIt.val());
                 }
