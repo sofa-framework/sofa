@@ -50,6 +50,7 @@ public:
     typedef TThreadManager ThreadManager;
     typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
+    using Inherit::initData;
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<double> f_omega; ///< Omega coefficient

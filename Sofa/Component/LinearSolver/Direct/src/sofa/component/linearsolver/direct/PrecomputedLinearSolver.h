@@ -77,6 +77,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(PrecomputedLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    using Inherit::initData;
+
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 

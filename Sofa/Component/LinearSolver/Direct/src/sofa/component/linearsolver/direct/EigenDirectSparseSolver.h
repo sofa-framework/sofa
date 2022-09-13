@@ -47,6 +47,9 @@ public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, EigenSolver),
         SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector));
 
+    using Inherit = sofa::component::linearsolver::MatrixLinearSolver<Matrix, Vector>;
+    using Inherit::initData;
+
     using NaturalOrderSolver = typename EigenSolver::NaturalOrderSolver;
     using AMDOrderSolver     = typename EigenSolver::AMDOrderSolver;
     using COLAMDOrderSolver  = typename EigenSolver::COLAMDOrderSolver;

@@ -42,6 +42,8 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    using Inherit::initData;
+
     Data<bool> f_verbose; ///< Dump system state at each iteration
 protected:
     JacobiPreconditioner();

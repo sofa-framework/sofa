@@ -39,6 +39,7 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     using Real = typename Matrix::Real;
+    using Inherit::initData;
 
     Data<unsigned> d_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<Real> d_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)

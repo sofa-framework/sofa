@@ -45,6 +45,9 @@ class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BTDLinearSolver, Matrix, Vector), SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector));
 
+    using Inherit = sofa::component::linearsolver::MatrixLinearSolver<Matrix, Vector>;
+    using Inherit::initData;
+
     Data<bool> d_verbose; ///< Dump system state at each iteration
     Data<bool> d_problem; ///< display debug informations about subpartSolve computation
     Data<bool> d_subpartSolve; ///< Allows for the computation of a subpart of the system
@@ -98,7 +101,7 @@ public:
     Vector Y;
 protected:
     BTDLinearSolver()
-        : d_verbose( initData(&d_verbose,false,"verbose","Dump system state at each iteration") )
+        : d_verbose(initData(&d_verbose,false,"verbose","Dump system state at each iteration") )
         , d_problem(initData(&d_problem, false,"showProblem", "display debug informations about subpartSolve computation") )
         , d_subpartSolve(initData(&d_subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
         , d_verification(initData(&d_verification, false,"verification", "verification of the subpartSolve"))

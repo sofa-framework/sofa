@@ -47,6 +47,7 @@ public:
     typedef TVector Vector;
     typedef typename TMatrix::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,ThreadManager> Inherit;
+    using Inherit::initData;
     typedef sofa::type::MatNoInit<3, 3, Real> Transformation;
     typedef TMatrix TRotationMatrix;
     typedef typename Inherit::JMatrixType JMatrixType;

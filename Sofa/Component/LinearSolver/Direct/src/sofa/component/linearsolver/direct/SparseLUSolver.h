@@ -69,7 +69,8 @@ public:
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
 
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;    
+    using Inherit::initData;
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<double> f_tol; ///< tolerance of factorization

@@ -138,6 +138,7 @@ class SparseLDLSolverImpl : public sofa::component::linearsolver::MatrixLinearSo
 public :
     SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolverImpl,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager));
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector, TThreadManager> Inherit;
+    using Inherit::initData;
 
     typedef TMatrix Matrix;
     typedef TVector Vector;

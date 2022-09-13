@@ -42,6 +42,9 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
 
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector> Inherit;
+    using Inherit::initData;
+
     SparseCholeskySolver();
     ~SparseCholeskySolver() override;
 

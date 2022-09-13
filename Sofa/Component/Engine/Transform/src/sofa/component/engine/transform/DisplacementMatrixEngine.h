@@ -100,11 +100,12 @@ void DisplacementTransformEngine<defaulttype::Rigid3Types,type::Mat4x4 >::mult( 
 template < class DataTypes >
 class DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes, type::Mat4x4>
 {
-
 public:
     SOFA_CLASS( SOFA_TEMPLATE( DisplacementMatrixEngine, DataTypes ),SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, type::Mat4x4 ) );
 
     typedef DisplacementTransformEngine<DataTypes, type::Mat4x4> Inherit;
+    using Inherit::initData;
+
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord; // rigid
     typedef typename DataTypes::VecCoord VecCoord;

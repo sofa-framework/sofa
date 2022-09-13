@@ -45,6 +45,7 @@ public:
     typedef TVector Vector;
     typedef typename Vector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    using Inherit::initData;
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
 

@@ -41,6 +41,7 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    using Inherit::initData;
 
     Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)

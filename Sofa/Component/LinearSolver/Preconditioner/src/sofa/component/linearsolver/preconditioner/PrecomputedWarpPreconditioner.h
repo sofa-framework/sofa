@@ -94,6 +94,7 @@ public:
     typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseVector TVector;
     typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    using Inherit::initData;
 
     SOFA_CLASS(SOFA_TEMPLATE(PrecomputedWarpPreconditioner,TDataTypes),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
     typedef TDataTypes DataTypes;

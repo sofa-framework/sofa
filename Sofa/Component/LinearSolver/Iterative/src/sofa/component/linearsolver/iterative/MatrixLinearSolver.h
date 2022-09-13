@@ -54,7 +54,7 @@ template<class Matrix, class Vector>
 class BaseMatrixLinearSolver : public sofa::core::behavior::LinearSolver
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector), sofa::core::behavior::LinearSolver);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector), sofa::core::behavior::LinearSolver);
 
     virtual void invert(Matrix& M) = 0;
 

@@ -164,6 +164,8 @@ private:
     void unspecializedInit() ;
 };
 
+template<>
+SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API void BilateralInteractionConstraint<Rigid3Types>::bwdInit();
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_BILATERALINTERACTIONCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint< Vec3Types >;
