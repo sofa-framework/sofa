@@ -39,10 +39,10 @@ namespace sofa::type
 namespace // anonymous
 {
     template<typename real>
-    constexpr real rabs(const real r)
+    real rabs(const real r)
     {
         if constexpr (std::is_signed<real>())
-            return r < 0 ? -r : r;
+            return std::abs(r);
         else
             return r;
     }
@@ -526,7 +526,7 @@ public:
     }
 
     /// return true if norm()==1
-    constexpr bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const
+    bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const
     { 
         return rabs( norm2() - static_cast<ValueType>(1) ) <= threshold;
     }

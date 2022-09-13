@@ -32,16 +32,16 @@
 namespace // anonymous
 {
     template<typename real>
-    constexpr real rabs(const real r)
+    real rabs(const real r)
     {
         if constexpr (std::is_signed<real>())
-            return r < 0 ? -r : r;
+            return std::abs(r);
         else
             return r;
     }
 
     template<typename real>
-    constexpr real equalsZero(const real r, const real epsilon = std::numeric_limits<real>::epsilon())
+    real equalsZero(const real r, const real epsilon = std::numeric_limits<real>::epsilon())
     {
         return rabs(r) <= epsilon;
     }
@@ -65,8 +65,8 @@ public:
     typedef VecNoInit<C,real> LineNoInit;
     typedef Vec<L,real> Col;
 
-    static const Size nbLines = L;
-    static const Size nbCols  = C;
+    static constexpr Size nbLines = L;
+    static constexpr Size nbCols  = C;
 
     constexpr Mat() noexcept
     {
@@ -389,7 +389,7 @@ public:
     }
 
 
-    constexpr bool isSymmetric() const
+    bool isSymmetric() const
     {
         for (Size i=0; i<L; i++)
             for (Size j=i+1; j<C; j++)
@@ -397,7 +397,7 @@ public:
         return true;
     }
 
-    constexpr bool isDiagonal() const noexcept
+    bool isDiagonal() const noexcept
     {
         for (Size i=0; i<L; i++)
         {
@@ -799,7 +799,7 @@ constexpr real determinant(const Mat<3,2,real>& m) noexcept
 
 // one-norm of a 3 x 3 matrix
 template<class real>
-constexpr real oneNorm(const Mat<3,3,real>& A)
+real oneNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
@@ -813,7 +813,7 @@ constexpr real oneNorm(const Mat<3,3,real>& A)
 
 // inf-norm of a 3 x 3 matrix
 template<class real>
-constexpr real infNorm(const Mat<3,3,real>& A)
+real infNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
@@ -847,7 +847,7 @@ constexpr Vec<N,real> diagonal(const Mat<N,N,real>& m)
 
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
-[[nodiscard]] constexpr bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+[[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     sofa::Size i{0}, j{0}, k{0};
     Vec<S, sofa::Size> r, c, row, col;
