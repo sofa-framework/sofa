@@ -362,7 +362,9 @@ extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 
 #include <sofa/core/datatype/Data[bool].h>
 #include <sofa/core/datatype/Data[string].h>
+#include <sofa/core/datatype/Data[Integer].h>
 #include <sofa/core/datatype/Data[RGBAColor].h>
+#include <sofa/core/datatype/Data[Scalar].h>
 #include <sofa/core/datatype/Data[Tag].h>
 
 namespace sofa

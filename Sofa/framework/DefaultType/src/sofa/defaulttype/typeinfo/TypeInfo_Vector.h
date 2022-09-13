@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/type/vector.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/defaulttype/typeinfo/models/VectorTypeInfo.h>
 
 namespace sofa::defaulttype
