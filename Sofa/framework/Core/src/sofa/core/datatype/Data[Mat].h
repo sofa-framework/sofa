@@ -19,8 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#pragma once
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
+#include <sofa/type/Mat.h>
 
+#ifndef SOFA_CORE_DATATYPE_DATAMAT_DEFINITION
+DATATYPEINFO_DECLARE(sofa::type::Mat1x1f);
+DATATYPEINFO_DECLARE(sofa::type::Mat1x1d);
 
+DATATYPEINFO_DECLARE(sofa::type::Mat2x2f);
+DATATYPEINFO_DECLARE(sofa::type::Mat2x2d);
+
+DATATYPEINFO_DECLARE(sofa::type::Mat3x3f);
+DATATYPEINFO_DECLARE(sofa::type::Mat3x3d);
+
+DATATYPEINFO_DECLARE(sofa::type::Mat3x4f);
+DATATYPEINFO_DECLARE(sofa::type::Mat3x4d);
+
+DATATYPEINFO_DECLARE(sofa::type::Mat4x4f);
+DATATYPEINFO_DECLARE(sofa::type::Mat4x4d);
+#endif

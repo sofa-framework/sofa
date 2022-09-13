@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#define SOFA_CORE_DATATYPE_DATACOMPONENTSTATE_DEFINITION
+#include <sofa/core/datatype/Data[ComponentState].h>
+#include <sofa/defaulttype/typeinfo/NameOnlyTypeInfo.h>
 
-#include <sofa/core/objectmodel/Data.h>
-
-
+DATATYPEINFO_DEFINE(sofa::core::objectmodel::ComponentState);

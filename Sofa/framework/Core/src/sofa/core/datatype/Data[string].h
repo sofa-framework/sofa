@@ -22,19 +22,18 @@
 #pragma once
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
 #include <sofa/type/vector.h>
 #include <string>
 
+
 namespace sofa::core::objectmodel
 {
-
-template<> bool Data<std::string>::read(const std::string& s);
-template<> bool Data<std::string>::AbstractTypeInfoRegistration();
-template<> bool Data<sofa::type::vector<std::string>>::AbstractTypeInfoRegistration();
+    // std::string has its own custom serialization
+    template<> bool Data<std::string>::read(const std::string& s);
+}
 
 #ifndef SOFA_CORE_DATATYPE_DATASTRING_DEFINITION
-extern template class SOFA_CORE_API Data<std::string>;
-extern template class SOFA_CORE_API Data<sofa::type::vector<std::string>>;
-#endif ///
+DATATYPEINFO_DECLARE(std::string);
+#endif 
 
-}

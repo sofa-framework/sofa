@@ -24,45 +24,5 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 
-namespace sofa::core::objectmodel
-{
-
-template<> bool Data<float>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<float>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<float>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-template<> bool Data<sofa::type::vector<float>>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<sofa::type::vector<float>>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<sofa::type::vector<float>>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-template class SOFA_CORE_API Data<float>;
-template class SOFA_CORE_API Data<sofa::type::vector<float>>;
-
-template<> bool Data<double>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<double>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<double>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-template<> bool Data<sofa::type::vector<double>>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<sofa::type::vector<double>>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<sofa::type::vector<double>>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-template class SOFA_CORE_API Data<double>;
-template class SOFA_CORE_API Data<sofa::type::vector<double>>;
-
-}
+DATATYPEINFO_DEFINE(float);
+DATATYPEINFO_DEFINE(double);

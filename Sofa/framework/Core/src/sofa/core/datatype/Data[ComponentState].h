@@ -19,8 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#pragma once
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
+#include <sofa/core/objectmodel/ComponentState.h>
 
-
+#ifndef SOFA_CORE_DATATYPE_DATACOMPONENTSTATE_DEFINITION
+DATATYPEINFO_DECLARE(sofa::core::objectmodel::ComponentState);
+#endif

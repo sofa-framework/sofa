@@ -23,16 +23,10 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
 
-namespace sofa::core::objectmodel
-{
-
-template<> bool Data<Tag>::AbstractTypeInfoRegistration();
-template<> bool Data<TagSet>::AbstractTypeInfoRegistration();
 
 #ifndef SOFA_CORE_DATATYPE_DATATAG_DEFINITION
-extern template class SOFA_CORE_API Data<Tag>;
-extern template class SOFA_CORE_API Data<TagSet>;
-#endif ///
-
-}
+DATATYPEINFO_DECLARE(sofa::core::objectmodel::Tag)
+DATATYPEINFO_DECLARE(sofa::core::objectmodel::TagSet)
+#endif 

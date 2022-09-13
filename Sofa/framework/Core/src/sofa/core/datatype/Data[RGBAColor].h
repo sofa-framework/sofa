@@ -24,16 +24,8 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/RGBAColor.h>
-
-namespace sofa::core::objectmodel
-{
-
-template<> bool Data<sofa::type::RGBAColor>::AbstractTypeInfoRegistration();
-template<> bool Data<sofa::type::vector<sofa::type::RGBAColor>>::AbstractTypeInfoRegistration();
+#include <sofa/core/datatype/DataRegistrationMacro.h>
 
 #ifndef SOFA_CORE_DATATYPE_DATARGBACOLOR_DEFINITION
-extern template class SOFA_CORE_API Data<sofa::type::RGBAColor>;
-extern template class SOFA_CORE_API Data<sofa::type::vector<sofa::type::RGBAColor>>;
+DATATYPEINFO_DECLARE(sofa::type::RGBAColor);
 #endif ///
-
-}

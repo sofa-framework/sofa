@@ -29,12 +29,8 @@
 #include <sofa/defaulttype/AbstractTypeInfo.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>

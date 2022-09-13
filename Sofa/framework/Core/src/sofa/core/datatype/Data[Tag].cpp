@@ -23,8 +23,9 @@
 #include <sofa/core/datatype/Data[Tag].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 
-
+// Custom name type definition 
 namespace sofa::defaulttype
 {
 
@@ -40,31 +41,8 @@ struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa
     static const char* name() { return "TagSet"; }
 };
 
-} // namespace defaulttype
+} // namespace sofa::defaulttype
 
 
-
-namespace sofa::core::objectmodel
-{
-
-template<> bool Data<Tag>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<Tag>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<Tag>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-template<> bool Data<TagSet>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<TagSet>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<TagSet>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-
-template class SOFA_CORE_API Data<Tag>;
-template class SOFA_CORE_API Data<TagSet>;
-
-}
+DATATYPEINFO_DEFINE(sofa::core::objectmodel::Tag)
+DATATYPEINFO_DEFINE(sofa::core::objectmodel::TagSet)

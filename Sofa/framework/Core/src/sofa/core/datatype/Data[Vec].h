@@ -19,8 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#pragma once
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
+#include <sofa/type/Vec.h>
 
+#ifndef SOFA_CORE_DATATYPE_DATAVEC_DEFINITION
+DATATYPEINFO_DECLARE(sofa::type::Vec1f);
+DATATYPEINFO_DECLARE(sofa::type::Vec1d);
+DATATYPEINFO_DECLARE(sofa::type::Vec1i);
+DATATYPEINFO_DECLARE(sofa::type::Vec1u);
 
+DATATYPEINFO_DECLARE(sofa::type::Vec2f);
+DATATYPEINFO_DECLARE(sofa::type::Vec2d);
+DATATYPEINFO_DECLARE(sofa::type::Vec2i);
+DATATYPEINFO_DECLARE(sofa::type::Vec2u);
+
+DATATYPEINFO_DECLARE(sofa::type::Vec3f);
+DATATYPEINFO_DECLARE(sofa::type::Vec3d);
+DATATYPEINFO_DECLARE(sofa::type::Vec3i);
+DATATYPEINFO_DECLARE(sofa::type::Vec3u);
+
+DATATYPEINFO_DECLARE(sofa::type::Vec4f);
+DATATYPEINFO_DECLARE(sofa::type::Vec4d);
+DATATYPEINFO_DECLARE(sofa::type::Vec4i);
+DATATYPEINFO_DECLARE(sofa::type::Vec4u);
+
+DATATYPEINFO_DECLARE(sofa::type::Vec6f);
+DATATYPEINFO_DECLARE(sofa::type::Vec6d);
+DATATYPEINFO_DECLARE(sofa::type::Vec6i);
+DATATYPEINFO_DECLARE(sofa::type::Vec6u);
+#endif

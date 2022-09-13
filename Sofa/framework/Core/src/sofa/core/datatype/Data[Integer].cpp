@@ -22,20 +22,15 @@
 #define SOFA_CORE_DATATYPE_DATAINTEGER_DEFINITION
 #include <sofa/core/datatype/Data[Integer].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
-#include <sofa/core/datatype/DataRegistrationMacro.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 
-DATATYPEINFO_REGISTER(char);
-DATATYPEINFO_REGISTER(unsigned char);
-
-DATATYPEINFO_REGISTER(short);
-DATATYPEINFO_REGISTER(unsigned short);
-
-DATATYPEINFO_REGISTER(int);
-DATATYPEINFO_REGISTER(unsigned int);
-
-DATATYPEINFO_REGISTER(long);
-DATATYPEINFO_REGISTER(unsigned long);
-
-DATATYPEINFO_REGISTER(long long);
-DATATYPEINFO_REGISTER(unsigned long long);
-
+DATATYPEINFO_DEFINE(char);
+DATATYPEINFO_DEFINE(unsigned char);
+DATATYPEINFO_DEFINE(short);
+DATATYPEINFO_DEFINE(unsigned short);
+DATATYPEINFO_DEFINE(int);
+DATATYPEINFO_DEFINE(unsigned int);
+DATATYPEINFO_DEFINE(long);
+DATATYPEINFO_DEFINE(unsigned long);
+DATATYPEINFO_DEFINE(long long);
+DATATYPEINFO_DEFINE(unsigned long long);

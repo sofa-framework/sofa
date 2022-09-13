@@ -241,20 +241,8 @@ private:
     void* doBeginEditVoidPtr() override  { return beginEdit(); }
     void doEndEditVoidPtr() override  { endEdit(); }
     
-    static bool AbstractTypeInfoRegistration()
-    {
-        auto info = sofa::defaulttype::VirtualTypeInfo<T>::get();
-        sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<T>(), info, sofa_tostring(SOFA_TARGET));
-        dmsg_deprecated("GET VALUE TYPE INFO WITH DEPRECTED_CODE") << info->getTypeName();         
-        return false;        
-    }
-    
-    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer()
-    { 
-        static bool __inited__ = AbstractTypeInfoRegistration();        
-        SOFA_UNUSED(__inited__);
-        return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>()); 
-    }
+    static bool AbstractTypeInfoRegistration();    
+    static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer();
 };
 
 class EmptyData : public Data<void*> {};
@@ -262,6 +250,23 @@ class EmptyData : public Data<void*> {};
 /// Specialization for reading strings
 template<>
 bool Data<std::string>::read( const std::string& str );
+
+template<class T>
+bool Data<T>::AbstractTypeInfoRegistration()
+{
+    auto info = sofa::defaulttype::VirtualTypeInfo<T>::get();
+    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<T>(), info, sofa_tostring(SOFA_TARGET));
+    dmsg_deprecated("Data") << "registration type for " << info->getTypeName();                 
+    return false;        
+}
+
+template<class T>
+const sofa::defaulttype::AbstractTypeInfo* Data<T>::GetValueTypeInfoWithCompatibilityLayer()
+{ 
+    static bool __inited__ = AbstractTypeInfoRegistration();        
+    SOFA_UNUSED(__inited__);
+    return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>()); 
+}
 
 /// General case for printing default value
 template<class T>
@@ -355,17 +360,16 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
     return dynamic_cast<const Data<T>*>(parent) != nullptr;
 }
 
-#if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
-extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
-#endif
 } // namespace core::objectmodel
 
 #include <sofa/core/datatype/Data[bool].h>
 #include <sofa/core/datatype/Data[string].h>
+#include <sofa/core/datatype/Data[ComponentState].h>
 #include <sofa/core/datatype/Data[Integer].h>
 #include <sofa/core/datatype/Data[RGBAColor].h>
 #include <sofa/core/datatype/Data[Scalar].h>
 #include <sofa/core/datatype/Data[Tag].h>
+#include <sofa/core/datatype/Data[Vec].h>
 
 namespace sofa
 {

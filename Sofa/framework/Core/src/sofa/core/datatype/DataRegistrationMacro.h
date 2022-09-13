@@ -21,7 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#define DATATYPEINFO_REGISTER(P_TYPENAME)  \
+#include <sofa/type/vector.h>
+
+#define DATATYPEINFO_DEFINE_SINGLE(P_TYPENAME)  \
 namespace sofa::core::objectmodel          \
 {                                          \
 template<> bool Data<P_TYPENAME>::AbstractTypeInfoRegistration() { \
@@ -30,5 +32,20 @@ template<> bool Data<P_TYPENAME>::AbstractTypeInfoRegistration() { \
                                              sofa_tostring(SOFA_TARGET));                             \
     return true;                                                                                      \
 }                                                                                                     \
-template class SOFA_CORE_API Data<P_TYPENAME>;                                                        \
+template class Data<P_TYPENAME>;                                                        \
 }
+
+#define DATATYPEINFO_DECLARE_SINGLE(P_TYPENAME)  \
+namespace sofa::core::objectmodel          \
+{                                          \
+    template<> bool Data<P_TYPENAME>::AbstractTypeInfoRegistration();      \
+    extern template class Data<P_TYPENAME>;                                \
+}                                                                        
+
+#define DATATYPEINFO_DEFINE(P_TYPENAME) \
+    DATATYPEINFO_DEFINE_SINGLE(P_TYPENAME) \
+    DATATYPEINFO_DEFINE_SINGLE(sofa::type::vector<P_TYPENAME>) 
+
+#define DATATYPEINFO_DECLARE(P_TYPENAME) \
+    DATATYPEINFO_DECLARE_SINGLE(P_TYPENAME) \
+    DATATYPEINFO_DECLARE_SINGLE(sofa::type::vector<P_TYPENAME>) 

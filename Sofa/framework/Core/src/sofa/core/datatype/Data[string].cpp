@@ -35,24 +35,6 @@ bool SOFA_CORE_API Data<std::string>::read( const std::string& str )
     return true;
 }
 
-template<> bool Data<std::string>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<std::string>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<std::string>::get(),
-                                             "Sofa.Core");
-    return true;
 }
 
-template<> bool Data<sofa::type::vector<std::string>>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<sofa::type::vector<std::string>>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<sofa::type::vector<std::string>>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-
-template class SOFA_CORE_API Data<std::string>;
-template class SOFA_CORE_API Data<sofa::type::vector<std::string>>;
-
-}
+DATATYPEINFO_DEFINE(std::string);

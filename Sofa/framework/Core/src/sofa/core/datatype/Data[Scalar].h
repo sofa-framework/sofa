@@ -24,20 +24,8 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/vector.h>
 
-namespace sofa::core::objectmodel
-{
-
-template<> bool Data<float>::AbstractTypeInfoRegistration();
-template<> bool Data<sofa::type::vector<float>>::AbstractTypeInfoRegistration();
-
-template<> bool Data<double>::AbstractTypeInfoRegistration();
-template<> bool Data<sofa::type::vector<double>>::AbstractTypeInfoRegistration();
-
 #ifndef SOFA_CORE_DATATYPE_DATASCALAR_DEFINITION
-extern template class SOFA_CORE_API Data<float>;
-extern template class SOFA_CORE_API Data<sofa::type::vector<float>>;
-extern template class SOFA_CORE_API Data<double>;
-extern template class SOFA_CORE_API Data<sofa::type::vector<double>>;
+DATATYPEINFO_DECLARE(float);
+DATATYPEINFO_DECLARE(double);
 #endif ///
 
-}

@@ -22,18 +22,15 @@
 #pragma once
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/type/vector.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
 
 namespace sofa::core::objectmodel
 {
-
-template<> bool Data<bool>::read(const std::string& s);
-template<> bool Data<bool>::AbstractTypeInfoRegistration();
-template<> bool Data<sofa::type::vector<bool>>::AbstractTypeInfoRegistration();
+    // bool has a custom serialization. 
+    template<> bool Data<bool>::read(const std::string& s);
+}
 
 #ifndef SOFA_CORE_DATATYPE_DATABOOL_DEFINITION
-extern template class SOFA_CORE_API Data<bool>;
-extern template class SOFA_CORE_API Data<sofa::type::vector<bool>>;
+DATATYPEINFO_DECLARE(bool);
 #endif ///
 
-}

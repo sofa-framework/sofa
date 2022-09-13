@@ -22,21 +22,18 @@
 #pragma once
 
 #include <sofa/core/objectmodel/Data.h>
-
-namespace sofa::core::objectmodel
-{
+#include <sofa/core/datatype/DataRegistrationMacro.h>
 
 #ifndef SOFA_CORE_DATATYPE_DATAINTEGER_DEFINITION
-extern template class Data<char>;
-extern template class Data<unsigned char>;
-extern template class Data<short>;
-extern template class Data<unsigned short>;
-extern template class Data<int>;
-extern template class Data<unsigned int>;
-extern template class Data<long>;
-extern template class Data<unsigned long>;
-extern template class Data<long long>;
-extern template class Data<unsigned long long>;
+DATATYPEINFO_DECLARE(char);
+DATATYPEINFO_DECLARE(unsigned char);
+DATATYPEINFO_DECLARE(short);
+DATATYPEINFO_DECLARE(unsigned short);
+DATATYPEINFO_DECLARE(int);
+DATATYPEINFO_DECLARE(unsigned int);
+DATATYPEINFO_DECLARE(long);
+DATATYPEINFO_DECLARE(unsigned long);
+DATATYPEINFO_DECLARE(long long);
+DATATYPEINFO_DECLARE(unsigned long long);
 #endif ///
 
-}

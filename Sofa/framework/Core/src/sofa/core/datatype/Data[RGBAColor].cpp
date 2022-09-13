@@ -24,26 +24,5 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_RGBAColor.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
 
-namespace sofa::core::objectmodel
-{
+DATATYPEINFO_DEFINE(sofa::type::RGBAColor);
 
-template<> bool Data<sofa::type::RGBAColor>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<bool>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<bool>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-template<> bool Data<sofa::type::vector<sofa::type::RGBAColor>>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<sofa::type::vector<sofa::type::RGBAColor>>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<sofa::type::vector<sofa::type::RGBAColor>>::get(),
-                                             "Sofa.Core");
-    return true;    
-}
-
-template class SOFA_CORE_API Data<sofa::type::RGBAColor>;
-template class SOFA_CORE_API Data<sofa::type::vector<sofa::type::RGBAColor>>;
-
-}

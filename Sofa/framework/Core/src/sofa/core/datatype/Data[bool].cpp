@@ -46,24 +46,6 @@ bool SOFA_CORE_API Data<bool>::read( const std::string& str )
     return true;
 }
 
-template<> bool Data<bool>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<bool>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<bool>::get(),
-                                             "Sofa.Core");
-    return true;
 }
 
-template<> bool Data<sofa::type::vector<bool>>::AbstractTypeInfoRegistration()
-{
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<sofa::type::vector<bool>>(), 
-                                             sofa::defaulttype::VirtualTypeInfo<sofa::type::vector<bool>>::get(),
-                                             "Sofa.Core");
-    return true;
-}
-
-
-template class SOFA_CORE_API Data<bool>;
-template class SOFA_CORE_API Data<sofa::type::vector<bool>>;
-
-}
+DATATYPEINFO_DEFINE(bool);
