@@ -1434,7 +1434,7 @@ public:
 
     static constexpr RigidCoord<2,real> identity()
     {
-        static RigidCoord<2,real> c;
+        RigidCoord<2,real> c;
         return c;
     }
 
