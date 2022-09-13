@@ -25,6 +25,9 @@
 
 namespace sofa::type
 {
+template <class type, sofa::Size L>
+class fixed_array;
+
 template <sofa::Size L, class Real=float>
 class Vec;
 
@@ -104,4 +107,52 @@ using Quatf = type::Quat<float>;
 class BoundingBox;
 class BoundingBox1D;
 class BoundingBox2D;
+
+using FixedArray1i = fixed_array<int, 1>;
+using FixedArray1I = fixed_array<unsigned int, 1>;
+
+using FixedArray2i = fixed_array<int, 2>;
+using FixedArray2I = fixed_array<unsigned int, 2>;
+
+using FixedArray3i = fixed_array<int, 3>;
+using FixedArray3I = fixed_array<unsigned int, 3>;
+
+using FixedArray4i = fixed_array<int, 4>;
+using FixedArray4I = fixed_array<unsigned int, 4>;
+
+using FixedArray5i = fixed_array<int, 5>;
+using FixedArray5I = fixed_array<unsigned int, 5>;
+
+using FixedArray6i = fixed_array<int, 6>;
+using FixedArray6I = fixed_array<unsigned int, 6>;
+
+using FixedArray7i = fixed_array<int, 7>;
+using FixedArray7I = fixed_array<unsigned int, 7>;
+
+using FixedArray8i = fixed_array<int, 8>;
+using FixedArray8I = fixed_array<unsigned int, 8>;
+
+using FixedArray1f = fixed_array<float, 1>;
+using FixedArray1d = fixed_array<double, 1>;
+
+using FixedArray2f = fixed_array<float, 2>;
+using FixedArray2d = fixed_array<double, 2>;
+
+using FixedArray3f = fixed_array<float, 3>;
+using FixedArray3d = fixed_array<double, 3>;
+
+using FixedArray4f = fixed_array<float, 4>;
+using FixedArray4d = fixed_array<double, 4>;
+
+using FixedArray5f = fixed_array<float, 5>;
+using FixedArray5d = fixed_array<double, 5>;
+
+using FixedArray6f = fixed_array<float, 6>;
+using FixedArray6d = fixed_array<double, 6>;
+
+using FixedArray7f = fixed_array<float, 7>;
+using FixedArray7d = fixed_array<double, 7>;
+
+using FixedArray8f = fixed_array<float, 8>;
+using FixedArray8d = fixed_array<double, 8>;
 }
