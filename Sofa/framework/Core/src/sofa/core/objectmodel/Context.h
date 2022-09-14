@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_CONTEXT_H
-#define SOFA_CORE_OBJECTMODEL_CONTEXT_H
-
+#pragma once
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -43,8 +35,6 @@ class SOFA_CORE_API Context : public BaseContext
 public:
     SOFA_CLASS(Context, BaseContext);
 
-
-
     Data<bool> is_activated; ///< To Activate a node
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     Data<SReal> dt_; ///< Time step
@@ -53,14 +43,12 @@ public:
 	Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
 	Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 
-
-
 protected:
     Context();
     virtual ~Context() override
     {}
-public:
 
+public:
     /// @name Parameters
     /// @{
 
@@ -121,10 +109,4 @@ public:
 
 };
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::objectmodel
