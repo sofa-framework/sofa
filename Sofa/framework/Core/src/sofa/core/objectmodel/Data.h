@@ -23,11 +23,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/helper/StringUtils.h>
-#include <sofa/helper/accessor.h>
-#include <istream>
 #include <sofa/core/objectmodel/DataContentValue.h>
-#include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/helper/accessor.h>
 namespace sofa::core::objectmodel
 {
 
@@ -93,44 +90,28 @@ public:
     };
 
     SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Method Data::templateName() is deprecated, to fix your code you need to use Data::GetValueTypeInfo()->getTypeName().")    
-    static std::string templateName()
-    {
-        return GetValueTypeInfo()->getTypeName();
-    }
+    static std::string templateName();
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
-    BaseData* getNewInstance() override { return new Data();}
-
+    BaseData* getNewInstance() override;
+    
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
-    explicit Data(const BaseData::BaseInitData& init) : BaseData(init)
-    {
-    }
+    explicit Data(const BaseData::BaseInitData& init);
 
     /** \copydoc Data(const BaseData::BaseInitData&) */
-    explicit Data(const InitData& init) : BaseData(init)
-    {
-        m_value = ValueType(init.value);
-        m_hasDefaultValue = true;
-    }
+    explicit Data(const InitData& init);
 
     /** \copydoc BaseData(const char*, bool, bool) */
     //[[deprecated("Replaced with one with std::string instead of char* version")]]
-    Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false)
-        : Data(sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly) {}
+    Data( const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false);
 
     /** \copydoc BaseData(const std::string& , bool, bool) */
-    Data( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false)
-        : BaseData(helpMsg, isDisplayed, isReadOnly)
-    {
-        m_value = ValueType();
-    }
+    Data( const std::string& helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
     /** \copydoc BaseData(const char*, bool, bool)
      *  \param value The default value.
      */
-    Data( const T& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false) :
-        Data(value, sofa::helper::safeCharToString(helpMsg), isDisplayed, isReadOnly)
-    {}
+    Data( const T& value, const char* helpMsg=nullptr, bool isDisplayed=true, bool isReadOnly=false);
 
     /** \copydoc BaseData(const char*, bool, bool)
      *  \param value The default value.
@@ -151,55 +132,25 @@ public:
 
     /// BeginEdit method if it is only to write the value
     /// checking that current value is up to date
-    virtual T* beginEdit()
-    {
-        updateIfDirty();
-        return beginWriteOnly();
-    }
+    virtual T* beginEdit();
 
     /// beginWriteOnly method if it is only to write the value
     /// regardless of the current status of this value: no dirtiness check
-    virtual T* beginWriteOnly()
-    {
-        m_counter++;
-        m_isSet=true;
-        BaseData::setDirtyOutputs();
-        return m_value.beginEdit();
-    }
+    virtual T* beginWriteOnly();
 
-    virtual void endEdit()
-    {
-        m_value.endEdit();
-        BaseData::notifyEndEdit();
-    }
+    virtual void endEdit();
 
     /// @warning writeOnly (the Data is not updated before being set)
-    void setValue(const T& value)
-    {
-        *beginWriteOnly()=value;
-        endEdit();
-    }
+    void setValue(const T& value);
 
-    const T& getValue() const
-    {
-        updateIfDirty();
-        return m_value.getValue();
-    }
-
-
+    const T& getValue() const;
     /// @}
     
     /// Get info about the value 'T' type 
-    static const defaulttype::AbstractTypeInfo* GetValueTypeInfo()
-    {
-        return GetValueTypeInfoWithCompatibilityLayer();
-    }
+    static const defaulttype::AbstractTypeInfo* GetValueTypeInfo();
        
     /// Get info about the value 'T' type 
-    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override
-    {
-        return GetValueTypeInfoWithCompatibilityLayer();
-    }
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override;
 
     /** Try to read argument value from an input stream.
     Return false if failed
@@ -209,16 +160,7 @@ public:
     std::string getValueString() const override;
     std::string getValueTypeString() const override;
 
-    friend std::ostream & operator << (std::ostream &out, const Data& df)
-    {
-        out<<df.getValue();
-        return out;
-    }
-
-    void operator =( const T& value )
-    {
-        this->setValue(value);
-    }
+    void operator =( const T& value );
 
     bool copyValueFrom(const Data<T>* data);
 
@@ -227,6 +169,8 @@ public:
     Data(const Data& ) = delete;
     Data& operator=(const Data& ) = delete;
 
+    friend std::ostream & operator <<(std::ostream &out, const Data& df);
+    
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
 
@@ -237,9 +181,9 @@ private:
     bool doIsExactSameDataType(const BaseData* parent) override;
     bool doCopyValueFrom(const BaseData* parent) override;
     bool doSetValueFromLink(const BaseData* parent) override;
-    const void* doGetValueVoidPtr() const override { return &getValue(); }
-    void* doBeginEditVoidPtr() override  { return beginEdit(); }
-    void doEndEditVoidPtr() override  { endEdit(); }
+    const void* doGetValueVoidPtr() const override;
+    void* doBeginEditVoidPtr() override;
+    void doEndEditVoidPtr() override;
     
     static bool AbstractTypeInfoRegistration();    
     static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer();
@@ -247,127 +191,18 @@ private:
 
 class EmptyData : public Data<void*> {};
 
-/// Specialization for reading strings
-template<>
-bool Data<std::string>::read( const std::string& str );
-
-template<class T>
-bool Data<T>::AbstractTypeInfoRegistration()
-{
-    auto info = sofa::defaulttype::VirtualTypeInfo<T>::get();
-    sofa::defaulttype::TypeInfoRegistry::Set(sofa::defaulttype::TypeInfoId::GetTypeId<T>(), info, sofa_tostring(SOFA_TARGET));
-    dmsg_deprecated("Data") << "registration type for " << info->getTypeName();                 
-    return false;        
-}
-
-template<class T>
-const sofa::defaulttype::AbstractTypeInfo* Data<T>::GetValueTypeInfoWithCompatibilityLayer()
-{ 
-    static bool __inited__ = AbstractTypeInfoRegistration();        
-    SOFA_UNUSED(__inited__);
-    return sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>()); 
-}
-
-/// General case for printing default value
-template<class T>
-void Data<T>::printValue( std::ostream& out) const
-{
-    out << getValue() << " ";
-}
-
-/// General case for printing default value
-template<class T>
-std::string Data<T>::getValueString() const
-{
-    std::ostringstream out;
-    out << getValue();
-    return out.str();
-}
-
-template<class T>
-SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Use sofa::getValueTypeInfo()->getTypeName().")
-std::string Data<T>::getValueTypeString() const
-{
-    return getValueTypeInfo()->getTypeName();
-}
-
-template <class T>
-bool Data<T>::read(const std::string& s)
-{
-    if (s.empty())
-    {
-        const bool resized = getValueTypeInfo()->setSize( BaseData::beginEditVoidPtr(), 0 );
-        BaseData::endEditVoidPtr();
-        return resized;
-    }
-    std::istringstream istr( s.c_str() );
-
-    // capture std::cerr output (if any)
-    std::stringstream cerrbuffer;
-    std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
-
-    istr >> *beginEdit();
-    endEdit();
-
-    // restore the previous cerr
-    std::cerr.rdbuf(old);
-
-    if( istr.fail() )
-    {
-        // transcript the std::cerr buffer into the Messaging system
-        msg_warning(this->getName()) << cerrbuffer.str();
-
-        return false;
-    }
-
-    return true;
-}
-
-template <class T>
-bool Data<T>::copyValueFrom(const Data<T>* data)
-{
-    setValue(data->getValue());
-    return true;
-}
-
-template <class T>
-bool Data<T>::doCopyValueFrom(const BaseData* data)
-{
-    const Data<T>* typedata = dynamic_cast<const Data<T>*>(data);
-    if(!typedata)
-        return false;
-
-    return copyValueFrom(typedata);
-}
-
-template <class T>
-bool Data<T>::doSetValueFromLink(const BaseData* data)
-{
-    const Data<T>* typedata = dynamic_cast<const Data<T>*>(data);
-    if(!typedata)
-        return false;
-
-    m_value = typedata->m_value;
-    m_counter++;
-    m_isSet = true;
-    BaseData::setDirtyOutputs();
-    return true;
-}
-
-template <class T>
-bool Data<T>::doIsExactSameDataType(const BaseData* parent)
-{
-    return dynamic_cast<const Data<T>*>(parent) != nullptr;
-}
-
 } // namespace core::objectmodel
 
+#include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/datatype/Data[bool].h>
 #include <sofa/core/datatype/Data[string].h>
 #include <sofa/core/datatype/Data[fixed_array].h>
+#include <sofa/core/datatype/Data[BoundingBox].h>
 #include <sofa/core/datatype/Data[ComponentState].h>
 #include <sofa/core/datatype/Data[Integer].h>
 #include <sofa/core/datatype/Data[Mat].h>
+#include <sofa/core/datatype/Data[Material].h>
+#include <sofa/core/datatype/Data[OptionsGroup].h>
 #include <sofa/core/datatype/Data[Quat].h>
 #include <sofa/core/datatype/Data[RGBAColor].h>
 #include <sofa/core/datatype/Data[Scalar].h>
