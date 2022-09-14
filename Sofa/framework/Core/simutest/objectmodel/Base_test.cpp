@@ -30,7 +30,10 @@ using sofa::simulation::Node ;
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject;
 
+#include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
+
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
 namespace customns
