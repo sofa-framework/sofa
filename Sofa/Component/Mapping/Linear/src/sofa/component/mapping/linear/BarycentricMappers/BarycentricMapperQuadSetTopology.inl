@@ -106,13 +106,13 @@ void BarycentricMapperQuadSetTopology<In,Out>::computeBase(Mat3x3d& base, const 
 }
 
 template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::computeCenter(Vector3& center, const typename In::VecCoord& in, const Quad& element)
+void BarycentricMapperQuadSetTopology<In,Out>::computeCenter(Vec3& center, const typename In::VecCoord& in, const Quad& element)
 {
     center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]] ) *0.25;
 }
 
 template <class In, class Out>
-void BarycentricMapperQuadSetTopology<In,Out>::computeDistance(SReal& d, const Vector3& v)
+void BarycentricMapperQuadSetTopology<In,Out>::computeDistance(SReal& d, const Vec3& v)
 {
     d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
 }

@@ -36,7 +36,7 @@ namespace sofa::gl
 class SOFA_GL_API Axis
 {
 public:
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
     typedef sofa::type::Vec4f   Vec4f;
     typedef sofa::type::Vec3d   Vec3d;
     typedef sofa::type::Quat<SReal> Quaternion;

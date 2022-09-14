@@ -322,7 +322,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     // ---- Display a "X" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
 
-    gl::GlText::draw('X', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('X', sofa::type::Vec3(0.0, 0.0, 0.0), fontScale);
 
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
@@ -338,7 +338,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Y" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Y', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Y', sofa::type::Vec3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -353,7 +353,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Z" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Z', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Z', sofa::type::Vec3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -367,7 +367,7 @@ void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 {
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r == 0.0)
-        r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
+        r = (Vec3(maxBBox) - Vec3(minBBox)).norm() / 500;
 
     Enable<GL_DEPTH_TEST> depth;
     Enable<GL_LIGHTING> lighting;
@@ -607,7 +607,7 @@ void QtViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vec3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -1054,7 +1054,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
         }
         else if (_mouseInteractorTranslationMode)
         {
-            _mouseInteractorAbsolutePosition = Vector3(0, 0, 0);
+            _mouseInteractorAbsolutePosition = Vec3(0, 0, 0);
 
             if (_translationMode == XY_TRANSLATION)
             {
@@ -1502,17 +1502,17 @@ void QtViewer::newView()
     SofaViewer::newView();
 }
 
-void QtViewer::getView(Vector3& pos, Quat<SReal>& ori) const
+void QtViewer::getView(Vec3& pos, Quat<SReal>& ori) const
 {
     SofaViewer::getView(pos, ori);
 }
 
-void QtViewer::setView(const Vector3& pos, const Quat<SReal> &ori)
+void QtViewer::setView(const Vec3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::setView(pos, ori);
 }
 
-void QtViewer::moveView(const Vector3& pos, const Quat<SReal> &ori)
+void QtViewer::moveView(const Vec3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::moveView(pos, ori);
 }

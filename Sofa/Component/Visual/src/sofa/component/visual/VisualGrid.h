@@ -33,7 +33,7 @@ class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
 public:
     SOFA_CLASS(VisualGrid, VisualModel);
 
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
 
     enum PLANE
     {

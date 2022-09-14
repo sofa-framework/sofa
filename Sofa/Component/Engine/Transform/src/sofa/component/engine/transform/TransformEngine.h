@@ -61,10 +61,10 @@ protected:
 
     Data<VecCoord> f_inputX; ///< input position
     Data<VecCoord> f_outputX; ///< ouput position
-    Data<type::Vector3> translation; ///< translation
-    Data<type::Vector3> rotation; ///< rotation
+    Data<type::Vec3> translation; ///< translation
+    Data<type::Vec3> rotation; ///< rotation
     Data<type::Quat<SReal>> quaternion; ///< quaternion rotation
-    Data<type::Vector3> scale; ///< scale
+    Data<type::Vec3> scale; ///< scale
     Data<bool> inverse; ///< true to apply inverse transformation
 };
 

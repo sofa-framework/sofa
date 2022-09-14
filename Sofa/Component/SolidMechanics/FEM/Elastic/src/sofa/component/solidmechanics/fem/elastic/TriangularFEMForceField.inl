@@ -1216,7 +1216,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (showStressVector.getValue())
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         for (Size i = 0; i < nbTriangles; ++i)
         {
             const Triangle& tri = m_topology->getTriangle(i);
@@ -1225,8 +1225,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index c = tri[2];
             Coord center = (x[a] + x[b] + x[c]) / 3;
             Coord d = triangleInf[i].principalStressDirection * 2.5; //was 0.25
-            vertices.push_back(sofa::type::Vector3(center));
-            vertices.push_back(sofa::type::Vector3(center + d));
+            vertices.push_back(sofa::type::Vec3(center));
+            vertices.push_back(sofa::type::Vec3(center + d));
         }
         vparams->drawTool()->drawLines(vertices, 1, sofa::type::RGBAColor(1, 0, 1, 1));
     }
@@ -1259,7 +1259,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 maxStress = averageStress;
         }
 
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         std::vector<sofa::type::RGBAColor> colorVector;
 
         auto evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
@@ -1271,11 +1271,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index c = tri[2];
 
             colorVector.push_back(evalColor(vertexInf[a].stress));
-            vertices.push_back(sofa::type::Vector3(x[a]));
+            vertices.push_back(sofa::type::Vec3(x[a]));
             colorVector.push_back(evalColor(vertexInf[b].stress));
-            vertices.push_back(sofa::type::Vector3(x[b]));
+            vertices.push_back(sofa::type::Vec3(x[b]));
             colorVector.push_back(evalColor(vertexInf[c].stress));
-            vertices.push_back(sofa::type::Vector3(x[c]));
+            vertices.push_back(sofa::type::Vec3(x[c]));
         }
         vparams->drawTool()->drawTriangles(vertices, colorVector);
         vertices.clear();
@@ -1286,7 +1286,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (showFracturableTriangles.getValue())
     {
         std::vector<sofa::type::RGBAColor> colorVector;
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         sofa::type::RGBAColor color;
 
         Real maxDifference = std::numeric_limits<Real>::min();
@@ -1314,11 +1314,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 Index c = tri[2];
 
                 colorVector.push_back(color);
-                vertices.push_back(sofa::type::Vector3(x[a]));
+                vertices.push_back(sofa::type::Vec3(x[a]));
                 colorVector.push_back(color);
-                vertices.push_back(sofa::type::Vector3(x[b]));
+                vertices.push_back(sofa::type::Vec3(x[b]));
                 colorVector.push_back(color);
-                vertices.push_back(sofa::type::Vector3(x[c]));
+                vertices.push_back(sofa::type::Vec3(x[c]));
             }
         }
         vparams->drawTool()->drawTriangles(vertices, colorVector);

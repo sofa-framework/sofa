@@ -570,16 +570,16 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->disableLighting();
         constexpr sofa::type::RGBAColor color(0,1,0.5,1);
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
 
         // Camera positions
         for (unsigned int i=0; i<m_rotationPoints.size()-1; ++i)
         {
-            vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[i  ][0], (float)m_rotationPoints[i  ][1], (float)m_rotationPoints[i  ][2]));
-            vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[i+1][0], (float)m_rotationPoints[i+1][1], (float)m_rotationPoints[i+1][2]));
+            vertices.push_back(sofa::type::Vec3((float)m_rotationPoints[i  ][0], (float)m_rotationPoints[i  ][1], (float)m_rotationPoints[i  ][2]));
+            vertices.push_back(sofa::type::Vec3((float)m_rotationPoints[i+1][0], (float)m_rotationPoints[i+1][1], (float)m_rotationPoints[i+1][2]));
         }
-        vertices.push_back(sofa::type::Vector3((float)m_rotationPoints.back()[0], (float)m_rotationPoints.back()[1], (float)m_rotationPoints.back()[2]));
-        vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[0    ][0], (float)m_rotationPoints[0    ][1], (float)m_rotationPoints[0    ][2]));
+        vertices.push_back(sofa::type::Vec3((float)m_rotationPoints.back()[0], (float)m_rotationPoints.back()[1], (float)m_rotationPoints.back()[2]));
+        vertices.push_back(sofa::type::Vec3((float)m_rotationPoints[0    ][0], (float)m_rotationPoints[0    ][1], (float)m_rotationPoints[0    ][2]));
 
         vparams->drawTool()->drawLines(vertices,1,color);
         vertices.clear();
@@ -590,8 +590,8 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
 
         for (unsigned int i=0; i<dx; ++i)
         {
-            vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[i*ratio][0], (float)m_rotationPoints[i*ratio][1], (float)m_rotationPoints[i*ratio][2]));
-            vertices.push_back(sofa::type::Vector3((float)_lookAt[0], (float)_lookAt[1], (float)_lookAt[2]));
+            vertices.push_back(sofa::type::Vec3((float)m_rotationPoints[i*ratio][0], (float)m_rotationPoints[i*ratio][1], (float)m_rotationPoints[i*ratio][2]));
+            vertices.push_back(sofa::type::Vec3((float)_lookAt[0], (float)_lookAt[1], (float)_lookAt[2]));
         }
         vparams->drawTool()->drawLines(vertices,1,color);
     }
@@ -604,14 +604,14 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->disableLighting();
         constexpr sofa::type::RGBAColor color(0,1,0.5,1);
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
 
         // Camera positions
         type::vector<Vec3> _positions = m_translationPositions.getValue();
         for (unsigned int i=0; i < _positions.size()-1; ++i)
         {
-            vertices.push_back(sofa::type::Vector3((float)_positions[i  ][0], (float)_positions[i  ][1], (float)_positions[i  ][2]));
-            vertices.push_back(sofa::type::Vector3((float)_positions[i+1][0], (float)_positions[i+1][1], (float)_positions[i+1][2]));
+            vertices.push_back(sofa::type::Vec3((float)_positions[i  ][0], (float)_positions[i  ][1], (float)_positions[i  ][2]));
+            vertices.push_back(sofa::type::Vec3((float)_positions[i+1][0], (float)_positions[i+1][1], (float)_positions[i+1][2]));
         }
         vparams->drawTool()->drawLines(vertices,1,color);
     }

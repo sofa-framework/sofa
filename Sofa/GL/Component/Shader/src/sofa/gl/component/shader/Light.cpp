@@ -48,7 +48,7 @@ int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
         .add< SpotLight >()
         ;
 
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER = "shaders/softShadows/VSM/generate_depth_texture.vert";
 const std::string Light::PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER = "shaders/softShadows/VSM/generate_depth_texture.frag";
@@ -397,7 +397,7 @@ GLfloat Light::getZFar()
 }
 
 DirectionalLight::DirectionalLight()
-    : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
+    : d_direction(initData(&d_direction, (Vec3) Vec3(0,0,-1), "direction", "Set the direction of the light"))
 {
 
 }
@@ -429,13 +429,13 @@ void DirectionalLight::drawSource(const core::visual::VisualParams* vparams)
     SOFA_UNUSED(vparams);
 }
 
-void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vector3 &direction)
+void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vec3 &direction)
 {
     //1-compute bounding box
     sofa::core::visual::VisualParams* vp = sofa::core::visual::visualparams::defaultInstance();
     const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
-    Vector3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
-    Vector3 posLight = center;
+    Vec3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
+    Vec3 posLight = center;
 
     posLight[0] = sceneBBox.maxBBox()[0] - sceneBBox.minBBox()[0] * 0.5;
     posLight[1] = sceneBBox.maxBBox()[1] - sceneBBox.minBBox()[1] * 0.5;
@@ -445,19 +445,19 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
     //2-compute orientation to fit the bbox from light's pov
     // bounding box in light space = frustrum
     double epsilon = 0.0000001;
-    Vector3 zAxis = -direction;
+    Vec3 zAxis = -direction;
     zAxis.normalize();
-    Vector3 yAxis(0, 1, 0);
+    Vec3 yAxis(0, 1, 0);
 
     if (fabs(zAxis[0]) < epsilon && fabs(zAxis[2]) < epsilon)
     {
         if (zAxis[1] > 0)
-            yAxis = Vector3(0, 0, -1);
+            yAxis = Vec3(0, 0, -1);
         else
-            yAxis = Vector3(0, 0, 1);
+            yAxis = Vec3(0, 0, 1);
     }
 
-    Vector3 xAxis = yAxis.cross(zAxis);
+    Vec3 xAxis = yAxis.cross(zAxis);
     xAxis.normalize();
 
     yAxis = zAxis.cross(xAxis);
@@ -532,8 +532,8 @@ void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& lef
 void DirectionalLight::computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar )
 {
     const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
-    Vector3 minBBox = sceneBBox.minBBox();
-    Vector3 maxBBox = sceneBBox.maxBBox();
+    Vec3 minBBox = sceneBBox.minBBox();
+    Vec3 maxBBox = sceneBBox.maxBBox();
 
     float maxLength = float((maxBBox - minBBox).norm());
 
@@ -563,7 +563,7 @@ void DirectionalLight::preDrawShadow(core::visual::VisualParams* vp)
     float zFar = 1e10, right = 1e10, top = 1e10;
 
     Light::preDrawShadow(vp);
-    const Vector3& dir = d_direction.getValue();
+    const Vec3& dir = d_direction.getValue();
 
     computeClippingPlane(vp, left, right, top, bottom, zNear, zFar);
 
@@ -601,7 +601,7 @@ GLuint DirectionalLight::getColorTexture()
 
 PositionalLight::PositionalLight()
     : d_fixed(initData(&d_fixed, (bool) false, "fixed", "Fix light position from the camera"))
-    , d_position(initData(&d_position, (Vector3) Vector3(-0.7,0.3,0.0), "position", "Set the position of the light"))
+    , d_position(initData(&d_position, (Vec3) Vec3(-0.7,0.3,0.0), "position", "Set the position of the light"))
     , d_attenuation(initData(&d_attenuation, (float) 0.0, "attenuation", "Set the attenuation of the light"))
 {
 
@@ -670,7 +670,7 @@ void PositionalLight::draw(const core::visual::VisualParams* vparams)
 
 
 SpotLight::SpotLight()
-    : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
+    : d_direction(initData(&d_direction, (Vec3) Vec3(0,0,-1), "direction", "Set the direction of the light"))
     , d_cutoff(initData(&d_cutoff, (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot"))
     , d_exponent(initData(&d_exponent, (float) 1.0, "exponent", "Set the exponent of the spot"))
     , d_lookat(initData(&d_lookat, false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
@@ -686,7 +686,7 @@ SpotLight::~SpotLight()
 void SpotLight::drawLight()
 {
     PositionalLight::drawLight();
-    type::Vector3 d = d_direction.getValue();
+    type::Vec3 d = d_direction.getValue();
     if (d_lookat.getValue()) d -= d_position.getValue();
     d.normalize();
     GLfloat dir[3]= {(GLfloat)(d[0]), (GLfloat)(d[1]), (GLfloat)(d[2])};
@@ -712,7 +712,7 @@ void SpotLight::drawSource(const core::visual::VisualParams* vparams)
 
     computeClippingPlane(vparams, zNear, zFar);
 
-    Vector3 dir = d_direction.getValue();
+    Vec3 dir = d_direction.getValue();
     if (d_lookat.getValue())
         dir -= d_position.getValue();
 
@@ -722,16 +722,16 @@ void SpotLight::drawSource(const core::visual::VisualParams* vparams)
     float baseLength = zFar * tanf(float(this->d_cutoff.getValue() * M_PI / 180));
     float tipLength = (baseLength*0.5f) * (zNear/ zFar);
 
-    Vector3 direction;
+    Vec3 direction;
     if(d_lookat.getValue())
         direction = this->d_direction.getValue() - this->d_position.getValue();
     else
         direction = this->d_direction.getValue();
 
     direction.normalize();
-    Vector3 base = this->getPosition() + direction*zFar;
-    Vector3 tip = this->getPosition() + direction*zNear;
-    std::vector<Vector3> centers;
+    Vec3 base = this->getPosition() + direction*zFar;
+    Vec3 tip = this->getPosition() + direction*zNear;
+    std::vector<Vec3> centers;
     centers.push_back(this->getPosition());
     vparams->drawTool()->setPolygonMode(0, true);
     vparams->drawTool()->setLightingEnabled(false);
@@ -748,7 +748,7 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
 
     computeClippingPlane(vparams, zNear, zFar);
 
-    Vector3 dir = d_direction.getValue();
+    Vec3 dir = d_direction.getValue();
     if (d_lookat.getValue())
         dir -= d_position.getValue();
 
@@ -767,25 +767,25 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
     zFar = -1e10;
 
     const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
-    const Vector3 &pos = d_position.getValue();
-    Vector3 dir = d_direction.getValue();
+    const Vec3 &pos = d_position.getValue();
+    Vec3 dir = d_direction.getValue();
     if (d_lookat.getValue())
         dir -= d_position.getValue();
 
     double epsilon = 0.0000001;
-    Vector3 zAxis = -dir;
+    Vec3 zAxis = -dir;
     zAxis.normalize();
-    Vector3 yAxis(0, 1, 0);
+    Vec3 yAxis(0, 1, 0);
 
     if (fabs(zAxis[0]) < epsilon && fabs(zAxis[2]) < epsilon)
     {
         if (zAxis[1] > 0)
-            yAxis = Vector3(0, 0, -1);
+            yAxis = Vec3(0, 0, -1);
         else
-            yAxis = Vector3(0, 0, 1);
+            yAxis = Vec3(0, 0, 1);
     }
 
-    Vector3 xAxis = yAxis.cross(zAxis);
+    Vec3 xAxis = yAxis.cross(zAxis);
     xAxis.normalize();
 
     yAxis = zAxis.cross(xAxis);
@@ -799,7 +799,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
         //compute zNear, zFar from light point of view
         for (int corner = 0; corner<8; ++corner)
         {
-            Vector3 p(
+            Vec3 p(
                         (corner & 1) ? sceneBBox.minBBox().x() : sceneBBox.maxBBox().x(),
                         (corner & 2) ? sceneBBox.minBBox().y() : sceneBBox.maxBBox().y(),
                         (corner & 4) ? sceneBBox.minBBox().z() : sceneBBox.maxBBox().z());
@@ -845,8 +845,8 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
 
     float zNear = -1e10, zFar = 1e10;
 
-    const Vector3 &pos = d_position.getValue();
-    Vector3 dir = d_direction.getValue();
+    const Vec3 &pos = d_position.getValue();
+    Vec3 dir = d_direction.getValue();
     if (d_lookat.getValue())
         dir -= d_position.getValue();
 
@@ -870,22 +870,22 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     glEnable(GL_DEPTH_TEST);
 }
 
-void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vector3 &position, const sofa::type::Vector3 &direction)
+void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::Vec3 &position, const sofa::type::Vec3 &direction)
 {
     double epsilon = 0.0000001;
-    Vector3 zAxis = -direction;
+    Vec3 zAxis = -direction;
     zAxis.normalize();
-    Vector3 yAxis(0, 1, 0);
+    Vec3 yAxis(0, 1, 0);
 
     if (fabs(zAxis[0]) < epsilon && fabs(zAxis[2]) < epsilon)
     {
         if (zAxis[1] > 0)
-            yAxis = Vector3(0, 0, -1);
+            yAxis = Vec3(0, 0, -1);
         else
-            yAxis = Vector3(0, 0, 1);
+            yAxis = Vec3(0, 0, 1);
     }
 
-    Vector3 xAxis = yAxis.cross(zAxis);
+    Vec3 xAxis = yAxis.cross(zAxis);
     xAxis.normalize();
 
     yAxis = zAxis.cross(xAxis);
@@ -901,7 +901,7 @@ void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::type::
     sofa::type::Quat<SReal> q;
     q = sofa::type::Quat<SReal>::createQuaterFromFrame(xAxis, yAxis, zAxis);
 
-    Vector3 origin = q.inverseRotate(-position);
+    Vec3 origin = q.inverseRotate(-position);
 
     //translation
     mat[12] = GLfloat(origin[0]);

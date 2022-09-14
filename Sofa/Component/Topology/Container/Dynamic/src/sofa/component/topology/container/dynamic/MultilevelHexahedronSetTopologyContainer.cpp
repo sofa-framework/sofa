@@ -179,7 +179,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const Inde
 }
 
 bool MultilevelHexahedronSetTopologyContainer::getHexaContainsPosition(const Index hexaId,
-        const type::Vector3& baryC) const
+        const type::Vec3& baryC) const
 {
     const Component& comp = *_coarseComponents.getValue()[hexaId];
     const Vec3i& coarseVoxelId = comp.getVoxelId();
@@ -191,11 +191,11 @@ bool MultilevelHexahedronSetTopologyContainer::getHexaContainsPosition(const Ind
 
     const float epsilon = 0.001f;
 
-    Vector3 voxelRealMin((coarse_i + baryC[0] - epsilon) * coarseVoxelSize,
+    Vec3 voxelRealMin((coarse_i + baryC[0] - epsilon) * coarseVoxelSize,
             (coarse_j + baryC[1] - epsilon) * coarseVoxelSize,
             (coarse_k + baryC[2] - epsilon) * coarseVoxelSize);
 
-    Vector3 voxelRealMax((coarse_i + baryC[0] + epsilon) * coarseVoxelSize,
+    Vec3 voxelRealMax((coarse_i + baryC[0] + epsilon) * coarseVoxelSize,
             (coarse_j + baryC[1] + epsilon) * coarseVoxelSize,
             (coarse_k + baryC[2] + epsilon) * coarseVoxelSize);
 

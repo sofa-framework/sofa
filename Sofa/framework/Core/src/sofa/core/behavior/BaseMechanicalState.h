@@ -282,7 +282,7 @@ public:
     /// Scale the current state
     virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)=0;
 
-    virtual type::Vector3 getScale() const { return type::Vector3(1.0,1.0,1.0); }
+    virtual type::Vec3 getScale() const { return type::Vec3(1.0,1.0,1.0); }
 
     virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {

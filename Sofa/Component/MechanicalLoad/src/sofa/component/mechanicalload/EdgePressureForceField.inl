@@ -424,14 +424,14 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::yellow();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
     const sofa::type::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::type::Vector3 p = (x[m_topology->getEdge(my_map[i])[0]] + x[m_topology->getEdge(my_map[i])[1]]) / 2.0;
+        sofa::type::Vec3 p = (x[m_topology->getEdge(my_map[i])[0]] + x[m_topology->getEdge(my_map[i])[1]]) / 2.0;
         vertices.push_back(p);
 
         sofa::type::Vec3d f = my_subset[i].force;

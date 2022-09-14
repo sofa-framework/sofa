@@ -635,7 +635,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
     std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 

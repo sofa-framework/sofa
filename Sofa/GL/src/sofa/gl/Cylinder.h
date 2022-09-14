@@ -36,7 +36,7 @@ namespace sofa::gl
 class SOFA_GL_API Cylinder
 {
 public:
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
     typedef sofa::type::Quat<SReal> Quaternion;
     Cylinder(SReal len=(SReal)1);
     Cylinder(const Vector3& len);

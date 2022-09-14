@@ -1235,7 +1235,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->enableBlending();
         }
 
-        std::vector< type::Vector3 > points[6] =
+        std::vector< type::Vec3 > points[6] =
         {
             { pa, pb, pc, pa, pc, pd },
             { pe, pf, pg, pe, pg, ph },

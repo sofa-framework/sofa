@@ -43,7 +43,7 @@ typedef ::testing::Types<
 //TestDataEngine< component::engine::analyze::HausdorffDistance<defaulttype::Vec3Types> >, // ???
 //TestDataEngine< component::engine::analyze::ShapeMatching<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 TestDataEngine< component::engine::analyze::ClusteringEngine<defaulttype::Vec3Types> >,
-TestDataEngine< component::engine::analyze::SumEngine<type::Vector3> >
+TestDataEngine< component::engine::analyze::SumEngine<type::Vec3> >
 > TestTypes; // the types to instanciate.
 
 //// ========= Tests to run for each instanciated type

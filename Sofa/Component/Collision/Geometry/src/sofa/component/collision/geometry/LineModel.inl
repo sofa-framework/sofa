@@ -314,7 +314,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
-        std::vector< type::Vector3 > points;
+        std::vector< type::Vec3 > points;
         for (Size i=0; i<size; i++)
         {
             TLine<DataTypes> l(this,i);
@@ -330,7 +330,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
 
         if (m_displayFreePosition.getValue())
         {
-            std::vector< type::Vector3 > pointsFree;
+            std::vector< type::Vec3 > pointsFree;
             for (Size i=0; i<size; i++)
             {
                 TLine<DataTypes> l(this,i);
@@ -471,10 +471,10 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         const SReal distance = (SReal)this->proximity.getValue();
         for (Size i=0; i<size; i++)
         {
-            type::Vector3 minElem, maxElem;
+            type::Vec3 minElem, maxElem;
             TLine<DataTypes> l(this,i);
-            const type::Vector3& pt1 = l.p1();
-            const type::Vector3& pt2 = l.p2();
+            const type::Vec3& pt1 = l.p1();
+            const type::Vec3& pt2 = l.p2();
 
             for (int c = 0; c < 3; c++)
             {
@@ -501,7 +501,7 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
-    type::Vector3 minElem, maxElem;
+    type::Vec3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -510,10 +510,10 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
         for (Size i=0; i<size; i++)
         {
             TLine<DataTypes> t(this,i);
-            const type::Vector3& pt1 = t.p1();
-            const type::Vector3& pt2 = t.p2();
-            const type::Vector3 pt1v = pt1 + t.v1()*dt;
-            const type::Vector3 pt2v = pt2 + t.v2()*dt;
+            const type::Vec3& pt1 = t.p1();
+            const type::Vec3& pt2 = t.p2();
+            const type::Vec3 pt1v = pt1 + t.v1()*dt;
+            const type::Vec3 pt2v = pt2 + t.v2()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -573,8 +573,8 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
     for (Size i=0; i<size; i++)
     {
         Element e(this,i);
-        const type::Vector3& pt1 = e.p1();
-        const type::Vector3& pt2 = e.p2();
+        const type::Vec3& pt1 = e.p1();
+        const type::Vec3& pt2 = e.p2();
 
         for (int c=0; c<3; c++)
         {

@@ -543,7 +543,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         vparams->drawTool()->setPolygonMode(0, true);
 
     std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -555,11 +555,11 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index c = (*it)[2];
 
         colorVector.push_back(sofa::type::RGBAColor::green());
-        vertices.push_back(sofa::type::Vector3(x[a]));
+        vertices.push_back(sofa::type::Vec3(x[a]));
         colorVector.push_back(sofa::type::RGBAColor(0, 0.5, 0.5, 1));
-        vertices.push_back(sofa::type::Vector3(x[b]));
+        vertices.push_back(sofa::type::Vec3(x[b]));
         colorVector.push_back(sofa::type::RGBAColor(0, 0, 1, 1));
-        vertices.push_back(sofa::type::Vector3(x[c]));
+        vertices.push_back(sofa::type::Vec3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices, colorVector);
 

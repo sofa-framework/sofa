@@ -232,7 +232,7 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();
 
-    type::vector<sofa::type::Vector3> points;
+    type::vector<sofa::type::Vec3> points;
     for(auto& index : d_indices.getValue())
     {
         points.push_back({x[index][0], x[index][1], x[index][2]});

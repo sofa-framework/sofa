@@ -250,8 +250,8 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);
@@ -261,8 +261,8 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
     }
     else // new drawing by spheres
     {
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);

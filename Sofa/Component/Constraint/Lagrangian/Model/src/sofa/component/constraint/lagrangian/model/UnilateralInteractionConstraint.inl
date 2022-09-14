@@ -394,8 +394,8 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> redVertices;
-    std::vector<sofa::type::Vector3> otherVertices;
+    std::vector<sofa::type::Vec3> redVertices;
+    std::vector<sofa::type::Vec3> otherVertices;
     std::vector<sofa::type::RGBAColor> otherColors;
 
     for (unsigned int i=0; i<contacts.size(); i++)

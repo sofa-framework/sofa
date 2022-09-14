@@ -279,11 +279,11 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
     if( d_showObjectScale.getValue() == 0 )
     {
         vparams->drawTool()->disableLighting();
-        type::vector< type::Vector3 > points;
+        type::vector< type::Vec3 > points;
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][1]]) ));
+            points.push_back( sofa::type::Vec3( TIn::getCPos(pos[links[i][0]]) ) );
+            points.push_back( sofa::type::Vec3( TIn::getCPos(pos[links[i][1]]) ));
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -292,8 +292,8 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
         vparams->drawTool()->enableLighting();
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            type::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
-            type::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
+            type::Vec3 p0 = TIn::getCPos(pos[links[i][0]]);
+            type::Vec3 p1 = TIn::getCPos(pos[links[i][1]]);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }

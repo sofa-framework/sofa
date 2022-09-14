@@ -29,10 +29,10 @@
 namespace sofa::component::mapping::linear
 {
 
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::core::visual::VisualParams;
 using sofa::type::Vec;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::Matrix3;
 using sofa::type::Mat3x3d;
 using sofa::type::Vec3d;
@@ -76,7 +76,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
     const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
     const SeqQuads& quads = this->m_fromTopology->getQuads();
     type::vector<Matrix3> bases;
-    type::vector<Vector3> centers;
+    type::vector<Vec3> centers;
     if ( tetras.empty() && hexas.empty() )
     {
         if ( triangles.empty() && quads.empty() )
@@ -87,14 +87,14 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             clearMap1dAndReserve ( out.size() );
 
             type::vector< SReal >   lengthEdges;
-            type::vector< Vector3 > unitaryVectors;
+            type::vector< Vec3 > unitaryVectors;
 
             Index e;
             for ( e=0; e<edges.size(); e++ )
             {
                 lengthEdges.push_back ( ( in[edges[e][1]]-in[edges[e][0]] ).norm() );
 
-                Vector3 V12 = ( in[edges[e][1]]-in[edges[e][0]] ); V12.normalize();
+                Vec3 V12 = ( in[edges[e][1]]-in[edges[e][0]] ); V12.normalize();
                 unitaryVectors.push_back ( V12 );
             }
 
@@ -104,9 +104,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 for ( e=0; e<edges.size(); e++ )
                 {
                     SReal lengthEdge = lengthEdges[e];
-                    Vector3 V12 =unitaryVectors[e];
+                    Vec3 V12 =unitaryVectors[e];
 
-                    coef = ( V12 ) * Vector3 ( Out::getCPos(out[i])-in[edges[e][0]] ) /lengthEdge;
+                    coef = ( V12 ) * Vec3 ( Out::getCPos(out[i])-in[edges[e][0]] ) /lengthEdge;
                     if ( coef >= 0 && coef <= 1 ) {addPointInLine ( e,&coef );  break; }
                 }
                 //If no good coefficient has been found, we add to the last element
@@ -570,7 +570,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     const SeqTetrahedra& tetrahedra = this->m_fromTopology->getTetrahedra();
     const SeqHexahedra& cubes = this->m_fromTopology->getHexahedra();
 
-    std::vector< Vector3 > points;
+    std::vector< Vec3 > points;
     // 1D elements
     {
         const Index i0 = 0;

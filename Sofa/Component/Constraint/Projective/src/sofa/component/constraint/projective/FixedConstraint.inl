@@ -360,8 +360,8 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
 
         if (d_fixAll.getValue())
         {
@@ -385,8 +385,8 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(true);
 
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
         if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {

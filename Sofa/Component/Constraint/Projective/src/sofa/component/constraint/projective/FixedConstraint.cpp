@@ -118,7 +118,7 @@ void FixedConstraint<Rigid2Types>::draw(const core::visual::VisualParams* vparam
 
     vparams->drawTool()->setLightingEnabled(false);
     constexpr sofa::type::RGBAColor color (1,0.5,0.5,1);
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     if(d_fixAll.getValue())
     {

@@ -108,7 +108,7 @@ public:
 
     const Vec3i& getCoarseResolution() const { return _coarseResolution; }
 
-    bool getHexaContainsPosition(const Index hexaId, const type::Vector3& baryC) const;
+    bool getHexaContainsPosition(const Index hexaId, const type::Vec3& baryC) const;
 
     const Vec3i& getHexaIdxInCoarseRegularGrid(const Index hexaId) const;
     int getHexaIdInCoarseRegularGrid(const Index hexaId) const;

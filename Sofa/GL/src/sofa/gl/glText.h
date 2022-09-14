@@ -54,9 +54,9 @@ public:
     /// Constructor with specified text
     GlText ( const std::string& text );
     /// Constructor with specified text and position
-    GlText ( const std::string& text, const type::Vector3& position );
+    GlText ( const std::string& text, const type::Vec3& position );
     /// Constructor with specified text, position and scale
-    GlText ( const std::string& text, const type::Vector3& position, const double& scale );
+    GlText ( const std::string& text, const type::Vec3& position, const double& scale );
     /// Destructor
     ~GlText();
 
@@ -66,7 +66,7 @@ public:
     template <typename T>
     void setText ( const T& text );
     /// Update the position used to render the text
-    void update ( const type::Vector3& position );
+    void update ( const type::Vec3& position );
     /// Update the scale used to render the text
     void update ( const double& scale );
 
@@ -82,10 +82,10 @@ public:
 
     /// Render the text at the defined position and scale
     template <typename T>
-    static void draw ( const T& text, const type::Vector3& position = type::Vector3(0.0,0.0,0.0), const double& scale = 1.0);
+    static void draw ( const T& text, const type::Vec3& position = type::Vec3(0.0,0.0,0.0), const double& scale = 1.0);
     
     static void textureDraw_Overlay(const char* text, const double scale = 1.0);
-    static void textureDraw_Indices(const type::vector<type::Vector3>& positions, const float& scale);
+    static void textureDraw_Indices(const type::vector<type::Vec3>& positions, const float& scale);
 
 private:
     static void initTexture();
@@ -97,7 +97,7 @@ private:
 
     double scale;
     std::string text;
-    type::Vector3 position;
+    type::Vec3 position;
 };
 
 } // namespace sofa::gl

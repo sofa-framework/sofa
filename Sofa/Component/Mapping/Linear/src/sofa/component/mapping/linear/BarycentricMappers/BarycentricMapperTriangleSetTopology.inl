@@ -104,13 +104,13 @@ void BarycentricMapperTriangleSetTopology<In,Out>::computeBase(Mat3x3d& base, co
 }
 
 template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::computeCenter(Vector3& center, const typename In::VecCoord& in, const Triangle& element)
+void BarycentricMapperTriangleSetTopology<In,Out>::computeCenter(Vec3& center, const typename In::VecCoord& in, const Triangle& element)
 {
     center = (in[element[0]]+in[element[1]]+in[element[2]])/3;
 }
 
 template <class In, class Out>
-void BarycentricMapperTriangleSetTopology<In,Out>::computeDistance(SReal& d, const Vector3& v)
+void BarycentricMapperTriangleSetTopology<In,Out>::computeDistance(SReal& d, const Vec3& v)
 {
     d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
 }

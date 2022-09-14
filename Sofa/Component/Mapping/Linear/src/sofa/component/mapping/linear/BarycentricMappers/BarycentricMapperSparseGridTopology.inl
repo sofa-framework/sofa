@@ -28,7 +28,7 @@
 namespace sofa::component::mapping::linear
 {
 
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::core::visual::VisualParams;
 using sofa::type::Vec;
 
@@ -107,7 +107,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const VisualParams* vpa
                                                          const typename Out::VecCoord& out,
                                                          const typename In::VecCoord& in )
 {
-    std::vector< Vector3 > points;
+    std::vector< Vec3 > points;
     for ( unsigned int i=0; i<m_map.size(); i++ )
     {
 

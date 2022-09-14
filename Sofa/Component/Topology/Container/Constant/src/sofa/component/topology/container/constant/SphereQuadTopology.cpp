@@ -47,7 +47,7 @@ SphereQuadTopology::SphereQuadTopology()
 {
 }
 
-Vector3 SphereQuadTopology::getPoint(int x, int y, int z) const
+Vec3 SphereQuadTopology::getPoint(int x, int y, int z) const
 {
     Vector3 p((2*x)/(SReal)(nx.getValue()-1) - 1, (2*y)/(SReal)(ny.getValue()-1) - 1, (2*z)/(SReal)(nz.getValue()-1) - 1);
     p.normalize();

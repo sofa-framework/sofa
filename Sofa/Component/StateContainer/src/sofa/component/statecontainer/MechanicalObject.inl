@@ -2680,9 +2680,9 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 {
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-    std::vector<type::Vector3> positions;
+    std::vector<type::Vec3> positions;
     for (int i = 0; i <d_size.getValue(); ++i)
-        positions.push_back(type::Vector3(getPX(i), getPY(i), getPZ(i)));
+        positions.push_back(type::Vec3(getPX(i), getPY(i), getPZ(i)));
 
     vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
 }

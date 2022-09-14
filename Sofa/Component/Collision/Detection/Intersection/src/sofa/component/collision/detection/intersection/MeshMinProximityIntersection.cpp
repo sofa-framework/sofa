@@ -85,11 +85,11 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
+    const Vec3 AB = e1.p2()-e1.p1();
+    const Vec3 CD = e2.p2()-e2.p1();
+    const Vec3 AC = e2.p1()-e1.p1();
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
 
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
@@ -111,7 +111,7 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
             return false;
     }
 
-    const Vector3 PQ = AC + CD * beta - AB * alpha;
+    const Vec3 PQ = AC + CD * beta - AB * alpha;
 
     return PQ.norm2() < alarmDist * alarmDist;
 }
@@ -120,11 +120,11 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
+    const Vec3 AB = e1.p2()-e1.p1();
+    const Vec3 CD = e2.p2()-e2.p1();
+    const Vec3 AC = e2.p1()-e1.p1();
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
 
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
@@ -145,7 +145,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
             return 0;
     }
 
-    Vector3 P,Q,PQ;
+    Vec3 P,Q,PQ;
     P = e1.p1() + AB * alpha;
     Q = e2.p1() + CD * beta;
 
@@ -186,7 +186,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     else
     {
         msg_warning(intersection) << "Null distance between contact detected";
-        detection->normal= Vector3(1,0,0);
+        detection->normal= Vec3(1,0,0);
     }
     detection->value -= contactDist;
 
@@ -197,11 +197,11 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p3()-e2.p1();
-    const Vector3 AP = e1.p() -e2.p1();
+    const Vec3 AB = e2.p2()-e2.p1();
+    const Vec3 AC = e2.p3()-e2.p1();
+    const Vec3 AP = e1.p() -e2.p1();
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
 
     // We want to find alpha,beta so that:
     // AQ = AB*alpha+AC*beta
@@ -233,7 +233,7 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
             alpha + beta  > 0.999999)
         return false;
 
-    const Vector3 PQ = AB * alpha + AC * beta - AP;
+    const Vec3 PQ = AB * alpha + AC * beta - AP;
 
     return PQ.norm2() < alarmDist * alarmDist;
 }
@@ -242,11 +242,11 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p3()-e2.p1();
-    const Vector3 AP = e1.p() -e2.p1();
+    const Vec3 AB = e2.p2()-e2.p1();
+    const Vec3 AC = e2.p3()-e2.p1();
+    const Vec3 AP = e1.p() -e2.p1();
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
 
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
@@ -266,7 +266,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
             alpha + beta  > 0.999999)
         return 0;
 
-    Vector3 P,Q,QP; //PQ
+    Vec3 P,Q,QP; //PQ
     P = e1.p();
     Q = e2.p1() + AB * alpha + AC * beta;
     QP = P-Q;
@@ -308,7 +308,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     else
     {
         msg_warning(intersection) << "Null distance between contact detected";
-        detection->normal= Vector3(1,0,0);
+        detection->normal= Vec3(1,0,0);
     }
     detection->value -= contactDist;
 
@@ -325,8 +325,8 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
 {
 
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Vec3 AB = e2.p2()-e2.p1();
+    const Vec3 AP = e1.p()-e2.p1();
 
     SReal A;
     SReal b;
@@ -339,7 +339,7 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
     if (alpha < 0.000001 || alpha > 0.999999)
         return false;
 
-    Vector3 P,Q,PQ;
+    Vec3 P,Q,PQ;
     P = e1.p();
     Q = e2.p1() + AB * alpha;
     PQ = Q-P;
@@ -350,8 +350,8 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
 int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const Vec3 AB = e2.p2()-e2.p1();
+    const Vec3 AP = e1.p()-e2.p1();
 
     SReal A;
     SReal b;
@@ -360,7 +360,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
 
     SReal alpha = 0.5;
 
-    Vector3 P,Q,QP;
+    Vec3 P,Q,QP;
 
     alpha = b/A;
 
@@ -409,7 +409,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     else
     {
         msg_warning(intersection) << "Null distance between contact detected";
-        detection->normal= Vector3(1,0,0);
+        detection->normal= Vec3(1,0,0);
     }
     detection->value -= contactDist;
 
@@ -420,7 +420,7 @@ bool MeshMinProximityIntersection::testIntersection(Point& e1, Point& e2)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 PQ = e2.p()-e1.p();
+    const Vec3 PQ = e2.p()-e1.p();
 
     return PQ.norm2() < alarmDist * alarmDist;
 }
@@ -429,7 +429,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    Vector3 P,Q,PQ;
+    Vec3 P,Q,PQ;
     P = e1.p();
     Q = e2.p();
     PQ = Q-P;
@@ -468,7 +468,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     else
     {
         msg_warning(intersection) << "Null distance between contact detected";
-        detection->normal= Vector3(1,0,0);
+        detection->normal= Vec3(1,0,0);
     }
     detection->value -= contactDist;
 

@@ -652,7 +652,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    using type::Vector3;
+    using type::Vec3;
     using type::Vec3i;
     using type::Vec4f;
 
@@ -718,19 +718,19 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         }
         if (showStressVector && maxStress > 0)
         {
-            std::vector< Vector3 > points[2];
+            std::vector< Vec3 > points[2];
             for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Triangle t = triangles[i];
-                Vector3 a = x[t[0]];
-                Vector3 b = x[t[1]];
-                Vector3 c = x[t[2]];
-                Vector3 d1 = stressVectors[i];
+                Vec3 a = x[t[0]];
+                Vec3 b = x[t[1]];
+                Vec3 c = x[t[2]];
+                Vec3 d1 = stressVectors[i];
                 Real s1 = stresses[i];
-                Vector3 d2 = stressVectors2[i];
+                Vec3 d2 = stressVectors2[i];
                 Real s2 = stresses2[i];
-                Vector3 center = (a+b+c)/3;
-                Vector3 n = cross(b-a,c-a);
+                Vec3 center = (a+b+c)/3;
+                Vec3 n = cross(b-a,c-a);
                 Real fact = (Real)helper::rsqrt(n.norm())*(Real)0.5;
                 int g1 = (s1 < 0) ? 1 : 0;
                 int g2 = (s2 < 0) ? 1 : 0;
@@ -747,7 +747,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     }
     else
     {
-        std::vector< Vector3 > points[4];
+        std::vector< Vec3 > points[4];
 
         constexpr sofa::type::RGBAColor c0 = sofa::type::RGBAColor::red();
         constexpr sofa::type::RGBAColor c1 = sofa::type::RGBAColor::green();
@@ -768,7 +768,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
             Coord c = x[t[2]];
             Coord fx = ts.frame[0];
             Coord fy = ts.frame[1];
-            Vector3 center = (a+b+c)*(1.0f/3.0f);
+            Vec3 center = (a+b+c)*(1.0f/3.0f);
             Real scale = (Real)(sqrt((b-a).cross(c-a).norm()*0.25f));
             points[0].push_back(center);
             points[0].push_back(center + ts.frame[0] * scale);

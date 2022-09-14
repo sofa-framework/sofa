@@ -33,24 +33,24 @@ bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>&
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
-    type::Vector3 p0 = triangle.p1();
-    type::Vector3 p1 = triangle.p2();
-    type::Vector3 p2 = triangle.p3();
+    type::Vec3 p0 = triangle.p1();
+    type::Vec3 p1 = triangle.p2();
+    type::Vec3 p2 = triangle.p3();
 
     // Center of the sphere
-    const type::Vector3 sphCenter(sph.center());
+    const type::Vec3 sphCenter(sph.center());
     // Radius of the sphere
     const double r = sph.r();
 
     //Normal to the plane (plane spanned by tree points of the triangle)
-    type::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
+    type::Vec3 normal = cross( (p1 - p0), (p2 - p0) );
     normal.normalize();
 
     //Distance from the center of the sphere to the plane.
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    type::Vector3 projPoint = sphCenter - normal*distance;
+    type::Vec3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)
@@ -84,24 +84,24 @@ int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
-    type::Vector3 p0 = triangle.p1();
-    type::Vector3 p1 = triangle.p2();
-    type::Vector3 p2 = triangle.p3();
+    type::Vec3 p0 = triangle.p1();
+    type::Vec3 p1 = triangle.p2();
+    type::Vec3 p2 = triangle.p3();
 
     // Center of the sphere
-    const type::Vector3 sphCenter(sph.center());
+    const type::Vec3 sphCenter(sph.center());
     // Radius of the sphere
     const double r = sph.r();
 
     //Normal to the plane (plane spanned by tree points of the triangle)
-    type::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
+    type::Vec3 normal = cross( (p1 - p0), (p2 - p0) );
     normal.normalize();
 
     //Distance from the center of the sphere to the plane.
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    type::Vector3 projPoint = sphCenter - normal*distance;
+    type::Vec3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)

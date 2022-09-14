@@ -105,26 +105,26 @@ void SuturePointPerformer<DataTypes>::start()
 
 
         // Get vertices of both triangles
-        sofa::type::vector<sofa::type::Vector3 > listCoords;
+        sofa::type::vector<sofa::type::Vec3 > listCoords;
         const core::topology::BaseMeshTopology::Triangle Triangle1 = triangleContainer->getTriangle(firstPicked.indexCollisionElement);
         const core::topology::BaseMeshTopology::Triangle Triangle2 = triangleContainer->getTriangle(picked.indexCollisionElement);
 
         for (unsigned int i=0; i<3; i++)
         {
-            const sofa::type::Vector3& tmp = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[ Triangle1[i] ];
+            const sofa::type::Vec3& tmp = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[ Triangle1[i] ];
             listCoords.push_back (tmp);
         }
 
         for (unsigned int i=0; i<3; i++)
         {
-            const sofa::type::Vector3& tmp = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[ Triangle2[i] ];
+            const sofa::type::Vec3& tmp = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[ Triangle2[i] ];
             listCoords.push_back (tmp);
         }
 
         sofa::type::vector<unsigned int> pointToSuture;
         pointToSuture.resize(2);
 
-        sofa::type::vector<sofa::type::Vector3 > listPoint;
+        sofa::type::vector<sofa::type::Vec3 > listPoint;
         listPoint.push_back(firstPicked.point);
         listPoint.push_back(picked.point);
 

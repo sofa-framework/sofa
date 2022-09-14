@@ -34,10 +34,10 @@ template <class DataTypes>
 TransformEngine<DataTypes>::TransformEngine()
     : f_inputX ( initData (&f_inputX, "input_position", "input array of 3d points") )
     , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
-    , translation(initData(&translation, type::Vector3(0,0,0),"translation", "translation vector ") )
-    , rotation(initData(&rotation, type::Vector3(0,0,0), "rotation", "rotation vector ") )
+    , translation(initData(&translation, type::Vec3(0,0,0),"translation", "translation vector ") )
+    , rotation(initData(&rotation, type::Vec3(0,0,0), "rotation", "rotation vector ") )
     , quaternion(initData(&quaternion, type::Quat<SReal>(0,0,0,1), "quaternion", "rotation quaternion ") )
-    , scale(initData(&scale, type::Vector3(1,1,1),"scale", "scale factor") )
+    , scale(initData(&scale, type::Vec3(1,1,1),"scale", "scale factor") )
     , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
 {
     addInput(&f_inputX);
@@ -84,7 +84,7 @@ struct Scale : public TransformOperation<DataTypes>
         DataTypes::set(p,x*sx,y*sy,z*sz);
     }
 
-    void configure(const type::Vector3 &s, bool inverse)
+    void configure(const type::Vec3 &s, bool inverse)
     {
         if (inverse)
         {
@@ -109,13 +109,13 @@ struct RotationSpecialized : public TransformOperation<DataTypes>
 
     void execute(typename DataTypes::Coord &p) const
     {
-        type::Vector3 pos;
+        type::Vec3 pos;
         DataTypes::get(pos[0],pos[1],pos[2],p);
         pos=q.rotate(pos);
         DataTypes::set(p,pos[0],pos[1],pos[2]);
     }
 
-    void configure(const type::Vector3 &r, bool inverse)
+    void configure(const type::Vec3 &r, bool inverse)
     {
         q=type::Quat<Real>::createQuaterFromEuler( r*(R_PI/180.0));
         if (inverse)
@@ -140,7 +140,7 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
 
     void execute(typename DataTypes::Coord &p) const
     {
-        type::Vector3 pos;
+        type::Vec3 pos;
         DataTypes::get(pos[0],pos[1],pos[2],p);
         pos=q.rotate(pos);
         DataTypes::set(p,pos[0],pos[1],pos[2]);
@@ -148,7 +148,7 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
 		p.getOrientation() += rotZ;
     }
 
-    void configure(const type::Vector3 &r, bool inverse)
+    void configure(const type::Vec3 &r, bool inverse)
     {
         q=type::Quat<Real>::createQuaterFromEuler( r*(R_PI/180.0));
 		rotZ = static_cast<Real>(r.z() * (R_PI/180.0f));
@@ -179,7 +179,7 @@ struct RotationSpecialized<DataTypes, 3, false> : public TransformOperation<Data
 		p.getOrientation() = q*p.getOrientation();
     }
 
-    void configure(const type::Vector3 &r, bool inverse)
+    void configure(const type::Vec3 &r, bool inverse)
     {
         q=type::Quat<Real>::createQuaterFromEuler( r*(R_PI/180.0));
         if (inverse)
@@ -213,7 +213,7 @@ struct Translation : public TransformOperation<DataTypes>
         DataTypes::get(x,y,z,p);
         DataTypes::set(p,x+tx,y+ty,z+tz);
     }
-    void configure(const type::Vector3 &t, bool inverse)
+    void configure(const type::Vec3 &t, bool inverse)
     {
         if (inverse)
         {
@@ -264,24 +264,24 @@ private:
 template <class DataTypes>
 void TransformEngine<DataTypes>::doUpdate()
 {
-    const type::Vector3 &s=scale.getValue();
-    const type::Vector3 &r=rotation.getValue();
-    const type::Vector3 &t=translation.getValue();
+    const type::Vec3 &s=scale.getValue();
+    const type::Vec3 &r=rotation.getValue();
+    const type::Vec3 &t=translation.getValue();
     const type::Quat<SReal> &q=quaternion.getValue();
 
     //Create the object responsible for the transformations
     Transform<DataTypes> transformation;
     const bool inv = inverse.getValue();
-    if (s != type::Vector3(1,1,1))
+    if (s != type::Vec3(1,1,1))
         transformation.add(new Scale<DataTypes>, inv)->configure(s, inv);
 
-    if (r != type::Vector3(0,0,0))
+    if (r != type::Vec3(0,0,0))
         transformation.add(new Rotation<DataTypes>, inv)->configure(r, inv);
 
     if (q != type::Quat<SReal>(0,0,0,1))
         transformation.add(new Rotation<DataTypes>, inv)->configure(q, inv, this);
 
-    if (t != type::Vector3(0,0,0))
+    if (t != type::Vec3(0,0,0))
         transformation.add(new Translation<DataTypes>, inv)->configure(t, inv);
 
     //Get input

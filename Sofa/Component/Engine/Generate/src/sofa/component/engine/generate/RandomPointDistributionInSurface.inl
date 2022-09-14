@@ -257,7 +257,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     const VecCoord& out = f_outPoints.getValue();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     for (unsigned int i=0 ; i<in.size() ; i++)
         vertices.push_back(in[i]);

@@ -822,10 +822,10 @@ void IncrSAP::updateMovingBoxes(){
 double ISAPBox::tolerance = (double)(1e-7);
 
 double ISAPBox::squaredDistance(const ISAPBox & other) const{
-    const type::Vector3 & min_vect0 = cube.minVect();
-    const type::Vector3 & max_vect0 = cube.maxVect();
-    const type::Vector3 & min_vect1 = other.cube.minVect();
-    const type::Vector3 & max_vect1 = other.cube.maxVect();
+    const type::Vec3 & min_vect0 = cube.minVect();
+    const type::Vec3 & max_vect0 = cube.maxVect();
+    const type::Vec3 & min_vect1 = other.cube.minVect();
+    const type::Vec3 & max_vect1 = other.cube.maxVect();
 
     double temp;
     double dist2 = 0;
@@ -849,10 +849,10 @@ double ISAPBox::squaredDistance(const ISAPBox & other) const{
 }
 
 bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
-    const type::Vector3 & min_vect0 = cube.minVect();
-    const type::Vector3 & max_vect0 = cube.maxVect();
-    const type::Vector3 & min_vect1 = other.cube.minVect();
-    const type::Vector3 & max_vect1 = other.cube.maxVect();
+    const type::Vec3 & min_vect0 = cube.minVect();
+    const type::Vec3 & max_vect0 = cube.maxVect();
+    const type::Vec3 & min_vect1 = other.cube.minVect();
+    const type::Vec3 & max_vect1 = other.cube.maxVect();
 
     for(int i = 0 ; i < 3 ; ++i){
         assert(min_vect0[i] <= max_vect0[i]);

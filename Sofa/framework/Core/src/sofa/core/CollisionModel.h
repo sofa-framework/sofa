@@ -94,7 +94,7 @@ public:
 
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
-    typedef sofa::type::Vector3::value_type Real;
+    typedef sofa::type::Vec3::value_type Real;
     using Index = sofa::Index;
     using Size = sofa::Size;
 

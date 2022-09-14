@@ -267,7 +267,7 @@ void CubeTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal 
         setDz(Vector3(0,0,0));
 }
 
-Vector3 CubeTopology::getPoint(int i) const
+Vec3 CubeTopology::getPoint(int i) const
 {
     const int nx = this->nx.getValue();
     const int ny = this->ny.getValue();
@@ -362,7 +362,7 @@ Vector3 CubeTopology::getPoint(int i) const
     return getPoint(x,y,z);
 }
 
-Vector3 CubeTopology::getPoint(int x, int y, int z) const
+Vec3 CubeTopology::getPoint(int x, int y, int z) const
 {
     return p0+dx*x+dy*y+dz*z;
 }

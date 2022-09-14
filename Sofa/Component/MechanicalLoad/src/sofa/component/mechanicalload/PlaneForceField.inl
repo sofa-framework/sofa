@@ -307,7 +307,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-    std::vector< type::Vector3 > points;
+    std::vector< type::Vec3 > points;
 
     points.push_back(corners[0]);
     points.push_back(corners[1]);
@@ -323,7 +323,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     vparams->drawTool()->drawTriangles(points, sofa::type::RGBAColor(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
     vparams->drawTool()->setPolygonMode(0,false); //No Culling
 
-    std::vector< type::Vector3 > pointsLine;
+    std::vector< type::Vec3 > pointsLine;
 
     // lines for points penetrating the plane
     unsigned int ibegin = 0;
@@ -335,7 +335,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
         iend = d_localRange.getValue()[1]+1;
 
-    type::Vector3 point1,point2;
+    type::Vec3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = DataTypes::getCPos(p1[i])*d_planeNormal.getValue()-d_planeD.getValue();

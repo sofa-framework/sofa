@@ -417,7 +417,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
 
         float vectorLength = p_vectorLength.getValue();
         auto color = sofa::type::RGBAColor::black();
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         for (unsigned int i =0; i<tetrahedronVectors.size(); i++)
         {
             Tetra t = tetrahedra[i];

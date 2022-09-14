@@ -327,7 +327,7 @@ void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
 void QtGLViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 {
     if (r==0.0)
-        r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
+        r = (Vec3(maxBBox) - Vec3(minBBox)).norm() / 500;
 #if 0
     {
         Enable<GL_DEPTH_TEST> depth;
@@ -614,7 +614,7 @@ void QtGLViewer::DisplayOBJs()
                     , this->camera()->orientation()[1]
                     , this->camera()->orientation()[2]
                     , this->camera()->orientation()[3]);
-            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vec3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);

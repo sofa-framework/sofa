@@ -50,13 +50,13 @@ bool MeshDiscreteIntersection::testIntersection(Triangle&, Line&)
 
 int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
 {
-    Vector3 A = e1.p1();
-    Vector3 AB = e1.p2()-A;
-    Vector3 AC = e1.p3()-A;
-    Vector3 P = e2.p1();
-    Vector3 PQ = e2.p2()-P;
+    Vec3 A = e1.p1();
+    Vec3 AB = e1.p2()-A;
+    Vec3 AC = e1.p3()-A;
+    Vec3 P = e2.p1();
+    Vec3 PQ = e2.p2()-P;
     Matrix3 M, Minv;
-    Vector3 right;
+    Vec3 right;
     for (int i=0; i<3; i++)
     {
         M[i][0] = AB[i];
@@ -66,13 +66,13 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
     }
     if (!Minv.invert(M))
         return 0;
-    Vector3 baryCoords = Minv * right;
+    Vec3 baryCoords = Minv * right;
     if (baryCoords[0] < 0 || baryCoords[1] < 0 || baryCoords[0]+baryCoords[1] > 1)
         return 0; // out of the triangle
     if (baryCoords[2] < 0 || baryCoords[2] > 1)
         return 0; // out of the line
 
-    Vector3 X = P+PQ*baryCoords[2];
+    Vec3 X = P+PQ*baryCoords[2];
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);

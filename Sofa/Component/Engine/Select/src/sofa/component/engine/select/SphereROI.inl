@@ -460,7 +460,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         ///draw the boxes
         const type::vector<Vec3>& c=centers.getValue();
         const type::vector<Real>& r=radii.getValue();        
-        std::vector<sofa::type::Vector3> drawcenters;
+        std::vector<sofa::type::Vec3> drawcenters;
         std::vector<float> drawradii;
 
         for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
@@ -486,7 +486,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
 
     vparams->drawTool()->disableLighting();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     ///draw points in ROI
     if( p_drawPoints.getValue())
