@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_ConstraintForceExporter_CPP
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_CONSTRAINTFORCEEXPORTER_CPP
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintForceExporter.inl>
 

@@ -29,6 +29,13 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
+
+/**
+* Small utility component to compute forces (and wrenches in case of rigids)
+* from constraints computed by a constraint solver on a mechanical state,
+* at the end of each animation step.
+* Can also draw the forces for debug purpose (but it does not draw the wrenches if applicable).
+*/
 template <typename DataTypes>
 class ConstraintForceExporter : public sofa::core::objectmodel::BaseObject
 {
@@ -93,7 +100,7 @@ private:
     void computeForce();
 };
 
-#if !defined(SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_ConstraintForceExporter_CPP)
+#if !defined(SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_CONSTRAINTFORCEEXPORTER_CPP)
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

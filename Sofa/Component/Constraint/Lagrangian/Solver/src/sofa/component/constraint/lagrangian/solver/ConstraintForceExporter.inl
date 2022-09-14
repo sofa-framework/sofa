@@ -33,8 +33,8 @@ template <class DataTypes>
 ConstraintForceExporter<DataTypes>::ConstraintForceExporter()
     : Inherited()
     , d_constraintForces(initData(&d_constraintForces, "constraintForces", "(output) Forces (or wrenches if rigids) computed from the mechanical state using the constraint solver."))
-    , d_draw(initData(&d_draw, true, "draw", "(debug) draw forces (as an arrow) for each position of the mechanical object."))
-    , d_drawForceScale(initData(&d_drawForceScale, 1.0, "drawForceScale", "(debug) Scale to apply on the force (draw as an arrow)."))
+    , d_draw(initData(&d_draw, true, "draw", "(debug) draw forces (as a line) for each position of the mechanical object."))
+    , d_drawForceScale(initData(&d_drawForceScale, 1.0, "drawForceScale", "(debug) Scale to apply on the force (draw as a line)."))
     , l_mechanicalState(initLink("mechanicalState", "Link to the mechanical state storing the constraint matrix."))
     , l_constraintSolver(initLink("constraintSolver", "Link to the constraint solver."))
 {
@@ -68,12 +68,12 @@ void ConstraintForceExporter<DataTypes>::init()
 template <class DataTypes>
 void ConstraintForceExporter<DataTypes>::handleEvent(core::objectmodel::Event* event)
 {
-    Inherited::handleEvent(event);
-
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
     {
         return;
     }
+
+    Inherited::handleEvent(event);
 
     if (simulation::AnimateEndEvent::checkEventType(event))
     {
@@ -94,7 +94,7 @@ void ConstraintForceExporter<DataTypes>::draw(const sofa::core::visual::VisualPa
 
     assert(constraintForces.size() != positions.size());
 
-    const float arrowSize = 2.0f;
+    const float lineSize = 2.0f;
     const double forceScale = d_drawForceScale.getValue();
 
     vparams->drawTool()->saveLastState();
@@ -114,7 +114,7 @@ void ConstraintForceExporter<DataTypes>::draw(const sofa::core::visual::VisualPa
                                origin[1] + force[1] * forceScale,
                                origin[2] + force[2] * forceScale );
     }
-    vparams->drawTool()->drawLines(vertices, arrowSize, sofa::type::RGBAColor::white());
+    vparams->drawTool()->drawLines(vertices, lineSize, sofa::type::RGBAColor::white());
 
     vparams->drawTool()->restoreLastState();
 }
