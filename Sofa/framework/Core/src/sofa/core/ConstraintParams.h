@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_CONSTRAINTPARAMS_H
-#define SOFA_CORE_CONSTRAINTPARAMS_H
-
+#pragma once
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/Link.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /// Class gathering parameters use by constraint components methods, and transmitted by visitors
@@ -121,39 +115,39 @@ public:
 
 
 
-    /// @name Access to vectors from a given SingleLink to a state container (i.e. State or MechanicalState)
-    /// @{
+//    /// @name Access to vectors from a given SingleLink to a state container (i.e. State or MechanicalState)
+//    /// @{
 
-    /// Read access to the free (unconstrained) position
-    template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
-    {   return m_x[state.get()].read();    }
+//    /// Read access to the free (unconstrained) position
+//    template<class Owner, class S, unsigned int flags>
+//    const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
+//    {   return m_x[state.get()].read();    }
 
-    /// Read access to the free (unconstrained) velocity vector
-    template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
-    {   return m_v[state.get()].read();    }
+//    /// Read access to the free (unconstrained) velocity vector
+//    template<class Owner, class S, unsigned int flags>
+//    const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
+//    {   return m_v[state.get()].read();    }
 
-    /// Read access to the constraint jacobian matrix
-    template<class Owner, class S, unsigned int flags>
-    const Data<typename S::MatrixDeriv>* readJ(const SingleLink<Owner, S, flags>& state) const
-    {
-        return m_j[state.get()].read();
-    }
+//    /// Read access to the constraint jacobian matrix
+//    template<class Owner, class S, unsigned int flags>
+//    const Data<typename S::MatrixDeriv>* readJ(const SingleLink<Owner, S, flags>& state) const
+//    {
+//        return m_j[state.get()].read();
+//    }
 
-    /// Read access to the constraint force vector
-    template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecDeriv>* readLambda(SingleLink<Owner, S, flags>& state) const
-    {
-        return m_lambda[state.get(this)].read();
-    }
+//    /// Read access to the constraint force vector
+//    template<class Owner, class S, unsigned int flags>
+//    const Data<typename S::VecDeriv>* readLambda(SingleLink<Owner, S, flags>& state) const
+//    {
+//        return m_lambda[state.get(this)].read();
+//    }
 
-    /// Read access to the constraint corrective motion vector
-    template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecDeriv>* readDx(SingleLink<Owner, S, flags>& state) const
-    {
-        return m_dx[state.get(this)].read();
-    }
+//    /// Read access to the constraint corrective motion vector
+//    template<class Owner, class S, unsigned int flags>
+//    const Data<typename S::VecDeriv>* readDx(SingleLink<Owner, S, flags>& state) const
+//    {
+//        return m_dx[state.get(this)].read();
+//    }
 
 
     /// @}
@@ -246,8 +240,4 @@ protected:
     double m_smoothFactor;
 };
 
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_CONSTRAINT_PARAMS_H
+} // namespace sofa::core

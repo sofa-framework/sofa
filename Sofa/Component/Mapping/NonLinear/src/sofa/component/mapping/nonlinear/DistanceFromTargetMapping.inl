@@ -214,9 +214,9 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
      if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
-    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
     const SReal kfactor = mparams->kFactor();
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
     helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
 
     for(unsigned i=0; i<indices.size(); i++ )
