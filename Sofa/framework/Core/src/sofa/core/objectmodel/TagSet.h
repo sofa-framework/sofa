@@ -22,58 +22,35 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
+#include <sofa/core/objectmodel/Tag.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
+#include <sofa/helper/set.h>
 
 namespace sofa::core::objectmodel
 {
 
-/**
- *  \brief A Tag is a string (internally converted to an integer), attached to objects in order to define subsets to process by specific visitors.
- *
- */
-class SOFA_CORE_API Tag
+class SOFA_CORE_API TagSet : public std::set<Tag>
 {
 public:
-
-    Tag() : id(0) {}
-
-    /// A tag is constructed from a string and appears like one after, without actually storing a string
-    Tag(const std::string& s);
-
-    /// This constructor should be used only if really necessary
-    explicit Tag(int id) : id(id) {}
-
-    /// Any operation requiring a string can be used on a tag using this conversion
-    operator std::string() const;
-
-    bool operator==(const Tag& t) const { return id == t.id; }
-    bool operator!=(const Tag& t) const { return id != t.id; }
-    bool operator<(const Tag& t) const { return id < t.id; }
-    bool operator>(const Tag& t) const { return id > t.id; }
-    bool operator<=(const Tag& t) const { return id <= t.id; }
-    bool operator>=(const Tag& t) const { return id >= t.id; }
-    bool operator!() const { return !id; }
-
-    bool negative() const { return id < 0; }
-    Tag operator-() const { return Tag(-id); }
-
-    SOFA_CORE_API friend std::ostream& operator<<(std::ostream& o, const Tag& t);
-    SOFA_CORE_API friend std::istream& operator>>(std::istream& i, Tag& t);
-
-protected:
-    int id;
+    TagSet() {}
+    /// Automatic conversion between a tag and a tagset composed of this tag
+    TagSet(const Tag& t) { this->insert(t); }
+    /// Returns true if this TagSet contains specified tag
+    bool includes(const Tag& t) const { return this->count(t) > 0; }
+    /// Returns true if this TagSet contains all specified tags
+    bool includes(const TagSet& t) const;
 };
 
-} //namespace sofa::core::objectmodel
+} // namespace sofa::core::objectmodel
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 namespace sofa::defaulttype
 {
 
 template<>
-struct DataTypeInfo< sofa::core::objectmodel::Tag > : public TextTypeInfo<sofa::core::objectmodel::Tag >
+struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa::core::objectmodel::TagSet >
 {
-    static const char* name() { return "Tag"; }
+    static const char* name() { return "TagSet"; }
 };
 
-} //namespace sofa::defaulttype
+} // namespace sofa::defaulttype

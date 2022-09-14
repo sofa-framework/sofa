@@ -19,61 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/core/config.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
+#include <sofa/core/objectmodel/TagSet.h>
 
 namespace sofa::core::objectmodel
 {
 
-/**
- *  \brief A Tag is a string (internally converted to an integer), attached to objects in order to define subsets to process by specific visitors.
- *
- */
-class SOFA_CORE_API Tag
+bool TagSet::includes(const TagSet& t) const
 {
-public:
-
-    Tag() : id(0) {}
-
-    /// A tag is constructed from a string and appears like one after, without actually storing a string
-    Tag(const std::string& s);
-
-    /// This constructor should be used only if really necessary
-    explicit Tag(int id) : id(id) {}
-
-    /// Any operation requiring a string can be used on a tag using this conversion
-    operator std::string() const;
-
-    bool operator==(const Tag& t) const { return id == t.id; }
-    bool operator!=(const Tag& t) const { return id != t.id; }
-    bool operator<(const Tag& t) const { return id < t.id; }
-    bool operator>(const Tag& t) const { return id > t.id; }
-    bool operator<=(const Tag& t) const { return id <= t.id; }
-    bool operator>=(const Tag& t) const { return id >= t.id; }
-    bool operator!() const { return !id; }
-
-    bool negative() const { return id < 0; }
-    Tag operator-() const { return Tag(-id); }
-
-    SOFA_CORE_API friend std::ostream& operator<<(std::ostream& o, const Tag& t);
-    SOFA_CORE_API friend std::istream& operator>>(std::istream& i, Tag& t);
-
-protected:
-    int id;
-};
+    if (t.empty())
+        return true;
+    if (empty())
+    {
+        // An empty TagSet satisfies the conditions only if either :
+        // t is also empty (already handled)
+        // t only includes negative tags
+        if (*t.rbegin() <= Tag(0))
+            return true;
+        // t includes the "0" tag
+        if (t.count(Tag(0)) > 0)
+            return true;
+        // otherwise the TagSet t does not "include" empty sets
+        return false;
+    }
+    for (std::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
+        first2 != last2; ++first2)
+    {
+        Tag t2 = *first2;
+        if (t2 == Tag(0)) continue; // tag "0" is used to indicate that we should include objects without any tag
+        if (!t2.negative())
+        {
+            if (this->count(t2) == 0)
+                return false; // tag not found in this
+        }
+        else
+        {
+            if (this->count(-t2) > 0)
+                return false; // tag found in this
+        }
+    }
+    return true;
+}
 
 } //namespace sofa::core::objectmodel
-
-// Specialization of the defaulttype::DataTypeInfo type traits template
-namespace sofa::defaulttype
-{
-
-template<>
-struct DataTypeInfo< sofa::core::objectmodel::Tag > : public TextTypeInfo<sofa::core::objectmodel::Tag >
-{
-    static const char* name() { return "Tag"; }
-};
-
-} //namespace sofa::defaulttype
