@@ -105,11 +105,12 @@ using Quatd = type::Quat<double>;
 using Quatf = type::Quat<float>;
 
 class BoundingBox;
+using BoundingBox3D = BoundingBox;
 class BoundingBox1D;
 class BoundingBox2D;
 
 using FixedArray1i = fixed_array<int, 1>;
-using FixedArray1I = fixed_array<unsigned int, 1>;
+using  FixedArray1I = fixed_array<unsigned int, 1>;
 
 using FixedArray2i = fixed_array<int, 2>;
 using FixedArray2I = fixed_array<unsigned int, 2>;

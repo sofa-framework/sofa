@@ -48,6 +48,7 @@
 #pragma once
 
 #include <sofa/type/config.h>
+#include <sofa/type/fwd.h>
 
 #include <cstddef>
 #include <stdexcept>
