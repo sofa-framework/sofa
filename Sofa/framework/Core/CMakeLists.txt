@@ -106,9 +106,12 @@ set(HEADER_FILES
     ${SRC_ROOT}/datatype/Data[bool].h
     ${SRC_ROOT}/datatype/Data[string].h
     ${SRC_ROOT}/datatype/Data[fixed_array].h
+    ${SRC_ROOT}/datatype/Data[BoundingBox].h
     ${SRC_ROOT}/datatype/Data[ComponentState].h
     ${SRC_ROOT}/datatype/Data[Integer].h
     ${SRC_ROOT}/datatype/Data[Mat].h
+    ${SRC_ROOT}/datatype/Data[Material].h
+    ${SRC_ROOT}/datatype/Data[OptionsGroup].h
     ${SRC_ROOT}/datatype/Data[Quat].h
     ${SRC_ROOT}/datatype/Data[RGBAColor].h
     ${SRC_ROOT}/datatype/Data[Scalar].h
@@ -138,6 +141,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/ContextObject.h
     ${SRC_ROOT}/objectmodel/DDGNode.h
     ${SRC_ROOT}/objectmodel/Data.h
+    ${SRC_ROOT}/objectmodel/Data.inl
     ${SRC_ROOT}/objectmodel/DataCallback.h
     ${SRC_ROOT}/objectmodel/DataContentValue.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
@@ -245,9 +249,12 @@ set(SOURCE_FILES
     ${SRC_ROOT}/datatype/Data[bool].cpp
     ${SRC_ROOT}/datatype/Data[string].cpp
     ${SRC_ROOT}/datatype/Data[fixed_array].cpp
+    ${SRC_ROOT}/datatype/Data[BoundingBox].cpp
     ${SRC_ROOT}/datatype/Data[ComponentState].cpp
     ${SRC_ROOT}/datatype/Data[Integer].cpp
     ${SRC_ROOT}/datatype/Data[Mat].cpp
+    ${SRC_ROOT}/datatype/Data[Material].cpp
+    ${SRC_ROOT}/datatype/Data[OptionsGroup].cpp
     ${SRC_ROOT}/datatype/Data[Quat].cpp
     ${SRC_ROOT}/datatype/Data[RGBAColor].cpp
     ${SRC_ROOT}/datatype/Data[Scalar].cpp
@@ -275,7 +282,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/Context.cpp
     ${SRC_ROOT}/objectmodel/ContextObject.cpp
     ${SRC_ROOT}/objectmodel/DDGNode.cpp
-    ${SRC_ROOT}/objectmodel/Data.cpp
     ${SRC_ROOT}/objectmodel/DataCallback.cpp
     ${SRC_ROOT}/objectmodel/DataContentValue.cpp
     ${SRC_ROOT}/objectmodel/DataFileName.cpp
