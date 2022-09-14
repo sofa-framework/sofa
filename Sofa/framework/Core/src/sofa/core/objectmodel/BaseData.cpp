@@ -25,16 +25,8 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
-
-namespace core
-{
-
-namespace objectmodel
-{
-
-//#define SOFA_DDG_TRACE
 
 BaseData::BaseData(const char* h, DataFlags dataflags) : BaseData(sofa::helper::safeCharToString(h), dataflags)
 {
@@ -337,9 +329,10 @@ std::string BaseData::decodeTypeName(const std::type_info& t)
     return sofa::helper::NameDecoder::decodeTypeName(t);
 }
 
-} // namespace objectmodel
+std::ostream& operator<<(std::ostream &out, const sofa::core::objectmodel::BaseData& df)
+{
+    out<<df.getValueString();
+    return out;
+}
 
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::objectmodel
