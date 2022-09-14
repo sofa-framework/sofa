@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <list>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/sptr.h>
 
 #include <deque>
