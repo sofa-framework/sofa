@@ -307,10 +307,6 @@ int main(int argc, char** argv)
         "Number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
     );
 
-    addGUIParameters(argParser);
-    argParser->parse();
-    files = argParser->getInputFileList();
-
     if(showHelp)
     {
         argParser->showHelp();
@@ -382,9 +378,6 @@ int main(int argc, char** argv)
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
-    if (!files.empty())
-        fileName = files[0];
-
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
@@ -413,6 +406,10 @@ int main(int argc, char** argv)
         msg_info("runSofa") << "Automatic plugin loading disabled.";
     }
 
+    addGUIParameters(argParser);
+    argParser->parse();
+    files = argParser->getInputFileList();
+
     PluginManager::getInstance().init();
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
@@ -422,6 +419,9 @@ int main(int argc, char** argv)
 
         return err;
     }
+
+    if (!files.empty())
+        fileName = files[0];
 
     if (fileName.empty())
     {
@@ -437,7 +437,6 @@ int main(int argc, char** argv)
 
         fileName = DataRepository.getFile(fileName);
     }
-
 
     if (int err=GUIManager::createGUI(nullptr))
         return err;
