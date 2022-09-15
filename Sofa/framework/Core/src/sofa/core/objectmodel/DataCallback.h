@@ -83,6 +83,6 @@ private:
 /// Import DataCallback from its private namespace into the public one.
 using _datacallback_::DataCallback;
 
-} /// sofa::core::objectmodell
+} /// sofa::core::objectmodel
 
 
