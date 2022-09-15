@@ -35,7 +35,6 @@ ConstraintForceExporter<DataTypes>::ConstraintForceExporter()
     , d_constraintForces(initData(&d_constraintForces, "constraintForces", "(output) Forces (or wrenches if rigids) computed from the mechanical state using the constraint solver."))
     , d_draw(initData(&d_draw, true, "draw", "(debug) draw forces (as a line) for each position of the mechanical object."))
     , d_drawForceScale(initData(&d_drawForceScale, 1.0, "drawForceScale", "(debug) Scale to apply on the force (draw as a line)."))
-    , l_mechanicalState(initLink("mechanicalState", "Link to the mechanical state storing the constraint matrix."))
     , l_constraintSolver(initLink("constraintSolver", "Link to the constraint solver."))
 {
     this->f_listening.setValue(true);
@@ -45,8 +44,6 @@ ConstraintForceExporter<DataTypes>::ConstraintForceExporter()
 template <class DataTypes>
 void ConstraintForceExporter<DataTypes>::init()
 {
-    Inherited::init();
-
     if (!l_constraintSolver)
     {
         l_constraintSolver.set(this->getContext()->template get<ConstraintSolverImpl>());
@@ -60,7 +57,8 @@ void ConstraintForceExporter<DataTypes>::init()
     }
 
     // No need to check if the link to the mechanical state is correct
-    // as it has been covered by canCreate() 
+    // as it has been covered by canCreate()
+    // Inherited::init();
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
@@ -90,7 +88,7 @@ void ConstraintForceExporter<DataTypes>::draw(const sofa::core::visual::VisualPa
     }
 
     auto constraintForces = sofa::helper::getReadAccessor(d_constraintForces);
-    const auto& positions = l_mechanicalState->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const auto& positions = this->getMState()->read(sofa::core::ConstVecCoordId::position())->getValue();
 
     assert(constraintForces.size() != positions.size());
 
@@ -125,10 +123,10 @@ void ConstraintForceExporter<DataTypes>::computeForce()
     auto constraintForces = sofa::helper::getWriteOnlyAccessor(d_constraintForces);
 
     auto* constraintProblem = l_constraintSolver->getConstraintProblem();
-    const auto& constraintMatrix = l_mechanicalState->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const auto& constraintMatrix = this->getMState()->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     auto* lambdas = constraintProblem->getF();
     [[maybe_unused]] const int dimension = constraintProblem->getDimension();
-    const auto& positions = l_mechanicalState->read(sofa::core::ConstVecCoordId::position())->getValue();
+    const auto& positions = this->getMState()->read(sofa::core::ConstVecCoordId::position())->getValue();
 
     assert(lambdas != nullptr);
 

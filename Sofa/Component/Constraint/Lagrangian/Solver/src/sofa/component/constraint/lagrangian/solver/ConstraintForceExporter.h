@@ -24,6 +24,7 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 #include <sofa/core/fwd.h>
 
@@ -37,18 +38,20 @@ namespace sofa::component::constraint::lagrangian::solver
 * Can also draw the forces for debug purpose (but it does not draw the wrenches if applicable).
 */
 template <typename DataTypes>
-class ConstraintForceExporter : public sofa::core::objectmodel::BaseObject
+class ConstraintForceExporter : public sofa::core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS(ConstraintForceExporter, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ConstraintForceExporter, SOFA_TEMPLATE(sofa::core::behavior::SingleStateAccessor, DataTypes));
 
-    using Inherited = sofa::core::objectmodel::BaseObject;
+    using Inherited = typename sofa::core::behavior::SingleStateAccessor<DataTypes>;
+
     using Deriv = typename DataTypes::Deriv;
     using VecDeriv = typename DataTypes::VecDeriv;
 
 protected:
     ConstraintForceExporter();
     ~ConstraintForceExporter() override = default;
+
 public:
     void init() override;
     void handleEvent(sofa::core::objectmodel::Event* event) override;
@@ -58,7 +61,6 @@ public:
     Data<bool> d_draw; ///< (debug) draw forces (as an arrow) for each position of the mechanical object.
     Data<double> d_drawForceScale; ///< (debug) Scale to apply on the force (draw as an arrow).
 
-    SingleLink<ConstraintForceExporter<DataTypes>, sofa::core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_mechanicalState; ///< Link to the mechanical state storing the constraint matrix.
     SingleLink<ConstraintForceExporter<DataTypes>, ConstraintSolverImpl, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_constraintSolver; ///< Link to the constraint solver.
 
     /// Check that DataTypes matches the MechanicalState.
@@ -69,26 +71,26 @@ public:
 
         std::string mechanicalStatePath{};
 
-        if (arg->getAttribute("mechanicalState"))
+        if (arg->getAttribute("mstate"))
         {
-            mechanicalStatePath = arg->getAttribute("mechanicalState");
+            mechanicalStatePath = arg->getAttribute("mstate");
             context->findLinkDest(mechanicalState, mechanicalStatePath, nullptr);
 
             if (mechanicalState == nullptr)
             {
-                arg->logError("Data attribute 'mechanicalState' does not point to a mechanical state of data type '" + std::string(DataTypes::Name()) + "'.");
+                arg->logError("Data attribute 'mstate' does not point to a mechanical state of data type '" + std::string(DataTypes::Name()) + "'.");
                 return false;
             }
         }
         else
         {
             mechanicalStatePath = "@./";
-            arg->setAttribute("mechanicalState", mechanicalStatePath);
+            arg->setAttribute("mstate", mechanicalStatePath);
             context->findLinkDest(mechanicalState, mechanicalStatePath, nullptr);
 
             if (mechanicalState == nullptr)
             {
-                arg->logError("Data attribute 'mechanicalState' has not been set and none can be found in the parent node context.");
+                arg->logError("Data attribute 'mstate' has not been set and none can be found in the parent node context.");
                 return false;
             }
         }

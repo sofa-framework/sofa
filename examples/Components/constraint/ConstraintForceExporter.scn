@@ -60,7 +60,7 @@
         </Node>
 
         <!-- Compute and show forces computed by constraints created with FrictionContactConstraint on TORUS -->
-        <ConstraintForceExporter mechanicalState="@TORUS/dofs" constraintSolver="@../constraint_solver" draw="true" drawForceScale="0.5" />
+        <ConstraintForceExporter mstate="@TORUS/dofs" constraintSolver="@../constraint_solver" draw="true" drawForceScale="0.5" />
 
     </Node>
 
