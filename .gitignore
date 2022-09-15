@@ -46,6 +46,7 @@ CMakeLists.txt.user*
 
 # custom cmake file
 custom.cmake
+CMakeUserPresets.json
 
 # caching dirs (clangd, ccls....)
 .cache
