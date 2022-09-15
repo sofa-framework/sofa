@@ -104,8 +104,8 @@ private:
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintForceExporter<sofa::defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintForceExporter<sofa::defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintForceExporter<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintForceExporter<sofa::defaulttype::Rigid3Types>;
 #endif
 
 } //namespace sofa::component::constraint::lagrangian::solver
