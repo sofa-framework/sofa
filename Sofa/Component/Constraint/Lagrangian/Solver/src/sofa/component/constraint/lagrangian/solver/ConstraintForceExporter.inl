@@ -127,7 +127,7 @@ void ConstraintForceExporter<DataTypes>::computeForce()
     auto* constraintProblem = l_constraintSolver->getConstraintProblem();
     const auto& constraintMatrix = l_mechanicalState->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     auto* lambdas = constraintProblem->getF();
-    int dimension = constraintProblem->getDimension();
+    [[maybe_unused]] const int dimension = constraintProblem->getDimension();
     const auto& positions = l_mechanicalState->read(sofa::core::ConstVecCoordId::position())->getValue();
 
     assert(lambdas != nullptr);
