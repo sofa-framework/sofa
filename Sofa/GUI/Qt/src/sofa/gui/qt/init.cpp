@@ -24,15 +24,7 @@
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/qt/RealGUI.h>
 
-#if SOFA_GUI_QT_ENABLE_QGLVIEWER
-int QGLViewerGUIClass = sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
-#endif
-
-#if SOFA_GUI_QT_ENABLE_QTVIEWER
-int QtGUIClass = sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
-#endif
-
-void redirectQtMessages(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+void redirectQtMessages(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     SOFA_UNUSED(context);
     const QByteArray localMsg = msg.toLocal8Bit();
@@ -59,15 +51,43 @@ void redirectQtMessages(QtMsgType type, const QMessageLogContext &context, const
 namespace sofa::gui::qt
 {
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-
-        qInstallMessageHandler(redirectQtMessages);
+    extern "C" {
+        SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
     }
-}
+
+    void initExternalModule()
+    {
+        init();
+    }
+
+    const char* getModuleName()
+    {
+        return MODULE_NAME;
+    }
+
+    const char* getModuleVersion()
+    {
+        return MODULE_VERSION;
+    }
+
+    void init()
+    {
+        static bool first = true;
+        if (first)
+        {
+#if SOFA_GUI_QT_ENABLE_QGLVIEWER
+            sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
+#endif
+
+#if SOFA_GUI_QT_ENABLE_QTVIEWER
+            sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
+#endif
+            qInstallMessageHandler(redirectQtMessages);
+
+            first = false;
+        }
+    }
 
 } // namespace sofa::gui::qt

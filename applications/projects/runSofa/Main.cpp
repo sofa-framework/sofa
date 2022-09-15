@@ -54,8 +54,6 @@ using sofa::helper::system::FileSystem;
 #include <sofa/gui/common/GUIManager.h>
 using sofa::gui::common::GUIManager;
 
-#include <SofaGui/initSofaGui.h>
-
 using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
@@ -144,8 +142,6 @@ int main(int argc, char** argv)
 
     }
 #endif
-
-    sofa::gui::initSofaGui();
 
     string fileName ;
     bool        startAnim = false;
