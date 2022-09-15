@@ -22,7 +22,7 @@ sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Component.LinearSolver.Iterative SofaBaseMechanics Sofa.Component.Topology Sofa.Component.Constraint.Projective SofaGraphComponent Sofa.Component.ODESolver.Backward Sofa.Component.SolidMechanics.FEM.Elastic)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.LinearSolver.Iterative Sofa.Component.Topology Sofa.Component.Constraint.Projective SofaGraphComponent Sofa.Component.ODESolver.Backward Sofa.Component.SolidMechanics.FEM.Elastic)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
 
 sofa_create_package_with_targets(
