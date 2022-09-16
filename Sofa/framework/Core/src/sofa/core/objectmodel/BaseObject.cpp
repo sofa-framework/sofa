@@ -376,6 +376,32 @@ BaseObject::SPtr BaseObject::AddObjectToContextAndParse(BaseObject::SPtr obj, Ba
     return obj;
 }
 
+bool BaseObject::IsRequiredLinkPathPointingToCompatibleObject(const std::string& linkPath, const BaseClass* type, BaseContext* context, BaseObjectDescription* arg)
+{
+    std::string output = arg->getAttribute("linkPath");
+    if (output.empty()) {
+        arg->logError("The '"+linkPath+"' data attribute is empty. It should contain a valid path "
+                      "to one or more object of type '" + type->typeName + "'.");
+        return false;
+    } else if (!PathResolver::CheckPaths(context, type, output)) {
+        arg->logError("The '"+linkPath+"' data attribute does not contain a valid path to one or more object of type '" + type->typeName + "'.");
+        return false;
+    }
+    return true;    
+}
+
+bool BaseObject::IsRequiredObjectInContext(const ClassInfo& typeOfRequiredObject, BaseContext* context, BaseObjectDescription* arg)
+{
+    if( !context->getObject(typeOfRequiredObject) )
+    {
+        arg->logError(std::string("No object with the datatype '") + typeOfRequiredObject.name() +
+                      "' found in the context node.");
+        return false; 
+    }
+    return true;
+}
+
+
 
 } // namespace objectmodel
 

@@ -65,14 +65,15 @@ public:
     {
         return true;
     }
-
+    static bool IsRequiredLinkPathPointingToCompatibleObject(const std::string& linkPath, const BaseClass* type, BaseContext*, BaseObjectDescription* arg);
+    static bool IsRequiredObjectInContext(const ClassInfo& typeOfRequiredObject, BaseContext* context, BaseObjectDescription* arg);
+    
     /// Construction method called by ObjectFactory.
     template<class T>
     static BaseObject::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         return AddObjectToContextAndParse(sofa::core::objectmodel::New<T>(), context, arg);
     }
-
     static BaseObject::SPtr AddObjectToContextAndParse(BaseObject::SPtr obj, BaseContext* context, BaseObjectDescription* arg);
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
