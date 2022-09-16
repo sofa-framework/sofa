@@ -32,6 +32,8 @@ DevAngleCollisionMonitor<DataTypes>::DevAngleCollisionMonitor()
     , surfaceCM(nullptr)
     , intersection(nullptr)
     , narrowPhaseDetection(nullptr)
+    , mstate1(initLink("object1", "link to the first state container to monitor"))
+    , mstate2(initLink("object2", "link to the second state container to monitor"))
 {
 }
 

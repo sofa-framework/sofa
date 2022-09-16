@@ -57,13 +57,12 @@ public:
     void eval() override;
 
     /// Retrieve the associated MechanicalState (First model)
-    core::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1; }
-    core::behavior::BaseMechanicalState* getMechModel1() { return mstate1; }
+    core::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
+    core::behavior::BaseMechanicalState* getMechModel1() { return mstate1.get(); }
 
     /// Retrieve the associated MechanicalState (Second model)
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMState2() { return mstate2; }
-    core::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
-
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMState2() { return mstate2.get(); }
+    core::behavior::BaseMechanicalState* getMechModel2() { return mstate2.get(); }
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -85,26 +84,12 @@ public:
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = core::objectmodel::BaseObject::create(tObj, context, arg);
-
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
-        {
-            obj->mstate1 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->mstate2 = dynamic_cast<core::behavior::MechanicalState<defaulttype::Vec3Types>*>(arg->findObject(arg->getAttribute("object2","..")));
-        }
-
-        return obj;
-    }
-
 protected:
     /// First model mechanical state
-    core::behavior::MechanicalState<DataTypes> *mstate1;
+    SingleLink<DevAngleCollisionMonitor<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH> mstate1;
+
     /// Second model mechanical state
-    core::behavior::MechanicalState<defaulttype::Vec3Types> *mstate2;
+    SingleLink<DevAngleCollisionMonitor<DataTypes>, core::behavior::MechanicalState<sofa::defaulttype::Vec3Types>, BaseLink::FLAG_STOREPATH> mstate2;
 
     /// Point model of first object
     sofa::component::collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types> *pointsCM;

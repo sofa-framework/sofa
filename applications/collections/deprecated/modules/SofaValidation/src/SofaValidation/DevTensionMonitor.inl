@@ -26,6 +26,13 @@ namespace sofa::component::misc
 {
 
 template <class DataTypes>
+DevTensionMonitor<DataTypes>::DevTensionMonitor() :
+    mstate(initLink("object", "link to the state container to monitor"))
+{
+        
+};
+
+template <class DataTypes>
 void DevTensionMonitor<DataTypes>::init()
 {
 }

@@ -42,7 +42,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
 protected:
-    DevTensionMonitor() { };
+    DevTensionMonitor();
     virtual ~DevTensionMonitor() { };
 public:
     void init() override;
@@ -71,22 +71,8 @@ public:
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = core::objectmodel::BaseObject::create(tObj, context, arg);
-
-        if (arg && (arg->getAttribute("object")))
-        {
-            obj->mstate = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object","..")));
-        }
-
-        return obj;
-    }
-
 protected:
-    core::behavior::MechanicalState<DataTypes> *mstate;
+    SingleLink<DevTensionMonitor<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH> mstate;
 };
 
 
