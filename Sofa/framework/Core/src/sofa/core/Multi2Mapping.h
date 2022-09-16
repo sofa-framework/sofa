@@ -222,35 +222,14 @@ public:
     /// mapping.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        std::string input1 = arg->getAttribute("input1","");
-        std::string input2 = arg->getAttribute("input2","");
-        std::string output = arg->getAttribute("output","");
-        if (!input1.empty() && !PathResolver::CheckPaths(context, LinkFromModels1::DestType::GetClass(), input1))
+    {        
+        if( !IsRequiredLinkPathPointingToCompatibleObject("input1", LinkFromModels1::DestType::GetClass(), context, arg)  )
             return false;
-        if (!input2.empty() && !PathResolver::CheckPaths(context, LinkFromModels2::DestType::GetClass(), input2))
+        if( !IsRequiredLinkPathPointingToCompatibleObject("input2", LinkFromModels2::DestType::GetClass(), context, arg)  )
             return false;
-        if (output.empty() || !PathResolver::CheckPaths(context, LinkToModels::DestType::GetClass(), output))
+        if( !IsRequiredLinkPathPointingToCompatibleObject("output", LinkToModels::DestType::GetClass(), context, arg)  )
             return false;
-
         return BaseMapping::canCreate(obj, context, arg);
-    }
-    /// Construction method called by ObjectFactory.
-    ///
-    /// This implementation read the input and output attributes to
-    /// find the input and output models of this mapping.
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-
-        if (context)
-            context->addObject(obj);
-
-        if (arg)
-            obj->parse(arg);
-
-        return obj;
     }
 
 protected:
