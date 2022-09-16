@@ -28,7 +28,6 @@
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
 
-
 namespace sofa
 {
 
@@ -369,6 +368,14 @@ std::string BaseObject::getPathName() const {
     result += getName();
     return result;
 }
+
+BaseObject::SPtr BaseObject::AddObjectToContextAndParse(BaseObject::SPtr obj, BaseContext* context, BaseObjectDescription* arg)
+{
+    if (context) context->addObject(obj);
+    if (arg) obj->parse(arg);
+    return obj;
+}
+
 
 } // namespace objectmodel
 
