@@ -143,33 +143,6 @@ public:
         return BaseInteractionProjectiveConstraintSet::canCreate(obj, context, arg);
     }
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* /*p0*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-
-        if (context)
-            context->addObject(obj);
-
-        if (arg)
-        {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
-            if (!object1.empty())
-            {
-                arg->setAttribute("object1", object1);
-            }
-            if (!object2.empty())
-            {
-                arg->setAttribute("object2", object2);
-            }
-            obj->parse(arg);
-        }
-
-        return obj;
-    }
-
     using Inherit2::getMechModel1;
     using Inherit2::getMechModel2;
 };

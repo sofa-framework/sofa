@@ -105,20 +105,6 @@ public:
             , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
 
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T* p0, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        typename T::SPtr obj = core::behavior::BaseInteractionConstraint::create(p0, context, arg);
-
-        if (arg)
-        {
-            obj->parse(arg);
-        }
-
-        return obj;
-    }
-
     //TODO(dmarchal: 20/04/2020): Have a carefull look that we really want this customize pattern and it is not
     // a bug.
     /// Overriding this function is needed otherwise the template returned would be of type DataTypes1::Name()+","+DataType2::Name().
