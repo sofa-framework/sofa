@@ -57,6 +57,7 @@ public:
         typedef std::shared_ptr<Creator> SPtr;
 
         virtual ~Creator() { }
+
         /// Pre-construction check.
         ///
         /// \return true if the object can be created successfully.
@@ -93,6 +94,21 @@ public:
         std::string license;
         std::string defaultTemplate;
         CreatorMap creatorMap;
+        std::function<std::string(sofa::core::objectmodel::BaseContext*,
+                                  sofa::core::objectmodel::BaseObjectDescription*)> customTemplateDeductionMethod {[](sofa::core::objectmodel::BaseContext*,
+                                                                                                                      sofa::core::objectmodel::BaseObjectDescription*)->std::string{return "";}};
+
+        std::string getPreferredTemplate(sofa::core::objectmodel::BaseContext *context,
+                                         sofa::core::objectmodel::BaseObjectDescription* args)
+        {
+            std::string contextBasedTemplate = customTemplateDeductionMethod(context, args);
+
+            if(!contextBasedTemplate.empty())
+                return contextBasedTemplate;
+
+            return defaultTemplate;
+        }
+
         std::map<std::string, std::vector<std::string>> m_dataAlias ;
     };
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
@@ -319,6 +335,9 @@ public:
     /// See the add<RealObject>() method for an easy way to add a Creator.
     RegisterObject& addCreator(std::string classname, std::string templatename,
                                ObjectFactory::Creator::SPtr creator);
+
+    RegisterObject& setCustomTemplateDeductionMethod(std::function<std::string(sofa::core::objectmodel::BaseContext*,
+                                                     sofa::core::objectmodel::BaseObjectDescription*)>);
 
     /// Add a template instanciation of this class.
     ///

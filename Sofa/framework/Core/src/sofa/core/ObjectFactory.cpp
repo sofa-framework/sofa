@@ -159,9 +159,10 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     if (it != registry.end()) // Found the classname
     {
         entry = it->second;
+
         // If no template has been given or if the template does not exist, first try with the default one
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
-            templatename = entry->defaultTemplate;
+            templatename = entry->getPreferredTemplate(context, arg);
 
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
@@ -172,25 +173,6 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             } else {
                 creators_errors[templatename] = arg->getErrors();
                 arg->clearErrors();
-            }
-        }
-
-        // If object cannot be created with the given template (or the default one), try all possible ones
-        if (creators.empty())
-        {
-            CreatorMap::iterator it3;
-            for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
-            {
-                if (it3->first == templatename)
-                    continue; // We already tried to create the object with the specified (or default) template
-
-                Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg)){
-                    creators.push_back(*it3);
-                } else {
-                    creators_errors[it3->first] = arg->getErrors();
-                    arg->clearErrors();
-                }
             }
         }
     }
@@ -580,6 +562,15 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     return *this;
 }
 
+RegisterObject& RegisterObject::setCustomTemplateDeductionMethod(std::function<std::string(sofa::core::objectmodel::BaseContext*,
+                                                                 sofa::core::objectmodel::BaseObjectDescription*)> p)
+{
+    entry.customTemplateDeductionMethod = p;
+    return *this;
+}
+
+
+
 RegisterObject::operator int()
 {
     if (entry.className.empty())
@@ -592,6 +583,7 @@ RegisterObject::operator int()
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
+        reg.customTemplateDeductionMethod = entry.customTemplateDeductionMethod;
         if (!entry.defaultTemplate.empty())
         {
             if (!reg.defaultTemplate.empty())
