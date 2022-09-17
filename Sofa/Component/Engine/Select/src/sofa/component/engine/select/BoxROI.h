@@ -22,12 +22,10 @@
 #pragma once
 #include <sofa/component/engine/select/config.h>
 
-#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/topology/Topology.h>
 
 namespace sofa::component::engine::select::boxroi
 {
@@ -37,18 +35,18 @@ namespace sofa::component::engine::select::boxroi
 /// It is then import into sofa::component::engine::BoxROI to not break the
 /// API.
 
-    using core::objectmodel::BaseObjectDescription ;
-    using sofa::core::behavior::MechanicalState ;
-    using core::topology::BaseMeshTopology ;
-    using core::behavior::MechanicalState ;
-    using core::objectmodel::BaseContext ;
-    using core::objectmodel::BaseObject ;
-    using core::visual::VisualParams ;
-    using core::objectmodel::Event ;
-    using core::ExecParams ;
-    using core::DataEngine ;
-    using type::vector ;
-    using std::string ;
+using core::objectmodel::BaseObjectDescription ;
+using sofa::core::behavior::MechanicalState ;
+using core::topology::BaseMeshTopology ;
+using core::behavior::MechanicalState ;
+using core::objectmodel::BaseContext ;
+using core::objectmodel::BaseObject ;
+using core::visual::VisualParams ;
+using core::objectmodel::Event ;
+using core::ExecParams ;
+using core::DataEngine ;
+using type::vector ;
+using std::string ;
 
 
 
@@ -66,17 +64,16 @@ public:
     typedef type::Vec<3,Real> Vec3;
     typedef type::Vec<6,Real> Vec6;
     typedef type::Vec<10,Real> Vec10;
-    typedef BaseMeshTopology::SetIndex SetIndex;
+    typedef sofa::topology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
-    typedef BaseMeshTopology::PointID PointID;
-    typedef BaseMeshTopology::Edge Edge;
-    typedef BaseMeshTopology::Triangle Triangle;
-    typedef BaseMeshTopology::Tetra Tetra;
-    typedef BaseMeshTopology::Hexa Hexa;
-    typedef BaseMeshTopology::Quad Quad;
+    typedef sofa::Index PointID;
+    typedef sofa::topology::Edge Edge;
+    typedef sofa::topology::Triangle Triangle;
+    typedef sofa::topology::Tetrahedron Tetra;
+    typedef sofa::topology::Hexahedron Hexa;
+    typedef sofa::topology::Quad Quad;
 
-public:
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
     void init() override;
     void reinit() override;
@@ -86,26 +83,6 @@ public:
     void computeBBox(const ExecParams*  params, bool onlyVisible=false ) override;
     void handleEvent(Event *event) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, BaseContext* context, BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-public:
     //Input
     Data<vector<Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
@@ -189,12 +166,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec6Types>;
- 
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Rigid3Types>;
 #endif
 
 } // namespace sofa::component::engine::select::boxroi

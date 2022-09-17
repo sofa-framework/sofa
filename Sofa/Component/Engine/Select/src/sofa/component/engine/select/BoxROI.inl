@@ -24,6 +24,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
 #include <limits>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/accessor.h>
