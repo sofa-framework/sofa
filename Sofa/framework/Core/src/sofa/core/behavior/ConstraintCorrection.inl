@@ -24,9 +24,16 @@
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/ConstraintParams.h>
-
+#include <sofa/core/TypeDeductionRules.h>
 namespace sofa::core::behavior
 {
+
+template< class DataTypes >
+std::string ConstraintCorrection< DataTypes >::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                             sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    return sofa::core::CopyTypeFromMechanicalState(context, args);
+}
 
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::init()

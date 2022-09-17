@@ -22,18 +22,10 @@
 #pragma once
 #include <sofa/component/engine/select/config.h>
 
-
-
-#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/loader/MeshLoader.h>
 
 namespace sofa::component::engine::select
 {
-
 
 /**
  * This class find all the points/edges/triangles/tetrahedra located inside a given sphere.
@@ -46,61 +38,37 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::CPos CPos;
     typedef type::Vec<3,Real> Vec3;
     typedef type::Vec<6,Real> Vec6;
-    typedef type::vector<sofa::core::topology::BaseMeshTopology::EdgeID> SetEdge;
-    typedef type::vector<sofa::core::topology::BaseMeshTopology::TriangleID> SetTriangle;
-    typedef type::vector<sofa::core::topology::BaseMeshTopology::QuadID> SetQuad;
-    typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
-
-    typedef typename DataTypes::CPos CPos;
 
     typedef unsigned int PointID;
-    typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::Tetra Tetra;
-    typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef sofa::topology::Edge Edge;
+    typedef sofa::topology::Triangle Triangle;
+    typedef sofa::topology::Tetrahedron Tetra;
+    typedef sofa::topology::Quad Quad;
+    typedef sofa::type::vector<sofa::Index> SetEdge;
+    typedef sofa::type::vector<sofa::Index> SetTriangle;
+    typedef sofa::type::vector<sofa::Index> SetQuad;
+    typedef sofa::topology::SetIndex SetIndex;
 
 protected:
-
     SphereROI();
-
     ~SphereROI() override {}
+
 public:
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
 protected:
 	bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
     bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-    bool isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-    bool isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-    bool isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-    bool isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+    bool isEdgeInSphere(const Vec3& c, const Real& r, const sofa::topology::Edge& edge);
+    bool isTriangleInSphere(const Vec3& c, const Real& r, const sofa::topology::Triangle& triangle);
+    bool isQuadInSphere(const Vec3& c, const Real& r, const sofa::topology::Quad& quad);
+    bool isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::topology::Tetrahedron& tetrahedron);
 
 public:
     //Input
@@ -145,15 +113,14 @@ public:
     Data<bool> p_drawQuads; ///< Draw Quads
     Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
     Data<float> _drawSize; ///< rendering size for box and topological elements
-
 };
 
 template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
 template<> bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::topology::Edge& edge);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::topology::Triangle& triangle);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::topology::Quad& quad);
+template<> bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::topology::Tetrahedron& tetrahedron);
 template<> void SphereROI<defaulttype::Rigid3Types>::doUpdate();
 
 

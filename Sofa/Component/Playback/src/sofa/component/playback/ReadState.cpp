@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/playback/ReadState.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/Node.h>
 
@@ -30,7 +31,8 @@ namespace sofa::component::playback
 using namespace defaulttype;
 
 int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")
-        .add< ReadState >();
+        .add< ReadState >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMechanicalState);
 
 ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
     : Visitor(params)

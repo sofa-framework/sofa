@@ -20,21 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/playback/CompareTopology.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/Node.h>
 
 #include <sstream>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa::component::playback
 {
 
-
-
 int CompareTopologyClass = core::RegisterObject("Compare Topology containers from a reference frame to the associated Topology")
-        .add< CompareTopology >();
+        .add< CompareTopology >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMeshTopology);
 
 CompareTopology::CompareTopology(): ReadTopology()
 {

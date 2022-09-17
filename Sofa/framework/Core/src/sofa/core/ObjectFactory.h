@@ -95,13 +95,13 @@ public:
         std::string defaultTemplate;
         CreatorMap creatorMap;
         std::function<std::string(sofa::core::objectmodel::BaseContext*,
-                                  sofa::core::objectmodel::BaseObjectDescription*)> customTemplateDeductionMethod {[](sofa::core::objectmodel::BaseContext*,
+                                  sofa::core::objectmodel::BaseObjectDescription*)> deduceTemplate {[](sofa::core::objectmodel::BaseContext*,
                                                                                                                       sofa::core::objectmodel::BaseObjectDescription*)->std::string{return "";}};
 
         std::string getPreferredTemplate(sofa::core::objectmodel::BaseContext *context,
                                          sofa::core::objectmodel::BaseObjectDescription* args)
         {
-            std::string contextBasedTemplate = customTemplateDeductionMethod(context, args);
+            std::string contextBasedTemplate = deduceTemplate(context, args);
 
             if(!contextBasedTemplate.empty())
                 return contextBasedTemplate;
@@ -291,6 +291,20 @@ public:
     }
 };
 
+template<class T>
+class HasTemplateDeductionMethod
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&C::TemplateDeductionMethod) );
+    template<typename C> static NoType& test(...);
+
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
+
 /**
  *  \brief Helper class used to register a class in the ObjectFactory.
  *
@@ -336,7 +350,7 @@ public:
     RegisterObject& addCreator(std::string classname, std::string templatename,
                                ObjectFactory::Creator::SPtr creator);
 
-    RegisterObject& setCustomTemplateDeductionMethod(std::function<std::string(sofa::core::objectmodel::BaseContext*,
+    RegisterObject& setTemplateDeductionMethod(std::function<std::string(sofa::core::objectmodel::BaseContext*,
                                                      sofa::core::objectmodel::BaseObjectDescription*)>);
 
     /// Add a template instanciation of this class.
@@ -350,6 +364,11 @@ public:
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
+
+        // if there is a custom deduction method in the class then we use it. This is often used
+        // to implement a single "per" class deduction system.
+        if constexpr ( HasTemplateDeductionMethod<RealObject>::value )
+            entry.deduceTemplate = RealObject::TemplateDeductionMethod;
 
         return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/playback/WriteTopology.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BaseMapping.h>
 
@@ -29,12 +30,9 @@ namespace sofa::component::playback
 
 using namespace defaulttype;
 
-
-
 int WriteTopologyClass = core::RegisterObject("Write topology containers informations to file at each timestep")
-        .add< WriteTopology >();
-
-
+        .add< WriteTopology >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMeshTopology);
 
 WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
     :Visitor(params)

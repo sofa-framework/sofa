@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_PLANEROI_CPP
 #include <sofa/component/engine/select/PlaneROI.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::engine::select
@@ -30,14 +31,13 @@ namespace sofa::component::engine::select
 using namespace sofa::defaulttype;
 
 int PlaneROIClass = core::RegisterObject("Find the primitives inside a given plane")
-        .add< PlaneROI<Vec3Types> >()
+        .add< PlaneROI<Vec3Types> >(true)
         .add< PlaneROI<Rigid3Types> >()
- 
-        ;
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<Rigid3Types>;
- 
+
 
 
 } //namespace sofa::component::engine::select

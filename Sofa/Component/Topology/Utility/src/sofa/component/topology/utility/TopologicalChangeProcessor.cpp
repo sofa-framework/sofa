@@ -22,6 +22,7 @@
 #include <sofa/component/topology/utility/TopologicalChangeProcessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -52,8 +53,8 @@ using namespace defaulttype;
 
 
 int TopologicalChangeProcessorClass = core::RegisterObject("Read topological Changes and process them.")
-        .add< TopologicalChangeProcessor >();
-
+        .add< TopologicalChangeProcessor >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMeshTopology);
 
 TopologicalChangeProcessor::TopologicalChangeProcessor()
     : m_filename( initData(&m_filename, "filename", "input file name for topological changes."))

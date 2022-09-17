@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_MESHROI_CPP
 #include <sofa/component/engine/select/MeshROI.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa::component::engine::select
 {
@@ -31,15 +31,12 @@ using namespace sofa::defaulttype;
 
 int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given mesh")
         .add< MeshROI<Vec3Types> >(true) //default template
-        .add< MeshROI<Rigid3Types> >()
         .add< MeshROI<Vec6Types> >()
- 
-        ;
+        .add< MeshROI<Rigid3Types> >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Vec3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Rigid3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Vec6Types>;
- 
-
+template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<Rigid3Types>;
 
 } //namespace sofa::component::engine::select

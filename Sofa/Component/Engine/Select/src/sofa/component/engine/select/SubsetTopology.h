@@ -22,14 +22,7 @@
 #pragma once
 #include <sofa/component/engine/select/config.h>
 
-
-
-#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/loader/MeshLoader.h>
 
 namespace sofa::component::engine::select
 {
@@ -46,51 +39,27 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef type::Vec<6,Real> Vec6;
-    typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
+    typedef sofa::topology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
     typedef type::Vec<3,Real> Vec3;
     typedef unsigned int PointID;
-    typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::Quad Quad;
-    typedef core::topology::BaseMeshTopology::Tetra Tetra;
-    typedef core::topology::BaseMeshTopology::Hexa Hexa;
+    typedef sofa::topology::Edge Edge;
+    typedef sofa::topology::Triangle Triangle;
+    typedef sofa::topology::Quad Quad;
+    typedef sofa::topology::Tetrahedron Tetra;
+    typedef sofa::topology::Hexahedron Hexa;
 
 protected:
-
     SubsetTopology();
-
     ~SubsetTopology() override {}
+
 public:
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
-
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false ) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
 protected:
     bool isPointInROI(const CPos& p, unsigned int idROI);
@@ -154,7 +123,7 @@ public:
     Data<type::vector<Tetra> > f_tetrahedraOutROI; ///< Tetrahedra out of the ROI
     Data<type::vector<Hexa> > f_hexahedraInROI; ///< Hexahedra contained in the ROI
     Data<type::vector<Hexa> > f_hexahedraOutROI; ///< Hexahedra out of the ROI
-    Data<unsigned int> f_nbrborder; ///< If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology). 
+    Data<unsigned int> f_nbrborder; ///< If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology).
 
     //Parameter
     Data<bool> p_localIndices; ///< If true, will compute local dof indices in topological elements
@@ -168,7 +137,6 @@ public:
     ROIType typeROI;
     sofa::type::vector<unsigned int> localIndices;
     sofa::type::vector<unsigned int> listOnBorder;
-
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)

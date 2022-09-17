@@ -44,10 +44,10 @@ namespace _blenderexporter_
 {
 
 /**
-* This component can be used to export the physical simulation result to Blender (http://www.blender.org/) 
+* This component can be used to export the physical simulation result to Blender (http://www.blender.org/)
 * by replacing an existing cached simulation.
 * This exporter create a sequence of .bphys file containing the simulation state at each frame.
-* These files must be copied (or directly writed) in a blendcache folder created in the same directory 
+* These files must be copied (or directly writed) in a blendcache folder created in the same directory
 * that the blender file.
 */
 
@@ -77,36 +77,15 @@ public:
     Data < int > nbPtsByHair; ///< number of element by hair strand
 
 protected:
-
     typename DataType::SPtr mmodel;
-
     BlenderExporter();
-
     ~BlenderExporter() override{}
 
 public:
-
     static const char* Name(){return "Blender exporter";}
-
     void init() override;
-
     void reset() override;
-
     void handleEvent(sofa::core::objectmodel::Event* event) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T2>
-    static bool canCreate(T2*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<DataType*>(context->getState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + T::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
 protected:
 

@@ -164,13 +164,27 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
             templatename = entry->getPreferredTemplate(context, arg);
 
+        // At that point if there is no user defined strategy to get a meaningfull templatename we have to just
+        // use the first one in the list.
+        if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
+        {
+            for(auto& t : entry->creatorMap)
+            {
+                templatename = t.first;
+            }
+            templatename = entry->creatorMap.begin()->first;
+        }
+
+
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
             Creator::SPtr c = it2->second;
-            if (c->canCreate(context, arg)) {
+            if (c->canCreate(context, arg))
+            {
                 creators.push_back(*it2);
-            } else {
+            } else
+            {
                 creators_errors[templatename] = arg->getErrors();
                 arg->clearErrors();
             }
@@ -545,7 +559,6 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
                                            std::string templatename,
                                            ObjectFactory::Creator::SPtr creator)
 {
-
     if (!entry.className.empty() && entry.className != classname)
     {
         msg_error("ObjectFactory") << "Template already instanciated with a different classname: " << entry.className << " != " << classname;
@@ -562,10 +575,10 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     return *this;
 }
 
-RegisterObject& RegisterObject::setCustomTemplateDeductionMethod(std::function<std::string(sofa::core::objectmodel::BaseContext*,
+RegisterObject& RegisterObject::setTemplateDeductionMethod(std::function<std::string(sofa::core::objectmodel::BaseContext*,
                                                                  sofa::core::objectmodel::BaseObjectDescription*)> p)
 {
-    entry.customTemplateDeductionMethod = p;
+    entry.deduceTemplate = p;
     return *this;
 }
 
@@ -583,7 +596,7 @@ RegisterObject::operator int()
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
-        reg.customTemplateDeductionMethod = entry.customTemplateDeductionMethod;
+        reg.deduceTemplate = entry.deduceTemplate;
         if (!entry.defaultTemplate.empty())
         {
             if (!reg.defaultTemplate.empty())

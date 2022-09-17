@@ -106,9 +106,10 @@ public:
 
     void reinit() override;
 
-    virtual void readDataFile();
-
     void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void draw(const core::visual::VisualParams* vparams) override;
+
+    virtual void readDataFile();
 
     void setTime(double time);
 
@@ -116,22 +117,6 @@ public:
     void processTopologicalChanges(double time);
 
     bool readNext(double time, std::vector<std::string>& lines);
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MeshTopology.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (context->getMeshTopology() == nullptr) {
-            arg->logError("No mesh topology found in the context node.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    void draw(const core::visual::VisualParams* vparams) override;
-
     void updateTriangleIncisionInformation();
 
 protected:

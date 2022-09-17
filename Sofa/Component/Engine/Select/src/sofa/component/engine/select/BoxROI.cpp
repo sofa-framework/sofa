@@ -21,35 +21,26 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_BOXROI_CPP
 #include <sofa/component/engine/select/BoxROI.inl>
-#include "sofa/core/behavior/BaseMechanicalState.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::engine::select::boxroi
 {
 
 using namespace sofa::defaulttype;
-
-std::string deductionMethod(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*)
-{
-    if(context->getMechanicalState())
-        return context->getMechanicalState()->getTemplateName();
-    return "Vec3d";
-}
-
 int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/quad/tetrahedron/hexahedron) inside given boxes")
-        .add< BoxROI<Vec3Types> >()
+        .add< BoxROI<Vec3Types> >(true)
         .add< BoxROI<Vec2Types> >()
         .add< BoxROI<Vec1Types> >()
         .add< BoxROI<Rigid3Types> >()
         .add< BoxROI<Vec6Types> >()
-        .setCustomTemplateDeductionMethod(deductionMethod);
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMechanicalState);
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec2Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec1Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Rigid3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<Vec6Types>;
-
 
 } // namespace sofa::component::engine::select::boxroi

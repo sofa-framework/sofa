@@ -32,5 +32,4 @@ template class SOFA_CORE_API Constraint<Vec1Types>;
 template class SOFA_CORE_API Constraint<Rigid3Types>;
 template class SOFA_CORE_API Constraint<Rigid2Types>;
 
-
 } // namespace sofa::core::behavior

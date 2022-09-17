@@ -23,6 +23,10 @@
 #include <sofa/component/engine/select/SphereROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/loader/MeshLoader.h>
 
 namespace sofa::component::engine::select
 {
@@ -204,7 +208,7 @@ bool SphereROI<DataTypes>::isPointInSphere(const PointID& pid, const Real& r, co
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
+bool SphereROI<DataTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::topology::Edge& edge)
 {
     const VecCoord* x0 = &f_X0.getValue();
     for (unsigned int i=0; i<2; ++i)
@@ -218,7 +222,7 @@ bool SphereROI<DataTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const so
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
+bool SphereROI<DataTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::topology::Triangle& triangle)
 {
     const VecCoord* x0 = &f_X0.getValue();
     for (unsigned int i=0; i<3; ++i)
@@ -232,7 +236,7 @@ bool SphereROI<DataTypes>::isTriangleInSphere(const Vec3& c, const Real& r, cons
 }
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad)
+bool SphereROI<DataTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::topology::Quad& quad)
 {
     const VecCoord* x0 = &f_X0.getValue();
     for (unsigned int i=0; i<4; ++i)
@@ -247,7 +251,7 @@ bool SphereROI<DataTypes>::isQuadInSphere(const Vec3& c, const Real& r, const so
 
 
 template <class DataTypes>
-bool SphereROI<DataTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron)
+bool SphereROI<DataTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::topology::Tetrahedron& tetrahedron)
 {
     const VecCoord* x0 = &f_X0.getValue();
     for (unsigned int i=0; i<4; ++i)
@@ -459,7 +463,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         ///draw the boxes
         const type::vector<Vec3>& c=centers.getValue();
-        const type::vector<Real>& r=radii.getValue();        
+        const type::vector<Real>& r=radii.getValue();
         std::vector<sofa::type::Vector3> drawcenters;
         std::vector<float> drawradii;
 
@@ -468,7 +472,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
             drawcenters.push_back(c[i]);
             drawradii.push_back(float(r[i]));
-            
+
             if (edgeAngle.getValue() > 0)
             {
                 vparams->drawTool()->drawCone(c[i], c[i] + direction.getValue()*(cos(edgeAngle.getValue()*M_PI / 180.0)*r[i]), 0, (float)sin(edgeAngle.getValue()*M_PI / 180.0)*((float)r[i]), color);
@@ -600,7 +604,7 @@ bool SphereROI<defaulttype::Rigid3Types>::isPointInSphere(const PointID& pid, co
 }
 
 template <>
-bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
+bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::topology::Edge& edge)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<2; ++i)
@@ -614,7 +618,7 @@ bool SphereROI<defaulttype::Rigid3Types>::isEdgeInSphere(const Vec3& c, const Re
 }
 
 template <>
-bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
+bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::topology::Triangle& triangle)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<3; ++i)
@@ -628,7 +632,7 @@ bool SphereROI<defaulttype::Rigid3Types>::isTriangleInSphere(const Vec3& c, cons
 }
 
 template <>
-bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad)
+bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::topology::Quad& quad)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<4; ++i)
@@ -643,7 +647,7 @@ bool SphereROI<defaulttype::Rigid3Types>::isQuadInSphere(const Vec3& c, const Re
 
 
 template <>
-bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron)
+bool SphereROI<defaulttype::Rigid3Types>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::topology::Tetrahedron& tetrahedron)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<4; ++i)
@@ -829,7 +833,7 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 	f_quadIndices.endEdit();
 	f_tetrahedronIndices.endEdit();
 }
- 
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////

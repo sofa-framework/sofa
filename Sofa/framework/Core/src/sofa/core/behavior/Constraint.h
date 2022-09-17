@@ -98,22 +98,7 @@ public:
     ///
     /// This is the method that should be implemented by the component
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x) = 0;
-
-
     void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr) {
-            arg->logError("No mechanical state with the datatype '" + std::string(DataTypes::Name()) + "' found in the context node.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
 private:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
@@ -125,7 +110,5 @@ extern template class SOFA_CORE_API Constraint<defaulttype::Vec2Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec1Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Rigid3Types>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2Types>;
-
-
 #endif
 } // namespace sofa::core::behavior

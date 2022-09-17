@@ -37,6 +37,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/sptr.h
     ${SRC_ROOT}/State.h
     ${SRC_ROOT}/State.inl
+    ${SRC_ROOT}/TypeDeductionRules.h
     ${SRC_ROOT}/VecId.h
     ${SRC_ROOT}/behavior/BaseAnimationLoop.h
     ${SRC_ROOT}/behavior/BaseConstraint.h
@@ -197,6 +198,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
+    ${SRC_ROOT}/TypeDeductionRules.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraint.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp

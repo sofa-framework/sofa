@@ -80,21 +80,6 @@ public:
     /// Read the next values in the file corresponding to the last timestep before the given time
     bool readNext(double time, std::vector<std::string>& lines);
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (context->getMeshTopologyLink() == nullptr) {
-            arg->logError("No mesh topology found in the context node.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-
-
     // Tab of 2D elements composition
     Data< type::vector< type::fixed_array <unsigned int,2> > > edges;
     Data< type::vector< type::fixed_array <unsigned int,3> > > triangles;
@@ -103,8 +88,6 @@ public:
     // Tab of 3D elements composition
     Data< type::vector< type::fixed_array<unsigned int,4> > > tetrahedra;
     Data< type::vector< type::fixed_array<unsigned int,8> > > hexahedra;
-
-
 };
 
 

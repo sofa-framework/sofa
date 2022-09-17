@@ -90,20 +90,8 @@ public:
     //float PointIndicesScale;
     float getIndicesScale() const;
 
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
     /** \brief Called by the MechanicalObject state change callback to initialize added
-     * points according to the topology (topology element & local coordinates) 
+     * points according to the topology (topology element & local coordinates)
      */
     void initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< core::topology::PointAncestorElem > &ancestorElems
         , const type::vector< core::VecCoordId >& coordVecs, const type::vector< core::VecDerivId >& derivVecs ) override;
@@ -126,7 +114,6 @@ protected:
 
     /// Return true if the visibility parameters are showing the object in any way whatsoever, false otherwise
     virtual bool mustComputeBBox() const;
-
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)

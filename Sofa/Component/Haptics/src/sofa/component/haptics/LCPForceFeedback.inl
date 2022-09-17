@@ -416,6 +416,11 @@ void LCPForceFeedback<DataTypes>::computeWrench(const sofa::defaulttype::SolidTy
 
 }
 
+template<class DataTypes>
+void LCPForceFeedback<DataTypes>::draw( const core::visual::VisualParams* )
+{
+    msg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
+}
 
 
 template <>

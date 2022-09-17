@@ -22,15 +22,15 @@
 
 #include <sofa/component/playback/CompareState.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/Node.h>
-
 
 #include <sstream>
 #include <algorithm>
@@ -44,11 +44,6 @@ namespace sofa::component::playback
 namespace
 {
 /*anonymous namespace for utility functions*/
-
-
-
-
-
 /*
 look for potential CompareStateFile formatted likewise
 %0_%1_%2_mstate.txt.gz
@@ -101,7 +96,8 @@ std::string lookForValidCompareStateFile( const std::string& sceneName,
 
 
 int CompareStateClass = core::RegisterObject("Compare State vectors from a reference frame to the associated Mechanical State")
-        .add< CompareState >();
+        .add< CompareState >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMechanicalState);
 
 CompareState::CompareState(): ReadState()
 {

@@ -143,18 +143,9 @@ public:
         msg_error() << "applyConstraint(mparams, vector, matrix) not implemented.";
     }
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr){
-            arg->logError("No mechanical state with the datatype '" + std::string(DataTypes::Name()) + "' found in the context node.");
-            return false;
-        }
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                     sofa::core::objectmodel::BaseObjectDescription* args);
 
-        return BaseObject::canCreate(obj, context, arg);
-    }
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
@@ -164,7 +155,5 @@ extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec2Ty
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec1Types >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Rigid3Types >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Rigid2Types >;
-
-
 #endif
 } // namespace sofa::core::behavior

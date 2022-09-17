@@ -21,11 +21,19 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/engine/select/ValuesFromPositions.h>
+
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/loader/MeshLoader.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/type/RGBAColor.h>
+
+#include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
+
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::engine::select
 {
@@ -433,7 +441,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
 
             colors.push_back(color);
             colors.push_back(color);
-            
+
             vertices.push_back(point1);
             vertices.push_back(point2);
         }

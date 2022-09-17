@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/engine/select/PairBoxRoi.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/type/RGBAColor.h>
@@ -140,24 +142,24 @@ void PairBoxROI<DataTypes>::doUpdate()
     if (maxvb[0] > maxvb[3]) std::swap(maxvb[0],maxvb[3]);
     if (maxvb[1] > maxvb[4]) std::swap(maxvb[1],maxvb[4]);
     if (maxvb[2] > maxvb[5]) std::swap(maxvb[2],maxvb[5]);
-    
+
     if (minvb[0] > minvb[3]) std::swap(minvb[0],minvb[3]);
     if (minvb[1] > minvb[4]) std::swap(minvb[1],minvb[4]);
     if (minvb[2] > minvb[5]) std::swap(minvb[2],minvb[5]);
-    
+
     inclusiveBox.endEdit();
 
 
 
     // Write accessor for topological element indices in BOX
     SetIndex& indices = *f_indices.beginWriteOnly();
-   
+
     // Write accessor for toplogical element in BOX
     helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
 
     // Clear lists
     indices.clear();
-   
+
     pointsInROI.clear();
 
 
@@ -170,9 +172,9 @@ void PairBoxROI<DataTypes>::doUpdate()
             pointsInROI.push_back((*x0)[i]);
         }
     }
-   
+
     f_indices.endEdit();
-    
+
 }
 
 

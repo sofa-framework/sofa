@@ -21,16 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/engine/select/config.h>
-
-
-
-#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/loader/MeshLoader.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::engine::select
@@ -52,42 +43,19 @@ public:
     typedef type::Vec<3, Real> Vec3;
 
     typedef unsigned int PointID;
-    typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef sofa::topology::Edge Edge;
+    typedef sofa::topology::Triangle Triangle;
+    typedef sofa::topology::Tetrahedron Tetra;
 
 protected:
-
     ValuesFromPositions();
-
     ~ValuesFromPositions() override {}
+
 public:
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
 protected:
     struct TempData
@@ -136,12 +104,12 @@ public:
     // parameters
     sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType; ///< field type of output elements
     Data <bool> p_drawVectors; ///< draw vectors line
-    Data <float> p_vectorLength; ///< vector length visualisation. 
+    Data <float> p_vectorLength; ///< vector length visualisation.
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Rigid3Types>; 
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Rigid3Types>;
 #endif
 
 } //namespace sofa::component::engine::select

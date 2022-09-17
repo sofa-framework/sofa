@@ -210,9 +210,9 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if( !IsRequiredLinkPathPointingToCompatibleObject("input", LinkFromModels::DestType::GetClass(), context, arg) )
+        if( !RequiredLinkPathIsPointingToObjectOfType("input", LinkFromModels::DestType::GetClass(), context, arg) )
             return false;
-        if( !IsRequiredLinkPathPointingToCompatibleObject("output", LinkToModels::DestType::GetClass(), context, arg) )
+        if( !RequiredLinkPathIsPointingToObjectOfType("output", LinkToModels::DestType::GetClass(), context, arg) )
             return false;
         return BaseMapping::canCreate(obj, context, arg);
     }

@@ -376,7 +376,7 @@ BaseObject::SPtr BaseObject::AddObjectToContextAndParse(BaseObject::SPtr obj, Ba
     return obj;
 }
 
-bool BaseObject::IsRequiredLinkPathPointingToCompatibleObject(const std::string& linkPath, const BaseClass* type, BaseContext* context, BaseObjectDescription* arg)
+bool BaseObject::RequiredLinkPathIsPointingToObjectOfType(const std::string& linkPath, const BaseClass* type, BaseContext* context, BaseObjectDescription* arg)
 {
     std::string output = arg->getAttribute("linkPath");
     if (output.empty()) {
@@ -390,7 +390,7 @@ bool BaseObject::IsRequiredLinkPathPointingToCompatibleObject(const std::string&
     return true;    
 }
 
-bool BaseObject::IsRequiredObjectInContext(const ClassInfo& typeOfRequiredObject, BaseContext* context, BaseObjectDescription* arg)
+bool BaseObject::RequiredObjectIsInContext(const ClassInfo& typeOfRequiredObject, BaseContext* context, BaseObjectDescription* arg)
 {
     if( !context->getObject(typeOfRequiredObject) )
     {

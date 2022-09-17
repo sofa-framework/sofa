@@ -22,15 +22,10 @@
 #pragma once
 #include <sofa/component/engine/select/config.h>
 
-
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/loader/MeshLoader.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/topology/Topology.h>
 
 namespace sofa::component::engine::select
 {
@@ -45,51 +40,27 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(PlaneROI,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::CPos CPos;
+    typedef type::Vec<3,Real> Point;
     typedef type::Vec<3,Real> Vec3;
     typedef type::Vec<6,Real> Vec6;
     typedef type::Vec<10,Real> Vec10;
-    typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
-    typedef typename DataTypes::CPos CPos;
-
-    typedef type::Vec<3,Real> Point;
     typedef unsigned int PointID;
-    typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef sofa::topology::SetIndex SetIndex;
+    typedef sofa::topology::Edge Edge;
+    typedef sofa::topology::Triangle Triangle;
+    typedef sofa::topology::Tetrahedron Tetra;
 
 protected:
-
     PlaneROI();
-
     ~PlaneROI() override {}
+
 public:
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
 protected:
     bool isPointInPlane(const CPos& p);
@@ -97,7 +68,6 @@ protected:
     bool isEdgeInPlane(const Edge& e);
     bool isTriangleInPlane(const Triangle& t);
     bool isTetrahedronInPlane(const Tetra& t);
-
     void computePlane(unsigned int planeIndex);
 
 public:
@@ -130,7 +100,6 @@ public:
     Data<float> _drawSize; ///< rendering size for box and topological elements
 
 private:
-
     Vec3 p0, p1, p2, p3, p4, p5, p6, p7, plane0, plane1, plane2, plane3, vdepth;
     Real width, length, depth;
 };
@@ -138,7 +107,6 @@ private:
 #if  !defined(SOFA_COMPONENT_ENGINE_PLANEROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<defaulttype::Rigid3Types>;
- 
 #endif
 
 } //namespace sofa::component::engine::select

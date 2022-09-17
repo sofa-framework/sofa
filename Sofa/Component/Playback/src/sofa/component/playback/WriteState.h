@@ -79,33 +79,14 @@ protected:
     bool periodicExport;
     bool validInit;
 
-
     WriteState();
-
     ~WriteState() override;
+
 public:
     void init() override;
-
     void reinit() override;
-
     void reset() override;
-
     void handleEvent(sofa::core::objectmodel::Event* event) override;
-
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (context->getMechanicalState() == nullptr)
-        {
-            arg->logError("No mechanical state found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
 };
 
 ///Create WriteState component in the graph each time needed

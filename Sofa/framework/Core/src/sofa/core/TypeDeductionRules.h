@@ -23,4 +23,5 @@
 namespace sofa::core
 {
 std::string CopyTypeFromMechanicalState(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
+std::string CopyTypeFromMeshTopology(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
 }

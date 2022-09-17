@@ -22,14 +22,7 @@
 #pragma once
 #include <sofa/component/engine/select/config.h>
 
-
-
-#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/loader/MeshLoader.h>
 
 namespace sofa::component::engine::select
 {
@@ -45,45 +38,22 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::CPos CPos;
     typedef type::Vec<3,Real> Vec3;
     typedef type::Vec<6,Real> Vec6;
-    typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
-
-    typedef typename DataTypes::CPos CPos;
+    typedef sofa::topology::SetIndex SetIndex;
 
     typedef unsigned int PointID;
+
 protected:
-
     ProximityROI();
-
     ~ProximityROI() override {}
+
 public:
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (!arg->getAttribute("template"))
-        {
-            // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            {
-                arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                              "' found in the context node.");
-                return false; // this template is not the same as the existing MechanicalState
-            }
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
 public:
     //Input
@@ -95,10 +65,9 @@ public:
     //Output
     Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
     Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
-    Data< type::vector<Real> > f_distanceInROI; ///< distance between the points contained in the ROI and the closest center.
+    Data<type::vector<Real>> f_distanceInROI; ///< distance between the points contained in the ROI and the closest center.
 
     Data<SetIndex> f_indicesOut; ///< Indices of the points not contained in the ROI
-
 
     //Parameter
     Data<bool> p_drawSphere; ///< Draw shpere(s)
@@ -108,7 +77,6 @@ public:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ProximityROI<defaulttype::Vec3Types>;
- 
 #endif
 
 } //namespace sofa::component::engine::select

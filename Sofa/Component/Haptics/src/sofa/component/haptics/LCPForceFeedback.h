@@ -54,16 +54,10 @@ public:
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
     void init() override;
-
-    void draw( const core::visual::VisualParams* ) override
-    {
-        dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
-    }
+    void draw( const core::visual::VisualParams* ) override;
 
     Data< double > forceCoef; ///< multiply haptic force by this coef.
-
     Data< double > solverTimeout; ///< max time to spend solving constraints.
-
     Data< int > d_solverMaxIt; ///< max iteration to spend solving constraints.
 
     // deriv (or not) the rotations when updating the violations
@@ -94,20 +88,6 @@ protected:
 
 public:
     void handleEvent(sofa::core::objectmodel::Event *event) override;
-
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(context->getMechanicalState()) == nullptr) {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() + "' found in the context node.");
-            return false;
-        }
-
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
 
     /// Overide method to lock or unlock the force feedback computation. According to parameter, value == true (resp. false) will lock (resp. unlock) mutex @sa lockForce
     void setLock(bool value) override;

@@ -63,17 +63,13 @@ protected:
     double loopTime;
 
     ReadState();
-
     ~ReadState() override;
+
 public:
     void init() override;
-
     void bwdInit() override;
-
     void reset() override;
-
     void setTime(double time);
-
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void processReadState();
@@ -81,20 +77,6 @@ public:
 
     /// Read the next values in the file corresponding to the last timestep before the given time
     bool readNext(double time, std::vector<std::string>& lines);
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (context->getMechanicalState() == nullptr) {
-            arg->logError("No mechanical state found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-
 };
 
 

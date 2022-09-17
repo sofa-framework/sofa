@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/playback/ReadTopology.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::component::playback
@@ -29,7 +30,8 @@ namespace sofa::component::playback
 using namespace defaulttype;
 
 int ReadTopologyClass = core::RegisterObject("Read topology containers informations from file at each timestep")
-        .add< ReadTopology >();
+        .add< ReadTopology >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMeshTopology);
 
 ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
     :Visitor(params)

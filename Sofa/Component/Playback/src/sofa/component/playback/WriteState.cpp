@@ -20,18 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/playback/WriteState.inl>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/OdeSolver.h>
+
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/TypeDeductionRules.h>
+
 
 namespace sofa::component::playback
 {
 
 using namespace defaulttype;
 
-
 int WriteStateClass = core::RegisterObject("Write State vectors to file at each timestep")
-        .add< WriteState >();
+        .add< WriteState >()
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMechanicalState);
 
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
     :simulation::Visitor(params)
@@ -109,7 +112,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
 
         ws->init();
         ws->f_listening.setValue(true);  //Activated at init
-        
+
         ++counterWriteState;
     }
 }

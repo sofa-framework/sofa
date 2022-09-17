@@ -65,9 +65,9 @@ public:
     {
         return true;
     }
-    static bool IsRequiredLinkPathPointingToCompatibleObject(const std::string& linkPath, const BaseClass* type, BaseContext*, BaseObjectDescription* arg);
-    static bool IsRequiredObjectInContext(const ClassInfo& typeOfRequiredObject, BaseContext* context, BaseObjectDescription* arg);
-    
+    static bool RequiredLinkPathIsPointingToObjectOfType(const std::string& linkPath, const BaseClass* type, BaseContext*, BaseObjectDescription* arg);
+    static bool RequiredObjectIsInContext(const ClassInfo& typeOfRequiredObject, BaseContext* context, BaseObjectDescription* arg);
+
     /// Construction method called by ObjectFactory.
     template<class T>
     static BaseObject::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)

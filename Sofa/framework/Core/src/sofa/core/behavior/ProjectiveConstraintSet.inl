@@ -22,11 +22,20 @@
 #pragma once
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <iostream>
 
 
 namespace sofa::core::behavior
 {
+
+template< class DataTypes >
+std::string ProjectiveConstraintSet< DataTypes >::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                             sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    return sofa::core::CopyTypeFromMechanicalState(context, args);
+}
+
 
 template<class DataTypes>
 ProjectiveConstraintSet<DataTypes>::ProjectiveConstraintSet(MechanicalState<DataTypes> *mm)

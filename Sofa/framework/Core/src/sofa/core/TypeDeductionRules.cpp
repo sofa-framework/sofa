@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa::core
@@ -32,5 +32,13 @@ std::string CopyTypeFromMechanicalState(sofa::core::objectmodel::BaseContext* co
         return context->getMechanicalState()->getTemplateName();
     return "";
 }
+
+std::string CopyTypeFromMeshTopology(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*)
+{
+    if(context->getMeshTopology())
+        return context->getMeshTopology()->getTemplateName();
+    return "";
+}
+
 
 }

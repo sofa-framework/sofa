@@ -24,11 +24,18 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <iostream>
 
 namespace sofa::core::behavior
 {
 
+template< class DataTypes >
+std::string ForceField< DataTypes >::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                             sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    return sofa::core::CopyTypeFromMechanicalState(context, args);
+}
 
 template<class DataTypes>
 ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
