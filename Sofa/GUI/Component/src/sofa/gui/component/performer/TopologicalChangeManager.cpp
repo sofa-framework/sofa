@@ -318,8 +318,6 @@ Index TopologicalChangeManager::removeItemsFromLineModel(LineCollisionModel<sofa
 
     topo_mod->notifyEndingEvent();
 
-    topo_mod->propagateTopologicalChanges();
-
     return indices.size();
 }
 
