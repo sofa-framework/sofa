@@ -307,7 +307,7 @@ Index TopologicalChangeManager::removeItemsFromLineModel(LineCollisionModel<sofa
     std::sort(unique_indices.begin(), unique_indices.end());
     unique_indices.erase(std::unique(unique_indices.begin(), unique_indices.end()), unique_indices.end());
 
-    sofa::core::topology::TopologyModifier* topo_mod;
+    EdgeSetTopologyModifier* topo_mod;
     topo_curr->getContext()->get(topo_mod);
     if(topo_mod  == nullptr){
         msg_warning("TopologicalChangeManager") << "Cannot find an EdgeSetTopologyModifier to perform the changes.";
