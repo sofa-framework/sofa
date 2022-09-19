@@ -24,7 +24,7 @@
 #include <sofa/component/mass/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/topology/Edge.h>
-
+#include <sofa/core/TypeDeductionRules.h>
 using sofa::core::visual::VisualParams ;
 using sofa::core::MechanicalParams ;
 using sofa::helper::ReadAccessor ;
@@ -36,6 +36,17 @@ using sofa::core::objectmodel::ComponentState ;
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
+
+template <class DataType, class GeometricalType>
+std::string DiagonalMass<DataType, GeometricalType>::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                             sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string a = sofa::core::DeducedFromLinkedMechanicalState("geometryState", context, args);
+    std::string b = sofa::core::DeducedFromLinkedBaseMeshTopology("topology", context,args);
+    if(b.empty())
+        b=a;
+    return a+","+b;
+}
 
 template <class RigidTypes, class GeometricalTypes>
 template <class T>
@@ -153,7 +164,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
         msg_warning() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
-        
+
     if(!l_topology)
     {
         msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
@@ -341,9 +352,7 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
         .add< DiagonalMass<Vec1Types, Vec3Types> >()
         .add< DiagonalMass<Rigid3Types> >()
         .add< DiagonalMass<Rigid2Types> >()
-        .add< DiagonalMass<Rigid2Types, Rigid3Types> >()
-
-        ;
+        .add< DiagonalMass<Rigid2Types, Rigid3Types> >();
 
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types>;
