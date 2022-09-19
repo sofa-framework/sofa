@@ -84,6 +84,11 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
 {
     Inherit1::init();
+    if(!this->mstate.get())
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     if (l_topology.empty())
     {
@@ -198,6 +203,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
                                             const DataVecCoord &  dataX ,
                                             const DataVecDeriv &dataV )
 {
+    if(!this->isComponentStateValid())
+        return;
+
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(dataV);
 
@@ -241,6 +249,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams, DataVecDeriv& datadF , const DataVecDeriv& datadX)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     VecDeriv& df = *(datadF.beginEdit());
     const VecDeriv& dx=datadX.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -284,6 +295,9 @@ typename BeamFEMForceField<DataTypes>::Real BeamFEMForceField<DataTypes>::pseudo
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
 {
+    if(!this->isComponentStateValid())
+        return;
+
     Real   phiy, phiz;
     Real _L = (Real)m_beamsData.getValue()[i]._L;
     Real _A = (Real)m_beamsData.getValue()[i]._A;
@@ -362,6 +376,9 @@ inline type::Quat<SReal> qDiff(type::Quat<SReal> a, const type::Quat<SReal>& b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     type::Quat<SReal> quatA, quatB, dQ;
@@ -403,6 +420,9 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
+    if(!this->isComponentStateValid())
+        return;
+
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     beamQuat(i)= x[a].getOrientation();
@@ -468,6 +488,9 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, SReal fact)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     Displacement local_depl;
     type::Vec<3,Real> u;
     type::Quat<SReal>& q = beamQuat(i);
@@ -508,6 +531,9 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
+    if(!this->isComponentStateValid())
+        return;
+
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     linearalgebra::BaseMatrix* mat = r.matrix;
@@ -624,6 +650,9 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 template<class DataTypes>
 SReal BeamFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord&  x) const
 {
+    if(!this->isComponentStateValid())
+        return -1.0;
+
     SOFA_UNUSED(x);
     SOFA_UNUSED(mparams);
     msg_warning() << "Method getPotentialEnergy not implemented yet.";
@@ -634,8 +663,10 @@ SReal BeamFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPar
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!this->mstate) return;
 
     vparams->drawTool()->saveLastState();
 
@@ -663,6 +694,9 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    if(!this->isComponentStateValid())
+        return;
+
     SOFA_UNUSED(params);
 
     if( !onlyVisible ) return;
