@@ -51,7 +51,7 @@ public:
     Frame (const Vec3 &origin, const Mat33& m );
 
     /** Define the local frame using three transforms */
-    Frame (const Vec3 &origin, const Quat &orientation, const Vec3& scale=Vec3(1,1,1) );
+    Frame (const Vec3 &origin, const Quat &orientation, const Vec3& scale=Vec3(1_sreal,1_sreal,1_sreal) );
 
     /** Define the local frame without rotation */
     Frame (const Vec3 &origin );
