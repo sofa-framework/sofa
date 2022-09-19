@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -29,6 +30,16 @@
 
 namespace sofa::core::behavior
 {
+
+template< class DataTypes >
+std::string PairInteractionForceField< DataTypes >::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                            sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object1", "@./", context, args);
+    if(type.empty())
+        type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object2", "@./", context, args);
+    return type;
+}
 
 template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)

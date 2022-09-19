@@ -22,10 +22,20 @@
 #pragma once
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
-
+#include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa::core::behavior
 {
+
+template< class DataTypes >
+std::string PairInteractionProjectiveConstraintSet< DataTypes >::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                            sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object1", "@./", context, args);
+    if(type.empty())
+        type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object2", "@./", context, args);
+    return type;
+}
 
 template<class DataTypes>
 PairInteractionProjectiveConstraintSet<DataTypes>::PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)

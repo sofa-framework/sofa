@@ -108,40 +108,15 @@ public:
     /// Project the global Mechanical Matrix to constrained space using offset parameter
     void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
     {
-
     }
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
     void applyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
     {
-
     }
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        MechanicalState<DataTypes>* mstate1 = nullptr;
-        MechanicalState<DataTypes>* mstate2 = nullptr;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
-        context->findLinkDest(mstate1, object1, nullptr);
-        context->findLinkDest(mstate2, object2, nullptr);
-
-        if (!mstate1) {
-            arg->logError("Data attribute 'object1' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-        if (!mstate2) {
-            arg->logError("Data attribute 'object2' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-
-        return BaseInteractionProjectiveConstraintSet::canCreate(obj, context, arg);
-    }
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* args);
 
     using Inherit2::getMechModel1;
     using Inherit2::getMechModel2;

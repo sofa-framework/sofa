@@ -83,9 +83,9 @@ void PairStateAccessor<DataTypes1, DataTypes2>::init()
         mstate1.set(dynamic_cast< MechanicalState<DataTypes1>* >(getContext()->getMechanicalState()));
 
         msg_error_when(!mstate1) << "MechanicalState #1 (" << mstate1.getName() << "): No compatible MechanicalState "
-                "found in the current context. "
-                "This may be because there is no MechanicalState in the local context, "
-                "or because the type is not compatible.";
+                                                                                   "found in the current context. "
+                                                                                   "This may be because there is no MechanicalState in the local context, "
+                                                                                   "or because the type is not compatible.";
     }
 
     if (!mstate2.get())
@@ -93,9 +93,9 @@ void PairStateAccessor<DataTypes1, DataTypes2>::init()
         mstate2.set(dynamic_cast< MechanicalState<DataTypes2>* >(getContext()->getMechanicalState()));
 
         msg_error_when(!mstate2) << "MechanicalState #2 (" << mstate2.getName() << "): No compatible MechanicalState "
-                "found in the current context. "
-                "This may be because there is no MechanicalState in the local context, "
-                "or because the type is not compatible.";
+                                                                                   "found in the current context. "
+                                                                                   "This may be because there is no MechanicalState in the local context, "
+                                                                                   "or because the type is not compatible.";
     }
 
     l_mechanicalStates.clear();
@@ -105,8 +105,8 @@ void PairStateAccessor<DataTypes1, DataTypes2>::init()
 
 template <class DataTypes1, class DataTypes2>
 PairStateAccessor<DataTypes1, DataTypes2>::PairStateAccessor(
-    MechanicalState<DataTypes1>* mm1,
-    MechanicalState<DataTypes2>* mm2)
+        MechanicalState<DataTypes1>* mm1,
+        MechanicalState<DataTypes2>* mm2)
     : Inherit1()
     , mstate1(initLink("object1", "First object associated to this component"), mm1)
     , mstate2(initLink("object2", "Second object associated to this component"), mm2)

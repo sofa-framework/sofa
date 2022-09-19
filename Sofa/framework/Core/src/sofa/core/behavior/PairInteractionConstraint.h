@@ -77,7 +77,7 @@ public:
     ///
     /// This is the method that should be implemented by the component
     virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-            , const DataVecDeriv &v1, const DataVecDeriv &v2) = 0;
+                                        , const DataVecDeriv &v1, const DataVecDeriv &v2) = 0;
 
     /// Construct the Jacobian Matrix
     ///
@@ -95,43 +95,19 @@ public:
     ///
     /// This is the method that should be implemented by the component
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
-            , const DataVecCoord &x1, const DataVecCoord &x2) = 0;
+                                       , const DataVecCoord &x1, const DataVecCoord &x2) = 0;
 
 
     void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        MechanicalState<DataTypes>* mstate1 = nullptr;
-        MechanicalState<DataTypes>* mstate2 = nullptr;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
-        context->findLinkDest(mstate1, object1, nullptr);
-        context->findLinkDest(mstate2, object2, nullptr);
-
-        if (!mstate1) {
-            arg->logError("Data attribute 'object1' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-        if (!mstate2) {
-            arg->logError("Data attribute 'object2' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
-            return false;
-        }
-
-        return BaseInteractionConstraint::canCreate(obj, context, arg);
-    }
-
     using Inherit2::getMechModel1;
     using Inherit2::getMechModel2;
 
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* args);
 protected:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& res1, Data<VecDeriv>& res2, const Data<MatrixDeriv>& j1, const Data<MatrixDeriv>& j2,
-                               const sofa::linearalgebra::BaseVector* lambda);
+                     const sofa::linearalgebra::BaseVector* lambda);
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)

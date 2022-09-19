@@ -23,9 +23,20 @@
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa::core::behavior
 {
+
+template< class DataTypes >
+std::string PairInteractionConstraint< DataTypes >::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                            sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object1", "@./", context, args);
+    if(type.empty())
+        type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object2", "@./", context, args);
+    return type;
+}
 
 template<class DataTypes>
 PairInteractionConstraint<DataTypes>::PairInteractionConstraint(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
@@ -80,7 +91,7 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* c
 
 template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result1, Data<VecDeriv>& result2,
-    const Data<MatrixDeriv>& jacobian1, const Data<MatrixDeriv>& jacobian2, const sofa::linearalgebra::BaseVector* lambda)
+                                                       const Data<MatrixDeriv>& jacobian1, const Data<MatrixDeriv>& jacobian2, const sofa::linearalgebra::BaseVector* lambda)
 {
     auto res1 = sofa::helper::getWriteAccessor(result1);
     auto res2 = sofa::helper::getWriteAccessor(result2);
