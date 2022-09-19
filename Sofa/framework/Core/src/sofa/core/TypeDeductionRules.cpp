@@ -41,4 +41,40 @@ std::string CopyTypeFromMeshTopology(sofa::core::objectmodel::BaseContext* conte
 }
 
 
+std::string DeducedFromLinkedMechanicalState(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    // get the template type from the object pointed by the linkPath
+    std::string linkedPath = arg->getAttribute(attributeName,"");
+    if (!linkedPath.empty() )
+    {
+        auto base = sofa::core::PathResolver::FindBaseFromPath(context, linkedPath);
+        if(base!=nullptr)
+            return base->getTemplateName();
+    }
+
+    // if we were not able to get it, then deduce it from the context's
+    if(context->getMechanicalState())
+        return context->getMechanicalState()->getTemplateName();
+
+    return "";
+}
+
+std::string DeducedFromLinkedBaseMeshTopology(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    // get the template type from the object pointed by the linkPath
+    std::string linkedPath = arg->getAttribute(attributeName,"");
+    if (!linkedPath.empty() )
+    {
+        auto base = sofa::core::PathResolver::FindBaseFromPath(context, linkedPath);
+        if(base!=nullptr)
+            return base->getTemplateName();
+    }
+
+    // if we were not able to get it, then deduce it from the context's
+    if(context->getMeshTopology())
+        return context->getMeshTopology()->getTemplateName();
+
+    return "";
+}
+
 }
