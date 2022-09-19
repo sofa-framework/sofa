@@ -51,7 +51,7 @@ class vectorData : public type::vector< core::objectmodel::Data<T>* > {
 public:
 
     typedef type::vector< core::objectmodel::Data<T>* > Inherit;
-    using Inherit::size_type;
+    using size_type = typename Inherit::size_type;
 
     /// 'dataEngineInOut' is only valid if 'component' is a DataEngine
     vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help, DataEngineDataType dataEngineDataType= DataEngineDataType::DataEngineNothing, const T& defaultValue=T())
@@ -104,13 +104,15 @@ public:
         }
     }
 
-    void resize(const unsigned int size)
+    void resize(const unsigned int count)
     {
         core::DataEngine* componentAsDataEngine = m_dataEngineDataType!= DataEngineDataType::DataEngineNothing ? m_component->toDataEngine() : nullptr;
 
-        if (size < this->size()) {
+        if (count < this->size())
+        {
             // removing some data if size is inferior than current size
-            for (size_type i=size; i<this->size(); ++i) {
+            for (size_type i = count; i < this->size(); ++i)
+            {
                 if (componentAsDataEngine!=nullptr)
                 {
                     if(m_dataEngineDataType== DataEngineDataType::DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
@@ -118,12 +120,12 @@ public:
                 }
                 delete (*this)[i];
             }
-            if( size ) Inherit::resize(size);
+            if( count ) Inherit::resize(count);
             else Inherit::clear();
         }
         else
         {
-            for (size_type i=this->size(); i<size; ++i)
+            for (size_type i=this->size(); i<count; ++i)
             {
                 std::ostringstream oname, ohelp;
                 oname << m_name << (i+1);
