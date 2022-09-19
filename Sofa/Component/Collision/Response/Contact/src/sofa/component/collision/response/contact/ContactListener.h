@@ -76,39 +76,7 @@ public:
     std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> getContactElements() const; // model, id, model, id
 
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::CollisionModel* collModel1 = nullptr;
-        core::CollisionModel* collModel2 = nullptr;
-
-        std::string collModelPath1;
-        std::string collModelPath2;
-
-        if (arg->getAttribute("collisionModel1"))
-            collModelPath1 = arg->getAttribute("collisionModel1");
-        else
-            collModelPath1 = "";
-
-        context->findLinkDest(collModel1, collModelPath1, nullptr);
-
-        if (arg->getAttribute("collisionModel2"))
-            collModelPath2 = arg->getAttribute("collisionModel2");
-        else
-            collModelPath2 = "";
-
-        context->findLinkDest(collModel2, collModelPath2, nullptr);
-
-        if (collModel1 == nullptr && collModel2 == nullptr )
-        {
-            arg->logError("Data attributes 'collisionModel1' and 'collisionModel2' are not pointing to valid collision models.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
-    template<class T>
-    static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static BaseObject::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         core::CollisionModel* collModel1 = nullptr;
         core::CollisionModel* collModel2 = nullptr;
@@ -137,18 +105,7 @@ public:
             }
         }
         typename T::SPtr obj = sofa::core::objectmodel::New<T>( collModel1, collModel2 );
-
-        if (context)
-        {
-            context->addObject(obj);
-        }
-
-        if (arg)
-        {
-            obj->parse(arg);
-        }
-
-        return obj;
+        return AddObjectToContextAndParse(obj, context, arg);
     }
 
 protected:

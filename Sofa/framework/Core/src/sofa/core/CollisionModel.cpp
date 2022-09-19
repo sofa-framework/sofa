@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/type/RGBAColor.h>
 
 using sofa::type::RGBAColor ;
@@ -29,6 +30,12 @@ namespace sofa::core
 {
 
 std::vector<int> BaseCollisionElementIterator::emptyVector; ///< empty vector to be able to initialize the iterator to an empty pair
+
+std::string CollisionModel::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                    sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    return sofa::core::CopyTypeFromMechanicalState(context, args);
+}
 
 void CollisionModel::bwdInit()
 {
@@ -53,7 +60,6 @@ void CollisionModel::bwdInit()
             msg_info() << "CollisionElementActiver named" << l_collElemActiver.get()->getName() << " found !" << this->getName();
         }
     }
-
 }
 
 void CollisionModel::setColor4f(const float *c)

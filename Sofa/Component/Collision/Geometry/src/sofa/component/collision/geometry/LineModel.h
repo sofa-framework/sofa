@@ -76,7 +76,7 @@ class LineCollisionModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);
-    
+
     enum LineFlag
     {
         FLAG_P1  = 1<<0, ///< Point 1  is attached to this line
@@ -137,24 +137,10 @@ public:
     Deriv velocity(Index index)const;
 
     virtual Index getElemEdgeIndex(Index index) const { return index; }
-    
+
     int getLineFlags(Index i);
 
     Data<bool> bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
     {
@@ -167,7 +153,7 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    
+
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
     Topology* topology;

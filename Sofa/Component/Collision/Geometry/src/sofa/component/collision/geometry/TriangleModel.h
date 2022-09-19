@@ -137,7 +137,7 @@ public:
     Data<bool> d_bothSide; ///< to activate collision on both side of the triangle model
     Data<bool> d_computeNormals; ///< set to false to disable computation of triangles normal
     Data<bool> d_useCurvature; ///< use the curvature of the mesh to avoid some self-intersection test
-    
+
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangleCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
@@ -194,21 +194,6 @@ public:
     int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
 
     Deriv velocity(Index index)const;
-
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 

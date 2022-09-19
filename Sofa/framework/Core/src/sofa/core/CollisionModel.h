@@ -295,7 +295,7 @@ public:
             int level = 0;
             CollisionModel *cm = getNext();
             CollisionModel* root = this;
-            while (cm) 
+            while (cm)
             {
                 root = cm;
                 cm = cm->getNext();
@@ -304,17 +304,17 @@ public:
 
             pmodel = sofa::core::objectmodel::New<DerivedModel>();
             pmodel->setName("BVLevel", level);
-            root->addSlave(pmodel); 
+            root->addSlave(pmodel);
             pmodel->setMoving(isMoving());
             pmodel->setSimulated(isSimulated());
             pmodel->proximity.setParent(&proximity);
-			
+
             pmodel->group.beginEdit()->insert(group.getValue().begin(), group.getValue().end());
             pmodel->group.endEdit();
             pmodel->f_listening.setParent(&f_listening);
             pmodel->f_printLog.setParent(&f_printLog);
-			
-            setPrevious(pmodel);			
+
+            setPrevious(pmodel);
         }
         return pmodel.get();
     }
@@ -377,6 +377,8 @@ public:
 
     /// Get user data
     void* GetUserData() { return userData; }
+
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* args);
 
 protected:
 
