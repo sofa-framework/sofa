@@ -56,7 +56,7 @@ public:
     Data < bool > f_draw;
     /// Suppress field for save as function
     Data < bool > isToPrint;
-    /// Output file name    
+    /// Output file name
     sofa::core::objectmodel::DataFileName f_filename;
     /// Period between outputs
     Data < double > f_period;
@@ -112,30 +112,11 @@ public:
     core::behavior::MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
     core::behavior::BaseMechanicalState* getMechModel2() { return mstate2; }
 
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (!sofa::core::PathResolver::CheckPath(context, LinkMState::DestType::GetClass(), object1)) {
-            arg->logError("Data attribute 'object1' must point to a valid object.");
-            return false;
-        }
-
-        if (!sofa::core::PathResolver::CheckPath(context, LinkMState::DestType::GetClass(), object2)) {
-            arg->logError("Data attribute 'object2' must point to a valid object.");
-            return false;
-        }
-
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
     void setPathToMS1(const std::string &o) { mstate1.setPath(o); }
     void setPathToMS2(const std::string &o) { mstate2.setPath(o); }
     void setPeriod(const double& _dt)      { f_period.setValue(_dt); }
+
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* , sofa::core::objectmodel::BaseObjectDescription*);
 
 protected:
     /// output file

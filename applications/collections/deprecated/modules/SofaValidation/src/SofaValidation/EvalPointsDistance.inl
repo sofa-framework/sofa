@@ -28,6 +28,7 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 #include <iomanip>
 
@@ -35,6 +36,15 @@
 
 namespace sofa::component::misc
 {
+
+template <class DataTypes>
+std::string EvalPointsDistance<DataTypes>::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object1", "@./", context, args);
+    if(type.empty())
+        type = sofa::core::DeducedFromLink<sofa::core::behavior::BaseMechanicalState>("object2", "@./", context, args);
+    return type;
+}
 
 template<class DataTypes>
 EvalPointsDistance<DataTypes>::EvalPointsDistance()

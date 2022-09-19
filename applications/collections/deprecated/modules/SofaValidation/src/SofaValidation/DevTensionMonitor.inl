@@ -21,15 +21,23 @@
 ******************************************************************************/
 #include <SofaValidation/DevTensionMonitor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa::component::misc
 {
+
+template< class DataTypes >
+std::string DevTensionMonitor<DataTypes>::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                                                  sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    return sofa::core::CopyTypeFromMechanicalState(context, args);
+}
 
 template <class DataTypes>
 DevTensionMonitor<DataTypes>::DevTensionMonitor() :
     mstate(initLink("object", "link to the state container to monitor"))
 {
-        
+
 };
 
 template <class DataTypes>

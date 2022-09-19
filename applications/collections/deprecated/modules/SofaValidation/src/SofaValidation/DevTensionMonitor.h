@@ -48,28 +48,8 @@ public:
     void init() override;
     void eval() override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("object"))
-        {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(arg->findObject(arg->getAttribute("object",".."))) == nullptr) {
-                arg->logError(std::string("Data attribute 'object' must point to a valid mechanical state of data type '") + DataTypes::Name() + "'.");
-                return false;
-            }
-        }
-        else
-        {
-            if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr) {
-                arg->logError("No mechanical state with the datatype '" + std::string(DataTypes::Name()) +
-                              "' found in the context node and none specified in the data attribute 'object'.");
-                return false;
-            }
-        }
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* args);
 
 protected:
     SingleLink<DevTensionMonitor<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH> mstate;
