@@ -24,12 +24,21 @@
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa
 {
 
 namespace core
 {
+
+template <class In, class Out>
+std::string MultiMapping<In,Out>::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string inType = sofa::core::DeducedFromLink<BaseState>("input", "@../", context, args);
+    std::string outType = sofa::core::DeducedFromLink<BaseState>("output", "@./", context, args);
+    return inType+","+outType;
+}
 
 template< class In, class Out>
 MultiMapping<In,Out>::MultiMapping()

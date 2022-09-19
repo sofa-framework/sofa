@@ -193,6 +193,7 @@ public:
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
     void disable() override;
 
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* , sofa::core::objectmodel::BaseObjectDescription*);
 
     template<class T>
     static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
@@ -200,21 +201,6 @@ public:
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "Mapping", "Map");
         return name;
-    }
-
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output models types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if( !RequiredLinkPathIsPointingToObjectOfType("input", LinkFromModels::DestType::GetClass(), context, arg) )
-            return false;
-        if( !RequiredLinkPathIsPointingToObjectOfType("output", LinkToModels::DestType::GetClass(), context, arg) )
-            return false;
-        return BaseMapping::canCreate(obj, context, arg);
     }
 
 protected:

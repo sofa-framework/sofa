@@ -24,11 +24,21 @@
 
 #include <sofa/core/Multi2Mapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/TypeDeductionRules.h>
 namespace sofa
 {
 
 namespace core
 {
+
+template <class In1, class In2, class Out>
+std::string Multi2Mapping<In1,In2,Out>::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string in1Type = sofa::core::DeducedFromLink<BaseState>("input1", "@../", context, args);
+    std::string in2Type = sofa::core::DeducedFromLink<BaseState>("input2", "@../", context, args);
+    std::string outType = sofa::core::DeducedFromLink<BaseState>("output", "@./", context, args);
+    return in1Type+","+in2Type+","+outType;
+}
 
 template < class In1, class In2, class Out >
 Multi2Mapping<In1,In2,Out>::Multi2Mapping()

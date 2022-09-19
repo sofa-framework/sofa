@@ -215,22 +215,7 @@ public:
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
     void disable() override;
 
-    /// Pre-construction check method called by ObjectFactory.
-    ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output models types of this
-    /// mapping.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {        
-        if( !RequiredLinkPathIsPointingToObjectOfType("input1", LinkFromModels1::DestType::GetClass(), context, arg)  )
-            return false;
-        if( !RequiredLinkPathIsPointingToObjectOfType("input2", LinkFromModels2::DestType::GetClass(), context, arg)  )
-            return false;
-        if( !RequiredLinkPathIsPointingToObjectOfType("output", LinkToModels::DestType::GetClass(), context, arg)  )
-            return false;
-        return BaseMapping::canCreate(obj, context, arg);
-    }
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* , sofa::core::objectmodel::BaseObjectDescription*);
 
 protected:
     void getVecIn1Coord     (const MultiVecCoordId id,         type::vector<      In1DataVecCoord*> &v) const
