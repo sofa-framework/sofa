@@ -24,6 +24,7 @@
 
 #include <sofa/core/State.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/TypeDeductionRules.h>
 #include <sofa/core/Mapping.h>
 #include <iostream>
 
@@ -34,12 +35,22 @@ namespace core
 {
 
 template <class In, class Out>
+std::string Mapping<In,Out>::TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* args)
+{
+    std::string inType = sofa::core::DeducedFromLink<BaseState>("input", "@../", context, args);
+    std::string outType = sofa::core::DeducedFromLink<BaseState>("output", "@./", context, args);
+    return inType+","+outType;
+}
+
+template <class In, class Out>
 Mapping<In,Out>::Mapping(State<In>* from, State<Out>* to)
     : BaseMapping()
     , fromModel(initLink("input", "Input object to map"), from)
     , toModel(initLink("output", "Output object to map"), to)
     , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
 {
+    fromModel.setPath("@../");
+    toModel.setPath("@./");
     if(to != nullptr && !testMechanicalState(to))
         setNonMechanical();
 }
@@ -102,6 +113,16 @@ type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 template <class In, class Out>
 void Mapping<In,Out>::init()
 {
+    if constexpr(std::is_same<In, Out>::value)
+    {
+        if(toModel.get() == fromModel.get())
+        {
+            // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
+            msg_error() << "Both the input and the output point to the same mechanical state '"+toModel.get()->getPathName()+"'.";
+            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+    }
+
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();
@@ -111,6 +132,8 @@ void Mapping<In,Out>::init()
     applyJ(mechanicalparams::defaultInstance(), VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
         apply(mechanicalparams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
+
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template <class In, class Out>
