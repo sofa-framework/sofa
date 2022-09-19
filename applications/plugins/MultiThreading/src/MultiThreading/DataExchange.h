@@ -43,7 +43,7 @@ namespace sofa
 
 			DataExchangeEvent( double dt )
 				: sofa::core::objectmodel::Event()
-				, dt(dt) 
+				, dt(dt)
 			{}
 
 			~DataExchangeEvent() override {}
@@ -61,33 +61,29 @@ namespace sofa
 		public:
 			SOFA_CLASS(SOFA_TEMPLATE(DataExchange, DataTypes ), objectmodel::BaseObject);
 
-			//typedef typename DataTypes::Real        Real;
-			//typedef typename DataTypes::Coord       Coord;
-			//typedef typename DataTypes::VecCoord    VecCoord;
-
 		protected:
 
 			DataExchange( const char* from, const char* to );
-		
+
 			~DataExchange() override;
-			
+
 			void copyData();
 
 		public:
 
 			 /// Initialization method called at graph creation and modification, during top-down traversal.
 			void init() override;
-			
+
 
 			void handleEvent( core::objectmodel::Event* event ) override;
 
             virtual std::string getTemplateName() const  override
-            { 
+            {
                 return templateName(this);
             }
 
             static std::string templateName(const DataExchange<DataTypes>* = nullptr)
-            { 
+            {
                 return sofa::defaulttype::DataTypeName<DataTypes>::name();
             }
 
@@ -110,13 +106,13 @@ namespace sofa
 
 			template<class T>
 			static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-			{	
+			{
 				std::string fromPath;
 				std::string toPath;
 
 				if(arg)
 				{
-					
+
 					fromPath = arg->getAttribute(std::string("from"), NULL );
 					toPath = arg->getAttribute(std::string("to"), NULL );
 

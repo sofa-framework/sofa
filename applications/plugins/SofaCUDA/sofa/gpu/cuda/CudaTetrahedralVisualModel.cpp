@@ -22,6 +22,7 @@
 #include "CudaTetrahedralVisualModel.inl"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/TypeDeductionRules.h>
 
 namespace sofa
 {
@@ -32,7 +33,7 @@ namespace visualmodel
 
 int CudaOglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
         .add< OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes> >()
-        ;
+        .setTemplateDeductionMethod(sofa::core::CopyTypeFromMechanicalState);
 
 template class OglTetrahedralModel<sofa::gpu::cuda::CudaVec3fTypes>;
 

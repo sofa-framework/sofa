@@ -32,7 +32,7 @@
 
 #include <sofa/defaulttype/TopologyTypes.h>
 
-// I need C++0x !!! 
+// I need C++0x !!!
 // a: we all do ;-)
 
 // TODO: the following should probably be moved outside this file (in
@@ -323,16 +323,6 @@ public:
     Data<bool> d_showGrid; ///< activate rendering of the grid
     Data<bool> d_autoUpdate; ///< Automatically update the grid at each iteration.
     Data<bool> d_sortPoints; ///< Sort points depending on which cell they are in the grid. This is required for efficient collision detection.
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-            return false;
-        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
 protected:
     SpatialGridContainer();
     ~SpatialGridContainer() override;
