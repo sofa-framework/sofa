@@ -266,6 +266,12 @@ void BaseObject::init()
             }
         }
     }
+
+    doBaseObjectInit();
+    if(countLoggedMessages({sofa::helper::logging::Message::Error, sofa::helper::logging::Message::Warning})!=0)
+    {
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 void BaseObject::bwdInit()

@@ -81,7 +81,7 @@ public:
     void parse ( BaseObjectDescription* arg ) override;
 
     /// Initialization method called at graph creation and modification, during top-down traversal.
-    virtual void init();
+    void init();
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.
     virtual void bwdInit();
@@ -179,6 +179,8 @@ public:
 
     /// Return the full path name of this object
     virtual std::string getPathName() const override;
+
+    virtual void doBaseObjectInit() {}
 
     /// @name internalupdate
     ///   Methods related to tracking of data and the internal update
