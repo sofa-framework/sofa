@@ -20,14 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/config.h>
+
 namespace sofa::core
 {
-std::string CopyTypeFromMechanicalState(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
-std::string CopyTypeFromMeshTopology(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
+SOFA_CORE_API std::string CopyTypeFromMechanicalState(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
+SOFA_CORE_API std::string CopyTypeFromMeshTopology(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
 
 /// Deduce the object template from the object pointed by the linkName, if not set, use the provided defaultValue
 template<class TargetObject>
-std::string DeducedFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+SOFA_CORE_API std::string DeducedFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     // get the template type from the object pointed by the linkPath
     const std::string linkedPath = arg->getAttribute(attributeName, defaultValue.c_str());
@@ -39,11 +41,11 @@ std::string DeducedFromLink(const std::string& attributeName, const std::string 
 }
 
 /// Deduce the object template from the object pointed by the linkName, if not set, use the provided defaultValue
-std::string DeducedFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg);
+SOFA_CORE_API std::string DeducedFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg);
 
 /// Deduce the object template from the object pointed by the linkName, then search in the current context for a MechanicalState
-std::string DeducedFromLinkedMechanicalState(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
+SOFA_CORE_API std::string DeducedFromLinkedMechanicalState(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
 
 /// Deduce the object template from the object pointed by the linkName, then search in the current context for a BaseMeshTopology
-std::string DeducedFromLinkedBaseMeshTopology(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
+SOFA_CORE_API std::string DeducedFromLinkedBaseMeshTopology(const std::string& attributeName, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription*);
 }
