@@ -46,7 +46,7 @@ void TopologySubsetData <TopologyElementType, VecT>::swap(Index i1, Index i2)
     
     if (i1 >= data.size() || i2 >= data.size())
     {
-        msg_warning("TopologySubsetData") << "swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of data size: " << data.size();
+        msg_warning(this->getOwner()) << "TopologySubsetData: " << this->getName() << " swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of data size: " << data.size();
         this->endEdit();
         return;
     }
@@ -67,7 +67,7 @@ void TopologySubsetData <TopologyElementType, VecT>::setMap2Elements(const sofa:
 }
 
 template <typename TopologyElementType, typename VecT>
-Index TopologySubsetData <TopologyElementType, VecT>::indexOfElement(Index index)
+Index TopologySubsetData <TopologyElementType, VecT>::indexOfElement(Index index) const
 {    
     for (unsigned int i = 0; i < m_map2Elements.size(); ++i)
         if (index == m_map2Elements[i])
@@ -166,6 +166,9 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::type::ve
     // check for each element index to remove if it concern this subsetData
     for (Index elemId : index)
     {
+        if (data.size() == 0)
+            return;
+
         // Check if this element is inside the subset map
         Index dataId = this->indexOfElement(elemId);
         
@@ -216,7 +219,7 @@ void TopologySubsetData <TopologyElementType, VecT>::swapPostProcess(Index i1, I
 {
     if (i1 >= m_map2Elements.size() || i2 >= m_map2Elements.size())
     {
-        msg_warning("TopologySubsetData") << "swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of m_map2Elements size: " << m_map2Elements.size();
+        msg_warning(this->getOwner()) << "TopologySubsetData: " << this->getName() << " swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of m_map2Elements size: " << m_map2Elements.size();
         return;
     }
 
@@ -253,14 +256,14 @@ template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::type::vector<Index>&,
     const sofa::type::vector<TopologyElementType>&)
 {
-    dmsg_error("TopologySubsetData") << "addOnMovedPosition event on topology subsetData is not yet handled.";
+    dmsg_error(this->getOwner()) << "TopologySubsetData: " << this->getName() << " addOnMovedPosition event on topology subsetData is not yet handled.";
 }
 
 
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::type::vector<Index>&)
 {
-    dmsg_error("TopologySubsetData") << "removeOnMovedPosition event on topology subsetData is not yet handled";
+    dmsg_error(this->getOwner()) << "TopologySubsetData: " << this->getName() << " removeOnMovedPosition event on topology subsetData is not yet handled";
 }
 
 
