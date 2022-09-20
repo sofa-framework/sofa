@@ -20,10 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_DATATYPE_DATAVEC_DEFINITION
+#include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/datatype/Data[Vec].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 
 DATATYPEINFO_DEFINE(sofa::type::Vec1f);
 DATATYPEINFO_DEFINE(sofa::type::Vec1d);

@@ -125,13 +125,6 @@ const sofa::defaulttype::AbstractTypeInfo* Data<T>::getValueTypeInfo() const
 }
 
 template<class T>
-std::ostream & operator<<(std::ostream &out, const Data<T>& df)
-{
-    out<<df.getValue();
-    return out;
-}
-
-template<class T>
 void Data<T>::operator=( const T& value )
 {
     this->setValue(value);

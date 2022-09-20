@@ -39,7 +39,7 @@
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 
-#include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>

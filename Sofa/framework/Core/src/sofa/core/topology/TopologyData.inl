@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/topology/TopologyDataHandler.inl>
+#include <sofa/core/topology/TopologyElement.h>
 
 namespace sofa::core::topology
 {

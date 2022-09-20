@@ -28,6 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/topology/TopologyHandler.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 
 namespace sofa::component::topology::container::dynamic
 {

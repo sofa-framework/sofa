@@ -22,9 +22,9 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/DataLink.h>
+#include <sofa/defaulttype/TypeInfoRegistry.h>
 
 namespace sofa::core::objectmodel
 {
@@ -316,12 +316,10 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Use sofa::helper::NameDecoder::decodeTypeName(t) or .... instead.")
     static std::string typeName(const T* = nullptr)
     {
-        if constexpr (defaulttype::DataTypeInfo<T>::ValidInfo)
-            return defaulttype::DataTypeName<T>::name();
-        else
-            return decodeTypeName(typeid(T));
+        auto a = sofa::defaulttype::TypeInfoRegistry::Get(sofa::defaulttype::TypeInfoId::GetTypeId<T>());
+        return a->getTypeName();
     }
-
+    
 protected:
     /// Try to update this Data from the value of its parent in "fast mode";
     bool genericCopyValueFrom(const BaseData* parent);
@@ -339,6 +337,8 @@ private:
     virtual void doEndEditVoidPtr() = 0;
     virtual void doOnUpdate() {}
 };
+
+std::ostream& operator<<(std::ostream &out, const BaseData& df);
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container
  *  and providing access to its data through a non-const void* ptr taking care of the

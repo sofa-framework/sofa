@@ -31,8 +31,7 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <sofa/core/topology/TopologyChange.h>
-
+#include <sofa/core/topology/TopologyChangeClasses.h>
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>

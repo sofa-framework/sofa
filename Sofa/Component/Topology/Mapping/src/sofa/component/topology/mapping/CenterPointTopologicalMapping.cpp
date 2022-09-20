@@ -23,6 +23,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/topology/TopologyChangeClasses.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 
 #include <sofa/type/Vec.h>

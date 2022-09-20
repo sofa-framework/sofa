@@ -23,7 +23,7 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/datatype/DataRegistrationMacro.h>
-#include <sofa/type/BoundingBox.h>
+#include <sofa/type//BoundingBox.h>
 #include <sofa/type/vector.h>
 
 #ifndef SOFA_CORE_DATATYPE_DATABOUNDINGBOX_DEFINITION

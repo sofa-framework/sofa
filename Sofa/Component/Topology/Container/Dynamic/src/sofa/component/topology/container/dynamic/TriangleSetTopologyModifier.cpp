@@ -26,6 +26,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 
 #include <algorithm>
 

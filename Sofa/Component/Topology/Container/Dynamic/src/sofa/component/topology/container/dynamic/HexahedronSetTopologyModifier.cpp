@@ -25,6 +25,7 @@
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/TopologyHandler.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 
 #include <algorithm>
 

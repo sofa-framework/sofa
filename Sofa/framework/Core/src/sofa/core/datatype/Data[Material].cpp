@@ -23,5 +23,6 @@
 #include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/datatype/Data[Material].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 
 DATATYPEINFO_DEFINE(sofa::type::Material);

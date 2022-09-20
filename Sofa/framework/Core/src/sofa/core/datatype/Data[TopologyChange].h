@@ -21,25 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <vector>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/datatype/DataRegistrationMacro.h>
+#include <sofa/core/topology/TopologyChange.h>
+#include <sofa/helper/list.h>
 
-namespace sofa::defaulttype
+namespace sofa::core::objectmodel
 {
+    extern template class SOFA_CORE_API Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
-
-} /// namespace sofa::defaulttype

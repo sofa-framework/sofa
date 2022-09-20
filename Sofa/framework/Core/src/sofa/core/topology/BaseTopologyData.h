@@ -24,6 +24,8 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/topology/TopologyElement.h>
+
 
 namespace sofa::core::topology
 {

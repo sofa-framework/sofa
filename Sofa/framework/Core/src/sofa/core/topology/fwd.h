@@ -20,26 +20,48 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/config.h>
 
-#include <vector>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
-
-namespace sofa::defaulttype
+namespace sofa::core::topology
 {
 
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
+// forward declarations
+class SOFA_CORE_API TopologyChange;
+class SOFA_CORE_API EndingEvent;
+class SOFA_CORE_API PointsIndicesSwap;
+class SOFA_CORE_API PointsAdded;
+class SOFA_CORE_API PointsRemoved;
+class SOFA_CORE_API PointsMoved;
+class SOFA_CORE_API PointsRenumbering;
+class SOFA_CORE_API EdgesIndicesSwap;
+class SOFA_CORE_API EdgesAdded;
+class SOFA_CORE_API EdgesRemoved;
+class SOFA_CORE_API EdgesMoved_Removing;
+class SOFA_CORE_API EdgesMoved_Adding;
+class SOFA_CORE_API EdgesRenumbering;
+class SOFA_CORE_API TrianglesIndicesSwap;
+class SOFA_CORE_API TrianglesAdded;
+class SOFA_CORE_API TrianglesRemoved;
+class SOFA_CORE_API TrianglesMoved_Removing;
+class SOFA_CORE_API TrianglesMoved_Adding;
+class SOFA_CORE_API TrianglesRenumbering;
+class SOFA_CORE_API TetrahedraIndicesSwap;
+class SOFA_CORE_API TetrahedraAdded;
+class SOFA_CORE_API TetrahedraRemoved;
+class SOFA_CORE_API TetrahedraMoved_Removing;
+class SOFA_CORE_API TetrahedraMoved_Adding;
+class SOFA_CORE_API TetrahedraRenumbering;
+class SOFA_CORE_API QuadsIndicesSwap;
+class SOFA_CORE_API QuadsAdded;
+class SOFA_CORE_API QuadsRemoved;
+class SOFA_CORE_API QuadsMoved_Removing;
+class SOFA_CORE_API QuadsMoved_Adding;
+class SOFA_CORE_API QuadsRenumbering;
+class SOFA_CORE_API HexahedraIndicesSwap;
+class SOFA_CORE_API HexahedraAdded;
+class SOFA_CORE_API HexahedraRemoved;
+class SOFA_CORE_API HexahedraMoved_Removing;
+class SOFA_CORE_API HexahedraMoved_Adding;
+class SOFA_CORE_API HexahedraRenumbering;
 
-} /// namespace sofa::defaulttype
+} // sofa::core::topology

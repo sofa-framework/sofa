@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_DATATYPE_DATAMAT_DEFINITION
+#include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/datatype/Data[Mat].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 
 DATATYPEINFO_DEFINE(sofa::type::Mat1x1f);
 DATATYPEINFO_DEFINE(sofa::type::Mat1x1d);

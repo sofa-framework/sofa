@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_DATATYPE_DATASCALAR_DEFINITION
+#include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/datatype/Data[Scalar].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 
 DATATYPEINFO_DEFINE(float);
 DATATYPEINFO_DEFINE(double);

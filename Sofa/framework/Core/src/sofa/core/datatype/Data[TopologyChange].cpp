@@ -19,27 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <vector>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/set.h>
-#include <typeinfo>
-#include <sofa/defaulttype/AbstractTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
-#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
+#define SOFA_CORE_DATATYPE_DATATOPOLOGY_DEFINITION
+#include <sofa/core/objectmodel/Data.inl>
+#include <sofa/core/datatype/Data[TopologyChange].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Topology.h>
 
-namespace sofa::defaulttype
+namespace sofa::core::objectmodel
 {
-
-/// We make an alias to wrap around the old name to the new one.
-template<class T>
-using VirtualTypeInfo = DataTypeInfoDynamicWrapper<DataTypeInfo<T>>;
-
-} /// namespace sofa::defaulttype
+    template class SOFA_CORE_API Data<std::list<const sofa::core::topology::TopologyChange*>>;
+}

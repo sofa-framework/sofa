@@ -22,6 +22,7 @@
 #include <sofa/core/objectmodel/DataFileNameVector.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/logging/Messaging.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::system::DataRepository;

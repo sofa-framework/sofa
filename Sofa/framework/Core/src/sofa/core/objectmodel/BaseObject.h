@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/fwd.h>
+#include <list>
 namespace sofa
 {
 

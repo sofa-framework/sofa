@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_DATATYPE_DATASTRING_DEFINITION
+#include <sofa/core/objectmodel/Data.inl>
 #include <sofa/core/datatype/Data[string].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 
 namespace sofa::core::objectmodel
 {

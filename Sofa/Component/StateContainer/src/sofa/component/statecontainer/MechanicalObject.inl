@@ -28,7 +28,7 @@
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/simulation/Node.h>

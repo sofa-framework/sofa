@@ -26,6 +26,8 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/testing/BaseTest.h>
+#include <sofa/defaulttype/AbstractTypeInfo.h>
+
 using sofa::testing::BaseTest ;
 
 

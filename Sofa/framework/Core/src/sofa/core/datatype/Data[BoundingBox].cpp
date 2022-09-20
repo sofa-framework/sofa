@@ -24,6 +24,7 @@
 #include <sofa/core/datatype/Data[BoundingBox].h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_BoundingBox.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Vector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
 
 DATATYPEINFO_DEFINE(sofa::type::BoundingBox1D);
 DATATYPEINFO_DEFINE(sofa::type::BoundingBox2D);

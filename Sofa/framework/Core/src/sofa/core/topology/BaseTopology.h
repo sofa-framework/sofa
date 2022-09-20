@@ -26,6 +26,7 @@
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>
 #include <array>
+#include <sofa/core/topology/TopologyElement.h>
 
 namespace sofa::core::topology
 {

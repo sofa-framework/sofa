@@ -112,10 +112,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/datatype/Data[Mat].h
     ${SRC_ROOT}/datatype/Data[Material].h
     ${SRC_ROOT}/datatype/Data[OptionsGroup].h
+    ${SRC_ROOT}/datatype/Data[PrimitiveGroup].h
     ${SRC_ROOT}/datatype/Data[Quat].h
     ${SRC_ROOT}/datatype/Data[RGBAColor].h
     ${SRC_ROOT}/datatype/Data[Scalar].h
     ${SRC_ROOT}/datatype/Data[Tag].h
+    ${SRC_ROOT}/datatype/Data[Topology].h
+    ${SRC_ROOT}/datatype/Data[TopologyChange].h
     ${SRC_ROOT}/datatype/Data[Vec].h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
@@ -170,6 +173,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologicalMapping.h
     ${SRC_ROOT}/topology/Topology.h
     ${SRC_ROOT}/topology/TopologyChange.h
+    ${SRC_ROOT}/topology/TopologyElement.h
+    ${SRC_ROOT}/topology/TopologyChangeClasses.h
     ${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/topology/TopologyData.h
     ${SRC_ROOT}/topology/TopologyData.inl
@@ -255,10 +260,13 @@ set(SOURCE_FILES
     ${SRC_ROOT}/datatype/Data[Mat].cpp
     ${SRC_ROOT}/datatype/Data[Material].cpp
     ${SRC_ROOT}/datatype/Data[OptionsGroup].cpp
+    ${SRC_ROOT}/datatype/Data[PrimitiveGroup].cpp
     ${SRC_ROOT}/datatype/Data[Quat].cpp
     ${SRC_ROOT}/datatype/Data[RGBAColor].cpp
     ${SRC_ROOT}/datatype/Data[Scalar].cpp
     ${SRC_ROOT}/datatype/Data[Tag].cpp
+    ${SRC_ROOT}/datatype/Data[Topology].cpp 
+    ${SRC_ROOT}/datatype/Data[TopologyChange].cpp    
     ${SRC_ROOT}/datatype/Data[Vec].cpp
     ${SRC_ROOT}/loader/BaseLoader.cpp
     ${SRC_ROOT}/loader/MeshLoader.cpp
@@ -304,6 +312,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologicalMapping.cpp
     ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
+    ${SRC_ROOT}/topology/TopologyChangeClasses.cpp
+    ${SRC_ROOT}/topology/TopologyElement.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp

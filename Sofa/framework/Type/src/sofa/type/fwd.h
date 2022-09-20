@@ -109,6 +109,8 @@ using BoundingBox3D = BoundingBox;
 class BoundingBox1D;
 class BoundingBox2D;
 
+class PrimitiveGroup;
+
 using FixedArray1i = fixed_array<int, 1>;
 using  FixedArray1I = fixed_array<unsigned int, 1>;
 

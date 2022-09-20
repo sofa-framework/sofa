@@ -63,8 +63,6 @@ namespace sofa::core::objectmodel
  * <Foo bar="false"/>
  * \endcode
  */
-     
-
 template < class T = void* >
 class Data : public BaseData
 {
@@ -84,11 +82,10 @@ public:
     public:
         InitData() : value(T()) {}
         InitData(const T& v) : value(v) {}
-        InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(T()) {}
-
+        InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(T()) {} 
         T value;
     };
-
+    
     SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Method Data::templateName() is deprecated, to fix your code you need to use Data::GetValueTypeInfo()->getTypeName().")    
     static std::string templateName();
 
@@ -168,8 +165,6 @@ public:
 
     Data(const Data& ) = delete;
     Data& operator=(const Data& ) = delete;
-
-    friend std::ostream & operator <<(std::ostream &out, const Data& df);
     
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
@@ -203,10 +198,13 @@ class EmptyData : public Data<void*> {};
 #include <sofa/core/datatype/Data[Mat].h>
 #include <sofa/core/datatype/Data[Material].h>
 #include <sofa/core/datatype/Data[OptionsGroup].h>
+#include <sofa/core/datatype/Data[PrimitiveGroup].h>
 #include <sofa/core/datatype/Data[Quat].h>
 #include <sofa/core/datatype/Data[RGBAColor].h>
 #include <sofa/core/datatype/Data[Scalar].h>
 #include <sofa/core/datatype/Data[Tag].h>
+#include <sofa/core/datatype/Data[Topology].h>
+#include <sofa/core/datatype/Data[TopologyChange].h>
 #include <sofa/core/datatype/Data[Vec].h>
 
 namespace sofa

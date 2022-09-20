@@ -19,63 +19,157 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/DataCallback.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/helper/logging/Messaging.h>
+#pragma once
 
-namespace sofa
+#include <sofa/core/topology/TopologyChangeClasses.h>
+
+namespace sofa::core::topology
 {
 
-namespace core
+EndingEvent::~EndingEvent()
 {
-
-namespace objectmodel
-{
-
-namespace _datacallback_
-{
-
-void DataCallback::addInputs(std::initializer_list<BaseData*> data)
-{
-    for(BaseData* d : data)
-    {
-        addInput(d);
-    }
 }
 
-void DataCallback::addCallback(std::function<void(void)> f)
+PointsIndicesSwap::~PointsIndicesSwap()
 {
-    m_callbacks.push_back(f);
 }
 
-void DataCallback::notifyEndEdit()
+PointsAdded::~PointsAdded()
 {
-    if (!m_updating)
-    {
-        m_updating = true;
-        for (auto& callback : m_callbacks)
-            callback();
-
-        sofa::core::objectmodel::DDGNode::notifyEndEdit();
-        m_updating = false;
-    }
-    else
-    {
-        msg_warning("DataCallback") << "A DataCallback seems to have a circular dependency, please fix it to remove this warning.";
-    }
 }
 
-void DataCallback::update()
+PointsRemoved::~PointsRemoved()
 {
-
 }
 
+PointsRenumbering::~PointsRenumbering()
+{
 }
 
-} /// namespace objectmodel
+PointsMoved::~PointsMoved()
+{
+}
 
-} /// namespace core
+EdgesIndicesSwap::~EdgesIndicesSwap()
+{
+}
 
-} /// namespace sofa
+EdgesAdded::~EdgesAdded()
+{
+}
 
+EdgesRemoved::~EdgesRemoved()
+{
+}
+
+EdgesMoved_Removing::~EdgesMoved_Removing()
+{
+}
+
+EdgesMoved_Adding::~EdgesMoved_Adding()
+{
+}
+
+EdgesRenumbering::~EdgesRenumbering()
+{
+}
+
+TrianglesIndicesSwap::~TrianglesIndicesSwap()
+{
+}
+
+TrianglesAdded::~TrianglesAdded()
+{
+}
+
+TrianglesRemoved::~TrianglesRemoved()
+{
+}
+
+TrianglesMoved_Removing::~TrianglesMoved_Removing()
+{
+}
+
+TrianglesMoved_Adding::~TrianglesMoved_Adding()
+{
+}
+
+TrianglesRenumbering::~TrianglesRenumbering()
+{
+}
+
+QuadsIndicesSwap::~QuadsIndicesSwap()
+{
+}
+
+QuadsAdded::~QuadsAdded()
+{
+}
+
+QuadsRemoved::~QuadsRemoved()
+{
+}
+
+QuadsMoved_Removing::~QuadsMoved_Removing()
+{
+}
+
+QuadsMoved_Adding::~QuadsMoved_Adding()
+{
+}
+
+QuadsRenumbering::~QuadsRenumbering()
+{
+}
+
+TetrahedraIndicesSwap::~TetrahedraIndicesSwap()
+{
+}
+
+TetrahedraAdded::~TetrahedraAdded()
+{
+}
+
+TetrahedraRemoved::~TetrahedraRemoved()
+{
+}
+
+TetrahedraMoved_Removing::~TetrahedraMoved_Removing()
+{
+}
+
+TetrahedraMoved_Adding::~TetrahedraMoved_Adding()
+{
+}
+
+TetrahedraRenumbering::~TetrahedraRenumbering()
+{
+}
+
+HexahedraIndicesSwap::~HexahedraIndicesSwap()
+{
+}
+
+HexahedraAdded::~HexahedraAdded()
+{
+}
+
+HexahedraRemoved::~HexahedraRemoved()
+{
+}
+
+HexahedraMoved_Removing::~HexahedraMoved_Removing()
+{
+}
+
+HexahedraMoved_Adding::~HexahedraMoved_Adding()
+{
+}
+
+HexahedraRenumbering::~HexahedraRenumbering()
+{
+}
+
+
+} // namespace sofa::core::objectmodel
 

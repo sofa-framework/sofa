@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_CORE_TOPOLOGY_TOPOLOGYHANDLER_DEFINITION true
 #include <sofa/core/topology/TopologyHandler.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::core::topology

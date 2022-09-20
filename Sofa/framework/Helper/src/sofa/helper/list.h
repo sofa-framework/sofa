@@ -24,7 +24,8 @@
 
 
 #include <sofa/helper/config.h>
-
+#include <list>
+#include <iostream>
 
 /// adding string serialization to std::list to make it compatible with Data
 /// \todo: refactoring of the containers required

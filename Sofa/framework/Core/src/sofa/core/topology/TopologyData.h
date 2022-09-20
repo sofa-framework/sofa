@@ -26,7 +26,7 @@
 
 #include <sofa/core/topology/BaseTopologyData.h>
 #include <sofa/core/topology/TopologyDataHandler.h>
-
+#include <sofa/core/topology/TopologyChangeClasses.h>
 
 namespace sofa::core::topology
 {

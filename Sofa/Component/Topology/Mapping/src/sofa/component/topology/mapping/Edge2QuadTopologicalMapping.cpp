@@ -27,7 +27,7 @@
 #include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
 
-#include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
