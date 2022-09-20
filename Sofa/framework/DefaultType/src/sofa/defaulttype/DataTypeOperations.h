@@ -19,34 +19,80 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/PrimitiveGroup.h>
+#pragma once
+#include <sofa/config.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
 
-#include <istream>
-#include <ostream>
-
-namespace sofa::type
+namespace sofa::defaulttype
 {
 
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+/// Function resetting all the element of a container with its default constructor value type
+template<class Vec>
+void resetDataTypeVec(Vec& vec)
 {
-    out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-    return out;
+    for (auto& v : vec)
+    {
+        v = typename Vec::value_type{};
+    }
 }
 
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
+using sofa::type::Vec;
+using sofa::type::vector;
+
+/// In case of a vector<Vec>, zero can be set directly with memset on all the memory space for a faster reset
+template < sofa::Size N, typename ValueType>
+void resetVecTypeVec(vector<Vec<N, ValueType> >& vec)
 {
-    in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-    return in;
+    std::memset(vec.data(), 0, sizeof(ValueType) * N * vec.size());
 }
 
-bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
+template <>
+inline void resetDataTypeVec<vector<Vec<6, float> > >(vector<Vec<6, float> >& vec)
 {
-    return p0 < p.p0;
+    resetVecTypeVec(vec);
 }
 
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
+template <>
+inline void resetDataTypeVec<vector<Vec<6, double> > >(vector<Vec<6, double> >& vec)
+{
+    resetVecTypeVec(vec);
+}
 
-PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
-    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
+template <>
+inline void resetDataTypeVec<vector<Vec<3, float> > >(vector<Vec<3, float> >& vec)
+{
+    resetVecTypeVec(vec);
+}
 
-} /// namespace sofa::type
+template <>
+inline void resetDataTypeVec<vector<Vec<3, double> > >(vector<Vec<3, double> >& vec)
+{
+    resetVecTypeVec(vec);
+}
+
+template <>
+inline void resetDataTypeVec<vector<Vec<2, float> > >(vector<Vec<2, float> >& vec)
+{
+    resetVecTypeVec(vec);
+}
+
+template <>
+inline void resetDataTypeVec<vector<Vec<2, double> > >(vector<Vec<2, double> >& vec)
+{
+    resetVecTypeVec(vec);
+}
+
+template <>
+inline void resetDataTypeVec<vector<Vec<1, float> > >(vector<Vec<1, float> >& vec)
+{
+    resetVecTypeVec(vec);
+}
+
+template <>
+inline void resetDataTypeVec<vector<Vec<1, double> > >(vector<Vec<1, double> >& vec)
+{
+    resetVecTypeVec(vec);
+}
+
+}
