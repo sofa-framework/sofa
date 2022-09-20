@@ -119,7 +119,7 @@ public:
     }
 
     /// Return the last element index of the topolgy buffer this Data is linked to. @sa m_lastElementIndex
-    Index getLastElementIndex() const { return m_lastElementIndex; }
+    virtual Index getLastElementIndex() const { return m_lastElementIndex; }
 
 protected:
     /// Pointer to the Topology this TopologyData is depending on

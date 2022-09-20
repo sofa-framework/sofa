@@ -51,6 +51,11 @@ void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMesh
     this->Inherit::createTopologyHandler(_topology);
 }
 
+Index TopologySubsetIndices::getLastElementIndex() const
+{
+    auto nbr = Index(m_topology->getNbPoints());
+    return (nbr == 0) ? sofa::InvalidID : nbr - 1;
+}
 
 void TopologySubsetIndices::swapPostProcess(Index i1, Index i2)
 {
