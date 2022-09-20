@@ -64,9 +64,9 @@ JointSpringForceField<DataTypes>::~JointSpringForceField()
 
 
 template <class DataTypes>
-void JointSpringForceField<DataTypes>::init()
+void JointSpringForceField<DataTypes>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     const std::string& outfilename = f_outfilename.getFullPath();
     if (!outfilename.empty())

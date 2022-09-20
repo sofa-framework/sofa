@@ -135,7 +135,7 @@ public:
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
     void draw(const core::visual::VisualParams* vparams) override;
-    void init() override;
+    void doBaseObjectInit() override;
     void loadMatrix(TMatrix& M);
 
     bool hasUpdatedMatrix() override {return false;}

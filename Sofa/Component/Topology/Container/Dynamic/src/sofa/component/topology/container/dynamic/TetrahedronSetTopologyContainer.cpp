@@ -57,7 +57,7 @@ void TetrahedronSetTopologyContainer::addTetra(Index a, Index b, Index c, Index 
     if (d >= getNbPoints()) setNbPoints(d+1);
 }
 
-void TetrahedronSetTopologyContainer::init()
+void TetrahedronSetTopologyContainer::doBaseObjectInit()
 {
     helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 

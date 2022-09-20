@@ -112,7 +112,7 @@ public:
     typedef TLine<DataTypes> Element;
     friend class TLine<DataTypes>;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     // -- CollisionModel interface
 

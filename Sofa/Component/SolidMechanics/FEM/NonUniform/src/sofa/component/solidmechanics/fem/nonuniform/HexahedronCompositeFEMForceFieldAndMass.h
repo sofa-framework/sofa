@@ -89,7 +89,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void draw(const core::visual::VisualParams* vparams) override;
 

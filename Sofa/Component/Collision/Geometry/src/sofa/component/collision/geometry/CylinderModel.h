@@ -102,7 +102,7 @@ protected:
     CylinderCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate );
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     // -- CollisionModel interface
     void resize(Size size) override;

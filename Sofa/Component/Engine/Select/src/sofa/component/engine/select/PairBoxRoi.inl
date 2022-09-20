@@ -53,7 +53,7 @@ PairBoxROI<DataTypes>::PairBoxROI()
 }
 
 template <class DataTypes>
-void PairBoxROI<DataTypes>::init()
+void PairBoxROI<DataTypes>::doBaseObjectInit()
 {
     using sofa::core::objectmodel::BaseData;
     using sofa::core::objectmodel::BaseContext;

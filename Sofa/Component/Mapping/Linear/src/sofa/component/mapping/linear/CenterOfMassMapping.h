@@ -71,7 +71,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in) override;
     //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );

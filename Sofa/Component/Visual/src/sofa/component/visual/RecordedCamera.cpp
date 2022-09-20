@@ -65,9 +65,9 @@ RecordedCamera::RecordedCamera()
     this->f_listening.setValue(true);
 }
 
-void RecordedCamera::init()
+void RecordedCamera::doBaseObjectInit()
 {
-    BaseCamera::init();
+    BaseCamera::doBaseObjectInit();
 
     if (!m_rotationCenter.isSet())
         m_rotationCenter = Vec3(0.0, 10.0, 0.0);

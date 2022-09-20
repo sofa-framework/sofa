@@ -37,9 +37,9 @@ using namespace std;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-void HexahedronSetTopologyModifier::init()
+void HexahedronSetTopologyModifier::doBaseObjectInit()
 {
-    QuadSetTopologyModifier::init();
+    QuadSetTopologyModifier::doBaseObjectInit();
     this->getContext()->get(m_container);
 }
 

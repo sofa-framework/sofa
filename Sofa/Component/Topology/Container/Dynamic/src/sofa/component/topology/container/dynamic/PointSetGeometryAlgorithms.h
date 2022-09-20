@@ -59,7 +59,7 @@ protected:
 
     ~PointSetGeometryAlgorithms() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 
@@ -103,7 +103,7 @@ public:
     }
 
     /** \brief Called by the MechanicalObject state change callback to initialize added
-     * points according to the topology (topology element & local coordinates) 
+     * points according to the topology (topology element & local coordinates)
      */
     void initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< core::topology::PointAncestorElem > &ancestorElems
         , const type::vector< core::VecCoordId >& coordVecs, const type::vector< core::VecDerivId >& derivVecs ) override;

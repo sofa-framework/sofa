@@ -72,7 +72,7 @@ protected:
     ~MeshSubsetEngine() override;
 
 public:
-    void init() override
+    void doBaseObjectInit() override
     {
         setDirtyValue();
     }

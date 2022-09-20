@@ -51,7 +51,7 @@ PipelineImpl::~PipelineImpl()
 {
 }
 
-void PipelineImpl::init()
+void PipelineImpl::doBaseObjectInit()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == nullptr) return;

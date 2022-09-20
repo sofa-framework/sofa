@@ -44,9 +44,9 @@ APIVersion::~APIVersion()
 {
 }
 
-void APIVersion::init()
+void APIVersion::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
     checkInputData() ;
 }
 

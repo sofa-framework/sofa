@@ -34,9 +34,9 @@ namespace sofa::component::constraint::lagrangian::correction
 using namespace sofa::defaulttype;
 
 template<>
-SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init()
+SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::doBaseObjectInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
 
     const VecReal& comp = compliance.getValue();

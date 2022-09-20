@@ -38,7 +38,7 @@ SumEngine<DataTypes>::SumEngine()
 }
 
 template <class DataType>
-void SumEngine<DataType>::init()
+void SumEngine<DataType>::doBaseObjectInit()
 {
     setDirtyValue();
 }

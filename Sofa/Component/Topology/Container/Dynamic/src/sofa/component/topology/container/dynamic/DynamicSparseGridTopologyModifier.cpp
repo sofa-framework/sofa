@@ -34,9 +34,9 @@ int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron 
         .add< DynamicSparseGridTopologyModifier >();
 
 
-void DynamicSparseGridTopologyModifier::init()
+void DynamicSparseGridTopologyModifier::doBaseObjectInit()
 {
-    HexahedronSetTopologyModifier::init();
+    HexahedronSetTopologyModifier::doBaseObjectInit();
     this->getContext()->get ( m_DynContainer );
     if ( ! m_DynContainer )
     {

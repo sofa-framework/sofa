@@ -80,7 +80,7 @@ protected:
 
     ~TetrahedronSetGeometryAlgorithms() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

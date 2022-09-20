@@ -303,9 +303,9 @@ TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::init()
+void TriangularBendingSprings<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     // checking inputs using setter
     setKs(d_ks.getValue());

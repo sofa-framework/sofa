@@ -34,9 +34,9 @@ int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic s
         ;
 
 template <>
-void HermiteSplineConstraint<defaulttype::Rigid3Types>::init()
+void HermiteSplineConstraint<defaulttype::Rigid3Types>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
+    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::doBaseObjectInit();
 }
 
 template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API HermiteSplineConstraint<defaulttype::Rigid3Types>;

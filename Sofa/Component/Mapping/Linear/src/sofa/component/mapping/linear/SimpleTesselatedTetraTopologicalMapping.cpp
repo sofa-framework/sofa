@@ -57,7 +57,7 @@ SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping
 {
 }
 
-void SimpleTesselatedTetraTopologicalMapping::init()
+void SimpleTesselatedTetraTopologicalMapping::doBaseObjectInit()
 {
     if(fromModel)
     {
@@ -146,7 +146,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 
                 tetrahedraMappedFromTetraData.push_back(newTetrahedraIndices);
             }
-            toModel->init();
+            toModel->doBaseObjectInit();
             tetrahedraMappedFromTetra.endEdit();
         }
     }

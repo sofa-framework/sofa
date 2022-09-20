@@ -79,7 +79,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index tri
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::init()
+void TriangularAnisotropicFEMForceField<DataTypes>::doBaseObjectInit()
 {
     if (l_topology.empty())
     {
@@ -107,7 +107,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
         createTriangleInfo(triangleIndex, triInfo, t, ancestors, coefs);
     });
 
-    Inherited::init();
+    Inherited::doBaseObjectInit();
     reinit();
 }
 

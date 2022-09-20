@@ -64,7 +64,7 @@ protected:
 
     virtual ~LinearSolverConstraintCorrection();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
 
     void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;

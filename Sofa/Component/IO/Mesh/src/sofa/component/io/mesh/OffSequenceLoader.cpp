@@ -68,9 +68,9 @@ void OffSequenceLoader::reset()
 }
 
 
-void OffSequenceLoader::init()
+void OffSequenceLoader::doBaseObjectInit()
 {
-    MeshOffLoader::init();
+    MeshOffLoader::doBaseObjectInit();
 
     //parse the file name to get the index part
     std::string file = this->d_filename.getFullPath();

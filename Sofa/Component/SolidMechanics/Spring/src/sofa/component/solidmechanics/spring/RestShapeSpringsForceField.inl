@@ -101,7 +101,7 @@ void RestShapeSpringsForceField<DataTypes>::parse(core::objectmodel::BaseObjectD
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::bwdInit()
 {
-    ForceField<DataTypes>::init();
+    ForceField<DataTypes>::doBaseObjectInit();
 
     if (d_stiffness.getValue().empty())
     {

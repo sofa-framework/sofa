@@ -255,7 +255,7 @@ public:
 
 
 template<> SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API
-void BilateralInteractionConstraint<Rigid3Types>::init(){
+void BilateralInteractionConstraint<Rigid3Types>::doBaseObjectInit(){
     unspecializedInit() ;
 }
 

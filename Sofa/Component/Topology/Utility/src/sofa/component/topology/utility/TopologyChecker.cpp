@@ -56,7 +56,7 @@ TopologyChecker::~TopologyChecker()
 }
 
 
-void TopologyChecker::init()
+void TopologyChecker::doBaseObjectInit()
 {
     if (l_topology.empty())
     {

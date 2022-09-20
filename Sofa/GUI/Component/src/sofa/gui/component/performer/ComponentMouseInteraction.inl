@@ -57,8 +57,8 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::s
         current->addObject(mouseMapping);
 
         mouseMapping->setNonMechanical();
-        mouseInSofa->init();
-        mouseInteractor->init();
+        mouseInSofa->doBaseObjectInit();
+        mouseInteractor->doBaseObjectInit();
         mouseMapping->init();
     }
 }

@@ -48,7 +48,7 @@ DAGSimulation::DAGSimulation()
 {
     // Safety check; it could be elsewhere, but here is a good place, I guess.
     if (!sofa::simulation::graph::isInitialized())
-        sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Graph", "sofa::simulation::graph::init()");
+        sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Graph", "sofa::simulation::graph::doBaseObjectInit()");
 }
 
 DAGSimulation::~DAGSimulation()

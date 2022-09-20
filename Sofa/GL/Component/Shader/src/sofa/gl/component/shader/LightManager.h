@@ -69,7 +69,7 @@ protected:
     ~LightManager() override;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void bwdInit() override;
     void reinit() override;
     void initVisual() override;

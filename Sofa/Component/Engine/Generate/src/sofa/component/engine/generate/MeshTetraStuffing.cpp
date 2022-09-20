@@ -71,7 +71,7 @@ MeshTetraStuffing::~MeshTetraStuffing()
 {
 }
 
-void MeshTetraStuffing::init()
+void MeshTetraStuffing::doBaseObjectInit()
 {
     //setDirtyValue();
 

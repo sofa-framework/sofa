@@ -90,9 +90,9 @@ void CubeTopology::setSize(int nx, int ny, int nz)
     setSize();
 }
 
-void CubeTopology::init()
+void CubeTopology::doBaseObjectInit()
 {
-    this->MeshTopology::init();
+    this->MeshTopology::doBaseObjectInit();
     setSize();
 }
 

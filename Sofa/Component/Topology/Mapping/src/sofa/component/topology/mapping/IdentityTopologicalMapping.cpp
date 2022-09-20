@@ -68,9 +68,9 @@ IdentityTopologicalMapping::~IdentityTopologicalMapping()
 {
 }
 
-void IdentityTopologicalMapping::init()
+void IdentityTopologicalMapping::doBaseObjectInit()
 {
-    sofa::core::topology::TopologicalMapping::init();
+    sofa::core::topology::TopologicalMapping::doBaseObjectInit();
     this->updateLinks();
     if (fromModel && toModel)
     {

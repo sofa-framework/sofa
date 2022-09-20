@@ -70,7 +70,7 @@ public:
 
     ~ClusteringEngine() override {}
 
-    void init() override;
+    void doBaseObjectInit() override;
     void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;

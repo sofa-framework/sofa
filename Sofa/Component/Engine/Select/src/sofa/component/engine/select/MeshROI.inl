@@ -112,7 +112,7 @@ MeshROI<DataTypes>::MeshROI()
 }
 
 template <class DataTypes>
-void MeshROI<DataTypes>::init()
+void MeshROI<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 

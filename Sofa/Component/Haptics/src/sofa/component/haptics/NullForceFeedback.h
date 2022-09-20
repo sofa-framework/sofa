@@ -34,7 +34,7 @@ class SOFA_COMPONENT_HAPTICS_API NullForceFeedback : public ForceFeedback
 {
 public:
     SOFA_CLASS(NullForceFeedback,ForceFeedback);
-    void init() override;
+    void doBaseObjectInit() override;
 
     void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override;
     void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) override;

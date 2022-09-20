@@ -55,7 +55,7 @@ void TetrahedronCollisionModel::resize(Size size)
     if (getPrevious() != nullptr) getPrevious()->resize(0); // force recomputation of bounding tree
 }
 
-void TetrahedronCollisionModel::init()
+void TetrahedronCollisionModel::doBaseObjectInit()
 {
     if (l_topology.empty())
     {
@@ -73,7 +73,7 @@ void TetrahedronCollisionModel::init()
         return;
     }
 
-    this->CollisionModel::init();
+    this->CollisionModel::doBaseObjectInit();
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
     if (mstate==nullptr)

@@ -114,7 +114,7 @@ public:
     void removeConstraint(Index index);
    
     /// -- Constraint interface
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Cancel the possible forces
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;

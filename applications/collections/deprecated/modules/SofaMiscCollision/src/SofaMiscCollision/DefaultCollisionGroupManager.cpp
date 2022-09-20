@@ -389,15 +389,15 @@ void DefaultCollisionGroupManager::addSolversToNode(simulation::Node::SPtr node,
     // perform init only once everyone has been added (in case of explicit dependencies)
     if (solverSet.odeSolver)
     {
-        solverSet.odeSolver->init();
+        solverSet.odeSolver->doBaseObjectInit();
     }
     if (solverSet.linearSolver)
     {
-        solverSet.linearSolver->init();
+        solverSet.linearSolver->doBaseObjectInit();
     }
     if (solverSet.constraintSolver)
     {
-        solverSet.constraintSolver->init();
+        solverSet.constraintSolver->doBaseObjectInit();
     }
 }
 

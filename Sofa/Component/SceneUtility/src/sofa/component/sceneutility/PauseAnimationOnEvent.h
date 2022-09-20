@@ -39,7 +39,7 @@ protected:
 
     ~PauseAnimationOnEvent() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     bool paused;
     bool isPaused() override;

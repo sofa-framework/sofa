@@ -128,10 +128,10 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~Tri
 
 }
 
-template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::init()
+template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::doBaseObjectInit()
 {
     msg_info() << "initializing TriangularQuadraticSpringsForceField";
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     if (l_topology.empty())
     {

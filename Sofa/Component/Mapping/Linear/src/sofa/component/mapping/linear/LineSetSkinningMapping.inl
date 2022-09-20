@@ -72,7 +72,7 @@ double LineSetSkinningMapping<TIn, TOut>::convolutionSegment(const type::Vec<3,R
 }
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::init()
+void LineSetSkinningMapping<TIn, TOut>::doBaseObjectInit()
 {
     const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
@@ -183,7 +183,7 @@ void LineSetSkinningMapping<TIn, TOut>::reinit()
     neighborhoodLinesSet.clear();
     neighborhood.clear();
 
-    init();
+    doBaseObjectInit();
 }
 
 template <class TIn, class TOut>

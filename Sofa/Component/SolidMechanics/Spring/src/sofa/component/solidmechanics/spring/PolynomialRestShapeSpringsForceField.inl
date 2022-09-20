@@ -53,7 +53,7 @@ PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialRestShapeSpringsForce
 template<class DataTypes>
 void PolynomialRestShapeSpringsForceField<DataTypes>::bwdInit()
 {
-    core::behavior::ForceField<DataTypes>::init();
+    core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 
     if (d_polynomialStiffness.getValue().empty())
     {

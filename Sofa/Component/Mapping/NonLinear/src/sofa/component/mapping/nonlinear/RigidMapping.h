@@ -106,7 +106,7 @@ public:
     sofa::Size addPoint(const Coord& c);
     sofa::Size addPoint(const Coord& c, sofa::Index indexFrom);
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Compute the local coordinates based on the current output coordinates.
     void reinit() override;

@@ -120,7 +120,7 @@ void UniformMass<DataTypes>::setTotalMass ( SReal m )
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::init()
+void UniformMass<DataTypes>::doBaseObjectInit()
 {
     initDefaultImpl();
 }
@@ -131,7 +131,7 @@ void UniformMass<DataTypes>::initDefaultImpl()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
-    Mass<DataTypes>::init();
+    Mass<DataTypes>::doBaseObjectInit();
 
     WriteAccessor<Data<SetIndexArray > > indices = d_indices;
     

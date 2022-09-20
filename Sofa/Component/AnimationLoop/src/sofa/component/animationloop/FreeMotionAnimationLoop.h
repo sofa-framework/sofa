@@ -40,7 +40,7 @@ public:
 
 public:
     void step (const sofa::core::ExecParams* params, SReal dt) override;
-    void init() override;
+    void doBaseObjectInit() override;
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Construction method called by ObjectFactory. An animation loop can only

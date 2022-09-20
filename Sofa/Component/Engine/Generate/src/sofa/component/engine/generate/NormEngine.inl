@@ -38,7 +38,7 @@ NormEngine<DataTypes>::NormEngine()
 }
 
 template <class DataType>
-void NormEngine<DataType>::init()
+void NormEngine<DataType>::doBaseObjectInit()
 {
     setDirtyValue();
 }

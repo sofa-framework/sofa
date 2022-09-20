@@ -50,9 +50,9 @@ QuadPressureForceField<DataTypes>::QuadPressureForceField()
 }
 
 template <class DataTypes>
-void QuadPressureForceField<DataTypes>::init()
+void QuadPressureForceField<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

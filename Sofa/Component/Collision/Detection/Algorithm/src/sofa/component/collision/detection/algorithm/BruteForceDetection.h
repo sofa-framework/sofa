@@ -34,7 +34,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BruteForceDetection final
 public:
     SOFA_CLASS(BruteForceDetection, sofa::core::objectmodel::BaseObject);
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Construction method called by ObjectFactory.
     template<class T>

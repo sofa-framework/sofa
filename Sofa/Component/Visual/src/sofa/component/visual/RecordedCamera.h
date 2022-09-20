@@ -40,7 +40,7 @@ protected:
     RecordedCamera();
     ~RecordedCamera() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void reset() override;
     void handleEvent(sofa::core::objectmodel::Event *) override;

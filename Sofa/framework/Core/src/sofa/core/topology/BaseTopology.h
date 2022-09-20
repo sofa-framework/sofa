@@ -67,7 +67,7 @@ protected:
     ~GeometryAlgorithms() override
     {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /** \brief Called by the MechanicalObject state change callback to initialize added
     * points according to the topology (topology element & local coordinates)
@@ -99,7 +99,7 @@ protected:
     ~TopologyModifier() override
     { }
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
     *
@@ -165,7 +165,7 @@ protected:
     /// Destructor
     ~TopologyContainer() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// BaseMeshTopology API
     /// @{

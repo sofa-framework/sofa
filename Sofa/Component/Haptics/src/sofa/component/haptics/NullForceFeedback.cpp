@@ -26,9 +26,9 @@
 namespace sofa::component::haptics
 {
 
-void NullForceFeedback::init()
+void NullForceFeedback::doBaseObjectInit()
 {
-    this->ForceFeedback::init();
+    this->ForceFeedback::doBaseObjectInit();
 }
 
 void NullForceFeedback::computeForce(SReal /*x*/, SReal /*y*/, SReal /*z*/, SReal /*u*/, SReal /*v*/, SReal /*w*/, SReal /*q*/, SReal& fx, SReal& fy, SReal& fz)

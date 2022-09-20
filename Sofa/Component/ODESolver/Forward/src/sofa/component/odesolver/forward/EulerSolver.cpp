@@ -240,9 +240,9 @@ double EulerExplicitSolver::getSolutionIntegrationFactor(int outputDerivative) c
     return vect[outputDerivative];
 }
 
-void EulerExplicitSolver::init()
+void EulerExplicitSolver::doBaseObjectInit()
 {
-    OdeSolver::init();
+    OdeSolver::doBaseObjectInit();
     reinit();
 }
 

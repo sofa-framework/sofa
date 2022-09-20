@@ -54,7 +54,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::init()
+void ConstantForceField<DataTypes>::doBaseObjectInit()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
        
@@ -163,7 +163,7 @@ void ConstantForceField<DataTypes>::init()
     }
 
     // init from ForceField
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     // add to tracker
     this->trackInternalData(d_indices);

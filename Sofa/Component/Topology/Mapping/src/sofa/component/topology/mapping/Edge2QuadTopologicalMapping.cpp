@@ -66,7 +66,7 @@ Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
 {
 }
 
-void Edge2QuadTopologicalMapping::init()
+void Edge2QuadTopologicalMapping::doBaseObjectInit()
 {
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
@@ -263,7 +263,7 @@ void Edge2QuadTopologicalMapping::init()
             Loc2GlobDataVec.endEdit();
 
             // Need to fully init the target topology
-            to_tstm->init();
+            to_tstm->doBaseObjectInit();
 
             d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }

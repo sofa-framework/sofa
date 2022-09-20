@@ -385,7 +385,7 @@ public:
 
     void updateVisual() override;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initFromTopology();
     void initPositionFromVertices();
     void initFromFileMesh();

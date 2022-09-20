@@ -107,12 +107,12 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::instantiateMaterial()
     }
 }
 
-template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
+template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::doBaseObjectInit()
 {
     using namespace material;
     msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
 
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     /** parse the parameter set */
     const SetParameterArray& paramSet = d_parameterSet.getValue();

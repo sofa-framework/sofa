@@ -48,7 +48,7 @@ protected:
     Indices2ValuesMapper();
     ~Indices2ValuesMapper() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void doUpdate() override;
 

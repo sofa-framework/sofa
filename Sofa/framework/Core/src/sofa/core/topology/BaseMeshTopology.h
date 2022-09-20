@@ -93,7 +93,7 @@ public:
 protected:
     BaseMeshTopology()	;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Load the topology from a file.
     ///

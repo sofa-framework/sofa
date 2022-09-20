@@ -53,7 +53,7 @@ public:
     /// finds a hexahedron, in its rest position, which is nearest to a given point. Computes barycentric coordinates and a distance measure.
     int findNearestElementInRestPos(const Coord& pos, type::Vector3& baryC, Real& distance) const override;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     core::topology::BaseMeshTopology::HexaID getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing );
     unsigned int getRegularGridIndexFromTopoIndex ( core::topology::BaseMeshTopology::HexaID index );

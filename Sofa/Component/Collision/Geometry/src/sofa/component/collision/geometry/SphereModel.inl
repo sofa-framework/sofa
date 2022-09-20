@@ -73,13 +73,13 @@ void SphereCollisionModel<DataTypes>::resize(Size size)
 
 
 template<class DataTypes>
-void SphereCollisionModel<DataTypes>::init()
+void SphereCollisionModel<DataTypes>::doBaseObjectInit()
 {
     if(d_componentState.getValue() == ComponentState::Valid){
         msg_warning(this) << "Calling an already fully initialized component. You should use reinit instead." ;
     }
 
-    this->CollisionModel::init();
+    this->CollisionModel::doBaseObjectInit();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     if (mstate==nullptr)
     {

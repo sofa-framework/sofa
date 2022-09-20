@@ -65,9 +65,9 @@ void  HermiteSplineConstraint<DataTypes>::addConstraint(unsigned index)
 
 
 template <class DataTypes>
-void HermiteSplineConstraint<DataTypes>::init()
+void HermiteSplineConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {
@@ -91,7 +91,7 @@ void HermiteSplineConstraint<DataTypes>::init()
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::reinit()
 {
-    init();
+    doBaseObjectInit();
 }
 
 

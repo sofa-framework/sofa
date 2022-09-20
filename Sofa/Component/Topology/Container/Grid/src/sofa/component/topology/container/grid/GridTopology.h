@@ -106,7 +106,7 @@ protected:
 
 public:
     /// BaseObject method should be overwritten by children
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// BaseObject method should be overwritten by children
     void reinit() override;

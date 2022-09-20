@@ -239,11 +239,11 @@ end:
 }
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::init()
+void BarycentricMapping<TIn, TOut>::doBaseObjectInit()
 {
     this->d_componentState.setValue(ComponentState::Invalid) ;
 
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     populateTopologies();
 

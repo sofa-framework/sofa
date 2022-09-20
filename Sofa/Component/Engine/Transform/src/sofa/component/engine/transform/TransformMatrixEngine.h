@@ -48,7 +48,7 @@ protected:
     void doUpdate() override = 0;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
 protected:
@@ -86,7 +86,7 @@ protected:
     void doUpdate() override;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
 protected:
     /// translation
@@ -109,7 +109,7 @@ protected:
     void doUpdate() override;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
 protected:
     /// rotation
@@ -132,7 +132,7 @@ protected:
     void doUpdate() override;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
 protected:
     Data<type::Vector3> d_scale; ///< scale

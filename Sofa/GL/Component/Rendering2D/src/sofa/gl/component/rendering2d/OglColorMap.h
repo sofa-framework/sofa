@@ -64,7 +64,7 @@ public:
     sofa::helper::ColorMap m_colorMap;
     GLuint texture;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     //void initVisual() { initTextures(); }

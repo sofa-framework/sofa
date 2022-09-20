@@ -86,7 +86,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit()  override { msg_warning() << "Non-uniform mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."; }
 
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;

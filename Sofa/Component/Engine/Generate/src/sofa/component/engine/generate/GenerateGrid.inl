@@ -50,7 +50,7 @@ GenerateGrid<DataTypes>::GenerateGrid()
 
 
 template <class DataTypes>
-void GenerateGrid<DataTypes>::init()
+void GenerateGrid<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

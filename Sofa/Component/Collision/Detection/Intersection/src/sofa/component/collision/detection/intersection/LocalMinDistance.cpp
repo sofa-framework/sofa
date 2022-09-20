@@ -59,7 +59,7 @@ LocalMinDistance::LocalMinDistance()
 {
 }
 
-void LocalMinDistance::init()
+void LocalMinDistance::doBaseObjectInit()
 {
     intersectors.add<CubeCollisionModel, CubeCollisionModel, LocalMinDistance>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this); // sphere-sphere is always activated
@@ -87,7 +87,7 @@ void LocalMinDistance::init()
     //new supported pairs of collision models.
     IntersectorFactory::getInstance()->addIntersectors(this);
 
-    BaseProximityIntersection::init();
+    BaseProximityIntersection::doBaseObjectInit();
 }
 
 bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)

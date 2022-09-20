@@ -101,7 +101,7 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     int addPoint ( const OutCoord& c );
     int addPoint ( const OutCoord& c, int indexFrom );
 
-    void init() override;
+    void doBaseObjectInit() override;
 
 	void handleTopologyChange(core::topology::Topology* t) override;
 

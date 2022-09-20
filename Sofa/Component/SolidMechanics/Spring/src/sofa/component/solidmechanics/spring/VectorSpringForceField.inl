@@ -141,7 +141,7 @@ VectorSpringForceField<DataTypes>::~VectorSpringForceField()
 }
 
 template <class DataTypes>
-void VectorSpringForceField<DataTypes>::init()
+void VectorSpringForceField<DataTypes>::doBaseObjectInit()
 {
     if (m_useTopology.getValue()) 
     {
@@ -174,7 +174,7 @@ void VectorSpringForceField<DataTypes>::init()
         });
     }
 
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 }
 
 template <class DataTypes>

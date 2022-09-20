@@ -63,7 +63,7 @@ public:
     ~MeshSampler() override {}
 
     void reinit()    override { update();  }
-    void init() override;
+    void doBaseObjectInit() override;
     void doUpdate() override;
 
     void draw(const core::visual::VisualParams* vparams) override;

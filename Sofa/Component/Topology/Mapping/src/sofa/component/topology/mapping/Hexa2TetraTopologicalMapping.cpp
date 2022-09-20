@@ -63,7 +63,7 @@ Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()
 {
 }
 
-void Hexa2TetraTopologicalMapping::init()
+void Hexa2TetraTopologicalMapping::doBaseObjectInit()
 {
     using namespace container::dynamic;
 
@@ -193,7 +193,7 @@ void Hexa2TetraTopologicalMapping::init()
     Loc2GlobDataVec.endEdit();
 
     // Need to fully init the target topology
-    toModel->init();
+    toModel->doBaseObjectInit();
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }

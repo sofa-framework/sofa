@@ -132,9 +132,9 @@ SReal PointSetTopologyContainer::getPZ(Index i) const
         return 0.0;
 }
 
-void PointSetTopologyContainer::init()
+void PointSetTopologyContainer::doBaseObjectInit()
 {
-    core::topology::TopologyContainer::init();
+    core::topology::TopologyContainer::doBaseObjectInit();
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     int pointsDiff = (int)initPoints.size() - (int)getNbPoints(); 
     if( pointsDiff > 0 )

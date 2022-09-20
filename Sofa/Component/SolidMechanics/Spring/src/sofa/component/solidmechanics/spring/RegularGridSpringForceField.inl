@@ -50,7 +50,7 @@ RegularGridSpringForceField<DataTypes>::RegularGridSpringForceField(core::behavi
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::init()
+void RegularGridSpringForceField<DataTypes>::doBaseObjectInit()
 {
     if (this->mstate1 == nullptr)
     {
@@ -61,7 +61,7 @@ void RegularGridSpringForceField<DataTypes>::init()
     {
         topology = dynamic_cast<topology::container::grid::RegularGridTopology*>(this->mstate1->getContext()->getMeshTopology());
     }
-    this->StiffSpringForceField<DataTypes>::init();
+    this->StiffSpringForceField<DataTypes>::doBaseObjectInit();
 }
 
 template<class DataTypes>

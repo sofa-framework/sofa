@@ -90,7 +90,7 @@ public:
     //virtual void init();
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

@@ -67,7 +67,7 @@ PointSplatModel::~PointSplatModel()
         delete [] texture_data;
 }
 
-void PointSplatModel::init()
+void PointSplatModel::doBaseObjectInit()
 {
     getContext()->get(_topology);
     if(_topology)
@@ -75,7 +75,7 @@ void PointSplatModel::init()
     else
         getContext()->get(_mstate);
 
-    VisualModel::init();
+    VisualModel::doBaseObjectInit();
 
     core::loader::VoxelLoader *loader;
     getContext()->get(loader);

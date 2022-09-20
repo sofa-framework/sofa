@@ -61,7 +61,7 @@ public:
     void parseFields ( const std::map<std::string,std::string*>& str ) override;
 
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
 protected:

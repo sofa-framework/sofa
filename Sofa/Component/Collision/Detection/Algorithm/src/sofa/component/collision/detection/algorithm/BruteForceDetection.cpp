@@ -31,7 +31,7 @@ int BruteForceDetectionClass = core::RegisterObject(
         "Combination of brute force broad phase and BVH narrow phase collision detection")
         .add<BruteForceDetection>();
 
-void BruteForceDetection::init()
+void BruteForceDetection::doBaseObjectInit()
 {
     const std::string broadPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::BroadPhaseDetection>();
     const std::string narrowPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::NarrowPhaseDetection>();

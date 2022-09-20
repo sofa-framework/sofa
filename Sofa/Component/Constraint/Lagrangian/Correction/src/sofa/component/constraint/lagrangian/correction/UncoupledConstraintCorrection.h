@@ -58,7 +58,7 @@ protected:
 
     virtual ~UncoupledConstraintCorrection();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 
@@ -140,7 +140,7 @@ protected:
 
 
 template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::doBaseObjectInit();
 
 template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::linearalgebra::BaseMatrix * /*m*/) const;

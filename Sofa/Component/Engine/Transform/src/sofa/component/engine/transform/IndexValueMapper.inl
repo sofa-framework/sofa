@@ -42,7 +42,7 @@ IndexValueMapper<DataTypes>::IndexValueMapper()
 }
 
 template <class DataTypes>
-void IndexValueMapper<DataTypes>::init()
+void IndexValueMapper<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

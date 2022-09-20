@@ -51,7 +51,7 @@ public:
     Data<unsigned int>           d_updateLabelEveryNbSteps; ///< Update the display of the label every nb of time steps
     Data<bool>                   d_visible; ///< Is label displayed
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void updateVisual() override;
     void drawVisual(const core::visual::VisualParams* vparams) override;

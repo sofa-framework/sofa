@@ -52,9 +52,9 @@ SparseGridRamificationTopology::~SparseGridRamificationTopology()
 }
 
 
-void SparseGridRamificationTopology::init()
+void SparseGridRamificationTopology::doBaseObjectInit()
 {
-    SparseGridTopology::init();
+    SparseGridTopology::doBaseObjectInit();
 
     if( this->isVirtual || _nbVirtualFinerLevels.getValue() > 0)
         findCoarsestParents(); // in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
@@ -842,7 +842,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     }
     else
         _virtualFinerLevels[0]->load(fileTopology.c_str());
-    _virtualFinerLevels[0]->init();
+    _virtualFinerLevels[0]->doBaseObjectInit();
 
 
     std::stringstream tmpMsg;
@@ -858,7 +858,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
         this->addSlave(_virtualFinerLevels[i]);
 
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
-        _virtualFinerLevels[i]->init();
+        _virtualFinerLevels[i]->doBaseObjectInit();
 
         tmpMsg<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }

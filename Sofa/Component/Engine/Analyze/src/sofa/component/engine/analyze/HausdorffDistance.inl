@@ -49,7 +49,7 @@ HausdorffDistance<DataTypes>::HausdorffDistance()
 }
 
 template <class DataTypes>
-void HausdorffDistance<DataTypes>::init()
+void HausdorffDistance<DataTypes>::doBaseObjectInit()
 {
     computeDistances();
 }

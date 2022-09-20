@@ -42,7 +42,7 @@ public :
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems
     void createContacts(const DetectionOutputMap& outputs) override;
-    void init() override;
+    void doBaseObjectInit() override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     template<class T>

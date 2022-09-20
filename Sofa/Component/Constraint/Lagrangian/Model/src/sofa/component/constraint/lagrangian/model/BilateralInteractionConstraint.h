@@ -118,7 +118,7 @@ protected:
 
     virtual ~BilateralInteractionConstraint(){}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void bwdInit() override {}
 

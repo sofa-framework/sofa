@@ -93,9 +93,9 @@ GearSpringForceField<DataTypes>::~GearSpringForceField()
 
 
 template <class DataTypes>
-void GearSpringForceField<DataTypes>::init()
+void GearSpringForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 
     const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())

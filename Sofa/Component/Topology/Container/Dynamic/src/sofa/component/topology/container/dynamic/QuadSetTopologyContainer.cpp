@@ -52,7 +52,7 @@ void QuadSetTopologyContainer::addQuad(Index a, Index b, Index c, Index d )
     if (d >= getNbPoints()) setNbPoints( d+1 );
 }
 
-void QuadSetTopologyContainer::init()
+void QuadSetTopologyContainer::doBaseObjectInit()
 {
     helper::ReadAccessor< Data< sofa::type::vector<Quad> > > m_quads = d_quad;
     if (d_initPoints.isSet())

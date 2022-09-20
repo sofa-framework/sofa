@@ -268,10 +268,10 @@ public:
         Inherit1::parseFields(str);
     }
 
-    void init() override
+    void doBaseObjectInit() override
     {
         vl_input.resize(d_nbInput.getValue());
-        Inherit1::init();
+        Inherit1::doBaseObjectInit();
         update();
     }
 

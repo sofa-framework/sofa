@@ -47,9 +47,9 @@ OglSceneFrame::OglSceneFrame()
     d_alignment.setValue(alignmentOptions);
 }
 
-void OglSceneFrame::init()
+void OglSceneFrame::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
     updateVisual();
 }
 

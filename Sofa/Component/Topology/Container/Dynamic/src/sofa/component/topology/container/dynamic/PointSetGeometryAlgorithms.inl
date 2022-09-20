@@ -43,7 +43,7 @@ template <class DataTypes>
 }
 
 template <class DataTypes>
-void PointSetGeometryAlgorithms< DataTypes >::init()
+void PointSetGeometryAlgorithms< DataTypes >::doBaseObjectInit()
 {
     this->d_componentState.setValue(ComponentState::Invalid);
     if ( this->d_tagMechanics.getValue().size()>0) {
@@ -52,7 +52,7 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
     } else {
         object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
     }
-    core::topology::GeometryAlgorithms::init();
+    core::topology::GeometryAlgorithms::doBaseObjectInit();
 
     if (l_topology.empty())
     {

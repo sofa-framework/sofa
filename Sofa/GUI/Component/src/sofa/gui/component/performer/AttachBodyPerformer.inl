@@ -52,7 +52,7 @@ void AttachBodyPerformer<DataTypes>::start()
     this->interactor->getContext()->get(mapping); assert(mapping);
     mapping->apply(core::mechanicalparams::defaultInstance());
     mapping->applyJ(core::mechanicalparams::defaultInstance());
-    m_forcefield->init();
+    m_forcefield->doBaseObjectInit();
     this->interactor->setMouseAttached(true);
 }
 

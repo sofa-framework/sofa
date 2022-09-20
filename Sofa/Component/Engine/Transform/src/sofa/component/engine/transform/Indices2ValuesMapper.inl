@@ -47,7 +47,7 @@ Indices2ValuesMapper<DataTypes>::Indices2ValuesMapper()
 }
 
 template <class DataTypes>
-void Indices2ValuesMapper<DataTypes>::init()
+void Indices2ValuesMapper<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

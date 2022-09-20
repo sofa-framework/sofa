@@ -70,7 +70,7 @@ public:
 	TransformEngine_test(bool init = true)
 	{
 		if (init)
-			TransformEngine<DataTypes>::init();
+			TransformEngine<DataTypes>::doBaseObjectInit();
 		this->f_outputX.cleanDirty();
 		this->f_inputX.cleanDirty();
 		this->cleanDirty();

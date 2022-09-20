@@ -68,7 +68,7 @@ public:
     /// call when initializing the simulation
     virtual void init() override
     {
-        Inherited::init();
+        Inherited::doBaseObjectInit();
         m_exposedDofs = dynamic_cast<Dofs*>( this->getMState() );
     }
 

@@ -102,7 +102,7 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
 
 
 template<class DataTypes>
-void TriangleBendingSprings<DataTypes>::init()
+void TriangleBendingSprings<DataTypes>::doBaseObjectInit()
 {
     this->mstate1 = this->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
     StiffSpringForceField<DataTypes>::clear();
@@ -147,7 +147,7 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    StiffSpringForceField<DataTypes>::init();
+    StiffSpringForceField<DataTypes>::doBaseObjectInit();
 
 }
 

@@ -43,9 +43,9 @@ ComplianceMatrixImage::ComplianceMatrixImage()
 
 ComplianceMatrixImage::~ComplianceMatrixImage() = default;
 
-void ComplianceMatrixImage::init()
+void ComplianceMatrixImage::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if (!l_constraintSolver)
     {

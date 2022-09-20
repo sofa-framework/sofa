@@ -105,9 +105,9 @@ void LinearMovementConstraint<DataTypes>::addKeyMovement(Real time, Deriv moveme
 
 // -- Constraint interface
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::init()
+void LinearMovementConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

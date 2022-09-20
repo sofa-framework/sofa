@@ -102,9 +102,9 @@ void LinearVelocityConstraint<TDataTypes>::addKeyVelocity(Real time, Deriv movem
 
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::init()
+void LinearVelocityConstraint<TDataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<TDataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<TDataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

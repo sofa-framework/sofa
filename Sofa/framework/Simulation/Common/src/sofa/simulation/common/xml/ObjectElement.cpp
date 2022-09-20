@@ -83,7 +83,7 @@ bool ObjectElement::initNode()
 
         if(obj)
         {
-           obj->init() ;
+           obj->doBaseObjectInit() ;
            msg_error(obj.get()) << tmp.str() ;
            return false;
         }

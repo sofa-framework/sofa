@@ -53,7 +53,7 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator MatrixDerivColIterator;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void draw( const core::visual::VisualParams* ) override
     {

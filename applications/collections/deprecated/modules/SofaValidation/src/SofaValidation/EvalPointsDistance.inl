@@ -74,7 +74,7 @@ EvalPointsDistance<DataTypes>::~EvalPointsDistance()
 
 //-------------------------------- init------------------------------------
 template<class DataTypes>
-void EvalPointsDistance<DataTypes>::init()
+void EvalPointsDistance<DataTypes>::doBaseObjectInit()
 {
     if(isToPrint.getValue()==true) dist.setPersistent(false);
     if (!mstate1 )

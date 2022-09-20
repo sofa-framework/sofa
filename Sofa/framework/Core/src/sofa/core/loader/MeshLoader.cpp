@@ -202,9 +202,9 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 }
 
-void MeshLoader::init()
+void MeshLoader::doBaseObjectInit()
 {
-    BaseLoader::init();
+    BaseLoader::doBaseObjectInit();
     this->reinit();
 }
 

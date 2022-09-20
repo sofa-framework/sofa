@@ -98,7 +98,7 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 }
 
 
-void TopologicalChangeProcessor::init()
+void TopologicalChangeProcessor::doBaseObjectInit()
 {
     if (l_topology.empty())
     {

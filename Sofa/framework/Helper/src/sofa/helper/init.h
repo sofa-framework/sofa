@@ -42,15 +42,15 @@ namespace helper
 //       "Higher level"
 //     ------------------>
 //
-//     sofa::helper::init()                             // SofaHelper
-//     └──sofa::type::init()                     // SofaDefaultType
-//        └──sofa::core::init()                         // SofaCore
-//           └──sofa::simulation::common::init()        // SofaSimulationCommon
-//              └──sofa::simulation::graph::init()      // SofaSimulationGraph
+//     sofa::helper::doBaseObjectInit()                             // SofaHelper
+//     └──sofa::type::doBaseObjectInit()                     // SofaDefaultType
+//        └──sofa::core::doBaseObjectInit()                         // SofaCore
+//           └──sofa::simulation::common::doBaseObjectInit()        // SofaSimulationCommon
+//              └──sofa::simulation::graph::doBaseObjectInit()      // SofaSimulationGraph
 //
 // For example:
 //
-// - If it links against SofaCore, it only needs to call sofa::core::init().
+// - If it links against SofaCore, it only needs to call sofa::core::doBaseObjectInit().
 ///
 //
 // Symmetrically, before exiting, an application needs to call the cleanup()

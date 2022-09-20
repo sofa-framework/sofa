@@ -62,7 +62,7 @@ protected:
     ~MeshROI() override {}
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void doUpdate() override;
     void draw(const core::visual::VisualParams*) override;

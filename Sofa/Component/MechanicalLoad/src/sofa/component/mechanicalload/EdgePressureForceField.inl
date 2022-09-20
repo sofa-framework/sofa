@@ -55,9 +55,9 @@ template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForce
 }
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::init()
+void EdgePressureForceField<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

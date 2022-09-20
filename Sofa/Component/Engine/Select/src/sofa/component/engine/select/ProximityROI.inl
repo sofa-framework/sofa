@@ -67,7 +67,7 @@ ProximityROI<DataTypes>::ProximityROI()
 }
 
 template <class DataTypes>
-void ProximityROI<DataTypes>::init()
+void ProximityROI<DataTypes>::doBaseObjectInit()
 {
     if (!f_X0.isSet())
     {

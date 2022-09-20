@@ -80,10 +80,10 @@ void OglShaderVisualModel::popTransformMatrix()
     */
 }
 
-void OglShaderVisualModel::init()
+void OglShaderVisualModel::doBaseObjectInit()
 {
     if (!shader)
-        OglModel::init();
+        OglModel::doBaseObjectInit();
 
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     shader = context->core::objectmodel::BaseContext::get<OglShader>();

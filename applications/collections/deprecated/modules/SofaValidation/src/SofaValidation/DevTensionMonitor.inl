@@ -26,7 +26,7 @@ namespace sofa::component::misc
 {
 
 template <class DataTypes>
-void DevTensionMonitor<DataTypes>::init()
+void DevTensionMonitor<DataTypes>::doBaseObjectInit()
 {
 }
 

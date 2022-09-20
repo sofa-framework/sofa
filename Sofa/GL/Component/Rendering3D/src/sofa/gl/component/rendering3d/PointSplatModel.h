@@ -48,7 +48,7 @@ protected:
     PointSplatModel();
     ~PointSplatModel() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

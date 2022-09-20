@@ -49,7 +49,7 @@ ContactListener::~ContactListener()
 {
 }
 
-void ContactListener::init(void)
+void ContactListener::doBaseObjectInit(void)
 {
     m_NarrowPhase = getContext()->get<core::collision::NarrowPhaseDetection>();
     if ( m_NarrowPhase != nullptr )

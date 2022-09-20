@@ -147,7 +147,7 @@ GenerateSphere<DataTypes>::GenerateSphere()
 
 
 template <class DataTypes>
-void GenerateSphere<DataTypes>::init()
+void GenerateSphere<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 

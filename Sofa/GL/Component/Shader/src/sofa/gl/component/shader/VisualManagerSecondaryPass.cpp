@@ -49,7 +49,7 @@ VisualManagerSecondaryPass::~VisualManagerSecondaryPass()
 {
 }
 
-void VisualManagerSecondaryPass::init()
+void VisualManagerSecondaryPass::doBaseObjectInit()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     multiPassEnabled=checkMultipass(context);

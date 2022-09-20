@@ -67,7 +67,7 @@ protected:
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     void updateTopologicalMappingTopDown() override;

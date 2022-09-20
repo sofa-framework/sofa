@@ -46,7 +46,7 @@ protected:
     ~PointSetTopologyContainer() override = default;
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Procedural creation methods
     /// @{
@@ -86,7 +86,7 @@ public:
 
     /** \brief Returns the type of the topology */
     sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::POINT;}
-    
+
     /// @}
 
 
@@ -149,9 +149,9 @@ protected:
     const bool& isPointTopologyDirty() const {return m_pointTopologyDirty;}
 
 public:
-    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points    
+    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points
 
-    Data<bool> d_checkTopology; ///< Bool parameter to activate internal topology checks in several methods 
+    Data<bool> d_checkTopology; ///< Bool parameter to activate internal topology checks in several methods
 
 protected:
     /// Boolean used to know if the topology Data of this container is dirty

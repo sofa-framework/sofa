@@ -60,7 +60,7 @@ class SOFA_SOFAUSERINTERACTION_API SleepController : public core::objectmodel::B
 public:
     SOFA_CLASS(SleepController, core::objectmodel::BaseObject);
 
-	void init() override;
+	void doBaseObjectInit() override;
 	void reset() override;
 	void handleEvent(core::objectmodel::Event*) override;
 

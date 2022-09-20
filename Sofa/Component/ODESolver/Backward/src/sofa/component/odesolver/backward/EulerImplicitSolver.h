@@ -109,7 +109,7 @@ public:
 protected:
     EulerImplicitSolver();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void cleanup() override;
 

@@ -40,12 +40,12 @@ public :
 protected:
     SparseGridMultipleTopology( bool _isVirtual=false );
 public:
-    void init() override
+    void doBaseObjectInit() override
     {
         if(_computeRamifications.getValue())
-            SparseGridRamificationTopology::init(  );
+            SparseGridRamificationTopology::doBaseObjectInit(  );
         else
-            SparseGridTopology::init(  );
+            SparseGridTopology::doBaseObjectInit(  );
     }
 
     void buildAsFinest() override;

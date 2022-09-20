@@ -59,7 +59,7 @@ SkinningMapping<TIn, TOut>::~SkinningMapping ()
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::init()
+void SkinningMapping<TIn, TOut>::doBaseObjectInit()
 {
     unsigned int numChildren = this->toModel->getSize();
     sofa::helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -76,7 +76,7 @@ void SkinningMapping<TIn, TOut>::init()
         updateWeights(); // if not defined by user -> recompute based on euclidean distances
 
     reinit();
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 }
 
 template <class TIn, class TOut>

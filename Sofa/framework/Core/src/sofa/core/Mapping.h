@@ -168,7 +168,7 @@ public:
     }
 
     /// Propagate positions and velocities to the output
-    void init() override;
+    void doBaseObjectInit() override;
 
     ///<TO REMOVE>  FF:why would we remove this, is there any alternative function ?
     // Useful ?

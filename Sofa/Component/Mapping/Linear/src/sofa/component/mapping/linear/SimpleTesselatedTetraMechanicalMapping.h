@@ -70,7 +70,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void apply(const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn) override;
 

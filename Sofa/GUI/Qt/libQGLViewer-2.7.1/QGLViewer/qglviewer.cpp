@@ -3785,7 +3785,7 @@ syntax error.
 
 A manipulatedFrame() should be defined \e before calling this method, so that
 its state can be restored. Initialization code put \e after this function will
-override saved values: \code void Viewer::init()
+override saved values: \code void Viewer::doBaseObjectInit()
 {
 // Default initialization goes here (including the declaration of a possible
 manipulatedFrame).

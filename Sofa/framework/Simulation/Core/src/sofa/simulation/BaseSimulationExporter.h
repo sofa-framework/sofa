@@ -56,7 +56,7 @@ public:
     Data<bool>         d_isEnabled; ///< Enable or disable the component. (default=true)
 
     /// Don't override this function anymore. But you can do you init in the doInit.
-    void init() final;
+    void doBaseObjectInit() final;
 
     /// Don't override this function anymore. But you can do your reinit in the doReInit.
     void reinit() final ;

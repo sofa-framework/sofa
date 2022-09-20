@@ -54,7 +54,7 @@ protected:
     FixedRotationConstraint();
     ~FixedRotationConstraint() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;

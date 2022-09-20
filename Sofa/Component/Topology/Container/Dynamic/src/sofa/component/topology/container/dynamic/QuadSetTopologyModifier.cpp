@@ -39,9 +39,9 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
 
-void QuadSetTopologyModifier::init()
+void QuadSetTopologyModifier::doBaseObjectInit()
 {
-    EdgeSetTopologyModifier::init();
+    EdgeSetTopologyModifier::doBaseObjectInit();
     this->getContext()->get(m_container);
 }
 

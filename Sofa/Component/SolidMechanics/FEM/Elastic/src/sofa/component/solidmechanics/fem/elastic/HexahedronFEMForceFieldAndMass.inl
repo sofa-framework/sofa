@@ -39,11 +39,12 @@ HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
+void HexahedronFEMForceFieldAndMass<DataTypes>::doBaseObjectInit( )
 {
     if(this->_alreadyInit)return;
-    HexahedronFEMForceFieldT::init();
-    MassT::init();
+    //TOD damienmarchal refactor-init
+    //HexahedronFEMForceFieldT::doBaseObjectInit();
+    //MassT::doBaseObjectInit();
 
     _particleMasses.resize( this->_initialPoints.getValue().size() );
 

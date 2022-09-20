@@ -42,7 +42,7 @@ public:
 
     simulation::Node *context;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     virtual void computeForce(SReal x, SReal y, SReal z,
                               SReal u, SReal v, SReal w,

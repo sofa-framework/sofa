@@ -41,12 +41,12 @@ BlenderExporter<T>::BlenderExporter()
 }
 
 template<class T>
-void BlenderExporter<T>::init()
+void BlenderExporter<T>::doBaseObjectInit()
 {
     mmodel = getContext()->template get<DataType>(sofa::core::objectmodel::BaseContext::SearchDirection::Local);
     if(mmodel == nullptr)
         msg_error()<<"Initialization failed!";
-    Inherit::init();
+    Inherit::doBaseObjectInit();
     // if hair type simulation, create an additional information frame
     if(simulationType.getValue()==Hair)
     {

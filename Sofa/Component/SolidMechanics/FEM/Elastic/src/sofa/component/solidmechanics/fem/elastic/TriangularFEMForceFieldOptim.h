@@ -102,7 +102,7 @@ public:
     Real getPoisson() { return d_poisson.getValue(); }
     Real getYoung() { return d_young.getValue(); }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;

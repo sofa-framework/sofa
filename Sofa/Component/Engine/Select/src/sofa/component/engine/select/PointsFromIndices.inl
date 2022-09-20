@@ -38,7 +38,7 @@ PointsFromIndices<DataTypes>::PointsFromIndices()
 }
 
 template <class DataTypes>
-void PointsFromIndices<DataTypes>::init()
+void PointsFromIndices<DataTypes>::doBaseObjectInit()
 {
     if (f_X.getValue().empty())
     {

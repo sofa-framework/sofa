@@ -119,9 +119,9 @@ UncoupledConstraintCorrection<DataTypes>::~UncoupledConstraintCorrection()
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::init()
+void UncoupledConstraintCorrection<DataTypes>::doBaseObjectInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 

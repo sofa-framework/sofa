@@ -287,7 +287,7 @@ struct PlaneForceField_test : public BaseSimulationTest
 
         {
             EXPECT_MSG_EMIT(Warning) ;
-            planeff->init() ;
+            planeff->doBaseObjectInit() ;
         }
 
         return true;

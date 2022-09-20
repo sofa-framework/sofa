@@ -100,7 +100,7 @@ void MergeMeshes<DataTypes>::parseFields ( const std::map<std::string,std::strin
 }
 
 template <class DataTypes>
-void MergeMeshes<DataTypes>::init()
+void MergeMeshes<DataTypes>::doBaseObjectInit()
 {
     addInput(&f_nbMeshes);
     createInputMeshesData();

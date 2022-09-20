@@ -43,7 +43,7 @@
 namespace sofa::component::controller
 {
 
-void ArticulatedHierarchyBVHController::init()
+void ArticulatedHierarchyBVHController::doBaseObjectInit()
 {
     sofa::simulation::Node* curNode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     if (curNode)

@@ -69,7 +69,7 @@ public:
     /**
      * @brief Init method called during the scene graph initialization.
      */
-    virtual void init() override;
+    virtual void doBaseObjectInit() override;
 
     /**
      * @brief Reset to initial state

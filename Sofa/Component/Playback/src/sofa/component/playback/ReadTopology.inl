@@ -59,7 +59,7 @@ ReadTopology::~ReadTopology()
 #endif
 }
 
-void ReadTopology::init()
+void ReadTopology::doBaseObjectInit()
 {
 
     reset();

@@ -96,9 +96,9 @@ void CylinderCollisionModel<DataTypes>::resize(Size size)
 }
 
 template<class DataTypes>
-void CylinderCollisionModel<DataTypes>::init()
+void CylinderCollisionModel<DataTypes>::doBaseObjectInit()
 {
-    this->CollisionModel::init();
+    this->CollisionModel::doBaseObjectInit();
     m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     if (m_mstate==nullptr)
     {

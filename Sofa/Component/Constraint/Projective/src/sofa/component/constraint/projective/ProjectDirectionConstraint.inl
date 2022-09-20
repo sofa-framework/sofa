@@ -78,9 +78,9 @@ void ProjectDirectionConstraint<DataTypes>::removeConstraint(Index index)
 
 
 template <class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::init()
+void ProjectDirectionConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

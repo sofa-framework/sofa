@@ -29,13 +29,13 @@ namespace sofa::component::mapping::linear
 
 
 template<class TIn, class TOut>
-void IdentityMapping<TIn, TOut>::init()
+void IdentityMapping<TIn, TOut>::doBaseObjectInit()
 {
     const auto n = this->fromModel->getSize();
 
     this->toModel->resize( n );
 
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
 
     // build J

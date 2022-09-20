@@ -134,7 +134,7 @@ protected:
 
 public:
     // ForceField api
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;

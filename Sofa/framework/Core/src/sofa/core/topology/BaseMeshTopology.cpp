@@ -244,7 +244,7 @@ const sofa::type::vector<BaseMeshTopology::PointID>& BaseMeshTopology::getPoints
 }
 
 
-void BaseMeshTopology::init()
+void BaseMeshTopology::doBaseObjectInit()
 {
     if (!fileTopology.getValue().empty())
     {

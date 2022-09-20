@@ -70,7 +70,7 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
 
 
 template<class DataTypes>
-void Distances< DataTypes >::init()
+void Distances< DataTypes >::doBaseObjectInit()
 {
     if ( !hexaContainer ) return;
     hexaContainer->getContext()->get ( hexaGeoAlgo );

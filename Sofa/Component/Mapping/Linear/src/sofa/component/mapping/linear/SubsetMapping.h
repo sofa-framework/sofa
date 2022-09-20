@@ -103,7 +103,7 @@ public:
 
     int addPoint(Index index);
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     virtual ~SubsetMapping();
 

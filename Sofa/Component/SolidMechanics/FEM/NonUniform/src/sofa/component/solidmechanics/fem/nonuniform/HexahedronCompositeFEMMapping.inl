@@ -33,7 +33,7 @@ namespace sofa::component::solidmechanics::fem::nonuniform
 {
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::init()
+void HexahedronCompositeFEMMapping<BasicMapping>::doBaseObjectInit()
 {
     using namespace sofa::defaulttype;
 
@@ -133,7 +133,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
                 _finestBarycentricCoord[i] = std::pair<Index, type::fixed_array<Real, 8> >(elementIdx, baryCoefs);
             }
             else
-                msg_error() << "HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex " << _p0[i];
+                msg_error() << "HexahedronCompositeFEMMapping::doBaseObjectInit()   error finding the corresponding finest cube of vertex " << _p0[i];
         }
     }
 
@@ -175,7 +175,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 // 	}
 
 
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
 }
 

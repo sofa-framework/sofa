@@ -53,7 +53,7 @@ void MergeVectors<VecT>::parseFields( const std::map<std::string,std::string*>& 
 }
 
 template <class VecT>
-void MergeVectors<VecT>::init()
+void MergeVectors<VecT>::doBaseObjectInit()
 {
     addInput(&f_nbInputs);
 

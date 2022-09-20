@@ -55,7 +55,7 @@ protected:
     ~QuadBendingSprings();
 public:
     /// Searches triangle topology and creates the bending springs
-    void init() override;
+    void doBaseObjectInit() override;
 
     void draw(const core::visual::VisualParams*) override {}
 

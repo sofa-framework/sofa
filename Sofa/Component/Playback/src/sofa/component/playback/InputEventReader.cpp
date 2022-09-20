@@ -54,7 +54,7 @@ InputEventReader::InputEventReader()
     , oldPedalState(NO_PEDAL)
 {
 }
-void InputEventReader::init()
+void InputEventReader::doBaseObjectInit()
 {
 #ifdef __linux__
     if((fd = open(filename.getFullPath().c_str(), O_RDONLY)) < 0)

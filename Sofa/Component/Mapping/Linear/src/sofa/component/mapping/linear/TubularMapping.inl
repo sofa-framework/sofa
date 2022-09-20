@@ -36,7 +36,7 @@ TubularMapping<TIn, TOut>::TubularMapping ( )
 {
 }
 template <class TIn, class TOut>
-void TubularMapping<TIn, TOut>::init()
+void TubularMapping<TIn, TOut>::doBaseObjectInit()
 {
     if (!m_radius.isSet())
     {
@@ -46,7 +46,7 @@ void TubularMapping<TIn, TOut>::init()
     }
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
 }
 

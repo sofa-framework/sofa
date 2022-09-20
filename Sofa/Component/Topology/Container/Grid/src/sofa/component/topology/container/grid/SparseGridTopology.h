@@ -63,7 +63,7 @@ public:
     static const float WEIGHT27[8][27];
     static const Index cornerIndicesFromFineToCoarse[8][8];
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// building from a mesh file
     virtual void buildAsFinest();
@@ -299,13 +299,13 @@ public :
 
     const SeqHexahedra& getHexahedra() override
     {
-        if( !_alreadyInit ) init();
+        if( !_alreadyInit ) doBaseObjectInit();
         return container::constant::MeshTopology::getHexahedra();
     }
 
     Size getNbPoints() const override
     {
-        if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
+        if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->doBaseObjectInit();
         return container::constant::MeshTopology::getNbPoints();
     }
 

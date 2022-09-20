@@ -41,7 +41,7 @@ public:
     ~GenerateRigidMass() override;
 
     /// Initialization method called at graph modification, during bottom-up traversal.
-    void init() override;
+    void doBaseObjectInit() override;
     /// Update method called when variables used in precomputation are modified.
     void reinit() override;
     /// Update the output values

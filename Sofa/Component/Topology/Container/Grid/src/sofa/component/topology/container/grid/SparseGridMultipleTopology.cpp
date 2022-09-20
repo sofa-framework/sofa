@@ -247,7 +247,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     sgmt->_dataStiffnessCoefs.setValue(this->_dataStiffnessCoefs.getValue());
     sgmt->_dataMassCoefs.setValue(this->_dataMassCoefs.getValue());
     sgmt->_finestConnectivity.setValue( _finestConnectivity.getValue() );
-    _virtualFinerLevels[0]->init();
+    _virtualFinerLevels[0]->doBaseObjectInit();
 
     std::stringstream tmpStr;
     tmpStr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
@@ -261,7 +261,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         this->addSlave(_virtualFinerLevels[i]);
         _virtualFinerLevels[i]->setName( nameg2.str().c_str() );
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
-        _virtualFinerLevels[i]->init();
+        _virtualFinerLevels[i]->doBaseObjectInit();
 
         tmpStr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }

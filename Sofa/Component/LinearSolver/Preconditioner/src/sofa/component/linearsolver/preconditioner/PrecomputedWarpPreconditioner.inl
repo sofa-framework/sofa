@@ -642,7 +642,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(linearalgebra::Bas
 }
 
 template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::init()
+void PrecomputedWarpPreconditioner<TDataTypes>::doBaseObjectInit()
 {
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
     if (node != nullptr) mstate = node->get<MState> ();

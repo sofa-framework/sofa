@@ -57,7 +57,7 @@ MultilevelHexahedronSetTopologyContainer::~MultilevelHexahedronSetTopologyContai
     clear();
 }
 
-void MultilevelHexahedronSetTopologyContainer::init()
+void MultilevelHexahedronSetTopologyContainer::doBaseObjectInit()
 {
     const Vec3i& _fineResolution = fineResolution.getValue();
 
@@ -95,7 +95,7 @@ void MultilevelHexahedronSetTopologyContainer::init()
         _fineComponentInRegularGrid[id] = comp;
     }
 
-    HexahedronSetTopologyContainer::init();
+    HexahedronSetTopologyContainer::doBaseObjectInit();
 
     _coarseComponents.createTopologyHandler(this);
     _fineComponents.createTopologyHandler(this);

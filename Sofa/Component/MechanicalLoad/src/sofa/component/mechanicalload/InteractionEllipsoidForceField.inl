@@ -54,9 +54,9 @@ namespace sofa::component::mechanicalload
 
 
 template<class DataTypes1, class DataTypes2>
-void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::init()
+void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
     vars.pos6D = this->mstate2->read(core::VecCoordId::position())->getValue()[object2_dof_index.getValue()];
     if(object2_invert.getValue())
         vars.pos6D = DataTypes2::inverse(vars.pos6D);

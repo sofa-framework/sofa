@@ -172,7 +172,7 @@ public:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
     void bwdInit() override;
     void reinit() override;
     virtual void reinitBeam(Index i);

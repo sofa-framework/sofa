@@ -51,7 +51,7 @@ void TriangleSetTopologyContainer::addTriangle(Index a, Index b, Index c )
     if (c >= getNbPoints()) setNbPoints(c+1);
 }
 
-void TriangleSetTopologyContainer::init()
+void TriangleSetTopologyContainer::doBaseObjectInit()
 {
     helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 

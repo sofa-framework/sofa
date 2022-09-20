@@ -86,9 +86,9 @@ void AffineMovementConstraint<DataTypes>::removeConstraint(Index index)
 
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::init()
+void AffineMovementConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

@@ -36,7 +36,7 @@ class SOFA_COMPONENT_HAPTICS_API NullForceFeedbackT : public MechanicalStateForc
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE(NullForceFeedbackT,TDataTypes),MechanicalStateForceFeedback<TDataTypes>);
-    void init() override {this->ForceFeedback::init();}
+    void doBaseObjectInit() override {this->ForceFeedback::doBaseObjectInit();}
 
     void computeForce(SReal, SReal, SReal, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz) override
     {

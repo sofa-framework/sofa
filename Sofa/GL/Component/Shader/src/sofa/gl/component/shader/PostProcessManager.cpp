@@ -53,7 +53,7 @@ PostProcessManager::~PostProcessManager()
 
 
 
-void PostProcessManager::init()
+void PostProcessManager::doBaseObjectInit()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     dofShader = context->core::objectmodel::BaseContext::get<sofa::gl::component::shader::OglShader>();

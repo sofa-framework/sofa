@@ -52,9 +52,9 @@ FillReducingOrdering<DataTypes>::FillReducingOrdering()
 }
 
 template <class DataTypes>
-void FillReducingOrdering<DataTypes>::init()
+void FillReducingOrdering<DataTypes>::doBaseObjectInit()
 {
-    DataEngine::init();
+    DataEngine::doBaseObjectInit();
 
     if (!l_mstate)
     {

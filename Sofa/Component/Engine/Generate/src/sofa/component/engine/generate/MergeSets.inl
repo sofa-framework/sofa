@@ -47,7 +47,7 @@ MergeSets<T>::~MergeSets()
 }
 
 template <class T>
-void MergeSets<T>::init()
+void MergeSets<T>::doBaseObjectInit()
 {
     setDirtyValue();
 }

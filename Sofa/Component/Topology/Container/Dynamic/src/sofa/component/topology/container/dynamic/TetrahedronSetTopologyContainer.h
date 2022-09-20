@@ -61,7 +61,7 @@ protected:
 
     ~TetrahedronSetTopologyContainer() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     //add removed tetrahedron index
     void addRemovedTetraIndex(sofa::type::vector< TetrahedronID >& tetrahedra);

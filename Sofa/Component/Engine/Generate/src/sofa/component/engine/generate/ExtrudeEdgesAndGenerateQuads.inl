@@ -52,7 +52,7 @@ ExtrudeEdgesAndGenerateQuads<DataTypes>::ExtrudeEdgesAndGenerateQuads()
 }
 
 template <class DataTypes>
-void ExtrudeEdgesAndGenerateQuads<DataTypes>::init()
+void ExtrudeEdgesAndGenerateQuads<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

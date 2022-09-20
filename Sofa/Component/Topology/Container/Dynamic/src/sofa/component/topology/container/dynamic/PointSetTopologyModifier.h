@@ -54,7 +54,7 @@ protected:
 
     ~PointSetTopologyModifier() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /** \brief Swap points i1 and i2.
     *
@@ -70,15 +70,15 @@ public:
         const sofa::type::vector< PointID >& inv_index,
         const bool renumberDOF = true);
 
-    
+
     /** \brief Add a set of points
-    * 
+    *
     * \sa addPoints
     */
     virtual void addPoints(const sofa::Size nPoints, const bool addDOF = true);
- 
+
     /** \brief Add a set of points
-    * 
+    *
     * \sa addPoints
     */
     virtual void addPoints(const sofa::Size nPoints,
@@ -156,7 +156,7 @@ protected:
     * \sa addPointsWarning
     */
     virtual void addPointsProcess(const sofa::Size nPoints);
-    
+
 
     /** \brief Sends a message to warn that some points are about to be deleted.
     *

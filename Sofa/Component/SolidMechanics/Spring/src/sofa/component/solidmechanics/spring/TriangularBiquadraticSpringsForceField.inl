@@ -148,9 +148,9 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~T
 
 }
 
-template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::init()
+template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
     
     if (l_topology.empty())
     {

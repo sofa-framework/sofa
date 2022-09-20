@@ -296,9 +296,9 @@ FastTriangularBendingSprings<DataTypes>::~FastTriangularBendingSprings()
 
 
 template<class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::init()
+void FastTriangularBendingSprings<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     if (l_topology.empty())
     {

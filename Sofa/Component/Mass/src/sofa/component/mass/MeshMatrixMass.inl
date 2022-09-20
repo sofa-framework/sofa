@@ -987,13 +987,13 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronDestruc
 using sofa::core::topology::TopologyElementType;
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
+void MeshMatrixMass<DataTypes, GeometricalTypes>::doBaseObjectInit()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
     m_massLumpingCoeff = 0.0;
 
-    Inherited::init();
+    Inherited::doBaseObjectInit();
 
     TopologyElementType topoType = checkTopology();
     if(topoType == TopologyElementType::POINT)
@@ -1001,7 +1001,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
         return;
     }
     setMassTopologyType(topoType);
-    Inherited::init();
+    Inherited::doBaseObjectInit();
     initTopologyHandlers(topoType);
 
     massInitialization();

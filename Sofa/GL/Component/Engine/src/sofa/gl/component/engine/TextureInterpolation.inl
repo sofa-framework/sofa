@@ -51,7 +51,7 @@ TextureInterpolation<DataTypes>::TextureInterpolation()
 
 
 template <class DataTypes>
-void TextureInterpolation<DataTypes>::init()
+void TextureInterpolation<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 

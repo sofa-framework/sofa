@@ -63,7 +63,7 @@ WriteTopology::~WriteTopology()
 }
 
 
-void WriteTopology::init()
+void WriteTopology::doBaseObjectInit()
 {
     if (l_topology.empty())
     {

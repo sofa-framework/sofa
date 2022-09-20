@@ -171,12 +171,12 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
 }
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::init()
+void SpringForceField<DataTypes>::doBaseObjectInit()
 {
     // Load
     if (!fileSprings.getValue().empty())
         load(fileSprings.getFullPath().c_str());
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 
     initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
     initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);

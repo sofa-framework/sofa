@@ -39,9 +39,9 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 using namespace sofa::core::topology;
 
-void PointSetTopologyModifier::init()
+void PointSetTopologyModifier::doBaseObjectInit()
 {
-    core::topology::TopologyModifier::init();
+    core::topology::TopologyModifier::doBaseObjectInit();
     this->getContext()->get(m_container);
 }
 

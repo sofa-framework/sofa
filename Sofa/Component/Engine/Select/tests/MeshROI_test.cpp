@@ -149,7 +149,7 @@ struct MeshROI_test : public BaseSimulationTest,
                                                   scene1.size()) ;
         ASSERT_NE(root, nullptr) ;
 
-        root->getChild("node")->getObject("MeshROI")->init();
+        root->getChild("node")->getObject("MeshROI")->doBaseObjectInit();
         EXPECT_EQ(root->getChild("node")->getObject("MeshROI")->findData("box")->getValueString(),"-11.4529 -7.38909 -5.04461 11.4121 8.31288 5.01514");
     }
 

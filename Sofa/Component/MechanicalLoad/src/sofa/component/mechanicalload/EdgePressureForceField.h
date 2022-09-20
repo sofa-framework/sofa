@@ -101,7 +101,7 @@ protected:
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;

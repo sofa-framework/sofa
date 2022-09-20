@@ -132,7 +132,7 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void bwdInit() override;
 
     void createDefaultSprings();

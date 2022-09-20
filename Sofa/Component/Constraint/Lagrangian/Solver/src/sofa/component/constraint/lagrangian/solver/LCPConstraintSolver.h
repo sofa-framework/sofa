@@ -66,7 +66,7 @@ protected:
     */
     ~LCPConstraintSolver() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void cleanup() override;
 

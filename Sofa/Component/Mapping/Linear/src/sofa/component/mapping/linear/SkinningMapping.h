@@ -98,7 +98,7 @@ protected:
     virtual ~SkinningMapping();
     
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     void apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in) override;

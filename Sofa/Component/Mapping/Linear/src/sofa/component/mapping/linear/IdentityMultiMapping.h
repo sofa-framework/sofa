@@ -64,7 +64,7 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override;
     void applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override;

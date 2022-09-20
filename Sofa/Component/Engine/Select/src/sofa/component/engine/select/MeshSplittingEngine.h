@@ -85,7 +85,7 @@ protected:
     ~MeshSplittingEngine() override;
 
 public:
-    void init() override
+    void doBaseObjectInit() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);

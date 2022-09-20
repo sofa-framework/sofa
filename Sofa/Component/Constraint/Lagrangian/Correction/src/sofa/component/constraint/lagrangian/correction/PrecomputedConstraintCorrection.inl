@@ -195,7 +195,7 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     const VecDeriv& v0 = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
 

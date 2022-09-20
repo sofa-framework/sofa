@@ -76,7 +76,7 @@ void OglLabel::parse(BaseObjectDescription *arg)
 
 }
 
-void OglLabel::init()
+void OglLabel::doBaseObjectInit()
 {
     reinit();
 }

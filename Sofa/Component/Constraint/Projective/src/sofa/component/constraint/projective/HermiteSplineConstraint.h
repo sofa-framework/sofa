@@ -84,7 +84,7 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<HermiteSplineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    
+
 protected:
     explicit HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
@@ -103,7 +103,7 @@ public:
     void computeDerivateHermiteCoefs( const Real u, Real &dH00, Real &dH10, Real &dH01, Real &dH11);
 
     /// -- Constraint interface
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
 
@@ -121,7 +121,7 @@ protected:
 };
 
 template <>
-void SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API HermiteSplineConstraint<defaulttype::Rigid3Types>::init();
+void SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API HermiteSplineConstraint<defaulttype::Rigid3Types>::doBaseObjectInit();
 
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)

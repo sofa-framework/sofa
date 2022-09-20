@@ -179,7 +179,7 @@ public:
     }
 
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     ///<TO REMOVE>
     /// Apply the mapping to position and velocity vectors.

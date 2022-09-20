@@ -102,7 +102,7 @@ protected:
 public:
 
     ////////////////////////// Inherited from BaseObject /////////////////////////
-    void init() override;
+    void doBaseObjectInit() override;
     void bwdInit() override;
     void draw(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams*  params, bool /*onlyVisible*/) override;

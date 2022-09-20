@@ -71,9 +71,9 @@ DefaultPipeline::DefaultPipeline()
 typedef simulation::Visitor::ctime_t ctime_t;
 #endif
 
-void DefaultPipeline::init()
+void DefaultPipeline::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if (broadPhaseDetection == nullptr)
     {

@@ -35,7 +35,7 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::init()
+void CenterOfMassMapping<TIn, TOut>::doBaseObjectInit()
 {
     //get the pointer on the input dofs mass
     masses = this->fromModel->getContext()->getMass();
@@ -48,7 +48,7 @@ void CenterOfMassMapping<TIn, TOut>::init()
     for (unsigned int i=0, size = this->fromModel->getSize() ; i< size; i++)
         totalMass += masses->getElementMass(i);
 
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 }
 
 

@@ -77,7 +77,7 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::unspecializedInit()
 {
     /// Do general check of validity for inputs
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     /// Using assert means that the previous lines have check that there is two valid mechanical state.
     assert(this->mstate1);
@@ -89,7 +89,7 @@ void BilateralInteractionConstraint<DataTypes>::unspecializedInit()
 }
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::init()
+void BilateralInteractionConstraint<DataTypes>::doBaseObjectInit()
 {
     unspecializedInit();
 }
@@ -103,7 +103,7 @@ void BilateralInteractionConstraint<DataTypes>::reinit()
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::reset(){
-    init();
+    doBaseObjectInit();
 }
 
 template<class DataTypes>

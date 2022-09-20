@@ -84,7 +84,7 @@ protected:
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     Size getNbPoints() const override;
 
@@ -516,7 +516,7 @@ protected:
      */
     void createHexahedraAroundQuadArray();
 
-    
+
 public:
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns InvalidID if no edge exists
      *
@@ -602,10 +602,10 @@ public:
 
   	/** \ brief returns the topologyType */
     sofa::core::topology::TopologyElementType getTopologyType() const override { return m_upperElementType; }
-  
+
     int revision;
 
-    // To draw the mesh, the topology position must be linked with the mechanical object position 
+    // To draw the mesh, the topology position must be linked with the mechanical object position
     Data< bool > _drawEdges; ///< if true, draw the topology Edges
     Data< bool > _drawTriangles; ///< if true, draw the topology Triangles
     Data< bool > _drawQuads; ///< if true, draw the topology Quads

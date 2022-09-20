@@ -53,7 +53,7 @@ protected:
     DevAngleCollisionMonitor();
     virtual ~DevAngleCollisionMonitor() { };
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void eval() override;
 
     /// Retrieve the associated MechanicalState (First model)

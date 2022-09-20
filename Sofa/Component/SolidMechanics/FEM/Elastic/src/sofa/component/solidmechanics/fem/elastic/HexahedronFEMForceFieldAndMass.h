@@ -63,7 +63,7 @@ protected:
     HexahedronFEMForceFieldAndMass();
 public:
 
-    void init( ) override;
+    void doBaseObjectInit( ) override;
     void reinit( ) override;
 
     virtual void computeElementMasses( ); ///< compute the mass matrices

@@ -31,7 +31,7 @@ ForceFeedback::ForceFeedback():
 {
 }
 
-void ForceFeedback::init()
+void ForceFeedback::doBaseObjectInit()
 {
     context = sofa::simulation::node::getNodeFrom(getContext());
 }

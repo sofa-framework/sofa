@@ -111,7 +111,7 @@ MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
 }
 
 template<class DataTypes1, class DataTypes2>
-void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
+void MechanicalMatrixMapper<DataTypes1, DataTypes2>::doBaseObjectInit()
 {
     if(this->d_componentState.getValue() == ComponentState::Valid){
         msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
@@ -124,7 +124,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
         return;
     }
 
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if (mstate1.get() == nullptr || mstate2.get() == nullptr)
     {

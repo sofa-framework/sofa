@@ -102,7 +102,7 @@ protected:
     ~OglShader() override;
 public:
     void initVisual() override;
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void drawVisual(const core::visual::VisualParams* vparams) override;
     void updateVisual() override;
@@ -188,7 +188,7 @@ protected:
 public:
     OglShaderElement();
     ~OglShaderElement() override {}
-    void init() override;
+    void doBaseObjectInit() override;
     const std::string getId() const {return id.getValue();}
     void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();}
     void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();}

@@ -52,7 +52,7 @@ private:
     Data< type::fixed_array<sofa::type::Vector3,2> > box;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     void beginBroadPhase() override;

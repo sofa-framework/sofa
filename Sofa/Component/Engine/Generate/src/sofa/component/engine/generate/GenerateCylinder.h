@@ -57,7 +57,7 @@ public:
 
     ~GenerateCylinder() override {}
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

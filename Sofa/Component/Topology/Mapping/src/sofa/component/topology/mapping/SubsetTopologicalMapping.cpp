@@ -111,9 +111,9 @@ template<class T, class M> T apply_map(const T& v, const M& m)
     return res;
 }
 
-void SubsetTopologicalMapping::init()
+void SubsetTopologicalMapping::doBaseObjectInit()
 {
-    sofa::core::topology::TopologicalMapping::init();
+    sofa::core::topology::TopologicalMapping::doBaseObjectInit();
     this->updateLinks();
     if (fromModel && toModel)
     {
@@ -345,7 +345,7 @@ void SubsetTopologicalMapping::init()
             msg_info() << " HE: "<<fromModel->getNbHexahedra() << "->" << toModel->getNbHexahedra() << "/" << (fromModel->getNbHexahedra() - toModel->getNbHexahedra());
 
         // Need to fully init the target topology
-        toModel->init();
+        toModel->doBaseObjectInit();
     }
 }
 

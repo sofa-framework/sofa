@@ -62,7 +62,7 @@ protected:
     FillReducingOrdering();
     ~FillReducingOrdering() override {}
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void reorderByEigen();
     void doUpdate() override;

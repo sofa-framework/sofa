@@ -834,7 +834,7 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 }
 
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::init()
+void DiagonalMass<DataTypes, GeometricalTypes>::doBaseObjectInit()
 {
     this->d_componentState.setValue(ComponentState::Invalid);
 
@@ -846,11 +846,11 @@ void DiagonalMass<DataTypes, GeometricalTypes>::init()
         msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
                       << "the topology won't be used to compute the mass" << msgendl
                       << "the update, the coherency and the tracking of mass information data are disable (listening = false)";
-        Inherited::init();
+        Inherited::doBaseObjectInit();
     }
     else
     {
-        Inherited::init();
+        Inherited::doBaseObjectInit();
         if(!checkTopology())
         {
             return;

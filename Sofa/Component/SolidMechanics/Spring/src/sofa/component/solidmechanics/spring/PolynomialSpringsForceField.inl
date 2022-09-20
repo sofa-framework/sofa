@@ -64,7 +64,7 @@ void PolynomialSpringsForceField<DataTypes>::bwdInit()
 {
     sofa::helper::ReadAccessor< Data<VecReal> > zeroLength = d_zeroLength;
 
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 
     if (d_polynomialStiffness.getValue().empty())
     {

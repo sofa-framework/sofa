@@ -39,10 +39,10 @@ using namespace std;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-void TriangleSetTopologyModifier::init()
+void TriangleSetTopologyModifier::doBaseObjectInit()
 {
 
-    EdgeSetTopologyModifier::init();
+    EdgeSetTopologyModifier::doBaseObjectInit();
     this->getContext()->get(m_container);
 }
 

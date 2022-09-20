@@ -55,7 +55,7 @@ public:
     /// Assign the field values stored in the given map of name -> value pairs
     void parseFields( const std::map<std::string,std::string*>& str ) override;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

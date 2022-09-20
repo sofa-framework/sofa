@@ -52,7 +52,7 @@ VariationalSymplecticSolver::VariationalSymplecticSolver()
     cpt=0;
 }
 
-void VariationalSymplecticSolver::init()
+void VariationalSymplecticSolver::doBaseObjectInit()
 {
     if (!this->getTags().empty())
     {
@@ -64,7 +64,7 @@ void VariationalSymplecticSolver::init()
 
         msg_info() << "Responsible for the following objects with tags " << this->getTags() << " :" << tmp.str();
     }
-    sofa::core::behavior::OdeSolver::init();
+    sofa::core::behavior::OdeSolver::doBaseObjectInit();
     energies.open((f_fileName.getValue()).c_str(),std::ios::out);
 }
 

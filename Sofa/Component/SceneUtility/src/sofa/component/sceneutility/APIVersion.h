@@ -37,7 +37,7 @@ public:
     SOFA_CLASS(APIVersion, BaseObject);
 
     const std::string& getApiLevel() ;
-    void init() override ;
+    void doBaseObjectInit() override ;
 
 protected:
     APIVersion() ;

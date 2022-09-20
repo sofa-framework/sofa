@@ -47,7 +47,7 @@ MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
 
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::init()
+void MeshBarycentricMapperEngine<DataTypes>::doBaseObjectInit()
 {
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 

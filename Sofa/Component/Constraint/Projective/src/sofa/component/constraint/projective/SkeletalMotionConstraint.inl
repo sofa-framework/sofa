@@ -50,10 +50,10 @@ SkeletalMotionConstraint<DataTypes>::~SkeletalMotionConstraint()
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::init()
+void SkeletalMotionConstraint<DataTypes>::doBaseObjectInit()
 {
     nextPositions.resize(skeletonBones.getValue().size());
-    sofa::core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    sofa::core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 }
 
 template <class DataTypes>

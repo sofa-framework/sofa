@@ -98,7 +98,7 @@ void DistanceFromTargetMapping<TIn, TOut>::clear()
 
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::init()
+void DistanceFromTargetMapping<TIn, TOut>::doBaseObjectInit()
 {
     assert( f_indices.getValue().size()==f_targetPositions.getValue().size()) ;
 
@@ -118,7 +118,7 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
-    this->Inherit::init();  // applies the mapping, so after the Data init
+    this->Inherit::doBaseObjectInit();  // applies the mapping, so after the Data init
 }
 
 template <class TIn, class TOut>

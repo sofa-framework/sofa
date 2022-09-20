@@ -434,7 +434,7 @@ void MathOp<VecT>::parseFields ( const std::map<std::string,std::string*>& str )
 }
 
 template <class VecT>
-void MathOp<VecT>::init()
+void MathOp<VecT>::doBaseObjectInit()
 {
     addInput(&f_nbInputs);
     addInput(&f_op);

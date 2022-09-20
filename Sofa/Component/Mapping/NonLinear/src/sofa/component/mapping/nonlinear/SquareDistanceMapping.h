@@ -93,7 +93,7 @@ public:
     /// Link to be set to the topology container in the component graph. 
     SingleLink<SquareDistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     using Inherit::apply;
 

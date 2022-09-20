@@ -77,7 +77,7 @@ PlaneROI<DataTypes>::PlaneROI()
 }
 
 template <class DataTypes>
-void PlaneROI<DataTypes>::init()
+void PlaneROI<DataTypes>::doBaseObjectInit()
 {
     using sofa::core::objectmodel::BaseData;
 

@@ -66,7 +66,7 @@ LightManager::~LightManager()
     //restoreDefaultLight();
 }
 
-void LightManager::init()
+void LightManager::doBaseObjectInit()
 {
     BaseContext* context = this->getContext();
     context->get<OglShadowShader, type::vector<OglShadowShader::SPtr> >(&m_shadowShaders, BaseContext::SearchRoot);

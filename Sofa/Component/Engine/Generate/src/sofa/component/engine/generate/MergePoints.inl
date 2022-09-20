@@ -45,7 +45,7 @@ MergePoints<DataTypes>::MergePoints()
 }
 
 template <class DataTypes>
-void MergePoints<DataTypes>::init()
+void MergePoints<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

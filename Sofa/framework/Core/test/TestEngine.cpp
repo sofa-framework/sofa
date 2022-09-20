@@ -53,7 +53,7 @@ TestEngine::TestEngine()
     addOutput(&f_result);
 }
 
-void TestEngine::init()
+void TestEngine::doBaseObjectInit()
 {
     setDirtyValue();
 }

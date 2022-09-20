@@ -54,9 +54,9 @@ TriangleModelInRegularGrid::~TriangleModelInRegularGrid()
 }
 
 
-void TriangleModelInRegularGrid::init()
+void TriangleModelInRegularGrid::doBaseObjectInit()
 {
-    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::init();
+    TriangleCollisionModel<sofa::defaulttype::Vec3Types>::doBaseObjectInit();
 
     _topology = this->getContext()->getMeshTopology();
     m_mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());

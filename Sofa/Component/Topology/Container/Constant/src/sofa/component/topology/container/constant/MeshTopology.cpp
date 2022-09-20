@@ -529,10 +529,10 @@ void MeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     Inherit1::parse(arg);
 }
 
-void MeshTopology::init()
+void MeshTopology::doBaseObjectInit()
 {
 
-    BaseMeshTopology::init();
+    BaseMeshTopology::doBaseObjectInit();
     if (nbPoints==0)
     {
         // looking for upper topology

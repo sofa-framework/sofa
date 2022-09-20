@@ -220,9 +220,9 @@ AttachConstraint<DataTypes>::~AttachConstraint()
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::init()
+void AttachConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
     reinit();
 }
 

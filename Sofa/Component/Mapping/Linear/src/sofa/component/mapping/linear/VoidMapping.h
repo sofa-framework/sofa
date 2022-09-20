@@ -39,7 +39,7 @@ public:
     typedef sofa::core::behavior::BaseMechanicalState In;
     typedef sofa::core::behavior::BaseMechanicalState Out;
 
-    void init() override
+    void doBaseObjectInit() override
     {
         fromModel = dynamic_cast<In*>(this->getContext()->getMechanicalState());
         toModel = dynamic_cast<Out*>(this->getContext()->getMechanicalState());

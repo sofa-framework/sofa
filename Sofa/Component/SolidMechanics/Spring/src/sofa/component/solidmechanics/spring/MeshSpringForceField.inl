@@ -100,7 +100,7 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, 
 }
 
 template<class DataTypes>
-void MeshSpringForceField<DataTypes>::init()
+void MeshSpringForceField<DataTypes>::doBaseObjectInit()
 {
     StiffSpringForceField<DataTypes>::clear();
     if(!(mstate1) || !(mstate2))
@@ -206,7 +206,7 @@ void MeshSpringForceField<DataTypes>::init()
         }
     }
 
-    StiffSpringForceField<DataTypes>::init();
+    StiffSpringForceField<DataTypes>::doBaseObjectInit();
 }
 
 

@@ -60,7 +60,7 @@ protected:
 
     virtual ~MappedObject();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     Data<VecCoord> f_X; ///< position vector
     Data<VecDeriv> f_V; ///< velocity vector

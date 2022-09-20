@@ -120,9 +120,9 @@ void PartialLinearMovementConstraint<DataTypes>::addKeyMovement(Real time, Deriv
 
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::init()
+void PartialLinearMovementConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

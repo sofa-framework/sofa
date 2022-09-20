@@ -52,9 +52,9 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
 }
 
 template<class TMatrix, class TVector>
-void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
+void ShewchukPCGLinearSolver<TMatrix,TVector>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     // Find linear solvers
     if (l_preconditioner.empty())

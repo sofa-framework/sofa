@@ -99,7 +99,7 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
 
 
 template <class DataTypes>
-void HexahedronFEMForceField<DataTypes>::init()
+void HexahedronFEMForceField<DataTypes>::doBaseObjectInit()
 {
     if (_alreadyInit)
     {
@@ -107,7 +107,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     }
     _alreadyInit=true;
 
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

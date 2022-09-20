@@ -58,7 +58,7 @@ protected:
 
     ~ProximityROI() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

@@ -70,7 +70,7 @@ public:
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     using Inherit::apply;
 

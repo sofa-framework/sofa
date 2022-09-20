@@ -63,7 +63,7 @@ GenerateRigidMass<DataTypes,MassType>::~GenerateRigidMass()
 }
 
 template <class DataTypes, class MassType>
-void  GenerateRigidMass<DataTypes, MassType>::init()
+void  GenerateRigidMass<DataTypes, MassType>::doBaseObjectInit()
 {
     setDirtyValue();
 

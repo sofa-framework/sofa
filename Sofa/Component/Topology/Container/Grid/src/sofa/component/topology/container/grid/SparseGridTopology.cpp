@@ -108,7 +108,7 @@ SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool 
 }
 
 
-void SparseGridTopology::init()
+void SparseGridTopology::doBaseObjectInit()
 {
     if(_alreadyInit) return;
     _alreadyInit = true;
@@ -1235,7 +1235,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
     else
         _virtualFinerLevels[0]->load(fileTopology.c_str());
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
-    _virtualFinerLevels[0]->init();
+    _virtualFinerLevels[0]->doBaseObjectInit();
 
     dmsg_info()<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
     dmsg_info()<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
@@ -1247,7 +1247,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1].get());
 
-        _virtualFinerLevels[i]->init();
+        _virtualFinerLevels[i]->doBaseObjectInit();
 
         dmsg_info()<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }

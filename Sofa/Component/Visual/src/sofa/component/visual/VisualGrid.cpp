@@ -70,9 +70,9 @@ void VisualGrid::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 }
 
 
-void VisualGrid::init()
+void VisualGrid::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
     updateVisual();
 
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);

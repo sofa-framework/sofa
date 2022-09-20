@@ -205,7 +205,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     }
 }
 
-void ArticulatedHierarchyContainer::init ()
+void ArticulatedHierarchyContainer::doBaseObjectInit ()
 {
     simulation::Node* context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 

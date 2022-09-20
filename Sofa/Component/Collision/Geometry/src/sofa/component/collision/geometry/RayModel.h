@@ -64,7 +64,7 @@ public:
 protected:
     RayCollisionModel(SReal defaultLength=1);
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     // -- CollisionModel interface
     void resize(Size size) override;

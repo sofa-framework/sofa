@@ -38,7 +38,7 @@ StopperConstraint<DataTypes>::StopperConstraint(MechanicalState* object)
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::init()
+void StopperConstraint<DataTypes>::doBaseObjectInit()
 {
     this->mstate = dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState());
     assert(this->mstate);

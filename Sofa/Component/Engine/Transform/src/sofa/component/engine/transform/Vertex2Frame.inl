@@ -51,7 +51,7 @@ Vertex2Frame<DataTypes>::Vertex2Frame():
 }
 
 template <class DataTypes>
-void Vertex2Frame<DataTypes>::init()
+void Vertex2Frame<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

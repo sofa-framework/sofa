@@ -75,7 +75,7 @@ ValuesFromPositions<DataTypes>::ValuesFromPositions()
 }
 
 template <class DataTypes>
-void ValuesFromPositions<DataTypes>::init()
+void ValuesFromPositions<DataTypes>::doBaseObjectInit()
 {
     using sofa::core::objectmodel::BaseData;
     using sofa::core::topology::BaseMeshTopology;

@@ -67,7 +67,7 @@ protected:
     ShewchukPCGLinearSolver();
 public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
-    void init() override;
+    void doBaseObjectInit() override;
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
 
 private :

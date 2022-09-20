@@ -51,7 +51,7 @@ SimpleTesselatedHexaTopologicalMapping::SimpleTesselatedHexaTopologicalMapping()
 {
 }
 
-void SimpleTesselatedHexaTopologicalMapping::init()
+void SimpleTesselatedHexaTopologicalMapping::doBaseObjectInit()
 {
     if(fromModel)
     {
@@ -324,7 +324,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
             }
 
             // Need to fully init the target topology
-            toModel->init();
+            toModel->doBaseObjectInit();
         }
     }
 }

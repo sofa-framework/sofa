@@ -63,9 +63,9 @@ TriangularFEMForceFieldOptim<DataTypes>::~TriangularFEMForceFieldOptim()
 // --- Initialization stage
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::init()
+void TriangularFEMForceFieldOptim<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     if (l_topology.empty())
     {

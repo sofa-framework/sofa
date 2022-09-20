@@ -62,7 +62,7 @@ public:
     virtual void setNode( simulation::Node* );
 
     /// Set the simulation node to the local context if not specified previously
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// perform one animation step
     void step(const sofa::core::ExecParams* params, SReal dt) override;

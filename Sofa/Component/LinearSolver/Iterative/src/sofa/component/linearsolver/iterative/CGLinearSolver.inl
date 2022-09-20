@@ -47,9 +47,9 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
 
 /// Initialization function checking input Data
 template<class TMatrix, class TVector>
-void CGLinearSolver<TMatrix,TVector>::init()
+void CGLinearSolver<TMatrix,TVector>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if(d_tolerance.getValue() < 0.0)
     {

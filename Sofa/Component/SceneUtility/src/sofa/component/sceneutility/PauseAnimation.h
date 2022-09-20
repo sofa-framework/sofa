@@ -42,7 +42,7 @@ protected:
     PauseAnimation ();
     ~PauseAnimation () override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     virtual bool isPaused() = 0;
 

@@ -97,9 +97,9 @@ TaitSurfacePressureForceField<DataTypes>::~TaitSurfacePressureForceField()
 }
 
 template <class DataTypes>
-void TaitSurfacePressureForceField<DataTypes>::init()
+void TaitSurfacePressureForceField<DataTypes>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if (l_topology.empty())
     {

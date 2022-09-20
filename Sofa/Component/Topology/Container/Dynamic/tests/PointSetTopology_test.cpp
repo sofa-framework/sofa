@@ -43,7 +43,7 @@ TEST( PointSetTopology_test, checkPointSetTopologyInitialization )
     initPos.resize( 50 );
     pointContainer->d_initPoints.setValue( initPos );
 
-    pointContainer->init();
+    pointContainer->doBaseObjectInit();
 
     EXPECT_EQ( 50, pointContainer->getNbPoints() );
 }

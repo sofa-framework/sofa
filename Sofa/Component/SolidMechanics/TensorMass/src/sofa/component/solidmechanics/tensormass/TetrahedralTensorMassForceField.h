@@ -118,7 +118,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initNeighbourhoodPoints();
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;

@@ -64,7 +64,7 @@ Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 }
 
 
-void Triangle2EdgeTopologicalMapping::init()
+void Triangle2EdgeTopologicalMapping::doBaseObjectInit()
 {
     // recheck models
     bool modelsOk = true;
@@ -122,7 +122,7 @@ void Triangle2EdgeTopologicalMapping::init()
     Loc2GlobDataVec.endEdit();
 
     // Need to fully init the target topology
-    toModel->init();
+    toModel->doBaseObjectInit();
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }

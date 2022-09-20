@@ -243,9 +243,9 @@ TetrahedralTensorMassForceField<DataTypes>::~TetrahedralTensorMassForceField()
 }
 
 template <class DataTypes> void 
-TetrahedralTensorMassForceField<DataTypes>::init()
+TetrahedralTensorMassForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     if (l_topology.empty())
     {

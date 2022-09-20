@@ -66,7 +66,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 

@@ -69,7 +69,7 @@ OrderIndependentTransparencyManager::~OrderIndependentTransparencyManager()
 
 }
 
-void OrderIndependentTransparencyManager::init()
+void OrderIndependentTransparencyManager::doBaseObjectInit()
 {
 
 }

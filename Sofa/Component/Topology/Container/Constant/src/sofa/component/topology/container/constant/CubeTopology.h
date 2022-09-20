@@ -48,7 +48,7 @@ public:
     void setNy(int n) { ny.setValue(n); setSize(); }
     void setNz(int n) { nz.setValue(n); setSize(); }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     enum Plane { PLANE_UNKNOWN=0,

@@ -75,7 +75,7 @@ GenerateCylinder<DataTypes>::GenerateCylinder()
 
 
 template <class DataTypes>
-void GenerateCylinder<DataTypes>::init()
+void GenerateCylinder<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

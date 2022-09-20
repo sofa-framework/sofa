@@ -85,7 +85,7 @@ void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, st
 }
 
 template<class DataTypes>
-void QuadBendingSprings<DataTypes>::init()
+void QuadBendingSprings<DataTypes>::doBaseObjectInit()
 {
     // Set the bending springs
 
@@ -121,7 +121,7 @@ void QuadBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    StiffSpringForceField<DataTypes>::init();
+    StiffSpringForceField<DataTypes>::doBaseObjectInit();
 }
 
 

@@ -36,7 +36,7 @@ namespace
 
 // GeometryAlgorithms implementation
 
-void GeometryAlgorithms::init()
+void GeometryAlgorithms::doBaseObjectInit()
 {
 }
 
@@ -47,7 +47,7 @@ void GeometryAlgorithms::initPointsAdded(const type::vector< sofa::Index >& /*in
 
 // TopologyModifier implementation
 
-void TopologyModifier::init()
+void TopologyModifier::doBaseObjectInit()
 {
     this->getContext()->get(m_topologyContainer);
 }
@@ -77,10 +77,10 @@ TopologyContainer::~TopologyContainer()
     resetTopologyHandlerList();
 }
 
-void TopologyContainer::init()
+void TopologyContainer::doBaseObjectInit()
 {
-    core::topology::BaseMeshTopology::init();
-    core::topology::BaseTopologyObject::init();
+    core::topology::BaseMeshTopology::doBaseObjectInit();
+    core::topology::BaseTopologyObject::doBaseObjectInit();
 }
 
 

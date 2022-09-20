@@ -45,9 +45,9 @@ Visual3DText::Visual3DText()
 }
 
 
-void Visual3DText::init()
+void Visual3DText::doBaseObjectInit()
 {
-    VisualModel::init();
+    VisualModel::doBaseObjectInit();
 
     reinit();
 

@@ -66,7 +66,7 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
     hexaBaryCoords.setGroup("BaryCoords");
 }
 
-void Mesh2PointTopologicalMapping::init()
+void Mesh2PointTopologicalMapping::doBaseObjectInit()
 {
     initDone = true;
     if(fromModel)

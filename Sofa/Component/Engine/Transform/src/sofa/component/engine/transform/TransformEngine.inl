@@ -51,7 +51,7 @@ TransformEngine<DataTypes>::TransformEngine()
 }
 
 template <class DataTypes>
-void TransformEngine<DataTypes>::init()
+void TransformEngine<DataTypes>::doBaseObjectInit()
 {
 }
 

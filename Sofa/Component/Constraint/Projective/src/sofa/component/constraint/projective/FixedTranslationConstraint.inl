@@ -74,9 +74,9 @@ void FixedTranslationConstraint<DataTypes>::removeIndex(Index index)
 
 // -- Constraint interface
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::init()
+void FixedTranslationConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

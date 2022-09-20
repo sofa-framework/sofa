@@ -294,14 +294,14 @@ OglIntVector4Variable::OglIntVector4Variable()
 }
 
 
-void OglIntVectorVariable::init()
+void OglIntVectorVariable::doBaseObjectInit()
 {
-    OglVariable<type::vector<GLint> >::init();
+    OglVariable<type::vector<GLint> >::doBaseObjectInit();
 }
 
-void OglIntVector2Variable::init()
+void OglIntVector2Variable::doBaseObjectInit()
 {
-    OglIntVectorVariable::init();
+    OglIntVectorVariable::doBaseObjectInit();
     type::vector<GLint> temp = value.getValue();
     if (temp.size() %2 != 0)
     {
@@ -312,9 +312,9 @@ void OglIntVector2Variable::init()
     }
 }
 
-void OglIntVector3Variable::init()
+void OglIntVector3Variable::doBaseObjectInit()
 {
-    OglIntVectorVariable::init();
+    OglIntVectorVariable::doBaseObjectInit();
     type::vector<GLint> temp = value.getValue();
 
     if (temp.size() %3 != 0)
@@ -326,9 +326,9 @@ void OglIntVector3Variable::init()
     }
 }
 
-void OglIntVector4Variable::init()
+void OglIntVector4Variable::doBaseObjectInit()
 {
-    OglIntVectorVariable::init();
+    OglIntVectorVariable::doBaseObjectInit();
     type::vector<GLint> temp = value.getValue();
 
     if (temp.size() %4 != 0)
@@ -406,24 +406,24 @@ OglFloatVector4Variable::OglFloatVector4Variable()
 }
 
 
-void OglFloatVectorVariable::init()
+void OglFloatVectorVariable::doBaseObjectInit()
 {
-    OglVariable<type::vector<float> >::init();
+    OglVariable<type::vector<float> >::doBaseObjectInit();
 }
 
-void OglFloatVector2Variable::init()
+void OglFloatVector2Variable::doBaseObjectInit()
 {
-    OglVariable<type::vector<type::Vec2f> >::init();
+    OglVariable<type::vector<type::Vec2f> >::doBaseObjectInit();
 }
 
-void OglFloatVector3Variable::init()
+void OglFloatVector3Variable::doBaseObjectInit()
 {
-    OglVariable<type::vector<type::Vec3f> >::init();
+    OglVariable<type::vector<type::Vec3f> >::doBaseObjectInit();
 }
 
-void OglFloatVector4Variable::init()
+void OglFloatVector4Variable::doBaseObjectInit()
 {
-    OglVariable<type::vector<type::Vec4f> >::init();
+    OglVariable<type::vector<type::Vec4f> >::doBaseObjectInit();
 }
 
 void OglFloatVectorVariable::initVisual()
@@ -478,9 +478,9 @@ OglMatrix2Variable::OglMatrix2Variable()
 
 }
 
-void OglMatrix2Variable::init()
+void OglMatrix2Variable::doBaseObjectInit()
 {
-    OglVariable<type::vector<float> >::init();
+    OglVariable<type::vector<float> >::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -511,9 +511,9 @@ OglMatrix3Variable::OglMatrix3Variable()
 
 }
 
-void OglMatrix3Variable::init()
+void OglMatrix3Variable::doBaseObjectInit()
 {
-    OglVariable<type::vector<float> >::init();
+    OglVariable<type::vector<float> >::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -544,9 +544,9 @@ OglMatrix4Variable::OglMatrix4Variable()
 
 }
 
-void OglMatrix4Variable::init()
+void OglMatrix4Variable::doBaseObjectInit()
 {
-    OglMatrix2Variable::init();
+    OglMatrix2Variable::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -577,9 +577,9 @@ OglMatrix2x3Variable::OglMatrix2x3Variable()
 
 }
 
-void OglMatrix2x3Variable::init()
+void OglMatrix2x3Variable::doBaseObjectInit()
 {
-    OglMatrix2Variable::init();
+    OglMatrix2Variable::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -611,9 +611,9 @@ OglMatrix3x2Variable::OglMatrix3x2Variable()
 
 }
 
-void OglMatrix3x2Variable::init()
+void OglMatrix3x2Variable::doBaseObjectInit()
 {
-    OglMatrix2Variable::init();
+    OglMatrix2Variable::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -644,9 +644,9 @@ OglMatrix2x4Variable::OglMatrix2x4Variable()
 
 }
 
-void OglMatrix2x4Variable::init()
+void OglMatrix2x4Variable::doBaseObjectInit()
 {
-    OglMatrix2Variable::init();
+    OglMatrix2Variable::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -677,9 +677,9 @@ OglMatrix4x2Variable::OglMatrix4x2Variable()
 
 }
 
-void OglMatrix4x2Variable::init()
+void OglMatrix4x2Variable::doBaseObjectInit()
 {
-    OglMatrix2Variable::init();
+    OglMatrix2Variable::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -710,9 +710,9 @@ OglMatrix3x4Variable::OglMatrix3x4Variable()
 
 }
 
-void OglMatrix3x4Variable::init()
+void OglMatrix3x4Variable::doBaseObjectInit()
 {
-    OglMatrix2Variable::init();
+    OglMatrix2Variable::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -743,9 +743,9 @@ OglMatrix4x3Variable::OglMatrix4x3Variable()
 
 }
 
-void OglMatrix4x3Variable::init()
+void OglMatrix4x3Variable::doBaseObjectInit()
 {
-    OglMatrix2Variable::init();
+    OglMatrix2Variable::doBaseObjectInit();
 
     type::vector<float> temp = value.getValue();
 
@@ -775,9 +775,9 @@ OglMatrix4VectorVariable::OglMatrix4VectorVariable()
 {
 }
 
-void OglMatrix4VectorVariable::init()
+void OglMatrix4VectorVariable::doBaseObjectInit()
 {
-    OglVariable<type::vector<type::Mat4x4f> >::init();
+    OglVariable<type::vector<type::Mat4x4f> >::doBaseObjectInit();
 }
 void OglMatrix4VectorVariable::initVisual()
 {

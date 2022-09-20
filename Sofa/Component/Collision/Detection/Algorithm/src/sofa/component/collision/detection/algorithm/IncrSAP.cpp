@@ -224,7 +224,7 @@ void IncrSAP::purge(){
 }
 
 
-void IncrSAP::init()
+void IncrSAP::doBaseObjectInit()
 {
     reinit();
 }

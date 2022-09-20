@@ -43,7 +43,7 @@ protected:
 
     ~DynamicSparseGridTopologyModifier() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /** \brief Actually Add some hexahedra to this topology. Wrong way to add some hexahedra for the moment !
     *

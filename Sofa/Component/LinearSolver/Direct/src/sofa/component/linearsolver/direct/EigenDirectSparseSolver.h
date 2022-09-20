@@ -54,7 +54,7 @@ public:
 
     ~EigenDirectSparseSolver() override = default;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     using EigenSparseMatrix    = Eigen::SparseMatrix<Real, Eigen::RowMajor>;

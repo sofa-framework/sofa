@@ -82,7 +82,7 @@ Monitor<DataTypes>::~Monitor()
 
 ////////////////////////////// init () ////////////////////////////////////
 template<class DataTypes>
-void Monitor<DataTypes>::init()
+void Monitor<DataTypes>::doBaseObjectInit()
 {
     if (!d_fileName.isSet()) {
         d_fileName.setValue(std::string("./") + getName());
@@ -126,7 +126,7 @@ void Monitor<DataTypes>::reset()
 template<class DataTypes>
 void Monitor<DataTypes>::reinit()
 {
-    init();
+    doBaseObjectInit();
 }
 /////////////////////////// end reinit () /////////////////////////////////
 

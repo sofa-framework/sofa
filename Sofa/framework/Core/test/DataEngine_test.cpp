@@ -53,7 +53,7 @@ public:
 
     ~TestEngine() override {}
 
-    void init() override
+    void doBaseObjectInit() override
     {
         setDirtyValue();
     }
@@ -83,7 +83,7 @@ struct DataEngine_test: public BaseTest
 
     void SetUp() override
     {
-        engine.init();
+        engine.doBaseObjectInit();
     }
 
     /// to test tracked Data

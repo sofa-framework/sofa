@@ -43,7 +43,7 @@ protected:
 public:
     typedef TDataTypes DataType;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void initVisual() override;
 

@@ -61,7 +61,7 @@ void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d,
     if (h >= getNbPoints()) setNbPoints(h+1);
 }
 
-void HexahedronSetTopologyContainer::init()
+void HexahedronSetTopologyContainer::doBaseObjectInit()
 {
     helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 

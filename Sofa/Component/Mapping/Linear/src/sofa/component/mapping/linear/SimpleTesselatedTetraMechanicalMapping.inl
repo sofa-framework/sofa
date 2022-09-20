@@ -41,7 +41,7 @@ SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::~SimpleTesselatedTetraMechani
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::init()
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::doBaseObjectInit()
 {
     this->getContext()->get(topoMap);
     if (topoMap)
@@ -51,7 +51,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::init()
         if (outputTopo)
             this->toModel->resize(outputTopo->getNbPoints());
     }
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 }
 
 template <class TIn, class TOut>

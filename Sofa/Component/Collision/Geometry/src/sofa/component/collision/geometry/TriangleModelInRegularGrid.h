@@ -34,7 +34,7 @@ class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleModelInRegularGrid : public 
 public:
     SOFA_CLASS(TriangleModelInRegularGrid, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
 
-    void init() override;
+    void doBaseObjectInit() override;
     void computeBoundingTree ( int maxDepth=0 ) override;
 
     sofa::core::topology::BaseMeshTopology* _topology;

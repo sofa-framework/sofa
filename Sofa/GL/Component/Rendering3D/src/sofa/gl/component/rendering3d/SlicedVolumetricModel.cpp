@@ -75,7 +75,7 @@ SlicedVolumetricModel::~SlicedVolumetricModel()
         delete [] texture_data;
 }
 
-void SlicedVolumetricModel::init()
+void SlicedVolumetricModel::doBaseObjectInit()
 {
     getContext()->get(_topology);
     if(_topology)
@@ -83,9 +83,9 @@ void SlicedVolumetricModel::init()
     else
         getContext()->get(_mstate);
 
-    _mstate->init();
+    _mstate->doBaseObjectInit();
 
-    VisualModel::init();
+    VisualModel::doBaseObjectInit();
 
     core::loader::VoxelLoader *loader;
     getContext()->get(loader);

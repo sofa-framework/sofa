@@ -250,7 +250,7 @@ protected:
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     void addCollisionModel (core::CollisionModel *cm) override;

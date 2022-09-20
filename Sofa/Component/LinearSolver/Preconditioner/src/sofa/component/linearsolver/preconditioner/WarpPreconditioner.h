@@ -75,7 +75,7 @@ public:
 
     ~WarpPreconditioner();
 
-    void init() override;
+    void doBaseObjectInit() override;
     void bwdInit() override;
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;

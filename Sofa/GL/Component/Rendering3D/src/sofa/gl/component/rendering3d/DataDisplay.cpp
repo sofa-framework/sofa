@@ -64,7 +64,7 @@ DataDisplay::DataDisplay()
     d_currentMax.setReadOnly(true);
 }
 
-void DataDisplay::init()
+void DataDisplay::doBaseObjectInit()
 {
     if (l_topology.empty())
     {

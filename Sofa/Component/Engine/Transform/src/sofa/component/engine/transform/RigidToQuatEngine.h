@@ -52,7 +52,7 @@ protected:
     ~RigidToQuatEngine() override;
 public:
     void doUpdate() override;
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     Data<type::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)

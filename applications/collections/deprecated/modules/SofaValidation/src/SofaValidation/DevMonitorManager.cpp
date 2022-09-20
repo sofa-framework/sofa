@@ -46,7 +46,7 @@ DevMonitorManager::~DevMonitorManager()
     // TODO Auto-generated destructor stub
 }
 
-void DevMonitorManager::init()
+void DevMonitorManager::doBaseObjectInit()
 {
     sofa::type::vector<core::DevBaseMonitor*>::iterator it;
 

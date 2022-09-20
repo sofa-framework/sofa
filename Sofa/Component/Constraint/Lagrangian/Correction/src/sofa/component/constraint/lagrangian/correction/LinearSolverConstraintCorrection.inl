@@ -61,9 +61,9 @@ LinearSolverConstraintCorrection<DataTypes>::~LinearSolverConstraintCorrection()
 //////////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::init()
+void LinearSolverConstraintCorrection<DataTypes>::doBaseObjectInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 

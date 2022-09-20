@@ -29,7 +29,7 @@ namespace sofa::core::behavior
 {
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::init()
+void ConstraintCorrection< DataTypes >::doBaseObjectInit()
 {
     mstate = dynamic_cast< behavior::MechanicalState< DataTypes >* >(getContext()->getMechanicalState());
 }

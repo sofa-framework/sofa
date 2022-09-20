@@ -40,7 +40,7 @@ public:
     Data<bool> active; ///< Control whether the clipping plane should be applied or not
 
     virtual sofa::core::objectmodel::ComponentState checkDataValues();
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void fwdDraw(core::visual::VisualParams*) override;
     void bwdDraw(core::visual::VisualParams*) override;

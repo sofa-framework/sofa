@@ -116,7 +116,7 @@ void RigidRigidMapping<TIn, TOut>::load(const char *filename)
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::init()
+void RigidRigidMapping<TIn, TOut>::doBaseObjectInit()
 {
 
     if (!fileRigidRigidMapping.getValue().empty())
@@ -164,7 +164,7 @@ void RigidRigidMapping<TIn, TOut>::init()
         points.endEdit();
     }
 
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 }
 
 template <class TIn, class TOut>

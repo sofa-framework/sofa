@@ -64,9 +64,9 @@ void RayCollisionModel::resize(Size size)
 }
 
 
-void RayCollisionModel::init()
+void RayCollisionModel::doBaseObjectInit()
 {
-    this->CollisionModel::init();
+    this->CollisionModel::doBaseObjectInit();
 
     mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     if (mstate==nullptr)
@@ -111,7 +111,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, Index in
 void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
-    {       
+    {
         for (sofa::Index i=0; i<size; i++)
         {
             draw(vparams,i);

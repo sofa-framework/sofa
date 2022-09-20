@@ -36,7 +36,7 @@ BruteForceBroadPhase::BruteForceBroadPhase()
         : box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
 {}
 
-void BruteForceBroadPhase::init()
+void BruteForceBroadPhase::doBaseObjectInit()
 {
     reinit();
 }

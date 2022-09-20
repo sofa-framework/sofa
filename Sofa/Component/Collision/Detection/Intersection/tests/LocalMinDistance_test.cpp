@@ -188,7 +188,7 @@ void TestLocalMinDistance::checkDoubleInit()
     auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
-    lmd->init() ;
+    lmd->doBaseObjectInit() ;
 
     FAIL() << "TODO: Calling init twice does not produce any warning message";
  

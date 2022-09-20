@@ -50,7 +50,7 @@ protected:
     ~Monitor () override;
 public:
     /// init data
-    void init () override;
+    void doBaseObjectInit () override;
 
     /// reset Monitored values
     void reset () override;

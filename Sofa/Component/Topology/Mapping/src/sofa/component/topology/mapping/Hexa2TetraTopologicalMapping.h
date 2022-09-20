@@ -62,7 +62,7 @@ protected:
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */
-    void init() override;
+    void doBaseObjectInit() override;
 
 
     /** \brief Translates the TopologyChange objects from the source to the target.

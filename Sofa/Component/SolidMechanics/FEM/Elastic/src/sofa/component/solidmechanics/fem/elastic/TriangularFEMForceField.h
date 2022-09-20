@@ -101,7 +101,7 @@ protected:
 
     ~TriangularFEMForceField() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;

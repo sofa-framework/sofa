@@ -65,7 +65,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reset() override;
 
 	float getAnimationSpeed() const			{return animationSpeed.getValue();}

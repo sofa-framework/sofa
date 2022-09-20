@@ -89,7 +89,7 @@ public:
     Data<std::map<unsigned int, unsigned int> > zonesFramePair; ///< Correspondance between the segmented value and the frames.
     Data<double> harmonicMaxValue; ///< Max value used to initialize the harmonic distance grid.
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

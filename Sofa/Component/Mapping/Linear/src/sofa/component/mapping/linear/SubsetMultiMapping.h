@@ -70,7 +70,7 @@ public:
     /// Correspondance array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     // Append particle of given index within the given model to the subset.
     void addPoint(const core::BaseState* fromModel, int index);

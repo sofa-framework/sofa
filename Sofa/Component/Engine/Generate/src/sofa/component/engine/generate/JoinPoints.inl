@@ -42,7 +42,7 @@ JoinPoints<DataTypes>::JoinPoints()
 }
 
 template <class DataTypes>
-void JoinPoints<DataTypes>::init()
+void JoinPoints<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

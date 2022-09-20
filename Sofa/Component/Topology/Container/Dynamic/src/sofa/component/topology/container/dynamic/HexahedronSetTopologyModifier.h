@@ -62,7 +62,7 @@ protected:
 
     ~HexahedronSetTopologyModifier() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     Data< bool > removeIsolated; ///< Controlled DOF index.
 

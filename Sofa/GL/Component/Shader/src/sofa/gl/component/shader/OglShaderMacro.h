@@ -46,7 +46,7 @@ protected:
     OglShaderMacro();
     ~OglShaderMacro() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_MACRO; }
@@ -66,7 +66,7 @@ protected:
 public:
     OglShaderDefineMacro();
     ~OglShaderDefineMacro() override;
-    void init() override;
+    void doBaseObjectInit() override;
     // Returns the value of the shader element
     const core::objectmodel::BaseData* getSEValue() const override { return &value; }
     // Returns the value of the shader element

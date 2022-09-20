@@ -136,7 +136,7 @@ public:
 
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f,
                            const DataVecCoord& x, const DataVecDeriv& v) override;

@@ -319,7 +319,7 @@ ConstraintAnimationLoop::~ConstraintAnimationLoop()
     }
 }
 
-void ConstraintAnimationLoop::init()
+void ConstraintAnimationLoop::doBaseObjectInit()
 {
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())

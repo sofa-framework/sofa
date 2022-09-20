@@ -51,7 +51,7 @@ DefaultVisualManagerLoop::~DefaultVisualManagerLoop()
 
 }
 
-void DefaultVisualManagerLoop::init()
+void DefaultVisualManagerLoop::doBaseObjectInit()
 {
     if (!l_node)
         l_node = dynamic_cast<simulation::Node*>(this->getContext());

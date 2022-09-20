@@ -38,7 +38,7 @@ public:
 protected:
     DefaultPipeline();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// get the set of response available with the current collision pipeline
     std::set< std::string > getResponseList() const override;

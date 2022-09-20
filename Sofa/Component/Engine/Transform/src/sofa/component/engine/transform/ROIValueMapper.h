@@ -56,7 +56,7 @@ public:
     //Parameter
     Data<Real> p_defaultValue; ///< Default value for indices out of ROIs
 
-    void init() override
+    void doBaseObjectInit() override
     {
         f_indices.resize(nbROIs.getValue());
         f_value.resize(nbROIs.getValue());

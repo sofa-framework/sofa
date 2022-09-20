@@ -119,8 +119,8 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
 
 
     mouseNode->init(sofa::core::execparams::defaultInstance());
-    mouseContainer->init();
-    mouseCollision->init();
+    mouseContainer->doBaseObjectInit();
+    mouseCollision->doBaseObjectInit();
 
     typedef sofa::gui::component::performer::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
     const MouseFactory *factory = MouseFactory::getInstance();

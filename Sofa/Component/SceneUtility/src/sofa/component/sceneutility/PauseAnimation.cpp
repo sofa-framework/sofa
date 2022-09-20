@@ -35,9 +35,9 @@ PauseAnimation::~PauseAnimation()
 {
 }
 
-void PauseAnimation::init()
+void PauseAnimation::doBaseObjectInit()
 {
-    BaseObject::init();
+    BaseObject::doBaseObjectInit();
     //simu = sofa::simulation::getSimulation();
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext());
     root = dynamic_cast<simulation::Node *>(context->getRootContext());

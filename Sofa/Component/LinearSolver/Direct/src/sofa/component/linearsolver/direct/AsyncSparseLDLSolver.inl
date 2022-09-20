@@ -29,9 +29,9 @@ namespace sofa::component::linearsolver::direct
 {
 
 template <class TMatrix, class TVector, class TThreadManager>
-void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
+void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
     waitForAsyncTask = true;
     m_asyncThreadInvertData = &m_secondInvertData;
     m_mainThreadInvertData = static_cast<InvertData*>(this->invertData.get());

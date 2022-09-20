@@ -94,7 +94,7 @@ public:
 
     //VisualModel
     void initVisual() override;
-    void init() override;
+    void doBaseObjectInit() override;
     virtual void drawLight();
     void reinit() override;
     void updateVisual() override;

@@ -69,7 +69,7 @@ public:
     Data<SetIndex> hexahedronS2D; ///< Internal source -> destination topology hexahedra map
     Data<SetIndex> hexahedronD2S; ///< Internal destination -> source topology hexahedra map
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *

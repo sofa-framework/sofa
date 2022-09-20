@@ -39,7 +39,7 @@ using namespace core::topology;
 using namespace core::objectmodel;
 
 /**
- * This class is only used to test engine. 
+ * This class is only used to test engine.
  */
 class TestEngine : public core::DataEngine
 {
@@ -51,7 +51,7 @@ protected:
     ~TestEngine() override {}
 public:
     SOFA_CLASS(TestEngine,core::DataEngine);
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

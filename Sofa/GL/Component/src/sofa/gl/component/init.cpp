@@ -27,7 +27,7 @@
 
 namespace sofa::gl::component
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -42,7 +42,7 @@ void initExternalModule()
         sofa::gl::component::rendering2d::init();
         sofa::gl::component::rendering3d::init();
         sofa::gl::component::shader::init();
-        
+
         first = false;
     }
 }

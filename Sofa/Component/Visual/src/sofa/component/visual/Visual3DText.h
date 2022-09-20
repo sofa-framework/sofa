@@ -49,7 +49,7 @@ protected:
     Visual3DText();
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

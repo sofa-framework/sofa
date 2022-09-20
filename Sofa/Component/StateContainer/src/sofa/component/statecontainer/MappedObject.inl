@@ -40,7 +40,7 @@ MappedObject<DataTypes>::~MappedObject()
 }
 
 template <class DataTypes>
-void MappedObject<DataTypes>::init()
+void MappedObject<DataTypes>::doBaseObjectInit()
 {
     if (getSize() == 0)
     {        

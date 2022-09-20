@@ -78,7 +78,7 @@ protected:
     ~WriteTopology() override;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reset() override;
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;

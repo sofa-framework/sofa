@@ -393,7 +393,7 @@ RealGUI::RealGUI ( const char* viewername)
       m_viewerMSAANbSampling(1)
 {
     setupUi(this);
-    
+
     ExpandAllButton->setIcon(QIcon(":/RealGUI/expandAll"));
     CollapseAllButton->setIcon(QIcon(":/RealGUI/collapseAll"));
     sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh"));
@@ -401,7 +401,7 @@ RealGUI::RealGUI ( const char* viewername)
     {
         button->setFixedWidth(button->height());
     }
-    
+
     parseOptions();
 
     createPluginManager();

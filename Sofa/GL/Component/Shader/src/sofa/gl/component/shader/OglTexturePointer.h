@@ -58,7 +58,7 @@ protected:
     Data<bool> enabled; ///< enabled ?
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
     void reinit() override;
     void fwdDraw(core::visual::VisualParams*) override;

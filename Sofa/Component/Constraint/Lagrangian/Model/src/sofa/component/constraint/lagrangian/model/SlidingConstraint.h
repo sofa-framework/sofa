@@ -70,7 +70,7 @@ protected:
     virtual ~SlidingConstraint(){}
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;

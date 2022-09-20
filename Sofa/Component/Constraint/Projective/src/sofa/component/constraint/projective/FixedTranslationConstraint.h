@@ -79,7 +79,7 @@ public:
     void removeIndex(Index index);
 
     // -- Constraint interface
-    void init() override;
+    void doBaseObjectInit() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;

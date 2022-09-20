@@ -272,9 +272,9 @@ void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints
 
 
 template<class DataTypes>
-void TriangleSetGeometryAlgorithms< DataTypes >::init()
+void TriangleSetGeometryAlgorithms< DataTypes >::doBaseObjectInit()
 {
-    EdgeSetGeometryAlgorithms<DataTypes>::init();
+    EdgeSetGeometryAlgorithms<DataTypes>::doBaseObjectInit();
     this->getContext()->get(m_container);
     this->getContext()->get(m_modifier);
 

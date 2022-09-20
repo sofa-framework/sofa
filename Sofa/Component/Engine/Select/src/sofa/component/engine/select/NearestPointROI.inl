@@ -52,9 +52,9 @@ NearestPointROI<DataTypes>::~NearestPointROI()
 }
 
 template <class DataTypes>
-void NearestPointROI<DataTypes>::init()
+void NearestPointROI<DataTypes>::doBaseObjectInit()
 {
-    Inherit2::init();
+    Inherit2::doBaseObjectInit();
 
     if (!this->mstate1 || !this->mstate2)
     {

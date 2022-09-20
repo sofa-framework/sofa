@@ -45,10 +45,10 @@ Inherit()
 }
 
 template < class DataTypes, class OutputType >
-void DisplacementTransformEngine< DataTypes, OutputType >::init()
+void DisplacementTransformEngine< DataTypes, OutputType >::doBaseObjectInit()
 {
     // parent method
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     // Computation of inverse matrix
     const VecCoord& x0 = d_x0.getValue();
@@ -63,7 +63,7 @@ template < class DataTypes, class OutputType >
 void DisplacementTransformEngine< DataTypes, OutputType >::doUpdate()
 {
     // parent method
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     const VecCoord& x = d_x.getValue();
     const VecCoord& x0 = d_x0.getValue();
@@ -102,10 +102,10 @@ DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
 }
 
 template < class DataTypes >
-void DisplacementMatrixEngine< DataTypes >::init()
+void DisplacementMatrixEngine< DataTypes >::doBaseObjectInit()
 {
     // parent method
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     // Init of the scale matrices in case if the user did not initialize them
     const VecCoord& x0 = this->d_x0.getValue();

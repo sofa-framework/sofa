@@ -39,7 +39,7 @@ DifferenceEngine<DataTypes>::DifferenceEngine()
 }
 
 template <class DataType>
-void DifferenceEngine<DataType>::init()
+void DifferenceEngine<DataType>::doBaseObjectInit()
 {
     setDirtyValue();
 }

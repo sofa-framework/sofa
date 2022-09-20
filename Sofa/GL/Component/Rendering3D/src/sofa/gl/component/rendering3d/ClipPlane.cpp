@@ -55,7 +55,7 @@ sofa::core::objectmodel::ComponentState ClipPlane::checkDataValues()
     return ComponentState::Valid;
 }
 
-void ClipPlane::init()
+void ClipPlane::doBaseObjectInit()
 {
     d_componentState.setValue(checkDataValues()) ;
 }

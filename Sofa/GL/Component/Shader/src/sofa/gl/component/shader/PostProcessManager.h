@@ -55,7 +55,7 @@ protected:
     PostProcessManager();
     ~PostProcessManager() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override { };
     void initVisual() override;
 

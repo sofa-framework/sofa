@@ -51,7 +51,7 @@ SquareDistanceMapping<TIn, TOut>::~SquareDistanceMapping()
 
 
 template <class TIn, class TOut>
-void SquareDistanceMapping<TIn, TOut>::init()
+void SquareDistanceMapping<TIn, TOut>::doBaseObjectInit()
 {
     if (l_topology.empty())
     {
@@ -79,7 +79,7 @@ void SquareDistanceMapping<TIn, TOut>::init()
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
-    this->Inherit::init();  // applies the mapping, so after the Data init
+    this->Inherit::doBaseObjectInit();  // applies the mapping, so after the Data init
 }
 
 template <class TIn, class TOut>

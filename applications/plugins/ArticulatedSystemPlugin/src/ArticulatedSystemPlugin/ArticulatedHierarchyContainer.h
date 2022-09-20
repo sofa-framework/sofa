@@ -54,7 +54,7 @@ protected:
 public:
 
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void setFilename(std::string f) {filename.setValue(f);}
 

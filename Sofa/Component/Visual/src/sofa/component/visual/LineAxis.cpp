@@ -59,9 +59,9 @@ LineAxis::LineAxis()
     , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 
-void LineAxis::init()
+void LineAxis::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
     updateVisual();
 }
 

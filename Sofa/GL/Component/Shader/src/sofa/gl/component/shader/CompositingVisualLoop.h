@@ -61,7 +61,7 @@ protected:
 
 public:
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
     void drawStep(sofa::core::visual::VisualParams* vparams) override;
 };

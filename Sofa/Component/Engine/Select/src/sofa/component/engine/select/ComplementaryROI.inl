@@ -76,7 +76,7 @@ void ComplementaryROI<DataTypes>::parseFields ( const map<string,string*>& str )
 }
 
 template <class DataTypes>
-void ComplementaryROI<DataTypes>::init()
+void ComplementaryROI<DataTypes>::doBaseObjectInit()
 {
     vd_setIndices.resize(d_nbSet.getValue());
     setDirtyValue();

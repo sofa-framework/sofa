@@ -28,7 +28,7 @@ namespace sofa::component::linearsolver::direct
 {
 template <class TBlockType, class EigenSolver>
 void EigenDirectSparseSolver<TBlockType, EigenSolver>
-    ::init()
+    ::doBaseObjectInit()
 {
     updateSolverOderingMethod();
 }

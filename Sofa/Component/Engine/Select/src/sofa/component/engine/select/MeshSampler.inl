@@ -51,7 +51,7 @@ MeshSampler<DataTypes>::MeshSampler()
 }
 
 template <class DataTypes>
-void MeshSampler<DataTypes>::init()
+void MeshSampler<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

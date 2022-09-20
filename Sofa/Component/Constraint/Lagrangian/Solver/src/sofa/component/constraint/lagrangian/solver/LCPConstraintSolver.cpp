@@ -249,9 +249,9 @@ LCPConstraintSolver::~LCPConstraintSolver()
         delete _Wdiag;
 }
 
-void LCPConstraintSolver::init()
+void LCPConstraintSolver::doBaseObjectInit()
 {
-    core::behavior::ConstraintSolver::init();
+    core::behavior::ConstraintSolver::doBaseObjectInit();
 
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())

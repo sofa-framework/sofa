@@ -28,9 +28,9 @@ namespace sofa::gui::component::performer
 {
 
 template <class DataTypes>
-void MouseInteractor<DataTypes>::init()
+void MouseInteractor<DataTypes>::doBaseObjectInit()
 {
-    BaseMouseInteractor::init();
+    BaseMouseInteractor::doBaseObjectInit();
     mouseInSofa = dynamic_cast< MouseContainer*>(this->getContext()->getMechanicalState());
     assert(mouseInSofa);
 }

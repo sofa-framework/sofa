@@ -55,7 +55,7 @@ protected:
     DynamicSparseGridTopologyContainer();
     ~DynamicSparseGridTopologyContainer() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
 };
 

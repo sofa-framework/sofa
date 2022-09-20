@@ -80,9 +80,9 @@ void ProjectToPointConstraint<DataTypes>::removeConstraint(Index index)
 
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::init()
+void ProjectToPointConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

@@ -86,7 +86,7 @@ protected:
     ~EvalPointsDistance() override;
 public:
     /// Init the computation of the distances
-    void init() override;
+    void doBaseObjectInit() override;
     /// Update
     void reinit() override;
     /// Reset the computation of the distances

@@ -151,7 +151,7 @@ protected:
 public:
 
     void step(const core::ExecParams* params, SReal dt) override;
-    void init() override;
+    void doBaseObjectInit() override;
 
     Data<bool> d_displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
     Data<double> d_tol; ///< Tolerance of the Gauss-Seidel

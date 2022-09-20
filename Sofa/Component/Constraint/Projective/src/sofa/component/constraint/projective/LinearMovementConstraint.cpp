@@ -29,9 +29,9 @@ namespace sofa::component::constraint::projective
 {
 
 template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API
-void LinearMovementConstraint<defaulttype::Rigid3Types>::init()
+void LinearMovementConstraint<defaulttype::Rigid3Types>::doBaseObjectInit()
 {    
-    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
+    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::doBaseObjectInit();
 
     x0.resize(0);
     nextM = prevM = Deriv();

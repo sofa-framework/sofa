@@ -47,9 +47,9 @@ EvalSurfaceDistance<DataTypes>::~EvalSurfaceDistance()
 
 //-------------------------------- init ------------------------------------
 template<class DataTypes>
-void EvalSurfaceDistance<DataTypes>::init()
+void EvalSurfaceDistance<DataTypes>::doBaseObjectInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
     if (!this->mstate1 || !this->mstate2)
         return;
     sofa::core::objectmodel::BaseContext* c1 = this->mstate1->getContext();
@@ -69,11 +69,11 @@ void EvalSurfaceDistance<DataTypes>::init()
 
     intersection = sofa::core::objectmodel::New<sofa::component::collision::detection::intersection::NewProximityIntersection>();
     this->addSlave(intersection);
-    intersection->init();
+    intersection->doBaseObjectInit();
 
     narrowPhaseDetection = sofa::core::objectmodel::New<sofa::component::collision::detection::algorithm::BVHNarrowPhase>();
     this->addSlave(narrowPhaseDetection);
-    narrowPhaseDetection->init();
+    narrowPhaseDetection->doBaseObjectInit();
 }
 
 //-------------------------------- eval------------------------------------

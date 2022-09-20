@@ -98,7 +98,7 @@ SphereROI<DataTypes>::SphereROI()
 }
 
 template <class DataTypes>
-void SphereROI<DataTypes>::init()
+void SphereROI<DataTypes>::doBaseObjectInit()
 {
     using sofa::core::objectmodel::BaseData;
     using sofa::core::topology::BaseMeshTopology;

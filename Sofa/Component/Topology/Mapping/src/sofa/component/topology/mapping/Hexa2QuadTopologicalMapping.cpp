@@ -58,7 +58,7 @@ Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
 {
 }
 
-void Hexa2QuadTopologicalMapping::init()
+void Hexa2QuadTopologicalMapping::doBaseObjectInit()
 {
     using namespace container::dynamic;
 
@@ -135,7 +135,7 @@ void Hexa2QuadTopologicalMapping::init()
     Loc2GlobDataVec.endEdit();
 
     // Need to fully init the target topology
-    toModel->init();
+    toModel->doBaseObjectInit();
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }

@@ -44,7 +44,7 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
 }
 
 template <class DataTypes>
-void SmoothMeshEngine<DataTypes>::init()
+void SmoothMeshEngine<DataTypes>::doBaseObjectInit()
 {
     if (l_topology.empty())
     {

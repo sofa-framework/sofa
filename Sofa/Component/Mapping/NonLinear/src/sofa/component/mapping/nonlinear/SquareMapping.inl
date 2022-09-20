@@ -44,12 +44,12 @@ SquareMapping<TIn, TOut>::~SquareMapping()
 
 
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::init()
+void SquareMapping<TIn, TOut>::doBaseObjectInit()
 {
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 }
 
 

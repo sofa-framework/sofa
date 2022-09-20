@@ -36,7 +36,7 @@ public:
 protected:
     OffSequenceLoader();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reset() override;
 

@@ -48,7 +48,7 @@ protected:
 
     ~ConfigurationSetting() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;

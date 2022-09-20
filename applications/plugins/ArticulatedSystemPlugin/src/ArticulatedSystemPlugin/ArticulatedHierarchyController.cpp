@@ -65,7 +65,7 @@ ArticulatedHierarchyController::ArticulatedHierarchyController()
 
 
 
-void ArticulatedHierarchyController::init()
+void ArticulatedHierarchyController::doBaseObjectInit()
 {
     dumpArticulationsAndBindingKeys();
 

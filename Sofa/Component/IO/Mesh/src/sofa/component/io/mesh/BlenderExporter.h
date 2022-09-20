@@ -88,7 +88,7 @@ public:
 
     static const char* Name(){return "Blender exporter";}
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reset() override;
 

@@ -62,7 +62,7 @@ public:
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init() override;
+    void doBaseObjectInit() override;
 
     /**
      * @name Controller Interface

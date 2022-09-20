@@ -44,9 +44,9 @@ LinearForceField<DataTypes>::LinearForceField()
 
 
 template<class DataTypes>
-void LinearForceField<DataTypes>::init()
+void LinearForceField<DataTypes>::doBaseObjectInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     if (l_topology.empty())
     {

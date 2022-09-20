@@ -116,7 +116,7 @@ TEST(SparseLDLSolver, MatrixFactorization)
     using Solver = sofa::component::linearsolver::direct::SparseLDLSolver<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
     Solver::SPtr solver = sofa::core::objectmodel::New<Solver>();
 
-    solver->init();
+    solver->doBaseObjectInit();
     solver->invert(matrix);
 
     auto* genericInvertData = solver->getMatrixInvertData(&matrix);

@@ -39,7 +39,7 @@ public:
 
     MultiTagAnimationLoop(simulation::Node* gnode);
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     virtual void clear();
 

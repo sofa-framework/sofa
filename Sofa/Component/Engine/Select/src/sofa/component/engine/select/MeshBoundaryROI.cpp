@@ -41,7 +41,7 @@ MeshBoundaryROI::MeshBoundaryROI(): Inherited()
     addOutput(&d_indices);
 }
 
-void MeshBoundaryROI::init()
+void MeshBoundaryROI::doBaseObjectInit()
 {
     setDirtyValue();
 }

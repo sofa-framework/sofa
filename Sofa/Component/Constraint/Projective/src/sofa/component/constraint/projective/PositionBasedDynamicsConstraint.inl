@@ -57,9 +57,9 @@ PositionBasedDynamicsConstraint<DataTypes>::~PositionBasedDynamicsConstraint()
 
 
 template <class DataTypes>
-void PositionBasedDynamicsConstraint<DataTypes>::init()
+void PositionBasedDynamicsConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
     if ((int)position.getValue().size() != (int)this->mstate->getSize())    msg_error() << "Invalid target position vector size." ;
 }
 

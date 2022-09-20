@@ -53,7 +53,7 @@ protected:
     virtual void traceFullScreenQuad();
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 
     void preDrawScene(core::visual::VisualParams* vp) override;

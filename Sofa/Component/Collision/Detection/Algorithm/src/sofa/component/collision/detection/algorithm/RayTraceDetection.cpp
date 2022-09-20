@@ -32,7 +32,7 @@ int RayTraceDetectionClass = core::RegisterObject(
         "Collision detection using TriangleOctreeModel").add<RayTraceDetection>();
 
 
-void RayTraceDetection::init()
+void RayTraceDetection::doBaseObjectInit()
 {
     const std::string broadPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::BroadPhaseDetection>();
     const std::string narrowPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::NarrowPhaseDetection>();

@@ -41,7 +41,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API RayTraceDetection final :
 public:
     SOFA_CLASS(RayTraceDetection, sofa::core::objectmodel::BaseObject);
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Construction method called by ObjectFactory.
     template<class T>

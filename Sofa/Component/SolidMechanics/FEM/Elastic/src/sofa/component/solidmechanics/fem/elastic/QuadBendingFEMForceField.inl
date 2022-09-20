@@ -91,9 +91,9 @@ QuadBendingFEMForceField<DataTypes>::~QuadBendingFEMForceField()
 // --- Initialization stage
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void QuadBendingFEMForceField<DataTypes>::init()
+void QuadBendingFEMForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

@@ -46,7 +46,7 @@ AngularSpringForceField<DataTypes>::AngularSpringForceField()
 template<class DataTypes>
 void AngularSpringForceField<DataTypes>::bwdInit()
 {
-    core::behavior::ForceField<DataTypes>::init();
+    core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 
     if (angularStiffness.getValue().empty())
     {

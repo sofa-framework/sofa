@@ -57,7 +57,7 @@ void TriangleCollisionModel<DataTypes>::resize(Size size)
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::init()
+void TriangleCollisionModel<DataTypes>::doBaseObjectInit()
 {
     if (l_topology.empty())
     {
@@ -76,7 +76,7 @@ void TriangleCollisionModel<DataTypes>::init()
     }
 
     // TODO epernod 2019-01-21: Check if this call super is needed.
-    this->CollisionModel::init();
+    this->CollisionModel::doBaseObjectInit();
     m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (this->getContext()->getMechanicalState());
 
     this->getContext()->get(m_pointModels);

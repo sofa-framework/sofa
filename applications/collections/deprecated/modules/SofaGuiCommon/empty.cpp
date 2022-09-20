@@ -26,9 +26,9 @@
 
 namespace sofa::gui
 {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() 
-    { 
-        sofa::gui::common::init(); 
+    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol()
+    {
+        sofa::gui::common::init();
         sofa::gui::batch::init();
     }
 } // namespace sofa::gui

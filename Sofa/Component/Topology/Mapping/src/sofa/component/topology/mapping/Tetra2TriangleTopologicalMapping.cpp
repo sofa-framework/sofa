@@ -62,7 +62,7 @@ Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping()
 {
 }
 
-void Tetra2TriangleTopologicalMapping::init()
+void Tetra2TriangleTopologicalMapping::doBaseObjectInit()
 {
     bool modelsOk = true;
     if (!fromModel)
@@ -144,7 +144,7 @@ void Tetra2TriangleTopologicalMapping::init()
         }
     }
     // Need to fully init the target topology
-    toModel->init();
+    toModel->doBaseObjectInit();
 
     Loc2GlobDataVec.endEdit();
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);

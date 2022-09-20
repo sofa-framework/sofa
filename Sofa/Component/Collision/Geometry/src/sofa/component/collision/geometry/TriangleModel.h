@@ -169,7 +169,7 @@ protected:
     virtual void updateNormals();
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     // -- CollisionModel interface
 

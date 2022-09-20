@@ -68,7 +68,7 @@ public:
     /// Compute the error metric between two surfaces
     SReal  eval() override;
     /// Init the computation
-    void init() override;
+    void doBaseObjectInit() override;
     void draw(const core::visual::VisualParams* vparams) override;
 
 protected:

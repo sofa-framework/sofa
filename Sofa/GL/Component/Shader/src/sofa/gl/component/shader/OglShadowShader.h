@@ -36,7 +36,7 @@ protected:
     OglShadowShader();
     ~OglShadowShader() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     virtual void initShaders(unsigned int numberOfLights, bool softShadow);
 

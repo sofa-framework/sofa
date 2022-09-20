@@ -63,7 +63,7 @@ public:
 protected:
     HexahedralFEMForceFieldAndMass();
 public:
-    void init( ) override;
+    void doBaseObjectInit( ) override;
     void reinit( ) override;
 
     // -- Mass interface
@@ -94,7 +94,7 @@ public:
 
     SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const override ///< vMv/2 using dof->getV() override
     {
-        msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"; 
+        msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented";
         return 0;
     }
 

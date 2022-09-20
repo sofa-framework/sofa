@@ -37,7 +37,7 @@ class PairStateAccessor : public virtual StateAccessor
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(PairStateAccessor, DataTypes1, DataTypes2), StateAccessor);
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Retrieve the associated MechanicalState #1
     MechanicalState<DataTypes1>* getMState1() { return mstate1; }
@@ -74,9 +74,9 @@ protected:
 };
 
 template <class DataTypes1, class DataTypes2>
-void PairStateAccessor<DataTypes1, DataTypes2>::init()
+void PairStateAccessor<DataTypes1, DataTypes2>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if (!mstate1.get())
     {

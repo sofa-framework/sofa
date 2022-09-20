@@ -61,7 +61,7 @@ TopologyBoundingTrasher<DataTypes>::~TopologyBoundingTrasher()
 
 
 template <class DataTypes>
-void TopologyBoundingTrasher<DataTypes>::init()
+void TopologyBoundingTrasher<DataTypes>::doBaseObjectInit()
 {
     if (l_topology.empty())
     {

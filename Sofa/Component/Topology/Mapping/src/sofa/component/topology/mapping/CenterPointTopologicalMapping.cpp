@@ -45,7 +45,7 @@ CenterPointTopologicalMapping::CenterPointTopologicalMapping ()
 {
 }
 
-void CenterPointTopologicalMapping::init()
+void CenterPointTopologicalMapping::doBaseObjectInit()
 {
     this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
     if(fromModel && toModel)

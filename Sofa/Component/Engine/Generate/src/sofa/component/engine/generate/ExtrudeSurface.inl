@@ -47,7 +47,7 @@ ExtrudeSurface<DataTypes>::ExtrudeSurface()
 }
 
 template <class DataTypes>
-void ExtrudeSurface<DataTypes>::init()
+void ExtrudeSurface<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

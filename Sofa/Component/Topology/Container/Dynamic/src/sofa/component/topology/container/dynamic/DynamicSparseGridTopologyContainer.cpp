@@ -52,15 +52,15 @@ DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
     idInRegularGrid2IndexInTopo.setDisplayed( false);
 }
 
-void DynamicSparseGridTopologyContainer::init()
+void DynamicSparseGridTopologyContainer::doBaseObjectInit()
 {
-    HexahedronSetTopologyContainer::init();
+    HexahedronSetTopologyContainer::doBaseObjectInit();
     // Init regular/topo mapping
     sofa::core::loader::VoxelLoader* VoxelLoader;
     this->getContext()->get(VoxelLoader);
     if ( !VoxelLoader )
     {
-        msg_error() << "DynamicSparseGridTopologyContainer::init(): No VoxelLoader found! Aborting...";
+        msg_error() << "DynamicSparseGridTopologyContainer::doBaseObjectInit(): No VoxelLoader found! Aborting...";
         exit(EXIT_FAILURE);
     }
 

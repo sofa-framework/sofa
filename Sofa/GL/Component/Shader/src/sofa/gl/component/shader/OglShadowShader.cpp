@@ -59,9 +59,9 @@ OglShadowShader::~OglShadowShader()
 {
 }
 
-void OglShadowShader::init()
+void OglShadowShader::doBaseObjectInit()
 {
-    OglShader::init();
+    OglShader::doBaseObjectInit();
 
     std::ostringstream oss;
     oss << LightManager::MAX_NUMBER_OF_LIGHTS;

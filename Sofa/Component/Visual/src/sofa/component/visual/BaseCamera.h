@@ -91,7 +91,7 @@ public:
     BaseCamera();
     ~BaseCamera() override;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void bwdInit() override;
 

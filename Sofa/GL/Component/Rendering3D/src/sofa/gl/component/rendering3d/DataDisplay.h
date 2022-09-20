@@ -66,7 +66,7 @@ public:
 
     Real oldMin, oldMax;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void drawVisual(const core::visual::VisualParams* vparams) override;
     void updateVisual() override;
 

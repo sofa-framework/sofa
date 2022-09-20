@@ -37,7 +37,7 @@ protected:
     DevMonitorManager();
     virtual ~DevMonitorManager();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void eval() override;
 
 private:

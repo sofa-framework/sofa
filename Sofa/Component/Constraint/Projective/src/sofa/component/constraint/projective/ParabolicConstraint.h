@@ -101,7 +101,7 @@ public:
     Real getEndTime() {return m_tEnd.getValue();}
 
     /// -- Constraint interface
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;

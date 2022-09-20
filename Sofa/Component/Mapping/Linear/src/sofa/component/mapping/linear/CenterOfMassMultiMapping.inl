@@ -151,7 +151,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams
 
 
 template <class TIn, class TOut>
-void CenterOfMassMultiMapping< TIn, TOut>::init()
+void CenterOfMassMultiMapping< TIn, TOut>::doBaseObjectInit()
 {
     typedef type::vector<double>::iterator iter_double;
 
@@ -170,7 +170,7 @@ void CenterOfMassMultiMapping< TIn, TOut>::init()
         invTotalMass += *iter;
     }
     invTotalMass = 1.0/invTotalMass;
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     sofa::core::State<Out>* toModel = this->toModels[0];
     if (toModel) toModel->resize(1);

@@ -986,7 +986,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::Vec
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::init()
+void MechanicalObject<DataTypes>::doBaseObjectInit()
 {
     if (!l_topology && d_useTopology.getValue())
     {

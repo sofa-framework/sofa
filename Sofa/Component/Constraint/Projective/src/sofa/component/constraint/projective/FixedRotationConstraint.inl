@@ -47,9 +47,9 @@ FixedRotationConstraint<DataTypes>::~FixedRotationConstraint()
 
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::init()
+void FixedRotationConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     // Retrieves mechanical state
     VecCoord x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

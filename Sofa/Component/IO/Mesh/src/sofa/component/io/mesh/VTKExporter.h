@@ -82,7 +82,7 @@ protected:
     VTKExporter();
     ~VTKExporter() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void cleanup() override;
     void bwdInit() override;
 

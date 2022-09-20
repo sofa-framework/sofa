@@ -92,7 +92,7 @@ public:
     ///
     double getSolutionIntegrationFactor(int outputDerivative) const override ;
 
-    void init() override ;
+    void doBaseObjectInit() override ;
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 

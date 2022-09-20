@@ -48,7 +48,7 @@ NewProximityIntersection::NewProximityIntersection()
 {
 }
 
-void NewProximityIntersection::init()
+void NewProximityIntersection::doBaseObjectInit()
 {
     intersectors.add<CubeCollisionModel, CubeCollisionModel, NewProximityIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, NewProximityIntersection>(this);
@@ -62,7 +62,7 @@ void NewProximityIntersection::init()
     //new supported pairs of collision models. For example, see MeshNewProximityIntersection.
     IntersectorFactory::getInstance()->addIntersectors(this);
 
-	BaseProximityIntersection::init();
+	BaseProximityIntersection::doBaseObjectInit();
 }
 
 bool NewProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)

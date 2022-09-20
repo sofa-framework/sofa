@@ -52,7 +52,7 @@ protected:
 
     ~DefaultVisualManagerLoop() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Initialize the textures
     void initStep(sofa::core::ExecParams* params) override;

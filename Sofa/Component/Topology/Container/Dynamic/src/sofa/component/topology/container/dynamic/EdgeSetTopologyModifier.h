@@ -55,7 +55,7 @@ protected:
 
     ~EdgeSetTopologyModifier() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -72,7 +72,7 @@ public:
     virtual void addEdges( const sofa::type::vector< Edge >& edges,
             const sofa::type::vector< sofa::type::vector< EdgeID > > & ancestors,
             const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs) ;
-    
+
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
     @param ancestors for each edge to be created provides an array of edge ancestors (optional)

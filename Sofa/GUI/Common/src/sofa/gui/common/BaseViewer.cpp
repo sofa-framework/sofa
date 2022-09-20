@@ -227,7 +227,7 @@ bool BaseViewer::load()
             visualStyle->displayFlags.endEdit();
 
             groot->addObject(visualStyle);
-            visualStyle->init();
+            visualStyle->doBaseObjectInit();
         }
 
         currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());

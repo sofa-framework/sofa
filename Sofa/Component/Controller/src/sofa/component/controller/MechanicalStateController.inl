@@ -53,7 +53,7 @@ MechanicalStateController<DataTypes>::MechanicalStateController()
 }
 
 template <class DataTypes>
-void MechanicalStateController<DataTypes>::init()
+void MechanicalStateController<DataTypes>::doBaseObjectInit()
 {
     using core::behavior::MechanicalState;
     mState = dynamic_cast<MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());

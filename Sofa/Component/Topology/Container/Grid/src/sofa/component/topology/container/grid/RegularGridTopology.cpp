@@ -89,7 +89,7 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 
 }
 
-void RegularGridTopology::init()
+void RegularGridTopology::doBaseObjectInit()
 {
     if (d_cellWidth.getValue())
     {
@@ -103,7 +103,7 @@ void RegularGridTopology::init()
         setNbGridPoints();
     }
 
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 }
 
 void RegularGridTopology::reinit()

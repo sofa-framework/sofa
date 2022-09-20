@@ -48,9 +48,9 @@ void OglTexturePointer::setActiveTexture(unsigned short unit)
     glActiveTexture(GL_TEXTURE0 + unit);
 }
 
-void OglTexturePointer::init()
+void OglTexturePointer::doBaseObjectInit()
 {
-    OglShaderElement::init();
+    OglShaderElement::doBaseObjectInit();
 }
 
 void OglTexturePointer::initVisual()

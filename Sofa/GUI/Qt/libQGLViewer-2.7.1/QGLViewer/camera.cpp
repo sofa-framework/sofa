@@ -997,7 +997,7 @@ Vec Camera::pointUnderPixel(const QPoint &pixel, bool &found) const {
  Simply calls fitSphere() on a sphere defined by sceneCenter() and
  sceneRadius().
 
- You will typically use this method in QGLViewer::init() after you defined a new
+ You will typically use this method in QGLViewer::doBaseObjectInit() after you defined a new
  sceneRadius(). */
 void Camera::showEntireScene() { fitSphere(sceneCenter(), sceneRadius()); }
 

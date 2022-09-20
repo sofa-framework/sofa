@@ -37,9 +37,9 @@ PauseAnimationOnEvent::~PauseAnimationOnEvent()
 
 }
 
-void PauseAnimationOnEvent::init()
+void PauseAnimationOnEvent::doBaseObjectInit()
 {
-    PauseAnimation::init();
+    PauseAnimation::doBaseObjectInit();
     this->f_listening.setValue(true);
 }
 

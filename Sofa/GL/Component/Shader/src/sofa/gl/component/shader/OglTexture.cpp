@@ -70,7 +70,7 @@ void OglTexture::setActiveTexture(unsigned short unit)
     glActiveTexture(GL_TEXTURE0 + unit);
 }
 
-void OglTexture::init()
+void OglTexture::doBaseObjectInit()
 {
     if (textureFilename.getFullPath().empty())
     {
@@ -195,7 +195,7 @@ void OglTexture::init()
         }
     }
 
-    OglShaderElement::init();
+    OglShaderElement::doBaseObjectInit();
 }
 
 void OglTexture::initVisual()
@@ -288,10 +288,10 @@ OglTexture2D::~OglTexture2D()
 {
 }
 
-void OglTexture2D::init()
+void OglTexture2D::doBaseObjectInit()
 {
     textureFilename.setValue(texture2DFilename.getValue());
-    OglTexture::init();
+    OglTexture::doBaseObjectInit();
 }
 
 

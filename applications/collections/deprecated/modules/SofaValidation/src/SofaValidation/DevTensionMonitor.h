@@ -45,7 +45,7 @@ protected:
     DevTensionMonitor() { };
     virtual ~DevTensionMonitor() { };
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void eval() override;
 
     /// Pre-construction check method called by ObjectFactory.

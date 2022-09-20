@@ -59,7 +59,7 @@ DilateEngine<DataTypes>::DilateEngine()
 
 
 template <class DataTypes>
-void DilateEngine<DataTypes>::init()
+void DilateEngine<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

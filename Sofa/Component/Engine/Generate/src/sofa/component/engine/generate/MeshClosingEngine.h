@@ -97,7 +97,7 @@ protected:
     ~MeshClosingEngine() override {}
 
 public:
-    void init() override
+    void doBaseObjectInit() override
     {
         setDirtyValue();
     }

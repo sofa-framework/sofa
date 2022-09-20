@@ -62,7 +62,7 @@ protected:
     ~ConstraintCorrection() override = default;
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void cleanup() override;
 

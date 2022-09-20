@@ -148,11 +148,11 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
 
 
 template <class DataTypes>
-void LCPForceFeedback<DataTypes>::init()
+void LCPForceFeedback<DataTypes>::doBaseObjectInit()
 {
     core::objectmodel::BaseContext* c = this->getContext();
 
-    this->ForceFeedback::init();
+    this->ForceFeedback::doBaseObjectInit();
     if(!c)
     {
         msg_error() << "LCPForceFeedback has no current context. Initialisation failed.";

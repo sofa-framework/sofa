@@ -82,7 +82,7 @@ Simulation::Simulation()
 {
     // Safety check; it could be elsewhere, but here is a good place, I guess.
     if (!sofa::simulation::core::isInitialized())
-        sofa::helper::printUninitializedLibraryWarning("SofaSimulationCommon", "sofa::simulation::common::init()");
+        sofa::helper::printUninitializedLibraryWarning("SofaSimulationCommon", "sofa::simulation::common::doBaseObjectInit()");
 
     name.setValue("Simulation");
 }

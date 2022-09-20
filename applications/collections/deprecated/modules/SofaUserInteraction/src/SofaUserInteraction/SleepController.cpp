@@ -129,7 +129,7 @@ SleepController::~SleepController()
 
 }
 
-void SleepController::init()
+void SleepController::doBaseObjectInit()
 {
     m_statesThatCanSleep.clear();
     m_contextsThatCanSleep.clear();

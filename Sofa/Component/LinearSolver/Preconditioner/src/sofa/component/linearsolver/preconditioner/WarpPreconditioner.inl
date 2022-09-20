@@ -63,9 +63,9 @@ WarpPreconditioner<TMatrix,TVector,ThreadManager >::~WarpPreconditioner()
 }
 
 template <class TMatrix, class TVector, class ThreadManager>
-void WarpPreconditioner<TMatrix, TVector, ThreadManager>::init()
+void WarpPreconditioner<TMatrix, TVector, ThreadManager>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
     first = true;
 }
 

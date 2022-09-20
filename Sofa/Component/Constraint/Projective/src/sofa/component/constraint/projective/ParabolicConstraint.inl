@@ -55,9 +55,9 @@ void  ParabolicConstraint<DataTypes>::addConstraint(unsigned index)
 
 
 template <class DataTypes>
-void ParabolicConstraint<DataTypes>::init()
+void ParabolicConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {
@@ -97,7 +97,7 @@ void ParabolicConstraint<DataTypes>::init()
         ay.normalize();
         az.normalize();
 
-        
+
         type::Mat<3,3,Real> Mrot(ax, ay, az);
         type::Mat<3,3,Real> Mrot2;
         Mrot2.transpose(Mrot);
@@ -113,7 +113,7 @@ void ParabolicConstraint<DataTypes>::init()
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::reinit()
 {
-    init();
+    doBaseObjectInit();
 }
 
 

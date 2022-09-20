@@ -40,9 +40,9 @@ NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForc
 {}
 
 template <class DataTypes>
-void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::init()
+void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 
     this->getContext()->get(this->_topology);
 

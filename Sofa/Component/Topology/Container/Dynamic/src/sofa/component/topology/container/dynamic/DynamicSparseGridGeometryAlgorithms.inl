@@ -29,9 +29,9 @@ namespace sofa::component::topology::container::dynamic
 {
 
 template < class DataTypes >
-void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
+void DynamicSparseGridGeometryAlgorithms<DataTypes>::doBaseObjectInit()
 {
-    HexahedronSetGeometryAlgorithms<DataTypes>::init();
+    HexahedronSetGeometryAlgorithms<DataTypes>::doBaseObjectInit();
     this->getContext()->get ( topoContainer );
     if ( !topoContainer )
     {

@@ -70,7 +70,7 @@ VoxelGridLoader::~VoxelGridLoader()
     segmentation = nullptr;
 }
 
-void VoxelGridLoader::init()
+void VoxelGridLoader::doBaseObjectInit()
 {
 
 

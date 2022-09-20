@@ -57,7 +57,7 @@ AbstractTransformMatrixEngine::AbstractTransformMatrixEngine()
     addOutput(&d_outT);
 }
 
-void AbstractTransformMatrixEngine::init()
+void AbstractTransformMatrixEngine::doBaseObjectInit()
 {
     setDirtyValue();
 }
@@ -92,9 +92,9 @@ TranslateTransformMatrixEngine::TranslateTransformMatrixEngine()
 {
 }
 
-void TranslateTransformMatrixEngine::init()
+void TranslateTransformMatrixEngine::doBaseObjectInit()
 {
-    AbstractTransformMatrixEngine::init();
+    AbstractTransformMatrixEngine::doBaseObjectInit();
     addInput(&d_translation);
     setDirtyValue();
 }
@@ -121,9 +121,9 @@ RotateTransformMatrixEngine::RotateTransformMatrixEngine()
 {
 }
 
-void RotateTransformMatrixEngine::init()
+void RotateTransformMatrixEngine::doBaseObjectInit()
 {
-    AbstractTransformMatrixEngine::init();
+    AbstractTransformMatrixEngine::doBaseObjectInit();
     addInput(&d_rotation);
     setDirtyValue();
 }
@@ -153,9 +153,9 @@ ScaleTransformMatrixEngine::ScaleTransformMatrixEngine()
 {
 }
 
-void ScaleTransformMatrixEngine::init()
+void ScaleTransformMatrixEngine::doBaseObjectInit()
 {
-    AbstractTransformMatrixEngine::init();
+    AbstractTransformMatrixEngine::doBaseObjectInit();
     addInput(&d_scale);
     setDirtyValue();
 }

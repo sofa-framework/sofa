@@ -68,9 +68,9 @@ SurfacePressureForceField<DataTypes>::~SurfacePressureForceField()
 
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::init()
+void SurfacePressureForceField<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
    
     if (l_topology.empty())
     {

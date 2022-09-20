@@ -48,9 +48,9 @@ FrameSpringForceField<DataTypes>::FrameSpringForceField ( MechanicalState* objec
 }
 
 template <class DataTypes>
-void FrameSpringForceField<DataTypes>::init()
+void FrameSpringForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 }
 
 template<class DataTypes>

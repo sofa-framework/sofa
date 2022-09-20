@@ -47,7 +47,7 @@ class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyChecker: public core::objectmo
 public:
     SOFA_CLASS(TopologyChecker, core::objectmodel::BaseObject);
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

@@ -58,7 +58,7 @@ int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& 
 }
 
 template <class TIn, class TInRoot, class TOut>
-void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::doBaseObjectInit()
 {
 
     if(this->getFromModels1().empty())
@@ -84,7 +84,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
         msg_info() << "Root Model found : Name = " << m_fromRootModel->getName() ;
     }
 
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 }
 
 template <class TIn, class TInRoot, class TOut>

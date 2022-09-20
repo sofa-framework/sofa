@@ -44,7 +44,7 @@ ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
 }
 
 template <class TIn, class TInRoot, class TOut>
-void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
+void ArticulatedSystemMapping<TIn, TInRoot, TOut>::doBaseObjectInit()
 {
 
     if(this->getFromModels1().empty())
@@ -89,8 +89,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     apply(xtoData.wref(),
             xfrom,
             m_fromRootModel == nullptr ? nullptr : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
-    
-    Inherit::init();
+
+    Inherit::doBaseObjectInit();
     /*
     OutVecDeriv& vto = m_toModel->read(core::ConstVecDerivId::velocity())->getValue();
     InVecDeriv& vfrom = m_fromModel->read(core::ConstVecDerivId::velocity())->getValue();
@@ -119,7 +119,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
-    
+
     const InVecCoord& xfrom = m_fromModel->read(core::ConstVecCoordId::position())->getValue();
     if (articulationCenters.size() > xfrom.size())
     {
@@ -142,7 +142,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::reset()
 {
-    init();
+    doBaseObjectInit();
 }
 
 

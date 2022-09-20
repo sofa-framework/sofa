@@ -163,9 +163,9 @@ FastTetrahedralCorotationalForceField<DataTypes>::~FastTetrahedralCorotationalFo
 }
 
 template <class DataTypes> 
-void FastTetrahedralCorotationalForceField<DataTypes>::init()
+void FastTetrahedralCorotationalForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     if (l_topology.empty())
     {

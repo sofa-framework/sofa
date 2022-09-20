@@ -57,7 +57,7 @@ MultiTagAnimationLoop::~MultiTagAnimationLoop()
 {
 }
 
-void MultiTagAnimationLoop::init()
+void MultiTagAnimationLoop::doBaseObjectInit()
 {
     tagList = this->getTags();
     sofa::core::objectmodel::TagSet::iterator it;

@@ -53,7 +53,7 @@ protected:
     OglCylinderModel();
     ~OglCylinderModel() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

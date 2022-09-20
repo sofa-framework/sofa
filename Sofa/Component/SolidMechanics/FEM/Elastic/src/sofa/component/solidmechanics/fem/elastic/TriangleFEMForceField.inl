@@ -55,9 +55,9 @@ TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::init()
+void TriangleFEMForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     // checking inputs using setter
     setMethod(f_method.getValue());

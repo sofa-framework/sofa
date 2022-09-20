@@ -55,9 +55,9 @@ OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForc
 
 
 template <class DataTypes>
-void OscillatingTorsionPressureForceField<DataTypes>::init()
+void OscillatingTorsionPressureForceField<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
     axis.setValue( axis.getValue() / axis.getValue().norm() );
 
     if (l_topology.empty())

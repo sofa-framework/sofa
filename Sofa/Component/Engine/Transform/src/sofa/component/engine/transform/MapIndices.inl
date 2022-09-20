@@ -47,7 +47,7 @@ MapIndices<T>::~MapIndices()
 }
 
 template <class T>
-void MapIndices<T>::init()
+void MapIndices<T>::doBaseObjectInit()
 {
     setDirtyValue();
 }

@@ -42,7 +42,7 @@ AverageCoord<DataTypes>::AverageCoord()
 }
 
 template <class DataTypes>
-void AverageCoord<DataTypes>::init()
+void AverageCoord<DataTypes>::doBaseObjectInit()
 {
     mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 

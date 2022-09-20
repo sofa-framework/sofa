@@ -105,7 +105,7 @@ bool BaseCamera::isActivated()
     return p_activated.getValue();
 }
 
-void BaseCamera::init()
+void BaseCamera::doBaseObjectInit()
 {    
     if(p_position.isSet())
     {

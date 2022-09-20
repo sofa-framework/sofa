@@ -72,7 +72,7 @@ public:
 
     ~SelectConnectedLabelsROI() override {}
 
-    void init() override
+    void doBaseObjectInit() override
     {
         d_labels.resize(d_nbLabels.getValue());
 

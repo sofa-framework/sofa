@@ -107,7 +107,7 @@ protected:
     virtual void updateFromTopology();
     void addTetraToDraw(const Tetrahedron& t, std::vector<sofa::type::Vector3>& tetraVertices, std::vector<sofa::type::Vector3>& normalVertices);
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     // -- CollisionModel interface
 

@@ -46,7 +46,7 @@ protected:
     IndexValueMapper();
     ~IndexValueMapper() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void doUpdate() override;
 

@@ -61,7 +61,7 @@ struct RigidMappingMatrixHelper<3, Real>
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class TIn, class TOut>
-void BeamLinearMapping<TIn, TOut>::init()
+void BeamLinearMapping<TIn, TOut>::doBaseObjectInit()
 {
     bool local = localCoord.getValue();
     if (this->points.empty() && this->toModel!=nullptr)
@@ -104,7 +104,7 @@ void BeamLinearMapping<TIn, TOut>::init()
         }
     }
 
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 }
 
 template <class TIn, class TOut>

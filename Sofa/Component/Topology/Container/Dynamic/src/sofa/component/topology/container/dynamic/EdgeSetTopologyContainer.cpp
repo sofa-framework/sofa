@@ -50,10 +50,10 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer()
 }
 
 
-void EdgeSetTopologyContainer::init()
+void EdgeSetTopologyContainer::doBaseObjectInit()
 {
     helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
-    
+
     if (d_initPoints.isSet())
     {
         setNbPoints(Size(d_initPoints.getValue().size()));
@@ -70,7 +70,7 @@ void EdgeSetTopologyContainer::init()
         }
     }
 
-    PointSetTopologyContainer::init();
+    PointSetTopologyContainer::doBaseObjectInit();
 
     // only init if edges are present at init.
     if (!m_edge.empty())
@@ -119,7 +119,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
     {
         const Edge& edge = edges[edgeId];
         // adding edge in the edge shell of both points
-        
+
         if (edge[0] >= unsigned(nbPoints) || edge[1] >= unsigned(nbPoints))
         {
             msg_warning() << "EdgesAroundVertex creation failed, Edge buffer is not concistent with number of points: Edge: " << edge << " for: " << nbPoints << " points.";
@@ -323,7 +323,7 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnected
         dmsg_warning() << "getConnectedElement: EdgesAroundVertex is empty. Be sure to call createEdgesAroundVertexArray first.";
         return elemAll;
     }
-    
+
     VecEdgeID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     size_t cpt = 0;

@@ -131,9 +131,9 @@ GenericConstraintSolver::~GenericConstraintSolver()
         simulation::TaskScheduler::getInstance()->stop();
 }
 
-void GenericConstraintSolver::init()
+void GenericConstraintSolver::doBaseObjectInit()
 {
-    core::behavior::ConstraintSolver::init();
+    core::behavior::ConstraintSolver::doBaseObjectInit();
 
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())

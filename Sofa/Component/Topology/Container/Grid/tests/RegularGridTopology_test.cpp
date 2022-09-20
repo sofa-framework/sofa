@@ -72,7 +72,7 @@ bool RegularGridTopology_test::regularGridSize(const std::vector<int>& p, bool f
     /// Creating a good Grid in 3D
     RegularGridTopology::SPtr regGrid = New<RegularGridTopology>(nx, ny, nz);
     regGrid->d_computeTriangleList.setValue(fromTriangleList);
-    regGrid->init();
+    regGrid->doBaseObjectInit();
 
     /// The input was not valid...the default data should be used.
     if (p[4] == 1)
@@ -135,7 +135,7 @@ bool RegularGridTopology_test::regularGridPosition()
     int ny = 8;
     int nz = 5;
     RegularGridTopology::SPtr regGrid = New<RegularGridTopology>(nx, ny, nz);
-    regGrid->init();
+    regGrid->doBaseObjectInit();
 
     // Check first circle with
     sofa::type::Vector3 p0 = regGrid->getPoint(0);
@@ -178,7 +178,7 @@ bool RegularGridTopology_test::regularGridFindPoint()
                     Dimension{ 4, 4, 4 },
                     BoundingBox( Coordinates{ 1., 1., 1. } /*min*/, Coordinates{ 4, 4, 4 } /*max*/ )
                 );
-    grid->init();
+    grid->doBaseObjectInit();
 
     EXPECT_EQ(grid->findPoint(Coordinates{ .4, .4, .4 }), sofa::InvalidID);
     // No margin set means anything position rounded to a valid

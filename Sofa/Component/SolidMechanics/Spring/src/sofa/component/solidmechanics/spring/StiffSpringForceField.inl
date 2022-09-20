@@ -56,7 +56,7 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1
 
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::init()
+void StiffSpringForceField<DataTypes>::doBaseObjectInit()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
 
@@ -64,7 +64,7 @@ void StiffSpringForceField<DataTypes>::init()
     {
         createSpringsFromInputs();
     }
-    this->SpringForceField<DataTypes>::init();
+    this->SpringForceField<DataTypes>::doBaseObjectInit();
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }

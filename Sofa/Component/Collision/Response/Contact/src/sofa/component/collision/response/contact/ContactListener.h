@@ -49,7 +49,7 @@ public:
     ContactListener(core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );
     ~ContactListener() override ;
 
-    void init(void) override;
+    void doBaseObjectInit(void) override;
 
 
     void handleEvent( core::objectmodel::Event* event ) override;

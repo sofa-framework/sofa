@@ -89,9 +89,9 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
 }
 
 template <class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::init()
+void TetrahedralCorotationalFEMForceField<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

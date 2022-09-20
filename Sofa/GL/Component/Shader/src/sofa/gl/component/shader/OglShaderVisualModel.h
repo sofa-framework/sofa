@@ -52,7 +52,7 @@ protected:
     OglShaderVisualModel();
     ~OglShaderVisualModel() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 
     void updateVisual() override;

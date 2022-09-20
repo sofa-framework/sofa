@@ -75,7 +75,7 @@ protected:
     static constexpr bool isPointOutside(const Coord& value, const Vec6& bb);
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;

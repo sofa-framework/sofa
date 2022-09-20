@@ -43,7 +43,7 @@ public:
 protected:
     ExtraMonitor();
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     //	virtual void reset();
 

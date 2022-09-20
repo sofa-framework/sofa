@@ -46,7 +46,7 @@ CompositingVisualLoop::~CompositingVisualLoop()
 void CompositingVisualLoop::initVisual()
 {}
 
-void CompositingVisualLoop::init()
+void CompositingVisualLoop::doBaseObjectInit()
 {
     if (!l_node)
         l_node = dynamic_cast<simulation::Node*>(this->getContext());

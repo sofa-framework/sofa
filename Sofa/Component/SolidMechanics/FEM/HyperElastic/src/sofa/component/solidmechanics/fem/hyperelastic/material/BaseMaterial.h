@@ -40,9 +40,9 @@ public:
     BaseMaterial() {}
     ~BaseMaterial() override {}
 
-    void init() override
+    void doBaseObjectInit() override
     {
-        this->core::objectmodel::BaseObject::init();
+        this->core::objectmodel::BaseObject::doBaseObjectInit();
     }
 
 

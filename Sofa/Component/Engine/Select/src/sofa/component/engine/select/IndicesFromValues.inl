@@ -46,7 +46,7 @@ IndicesFromValues<T>::~IndicesFromValues()
 }
 
 template <class T>
-void IndicesFromValues<T>::init()
+void IndicesFromValues<T>::doBaseObjectInit()
 {
     setDirtyValue();
 }

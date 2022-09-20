@@ -75,7 +75,7 @@ public:
     SingleLink<FastTriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// Searches triangle topology and creates the bending springs
-    void init() override;
+    void doBaseObjectInit() override;
 
     void reinit() override;
 

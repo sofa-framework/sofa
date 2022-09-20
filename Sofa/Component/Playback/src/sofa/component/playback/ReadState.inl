@@ -72,7 +72,7 @@ ReadState::~ReadState()
 #endif
 }
 
-void ReadState::init()
+void ReadState::doBaseObjectInit()
 {
     reset();
 }

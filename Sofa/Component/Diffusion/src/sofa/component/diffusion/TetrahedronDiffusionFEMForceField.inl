@@ -142,9 +142,9 @@ TetrahedronDiffusionFEMForceField<DataTypes>::~TetrahedronDiffusionFEMForceField
 // --- Initialization stage
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TetrahedronDiffusionFEMForceField<DataTypes>::init()
+void TetrahedronDiffusionFEMForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     if (l_topology.empty())
     {

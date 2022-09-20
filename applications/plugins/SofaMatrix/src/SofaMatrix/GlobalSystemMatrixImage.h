@@ -42,7 +42,7 @@ protected:
     GlobalSystemMatrixImage();
     ~GlobalSystemMatrixImage() override;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void handleEvent(core::objectmodel::Event *event) override;
 
     Data< type::BaseMatrixImageProxy > d_bitmap; ///< A proxy to visualize the produced image in the GUI through a DataWidget

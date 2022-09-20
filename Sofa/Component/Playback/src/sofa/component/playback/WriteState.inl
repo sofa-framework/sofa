@@ -70,7 +70,7 @@ WriteState::~WriteState()
 }
 
 
-void WriteState::init()
+void WriteState::doBaseObjectInit()
 {
     validInit = true;
     periodicExport = false;
@@ -226,7 +226,7 @@ if (outfile)
 if (gzfile)
     gzclose(gzfile);
 #endif
-init();
+doBaseObjectInit();
 }
 void WriteState::reset()
 {

@@ -42,7 +42,7 @@ public:
 public:
     virtual void computeForce(const  VecCoord& state,  VecDeriv& forces) = 0;
 
-    void init() override {context = sofa::simulation::node::getNodeFrom(getContext());}
+    void doBaseObjectInit() override {context = sofa::simulation::node::getNodeFrom(getContext());}
     void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) override = 0;
     void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & ) override = 0;
     void setReferencePosition(sofa::defaulttype::SolidTypes<SReal>::Transform& /*referencePosition*/) override {}

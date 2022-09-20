@@ -77,7 +77,7 @@ protected:
     OglTexture();
     ~OglTexture() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
     void reinit() override;
     void fwdDraw(core::visual::VisualParams*) override;
@@ -112,7 +112,7 @@ public:
     OglTexture2D();
     ~OglTexture2D() override;
 
-    void init() override;
+    void doBaseObjectInit() override;
 };
 
 } // namespace sofa::gl::component::shader

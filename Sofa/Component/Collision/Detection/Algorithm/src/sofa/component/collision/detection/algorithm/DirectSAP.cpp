@@ -29,7 +29,7 @@ namespace sofa::component::collision::detection::algorithm
         .add< DirectSAP >();
 
 
-void DirectSAP::init()
+void DirectSAP::doBaseObjectInit()
 {
     const std::string broadPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::BroadPhaseDetection>();
     const std::string narrowPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::NarrowPhaseDetection>();

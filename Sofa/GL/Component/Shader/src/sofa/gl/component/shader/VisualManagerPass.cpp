@@ -71,7 +71,7 @@ bool VisualManagerPass::checkMultipass(sofa::core::objectmodel::BaseContext* con
     return (isMultipass!=nullptr);
 }
 
-void VisualManagerPass::init()
+void VisualManagerPass::doBaseObjectInit()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     multiPassEnabled=checkMultipass(context);

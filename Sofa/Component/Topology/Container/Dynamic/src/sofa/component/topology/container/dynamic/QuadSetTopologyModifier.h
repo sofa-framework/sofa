@@ -55,7 +55,7 @@ protected:
 
     ~QuadSetTopologyModifier() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /** \brief add a set of quads
     @param quads an array of vertex indices describing the quads to be created

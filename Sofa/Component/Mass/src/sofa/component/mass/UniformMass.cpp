@@ -424,7 +424,7 @@ void UniformMass<Rigid3Types>::constructor_message()
 }
 
 template<> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3Types>::init()
+void UniformMass<Rigid3Types>::doBaseObjectInit()
 {
     initDefaultImpl() ;
 

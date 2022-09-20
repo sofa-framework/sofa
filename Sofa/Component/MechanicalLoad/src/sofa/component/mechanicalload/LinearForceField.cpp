@@ -48,9 +48,9 @@ template class SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<Rigid3Types>;
 
 
 template <>
-void LinearForceField<Rigid3Types>::init()
+void LinearForceField<Rigid3Types>::doBaseObjectInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 }
 
 template <>

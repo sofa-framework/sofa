@@ -98,7 +98,7 @@ protected:
 
     SphereCollisionModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     // -- CollisionModel interface
 

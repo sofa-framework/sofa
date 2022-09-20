@@ -44,16 +44,16 @@ GridTopology::GridUpdate::GridUpdate(GridTopology *t):
 }
 
 void GridTopology::GridUpdate::doUpdate()
-{   
+{
     if (m_topology->d_computeHexaList.getValue())
         updateHexas();
 
     if (m_topology->d_computeQuadList.getValue())
         updateQuads();
-    
+
     if (m_topology->d_computeTriangleList.getValue())
-        updateTriangles();    
-    
+        updateTriangles();
+
     if (m_topology->d_computeEdgeList.getValue())
         updateEdges();
 }
@@ -103,7 +103,7 @@ void GridTopology::GridUpdate::updateEdges()
     }
     else
     {
-        // Similar algo as createEdgeSetArray in TriangleSetTopologyContainer 
+        // Similar algo as createEdgeSetArray in TriangleSetTopologyContainer
         // create a temporary map to find redundant edges
         std::map<Edge, EdgeID> edgeMap;
         for (size_t i = 0; i<triangles.size(); ++i)
@@ -236,7 +236,7 @@ GridTopology::GridTopology(int nx, int ny, int nz) :
 {
 }
 
-void GridTopology::init()
+void GridTopology::doBaseObjectInit()
 {
     // first check resolution
     checkGridResolution();
@@ -252,11 +252,11 @@ void GridTopology::init()
 
     if (d_computeQuadList.getValue())
         this->computeQuadList();
-    
+
     if (d_computeEdgeList.getValue())
         this->computeEdgeList();
 
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 }
 
 void GridTopology::reinit()
@@ -297,7 +297,7 @@ Grid_dimension GridTopology::getDimensions() const
 	const Vec3i& _n = d_n.getValue();
 	int dim = 0;
 	for (int i = 0; i<3; i++)
-		if (_n[i] > 1) 
+		if (_n[i] > 1)
 			dim++;
 
 	return (Grid_dimension)dim;

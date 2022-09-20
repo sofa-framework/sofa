@@ -52,7 +52,7 @@ SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object1, Mechan
 }
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::init()
+void SlidingConstraint<DataTypes>::doBaseObjectInit()
 {
     assert(this->mstate1);
     assert(this->mstate2);

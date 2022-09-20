@@ -142,7 +142,7 @@ public:
     const sofa::type::vector< Spring >& getSprings() const {return springs.getValue();}
 
     void reinit() override;
-    void init() override;
+    void doBaseObjectInit() override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2) override;
     void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 ) override;

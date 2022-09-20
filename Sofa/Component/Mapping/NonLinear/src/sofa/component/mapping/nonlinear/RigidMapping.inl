@@ -204,7 +204,7 @@ void RigidMapping<TIn, TOut>::reinit()
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::init()
+void RigidMapping<TIn, TOut>::doBaseObjectInit()
 {
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
@@ -214,7 +214,7 @@ void RigidMapping<TIn, TOut>::init()
 
     this->reinit();
 
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
 }
 
 template <class TIn, class TOut>

@@ -47,7 +47,7 @@ public:
                SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
-    
+
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -117,7 +117,7 @@ public:
     void loadRigidMass(const std::string& filename);
 
     void reinit() override;
-    void init() override;
+    void doBaseObjectInit() override;
     void initDefaultImpl() ;
     void doUpdateInternal() override;
 
@@ -208,7 +208,7 @@ private:
 
 // Specialization for rigids
 template <>
-void UniformMass<defaulttype::Rigid3Types>::init();
+void UniformMass<defaulttype::Rigid3Types>::doBaseObjectInit();
 template <>
 void UniformMass<defaulttype::Rigid3Types>::loadRigidMass ( const std::string&  );
 template <>

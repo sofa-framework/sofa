@@ -129,7 +129,7 @@ public:
 
 
     /// -- Constraint interface
-    void init() override;
+    void doBaseObjectInit() override;
     void reset() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;

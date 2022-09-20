@@ -63,7 +63,7 @@ bool SparseGridTopology_test::buildFromMeshFile()
 
     dataFilename->setValue("mesh/suzanne.stl");
     sparseGrid1->setN({ 6, 5, 4 });
-    sparseGrid1->init();
+    sparseGrid1->doBaseObjectInit();
     EXPECT_EQ(sparseGrid1->getNbPoints(), 0);
     EXPECT_EQ(sparseGrid1->getNbHexahedra(), 0);
 
@@ -75,7 +75,7 @@ bool SparseGridTopology_test::buildFromMeshFile()
     EXPECT_NE(dataFilename, nullptr);
     dataFilename->setValue("mesh/dragon.OBJ");
     sparseGrid2->setN({ 6, 5, 4 });
-    sparseGrid2->init();
+    sparseGrid2->doBaseObjectInit();
 
     EXPECT_EQ(sparseGrid2->getNbPoints(), 110);
     EXPECT_EQ(sparseGrid2->getNbHexahedra(), 50);
@@ -95,7 +95,7 @@ bool SparseGridTopology_test::buildFromMeshParams()
     sparseGrid1->seqPoints.setValue({ {0, 0, 1}, {-1, 0, -1}, {0, 1, -1}, {1, 0, -1}, {0, -1, -1} });
     sparseGrid1->seqTriangles.setValue({ {0, 1, 2}, {0, 2, 3}, {0, 3, 4}, {0, 4, 1}, {1, 2, 3}, {3, 4, 1} });
     sparseGrid1->setN({ 10,10,10 });
-    sparseGrid1->init();
+    sparseGrid1->doBaseObjectInit();
 
     EXPECT_EQ(sparseGrid1->getNbPoints(), 392);
     EXPECT_EQ(sparseGrid1->getNbHexahedra(), 209);
@@ -116,7 +116,7 @@ bool SparseGridTopology_test::buildFromMeshParams()
     sparseGrid2->seqTriangles.setParent(&stlLoader->d_triangles);
     sparseGrid2->seqQuads.setParent(&stlLoader->d_quads);
     sparseGrid2->setN({ 10,10,10 });
-    sparseGrid2->init();
+    sparseGrid2->doBaseObjectInit();
 
     EXPECT_EQ(sparseGrid2->getNbPoints(), 550);
     EXPECT_EQ(sparseGrid2->getNbHexahedra(), 338);

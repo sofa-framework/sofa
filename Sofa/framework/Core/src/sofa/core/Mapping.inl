@@ -100,7 +100,7 @@ type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 }
 
 template <class In, class Out>
-void Mapping<In,Out>::init()
+void Mapping<In,Out>::doBaseObjectInit()
 {
     if(toModel && !testMechanicalState(toModel.get()))
     {

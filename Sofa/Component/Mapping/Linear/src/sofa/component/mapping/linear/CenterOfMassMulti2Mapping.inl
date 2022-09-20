@@ -237,7 +237,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT(
 }
 
 template <class TIn1, class TIn2, class TOut>
-void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut>::init()
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut>::doBaseObjectInit()
 {
     typedef type::vector<double>::iterator  iter_double;
 
@@ -259,7 +259,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut>::init()
     for ( iter_double iter = inputTotalMass1.begin() ; iter != inputTotalMass1.end() ; ++ iter ) invTotalMass += *iter;
     for ( iter_double iter = inputTotalMass2.begin() ; iter != inputTotalMass2.end() ; ++ iter ) invTotalMass += *iter;
     invTotalMass = 1.0/invTotalMass;
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     if (this->getToModels()[0]) this->getToModels()[0]->resize(1);
 }

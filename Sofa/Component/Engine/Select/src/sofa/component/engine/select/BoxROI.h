@@ -78,7 +78,7 @@ public:
 
 public:
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void doUpdate() override;
     void draw(const VisualParams*) override;

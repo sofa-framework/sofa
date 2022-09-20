@@ -791,9 +791,9 @@ void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 }
 
 
-void VisualModelImpl::init()
+void VisualModelImpl::doBaseObjectInit()
 {
-    VisualModel::init();
+    VisualModel::doBaseObjectInit();
 
     if (fileMesh.isSet()) // check if using internal mesh
     {

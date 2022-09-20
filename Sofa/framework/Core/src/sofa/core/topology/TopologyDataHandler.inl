@@ -93,7 +93,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
         msg_error(m_topologyData->getOwner()) << "Owner topology is not able to link with a Point Data Array, Data '" << m_data_name << "' won't be linked.";
         return;
     }
-    
+
 }
 
 

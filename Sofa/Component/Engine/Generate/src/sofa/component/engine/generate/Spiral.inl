@@ -40,7 +40,7 @@ Spiral<DataTypes>::Spiral()
 }
 
 template <class DataTypes>
-void Spiral<DataTypes>::init()
+void Spiral<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

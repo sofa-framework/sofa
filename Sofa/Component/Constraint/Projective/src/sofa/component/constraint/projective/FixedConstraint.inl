@@ -88,10 +88,10 @@ void FixedConstraint<DataTypes>::removeConstraint(Index index)
 
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::init()
+void FixedConstraint<DataTypes>::doBaseObjectInit()
 {
     this->d_componentState.setValue(ComponentState::Invalid);
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (!this->mstate.get())
     {

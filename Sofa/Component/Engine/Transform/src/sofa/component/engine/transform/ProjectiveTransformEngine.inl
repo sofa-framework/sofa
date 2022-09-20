@@ -42,7 +42,7 @@ ProjectiveTransformEngine<DataTypes>::ProjectiveTransformEngine()
 
 
 template <class DataTypes>
-void ProjectiveTransformEngine<DataTypes>::init()
+void ProjectiveTransformEngine<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

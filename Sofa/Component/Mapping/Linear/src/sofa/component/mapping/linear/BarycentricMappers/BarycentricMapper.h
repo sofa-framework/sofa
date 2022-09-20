@@ -59,7 +59,7 @@ public:
 
 public:
 
-    using BaseObject::init;
+    using BaseObject::doBaseObjectInit;
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     using BaseObject::draw;

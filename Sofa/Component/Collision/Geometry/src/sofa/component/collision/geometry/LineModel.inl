@@ -54,9 +54,9 @@ void LineCollisionModel<DataTypes>::resize(Size size)
 }
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::init()
+void LineCollisionModel<DataTypes>::doBaseObjectInit()
 {
-    this->CollisionModel::init();
+    this->CollisionModel::doBaseObjectInit();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
     this->getContext()->get(mpoints);
 

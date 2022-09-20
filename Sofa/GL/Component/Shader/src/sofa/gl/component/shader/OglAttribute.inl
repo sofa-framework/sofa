@@ -58,9 +58,9 @@ OglAttribute< size, type, DataTypes>::~OglAttribute()
 }
 
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::init()
+void OglAttribute< size, type, DataTypes>::doBaseObjectInit()
 {
-    OglShaderElement::init();
+    OglShaderElement::doBaseObjectInit();
     getContext()->get( _topology);
     value.getValue(); // make sure the data is updated
 

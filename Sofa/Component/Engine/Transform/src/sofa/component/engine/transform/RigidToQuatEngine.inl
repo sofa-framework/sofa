@@ -51,7 +51,7 @@ RigidToQuatEngine<DataTypes>::~RigidToQuatEngine()
 }
 
 template <class DataTypes>
-void RigidToQuatEngine<DataTypes>::init()
+void RigidToQuatEngine<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

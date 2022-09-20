@@ -146,7 +146,7 @@ public:
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     void draw(const core::visual::VisualParams* vparams) override;

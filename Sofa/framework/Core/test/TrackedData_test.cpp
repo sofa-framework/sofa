@@ -109,7 +109,7 @@ struct DataTracker_test: public ::testing::Test
     void SetUp() override
     {
         testObject = sofa::core::objectmodel::New<TestObject>();
-        testObject->init();
+        testObject->doBaseObjectInit();
     }
 
     /// to test tracked Data
@@ -225,7 +225,7 @@ struct DataTrackerEngine_test: public BaseTest
     void testInsideComponent()
     {
         TestObject2 testObject;
-        testObject.init();
+        testObject.doBaseObjectInit();
 
         unsigned localCounter = 0u;
 
@@ -347,7 +347,7 @@ struct DataTrackerFunctor_test: public BaseTest
     void test()
     {
         DummyObject testObject;
-        testObject.init();
+        testObject.doBaseObjectInit();
 
 
         // as soon as testObject.myData changes, myDataFunctor will be triggered

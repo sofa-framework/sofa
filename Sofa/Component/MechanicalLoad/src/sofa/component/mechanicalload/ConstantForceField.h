@@ -78,7 +78,7 @@ public:
     SingleLink<ConstantForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// Init function
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Re-init function
     void reinit() override;

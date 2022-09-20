@@ -61,7 +61,7 @@ protected:
     bool equilibriumReached{false};
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override {};
 
     void resetSystem() override;

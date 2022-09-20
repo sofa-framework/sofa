@@ -99,7 +99,7 @@ public:
     void addKeyForce(Real time, Deriv force);
     void clearKeyForces();
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     // ForceField methods
     /// Add the forces
@@ -126,7 +126,7 @@ private :
 
 
 template <>
-void SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<defaulttype::Rigid3Types>::init();
+void SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<defaulttype::Rigid3Types>::doBaseObjectInit();
 
 template <>
 SReal SOFA_COMPONENT_MECHANICALLOAD_API LinearForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;

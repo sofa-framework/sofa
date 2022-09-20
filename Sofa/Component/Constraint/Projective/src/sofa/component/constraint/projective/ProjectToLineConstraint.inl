@@ -78,9 +78,9 @@ void ProjectToLineConstraint<DataTypes>::removeConstraint(Index index)
 
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::init()
+void ProjectToLineConstraint<DataTypes>::doBaseObjectInit()
 {
-    this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
+    this->core::behavior::ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

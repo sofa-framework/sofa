@@ -67,7 +67,7 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
     return responseOptions;
 }
 
-void DefaultContactManager::init()
+void DefaultContactManager::doBaseObjectInit()
 {
     if (response.getValue().size() == 0)
     {
@@ -180,7 +180,7 @@ void DefaultContactManager::createNewContacts(const core::collision::ContactMana
                     contact->setName(model1->getName() + std::string("-") + model2->getName());
                     setContactTags(model1, model2, contact);
                     contact->f_printLog.setValue(notMuted());
-                    contact->init();
+                    contact->doBaseObjectInit();
                     contact->setDetectionOutputs(outputsIt->second);
                     ++nbContact;
                 }

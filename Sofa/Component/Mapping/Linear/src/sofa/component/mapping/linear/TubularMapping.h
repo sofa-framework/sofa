@@ -75,7 +75,7 @@ public:
     typedef type::Mat<N,N,Real> Mat;
     typedef type::Vec<N,Real> Vec;
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void apply ( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn ) override;
 

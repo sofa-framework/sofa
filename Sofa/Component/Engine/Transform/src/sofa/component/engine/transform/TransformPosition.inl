@@ -144,7 +144,7 @@ void TransformPosition<DataTypes>::selectTransformationMethod()
 }
 
 template <class DataTypes>
-void TransformPosition<DataTypes>::init()
+void TransformPosition<DataTypes>::doBaseObjectInit()
 {
     Coord& normal = *(f_normal.beginEdit());
 

@@ -84,7 +84,7 @@ OglShader::~OglShader()
     }
 }
 
-void OglShader::init()
+void OglShader::doBaseObjectInit()
 {
     unsigned int nshaders = 0;
     nshaders = std::max(nshaders, (unsigned int)vertFilename.getValue().size());
@@ -542,7 +542,7 @@ OglShaderElement::OglShaderElement()
 
 }
 
-void OglShaderElement::init()
+void OglShaderElement::doBaseObjectInit()
 {
     sofa::core::objectmodel::BaseContext* mycontext = this->getContext();
 

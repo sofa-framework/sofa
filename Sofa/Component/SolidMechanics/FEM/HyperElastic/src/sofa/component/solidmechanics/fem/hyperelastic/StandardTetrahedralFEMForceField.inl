@@ -66,10 +66,10 @@ template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::~Standar
     
 }
 
-template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::init()
+template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::doBaseObjectInit()
 {
     using namespace material;
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

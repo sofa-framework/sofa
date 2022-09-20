@@ -36,7 +36,7 @@ DevAngleCollisionMonitor<DataTypes>::DevAngleCollisionMonitor()
 }
 
 template <class DataTypes>
-void DevAngleCollisionMonitor<DataTypes>::init()
+void DevAngleCollisionMonitor<DataTypes>::doBaseObjectInit()
 {
     if (!this->mstate1 || !this->mstate2)
     {
@@ -61,11 +61,11 @@ void DevAngleCollisionMonitor<DataTypes>::init()
 
     intersection = sofa::core::objectmodel::New<sofa::component::collision::detection::intersection::NewProximityIntersection>();
     this->addSlave(intersection);
-    intersection->init();
+    intersection->doBaseObjectInit();
 
     narrowPhaseDetection = sofa::core::objectmodel::New<sofa::component::collision::detection::algorithm::BVHNarrowPhase>();
     this->addSlave(narrowPhaseDetection);
-    narrowPhaseDetection->init();
+    narrowPhaseDetection->doBaseObjectInit();
 }
 
 template <class DataTypes>

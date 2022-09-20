@@ -67,7 +67,7 @@ int SubsetMapping<TIn, TOut>::addPoint(Index index)
 }
 
 template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::init()
+void SubsetMapping<TIn, TOut>::doBaseObjectInit()
 {
     const bool ignoreNotFound = f_ignoreNotFound.getValue();
     int numnotfound = 0;
@@ -141,7 +141,7 @@ void SubsetMapping<TIn, TOut>::init()
         }
         f_indices.endEdit();
     }
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
     
     if (f_handleTopologyChange.getValue())
     {

@@ -68,7 +68,7 @@ Quad2TriangleTopologicalMapping::~Quad2TriangleTopologicalMapping()
 {
 }
 
-void Quad2TriangleTopologicalMapping::init()
+void Quad2TriangleTopologicalMapping::doBaseObjectInit()
 {
     using namespace container::dynamic;
 
@@ -179,7 +179,7 @@ void Quad2TriangleTopologicalMapping::init()
     }
 
     // Need to fully init the target topology
-    toModel->init();
+    toModel->doBaseObjectInit();
 
     //to_tstm->propagateTopologicalChanges();
     Loc2GlobDataVec.endEdit();

@@ -92,7 +92,7 @@ bool MeshTopology_test::testHexahedronTopology()
 
     fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/nine_hexa.msh", sofa::core::topology::TopologyElementType::HEXAHEDRON, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
-    topo->init();
+    topo->doBaseObjectInit();
     
     if (topoCon == nullptr || topo == nullptr)
     {
@@ -206,7 +206,7 @@ bool MeshTopology_test::testTetrahedronTopology()
 
     fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyElementType::TETRAHEDRON, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
-    topo->init();
+    topo->doBaseObjectInit();
 
     if (topoCon == nullptr || topo == nullptr)
     {
@@ -320,7 +320,7 @@ bool MeshTopology_test::testQuadTopology()
 
     fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1_quads.obj", sofa::core::topology::TopologyElementType::QUAD, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
-    topo->init();
+    topo->doBaseObjectInit();
 
     if (topoCon == nullptr || topo == nullptr)
     {
@@ -416,7 +416,7 @@ bool MeshTopology_test::testTriangleTopology()
 
     fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1.obj", sofa::core::topology::TopologyElementType::TRIANGLE, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
-    topo->init();
+    topo->doBaseObjectInit();
 
     if (topoCon == nullptr || topo == nullptr)
     {
@@ -512,7 +512,7 @@ bool MeshTopology_test::testEdgeTopology()
 
     fake_TopologyScene* scene2 = new fake_TopologyScene("mesh/square1_edges.obj", sofa::core::topology::TopologyElementType::EDGE, true);
     MeshTopology* topo = dynamic_cast<MeshTopology*>(scene2->getNode().get()->getMeshTopology());
-    topo->init();
+    topo->doBaseObjectInit();
 
     if (topoCon == nullptr || topo == nullptr)
     {

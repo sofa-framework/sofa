@@ -46,9 +46,9 @@ using namespace std;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-void EdgeSetTopologyModifier::init()
+void EdgeSetTopologyModifier::doBaseObjectInit()
 {
-    PointSetTopologyModifier::init();
+    PointSetTopologyModifier::doBaseObjectInit();
     getContext()->get(m_container);
 }
 

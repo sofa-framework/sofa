@@ -52,7 +52,7 @@ ExtrudeQuadsAndGenerateHexas<DataTypes>::ExtrudeQuadsAndGenerateHexas()
 }
 
 template <class DataTypes>
-void ExtrudeQuadsAndGenerateHexas<DataTypes>::init()
+void ExtrudeQuadsAndGenerateHexas<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

@@ -50,9 +50,9 @@ OglCylinderModel::~OglCylinderModel()
 {
 }
 
-void OglCylinderModel::init()
+void OglCylinderModel::doBaseObjectInit()
 {
-    VisualModel::init();
+    VisualModel::doBaseObjectInit();
 
     reinit();
 

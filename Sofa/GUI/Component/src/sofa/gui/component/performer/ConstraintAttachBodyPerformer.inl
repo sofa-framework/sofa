@@ -51,7 +51,7 @@ void ConstraintAttachBodyPerformer<DataTypes>::start()
     this->interactor->getContext()->get(mapping); assert(mapping);
     mapping->apply(core::mechanicalparams::defaultInstance());
     mapping->applyJ(core::mechanicalparams::defaultInstance());
-    m_constraint->init();
+    m_constraint->doBaseObjectInit();
     this->interactor->setMouseAttached(true);
 }
 

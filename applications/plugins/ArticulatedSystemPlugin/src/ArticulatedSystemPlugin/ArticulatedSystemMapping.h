@@ -83,7 +83,7 @@ protected:
     {
     }
 public:
-    void init() override;
+    void doBaseObjectInit() override;
     void bwdInit() override;
     void reset() override;
 

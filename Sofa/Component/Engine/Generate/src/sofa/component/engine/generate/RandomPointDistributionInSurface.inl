@@ -52,7 +52,7 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
 }
 
 template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::init()
+void RandomPointDistributionInSurface<DataTypes>::doBaseObjectInit()
 {
     unsigned int nb = numberOfTests.getValue();
     if (nb%2 == 0)

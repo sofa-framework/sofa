@@ -70,7 +70,7 @@ protected:
     LocalMinDistance();
 
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     bool testIntersection(collision::geometry::Cube& ,collision::geometry::Cube&) override;
 

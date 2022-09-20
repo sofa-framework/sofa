@@ -78,7 +78,7 @@ public:
     explicit NearestPointROI(core::behavior::MechanicalState<DataTypes> * = nullptr, core::behavior::MechanicalState<DataTypes> *mm2 = nullptr);
     ~NearestPointROI() override;
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void doUpdate() override;
 

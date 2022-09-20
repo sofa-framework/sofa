@@ -44,9 +44,9 @@ Mesh2PointMechanicalMapping<TIn, TOut>::~Mesh2PointMechanicalMapping()
 }
 
 template <class TIn, class TOut>
-void Mesh2PointMechanicalMapping<TIn, TOut>::init()
+void Mesh2PointMechanicalMapping<TIn, TOut>::doBaseObjectInit()
 {
-    this->Inherit::init();
+    this->Inherit::doBaseObjectInit();
     this->getContext()->get(topoMap);
     inputTopo = this->fromModel->getContext()->getMeshTopology();
     outputTopo = this->toModel->getContext()->getMeshTopology();

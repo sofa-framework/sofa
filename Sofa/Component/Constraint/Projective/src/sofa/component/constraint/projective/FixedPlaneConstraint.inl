@@ -187,9 +187,9 @@ void FixedPlaneConstraint<DataTypes>::selectVerticesAlongPlane()
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::init()
+void FixedPlaneConstraint<DataTypes>::doBaseObjectInit()
 {
-    ProjectiveConstraintSet<DataTypes>::init();
+    ProjectiveConstraintSet<DataTypes>::doBaseObjectInit();
 
     if (l_topology.empty())
     {

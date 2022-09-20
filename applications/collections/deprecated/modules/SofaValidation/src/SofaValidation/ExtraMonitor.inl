@@ -57,9 +57,9 @@ ExtraMonitor<DataTypes>::ExtraMonitor()
 
 ////////////////////////////// init () ////////////////////////////////////
 template<class DataTypes>
-void ExtraMonitor<DataTypes>::init()
+void ExtraMonitor<DataTypes>::doBaseObjectInit()
 {
-    Inherit::init();
+    Inherit::doBaseObjectInit();
     if (minX.getValue() != -1)
     {
         initialMinPos.resize(this->d_indices.getValue().size());

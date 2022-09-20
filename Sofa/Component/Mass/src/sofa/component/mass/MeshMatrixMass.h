@@ -135,7 +135,7 @@ public:
     virtual void clear();
 
     void reinit() override;
-    void init() override;
+    void doBaseObjectInit() override;
     void handleEvent(sofa::core::objectmodel::Event *event) override;
     void doUpdateInternal() override;
 

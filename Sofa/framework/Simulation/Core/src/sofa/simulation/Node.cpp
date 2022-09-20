@@ -860,7 +860,7 @@ void Node::updateSimulationContext()
 {
     for ( unsigned i=0; i<contextObject.size(); ++i )
     {
-        contextObject[i]->init();
+        contextObject[i]->doBaseObjectInit();
         contextObject[i]->apply();
     }
 }
@@ -870,7 +870,7 @@ void Node::updateVisualContext()
     // Apply local modifications to the context
     for ( unsigned i=0; i<contextObject.size(); ++i )
     {
-        contextObject[i]->init();
+        contextObject[i]->doBaseObjectInit();
         contextObject[i]->apply();
     }
 

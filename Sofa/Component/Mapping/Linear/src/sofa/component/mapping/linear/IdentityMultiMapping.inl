@@ -28,7 +28,7 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::init()
+void IdentityMultiMapping<TIn, TOut>::doBaseObjectInit()
 {
     unsigned outSize = 0;
     for( unsigned i=0 ; i<this->fromModels.size() ; ++i )
@@ -36,7 +36,7 @@ void IdentityMultiMapping<TIn, TOut>::init()
 
     this->toModels[0]->resize( outSize );
 
-    Inherit::init();
+    Inherit::doBaseObjectInit();
 
     static constexpr auto Nin = TIn::deriv_total_size;
     static constexpr auto Nout = TOut::deriv_total_size;

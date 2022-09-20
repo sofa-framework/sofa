@@ -61,7 +61,7 @@ public:
 
     bool isAsyncSolver() override { return true; }
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void solveSystem() override;

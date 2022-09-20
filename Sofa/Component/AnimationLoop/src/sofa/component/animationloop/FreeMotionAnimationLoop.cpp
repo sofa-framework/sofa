@@ -95,7 +95,7 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 }
 
 
-void FreeMotionAnimationLoop::init()
+void FreeMotionAnimationLoop::doBaseObjectInit()
 {
     simulation::common::VectorOperations vop(core::execparams::defaultInstance(), getContext());
 

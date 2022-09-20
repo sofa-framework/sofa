@@ -46,7 +46,7 @@ NormalsFromPoints<DataTypes>::NormalsFromPoints()
 }
 
 template <class DataTypes>
-void NormalsFromPoints<DataTypes>::init()
+void NormalsFromPoints<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

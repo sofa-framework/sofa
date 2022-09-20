@@ -137,7 +137,7 @@ void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* a
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::init()
+void BoxROI<DataTypes>::doBaseObjectInit()
 {
     /// If the position attribute is not set we are trying to
     /// automatically load the positions from the current context MechanicalState if any, then
@@ -314,7 +314,7 @@ void BoxROI<DataTypes>::init()
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
-    init();
+    doBaseObjectInit();
 }
 
 

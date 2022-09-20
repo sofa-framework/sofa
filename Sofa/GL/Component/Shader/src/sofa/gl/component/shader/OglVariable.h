@@ -61,10 +61,10 @@ protected:
     ~OglVariable() override {}
 public:
     virtual void setValue( const DataTypes& v ) { value.setValue(v); }
-    void init() override { OglShaderElement::init(); }
+    void doBaseObjectInit() override { OglShaderElement::doBaseObjectInit(); }
     void initVisual() override { core::visual::VisualModel::initVisual(); }
     void pushValue() { initVisual(); }
-    void reinit() override { init();	initVisual(); }
+    void reinit() override { doBaseObjectInit();	initVisual(); }
 	void updateVisual() override { initVisual(); }
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
@@ -177,7 +177,7 @@ public:
     OglIntVectorVariable();
     virtual ~OglIntVectorVariable() { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -190,7 +190,7 @@ public:
     OglIntVector2Variable();
     ~OglIntVector2Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -202,7 +202,7 @@ public:
     OglIntVector3Variable();
     ~OglIntVector3Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -214,7 +214,7 @@ public:
     OglIntVector4Variable();
     ~OglIntVector4Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -227,7 +227,7 @@ public:
     OglFloatVectorVariable();
     virtual ~OglFloatVectorVariable() { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -239,7 +239,7 @@ public:
     OglFloatVector2Variable();
     virtual ~OglFloatVector2Variable() { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -251,7 +251,7 @@ public:
     OglFloatVector3Variable();
     virtual ~OglFloatVector3Variable() { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -263,7 +263,7 @@ public:
     OglFloatVector4Variable();
     virtual ~OglFloatVector4Variable() { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -280,7 +280,7 @@ public:
 
     virtual void setTranspose( const bool& v ) { transpose.setValue(v); }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -292,7 +292,7 @@ public:
     OglMatrix3Variable();
     ~OglMatrix3Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -304,7 +304,7 @@ public:
     OglMatrix4Variable();
     ~OglMatrix4Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -316,7 +316,7 @@ public:
     OglMatrix2x3Variable();
     ~OglMatrix2x3Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -328,7 +328,7 @@ public:
     OglMatrix3x2Variable();
     ~OglMatrix3x2Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -340,7 +340,7 @@ public:
     OglMatrix2x4Variable();
     ~OglMatrix2x4Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -352,7 +352,7 @@ public:
     OglMatrix4x2Variable();
     ~OglMatrix4x2Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -364,7 +364,7 @@ public:
     OglMatrix3x4Variable();
     ~OglMatrix3x4Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -376,7 +376,7 @@ public:
     OglMatrix4x3Variable();
     ~OglMatrix4x3Variable() override { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 };
 
@@ -388,7 +388,7 @@ public:
     OglMatrix4VectorVariable();
     virtual ~OglMatrix4VectorVariable() { }
 
-    void init() override;
+    void doBaseObjectInit() override;
     void initVisual() override;
 
     Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL

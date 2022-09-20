@@ -66,7 +66,7 @@ DefaultAnimationLoop::~DefaultAnimationLoop()
 
 }
 
-void DefaultAnimationLoop::init()
+void DefaultAnimationLoop::doBaseObjectInit()
 {
     if (!gnode)
         gnode = dynamic_cast<simulation::Node*>(this->getContext());

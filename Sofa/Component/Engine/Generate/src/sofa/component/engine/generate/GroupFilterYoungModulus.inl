@@ -44,7 +44,7 @@ GroupFilterYoungModulus<DataTypes>::GroupFilterYoungModulus()
 }
 
 template <class DataTypes>
-void GroupFilterYoungModulus<DataTypes>::init()
+void GroupFilterYoungModulus<DataTypes>::doBaseObjectInit()
 {
     setDirtyValue();
 }

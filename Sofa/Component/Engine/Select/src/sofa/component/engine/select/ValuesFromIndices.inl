@@ -47,7 +47,7 @@ ValuesFromIndices<T>::~ValuesFromIndices()
 }
 
 template <class T>
-void ValuesFromIndices<T>::init()
+void ValuesFromIndices<T>::doBaseObjectInit()
 {
     f_outStr.setParent(&f_out);
 

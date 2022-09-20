@@ -51,10 +51,10 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
     {
     }
 
-template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
+template <class DataTypes> void TrianglePressureForceField<DataTypes>::doBaseObjectInit()
 {
 
-    this->core::behavior::ForceField<DataTypes>::init();
+    this->core::behavior::ForceField<DataTypes>::doBaseObjectInit();
 	
     if (l_topology.empty())
     {

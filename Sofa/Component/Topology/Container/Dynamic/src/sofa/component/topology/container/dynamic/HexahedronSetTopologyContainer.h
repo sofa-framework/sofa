@@ -84,7 +84,7 @@ protected:
 
     ~HexahedronSetTopologyContainer() override {}
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
 
     /// Procedural creation methods

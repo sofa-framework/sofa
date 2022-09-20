@@ -112,7 +112,6 @@ public:
     void initTextures();
     void initVisual() override;
 
-    void init() override { VisualModelImpl::init(); }
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     void updateBuffers() override;

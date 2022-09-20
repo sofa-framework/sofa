@@ -112,7 +112,7 @@ public:
     MouseInteractor():mouseInSofa(nullptr) {}
     ~MouseInteractor() override {}
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     core::behavior::BaseMechanicalState *getMouseContainer() override {return mouseInSofa;}
 

@@ -84,7 +84,7 @@ public:
 
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
-    void init() override;
+    void doBaseObjectInit() override;
     void draw(const core::visual::VisualParams* vparams) override;
 
 protected:

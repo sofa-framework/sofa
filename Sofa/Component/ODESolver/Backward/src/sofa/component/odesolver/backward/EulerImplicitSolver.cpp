@@ -47,7 +47,7 @@ EulerImplicitSolver::EulerImplicitSolver()
 {
 }
 
-void EulerImplicitSolver::init()
+void EulerImplicitSolver::doBaseObjectInit()
 {
     if (!this->getTags().empty())
     {
@@ -57,7 +57,7 @@ void EulerImplicitSolver::init()
         for (unsigned int i=0; i<objs.size(); ++i)
             msg_info() << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName();
     }
-    sofa::core::behavior::OdeSolver::init();
+    sofa::core::behavior::OdeSolver::doBaseObjectInit();
 }
 
 void EulerImplicitSolver::cleanup()

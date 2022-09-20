@@ -41,7 +41,7 @@ public:
 
     LineAxis();
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
     void drawVisual(const core::visual::VisualParams*) override;
     void updateVisual() override;

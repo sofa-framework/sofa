@@ -430,9 +430,9 @@ QuadularBendingSprings<DataTypes>::~QuadularBendingSprings()
 
 
 template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::init()
+void QuadularBendingSprings<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
     if (l_topology.empty())
     {

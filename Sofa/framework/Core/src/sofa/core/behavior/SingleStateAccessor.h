@@ -36,9 +36,9 @@ class SingleStateAccessor : public virtual StateAccessor
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(SingleStateAccessor, DataTypes), StateAccessor);
 
-    void init() override
+    void doBaseObjectInit() override
     {
-        Inherit1::init();
+        Inherit1::doBaseObjectInit();
 
         if (!mstate.get())
         {

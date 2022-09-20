@@ -57,7 +57,7 @@ VTKExporter::~VTKExporter()
         delete outfile;
 }
 
-void VTKExporter::init()
+void VTKExporter::doBaseObjectInit()
 {    
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(topology);

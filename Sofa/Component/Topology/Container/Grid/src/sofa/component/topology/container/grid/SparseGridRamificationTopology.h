@@ -37,7 +37,7 @@ protected:
     SparseGridRamificationTopology(bool _isVirtual=false);
     ~SparseGridRamificationTopology() override;
 public:
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).

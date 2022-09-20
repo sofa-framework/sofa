@@ -44,9 +44,9 @@ GlobalSystemMatrixImage::GlobalSystemMatrixImage()
 
 GlobalSystemMatrixImage::~GlobalSystemMatrixImage() = default;
 
-void GlobalSystemMatrixImage::init()
+void GlobalSystemMatrixImage::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if (!l_linearSolver)
     {

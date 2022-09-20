@@ -30,7 +30,7 @@ namespace sofa::component::engine::select
 
 using namespace sofa;
 
-void MergeROIs::init()
+void MergeROIs::doBaseObjectInit()
 {
     addInput(&d_nbROIs);
     f_indices.resize(d_nbROIs.getValue());

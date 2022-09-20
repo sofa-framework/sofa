@@ -52,7 +52,7 @@ public:
     //Output
     Data<type::vector<type::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
 
-    void init() override;
+    void doBaseObjectInit() override;
     void reinit() override;
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters

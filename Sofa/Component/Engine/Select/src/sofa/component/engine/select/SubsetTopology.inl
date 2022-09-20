@@ -82,7 +82,7 @@ SubsetTopology<DataTypes>::SubsetTopology()
 }
 
 template <class DataTypes>
-void SubsetTopology<DataTypes>::init()
+void SubsetTopology<DataTypes>::doBaseObjectInit()
 {
     using sofa::core::topology::BaseMeshTopology;
     using sofa::core::objectmodel::BaseData;

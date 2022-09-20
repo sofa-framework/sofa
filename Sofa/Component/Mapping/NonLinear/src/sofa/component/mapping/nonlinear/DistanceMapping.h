@@ -94,7 +94,7 @@ public:
 
 
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     using Inherit::apply;
 
@@ -197,7 +197,7 @@ public:
 
 
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void apply(const core::MechanicalParams *mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override
     {

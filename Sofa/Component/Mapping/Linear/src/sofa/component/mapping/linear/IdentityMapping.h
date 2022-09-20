@@ -95,7 +95,7 @@ public:
     /// input and output DOFs (mostly identity or data-conversion mappings).
     bool sameTopology() const override { return true; }
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in) override;
 

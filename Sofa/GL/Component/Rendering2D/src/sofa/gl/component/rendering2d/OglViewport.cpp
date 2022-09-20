@@ -64,7 +64,7 @@ OglViewport::~OglViewport()
 }
 
 
-void OglViewport::init()
+void OglViewport::doBaseObjectInit()
 {
     if (p_cameraRigid.isSet() || p_cameraRigid.getParent())
     {

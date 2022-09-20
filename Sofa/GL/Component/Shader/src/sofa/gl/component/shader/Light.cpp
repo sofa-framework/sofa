@@ -97,7 +97,7 @@ void Light::setID(const GLint& id)
     m_lightID = id;
 }
 
-void Light::init()
+void Light::doBaseObjectInit()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     LightManager* lm = context->core::objectmodel::BaseContext::get<LightManager>();
@@ -203,11 +203,11 @@ void Light::initVisual()
     m_blurVFBO->init(m_shadowTexWidth, m_shadowTexHeight);
     m_depthShader->vertFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER,true);
     m_depthShader->fragFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER,true);
-    m_depthShader->init();
+    m_depthShader->doBaseObjectInit();
     m_depthShader->initVisual();
     m_blurShader->vertFilename.addPath(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER,true);
     m_blurShader->fragFilename.addPath(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER,true);
-    m_blurShader->init();
+    m_blurShader->doBaseObjectInit();
     m_blurShader->initVisual();
 }
 

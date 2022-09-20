@@ -113,7 +113,7 @@ public:
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
     int m_initializationProcess;
 
-    /// Link to be set to the topology container in the component graph. 
+    /// Link to be set to the topology container in the component graph.
     SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
     /// Link to be set to the MechanicalObject associated with the geometry
     SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
@@ -144,7 +144,7 @@ public:
     void clear();
 
     void reinit() override;
-    void init() override;
+    void doBaseObjectInit() override;
     void handleEvent(sofa::core::objectmodel::Event* ) override;
 
     void doUpdateInternal() override;
@@ -181,7 +181,7 @@ protected:
 
 
     /** Method to update @sa d_vertexMass when a new Edge is created.
-    * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when EDGESADDED event is fired.    
+    * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when EDGESADDED event is fired.
     */
     void applyEdgeCreation(const sofa::type::vector< EdgeID >& /*indices*/,
         const sofa::type::vector< Edge >& /*elems*/,
@@ -224,7 +224,7 @@ protected:
     */
     template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyQuadDestruction(const sofa::type::vector<QuadID>& /*indices*/);
-    
+
 
     /** Method to update @sa d_vertexMass when a new Tetrahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAADDED event is fired.
@@ -250,7 +250,7 @@ protected:
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
         const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/);
-    
+
     /** Method to update @sa d_vertexMass when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
     */
@@ -387,9 +387,9 @@ void DiagonalMass<defaulttype::Rigid3Types>::reinit();
 template <>
 void DiagonalMass<defaulttype::Rigid2Types>::reinit();
 template <>
-void DiagonalMass<defaulttype::Rigid3Types>::init();
+void DiagonalMass<defaulttype::Rigid3Types>::doBaseObjectInit();
 template <>
-void DiagonalMass<defaulttype::Rigid2Types>::init();
+void DiagonalMass<defaulttype::Rigid2Types>::doBaseObjectInit();
 template <>
 void DiagonalMass<defaulttype::Rigid2Types>::draw(const core::visual::VisualParams* vparams);
 template <>

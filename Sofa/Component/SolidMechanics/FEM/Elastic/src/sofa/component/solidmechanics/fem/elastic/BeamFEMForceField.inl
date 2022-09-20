@@ -81,9 +81,9 @@ void BeamFEMForceField<DataTypes>::bwdInit()
 
 
 template <class DataTypes>
-void BeamFEMForceField<DataTypes>::init()
+void BeamFEMForceField<DataTypes>::doBaseObjectInit()
 {
-    Inherit1::init();
+    Inherit1::doBaseObjectInit();
 
     if (l_topology.empty())
     {

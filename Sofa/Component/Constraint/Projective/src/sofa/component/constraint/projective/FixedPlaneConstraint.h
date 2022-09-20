@@ -77,7 +77,7 @@ public:
 
 
     /// inherited from the BaseObject interface
-    void init() override;
+    void doBaseObjectInit() override;
     void draw(const VisualParams* vparams) override;
 
     /// -- Constraint interface

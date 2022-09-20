@@ -99,7 +99,7 @@ void BaseSimulationExporter::handleEvent(Event *event){
 }
 
 
-void BaseSimulationExporter::init()
+void BaseSimulationExporter::doBaseObjectInit()
 {
     updateFromDataField() ;
     doInit() ;

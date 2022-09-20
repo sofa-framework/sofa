@@ -509,7 +509,7 @@ bool QGLViewer::saveImageSnapshot(const QString &fileName) {
  When \p automatic is \c true, the file name is set to \c NAME-NUMBER, where \c
  NAME is snapshotFileName() and \c NUMBER is snapshotCounter(). The
  snapshotCounter() is automatically incremented after each snapshot saving. This
- is useful to create videos from your application: \code void Viewer::init()
+ is useful to create videos from your application: \code void Viewer::doBaseObjectInit()
  {
    resize(720, 576); // PAL DV format (use 720x480 for NTSC DV)
    connect(this, SIGNAL(drawFinished(bool)), SLOT(saveSnapshot(bool)));

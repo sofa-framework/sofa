@@ -208,7 +208,7 @@ public:
     {
     }
 
-    void init() override;
+    void doBaseObjectInit() override;
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///

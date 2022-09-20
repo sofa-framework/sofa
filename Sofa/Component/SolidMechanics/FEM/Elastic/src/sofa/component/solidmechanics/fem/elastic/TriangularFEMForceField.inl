@@ -90,9 +90,9 @@ TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 // --- Initialization stage
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::init()
+void TriangularFEMForceField<DataTypes>::doBaseObjectInit()
 {
-    this->Inherited::init();
+    this->Inherited::doBaseObjectInit();
 
 #ifdef PLOT_CURVE
     allGraphStress.clear();

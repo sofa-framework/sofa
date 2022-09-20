@@ -50,9 +50,9 @@ void PointCollisionModel<DataTypes>::resize(Size size)
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::init()
+void PointCollisionModel<DataTypes>::doBaseObjectInit()
 {
-    this->CollisionModel::init();
+    this->CollisionModel::doBaseObjectInit();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
 
     if (mstate==nullptr)
