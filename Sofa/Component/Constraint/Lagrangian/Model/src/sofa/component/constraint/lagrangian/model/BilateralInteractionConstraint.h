@@ -106,6 +106,14 @@ protected:
     Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
     Data<bool> derivative; ///< TEST: derivative
     Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
+
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1;
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2;
+
     std::vector<Vec3d> prevForces;
 
     // grouped square constraints
@@ -164,8 +172,14 @@ public:
     void addContact(Deriv norm, Real contactDistance, int m1, int m2,
                     long id=0, PersistentID localid=0) ;
 
+    /// Method to remove a contact using point @param indices and id of buffer: @sa m1 (resp. @sa 2m) if @param objectId is equal to 0 (resp. to 1)
+    void removeContact(int objectId, SubsetIndices indices);
+
 private:
     void unspecializedInit() ;
+
+    /// Method to get the index position of a @param point Id inside @sa m1 (resp. @sa 2m) if @param objectId is equal to 0 (resp. to 1). Return InvalidID if not found.
+    Index indexOfElemConstraint(int objectId, Index Id);
 };
 
 

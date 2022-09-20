@@ -57,6 +57,8 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
+    , l_topology1(initLink("topology1", "link to the first topology container"))
+    , l_topology2(initLink("topology2", "link to the second topology container"))
 {
     this->f_listening.setValue(true);
 }
@@ -92,6 +94,28 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::init()
 {
     unspecializedInit();
+
+    if (sofa::core::topology::BaseMeshTopology* _topology1 = l_topology1.get())
+    {
+        m1.createTopologyHandler(_topology1);
+        m1.addTopologyEventCallBack(core::topology::TopologyChangeType::POINTSREMOVED,
+            [this](const core::topology::TopologyChange* change)
+        {
+            const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
+            removeContact(0, pointsRemoved->getArray());
+        });
+    }
+
+    if (sofa::core::topology::BaseMeshTopology* _topology2 = l_topology2.get())
+    {
+        m2.createTopologyHandler(_topology2);
+        m2.addTopologyEventCallBack(core::topology::TopologyChangeType::POINTSREMOVED,
+            [this](const core::topology::TopologyChange* change)
+        {
+            const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
+            removeContact(1, pointsRemoved->getArray());
+        });
+    }
 }
 
 template<class DataTypes>
@@ -493,6 +517,36 @@ void BilateralInteractionConstraint<DataTypes>::addContact(Deriv norm, Real cont
 
 
 template<class DataTypes>
+void BilateralInteractionConstraint<DataTypes>::removeContact(int objectId, SubsetIndices indices)
+{
+    SubsetIndices& m1Indices = *this->m1.beginEdit();
+    SubsetIndices& m2Indices = *this->m2.beginEdit();
+    VecDeriv& wrest = *this->restVector.beginEdit();
+
+    int lastState1Id = this->mstate1->getSize() - 1;
+    int lastState2Id = this->mstate2->getSize() - 1;
+    for (int i = 0; i < indices.size(); ++i)
+    {
+        Index elemId = indices[i];
+        Index posId = indexOfElemConstraint(objectId, elemId);
+
+        if (posId != sofa::InvalidID)
+        {
+            if (wrest.size() == m1Indices.size())
+                wrest.erase(wrest.begin() + posId);
+            
+            m1Indices.erase(m1Indices.begin() + posId);
+            m2Indices.erase(m2Indices.begin() + posId);
+        }
+    }
+    
+    this->m1.endEdit();
+    this->m2.endEdit();
+    this->restVector.endEdit();
+}
+
+
+template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::clear(int reserve)
 {
     WriteAccessor<Data <SubsetIndices > > wm1 = this->m1;
@@ -508,6 +562,33 @@ void BilateralInteractionConstraint<DataTypes>::clear(int reserve)
         wrest.reserve(reserve);
     }
 }
+
+
+template<class DataTypes>
+Index BilateralInteractionConstraint<DataTypes>::indexOfElemConstraint(int objectId, Index Id)
+{
+    if (objectId == 0)
+    {
+        const SubsetIndices& cIndices = m1.getValue();
+        for (int i = 0; i < cIndices.size(); ++i)
+        {
+            if (cIndices[i] == Id)
+                return Index(i);
+        }
+    }
+    else if (objectId == 1)
+    {
+        const SubsetIndices& cIndices = m2.getValue();
+        for (int i = 0; i < cIndices.size(); ++i)
+        {
+            if (cIndices[i] == Id)
+                return Index(i);
+        }
+    }
+    
+    return sofa::InvalidID;
+}
+
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
