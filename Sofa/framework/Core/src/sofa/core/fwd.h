@@ -81,6 +81,8 @@ class AbstractDataLink;
 class ContextObject;
 class ConfigurationSetting;
 
+template<class TOwnerType, class TDestType, unsigned TFlags>
+class SingleLink;
 
 class Tag;
 SOFA_CORE_API std::ostream& operator<<(std::ostream& o, const Tag& t);
