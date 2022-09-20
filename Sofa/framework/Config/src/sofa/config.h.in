@@ -191,9 +191,9 @@ class DeprecatedAndRemoved {};
         "It is still usable but has been DEPRECATED since " deprecateDate ". " \
         "You have until " removeDate " to fix your code. " toFixMsg)]]
 
-// The following macro is empty because it is supposed to be used in conjonction 
+// The following macro is empty because it is supposed to be used in conjonction
 // when an attribute of type DeprecatedAndRemoved. It should not contain a [[deprecated]]
-// attribute, because if it does, the "deprecated" warning is showed in every constructor's 
+// attribute, because if it does, the "deprecated" warning is showed in every constructor's
 // for every disabled attribute.
 #define SOFA_ATTRIBUTE_DISABLED(deprecateDate, disableDate, toFixMsg)
 
@@ -238,6 +238,11 @@ class DeprecatedAndRemoved {};
         "v21.12 (PR#2292)", "v22.06", \
         "Use the Messaging API instead of using SofaOStream and sout/serr/sendl.")
 
+#define SOFA_ATTRIBUTE_DEPRECATED__VECTOR(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12 (PR#3299)", "v23.06", \
+        "Long aliases for VectorX will be removed. " msg)
+
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
@@ -268,7 +273,7 @@ using SignedIndex = int32_t;
 using Index = uint32_t;
 using Size = uint32_t;
 
-constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
+constexpr Index InvalidID = (std::numeric_limits<Index>::max)();
 
 }
 
