@@ -19,34 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/PrimitiveGroup.h>
+#include <sofa/core/objectmodel/TagSet.h>
 
-#include <istream>
-#include <ostream>
-
-namespace sofa::type
+namespace sofa::core::objectmodel
 {
 
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+bool TagSet::includes(const TagSet& t) const
 {
-    out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-    return out;
+    if (t.empty())
+        return true;
+    if (empty())
+    {
+        // An empty TagSet satisfies the conditions only if either :
+        // t is also empty (already handled)
+        // t only includes negative tags
+        if (*t.rbegin() <= Tag(0))
+            return true;
+        // t includes the "0" tag
+        if (t.count(Tag(0)) > 0)
+            return true;
+        // otherwise the TagSet t does not "include" empty sets
+        return false;
+    }
+    for (std::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
+        first2 != last2; ++first2)
+    {
+        Tag t2 = *first2;
+        if (t2 == Tag(0)) continue; // tag "0" is used to indicate that we should include objects without any tag
+        if (!t2.negative())
+        {
+            if (this->count(t2) == 0)
+                return false; // tag not found in this
+        }
+        else
+        {
+            if (this->count(-t2) > 0)
+                return false; // tag found in this
+        }
+    }
+    return true;
 }
 
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
-{
-    in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-    return in;
-}
-
-bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
-{
-    return p0 < p.p0;
-}
-
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
-
-PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
-    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
-
-} /// namespace sofa::type
+} //namespace sofa::core::objectmodel

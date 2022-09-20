@@ -19,34 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/PrimitiveGroup.h>
+#pragma once
 
-#include <istream>
-#include <ostream>
+#include <sofa/core/config.h>
+#include <sofa/core/objectmodel/Tag.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Set.h>
+#include <sofa/helper/set.h>
 
-namespace sofa::type
+namespace sofa::core::objectmodel
 {
 
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+class SOFA_CORE_API TagSet : public std::set<Tag>
 {
-    out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-    return out;
-}
+public:
+    TagSet() {}
+    /// Automatic conversion between a tag and a tagset composed of this tag
+    TagSet(const Tag& t) { this->insert(t); }
+    /// Returns true if this TagSet contains specified tag
+    bool includes(const Tag& t) const { return this->count(t) > 0; }
+    /// Returns true if this TagSet contains all specified tags
+    bool includes(const TagSet& t) const;
+};
 
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
+} // namespace sofa::core::objectmodel
+
+// Specialization of the defaulttype::DataTypeInfo type traits template
+namespace sofa::defaulttype
 {
-    in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-    return in;
-}
 
-bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
+template<>
+struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa::core::objectmodel::TagSet >
 {
-    return p0 < p.p0;
-}
+    static const char* name() { return "TagSet"; }
+};
 
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
-
-PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
-    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
-
-} /// namespace sofa::type
+} // namespace sofa::defaulttype

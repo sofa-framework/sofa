@@ -19,34 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/PrimitiveGroup.h>
+#pragma once
 
-#include <istream>
-#include <ostream>
+#include <sofa/type/trait/is_vector.h>
+#include <iosfwd>
 
-namespace sofa::type
+namespace sofa::helper
 {
-
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+////////////////////////// ReadAccessor for wrapping around vector like object //////////////////////
+/// ReadAccessor implementation class for vector types
+template<class T>
+class ReadAccessorVector
 {
-    out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-    return out;
+public:
+    typedef T container_type;
+    typedef const T const_container_type;
+    typedef typename container_type::Size Size;
+    typedef typename container_type::value_type value_type;
+    typedef typename container_type::reference reference;
+    typedef typename container_type::const_reference const_reference;
+    typedef typename container_type::iterator iterator;
+    typedef typename container_type::const_iterator const_iterator;
+
+protected:
+    const container_type* vref;
+
+public:
+    ReadAccessorVector(const container_type& container) : vref(&container) {}
+
+    bool empty() const { return vref->empty(); }
+    Size size() const { return vref->size(); }
+    const_reference operator[](Size i) const { return (*vref)[i]; }
+
+    const_iterator begin() const { return vref->begin(); }
+    const_iterator end() const { return vref->end(); }
+
+    ///////// Access the container for reading ////////////////
+    operator const_container_type& () const { return  *vref; }
+    const_container_type* operator->() const { return vref; }
+    const_container_type& operator* () const { return  *vref; }
+    const_container_type& ref() const { return *vref; }          ///< this duplicate operator* (remove ?)
+    ///////////////////////////////////////////////////////////
+};
+
 }
-
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
-{
-    in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-    return in;
-}
-
-bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
-{
-    return p0 < p.p0;
-}
-
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
-
-PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
-    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
-
-} /// namespace sofa::type

@@ -19,34 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/PrimitiveGroup.h>
+#pragma once
 
-#include <istream>
-#include <ostream>
+#include <sofa/helper/accessor/WriteAccessor.h>
 
-namespace sofa::type
+namespace sofa::helper
 {
 
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+/** Identical to WriteAccessor for default implementation, but different for some template specializations such as  core::objectmodel::Data<T>
+*/
+template<class T, class Enable = void>
+class WriteOnlyAccessor : public WriteAccessor<T, Enable>
 {
-    out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-    return out;
+protected:
+    typedef WriteAccessor<T> Inherit;
+    typedef typename Inherit::container_type container_type;
+
+public:
+    explicit WriteOnlyAccessor(container_type& container) : WriteAccessor<T, Enable>(container) {}
+};
+
+template<class VectorLikeType>
+class WriteOnlyAccessor<VectorLikeType,
+                        std::enable_if_t<sofa::type::trait::is_vector<VectorLikeType>::value> >
+    : public WriteAccessorVector< VectorLikeType >
+{
+public:
+    typedef WriteAccessorVector< VectorLikeType > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteOnlyAccessor(container_type& c) : Inherit(c) {}
+};
+
+
 }
-
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
-{
-    in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-    return in;
-}
-
-bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
-{
-    return p0 < p.p0;
-}
-
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
-
-PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
-    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
-
-} /// namespace sofa::type

@@ -19,34 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/PrimitiveGroup.h>
+#include <gtest/gtest.h>
 
-#include <istream>
-#include <ostream>
+#include <sofa/helper/accessor.h>
+#include <sofa/type/vector.h>
 
-namespace sofa::type
+namespace sofa
 {
 
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+TEST(ReadAccessor, PrimitiveTypes)
 {
-    out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-    return out;
+    const float float_value { 12.f };
+    const sofa::helper::ReadAccessor float_accessor(float_value);
+    EXPECT_FLOAT_EQ(float_accessor.ref(), 12.f);
+
+    const std::size_t size_t_value { 8 };
+    const sofa::helper::ReadAccessor size_t_accessor(size_t_value);
+    EXPECT_EQ(size_t_accessor.ref(), 8);
 }
 
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
+TEST(ReadAccessor, VectorTypes)
 {
-    in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-    return in;
+    const sofa::type::vector<float> vector { 0.f, 1.f, 2.f, 3.f, 4.f};
+    const sofa::helper::ReadAccessor accessor(vector);
+
+    EXPECT_EQ(accessor.size(), vector.size());
+    EXPECT_EQ(accessor.empty(), vector.empty());
+    EXPECT_EQ(accessor.begin(), vector.begin());
+    EXPECT_EQ(accessor.end(), vector.end());
 }
 
-bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
-{
-    return p0 < p.p0;
+
 }
-
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
-
-PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
-    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
-
-} /// namespace sofa::type
