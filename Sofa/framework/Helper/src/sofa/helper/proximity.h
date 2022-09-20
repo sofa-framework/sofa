@@ -44,18 +44,8 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    //void NewComputation(Triangle *triP, Triangle *triQ, sofa::type::Vector3 &Presult, sofa::type::Vector3 &Qresult);
     void NewComputation(const sofa::type::Vec3& P1, const sofa::type::Vec3& P2, const sofa::type::Vec3& P3, const sofa::type::Vec3& Q1, const sofa::type::Vec3& Q2, const sofa::type::Vec3& Q3, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
-    //double getAlphaP(){return _result[6];}
-    //double getBetaP(){return _result[7];}
-    //double getAlphaQ(){return _result[8];}
-    //double getBetaQ(){return _result[9];}
 
-
-private:
-    //double **_A;
-    //double *_b;
-    //double *_result;
 };
 
 //-----------------------------------------------------------------------------
@@ -71,22 +61,7 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    //void NewComputation(Triangle *tri, const sofa::type::Vector3 &Q1, const sofa::type::Vector3 &Q2, sofa::type::Vector3 &Presult, sofa::type::Vector3 &Qresult);
     void NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q1, const sofa::type::Vec3 &Q2, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
-
-    // we should add the same procedure using with AAB
-    //double distanceBSphere(Triangle &tri, sofa::type::Vector3 &Q1, sofa::type::Vector3&Q2);
-
-    //double distanceBBox(Triangle &tri, sofa::type::Vector3 &Q1, sofa::type::Vector3&Q2);
-
-    //double getAlpha(){return _result[5];}
-    //double getBeta(){return _result[6];}
-    //double getGamma(){return _result[7];}
-
-private:
-    //double **_A;
-    //double *_b;
-    //double *_result;
 };
 
 //-----------------------------------------------------------------------------
@@ -102,20 +77,7 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    //void NewComputation(Triangle *tri, const sofa::type::Vector3 &Q, sofa::type::Vector3 &Presult);
     void NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q, sofa::type::Vec3 &Presult);
-
-    // distance using bbox precomputed on the triangle
-    //double distanceBBox(Triangle &tri, const sofa::type::Vector3 &Q);
-
-    //double getAlpha(){return _result[4];}
-    //double getBeta(){return _result[5];}
-
-
-private:
-    //double **_A;
-    //double *_b;
-    //double *_result;
 };
 
 } // namespace helper

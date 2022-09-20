@@ -73,17 +73,10 @@ public:
     /// Render the text at the defined position and scale.
     void draw();
 
-    ///// Render the text at the current position with no scale
-    //template <typename T>
-    //static void draw ( const T& text );
-    ///// Render the text at the defined position with no scale
-    //template <typename T>
-    //static void draw ( const T& text, const type::Vector3& position );
-
     /// Render the text at the defined position and scale
     template <typename T>
     static void draw ( const T& text, const type::Vec3& position = type::Vec3(0.0,0.0,0.0), const double& scale = 1.0);
-    
+
     static void textureDraw_Overlay(const char* text, const double scale = 1.0);
     static void textureDraw_Indices(const type::vector<type::Vec3>& positions, const float& scale);
 
