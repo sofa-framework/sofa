@@ -117,8 +117,8 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
     if (minp == 0)
         return;
 
-    const type::vector<int> &m1Indices = m1.getValue();
-    const type::vector<int> &m2Indices = m2.getValue();
+    const SubsetIndices& m1Indices = m1.getValue();
+    const SubsetIndices& m2Indices = m2.getValue();
 
     MatrixDeriv &c1 = *c1_d.beginEdit();
     MatrixDeriv &c2 = *c2_d.beginEdit();
@@ -291,8 +291,8 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
 {
     if (!activated) return;
 
-    const type::vector<int> &m1Indices = m1.getValue();
-    const type::vector<int> &m2Indices = m2.getValue();
+    const SubsetIndices& m1Indices = m1.getValue();
+    const SubsetIndices& m2Indices = m2.getValue();
 
     unsigned minp = std::min(m1Indices.size(), m2Indices.size());
 
@@ -355,8 +355,8 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
                                                                      const DataVecDeriv &d_v1,
                                                                      const DataVecDeriv &d_v2)
 {
-    const type::vector<int> &m1Indices = m1.getValue();
-    const type::vector<int> &m2Indices = m2.getValue();
+    const SubsetIndices& m1Indices = m1.getValue();
+    const SubsetIndices& m2Indices = m2.getValue();
 
     const VecCoord &x1 = d_x1.getValue();
     const VecCoord &x2 = d_x2.getValue();
@@ -458,8 +458,8 @@ void BilateralInteractionConstraint<DataTypes>::addContact(Deriv /*norm*/, Coord
                                                            Coord /*Pfree*/, Coord /*Qfree*/,
                                                            long /*id*/, PersistentID /*localid*/)
 {
-    WriteAccessor<Data<type::vector<int> > > wm1 = this->m1;
-    WriteAccessor<Data<type::vector<int> > > wm2 = this->m2;
+    WriteAccessor<Data<SubsetIndices> > wm1 = this->m1;
+    WriteAccessor<Data<SubsetIndices> > wm2 = this->m2;
     WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
     wm1.push_back(m1);
     wm2.push_back(m2);
@@ -495,8 +495,8 @@ void BilateralInteractionConstraint<DataTypes>::addContact(Deriv norm, Real cont
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::clear(int reserve)
 {
-    WriteAccessor<Data<type::vector<int> > > wm1 = this->m1;
-    WriteAccessor<Data<type::vector<int> > > wm2 = this->m2;
+    WriteAccessor<Data <SubsetIndices > > wm1 = this->m1;
+    WriteAccessor<Data <SubsetIndices > > wm2 = this->m2;
     WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
     wm1.clear();
     wm2.clear();

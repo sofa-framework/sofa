@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -86,14 +87,17 @@ public:
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
 
+    using SubsetIndices = type::vector<Index>;
+    using DataSubsetIndices = sofa::core::topology::TopologySubsetIndices;
+
 protected:
     std::vector<Deriv> dfree;
     Quat<SReal> q;
 
     std::vector<unsigned int> cid;
 
-    Data<type::vector<int> > m1; ///< index of the constraint on the first model
-    Data<type::vector<int> > m2; ///< index of the constraint on the second model
+    DataSubsetIndices m1; ///< index of the constraint on the first model
+    DataSubsetIndices m2; ///< index of the constraint on the second model
     Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
