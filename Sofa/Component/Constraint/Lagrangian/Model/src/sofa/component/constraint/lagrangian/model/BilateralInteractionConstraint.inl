@@ -101,10 +101,6 @@ void BilateralInteractionConstraint<DataTypes>::reinit()
     activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
 }
 
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::reset(){
-    init();
-}
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId

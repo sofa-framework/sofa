@@ -124,8 +124,6 @@ public:
 
     void reinit() override;
 
-    void reset() override;
-
     void buildConstraintMatrix(const ConstraintParams* cParams,
                                        DataMatrixDeriv &c1, DataMatrixDeriv &c2,
                                        unsigned int &cIndex,
