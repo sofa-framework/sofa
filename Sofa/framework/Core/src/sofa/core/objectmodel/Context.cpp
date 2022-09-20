@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Context.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 Context::Context()
@@ -106,22 +100,16 @@ bool Context::getAnimate() const
 //===============================================================================
 
 /// Simulation timestep
-void Context::setDt(SReal val)
+void Context::setDt(SReal dt)
 {
-    dt_.setValue(val);
+    dt_.setValue(dt);
 }
 
 /// Simulation time
-void Context::setTime(SReal val)
+void Context::setTime(SReal t)
 {
-    time_.setValue(val);
+    time_.setValue(t);
 }
-
-/// Gravity vector
-// void Context::setGravity(const Vec3& g)
-// {
-// 	gravity_ = g;
-// }
 
 /// Gravity vector
 void Context::setGravity(const Vec3& g)
@@ -130,7 +118,7 @@ void Context::setGravity(const Vec3& g)
 }
 
 /// Animation flag
-void Context::setAnimate(bool val)
+void Context::setAnimate(const bool val)
 {
     animate_.setValue(val);
 }
@@ -156,13 +144,5 @@ void Context::copySimulationContext(const Context& c)
 
 
 }
-
-
-
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel
 
