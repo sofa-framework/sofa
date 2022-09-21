@@ -380,7 +380,7 @@ template <class VecT>
 void MathOp<VecT>::createInputs(int nb)
 {
     unsigned int n = (nb < 0) ? f_nbInputs.getValue() : (unsigned int)nb;
-    for (typename decltype(vf_inputs)::size_type i=vf_inputs.size(); i<n; ++i)
+    for (auto i = vf_inputs.size(); i < n; ++i)
     {
         std::ostringstream oname, ohelp;
         oname << "input" << (i+1);
