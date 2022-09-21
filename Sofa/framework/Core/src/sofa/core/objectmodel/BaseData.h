@@ -63,13 +63,12 @@ public:
     class BaseInitData
     {
     public:
-        BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), ownerClass(""), group(""), widget("") {}
+        BaseInitData() : data(nullptr), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(nullptr), name(""), group(""), widget("") {}
         BaseData* data;
         std::string helpMsg;
         DataFlags dataFlags;
         Base* owner;
         std::string name;
-        std::string ownerClass;
         std::string group;
         std::string widget;
     };
