@@ -98,7 +98,7 @@ protected:
     VecCoord initialDifference;
 
     Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
-    Data<int> activateAtIteration; ///< activate constraint at specified interation (0 = always enabled, -1=disabled)
+    Data<bool> d_activate; ///< bool to control constraint activation
     Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
     Data<bool> derivative; ///< TEST: derivative
     Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
@@ -107,10 +107,6 @@ protected:
     // grouped square constraints
     bool squareXYZ[3];
     Deriv dfree_square_total;
-
-
-    bool activated;
-    int iteration;
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralInteractionConstraint(MechanicalState* object) ;

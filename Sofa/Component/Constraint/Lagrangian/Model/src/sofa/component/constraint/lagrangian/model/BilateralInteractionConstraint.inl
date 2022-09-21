@@ -49,9 +49,7 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
 
     , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
                                     "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
-
-    //TODO(dmarchal): Such kind of behavior shouldn't be implemented in the component but externalized in a second component or in a python script controlling the scene.
-    , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
+    , d_activate( initData(&d_activate, true, "activate", "controle constraint activation (true by default)"))
 
     //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
@@ -84,8 +82,6 @@ void BilateralInteractionConstraint<DataTypes>::unspecializedInit()
     assert(this->mstate2);
 
     prevForces.clear();
-    iteration = 0;
-    activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
 }
 
 template<class DataTypes>
@@ -98,7 +94,6 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::reinit()
 {
     prevForces.clear();
-    activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
 }
 
 
@@ -106,7 +101,7 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
                                                                       , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
-    if (!activated)
+    if (!d_activate.getValue())
         return;
 
     unsigned minp = std::min(m1.getValue().size(), m2.getValue().size());
@@ -285,7 +280,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
                                                                        const DataVecCoord &d_x1, const DataVecCoord &d_x2
                                                                        , const DataVecDeriv & d_v1, const DataVecDeriv & d_v2)
 {
-    if (!activated) return;
+    if (!d_activate.getValue()) return;
 
     const type::vector<int> &m1Indices = m1.getValue();
     const type::vector<int> &m2Indices = m2.getValue();
@@ -529,7 +524,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
         vertices.push_back(DataTypes::getCPos(positionsM2[indicesM2[i]]));
     }
 
-    vparams->drawTool()->drawPoints(vertices, 10, (activated) ? colorActive : colorNotActive);
+    vparams->drawTool()->drawPoints(vertices, 10, (d_activate.getValue()) ? colorActive : colorNotActive);
 
 
 }
@@ -548,22 +543,21 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
 
         case 'A':
         case 'a':
-            msg_info() << "Activating constraint" ;
-            activated = true;
+            if (d_activate.getValue())
+            {
+                msg_info() << "Unactivating constraint";
+                d_activate.setValue(false);
+            }
+            else
+            {
+                msg_info() << "Activating constraint";
+                d_activate.setValue(true);
+            }
+            
             break;
         }
     }
 
-
-    if (simulation::AnimateEndEvent::checkEventType(event) )
-    {
-        ++iteration;
-        if (!activated && activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration)
-        {
-            msg_info() << "Activating constraint" ;
-            activated = true;
-        }
-    }
 }
 
 
