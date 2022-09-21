@@ -59,7 +59,7 @@ sofa_add_subdirectory(collection modules/SofaMiscMapping SofaMiscMapping ON WHEN
 sofa_add_subdirectory(collection modules/SofaMiscCollision SofaMiscCollision ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 sofa_add_subdirectory(collection modules/SofaHaptics SofaHaptics ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
-sofa_add_subdirectory(collection modules/SofaValidation SofaValidation ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
+sofa_add_subdirectory(plugin modules/SofaValidation SofaValidation ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(collection modules/SofaGeneralObjectInteraction SofaGeneralObjectInteraction ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
 
