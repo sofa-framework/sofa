@@ -39,7 +39,8 @@ public:
 
     NodeContext_test()
     {
-
+        importPlugin("Sofa.Component.StateContainer");
+        importPlugin("Sofa.Component.SceneUtility");
     }
 
     void testGetNodeObjects()
