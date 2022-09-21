@@ -33,7 +33,10 @@ using sofa::core::objectmodel::BaseObject;
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
 
+#include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
+
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
 namespace

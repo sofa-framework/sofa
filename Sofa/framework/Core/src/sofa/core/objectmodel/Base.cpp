@@ -28,6 +28,8 @@
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
 
+#include <sofa/defaulttype/AbstractTypeInfo.h>
+
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;

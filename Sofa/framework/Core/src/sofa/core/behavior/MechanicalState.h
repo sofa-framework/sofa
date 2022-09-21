@@ -22,7 +22,10 @@
 #pragma once
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
 #include <sofa/core/State.h>
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa::core::behavior
 {

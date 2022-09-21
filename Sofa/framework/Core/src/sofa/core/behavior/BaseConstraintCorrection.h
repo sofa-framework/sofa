@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
 namespace sofa::core::behavior
 {
