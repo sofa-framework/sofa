@@ -51,12 +51,17 @@ namespace // anonymous
 namespace sofa::type
 {
 
+template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
+constexpr Mat<C,P,real> multTranspose(const Mat<L,C,real>& m1, const Mat<L,P,real>& m2) noexcept;
+
+
+
 template <sofa::Size L, sofa::Size C, class real>
 class Mat : public fixed_array<VecNoInit<C,real>, L>
 {
 public:
 
-    enum { N = L*C };
+    static constexpr sofa::Size N = L * C;
 
     typedef typename fixed_array<real, N>::size_type Size;
 
@@ -276,44 +281,56 @@ public:
     }
 
     /// Special access to first line.
-    constexpr Line& x()  noexcept { static_assert(L >= 1, ""); return this->elems[0]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 1> >
+    constexpr Line& x()  noexcept { return this->elems[0]; }
     /// Special access to second line.
-    constexpr Line& y()  noexcept { static_assert(L >= 2, ""); return this->elems[1]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 2> >
+    constexpr Line& y()  noexcept { return this->elems[1]; }
     /// Special access to third line.
-    constexpr Line& z()  noexcept { static_assert(L >= 3, ""); return this->elems[2]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 3> >
+    constexpr Line& z()  noexcept { return this->elems[2]; }
     /// Special access to fourth line.
-    constexpr Line& w()  noexcept { static_assert(L >= 4, ""); return this->elems[3]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 4> >
+    constexpr Line& w()  noexcept { return this->elems[3]; }
 
     /// Special access to first line (read-only).
-    constexpr const Line& x() const noexcept { static_assert(L >= 1, ""); return this->elems[0]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 1> >
+    constexpr const Line& x() const noexcept { return this->elems[0]; }
     /// Special access to second line (read-only).
-    constexpr const Line& y() const noexcept { static_assert(L >= 2, ""); return this->elems[1]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 2> >
+    constexpr const Line& y() const noexcept { return this->elems[1]; }
     /// Special access to thrid line (read-only).
-    constexpr const Line& z() const noexcept { static_assert(L >= 3, ""); return this->elems[2]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 3> >
+    constexpr const Line& z() const noexcept { return this->elems[2]; }
     /// Special access to fourth line (read-only).
-    constexpr const Line& w() const noexcept { static_assert(L >= 4, ""); return this->elems[3]; }
+    template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 4> >
+    constexpr const Line& w() const noexcept { return this->elems[3]; }
 
     /// Set matrix to identity.
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     constexpr void identity() noexcept
     {
-        static_assert(L == C, "");
         clear();
         for (Size i=0; i<L; i++)
             this->elems[i][i]=1;
     }
 
     /// Returns the identity matrix
-    static Mat<L,L,real> Identity() noexcept
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
+    static const Mat<L,L,real>& Identity() noexcept
     {
-        static_assert(L == C, "");
-        Mat<L,L,real> id;
-        for (Size i=0; i<L; i++)
-            id[i][i]=1;
-        return id;
+        static Mat<L,L,real> s_identity = []()
+        {
+            Mat<L,L,real> id(NOINIT);
+            id.identity();
+            return id;
+        }();
+        return s_identity;
     }
 
     /// precomputed identity matrix of size (L,L)
-    static Mat<L, L, real> s_identity;
+    SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY()
+    static const Mat<L, L, real>& s_identity;
 
     template<Size S>
     static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs) noexcept
@@ -359,9 +376,9 @@ public:
     }
 
     /// Transpose the square matrix.
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     constexpr void transpose() noexcept
     {
-        static_assert(L == C, "Cannot self-transpose a non-square matrix. Use transposed() instead");
         for (Size i=0; i<L; i++)
         {
             for (Size j=i+1; j<C; j++)
@@ -389,12 +406,19 @@ public:
     }
 
 
-    bool isSymmetric() const
+    [[nodiscard]] bool isSymmetric() const
     {
-        for (Size i=0; i<L; i++)
-            for (Size j=i+1; j<C; j++)
-                if( rabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
-        return true;
+        if constexpr (L == C)
+        {
+            for (Size i=0; i<L; i++)
+                for (Size j=i+1; j<C; j++)
+                    if( rabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     bool isDiagonal() const noexcept
@@ -413,21 +437,6 @@ public:
     /// @}
 
     // LINEAR ALGEBRA
-
-    /// Matrix multiplication operator.
-    template <Size P>
-    constexpr Mat<L,P,real> operator*(const Mat<C,P,real>& m) const noexcept
-    {
-        Mat<L,P,real> r(NOINIT);
-        for(Size i=0; i<L; i++)
-            for(Size j=0; j<P; j++)
-            {
-                r[i][j]=(*this)[i][0] * m[0][j];
-                for(Size k=1; k<C; k++)
-                    r[i][j] += (*this)[i][k] * m[k][j];
-            }
-        return r;
-    }
 
     /// Matrix addition operator.
     constexpr Mat<L,C,real> operator+(const Mat<L,C,real>& m) const noexcept
@@ -495,18 +504,12 @@ public:
 
 
     /// Transposed Matrix multiplication operator.
+    /// Result = (*this)^T * m
+    /// Sizes: [L,C]^T * [L,P] = [C,L] * [L,P] = [C,P]
     template <Size P>
     constexpr Mat<C,P,real> multTranspose(const Mat<L,P,real>& m) const noexcept
     {
-        Mat<C,P,real> r(NOINIT);
-        for(Size i=0; i<C; i++)
-            for(Size j=0; j<P; j++)
-            {
-                r[i][j]=(*this)[0][i] * m[0][j];
-                for(Size k=1; k<L; k++)
-                    r[i][j] += (*this)[k][i] * m[k][j];
-            }
-        return r;
+        return ::sofa::type::multTranspose(*this, m);
     }
 
     /// Multiplication with the transposed of the given matrix operator \returns this * mt
@@ -617,7 +620,8 @@ public:
 
 
     /// invert this
-    constexpr Mat<L,C,real> inverted() const
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
+    [[nodiscard]] constexpr Mat<L,C,real> inverted() const
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         Mat<L,C,real> m = *this;
@@ -630,9 +634,9 @@ public:
     }
 
     /// Invert square matrix m
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     [[nodiscard]] constexpr bool invert(const Mat<L,C,real>& m)
     {
-        static_assert(L == C, "Cannot invert a non-square matrix");
         if (&m == this)
         {
             Mat<L,C,real> mat = m;
@@ -642,6 +646,7 @@ public:
         return invertMatrix(*this, m);
     }
 
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t) noexcept
     {
         Mat<L,C,real> m;
@@ -651,6 +656,7 @@ public:
         return m;
     }
 
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     static Mat<L,C,real> transformScale(real s) noexcept
     {
         Mat<L,C,real> m;
@@ -660,6 +666,7 @@ public:
         return m;
     }
 
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     static Mat<L,C,real> transformScale(const Vec<C-1,real>& s) noexcept
     {
         Mat<L,C,real> m;
@@ -715,6 +722,7 @@ public:
     }
 
     /// Invert transformation matrix m
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     constexpr bool transformInvert(const Mat<L,C,real>& m)
     {
         return transformInvertMatrix(*this, m);
@@ -723,9 +731,9 @@ public:
     /// for square matrices
     /// @warning in-place simple symmetrization
     /// this = ( this + this.transposed() ) / 2.0
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     constexpr void symmetrize() noexcept
     {
-        static_assert( C == L, "" );
         for(Size l=0; l<L; l++)
             for(Size c=l+1; c<C; c++)
                 this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;
@@ -734,8 +742,8 @@ public:
 };
 
 
-template <sofa::Size L, sofa::Size C, typename real> 
-Mat<L, L, real> Mat<L, C, real>::s_identity = Mat<L, L, real>::Identity();
+template <sofa::Size L, sofa::Size C, typename real>
+const Mat<L, L, real>& Mat<L, C, real>::s_identity = Mat<L, L, real>::Identity();
 
 /// Same as Mat except the values are not initialized by default
 template <sofa::Size L, sofa::Size C, typename real>
@@ -956,6 +964,19 @@ template<class real>
     return true;
 }
 
+/// Matrix inversion (special case 1x1).
+template<class real>
+[[nodiscard]] constexpr bool invertMatrix(Mat<1,1,real>& dest, const Mat<1,1,real>& from)
+{
+    if (equalsZero(from[0][0]))
+    {
+        return false;
+    }
+
+    dest[0][0] = static_cast<real>(1.) / from[0][0];
+    return true;
+}
+
 /// Inverse Matrix considering the matrix as a transformation.
 template<sofa::Size S, class real>
 [[nodiscard]] constexpr bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
@@ -1113,5 +1134,142 @@ constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real>& a, const Vec<L,Real>& b
 
     return m;
 }
+
+template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
+constexpr Mat<L,P,real> operator*(const Mat<L,C,real>& m1, const Mat<C,P,real>& m2) noexcept
+{
+    Mat<L,P,real> r(NOINIT);
+    for (Size i = 0; i<L; i++)
+    {
+        for (Size j = 0; j<P; j++)
+        {
+            r[i][j] = m1[i][0] * m2[0][j];
+            for (Size k = 1; k<C; k++)
+            {
+                r[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+    }
+    return r;
+}
+
+template<class real>
+constexpr Mat<3,3,real> operator*(const Mat<3,3,real>& m1, const Mat<3,3,real>& m2) noexcept
+{
+    Mat<3,3,real> r(NOINIT);
+
+    const auto A00 = m1[0][0];
+    const auto A01 = m1[0][1];
+    const auto A02 = m1[0][2];
+    const auto A10 = m1[1][0];
+    const auto A11 = m1[1][1];
+    const auto A12 = m1[1][2];
+    const auto A20 = m1[2][0];
+    const auto A21 = m1[2][1];
+    const auto A22 = m1[2][2];
+
+    const auto B00 = m2[0][0];
+    const auto B01 = m2[0][1];
+    const auto B02 = m2[0][2];
+    const auto B10 = m2[1][0];
+    const auto B11 = m2[1][1];
+    const auto B12 = m2[1][2];
+    const auto B20 = m2[2][0];
+    const auto B21 = m2[2][1];
+    const auto B22 = m2[2][2];
+
+    r[0][0] = A00 * B00 + A01 * B10 + A02 * B20;
+    r[0][1] = A00 * B01 + A01 * B11 + A02 * B21;
+    r[0][2] = A00 * B02 + A01 * B12 + A02 * B22;
+
+    r[1][0] = A10 * B00 + A11 * B10 + A12 * B20;
+    r[1][1] = A10 * B01 + A11 * B11 + A12 * B21;
+    r[1][2] = A10 * B02 + A11 * B12 + A12 * B22;
+
+    r[2][0] = A20 * B00 + A21 * B10 + A22 * B20;
+    r[2][1] = A20 * B01 + A21 * B11 + A22 * B21;
+    r[2][2] = A20 * B02 + A21 * B12 + A22 * B22;
+
+    return r;
+}
+
+template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
+constexpr Mat<C,P,real> multTranspose(const Mat<L,C,real>& m1, const Mat<L,P,real>& m2) noexcept
+{
+    Mat<C, P, real> r(NOINIT);
+    for (Size i = 0; i<C; i++)
+    {
+        for (Size j = 0; j<P; j++)
+        {
+            r[i][j] = m1[0][i] * m2[0][j];
+            for (Size k = 1; k<L; k++)
+            {
+                r[i][j] += m1[k][i] * m2[k][j];
+            }
+        }
+    }
+    return r;
+}
+
+template<class real>
+constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,real>& m2) noexcept
+{
+    Mat<3,3,real> r(NOINIT);
+
+    const auto A00 = m1[0][0];
+    const auto A01 = m1[0][1];
+    const auto A02 = m1[0][2];
+    const auto A10 = m1[1][0];
+    const auto A11 = m1[1][1];
+    const auto A12 = m1[1][2];
+    const auto A20 = m1[2][0];
+    const auto A21 = m1[2][1];
+    const auto A22 = m1[2][2];
+
+    const auto B00 = m2[0][0];
+    const auto B01 = m2[0][1];
+    const auto B02 = m2[0][2];
+    const auto B10 = m2[1][0];
+    const auto B11 = m2[1][1];
+    const auto B12 = m2[1][2];
+    const auto B20 = m2[2][0];
+    const auto B21 = m2[2][1];
+    const auto B22 = m2[2][2];
+
+    r[0][0] = A00 * B00 + A10 * B10 + A20 * B20;
+    r[0][1] = A00 * B01 + A10 * B11 + A20 * B21;
+    r[0][2] = A00 * B02 + A10 * B12 + A20 * B22;
+
+    r[1][0] = A01 * B00 + A11 * B10 + A21 * B20;
+    r[1][1] = A01 * B01 + A11 * B11 + A21 * B21;
+    r[1][2] = A01 * B02 + A11 * B12 + A21 * B22;
+
+    r[2][0] = A02 * B00 + A12 * B10 + A22 * B20;
+    r[2][1] = A02 * B01 + A12 * B11 + A22 * B21;
+    r[2][2] = A02 * B02 + A12 * B12 + A22 * B22;
+
+    return r;
+}
+
+#if !defined(SOFA_TYPE_MAT_CPP)
+
+extern template class SOFA_TYPE_API Mat<2, 2, SReal>;
+extern template class SOFA_TYPE_API Mat<2, 3, SReal>;
+extern template class SOFA_TYPE_API Mat<3, 3, SReal>;
+extern template class SOFA_TYPE_API Mat<4, 4, SReal>;
+extern template class SOFA_TYPE_API Mat<6, 3, SReal>;
+extern template class SOFA_TYPE_API Mat<6, 6, SReal>;
+extern template class SOFA_TYPE_API Mat<8, 3, SReal>;
+extern template class SOFA_TYPE_API Mat<8, 8, SReal>;
+extern template class SOFA_TYPE_API Mat<9, 9, SReal>;
+extern template class SOFA_TYPE_API Mat<12, 3, SReal>;
+extern template class SOFA_TYPE_API Mat<12, 6, SReal>;
+extern template class SOFA_TYPE_API Mat<12, 12, SReal>;
+extern template class SOFA_TYPE_API Mat<20, 20, SReal>;
+extern template class SOFA_TYPE_API Mat<20, 32, SReal>;
+extern template class SOFA_TYPE_API Mat<24, 24, SReal>;
+extern template class SOFA_TYPE_API Mat<32, 20, SReal>;
+
+#endif
 
 } // namespace sofa::type

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,33 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_TYPE_MAT_CPP
+#include <sofa/type/Mat.h>
 
-#include <sofa/config.h>
-
-#define SOFATYPE_VERSION @PROJECT_VERSION@
-
-#ifdef SOFA_BUILD_SOFA_TYPE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_TYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_TYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DEPRECATED__REBIND()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__REBIND() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.06", "v22.12", \
-        "As an alternative, use sofa::type::Rebind or sofa::type::rebind_to.")
-#endif
-
-#ifdef SOFA_BUILD_SOFA_TYPE
-#define SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.12", "v23.06", \
-        "As an alternative, use sofa::type::Mat<L,C,real>::Identity().")
-#endif
+namespace sofa::type
+{
+template class SOFA_TYPE_API Mat<2, 2, SReal>;
+template class SOFA_TYPE_API Mat<2, 3, SReal>;
+template class SOFA_TYPE_API Mat<3, 3, SReal>;
+template class SOFA_TYPE_API Mat<4, 4, SReal>;
+template class SOFA_TYPE_API Mat<6, 3, SReal>;
+template class SOFA_TYPE_API Mat<6, 6, SReal>;
+template class SOFA_TYPE_API Mat<8, 3, SReal>;
+template class SOFA_TYPE_API Mat<8, 8, SReal>;
+template class SOFA_TYPE_API Mat<9, 9, SReal>;
+template class SOFA_TYPE_API Mat<12, 3, SReal>;
+template class SOFA_TYPE_API Mat<12, 6, SReal>;
+template class SOFA_TYPE_API Mat<12, 12, SReal>;
+template class SOFA_TYPE_API Mat<20, 20, SReal>;
+template class SOFA_TYPE_API Mat<20, 32, SReal>;
+template class SOFA_TYPE_API Mat<24, 24, SReal>;
+template class SOFA_TYPE_API Mat<32, 20, SReal>;
+}

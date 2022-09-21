@@ -51,6 +51,7 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/DualQuat.cpp
     ${SOFATYPESRC_ROOT}/BoundingBox.cpp
     ${SOFATYPESRC_ROOT}/Frame.cpp
+    ${SOFATYPESRC_ROOT}/Mat.cpp
     ${SOFATYPESRC_ROOT}/Material.cpp
     ${SOFATYPESRC_ROOT}/PrimitiveGroup.cpp
     ${SOFATYPESRC_ROOT}/RGBAColor.cpp

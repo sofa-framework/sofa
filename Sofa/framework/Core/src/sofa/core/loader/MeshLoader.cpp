@@ -71,8 +71,8 @@ MeshLoader::MeshLoader() : BaseLoader()
   , d_translation(initData(&d_translation, Vec3(), "translation", "Translation of the DOFs"))
   , d_rotation(initData(&d_rotation, Vec3(), "rotation", "Rotation of the DOFs"))
   , d_scale(initData(&d_scale, Vec3(1.0, 1.0, 1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
-  , d_transformation(initData(&d_transformation, type::Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
-  , d_previousTransformation(type::Matrix4::s_identity )
+  , d_transformation(initData(&d_transformation, type::Matrix4::Identity(), "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
+  , d_previousTransformation(type::Matrix4::Identity() )
 {
     addAlias(&d_tetrahedra, "tetras");
     addAlias(&d_hexahedra, "hexas");
@@ -220,7 +220,7 @@ void MeshLoader::reinit()
     d_previousTransformation.identity();
 
 
-    if (transformation != type::Matrix4::s_identity)
+    if (transformation != type::Matrix4::Identity())
     {
         if (d_scale.getValue() != Vec3(1.0, 1.0, 1.0) || d_rotation.getValue() != Vec3(0.0, 0.0, 0.0) || d_translation.getValue() != Vec3(0.0, 0.0, 0.0))
         {
@@ -237,7 +237,7 @@ void MeshLoader::reinit()
                 type::Matrix4::transformScale(scale);
     }
 
-    if (transformation != type::Matrix4::s_identity)
+    if (transformation != type::Matrix4::Identity())
     {
         this->applyTransformation(transformation);
         d_previousTransformation.transformInvert(transformation);
