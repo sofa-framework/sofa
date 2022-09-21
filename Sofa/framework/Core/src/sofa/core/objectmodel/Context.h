@@ -46,7 +46,7 @@ public:
 
 
     Data<bool> is_activated; ///< To Activate a node
-    Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    Data<Vec3> d_gravity;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     Data<SReal> dt_; ///< Time step
     Data<SReal> time_; ///< Current time
     Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
@@ -109,7 +109,7 @@ public:
 	void setChangeSleepingState(bool val) override;
 
     /// Display flags: Gravity
-    virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
+    virtual void setDisplayWorldGravity(bool val) { d_gravity.setDisplayed(val); }
 
     /// @}
 

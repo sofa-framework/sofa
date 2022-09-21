@@ -162,7 +162,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    /// Automatic creation of a local GravityForceField if the worldGravity in the root node is defined
+    /// Automatic creation of a local GravityForceField if the gravity in the root node is defined
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
@@ -178,18 +178,18 @@ public:
             // to remove after v23.06 ...
             bool savePLog = context->f_printLog.getValue();
             context->f_printLog.setValue(true);
-            msg_info(context) << "A gravity seem to apply using the worldGravity in the root node (PR#2988)." << msgendl
+            msg_info(context) << "A gravity seem to apply using the gravity in the root node (PR#2988)." << msgendl
                                << "A GravityForceField is automatically added in the node \"" << context->getName() << "\".";
             context->f_printLog.setValue(savePLog);
             // until here
 
 
             const std::string templated = context->getMechanicalState()->getTemplateName();
-            std::string gravity_string = "@"+ context->getRootContext()->getPathName()+".worldGravity";
+            std::string gravity_string = "@"+ context->getRootContext()->getPathName()+".gravity";
 
             sofa::core::objectmodel::BaseObjectDescription desc("GravityForceField","GravityForceField");
             desc.setAttribute("template", templated);
-            desc.setAttribute("worldGravity", gravity_string);
+            desc.setAttribute("gravity", gravity_string);
 
             /// Create the object
             BaseObject::SPtr objGravityFF = sofa::core::ObjectFactory::getInstance()->createObject(context, &desc);

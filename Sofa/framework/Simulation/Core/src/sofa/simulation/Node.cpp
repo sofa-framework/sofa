@@ -169,19 +169,6 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
         objDesc.setAttribute("displayFlags", oldFlags);
         sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
     }
-
-    // SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#2988)", "v23.12", "Transition removing gravity and introducing GravityForceField")
-    const char* gravityStr = arg->getAttribute("gravity", nullptr);
-    if (gravityStr != nullptr)
-    {
-        msg_deprecated() << "The \"gravity\" data has been renamed \"worldGravity\" since PR#2988 and its default value is (0,0,0)." << msgendl
-                       "This change was made to explicit the fact that the gravity will affect all objects in the scene." << msgendl
-                       "To define a per-node gravity, please do not use the  \"worldGravity\" but a GravityForceField for each object instead.";
-        Vec3 g;
-        std::istringstream ss( gravityStr );
-        ss >> g ;
-        this->setGravity(g);
-    }
 }
 
 /// Initialize the components of this node and all the nodes which depend on it.

@@ -34,13 +34,13 @@ using namespace sofa::type;
 template<class DataTypes>
 GravityForceField<DataTypes>::GravityForceField()
     : d_gravitationalAcceleration(initData(&d_gravitationalAcceleration, "gravitationalAcceleration", "Value corresponding to the gravitational acceleration"))
-    , d_worldGravity(initData(&d_worldGravity, "worldGravity", "Vector3 which can be linked to the worldGravity data of Node"))
+    , d_gravity(initData(&d_gravity, "gravity", "Vector3 which can be linked to the gravity data of Node"))
     , l_mass(initLink("mass", "link to the mass"))
 {
-    // To avoid confusion, the data "d_worldGravity" used for the automatic creation of GravityForceField when using the Node gravity is hidden to the user
-    d_worldGravity.setDisplayed(false);
+    // To avoid confusion, the data "d_gravity" used for the automatic creation of GravityForceField when using the Node gravity is hidden to the user
+    d_gravity.setDisplayed(false);
 
-    this->addUpdateCallback("connnectToWorldGravity", { &d_worldGravity}, [this](const core::DataTracker& t)
+    this->addUpdateCallback("connnectToGravity", { &d_gravity}, [this](const core::DataTracker& t)
     {
         SOFA_UNUSED(t);
 
@@ -98,7 +98,7 @@ void GravityForceField<DataTypes>::init()
 template<class DataTypes>
 void GravityForceField<DataTypes>::setGravityFromRootNode()
 {
-    const Vec3& gravityRootNode = d_worldGravity.getValue();
+    const Vec3& gravityRootNode = d_gravity.getValue();
     auto gravity = sofa::helper::getWriteAccessor(d_gravitationalAcceleration);
     for(Size i=0; ( i<gravity.size() || i<3) ; i++ )
     {

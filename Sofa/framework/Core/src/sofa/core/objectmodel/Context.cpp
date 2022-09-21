@@ -32,7 +32,7 @@ namespace objectmodel
 
 Context::Context()
     : is_activated(initData(&is_activated, true, "activated", "To Activate a node"))
-    , worldGravity_(initData(&worldGravity_, Vec3(SReal(0.),SReal(0.),SReal(0.)),"worldGravity","Gravity in the world coordinate system"))
+    , d_gravity(initData(&d_gravity, Vec3(SReal(0.),SReal(0.),SReal(0.)),"gravity","Gravity in the world coordinate system"))
     , dt_(initData(&dt_,SReal(0.01),"dt","Time step"))
     , time_(initData(&time_,SReal(0.),"time","Current time"))
     , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
@@ -94,7 +94,7 @@ SReal Context::getTime() const
 /// Gravity vector in world coordinates
 const Context::Vec3& Context::getGravity() const
 {
-    return worldGravity_.getValue();
+    return d_gravity.getValue();
 }
 
 /// Animation flag
@@ -126,7 +126,7 @@ void Context::setTime(SReal val)
 /// Gravity vector
 void Context::setGravity(const Vec3& g)
 {
-    worldGravity_ .setValue(g);
+    d_gravity.setValue(g);
 }
 
 /// Animation flag
@@ -148,7 +148,7 @@ void Context::copyContext(const Context& c)
 
 void Context::copySimulationContext(const Context& c)
 {
-    worldGravity_.setValue(c.getGravity());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    d_gravity.setValue(c.getGravity());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     setDt(c.getDt());
     setTime(c.getTime());
     setAnimate(c.getAnimate());
