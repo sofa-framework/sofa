@@ -200,12 +200,6 @@ public:
     std::string getValueString() const override;
     std::string getValueTypeString() const override;
 
-    friend std::ostream & operator << (std::ostream &out, const Data& df)
-    {
-        out<<df.getValue();
-        return out;
-    }
-
     void operator =( const T& value )
     {
         this->setValue(value);

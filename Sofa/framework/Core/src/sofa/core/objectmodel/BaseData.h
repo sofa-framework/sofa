@@ -367,4 +367,7 @@ private:
     WriteAccessWithRawPtr() = default;
     BaseData* m_data { nullptr };
 };
+
+SOFA_CORE_API std::ostream& operator<<(std::ostream &out, const sofa::core::objectmodel::BaseData& df);
+
 } // namespace sofa::core::objectmodel
