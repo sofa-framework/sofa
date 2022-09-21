@@ -290,6 +290,7 @@ protected:
 
 extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
 extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec2Types >;
 extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
 extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec2Types >;
 extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types >;
