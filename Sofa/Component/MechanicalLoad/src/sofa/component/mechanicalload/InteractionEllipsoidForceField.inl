@@ -387,7 +387,6 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         q1.buildRotationMatrix(R);
         vparams->drawTool()->translate(cx2, cy2, cz2);
 
-        if constexpr (!std::is_same_v<SReal, float>)
         {
             //convert forcefully to float (in case SReal is double)
             float Rfloat[4][4];
@@ -396,10 +395,6 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
                     Rfloat[i][j] = static_cast<float>(R[i][j]);
 
             vparams->drawTool()->multMatrix(&Rfloat[0][0]);
-        }
-        else
-        {
-            vparams->drawTool()->multMatrix(&R[0][0]);
         }
 
         sofa::type::Vector3 center(cx1, cy1, cz1);
