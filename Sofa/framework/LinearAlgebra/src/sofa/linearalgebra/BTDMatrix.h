@@ -95,7 +95,7 @@ public:
         }
         type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBlock& mt)
         {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
+            return operator*(mt.m.transposed());
         }
         TransposedBlock t() const
         {
