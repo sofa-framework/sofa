@@ -179,6 +179,9 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
+    // Argument parser has 2 stages
+    // one is for the runSofa options itself
+    // second is for the eventual options the GUIs can add (i.e batch with the "-n" number of iterations option) 
     sofa::gui::common::ArgumentParser* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
 
     argParser->addArgument(
@@ -307,11 +310,16 @@ int main(int argc, char** argv)
         "Number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled"
     );
 
+    // first option parsing to see if the user requested to show help
+    argParser->parse();
+
     if(showHelp)
     {
         argParser->showHelp();
         exit( EXIT_SUCCESS );
     }
+
+    files = argParser->getInputFileList();
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
@@ -406,9 +414,11 @@ int main(int argc, char** argv)
         msg_info("runSofa") << "Automatic plugin loading disabled.";
     }
 
-    addGUIParameters(argParser);
-    argParser->parse();
-    files = argParser->getInputFileList();
+    // first parsing did not take into account the potential new options
+    // so is needs to be parsed again
+    auto argParserCopy = new sofa::gui::common::ArgumentParser(*argParser);
+    addGUIParameters(argParserCopy);
+    argParserCopy->parse();
 
     PluginManager::getInstance().init();
 
