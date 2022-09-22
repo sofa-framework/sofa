@@ -41,7 +41,7 @@ typename BlockFullMatrix<N,T>::Index  BlockFullMatrix<N, T>::Block::Ncols() cons
 template<std::size_t N, typename T>
 void  BlockFullMatrix<N, T>::Block::resize(Index, Index)
 {
-    clear();
+    this->clear();
 }
 
 template<std::size_t N, typename T>
