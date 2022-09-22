@@ -60,11 +60,11 @@ public:
 
     virtual type::vector<Real> & getVector();
 
-    void opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const override;
-    void opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const override;
+    void mulVector(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
+    void mulTransposeVector(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
 
     /// multiply the transpose current matrix by m matrix and strore the result in m
-    void opMulTM(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const override;
+    void mulTransposeMatrix(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const;
 
     void rotateMatrix(linearalgebra::BaseMatrix * mat,const linearalgebra::BaseMatrix * Jmat);
 

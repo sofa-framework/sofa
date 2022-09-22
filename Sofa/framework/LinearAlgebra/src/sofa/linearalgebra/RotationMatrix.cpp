@@ -102,7 +102,7 @@ type::vector<Real>& RotationMatrix<Real>::getVector()
 }
 
 template<class Real>
-void RotationMatrix<Real>::opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
+void RotationMatrix<Real>::mulVector(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     //Solve lv = R * lvR
     std::size_t k = 0;
@@ -118,7 +118,7 @@ void RotationMatrix<Real>::opMulV(linearalgebra::BaseVector* result, const linea
 }
 
 template<class Real>
-void RotationMatrix<Real>::opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
+void RotationMatrix<Real>::mulTransposeVector(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     std::size_t k = 0;
     sofa::SignedIndex l = 0;
@@ -134,7 +134,7 @@ void RotationMatrix<Real>::opMulTV(linearalgebra::BaseVector* result, const line
 
 /// multiply the transpose current matrix by m matrix and strore the result in m
 template<class Real>
-void RotationMatrix<Real>::opMulTM(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const
+void RotationMatrix<Real>::mulTransposeMatrix(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const
 {
     if (RotationMatrix<Real> * m = dynamic_cast<RotationMatrix<Real> * >(bm))
     {

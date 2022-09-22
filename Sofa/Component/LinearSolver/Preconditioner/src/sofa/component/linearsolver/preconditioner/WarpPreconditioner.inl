@@ -185,7 +185,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         this->linearSystem.systemMatrix->resize(currentSystemSize,currentSystemSize);
         rotationFinders[f_useRotationFinder.getValue()]->getRotations(this->linearSystem.systemMatrix);
 
-        this->linearSystem.systemMatrix->opMulTM(this->linearSystem.systemMatrix,rotationWork[indexwork]);
+        this->linearSystem.systemMatrix->mulTransposeMatrix(this->linearSystem.systemMatrix,rotationWork[indexwork]);
     }
 }
 
@@ -202,11 +202,11 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix() {
 /// Solve the system as constructed using the previous methods
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& Rcur, Vector& solution, Vector& rh) {
-    Rcur.opMulTV(l_linearSolver.get()->getSystemRHBaseVector(),&rh);
+    Rcur.mulTransposeVector(l_linearSolver.get()->getSystemRHBaseVector(),&rh);
 
     l_linearSolver.get()->solveSystem();
 
-    Rcur.opMulV(&solution,l_linearSolver.get()->getSystemLHBaseVector());
+    Rcur.mulVector(&solution,l_linearSolver.get()->getSystemLHBaseVector());
 }
 
 /// Solve the system as constructed using the previous methods
