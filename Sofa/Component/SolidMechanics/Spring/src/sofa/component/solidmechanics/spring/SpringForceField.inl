@@ -129,18 +129,46 @@ void SpringForceField<DataTypes>::applyRemovedEdges(const sofa::core::topology::
         return;
 
     type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
-    Size nbEdges = modifiedTopology->getNbEdges();
+    
+    const auto& topologyEdges = modifiedTopology->getEdges();
 
-    for (const auto edgeId : edges) // iterate on the edgeIds to remove
+    type::vector<sofa::Index> springIdsToDelete;
+
+    for (const auto& edgeId : edges) // iterate on the edgeIds to remove and save the respective point pairs
     {
-        --nbEdges;
+        auto& firstPointId = topologyEdges[edgeId][0];
+        auto& secondPointId = topologyEdges[edgeId][1];
 
-        type::vector<sofa::Index> toDelete;
-        sofa::Index i {};
-        
-        // TODO logic to actually remove the affected springs.
+        // sane default value to check against, if no spring is found for the edge
+        int springIdToDelete = -1;
+        sofa::Index i = 0;
+
+        for (const auto& spring : springsValue) // loop on the list of springs to find the spring with targeted pointIds
+        {
+            auto& firstSpringPointId = mstateId == 0 ? spring.m1 : spring.m2;
+            auto& secondSpringPointId = mstateId == 0 ? spring.m2 : spring.m1;
+
+            if (firstSpringPointId == firstPointId && secondSpringPointId == secondPointId)
+            {
+                dmsg_info() << "Spring " << spring << " has an edge to be removed: REMOVED edgeId: " << edgeId;
+                springIdToDelete = i;
+                break; // break as soon as the first matching spring is found. TODO is there a valid case for having multiple springs on the same topology edge?
+            }
+            ++i;
+        }
+       
+        if (springIdToDelete != -1) // if a matching spring was found, add it to the vector of Ids that will be removed
+        {
+            springIdsToDelete.push_back(springIdToDelete);
+        }
     }
 
+    // sort the edges to make sure we detele them from last to first
+    std::sort (springIdsToDelete.begin(), springIdsToDelete.end());
+    for (auto it = springIdsToDelete.rbegin(); it != springIdsToDelete.rend(); ++it) // delete accumulated springs to be removed
+    {
+        springsValue.erase(springsValue.begin() + (*it));
+    }
 }
 
 
@@ -239,6 +267,8 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 msg_info(this) << "Removed points: [" << pointsRemoved->getArray() << "]";
                 applyRemovedPoints(pointsRemoved, mstateId);
             });
+
+        indices.linkToEdgeDataArray();  
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::EDGESREMOVED,
             [this, mstateId](const core::topology::TopologyChange* change)
             {
