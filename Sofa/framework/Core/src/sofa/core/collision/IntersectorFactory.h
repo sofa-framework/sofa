@@ -24,6 +24,8 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
+#include <typeindex>
+#include <typeinfo>
 
 namespace sofa
 {
@@ -40,7 +42,7 @@ class BaseIntersectorCreator
 public:
     virtual ~BaseIntersectorCreator() {}
 
-    virtual void addIntersectors(TIntersectionClass* object) = 0;
+    virtual std::tuple<std::type_index, std::shared_ptr<void>> addIntersectors(TIntersectionClass* object) = 0;
 
     virtual std::string name() const = 0;
 };
@@ -52,6 +54,7 @@ protected:
     typedef BaseIntersectorCreator<TIntersectionClass> Creator;
     typedef std::vector<Creator*> CreatorVector;
     CreatorVector creatorVector;
+    std::unordered_map<std::type_index, std::shared_ptr<void>> intersectorCache;
 
 public:
 
@@ -68,7 +71,8 @@ public:
         while (it != end)
         {
             BaseIntersectorCreator<TIntersectionClass>* creator = (*it);
-            creator->addIntersectors(object);
+            std::tuple<std::type_index, std::shared_ptr<void>> intersectorHandleInfo = creator->addIntersectors(object);
+            intersectorCache[std::get<0>(intersectorHandleInfo)] = std::get<1>(intersectorHandleInfo);
             ++it;
         }
     }
@@ -88,11 +92,11 @@ public:
     {
         IntersectorFactory<TIntersectionClass>::getInstance()->registerCreator(this);
     }
-    virtual ~IntersectorCreator() {}
+    virtual ~IntersectorCreator() {} 
 
-    virtual void addIntersectors(TIntersectionClass* object)
+    virtual std::tuple<std::type_index, std::shared_ptr<void>> addIntersectors(TIntersectionClass* object)
     {
-        new TIntersectorClass(object);
+        return std::make_tuple(std::type_index(typeid(TIntersectorClass)), std::make_shared<TIntersectorClass>(object));
     }
 
     virtual std::string name() const { return m_name; }
