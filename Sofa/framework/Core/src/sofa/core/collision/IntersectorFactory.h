@@ -54,6 +54,8 @@ protected:
     typedef BaseIntersectorCreator<TIntersectionClass> Creator;
     typedef std::vector<Creator*> CreatorVector;
     CreatorVector creatorVector;
+    // keep track of already created TIntersectorClass instances for each template combination
+    // when the factory is destroyed, the refcount of the instances is zero and they are cleaned up correctly
     std::unordered_map<std::type_index, std::shared_ptr<void>> intersectorCache;
 
 public:
@@ -72,6 +74,8 @@ public:
         {
             BaseIntersectorCreator<TIntersectionClass>* creator = (*it);
             std::tuple<std::type_index, std::shared_ptr<void>> intersectorHandleInfo = creator->addIntersectors(object);
+            // add the specific TIntersectorClass and the respective pointer to the map
+            // if an old one of the same type is replaced, the old one will be cleaned up because its refcount is reduced to zero.
             intersectorCache[std::get<0>(intersectorHandleInfo)] = std::get<1>(intersectorHandleInfo);
             ++it;
         }
@@ -92,7 +96,7 @@ public:
     {
         IntersectorFactory<TIntersectionClass>::getInstance()->registerCreator(this);
     }
-    virtual ~IntersectorCreator() {} 
+    virtual ~IntersectorCreator() {}
 
     virtual std::tuple<std::type_index, std::shared_ptr<void>> addIntersectors(TIntersectionClass* object)
     {
