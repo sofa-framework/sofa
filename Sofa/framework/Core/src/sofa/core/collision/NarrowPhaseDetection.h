@@ -51,7 +51,20 @@ public:
 
 protected:
     /// Destructor
-    ~NarrowPhaseDetection() override { }
+    ~NarrowPhaseDetection() override {
+        for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)
+        {
+            DetectionOutputVector* do_vec = (it->second);
+
+            if (do_vec != nullptr)
+            {
+                do_vec->clear();
+                do_vec->release();
+            }
+            m_outputsMap.erase(it);
+        }
+    }
+
 public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase();
