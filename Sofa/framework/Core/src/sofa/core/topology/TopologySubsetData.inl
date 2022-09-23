@@ -219,7 +219,7 @@ void TopologySubsetData <TopologyElementType, VecT>::swapPostProcess(Index i1, I
 {
     if (i1 >= m_map2Elements.size() || i2 >= m_map2Elements.size())
     {
-        msg_warning(this->getOwner()) << "TopologySubsetData: " << this->getName() << " swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of m_map2Elements size: " << m_map2Elements.size();
+        msg_warning(this->getOwner()) << "TopologySubsetData: " << this->getName() << " swap indices out of bounds: i1: " << i1 << " | i2: " << i2 << " out of m_map2Elements size: " << m_map2Elements.size();
         return;
     }
 
