@@ -46,7 +46,7 @@ void TopologySubsetData <TopologyElementType, VecT>::swap(Index i1, Index i2)
     
     if (i1 >= data.size() || i2 >= data.size())
     {
-        msg_warning(this->getOwner()) << "TopologySubsetData: " << this->getName() << " swap indices out of bouds: i1: " << i1 << " | i2: " << i2 << " out of data size: " << data.size();
+        msg_warning(this->getOwner()) << "TopologySubsetData: " << this->getName() << " swap indices out of bounds: i1: " << i1 << " | i2: " << i2 << " out of data size: " << data.size();
         this->endEdit();
         return;
     }
