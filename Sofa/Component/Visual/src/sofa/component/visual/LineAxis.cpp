@@ -85,7 +85,7 @@ void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
 
     const float s = d_size.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if(m_drawX)
@@ -112,7 +112,7 @@ void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
             helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

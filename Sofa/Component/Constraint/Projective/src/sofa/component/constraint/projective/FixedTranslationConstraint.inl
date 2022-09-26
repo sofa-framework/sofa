@@ -177,7 +177,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::Vector3> vertices;
@@ -208,7 +208,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
         }
     }
     vparams->drawTool()->drawPoints(vertices, 10, color);
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

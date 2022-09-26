@@ -560,7 +560,7 @@ void RecordedCamera::drawRotation()
 
 void RecordedCamera::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw rotation path
     if(p_drawRotation.getValue())
@@ -615,7 +615,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawLines(vertices,1,color);
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::visual

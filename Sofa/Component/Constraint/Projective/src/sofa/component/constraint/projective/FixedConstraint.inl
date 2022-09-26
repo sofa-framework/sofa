@@ -353,7 +353,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = d_indices.getValue();
@@ -404,7 +404,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

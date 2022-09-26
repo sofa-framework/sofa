@@ -358,7 +358,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
 
     if (!bDraw.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     sofa::type::RGBAColor colorValue;
     std::vector<sofa::type::Vector3> vertices;
 
@@ -415,7 +415,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
     }
     vparams->drawTool()->drawLines(vertices,1,colorValue);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

@@ -349,7 +349,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index ( f_index );
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::RGBAColor> colorVector;
@@ -426,7 +426,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->drawPoints(vertices,10,colorVector);
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 
