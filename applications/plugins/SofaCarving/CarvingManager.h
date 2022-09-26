@@ -75,8 +75,6 @@ public:
     // link to the forceFeedBack component, if not set will search through graph and take first one encountered
     SingleLink<CarvingManager, core::CollisionModel, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_toolModel;
 
-    //SingleLink<CarvingManager, core::CollisionModel, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceModel;
-
     Data < std::string > d_toolModelPath; 
     /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
