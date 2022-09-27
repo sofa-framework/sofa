@@ -71,12 +71,24 @@ void Hexa2TetraTopologicalMapping::init()
 
     // recheck models
     bool modelsOk = true;
+
+    // Check input topology
     if (!fromModel)
     {
         msg_error() << "Pointer to input topology is invalid.";
         modelsOk = false;
     }
+    else
+    {
+        // Making sure the input topology corresponds to a tetrahedral topology
+        if (fromModel.get()->getTopologyType() != sofa::geometry::ElementType::HEXAHEDRON)
+        {
+            msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a hexahedral topology.";
+            modelsOk = false;
+        }
+    }
 
+    // Check ouput topology
     if (!toModel)
     {
         msg_error() << "Pointer to output topology is invalid.";

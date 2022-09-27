@@ -73,6 +73,8 @@ void Quad2TriangleTopologicalMapping::init()
     using namespace container::dynamic;
 
     bool modelsOk = true;
+
+    // Check input topology
     if (!fromModel)
     {
         // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
@@ -80,7 +82,19 @@ void Quad2TriangleTopologicalMapping::init()
         msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
         modelsOk = false;
     }
+    else
+    {
+        // Making sure the input topology is derived from the quad topology container
+        if (!dynamic_cast<QuadSetTopologyContainer *>(fromModel.get()))
+        {
+            msg_error() << "The input topology '" << fromModel.getPath() << "' is not a derived class of QuadSetTopologyContainer. "
+                        << "Consider setting the '" << fromModel.getName() << "' data attribute to a valid"
+                                                                            " QuadSetTopologyContainer derived object.";
+            modelsOk = false;
+        }
+    }
 
+    // Check output topology
     if (!toModel)
     {
         // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
@@ -88,22 +102,27 @@ void Quad2TriangleTopologicalMapping::init()
         msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
         modelsOk = false;
     }
-
-    // Making sure the output topology is derived from the triangle topology container
-    if (!dynamic_cast<TriangleSetTopologyContainer *>(toModel.get())) {
-        msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
-                    << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
-                                                                        " TriangleSetTopologyContainer derived object.";
-        modelsOk = false;
-    } else {
-        // Making sure a topology modifier exists at the same level as the output topology
-        TriangleSetTopologyModifier *to_tstm;
-        toModel->getContext()->get(to_tstm);
-        if (!to_tstm)
+    else
+    {
+        // Making sure the output topology is derived from the triangle topology container
+        if (!dynamic_cast<TriangleSetTopologyContainer *>(toModel.get()))
         {
-            msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
-                        << toModel->getContext()->getName() << "'.";
+            msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
+                        << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
+                                                                            " TriangleSetTopologyContainer derived object.";
             modelsOk = false;
+        }
+        else
+        {
+            // Making sure a topology modifier exists at the same level as the output topology
+            TriangleSetTopologyModifier *to_tstm;
+            toModel->getContext()->get(to_tstm);
+            if (!to_tstm)
+            {
+                msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
+                            << toModel->getContext()->getName() << "'.";
+                modelsOk = false;
+            }
         }
     }
 

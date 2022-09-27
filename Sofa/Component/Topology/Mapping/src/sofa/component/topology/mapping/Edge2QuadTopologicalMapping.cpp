@@ -97,6 +97,53 @@ void Edge2QuadTopologicalMapping::init()
     }
 
     unsigned int N = d_nbPointsOnEachCircle.getValue();
+    bool modelsOk = true;
+
+    // Check input topology
+    if (!fromModel)
+    {
+        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no input mesh topology could be found.
+        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
+        modelsOk = false;
+    }
+    else
+    {
+        // Making sure the input topology is derived from the edge topology container
+        if (!dynamic_cast<container::dynamic::EdgeSetTopologyContainer *>(fromModel.get()))
+        {
+            msg_error() << "The input topology '" << fromModel.getPath() << "' is not a derived class of EdgeSetTopologyContainer. "
+                        << "Consider setting the '" << fromModel.getName() << "' data attribute to a valid"
+                                                                            " EdgeSetTopologyContainer derived object.";
+            modelsOk = false;
+        }
+    }
+
+    // Check output topology
+    if (!toModel)
+    {
+        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
+        // If it is null at this point, it means no output mesh topology could be found.
+        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
+        modelsOk = false;
+    }
+    else
+    {
+        // Making sure the output topology is derived from the quad topology container
+        if (!dynamic_cast<container::dynamic::QuadSetTopologyContainer *>(toModel.get()))
+        {
+            msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of QuadSetTopologyContainer. "
+                        << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
+                                                                            " QuadSetTopologyContainer derived object.";
+            modelsOk = false;
+        }
+    }
+
+    if (!modelsOk)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 

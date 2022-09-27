@@ -66,25 +66,38 @@ Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 
 void Triangle2EdgeTopologicalMapping::init()
 {
-    // recheck models
     bool modelsOk = true;
+
+    // Check input topology
     if (!fromModel)
     {
         msg_error() << "Pointer to input topology is invalid.";
         modelsOk = false;
     }
+    else
+    {
+        // Making sure the input topology includes triangle elements
+        if (fromModel.get()->getNbTriangles() != 0)
+        {
+            msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a valid triangle topology.";
+            modelsOk = false;
+        }
+    }
 
+    // Check output topology
     if (!toModel)
     {
         msg_error() << "Pointer to output topology is invalid.";
         modelsOk = false;
     }
-
-    toModel->getContext()->get(m_outTopoModifier);
-    if (!m_outTopoModifier)
+    else
     {
-        msg_error() << "No EdgeSetTopologyModifier found in the Edge topology Node.";
-        modelsOk = false;
+        toModel->getContext()->get(m_outTopoModifier);
+        if (!m_outTopoModifier)
+        {
+            msg_error() << "No EdgeSetTopologyModifier found in the Edge topology Node.";
+            modelsOk = false;
+        }
     }
 
     if (!modelsOk)
