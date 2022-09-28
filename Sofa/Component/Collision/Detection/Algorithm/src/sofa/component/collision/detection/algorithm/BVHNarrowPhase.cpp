@@ -279,7 +279,7 @@ void BVHNarrowPhase::visitExternalChildren(const core::CollisionElementIterator 
             }
             else
             {
-                externalCells.push(std::move(externalChildren));
+                externalCells.push(externalChildren);
             }
         }
         else

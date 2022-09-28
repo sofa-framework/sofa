@@ -35,18 +35,23 @@ namespace core
 namespace objectmodel
 {
 
-BaseNode::BaseNode()
-{}
+BaseNode::BaseNode() : m_root(this)
+{
+}
 
 BaseNode::~BaseNode()
 {}
 
 BaseNode* BaseNode::getRoot() const
 {
-    BaseNode* firstParent = getFirstParent();
-    if (!firstParent) return const_cast<BaseNode*>(this);
-    else return firstParent->getRoot();
+    return m_root;
 }
+
+void BaseNode::setRoot(BaseNode* newroot)
+{
+    m_root = newroot;
+}
+
 
 core::behavior::BaseAnimationLoop* BaseNode::getAnimationLoop() const
 {

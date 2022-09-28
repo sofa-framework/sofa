@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_TAG_H
-#define SOFA_CORE_OBJECTMODEL_TAG_H
+#pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Text.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -71,25 +64,10 @@ protected:
     int id;
 };
 
-class SOFA_CORE_API TagSet : public std::set<Tag>
-{
-public:
-    TagSet() {}
-    /// Automatic conversion between a tag and a tagset composed of this tag
-    TagSet(const Tag& t) { this->insert(t); }
-    /// Returns true if this TagSet contains specified tag
-    bool includes(const Tag& t) const { return this->count(t) > 0; }
-    /// Returns true if this TagSet contains all specified tags
-    bool includes(const TagSet& t) const;
-};
-
-} // namespace objectmodel
-
-} // namespace core
+} //namespace sofa::core::objectmodel
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
-
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
 template<>
@@ -98,14 +76,4 @@ struct DataTypeInfo< sofa::core::objectmodel::Tag > : public TextTypeInfo<sofa::
     static const char* name() { return "Tag"; }
 };
 
-template<>
-struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa::core::objectmodel::TagSet >
-{
-    static const char* name() { return "TagSet"; }
-};
-
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::defaulttype
