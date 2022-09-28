@@ -481,13 +481,6 @@ void Quat<Real>::setFromUnitVectors(const Vec3& vFrom, const Vec3& vTo)
     this->normalize();
 }
 
-/// Print quaternion (C style)
-template<class Real>
-void Quat<Real>::print()
-{
-    printf("(%f, %f ,%f, %f)\n", _q[0], _q[1], _q[2], _q[3]);
-}
-
 template<class Real>
 void Quat<Real>::operator+=(const Quat& q2)
 {
