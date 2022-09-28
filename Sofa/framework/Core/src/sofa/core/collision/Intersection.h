@@ -45,7 +45,7 @@ public:
     template<class Model1, class Model2>
     sofa::core::collision::TDetectionOutputVector<Model1,Model2>* createOutputVector(Model1*, Model2*)
     {
-        // NOTE: this raw pointer is stored in NarropPhaseDetection's m_outputsMap and cleaned up when NarropPhaseDetection is destroyed
+        // NOTE: this raw pointer is stored in NarrowPhaseDetection's m_outputsMap and cleaned up when NarrowPhaseDetection is destroyed
         return new sofa::core::collision::TDetectionOutputVector<Model1,Model2>;
     }
 
