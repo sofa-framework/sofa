@@ -61,7 +61,7 @@ CarvingManager::CarvingManager()
 void CarvingManager::init()
 {
     // Search for collision model corresponding to the tool.
-    if (l_toolModel.empty())
+    if (l_toolModel.get())
     {
         m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchRoot);
     }
