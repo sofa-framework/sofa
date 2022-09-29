@@ -59,6 +59,8 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
 {
     BaseObject::parse(arg) ;
 
+    msg_deprecated() << "This component is still usable but has been DEPRECATED since v22.12. You have until v23.06 to fix your scene.";
+
     const char* component=arg->getAttribute("componentname") ;
     if(component==nullptr)
     {

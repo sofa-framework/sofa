@@ -31,6 +31,15 @@
 #  define SOFA_COMPONENT_SCENEUTILITY_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#ifdef SOFA_BUILD_SOFA_COMPONENT_SCENEUTILITY
+#define SOFA_ATTRIBUTE_DEPRECATED__MAKEALIASCOMPONENT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__MAKEALIASCOMPONENT() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12", "v23.06", \
+        "Aliases are not advised.")
+#endif
+
 namespace sofa::component::sceneutility
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";

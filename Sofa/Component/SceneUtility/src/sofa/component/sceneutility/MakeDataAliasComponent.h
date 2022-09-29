@@ -37,7 +37,7 @@ namespace sofa::component::sceneutility::makedataaliascomponent
 /// for ease of use
 
 /// A component to add alias to other components.
-class SOFA_COMPONENT_SCENEUTILITY_API MakeDataAliasComponent : public core::objectmodel::BaseObject
+class SOFA_ATTRIBUTE_DEPRECATED__MAKEALIASCOMPONENT() SOFA_COMPONENT_SCENEUTILITY_API MakeDataAliasComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MakeDataAliasComponent, core::objectmodel::BaseObject);

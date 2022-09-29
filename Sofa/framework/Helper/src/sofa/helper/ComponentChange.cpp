@@ -767,6 +767,9 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
 
     { "OglGrid", Deprecated("v22.12", "v23.06")},
     { "OglLineAxis", Deprecated("v22.12", "v23.06")},
+
+    { "MakeAlias", Deprecated("v22.12", "v23.06")},
+    { "MakeDataAlias", Deprecated("v22.12", "v23.06")},
 };
 
 } // namespace sofa::helper::lifecycle
