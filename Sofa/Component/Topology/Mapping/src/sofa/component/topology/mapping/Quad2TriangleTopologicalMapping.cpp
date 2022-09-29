@@ -87,9 +87,8 @@ void Quad2TriangleTopologicalMapping::init()
         // Making sure the input topology is derived from the quad topology container
         if (!dynamic_cast<QuadSetTopologyContainer *>(fromModel.get()))
         {
-            msg_error() << "The input topology '" << fromModel.getPath() << "' is not a derived class of QuadSetTopologyContainer. "
-                        << "Consider setting the '" << fromModel.getName() << "' data attribute to a valid"
-                                                                            " QuadSetTopologyContainer derived object.";
+            msg_error() << "The input topology '" << fromModel.getPath() << "' is not homogeneous with a QuadSetTopologyContainer. The '" << fromModel.getName() << "' data attribute must be linked to a valid component, among the following list of eligible components:" << msgendl
+                                   << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<container::dynamic::QuadSetTopologyContainer>();
             modelsOk = false;
         }
     }
@@ -107,9 +106,8 @@ void Quad2TriangleTopologicalMapping::init()
         // Making sure the output topology is derived from the triangle topology container
         if (!dynamic_cast<TriangleSetTopologyContainer *>(toModel.get()))
         {
-            msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
-                        << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
-                                                                            " TriangleSetTopologyContainer derived object.";
+            msg_error() << "The input topology '" << toModel.getPath() << "' is not homogeneous with a TriangleSetTopologyContainer. The '" << toModel.getName() << "' data attribute must be linked to a valid component, among the following list of eligible components:" << msgendl
+                                   << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<container::dynamic::TriangleSetTopologyContainer>();
             modelsOk = false;
         }
         else

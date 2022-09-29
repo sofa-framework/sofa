@@ -97,9 +97,8 @@ void Tetra2TriangleTopologicalMapping::init()
         // Making sure the output topology is derived from the triangle topology container
         if (!dynamic_cast<container::dynamic::TriangleSetTopologyContainer *>(toModel.get()))
         {
-            msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
-                        << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
-                                                                            " TriangleSetTopologyContainer derived object.";
+            msg_error() << "The input topology '" << toModel.getPath() << "' is not homogeneous with a TriangleSetTopologyContainer. The '" << toModel.getName() << "' data attribute must be linked to a valid component, among the following list of eligible components:" << msgendl
+                                   << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<container::dynamic::TriangleSetTopologyContainer>();
             modelsOk = false;
         }
         else

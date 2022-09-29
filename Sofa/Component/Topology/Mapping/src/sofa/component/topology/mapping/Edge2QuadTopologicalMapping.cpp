@@ -112,9 +112,8 @@ void Edge2QuadTopologicalMapping::init()
         // Making sure the input topology is derived from the edge topology container
         if (!dynamic_cast<container::dynamic::EdgeSetTopologyContainer *>(fromModel.get()))
         {
-            msg_error() << "The input topology '" << fromModel.getPath() << "' is not a derived class of EdgeSetTopologyContainer. "
-                        << "Consider setting the '" << fromModel.getName() << "' data attribute to a valid"
-                                                                            " EdgeSetTopologyContainer derived object.";
+            msg_error() << "The input topology '" << fromModel.getPath() << "' is not homogeneous with a EdgeSetTopologyContainer. The '" << fromModel.getName() << "' data attribute must be linked to a valid component, among the following list of eligible components:" << msgendl
+                                   << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<container::dynamic::EdgeSetTopologyContainer>();
             modelsOk = false;
         }
     }
@@ -132,9 +131,8 @@ void Edge2QuadTopologicalMapping::init()
         // Making sure the output topology is derived from the quad topology container
         if (!dynamic_cast<container::dynamic::QuadSetTopologyContainer *>(toModel.get()))
         {
-            msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of QuadSetTopologyContainer. "
-                        << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
-                                                                            " QuadSetTopologyContainer derived object.";
+            msg_error() << "The input topology '" << toModel.getPath() << "' is not homogeneous with a QuadSetTopologyContainer. The '" << toModel.getName() << "' data attribute must be linked to a valid component, among the following list of eligible components:" << msgendl
+                                   << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<container::dynamic::QuadSetTopologyContainer>();
             modelsOk = false;
         }
     }
