@@ -24,20 +24,4 @@
 
 namespace sofa::type
 {
-template class SOFA_TYPE_API Mat<2, 2, SReal>;
-template class SOFA_TYPE_API Mat<2, 3, SReal>;
-template class SOFA_TYPE_API Mat<3, 3, SReal>;
-template class SOFA_TYPE_API Mat<4, 4, SReal>;
-template class SOFA_TYPE_API Mat<6, 3, SReal>;
-template class SOFA_TYPE_API Mat<6, 6, SReal>;
-template class SOFA_TYPE_API Mat<8, 3, SReal>;
-template class SOFA_TYPE_API Mat<8, 8, SReal>;
-template class SOFA_TYPE_API Mat<9, 9, SReal>;
-template class SOFA_TYPE_API Mat<12, 3, SReal>;
-template class SOFA_TYPE_API Mat<12, 6, SReal>;
-template class SOFA_TYPE_API Mat<12, 12, SReal>;
-template class SOFA_TYPE_API Mat<20, 20, SReal>;
-template class SOFA_TYPE_API Mat<20, 32, SReal>;
-template class SOFA_TYPE_API Mat<24, 24, SReal>;
-template class SOFA_TYPE_API Mat<32, 20, SReal>;
 }
