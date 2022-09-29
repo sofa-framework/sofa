@@ -218,8 +218,8 @@ class DeprecatedAndRemoved {};
         "Remove the ExecParams argument from your call. ")
 
 
-#define SOFA_ATTRIBUTE_DEPRECATED__QUAT_API(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+#define SOFA_ATTRIBUTE_DISABLED__QUAT_API(msg) \
+    SOFA_ATTRIBUTE_DISABLED( \
         "v21.06 (PR#1878)", "v21.12", \
         "Quat was refactored. " msg)
 

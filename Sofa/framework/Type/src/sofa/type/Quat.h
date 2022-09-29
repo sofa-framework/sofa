@@ -172,8 +172,8 @@ public:
         m[2][2] = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__QUAT_API("Function toMatrix(mat4x4) will be removed. Use toHomogeneousMatrix() instead")
-    void toMatrix(Mat4x4 &m) const { toHomogeneousMatrix(m); }
+    SOFA_ATTRIBUTE_DISABLED__QUAT_API("Function toMatrix(mat4x4) has been removed. Use toHomogeneousMatrix() instead")
+    void toMatrix(Mat4x4 &m) const = delete;
 
     /// Convert the quaternion into an orientation homogeneous matrix
     /// The homogeneous part is set to 0,0,0,1
@@ -402,8 +402,8 @@ public:
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
     void setFromUnitVectors(const Vec3& vFrom, const Vec3& vTo);
 
-    SOFA_ATTRIBUTE_DEPRECATED__QUAT_API("This function will be removed. use iostream operators instead.")
-    void print();
+    SOFA_ATTRIBUTE_DISABLED__QUAT_API("This function has been removed. use iostream operators instead.")
+    void print() = delete;
 
     auto slerp(const Quat &q1, Real t) const -> Quat;
     auto slerp2(const Quat &q1, Real t) const-> Quat;
