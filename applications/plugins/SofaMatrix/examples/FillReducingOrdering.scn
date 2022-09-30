@@ -18,7 +18,7 @@ The scene compares two simulations in which only the vertices order differs:
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
-    <RequiredPlugin name="SofaMatrix"/> <!-- Needed to use components [FillReducingOrdering] -->
+    <RequiredPlugin name="SofaMatrix"/> <!-- Needed to use components [FillReducingOrdering GlobalSystemMatrixImage] -->
 
     <VisualStyle displayFlags="showForceFields hideVisualModels showBehaviorModels" />
 

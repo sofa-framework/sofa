@@ -1,15 +1,17 @@
 <Node name="root" dt="0.0001" gravity="0 0 0" >
-    <RequiredPlugin name='SofaBoundaryCondition'/>
-    <RequiredPlugin name='SofaTopologyMapping'/>
-    <RequiredPlugin name='SofaLoader'/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>
-    <RequiredPlugin name='SofaBaseLinearSolver'/>
-    <RequiredPlugin name='SofaBaseTopology'/>
-    <RequiredPlugin name="SofaBaseVisual" />
-    <RequiredPlugin name="SofaBaseMechanics" />
-    <RequiredPlugin name="SofaBaseLinearSolver" />
-    <RequiredPlugin name="SofaEngine" />
-    <RequiredPlugin name="SofaMeshCollision" />
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint LinearMovementConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Diffusion"/> <!-- Needed to use components [TetrahedronDiffusionFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
     <VisualStyle displayFlags="showBehaviorModels"/>
     <DefaultAnimationLoop />

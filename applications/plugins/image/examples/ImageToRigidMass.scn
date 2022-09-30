@@ -1,7 +1,15 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-    <RequiredPlugin name="SofaOpenglVisual"/>
-  <RequiredPlugin pluginName="image"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageToRigidMassEngine MeshToImageEngine] -->
   <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels" />
 
   <MeshOBJLoader name="mesh" filename="data/pelvis_f.obj" triangulate="1" />
@@ -22,7 +30,6 @@
   	<MechanicalObject template="Rigid3d" position="@../imagemass.position" showObject="0" showObjectScale="1"/>
 
 <!--COMPLIANT API-->
-<!--  	<RequiredPlugin pluginName="Compliant"/> -->
 <!--  	<RigidMass template="Rigid3d" inertia="@../imagemass.inertia" mass="@../imagemass.mass" draw="1" /> -->
 
 <!--SOFA API-->

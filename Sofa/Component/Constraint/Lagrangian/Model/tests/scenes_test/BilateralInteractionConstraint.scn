@@ -3,12 +3,12 @@
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="100" tolerance="1e-3" />
-    <CollisionPipeline depth="6" verbose="0" draw="0" />
+    <DefaultPipeline  depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContactConstraint" />
-    <CollisionGroup name="Group" />
+    <DefaultContactManager  name="Response" response="FrictionContactConstraint" />
+    <DefaultCollisionGroupManager  name="Group" />
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />
         <Node name="Visu">
@@ -19,7 +19,7 @@
         </Node>
     </Node>
     <Node name="CUBE_1">
-        <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitSolver  printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid3d" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalMass="0.1" />
