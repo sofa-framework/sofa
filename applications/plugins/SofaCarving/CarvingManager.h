@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CARVINGMANAGER_H
-#define SOFA_COMPONENT_COLLISION_CARVINGMANAGER_H
+#pragma once
 
 #include <SofaCarving/config.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -75,6 +74,10 @@ public:
     // link to the forceFeedBack component, if not set will search through graph and take first one encountered
     SingleLink<CarvingManager, core::CollisionModel, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_toolModel;
 
+    // link to the scene detection Method component (Narrow phase only)
+    SingleLink<CarvingManager, core::collision::NarrowPhaseDetection, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_detectionNP;
+
+
     Data < std::string > d_toolModelPath; 
     /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
@@ -102,16 +105,9 @@ protected:
     // Pointer to the target object collision model
     std::vector<core::CollisionModel*> m_surfaceCollisionModels;
 
-    // Pointer to the scene intersection Method component
-    core::collision::Intersection* m_intersectionMethod = nullptr;
-    // Pointer to the scene detection Method component (Narrow phase only)
-    core::collision::NarrowPhaseDetection* m_detectionNP = nullptr;
-
     // Bool to store the information if component has been initialized and can be used.
     bool m_carvingReady = false;
     
 };
 
 } // namespace sofa::component::collision
-
-#endif

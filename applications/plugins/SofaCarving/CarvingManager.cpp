@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CarvingManager.h"
+#include <SofaCarving/CarvingManager.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -81,9 +81,6 @@ void CarvingManager::init()
         m_surfaceCollisionModels.push_back(getContext()->get<core::CollisionModel>(d_surfaceModelPath.getValue()));
     }
 
-    m_intersectionMethod = getContext()->get<core::collision::Intersection>();
-    m_detectionNP = getContext()->get<core::collision::NarrowPhaseDetection>();
-
     m_carvingReady = true;
 
     if (m_toolCollisionModel == nullptr) { 
@@ -96,8 +93,7 @@ void CarvingManager::init()
         m_carvingReady = false; 
     }
 
-    if (m_intersectionMethod == nullptr) { msg_error() << "m_intersectionMethod not found. Add an Intersection method in your scene."; m_carvingReady = false; }
-    if (m_detectionNP == nullptr) { msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene."; m_carvingReady = false; }
+    if (l_detectionNP.get()) { msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene."; m_carvingReady = false; }
     
     if (m_carvingReady) { msg_info() << "CarvingManager: init OK."; }
 }
@@ -115,7 +111,7 @@ void CarvingManager::doCarve()
         return;
 
     // get the collision output
-    const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = m_detectionNP->getDetectionOutputs();
+    const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = l_detectionNP.get()->getDetectionOutputs();
     if (detectionOutputs.size() == 0)
         return;
 
