@@ -61,13 +61,11 @@ CarvingManager::CarvingManager()
 void CarvingManager::init()
 {
     // Search for collision model corresponding to the tool.
-    if (l_toolModel.get())
+    if (!l_toolModel.get())
     {
-        m_toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchRoot);
-    }
-    else
-    {
-        m_toolCollisionModel = l_toolModel.get();
+        auto toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchRoot);
+        if (toolCollisionModel != nullptr)
+            l_toolModel.set(toolCollisionModel);
     }
 
     // Search for the surface collision model.
@@ -83,8 +81,8 @@ void CarvingManager::init()
 
     m_carvingReady = true;
 
-    if (m_toolCollisionModel == nullptr) { 
-        msg_error() << "m_toolCollisionModel not found. Set tag 'CarvingTool' to the right collision model or specify the toolModelPath."; 
+    if (l_toolModel.get() == nullptr) {
+        msg_error() << "Tool Collision Model not found. Set the link to toolModel or set tag 'CarvingTool' to the right collision model."; 
         m_carvingReady = false; 
     }
 
@@ -119,6 +117,7 @@ void CarvingManager::doCarve()
 
     // loop on the contact to get the one between the CarvingSurface and the CarvingTool collision model
     const SReal& carvDist = d_carvingDistance.getValue();
+    auto toolCollisionModel = l_toolModel.get();
     const ContactVector* contacts = NULL;
     for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
     {
@@ -126,10 +125,10 @@ void CarvingManager::doCarve()
         sofa::core::CollisionModel* collMod2 = it->first.second;
         sofa::core::CollisionModel* targetModel = nullptr;
 
-        if (collMod1 == m_toolCollisionModel && collMod2->hasTag(sofa::core::objectmodel::Tag("CarvingSurface"))) {
+        if (collMod1 == toolCollisionModel && collMod2->hasTag(sofa::core::objectmodel::Tag("CarvingSurface"))) {
             targetModel = collMod2;
         }
-        else if (collMod2 == m_toolCollisionModel && collMod1->hasTag(sofa::core::objectmodel::Tag("CarvingSurface"))) {
+        else if (collMod2 == toolCollisionModel && collMod1->hasTag(sofa::core::objectmodel::Tag("CarvingSurface"))) {
             targetModel = collMod1;
         }
         else {
@@ -159,7 +158,7 @@ void CarvingManager::doCarve()
 
             if (c.value < carvDist)
             {
-                auto elementIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                auto elementIdx = (c.elem.first.getCollisionModel() == toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
                 elemsToRemove.push_back(elementIdx);
             }
         }

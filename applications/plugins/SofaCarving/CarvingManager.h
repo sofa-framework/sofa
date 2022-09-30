@@ -99,9 +99,6 @@ public:
     Data < std::string > d_activatorName;
     
 protected:
-    /// Pointer to the tool collision model
-    core::CollisionModel* m_toolCollisionModel = nullptr;
-
     // Pointer to the target object collision model
     std::vector<core::CollisionModel*> m_surfaceCollisionModels;
 
