@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "MeshSubsetEngine.h"
+#include <sofa/component/engine/select/MeshSubsetEngine.h>
 
 namespace sofa::component::engine::select
 {

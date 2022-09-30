@@ -6,7 +6,6 @@ set(SOURCE_FILES
     AffineMovementConstraint_test.cpp
     FixedConstraint_test.cpp
     PartialFixedConstraint_test.cpp
-    PointConstraint_test.cpp
     ProjectDirectionConstraint_test.cpp
     ProjectToLineConstraint_test.cpp
     ProjectToPlaneConstraint_test.cpp

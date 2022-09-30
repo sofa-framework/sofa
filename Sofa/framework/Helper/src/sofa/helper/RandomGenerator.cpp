@@ -34,7 +34,7 @@
  */
 
 
-#include "RandomGenerator.h"
+#include <sofa/helper/RandomGenerator.h>
 
 
 namespace sofa

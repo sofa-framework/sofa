@@ -54,6 +54,21 @@ extern "C" {
 
 void initExternalModule()
 {
+    init();
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
+
+void init()
+{
     static bool first = true;
     if (first)
     {
@@ -77,24 +92,9 @@ void initExternalModule()
         sofa::component::statecontainer::init();
         sofa::component::topology::init();
         sofa::component::visual::init();
-        
+
         first = false;
     }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    initExternalModule();
 }
 
 } // namespace sofa::component

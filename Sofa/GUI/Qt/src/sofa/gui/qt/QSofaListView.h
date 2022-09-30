@@ -33,54 +33,42 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/gui/qt/SofaSceneGraphWidget.h>
 
 #include <map>
 
 namespace sofa::gui::qt
 {
 
-class AddObject;
-class GraphListenerQListView;
-class QDisplayPropertyWidget;
-
-enum ObjectModelType { typeNode, typeObject, typeData };
-typedef union ObjectModelPtr
-{
-    sofa::simulation::Node* Node;
-    core::objectmodel::BaseObject* Object;
-    core::objectmodel::BaseData* Data;
-} ObjectModelPtr;
-
-typedef struct ObjectModel
-{
-public:
-    ObjectModelType type;
-    ObjectModelPtr ptr;
-    bool isNode()   { return type == typeNode;   }
-    bool isObject() { return type == typeObject; }
-    bool isData()   { return type == typeData;   }
-    bool isBase()   { return isNode() || isObject(); }
-    sofa::core::objectmodel::Base* asBase()
-    {
-        if( isNode() )
-            return sofa::core::castToBase(ptr.Node);
-        if( isObject() )
-            return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Object);
-        return nullptr;
-    }
-} ObjectModel;
-
-enum SofaListViewAttribute
-{
-    SIMULATION,
-    VISUAL,
-    MODELER
-};
-
-class SOFA_GUI_QT_API QSofaListView : public QTreeWidget
+class SOFA_GUI_QT_API QSofaListView : public SofaSceneGraphWidget
 {
     Q_OBJECT
 public:
+    class LockContextManager
+    {
+    public:
+        QSofaListView* self{nullptr};
+        bool state{true};
+
+        LockContextManager(QSofaListView* view, bool isLocked)
+        {
+            self = view;
+            state = view->isLocked();
+            if(isLocked)
+                view->lock();
+            else
+                view->unLock();
+        }
+
+        ~LockContextManager()
+        {
+            if(state)
+                self->lock();
+            else
+                self->unLock();
+        }
+    };
+
     QSofaListView(const SofaListViewAttribute& attribute,
             QWidget* parent = nullptr,
             const char* name = nullptr,
@@ -93,8 +81,15 @@ public:
     void addInPropertyWidget(QTreeWidgetItem *item, bool clear);
 
     void Clear(sofa::simulation::Node* rootNode);
-    void Freeze();
-    void Unfreeze();
+
+    /// Updates the view so it is synchronized with the simulation graph.
+    /// The view can be visually de-synchronized with the simulation graph. This happens
+    /// when the view is "frozen" for performance reason. In that case, use isDirty to
+    /// get current view state or the dirtynessChanged() signal.
+    /// To resynchronize the view call the update methid.
+    void update();
+    void setRoot(sofa::simulation::Node*);
+
     SofaListViewAttribute getAttribute() const { return attribute_; }
 
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -125,6 +120,7 @@ Q_SIGNALS:
     void focusChanged(sofa::core::objectmodel::BaseNode*);
     void dataModified( QString );
 
+
 protected Q_SLOTS:
     void SaveNode();
     void exportOBJ();
@@ -133,8 +129,6 @@ protected Q_SLOTS:
     void modifyUnlock(void* Id);
     void RemoveNode();
     void Modify();
-    void HideDatas();
-    void ShowDatas();
     void openInEditor();
     void openInstanciation();
     void openImplementation();
@@ -173,6 +167,7 @@ protected:
     ObjectModel object_;
     SofaListViewAttribute attribute_;
     QDisplayPropertyWidget* propertyWidget;
+
 
 };
 

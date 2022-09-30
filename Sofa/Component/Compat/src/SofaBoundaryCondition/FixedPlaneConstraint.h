@@ -23,7 +23,7 @@
 
 #include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/FixedPlaneConstraint.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/FixedPlaneConstraint.h")
 
 namespace sofa::component::projectiveconstraintset
 {

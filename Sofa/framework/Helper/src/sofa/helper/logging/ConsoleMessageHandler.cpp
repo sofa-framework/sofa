@@ -24,17 +24,11 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include "Message.h"
-#include "ConsoleMessageHandler.h"
-#include "DefaultStyleMessageFormatter.h"
+#include <sofa/helper/logging/Message.h>
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
+#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
@@ -56,8 +50,5 @@ ConsoleMessageHandler& MainConsoleMessageHandler::getInstance()
     static ConsoleMessageHandler s_instance;
     return s_instance;
 }
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 

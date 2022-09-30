@@ -13,7 +13,7 @@
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="PenalityContactForceField" />
     <DiscreteIntersection/>
     
     <RegularGridTopology name="tissue" n="20 20 1" min="0 0 0" max="10 10 0" />

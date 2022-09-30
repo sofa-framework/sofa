@@ -2533,8 +2533,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
 template <class DataTypes>
 bool TriangleSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
 {
-    return (showTriangleIndices.getValue() || _draw.getValue()) && this->m_topology->getNbTriangles() != 0
-        || Inherit1::mustComputeBBox();
+    return ((showTriangleIndices.getValue() || _draw.getValue()) && this->m_topology->getNbTriangles() != 0) || Inherit1::mustComputeBBox();
 }
 
 template<class Real>
@@ -4833,6 +4832,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 {
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+    vparams->drawTool()->saveLastState();
+
     // Draw Triangles indices
     if (showTriangleIndices.getValue() && this->m_topology->getNbTriangles() != 0)
     {
@@ -4967,6 +4968,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         vparams->drawTool()->drawLines(vertices,1.0f,colors);
     }
 
+    vparams->drawTool()->restoreLastState();
 }
 
 

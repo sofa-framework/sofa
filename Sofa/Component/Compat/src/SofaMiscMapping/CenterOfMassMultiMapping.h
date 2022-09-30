@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/mapping/linear/CenterOfMassMultiMapping.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMultiMapping.inl")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMultiMapping.inl")
 
 namespace sofa::component::mapping
 {

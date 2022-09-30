@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP
-#include "DifferenceEngine.inl"
+#include <sofa/component/engine/transform/DifferenceEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::transform

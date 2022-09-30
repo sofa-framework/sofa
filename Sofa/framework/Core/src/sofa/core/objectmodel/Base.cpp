@@ -28,6 +28,8 @@
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
 
+#include <sofa/defaulttype/AbstractTypeInfo.h>
+
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
@@ -47,8 +49,6 @@ static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
     : ref_counter(0)
-    , serr(_serr)
-    , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
@@ -63,7 +63,6 @@ Base::Base()
     f_bbox.setReadOnly(true);
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
-    sendl.setParent(this);
 
     /// name change => component state update
     addUpdateCallback("name", {&name}, [this](const DataTracker&){
@@ -252,39 +251,19 @@ void Base::setName(const std::string& n, int counter)
     setName(o.str());
 }
 
-void Base::processStream(std::ostream& out)
-{
-    if (serr==out)
-    {
-        MessageDispatcher::log(serr.messageClass(),
-                               serr.messageType(), sofa::helper::logging::getComponentInfo(this),
-                               serr.fileInfo()) << serr.str() ;
-        serr.clear();
-    }
-    else if (sout==out)
-    {
-        if (f_printLog.getValue())
-        {
-            MessageDispatcher::log(sout.messageClass(),
-                                   sout.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                   sout.fileInfo()) << sout.str();
-        }
-
-        sout.clear();
-    }
-}
-
 void Base::addMessage(const Message &m) const
 {
     if(m_messageslog.size() >= ERROR_LOG_SIZE ){
         m_messageslog.pop_front();
     }
     m_messageslog.push_back(m) ;
+    d_messageLogCount = d_messageLogCount.getValue()+1;
 }
 
 void Base::clearLoggedMessages() const
 {
    m_messageslog.clear() ;
+   d_messageLogCount = 0;
 }
 
 

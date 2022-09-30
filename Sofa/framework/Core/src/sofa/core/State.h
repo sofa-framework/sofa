@@ -24,7 +24,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/defaulttype/fwd.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 namespace sofa
 {
 

@@ -30,7 +30,7 @@ namespace sofa::geometry
 
 struct Triangle
 {
-    static const sofa::Size NumberOfNodes = 3;
+    static constexpr sofa::Size NumberOfNodes = 3;
 
     Triangle() = delete;
 

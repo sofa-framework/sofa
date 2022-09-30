@@ -19,15 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BASEMAPPING_H
-#define SOFA_CORE_BASEMAPPING_H
-
+#pragma once
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /** An interface to convert a model state to an other model state.
@@ -169,8 +164,5 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
-} // namespace core
+} // namespace sofa::core
 
-} // namespace sofa
-
-#endif

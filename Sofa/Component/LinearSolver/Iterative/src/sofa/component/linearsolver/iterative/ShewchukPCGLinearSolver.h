@@ -45,11 +45,23 @@ public:
     Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
     Data<bool> f_use_precond; ///< Use preconditioner
+    SingleLink<ShewchukPCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
     Data<unsigned> f_update_step; ///< Number of steps before the next refresh of precondtioners
     Data<bool> f_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
-    Data< std::string > f_preconditioners; ///< If not empty: path to the solvers to use as preconditioners
     Data<std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of residuals at each iteration
 
+
+    SOFA_ATTRIBUTE_DISABLED__SHEWCHUKPCGLINEARSOLVER_EXPLICITLINK()
+    Data< std::string > f_preconditioners; ///< If not empty: path to the solvers to use as preconditioners
+    //SOFA_ATTRIBUTE_DISABLED__SHEWCHUKPCGLINEARSOLVER_EXPLICITLINK()
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit1::parse(arg);
+        if (arg->getAttribute("preconditioners"))
+        {
+            msg_warning() << "String data \"preconditioners\" is now replaced by explicit data link: \"preconditioner\" (PR #3155)";
+        }
+    }
 
 protected:
     ShewchukPCGLinearSolver();
@@ -57,12 +69,9 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void init() override;
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
-    //void setSystemRHVector(VecId v);
-    //void setSystemLHVector(VecId v);
 
 private :
     unsigned next_refresh_step;
-    sofa::core::behavior::LinearSolver* m_preconditioners;
     bool first;
     int newton_iter;
 

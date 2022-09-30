@@ -128,22 +128,6 @@ public:
     std::function<void(Index, value_type&)> p_onDestructionCallback;
     std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< SReal >&)> p_onCreationCallback;
 
-    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method has been removed as it is not part of the new topology change design.")
-    void addInputData(sofa::core::objectmodel::BaseData* _data) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
-    const value_type& operator[](int i) const = delete;
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method was deleted because it presented risks. Use Write/Read Accessor instead.")
-    value_type& operator[](int i) = delete;
-
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2086)", "v21.06 (PR#2086)", "This method has been removed as it's mechanism is now automatically done in TopologyHandler.")
-    void registerTopologicalData() = delete;
-
-    SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2393)", "v21.12 (PR#2393)", "This method has been removed, TopologyHandler is now created internally. Method createTopologyHandler(BaseMeshTopology*) should be used.")
-    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler) = delete;
-    
 protected:
     std::unique_ptr<TopologyDataElementHandler> m_topologyHandler;
 

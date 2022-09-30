@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h")
 
 namespace sofa::component::forcefield
 {

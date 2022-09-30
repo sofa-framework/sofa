@@ -13,7 +13,6 @@
     <BVHNarrowPhase/>
   <DefaultContactManager response="PenalityContactForceField" />
   <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
-  <DefaultCollisionGroupManager />
 
   <CarvingManager active="true" carvingDistance="-0.01"/>
 

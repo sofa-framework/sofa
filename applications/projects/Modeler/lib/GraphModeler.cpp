@@ -63,7 +63,7 @@ int numNode= 0;
 int numComponent= 0;
 }
 
-GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f): QTreeWidget(parent), graphListener(nullptr), propertyWidget(nullptr)
+GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f): SofaSceneGraphWidget(parent), graphListener(nullptr), propertyWidget(nullptr)
 {
     this->setObjectName(name);
     setWindowFlags(f);
@@ -285,12 +285,13 @@ void GraphModeler::dropEvent(QDropEvent* event)
         BaseObject::SPtr newComponent = addComponent(getNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
         if (newComponent)
         {
-            QTreeWidgetItem *after = graphListener->items[newComponent.get()];
-            std::ostringstream oss;
-            oss << newComponent->getClassName() << " " << newComponent->getName();
-            after->setText(0, QString(oss.str().c_str()));
-            QTreeWidgetItem *item = itemAt(event->pos());
-            if (getObject(item)) initItem(after, item);
+//            QTreeWidgetItem *after = graphListener->items[newComponent.get()];
+
+//            std::ostringstream oss;
+//            oss << newComponent->getClassName() << " " << newComponent->getName();
+//            after->setText(0, QString(oss.str().c_str()));
+//            QTreeWidgetItem *item = itemAt(event->pos());
+//            if (getObject(item)) initItem(after, item);
         }
     }
     else

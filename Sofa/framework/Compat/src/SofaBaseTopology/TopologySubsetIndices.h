@@ -23,7 +23,7 @@
 
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologySubsetIndices.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologySubsetIndices.h")
 
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaBaseTopology/TopologyDataHandler.h>

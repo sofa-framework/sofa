@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP
-#include "NormalsFromPoints.inl"
+#include <sofa/component/engine/generate/NormalsFromPoints.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 

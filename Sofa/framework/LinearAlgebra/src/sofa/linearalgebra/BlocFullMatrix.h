@@ -54,7 +54,6 @@ public:
             return -m.transposed();
         }
     };
-    using TransposedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = TransposedBlock;
 
     class Block : public type::Mat<BSIZE,BSIZE,Real>
     {
@@ -83,11 +82,7 @@ public:
         }
         type::Mat<BSIZE,BSIZE,Real> operator*(const type::Mat<BSIZE,BSIZE,Real>& m)
         {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
-        }
-        type::Mat<BSIZE,BSIZE,Real> operator*(const Block& m)
-        {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
+            return sofa::type::operator*(*this, m);
         }
         type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBlock& mt)
         {
@@ -96,7 +91,6 @@ public:
         TransposedBlock t() const;
         Block i() const;
     };
-    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef Block SubMatrixType;
     // return the dimension of submatrices when requesting a given size
     static Index getSubMatrixDim(Index);

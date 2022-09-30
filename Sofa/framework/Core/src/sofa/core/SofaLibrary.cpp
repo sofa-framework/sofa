@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "SofaLibrary.h"
+#include <sofa/core/SofaLibrary.h>
 #include <sofa/core/ObjectFactory.h>
 
 

@@ -8,6 +8,8 @@ namespace component
 namespace engine
 {
 using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::constant;
+
 using namespace sofa::component::engine;
 using namespace sofa::component::loader;
 

@@ -157,16 +157,11 @@ public:
     /** Function to link the topological Data with the engine and the current topology. And init everything.
     * This function should be used at the end of the all declaration link to this Data while using it in a component.
     */
-    virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
+    virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology, bool printLog = false);
 
     /// Method to add a CallBack method to be used when a @sa core::topology::TopologyChangeType event is fired. The call back should use the @TopologyChangeCallback 
     /// signature and pass the corresponding core::topology::TopologyChange* structure.
     void addCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback);
-
-
-    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
-    bool registerTopology() = delete;
 
 protected:
     /// use to define engine name.

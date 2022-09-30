@@ -22,13 +22,13 @@
 #ifndef SOFA_COMPONENT_MAPPING_MANUALLINEARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_MANUALLINEARMAPPING_H
 
+#include <ManualMapping/config.h>
+
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 #include <memory>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <ManualMapping/config.h>
-
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 namespace sofa
 {
@@ -80,7 +80,7 @@ public:
     };
 
 
-    typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
+    typedef sofa::linearalgebra::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type eigen;
 
     typedef type::vector< linearalgebra::BaseMatrix* > js_type;

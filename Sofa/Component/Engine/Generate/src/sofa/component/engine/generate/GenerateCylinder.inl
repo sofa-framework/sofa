@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "GenerateCylinder.h"
+#include <sofa/component/engine/generate/GenerateCylinder.h>
 #include <sofa/helper/rmath.h> //M_PI
 
 #include <sofa/core/topology/Topology.h>

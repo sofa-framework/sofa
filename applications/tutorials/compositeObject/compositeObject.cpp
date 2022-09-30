@@ -19,34 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaGeneralTopology/CubeTopology.h>
-#include <SofaBaseVisual/VisualStyle.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaRigid/RigidMapping.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
-#include <SofaSimpleFem/HexahedronFEMForceField.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+#include <sofa/component/topology/container/constant/CubeTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/component/visual/VisualStyle.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/mapping/linear/SubsetMultiMapping.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
 
-#include <SofaComponentAll/initSofaComponentAll.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/component/init.h>
+#include <sofa/simulation/graph/init.h>
 #include <SofaGui/initSofaGui.h>
 
 
@@ -56,18 +54,17 @@ using namespace sofa::helper;
 using type::vector;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
-using namespace sofa::component::container;
+using namespace sofa::component::statecontainer;
 using namespace sofa::component::topology;
-using namespace sofa::component::collision;
-using namespace sofa::component::visualmodel;
+using namespace sofa::component::visual;
 using namespace sofa::component::mapping;
-using namespace sofa::component::forcefield;
+using namespace sofa::component::solidmechanics;
 
 typedef SReal Scalar;
 typedef sofa::type::Vec<3,SReal> Vec3;
 typedef sofa::type::Vec<1,SReal> Vec1;
-typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
-typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+typedef component::odesolver::backward::EulerImplicitSolver EulerImplicitSolver;
+typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 
 bool startAnim = true;
@@ -106,10 +103,10 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
     simulatedScene->addObject(cgLinearSolver);
 
-    using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<sofa::defaulttype::RigidTypes>;
+    using MechanicalObjectRigid3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::RigidTypes>;
     using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
-    using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
-    using FixedConstraintRigid3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::RigidTypes>;
+    using RigidMappingRigid3_to_3 = sofa::component::mapping::nonlinear::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
+    using FixedConstraintRigid3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::RigidTypes>;
     // The rigid object
     Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
     auto rigid_dof = addNew<MechanicalObjectRigid3>(rigidNode, "dof");
@@ -117,10 +114,10 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     auto rigid_fixedConstraint = addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
 
 
-    using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
+    using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types>;
     using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
-    using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
-    using FixedConstraintRigid3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::Rigid3Types>;
+    using RigidMappingRigid3_to_3 = sofa::component::mapping::nonlinear::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
+    using FixedConstraintRigid3 = sofa::component::constraint::projective::FixedConstraint<sofa::defaulttype::Rigid3Types>;
     // Particles mapped to the rigid object
     auto mappedParticles = rigidNode->createChild("mappedParticles");
     auto mappedParticles_dof = addNew< MechanicalObject3>(mappedParticles,"dof");
@@ -132,15 +129,15 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     MechanicalObject3::SPtr independentParticles_dof = addNew< MechanicalObject3>(independentParticles,"dof");
 
     // The deformable grid, connected to its 2 parents using a MultiMapping
-    using SubsetMultiMapping3_to_3 = SubsetMultiMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types>;
+    using SubsetMultiMapping3_to_3 = linear::SubsetMultiMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types>;
     using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types>;
-    using HexahedronFEMForceField3 = HexahedronFEMForceField<sofa::defaulttype::Vec3Types>;
+    using HexahedronFEMForceField3 = fem::elastic::HexahedronFEMForceField<sofa::defaulttype::Vec3Types>;
 
 
     Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
-    RegularGridTopology::SPtr deformableGrid_grid = addNew<RegularGridTopology>( deformableGrid, "grid" );
+    container::grid::RegularGridTopology::SPtr deformableGrid_grid = addNew<container::grid::RegularGridTopology>( deformableGrid, "grid" );
     deformableGrid_grid->setSize(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
@@ -251,13 +248,13 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
 
     //force load SofaComponentAll
-    sofa::component::initSofaComponentAll();
+    sofa::component::init();
     //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
 
-    if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
-    if (int err=sofa::gui::GUIManager::createGUI(NULL)) return err;
-    sofa::gui::GUIManager::SetDimension(800,600);
+    if (int err = sofa::gui::common::GUIManager::Init(argv[0],"")) return err;
+    if (int err=sofa::gui::common::GUIManager::createGUI(NULL)) return err;
+    sofa::gui::common::GUIManager::SetDimension(800,600);
 
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
@@ -266,16 +263,16 @@ int main(int argc, char** argv)
     //=================================================
 
     sofa::simulation::getSimulation()->init(groot.get());
-    sofa::gui::GUIManager::SetScene(groot);
+    sofa::gui::common::GUIManager::SetScene(groot);
 
     groot->setAnimate(true);
 
     // Run the main loop
-    if (int err = sofa::gui::GUIManager::MainLoop(groot))
+    if (int err = sofa::gui::common::GUIManager::MainLoop(groot))
         return err;
 
     sofa::simulation::getSimulation()->unload(groot);
-    sofa::gui::GUIManager::closeGUI();
+    sofa::gui::common::GUIManager::closeGUI();
 
     sofa::simulation::graph::cleanup();
     return 0;

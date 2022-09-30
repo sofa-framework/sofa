@@ -27,7 +27,7 @@
 #include <sofa/gl/component/shader/LightManager.h>
 #define SOFAGL_COMPONENT_LIGHTMANAGER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/LightManager.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/LightManager.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/LightManager.h> instead of this one."

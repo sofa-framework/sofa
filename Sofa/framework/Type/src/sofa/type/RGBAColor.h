@@ -44,7 +44,7 @@ class SOFA_TYPE_API RGBAColor : public fixed_array<float, 4>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
-    static RGBAColor fromFloat(const float r, const float g, const float b, const float a) ;
+    static RGBAColor fromFloat(float r, float g, float b, float a) ;
     static RGBAColor fromVec4(const fixed_array<float, 4>& color) ;
     static RGBAColor fromVec4(const fixed_array<double, 4>& color) ;
 

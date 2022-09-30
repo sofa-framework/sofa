@@ -208,8 +208,8 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
     for (unsigned int i=0; i<this->m_contacts.size(); i++)
     {
         unsigned int p = this->m_contacts[i];
-        for (int l=0; l<Deriv::total_size; ++l)
-            for (int c=0; c<Deriv::total_size; ++c)
+        for (sofa::Index l=0; l<Deriv::total_size; ++l)
+            for (sofa::Index c=0; c<Deriv::total_size; ++c)
             {
                 SReal coef = normal[l] * fact * normal[c];
                 mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);

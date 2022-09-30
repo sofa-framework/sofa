@@ -26,16 +26,10 @@
 #ifndef CONSOLEMESSAGEHANDLER_H
 #define CONSOLEMESSAGEHANDLER_H
 
-#include "MessageHandler.h"
+#include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 class MessageFormatter;
@@ -68,10 +62,6 @@ class SOFA_HELPER_API MainConsoleMessageHandler
 public:
     static ConsoleMessageHandler& getInstance() ;
 };
-
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 
 #endif // CONSOLEMESSAGEHANDLER_H

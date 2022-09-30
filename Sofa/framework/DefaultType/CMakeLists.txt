@@ -6,9 +6,13 @@ set(SRC_ROOT "src/sofa/defaulttype")
 set(HEADER_FILES
     ${SRC_ROOT}/AbstractTypeInfo.h
     ${SRC_ROOT}/DataTypeInfo.h
+    ${SRC_ROOT}/DataTypeOperations.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
     ${SRC_ROOT}/MatrixExporter.h
+    ${SRC_ROOT}/RigidCoord.h
+    ${SRC_ROOT}/RigidDeriv.h
+    ${SRC_ROOT}/RigidMass.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h

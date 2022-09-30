@@ -36,3 +36,12 @@ namespace sofa::component::linearsolver::preconditioner
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::linearsolver::preconditioner
+
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER
+#define SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK()
+#else
+#define SOFA_ATTRIBUTE_DISABLED__PRECONDITIONER_EXPLICITLINK() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+    "v22.12 (#3155)", "v23.06", "String data of the WarpPreconditioner were replaced by an explicit link")
+#endif // SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER

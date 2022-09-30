@@ -37,7 +37,7 @@ SOFA_TYPE_API int getInteger(const std::string& s, std::stringstream& msg, unsig
 {
     const char* attrstr = s.c_str();
     char* end = nullptr;
-    int retval = strtol(attrstr, &end, 10);
+    const int retval = strtol(attrstr, &end, 10);
 
     /// It is important to check that the string was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
@@ -59,7 +59,7 @@ SOFA_TYPE_API unsigned int getUnsignedInteger(const std::string& s, std::strings
     const char* attrstr = s.c_str();
     char* end = nullptr;
 
-    long long tmp = strtoll(attrstr, &end, 10);
+    const long long tmp = strtoll(attrstr, &end, 10);
 
     /// If there is minus sign we exit.
     if (tmp < 0) {
@@ -101,7 +101,7 @@ SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
     while(in>>s)
     {
         /// Check if there is the sign '-' in the string s.
-        std::string::size_type hyphen = s.find_first_of('-',1);
+        const std::string::size_type hyphen = s.find_first_of('-',1);
 
         /// If there is no '-' in s
         if (hyphen == std::string::npos)
@@ -118,7 +118,7 @@ SOFA_TYPE_API std::istream& vector<int>::read( std::istream& in )
             int t1,t2,tinc;
             std::string s1(s,0,hyphen);
             t1 = getInteger(s1, msg, numErrors) ;
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);
@@ -180,7 +180,7 @@ SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
 
     while(in>>s)
     {
-        std::string::size_type hyphen = s.find_first_of('-',1);
+        const std::string::size_type hyphen = s.find_first_of('-',1);
         if (hyphen == std::string::npos)
         {
             t = getUnsignedInteger(s, errmsg, errcnt) ;
@@ -192,7 +192,7 @@ SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
             int tinc;
             std::string s1(s,0,hyphen);
             t1 = getUnsignedInteger(s1, errmsg, errcnt) ;
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+            const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);
@@ -244,9 +244,9 @@ SOFA_TYPE_API std::istream& vector<unsigned int>::read( std::istream& in )
 template<>
 SOFA_TYPE_API std::ostream& vector<unsigned char>::write(std::ostream& os) const
 {
-    if( this->size()>0 )
+    if(!this->empty())
     {
-        for( Size i=0; i<this->size()-1; ++i )
+        for (Size i = 0; i<this->size()-1; ++i)
             os<<(int)(*this)[i]<<" ";
         os<<(int)(*this)[this->size()-1];
     }

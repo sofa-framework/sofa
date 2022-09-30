@@ -23,7 +23,7 @@
 
 #include <sofa/component/playback/ReadState.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadState.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadState.h")
 
 namespace sofa::component::misc
 {

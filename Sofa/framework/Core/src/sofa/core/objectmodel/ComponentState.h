@@ -24,11 +24,7 @@
 #include <sofa/core/config.h>
 #include <iosfwd>
 
-namespace sofa
-{
-namespace core
-{
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
@@ -47,9 +43,7 @@ SOFA_CORE_API std::ostream& operator<<(std::ostream& o, const ComponentState& s)
 SOFA_CORE_API std::istream& operator>>(std::istream& i, ComponentState& s);
 
 
-}  /// namespace objectmodel
-}  /// namespace core
-}  /// namespace sofa
+}  /// namespace sofa::core::objectmodel
 
 
 

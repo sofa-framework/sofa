@@ -1,15 +1,19 @@
-# CMake package configuration file for SofaPhysicsAPI
+# CMake package configuration file for @PROJECT_NAME@
 
 @PACKAGE_INIT@
 
-check_required_components(SofaPhysicsAPI)
+set(SOFAPHYSICSAPI_HAVE_SOFAVALIDATION @SOFAPHYSICSAPI_HAVE_SOFAVALIDATION@)
 
-find_package(Sofa.Simulation.Common QUIET REQUIRED)
+find_package(Sofa.Simulation.Graph QUIET REQUIRED)
 find_package(Sofa.Component QUIET REQUIRED)
 find_package(SofaGui QUIET REQUIRED)
-find_package(SceneCreator QUIET REQUIRED)
-find_package(SofaValidation QUIET REQUIRED)
 
-if(NOT TARGET SofaPhysicsAPI)
-	include("${CMAKE_CURRENT_LIST_DIR}/SofaPhysicsAPITargets.cmake")
+if(SOFAPHYSICSAPI_HAVE_SOFAVALIDATION)
+	find_package(SofaValidation QUIET REQUIRED)
 endif()
+
+if(NOT TARGET @PROJECT_NAME@)
+	include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
+
+check_required_components(@PROJECT_NAME@)

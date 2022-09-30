@@ -174,7 +174,7 @@ void LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::addForce(const core::M
 template<>
 SReal LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    this->serr<<"["<<this->getName()<<"] getPotentialEnergy not implemented !"<<this->sendl;
+    msg_error() << "[" << this->getName() << "] getPotentialEnergy not implemented !";
     return 0;
 }
 

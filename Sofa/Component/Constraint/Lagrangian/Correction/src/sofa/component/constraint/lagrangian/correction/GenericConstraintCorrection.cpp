@@ -24,9 +24,9 @@
 #include <sofa/component/constraint/lagrangian/correction/GenericConstraintCorrection.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ConstraintParams.h>
 
 using sofa::core::execparams::defaultInstance; 
@@ -36,7 +36,6 @@ namespace sofa::component::constraint::lagrangian::correction
 using sofa::simulation::mechanicalvisitor::MechanicalIntegrateConstraintsVisitor;
 using sofa::type::vector;
 using sofa::core::objectmodel::BaseContext;
-using sofa::core::behavior::LinearSolver;
 using sofa::core::behavior::BaseConstraintCorrection;
 using sofa::core::behavior::ConstraintSolver;
 using sofa::linearalgebra::BaseMatrix;
@@ -51,11 +50,10 @@ using sofa::core::VecDerivId;
 using sofa::core::VecCoordId;
 
 GenericConstraintCorrection::GenericConstraintCorrection()
-: d_linearSolversName( initData(&d_linearSolversName, "solverName", "name of the constraint solver") )
-, d_ODESolverName( initData(&d_ODESolverName, "ODESolverName", "name of the ode solver") )
+: l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix"))
+, l_ODESolver(initLink("ODESolver", "Link towards the ODE solver used to recover the integration factors"))
 , d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 {
-    m_ODESolver = nullptr;
 }
 
 GenericConstraintCorrection::~GenericConstraintCorrection() {}
@@ -64,68 +62,58 @@ void GenericConstraintCorrection::bwdInit()
 {
     BaseContext* context = this->getContext();
 
-    // Find linear solvers
-    m_linearSolvers.clear();
-    const vector<std::string>& solverNames = d_linearSolversName.getValue();
-    if(solverNames.empty())
+    // Find linear solver
+    if (l_linearSolver.empty())
     {
-        LinearSolver* s = nullptr;
-        context->get(s);
-        if(s)
-        {
-            if (s->getTemplateName() == "GraphScattered")
-                msg_warning() << "Can not use the solver " << s->getName() << " because it is templated on GraphScatteredType";
-            else
-                m_linearSolvers.push_back(s);
-        }
+        msg_info() << "Link \"linearSolver\" to the desired linear solver should be set to ensure right behavior." << msgendl
+                   << "First LinearSolver found in current context will be used.";
+        l_linearSolver.set( context->get<sofa::core::behavior::LinearSolver>(BaseContext::Local) );
     }
-    else 
+
+    if (l_linearSolver.get() == nullptr)
     {
-        for(unsigned int i=0; i<solverNames.size(); ++i)
+        msg_error() << "No LinearSolver component found at path: " << l_linearSolver.getLinkedPath() << ", nor in current context: " << context->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    else
+    {
+        if (l_linearSolver.get()->getTemplateName() == "GraphScattered")
         {
-            LinearSolver* s = nullptr;
-            context->get(s, solverNames[i]);
-
-            if(s)
-            {
-                if (s->getTemplateName() == "GraphScattered")
-                    msg_warning() << "Can not use the solver " << solverNames[i] << " because it is templated on GraphScatteredType";
-                else
-                    m_linearSolvers.push_back(s);
-            } 
-            else
-                msg_warning() << "Solver \"" << solverNames[i] << "\" not found.";
+            msg_error() << "Can not use the solver " << l_linearSolver.get()->getName() << " because it is templated on GraphScatteredType";
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
         }
-
+        else
+        {
+            msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
+        }
     }
 
     // Find ODE solver
-    if(d_ODESolverName.isSet())
-        context->get(m_ODESolver, d_ODESolverName.getValue());
-
-    if(m_ODESolver == nullptr)
+    if (l_ODESolver.empty())
     {
-        context->get(m_ODESolver, BaseContext::Local);
-        if (m_ODESolver == nullptr)
+        msg_info() << "Link \"ODESolver\" to the desired ODE solver should be set to ensure right behavior." << msgendl
+                   << "First ODESolver found in current context will be used.";
+        l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(BaseContext::Local) );
+        if (l_ODESolver.get() == nullptr)
         {
-            context->get(m_ODESolver, BaseContext::SearchRoot);
-            if (m_ODESolver == nullptr)
-            {
-                msg_error() << "No OdeSolver found.";
-                return;
-            }
+            l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(BaseContext::SearchRoot) );
         }
     }
 
-    if (m_linearSolvers.empty())
+    if (l_ODESolver.get() == nullptr)
     {
-        msg_error() << "No LinearSolver found.";
+        msg_error() << "No ODESolver component found at path: " << l_ODESolver.getLinkedPath() << ", nor in current context: " << context->name;
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
+    else
+    {
+        msg_info() << "ODESolver path used: '" << l_ODESolver.getLinkedPath() << "'";
+    }
 
-    msg_info() << "Found " << m_linearSolvers.size() << " m_linearSolvers";
-    for (auto* linearSolver : m_linearSolvers)
-        msg_info() << linearSolver->getName();
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void GenericConstraintCorrection::cleanup()
@@ -149,14 +137,13 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 }
 
 void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
-{
-    for (auto* linearSolver : m_linearSolvers)
-        linearSolver->rebuildSystem(massFactor, forceFactor);
+{    
+    l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
 
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
     const double complianceFactor = d_complianceFactor.getValue();
 
     // use the OdeSolver to get the position integration factor
@@ -166,12 +153,12 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     {
         case ConstraintParams::POS_AND_VEL :
         case ConstraintParams::POS :
-            factor = m_ODESolver->getPositionIntegrationFactor();
+            factor = l_ODESolver.get()->getPositionIntegrationFactor();
             break;
 
         case ConstraintParams::ACC :
         case ConstraintParams::VEL :
-            factor = m_ODESolver->getVelocityIntegrationFactor();
+            factor = l_ODESolver.get()->getVelocityIntegrationFactor();
             break;
 
         default :
@@ -180,18 +167,12 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
 
     factor *= complianceFactor;
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        linearSolver->buildComplianceMatrix(cparams, W, factor);
-    }
+    l_linearSolver.get()->buildComplianceMatrix(cparams, W, factor);
 }
 
 void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
 {
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        linearSolver->applyConstraintForce(cparams, dx, lambda);
-    }
+    l_linearSolver.get()->applyConstraintForce(cparams, dx, lambda);
 }
 
 void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* cparams,
@@ -202,11 +183,8 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         double positionFactor,
                                                         double velocityFactor)
 {
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, linearSolver->getSystemMultiMatrixAccessor());
-        linearSolver->getContext()->executeVisitor(&v);
-    }
+    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, l_linearSolver.get()->getSystemMultiMatrixAccessor());
+    l_linearSolver.get()->getContext()->executeVisitor(&v);
 }
 
 void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams * cparams,
@@ -215,11 +193,11 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams *
                                                         MultiVecDerivId dxId,
                                                         ConstMultiVecDerivId correction)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
     const double complianceFactor = d_complianceFactor.getValue();
 
-    const double positionFactor = m_ODESolver->getPositionIntegrationFactor() * complianceFactor;
-    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor() * complianceFactor;
+    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
+    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor() * complianceFactor;
 
     applyMotionCorrection(cparams, xId, vId, dxId, correction, positionFactor, velocityFactor);
 }
@@ -229,10 +207,10 @@ void GenericConstraintCorrection::applyPositionCorrection(const ConstraintParams
                                                           MultiVecDerivId dxId,
                                                           ConstMultiVecDerivId correctionId)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
 
     const double complianceFactor = d_complianceFactor.getValue();
-    const double positionFactor = m_ODESolver->getPositionIntegrationFactor() * complianceFactor;
+    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
 
     applyMotionCorrection(cparams, xId, VecDerivId::null(), dxId, correctionId, positionFactor, 0);
 }
@@ -242,16 +220,16 @@ void GenericConstraintCorrection::applyVelocityCorrection(const ConstraintParams
                                                           MultiVecDerivId dvId,
                                                           ConstMultiVecDerivId correctionId)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
 
-    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
+    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
     applyMotionCorrection(cparams, VecCoordId::null(), vId, dvId, correctionId, 0, velocityFactor);
 }
 
 void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 {
-    if (!m_ODESolver) return;
+    if (!l_ODESolver.get()) return;
 
     ConstraintParams cparams(*sofa::core::execparams::defaultInstance());
 
@@ -262,16 +240,13 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 
 void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
 {
-    for (auto* linearSolver : m_linearSolvers)
-    {
-        linearSolver->computeResidual(params, lambda);
-    }
+    l_linearSolver.get()->computeResidual(params, lambda);
 }
 
 
 void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {
-    if (!m_ODESolver)
+    if (!l_ODESolver.get())
         return;
 
     ConstraintParams cparams(*sofa::core::execparams::defaultInstance());

@@ -42,7 +42,7 @@
 #endif
 
 #include <cassert>
-#include "SetDirectory.h"
+#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa
 {

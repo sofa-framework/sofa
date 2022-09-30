@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "AspectPool.h"
+#include <sofa/core/objectmodel/AspectPool.h>
 #include <sofa/helper/system/thread/CircularQueue.inl>
 #include <iostream>
 

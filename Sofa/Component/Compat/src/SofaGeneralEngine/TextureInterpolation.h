@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/gl/component/engine/TextureInterpolation.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/engine/TextureInterpolation.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/engine/TextureInterpolation.h")
 
 namespace sofa::component::engine
 {

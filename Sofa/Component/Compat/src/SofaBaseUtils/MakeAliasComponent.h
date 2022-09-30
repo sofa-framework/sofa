@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/sceneutility/MakeAliasComponent.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/MakeAliasComponent.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/MakeAliasComponent.h")
 
 namespace sofa::component::makealiascomponent
 {

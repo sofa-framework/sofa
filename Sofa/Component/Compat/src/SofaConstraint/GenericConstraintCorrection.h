@@ -23,7 +23,7 @@
 
 #include <sofa/component/constraint/lagrangian/correction/ConstraintStoreLambdaVisitor.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/ConstraintStoreLambdaVisitor.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/ConstraintStoreLambdaVisitor.h")
 
 namespace sofa::component::constraintset
 {

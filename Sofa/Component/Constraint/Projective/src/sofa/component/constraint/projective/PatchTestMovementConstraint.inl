@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/simulation/Node.h>
-#include "PatchTestMovementConstraint.h"
+#include <sofa/component/constraint/projective/PatchTestMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>

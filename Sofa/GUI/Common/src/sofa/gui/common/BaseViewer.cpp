@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseViewer.h"
+#include <sofa/gui/common/BaseViewer.h>
 #include <sofa/gui/common/PickHandler.h>
-#include "BaseGUI.h"
+#include <sofa/gui/common/BaseGUI.h>
 
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/visual/DisplayFlags.h>

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ObjectFactory.h"
+#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -63,8 +63,8 @@ std::string ObjectFactory::shortName(std::string classname)
         ClassEntry::SPtr entry = it->second;
         if(!entry->creatorMap.empty())
         {
-            CreatorMap::iterator it = entry->creatorMap.begin();
-            Creator::SPtr c = it->second;
+            CreatorMap::iterator myit = entry->creatorMap.begin();
+            Creator::SPtr c = myit->second;
             shortname = c->getClass()->shortName;
         }
     }
@@ -425,8 +425,8 @@ void ObjectFactory::dump(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "  aliases :";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-                out << " " << *it;
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+                out << " " << *myit;
             out << "\n";
         }
         if (!entry->description.empty())
@@ -467,8 +467,8 @@ void ObjectFactory::dumpXML(std::ostream& out)
         ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
-        for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-            out << "<alias>" << xmlencode(*it) << "</alias>\n";
+        for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+            out << "<alias>" << xmlencode(*myit) << "</alias>\n";
         if (!entry->description.empty())
             out << "<description>"<<entry->description<<"</description>\n";
         if (!entry->authors.empty())
@@ -499,8 +499,8 @@ void ObjectFactory::dumpHTML(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "<li>Aliases:<i>";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-                out << " " << xmlencode(*it);
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+                out << " " << xmlencode(*myit);
             out << "</i></li>\n";
         }
         if (!entry->authors.empty())

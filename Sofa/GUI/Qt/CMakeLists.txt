@@ -143,6 +143,7 @@ set(MOC_HEADER_FILES
     ${SRC_ROOT}/SofaMouseManager.h    
     ${SRC_ROOT}/SofaVideoRecorderManager.h
     ${SRC_ROOT}/SofaPluginManager.h
+    ${SRC_ROOT}/SofaSceneGraphWidget.h
     ${SRC_ROOT}/WDoubleLineEdit.h    
     )
 set(HEADER_FILES
@@ -198,6 +199,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TableDataWidget.cpp
     ${SRC_ROOT}/WDoubleLineEdit.cpp
     ${SRC_ROOT}/viewer/SofaViewer.cpp
+    ${SRC_ROOT}/SofaSceneGraphWidget.cpp
     ${SRC_ROOT}/viewer/VisualModelPolicy.cpp    
 )
 set(UI_FILES

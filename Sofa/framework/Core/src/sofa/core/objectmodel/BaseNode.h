@@ -54,6 +54,8 @@ protected:
     BaseNode() ;
     ~BaseNode() override;
 
+    BaseNode* m_root {nullptr} ;
+
 private:
     BaseNode(const BaseNode& n) ;
     BaseNode& operator=(const BaseNode& n) ;
@@ -77,7 +79,8 @@ public:
     virtual BaseNode* getFirstParent() const = 0;
 
     /// returns the root by following up the first parent for multinodes
-    virtual BaseNode* getRoot() const;
+    BaseNode* getRoot() const;
+    void setRoot(BaseNode*) ;
 
     /// Add a child node
     virtual void addChild(BaseNode::SPtr node) = 0;

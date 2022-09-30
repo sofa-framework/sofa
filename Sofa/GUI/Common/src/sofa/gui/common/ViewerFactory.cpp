@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_GUI_VIEWERFACTORY_CPP
 
-#include "ViewerFactory.h"
+#include <sofa/gui/common/ViewerFactory.h>
 
 namespace sofa::helper
 {

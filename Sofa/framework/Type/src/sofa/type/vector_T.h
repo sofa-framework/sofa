@@ -40,6 +40,7 @@ namespace sofa::type
 
 static constexpr bool isEnabledVectorAccessChecking {SOFA_VECTOR_CHECK_ACCESS};
 
+[[noreturn]]
 extern void SOFA_TYPE_API vector_access_failure(const void* vec, std::size_t size, std::size_t i, const std::type_info& type);
 
 // standard vector dont use the CPUMemoryManager given as template
