@@ -533,10 +533,13 @@ void MeshTopology::init()
 {
 
     BaseMeshTopology::init();
+
+    const auto& hexahedra = seqHexahedra.getValue();
+
     if (nbPoints==0)
     {
         // looking for upper topology
-        if (!seqHexahedra.getValue().empty())
+        if (!hexahedra.empty())
             m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
         else if (!seqTetrahedra.getValue().empty())
             m_upperElementType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
@@ -584,12 +587,12 @@ void MeshTopology::init()
                     n = 1 + seqTetrahedra.getValue()[i][j];
             }
         }
-        for (unsigned int i=0; i<seqHexahedra.getValue().size(); i++)
+        for (unsigned int i=0; i<hexahedra.size(); i++)
         {
-            for (unsigned int j=0; j<seqHexahedra.getValue()[i].size(); j++)
+            for (unsigned int j=0; j<hexahedra[i].size(); j++)
             {
-                if (n <= seqHexahedra.getValue()[i][j])
-                    n = 1 + seqHexahedra.getValue()[i][j];
+                if (n <= hexahedra[i][j])
+                    n = 1 + hexahedra[i][j];
             }
         }
 
@@ -2294,17 +2297,20 @@ bool MeshTopology::hasPos() const
 
 SReal MeshTopology::getPX(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
+    const auto& points = seqPoints.getValue();
+    return ((unsigned)i<points.size()?points[i][0]:0.0);
 }
 
 SReal MeshTopology::getPY(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
+    const auto& points = seqPoints.getValue();
+    return ((unsigned)i<points.size()?points[i][1]:0.0);
 }
 
 SReal MeshTopology::getPZ(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
+    const auto& points = seqPoints.getValue();
+    return ((unsigned)i<points.size()?points[i][2]:0.0);
 }
 
 void MeshTopology::invalidate()

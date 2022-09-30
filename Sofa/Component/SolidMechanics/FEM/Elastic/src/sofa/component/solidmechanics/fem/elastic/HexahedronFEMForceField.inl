@@ -226,12 +226,14 @@ void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     unsigned int i=0;
     typename VecElement::const_iterator it;
 
+    const auto* indexedElements = this->getIndexedElements();
+
     switch(method)
     {
     case LARGE :
     {
         m_potentialEnergy = 0;
-        for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
+        for(it=indexedElements->begin(); it!=indexedElements->end(); ++it,++i)
         {
             accumulateForceLarge( _f, _p, i, *it );
         }
@@ -241,7 +243,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     case POLAR :
     {
         m_potentialEnergy = 0;
-        for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
+        for(it=indexedElements->begin(); it!=indexedElements->end(); ++it,++i)
         {
             accumulateForcePolar( _f, _p, i, *it );
         }
@@ -251,7 +253,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     case SMALL :
     {
         m_potentialEnergy = 0;
-        for(it=this->getIndexedElements()->begin(); it!=this->getIndexedElements()->end(); ++it,++i)
+        for(it=indexedElements->begin(); it!=indexedElements->end(); ++it,++i)
         {
             accumulateForceSmall( _f, _p, i, *it );
         }
@@ -274,7 +276,9 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
     unsigned int i = 0;
     typename VecElement::const_iterator it;
 
-    for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
+    const auto* indexedElements = this->getIndexedElements();
+
+    for(it = indexedElements->begin() ; it != indexedElements->end() ; ++it, ++i)
     {
         // Transformation R_0_2;
         // R_0_2.transpose(_rotations[i]);
@@ -1208,7 +1212,8 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     typename VecElement::const_iterator it;
     sofa::Index i;
-    for(it = this->getIndexedElements()->begin(), i = 0 ; it != this->getIndexedElements()->end() ; ++it, ++i)
+    const auto* indexedElements = this->getIndexedElements();
+    for(it = indexedElements->begin(), i = 0 ; it != indexedElements->end() ; ++it, ++i)
     {
         Index a = (*it)[0];
         Index b = (*it)[1];

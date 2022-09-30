@@ -388,12 +388,13 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
+    const auto& positions = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
+
     for (Size i=0; i<size; i++)
     {
-        Element t(this,i);
-        const type::Vector3& pt1 = t.p1();
-        const type::Vector3& pt2 = t.p2();
-        const type::Vector3& pt3 = t.p3();
+        const type::Vector3& pt1 = positions[(*this->m_triangles)[i][0]];
+        const type::Vector3& pt2 = positions[(*this->m_triangles)[i][1]];
+        const type::Vector3& pt3 = positions[(*this->m_triangles)[i][2]];
 
         for (int c=0; c<3; c++)
         {
