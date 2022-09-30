@@ -118,6 +118,7 @@ void CarvingManager::doCarve()
     sofa::helper::ScopedAdvancedTimer timer("CarvingElems");
 
     // loop on the contact to get the one between the CarvingSurface and the CarvingTool collision model
+    const SReal& carvDist = d_carvingDistance.getValue();
     const ContactVector* contacts = NULL;
     for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
     {
@@ -156,7 +157,7 @@ void CarvingManager::doCarve()
         {
             const ContactVector::value_type& c = (*contacts)[j];
 
-            if (c.value < d_carvingDistance.getValue())
+            if (c.value < carvDist)
             {
                 auto elementIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
                 elemsToRemove.push_back(elementIdx);
