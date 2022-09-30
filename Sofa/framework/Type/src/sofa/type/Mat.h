@@ -1251,7 +1251,4 @@ constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,rea
     return r;
 }
 
-#if !defined(SOFA_TYPE_MAT_CPP)
-#endif
-
 } // namespace sofa::type
