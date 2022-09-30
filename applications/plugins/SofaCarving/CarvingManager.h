@@ -79,7 +79,7 @@ public:
     /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
 
-    /// Collision distance at which cavring will start. Equal to contactDistance by default.
+    /// Collision distance at which carving will start. Equal to contactDistance by default.
     Data < SReal > d_carvingDistance;
     
     ///< Activate this object. Note that this can be dynamically controlled by using a key
