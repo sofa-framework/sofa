@@ -42,8 +42,8 @@ int HexahedronFEMForceFieldCudaClass = core::RegisterObject("Hexahedron FEM Forc
 .add< sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<CudaVec3fTypes> >()
 .add< sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-.add< component::forcefield::HexahedronFEMForceField<CudaVec3dTypes> >()
-.add< component::forcefield::HexahedronFEMForceField<CudaVec3d1Types> >()
+.add< component::solidmechanics::fem::elastic::HexahedronFEMForceField<CudaVec3dTypes> >()
+.add< component::solidmechanics::fem::elastic::HexahedronFEMForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
 ;
 

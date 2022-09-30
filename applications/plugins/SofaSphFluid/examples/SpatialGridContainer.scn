@@ -1,8 +1,12 @@
 <Node dt="0.005" gravity="0 -10 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaSphFluid"/>
-    <RequiredPlugin name='SofaBoundaryCondition'/>
-    <RequiredPlugin name='SofaImplicitOdeSolver'/>
+    <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [SPHFluidForceField, SpatialGridContainer] -->  
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->  
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField] -->  
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="Liver">

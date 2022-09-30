@@ -12,14 +12,12 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager SpotLight] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.02" contactDistance="0.02" />
-    <DefaultCollisionGroupManager />
     <LightManager />
     <SpotLight name="light1" color="1 0 0" position="0.5 0.7 2" cutoff="25" exponent="1" drawSource="false" />
     <SpotLight name="light2" color="0 1 0" position="0.5 -0.7 2" cutoff="25" exponent="1"  drawSource="false"/>

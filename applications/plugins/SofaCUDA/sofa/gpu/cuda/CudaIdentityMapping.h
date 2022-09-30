@@ -58,7 +58,7 @@ inline void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Typ
 #ifndef SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
 
 using namespace sofa::defaulttype;
-using namespace sofa::component::mapping;
+using namespace sofa::component::mapping::linear;
 using namespace sofa::gpu::cuda;
 
 // CudaVec3fTypes

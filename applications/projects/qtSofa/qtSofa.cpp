@@ -30,7 +30,7 @@
 #include <QResource>
 #include "QSofaMainWindow.h"
 #include <sofa/helper/system/glut.h>
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <string>
 #include <iostream>

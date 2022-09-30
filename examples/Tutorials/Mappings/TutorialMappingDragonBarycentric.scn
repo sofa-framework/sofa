@@ -13,14 +13,12 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     <VisualStyle displayFlags="showVisual showForceFields" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
-    <TreeCollisionGroupManager name="Group" />
     <Node name="Springs" gravity="0 -9.81 0">
         <EulerImplicitSolver name="default13" rayleighStiffness="0.5" rayleighMass="0.5" vdamping="0" />
         <CGLinearSolver template="GraphScattered" name="default14" iterations="25" tolerance="1e-05" threshold="1e-08" />

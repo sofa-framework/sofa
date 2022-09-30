@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/gui/common/config.h>
 #include <sofa/helper/Factory.inl>
-#include "BaseViewer.h"
+#include <sofa/gui/common/BaseViewer.h>
 
 class QWidget;
 

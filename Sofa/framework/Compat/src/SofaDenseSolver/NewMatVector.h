@@ -25,7 +25,7 @@
 
 #if __has_include(<SofaNewmat/NewMatVector.h>)
 #include <SofaNewmat/NewMatVector.h>
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaNewmat/NewMatVector.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "SofaNewmat/NewMatVector.h")
 #else
 SOFA_PRAGMA_ERROR("NewMatVector has moved into the SofaNewmat plugin since v21.12. You need to enable SofaNewmat in your configuration.")
 #endif

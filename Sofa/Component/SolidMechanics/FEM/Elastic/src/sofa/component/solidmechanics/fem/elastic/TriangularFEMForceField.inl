@@ -794,7 +794,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
         m_triangleUtils.computeDisplacementLarge(D, R_0_2, triangleInf[elementIndex].rotatedInitialElements, p[a], p[b], p[c]);
 
         // and compute postions of a, b, c in the co-rotational frame
-        Coord A = Coord(0, 0, 0);
+        Coord A = Coord(0, 0, 0); SOFA_UNUSED(A);
         Coord B = R_0_2 * (p[b] - p[a]);
         Coord C = R_0_2 * (p[c] - p[a]);
 
@@ -1068,7 +1068,7 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
     sofa::Size nbTriangles = m_topology->getNbTriangles();
     auto triangles = m_topology->getTriangles();
-    for (int i = 0; i < nbTriangles; i++)
+    for (sofa::Index i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
         const Triangle& tri = triangles[i];

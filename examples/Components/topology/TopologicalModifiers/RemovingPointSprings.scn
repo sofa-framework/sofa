@@ -9,12 +9,12 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [PointSetTopologyContainer PointSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglGrid OglLineAxis OglSceneFrame] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
 
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showForceFields showCollisionModels showInteractionForceFields" />
 
-    <OglGrid size="5" nbSubdiv="20"/>
-    <OglLineAxis size="1"/>
+    <VisualGrid size="5" nbSubdiv="20"/>
+    <LineAxis size="1"/>
     <OglSceneFrame/>
 
     <EulerImplicitSolver/>

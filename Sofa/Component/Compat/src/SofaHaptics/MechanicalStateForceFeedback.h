@@ -23,10 +23,11 @@
 
 #include <sofa/component/haptics/MechanicalStateForceFeedback.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/MechanicalStateForceFeedback.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/MechanicalStateForceFeedback.h")
 
 namespace sofa::component::controller
 {
-    using MechanicalStateForceFeedback = sofa::component::haptics::MechanicalStateForceFeedback;
+    template<class TDataTypes>
+    using MechanicalStateForceFeedback = sofa::component::haptics::MechanicalStateForceFeedback<TDataTypes>;
 
 } // namespace sofa::component::controller

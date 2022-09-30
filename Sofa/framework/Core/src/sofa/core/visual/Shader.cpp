@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Shader.h"
+#include <sofa/core/visual/Shader.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
+namespace sofa::core::visual
 {
 
 bool Shader::insertInNode( objectmodel::BaseNode* node )
@@ -44,11 +38,5 @@ bool Shader::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::visual
 

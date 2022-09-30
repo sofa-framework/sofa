@@ -191,64 +191,26 @@ class DeprecatedAndRemoved {};
         "It is still usable but has been DEPRECATED since " deprecateDate ". " \
         "You have until " removeDate " to fix your code. " toFixMsg)]]
 
-// The following macro is empty because it is supposed to be used in conjonction 
+// The following macro is empty because it is supposed to be used in conjonction
 // when an attribute of type DeprecatedAndRemoved. It should not contain a [[deprecated]]
-// attribute, because if it does, the "deprecated" warning is showed in every constructor's 
+// attribute, because if it does, the "deprecated" warning is showed in every constructor's
 // for every disabled attribute.
 #define SOFA_ATTRIBUTE_DISABLED(deprecateDate, disableDate, toFixMsg)
 
-#define SOFA_ATTRIBUTE_DEPRECATED__CLASSNAME_INTROSPECTION() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v20.06 (PR#1283)", "v21.06", \
-        "Information on how to update your code is provided in the PR description. ")
-
-#define SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION() \
+#define SOFA_ATTRIBUTE_DISABLED__BASEDATA_OWNERCLASS_ACCESSOR(msg) \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v20.06 (PR#1283)", "v21.06", \
-        "Information on how to update your code is provided in the PR description. ")
-
-#define SOFA_ATTRIBUTE_DISABLED__DATALINK() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v20.12 (PR#1503)", "v21.06 (PR#1793)", \
-        "Link<> cannot hold BaseData anymore. " \
-        "To make a link between Datas use DataLink instead. ")
-
-#define SOFA_ATTRIBUTE_DEPRECATED__BASEDATA_OWNERCLASS_ACCESSOR(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.06 (PR#1890)", "v21.12", \
+        "v21.06 (PR#1890)", "v22.12 (PR#3279)", \
         "BaseData API has changed. " msg)
-
-#define SOFA_ATTRIBUTE_DISABLED__DATA_OPERATOR(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v20.12 (PR#1639)", "v21.06 (PR#1793)", \
-        "Equality operator was removed from Data. " msg)
-
-
-#define SOFA_ATTRIBUTE_DEPRECATED__TDATA_INTO_DATA(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.06 (PR#1753)", "v21.12", \
-        "Data API has changed. " msg)
 
 #define SOFA_ATTRIBUTE_DISABLED__TDATA_INTO_DATA(msg) \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#1753)", "v21.06 (PR#1793)", \
+        "v21.06 (PR#1753)", "v22.12 (PR#3279)", \
         "Data API has changed. " msg)
-
-
-#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v20.06 (PR#1269)", "v21.12", \
-        "Aspects have been removed. " msg)
 
 #define SOFA_ATTRIBUTE_DISABLED__ASPECT(msg) \
     SOFA_ATTRIBUTE_DISABLED( \
-        "v20.06 (PR#1269)", "v21.06 (PR#1793)", \
+        "v20.06 (PR#1269)", "v21.12", \
         "Aspects have been removed. " msg)
-
-#define SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS() \
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT( \
-        "ExecParams are not needed anymore. " \
-        "Remove the ExecParams argument from your call. ")
 
 #define SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS() \
     SOFA_ATTRIBUTE_DISABLED__ASPECT( \
@@ -256,39 +218,10 @@ class DeprecatedAndRemoved {};
         "Remove the ExecParams argument from your call. ")
 
 
-#define SOFA_ATTRIBUTE_DEPRECATED__QUAT_API(msg) \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+#define SOFA_ATTRIBUTE_DISABLED__QUAT_API(msg) \
+    SOFA_ATTRIBUTE_DISABLED( \
         "v21.06 (PR#1878)", "v21.12", \
         "Quat was refactored. " msg)
-
-
-#define SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#1842)", "v21.06 (PR#1842)", \
-        "This function was removed as it duplicates a function that can be done using getContext(). " msg)
-
-
-#define SOFA_ATTRIBUTE_DEPRECATED__REFERENCES_IN_MESHLOADER() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v20.12 (PR#1627)", "v21.06", \
-        "This should use a reference instead of a pointer. ")
-
-#define SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v20.12 (PR#1627)", "v21.06", \
-        "This should use a reference instead of a pointer. ")
-
-
-#define SOFA_ATTRIBUTE_DEPRECATED__DRAWTOOL_USES_RGBACOLOR() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v20.12 (PR#1626)", "v21.06", \
-        "Use RGBAColor to define colors. ")
-
-#define SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v20.12 (PR#1626)", "v21.06", \
-        "Use RGBAColor to define colors. ")
-
 
 #define SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR() \
     SOFA_ATTRIBUTE_DEPRECATED( \
@@ -335,7 +268,7 @@ using SignedIndex = int32_t;
 using Index = uint32_t;
 using Size = uint32_t;
 
-constexpr Index InvalidID = (std::numeric_limits<Index>::max)(); 
+constexpr Index InvalidID = (std::numeric_limits<Index>::max)();
 
 }
 

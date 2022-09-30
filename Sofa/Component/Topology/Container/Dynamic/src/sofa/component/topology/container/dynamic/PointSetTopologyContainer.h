@@ -136,7 +136,7 @@ public:
         return in;
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.06", "v22.12", "Data points has been removed from PointSetTopologyContainer. Only the nbPoints should be used.")
+    SOFA_ATTRIBUTE_DISABLED__POINTSETCONTAINER_POINTSDATAREMOVAL()
     const sofa::type::vector<PointID>& getPoints() const = delete;
 
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
@@ -160,7 +160,7 @@ protected:
 private:
     Data<Size> nbPoints; ///< Number of points
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.06", "v22.12", "Data points has been removed from PointSetTopologyContainer. Only the nbPoints should be used.")
+    SOFA_ATTRIBUTE_DISABLED__POINTSETCONTAINER_POINTSDATAREMOVAL()
     DeprecatedAndRemoved points; ///< List of point indices
 };
 

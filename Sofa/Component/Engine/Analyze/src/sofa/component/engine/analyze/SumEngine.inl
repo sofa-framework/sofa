@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "SumEngine.h"
+#include <sofa/component/engine/analyze/SumEngine.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <numeric>
 

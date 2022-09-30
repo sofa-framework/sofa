@@ -28,7 +28,7 @@ using sofa::core::objectmodel::BaseNode ;
 using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
-#include "APIVersion.h"
+#include <sofa/component/sceneutility/APIVersion.h>
 #include <sofa/version.h>
 #include <numeric>
 

@@ -32,7 +32,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/config.h>
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/glut.h>
 
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     /*sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string gui = sofa::gui::SofaGUI::GetGUIName();*/
 	std::string gui = "";
-    sofa::gui::GUIManager::ListSupportedGUI('|');
+    sofa::gui::common::GUIManager::ListSupportedGUI('|');
     //std::string fileName = "OPENCL/beam10x10x46-spring-rk4-OPENCL.scn";
 
     std::string fileName = "OPENCL/quadSpringSphereOPENCL.scn";
@@ -82,10 +82,10 @@ int main(int argc, char** argv)
 
     if (!nbIter)
     {
-        if (int err=sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
+        if (int err=sofa::gui::common::GUIManager::Init(argv[0],gui.c_str()))
             return err;
 
-        if (int err=sofa::gui::GUIManager::createGUI(NULL))
+        if (int err=sofa::gui::common::GUIManager::createGUI(NULL))
             return err;
     }
 
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
     }
     sofa::simulation::tree::getSimulation()->init(groot.get());
     if (!nbIter)
-        sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
+        sofa::gui::common::GUIManager::SetScene(groot,fileName.c_str());
 
     if (nbIter != 0)
     {
@@ -159,8 +159,8 @@ int main(int argc, char** argv)
     }
     else
     {
-        sofa::gui::GUIManager::MainLoop(groot,fileName.c_str());
-        groot = dynamic_cast<GNode*>( sofa::gui::GUIManager::CurrentSimulation() );
+        sofa::gui::common::GUIManager::MainLoop(groot,fileName.c_str());
+        groot = dynamic_cast<GNode*>( sofa::gui::common::GUIManager::CurrentSimulation() );
     }
     if (groot!=NULL) getSimulation()->unload(groot);
 

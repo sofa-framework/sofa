@@ -13,7 +13,9 @@ Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
 
 ### Components scenes ###
 Components/collision/RuleBasedContactManager.scn 100 1e-4 0 1
-Components/constraint/BilateralInteractionConstraint.scn 100 1e-4 0 1
+Components/constraint/BilateralInteractionConstraint_NNCG.scn 100 1e-4 0 1
+Components/constraint/BilateralInteractionConstraint_PGS.scn 100 1e-4 0 1
+Components/constraint/BilateralInteractionConstraint_UGS.scn 100 1e-4 0 1
 Components/constraint/FixedConstraint.scn 100 1e-4 0 1
 Components/constraint/FrictionContact.scn 100 1e-4 0 1
 Components/forcefield/BeamFEMForceField.scn 100 1e-4 0 1
@@ -39,6 +41,10 @@ Components/mass/DiagonalMass.scn 100 1e-4 0 1
 Components/mass/MeshMatrixMass.scn 100 1e-4 0 1
 Components/linearsolver/FEMBAR_CGLinearSolver.scn 100 1e-8 0 1
 Components/linearsolver/FEMBAR_CGLinearSolver_assembled.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_EigenSimplicialLDLT.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_EigenSimplicialLLT.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_EigenSparseLU.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_EigenSparseQR.scn 100 1e-8 0 1
 Components/linearsolver/FEMBAR_MinResLinearSolver.scn 100 1e-8 0 1
 Components/linearsolver/FEMBAR_PrecomputedLinearSolver.scn 100 1e-8 0 1
 Components/linearsolver/FEMBAR_ShewchukPCGLinearSolver.scn 1e-8 0 1

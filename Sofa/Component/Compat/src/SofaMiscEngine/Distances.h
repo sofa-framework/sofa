@@ -23,7 +23,7 @@
 
 #include <sofa/component/engine/analyze/Distances.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/analyze/Distances.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/analyze/Distances.h")
 
 namespace sofa::component::engine
 {

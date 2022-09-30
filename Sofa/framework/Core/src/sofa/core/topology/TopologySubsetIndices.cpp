@@ -34,9 +34,9 @@ TopologySubsetIndices::TopologySubsetIndices(const typename sofa::core::topology
 
 }
 
-Index TopologySubsetIndices::indexOfElement(Index index)
+Index TopologySubsetIndices::indexOfElement(Index index) const
 {
-    const container_type& data = this->getValue();
+    const container_type& data = m_value.getValue();
     for (Index idElem = 0; idElem < data.size(); idElem++)
     {
         if (data[idElem] == index)

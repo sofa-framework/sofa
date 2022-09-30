@@ -21,13 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/topology/TopologyDataHandler.h>
-
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyDataHandler.h")
-
-namespace sofa::component::topology
-{
-    template< class TopologyElementType, class VecT>
-    using TopologyDataHandler = sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyDataHandler.h")

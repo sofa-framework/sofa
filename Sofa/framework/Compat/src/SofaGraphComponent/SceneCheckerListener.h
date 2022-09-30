@@ -27,7 +27,7 @@
 #include <SceneChecking/SceneCheckerListener.h>
 #define SCENECHECKING_SCENECHECKERLISTENER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckerListener.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckerListener.h")
 
 #else
 #error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckerListener.h> instead of this file."

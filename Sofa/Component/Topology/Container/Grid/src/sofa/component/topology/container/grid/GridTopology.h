@@ -173,7 +173,11 @@ public:
     /// Get Point index in Grid, will call method @sa getIndex
     Index point(int x, int y, int z) const { return getIndex(x,y,z); }
     /// Get Hexa index in Grid
-    Index hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
+    Index hexa(int x, int y, int z) const 
+    { 
+        const auto& n = d_n.getValue();
+        return x+(n[0]-1)*(y+(n[1]-1)*z); 
+    }
     /// Get Cube index, similar to \sa hexa method
     Index cube(int x, int y, int z) const { return hexa(x,y,z); }
 

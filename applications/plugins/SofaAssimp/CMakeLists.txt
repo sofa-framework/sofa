@@ -21,21 +21,22 @@ set(README_FILES README_AssimpPlugin.txt)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
 ### Dependencies
+find_package(Sofa.Core REQUIRED)
 sofa_find_package(Assimp REQUIRED)
-sofa_find_package(SofaLoader REQUIRED)
-sofa_find_package(SofaOpenglVisual REQUIRED)
-sofa_find_package(SofaBoundaryCondition REQUIRED)
-sofa_find_package(SofaGeneralRigid REQUIRED)
-sofa_find_package(SofaMeshCollision REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
+sofa_find_package(Sofa.Component.Mass REQUIRED)
+sofa_find_package(Sofa.Component.Mapping REQUIRED)
+sofa_find_package(Sofa.GL.Component.Rendering3D REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
 sofa_find_package(image QUIET)
 sofa_find_package(Flexible QUIET)
 
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAASSIMP")
+target_link_libraries(${PROJECT_NAME} PUBLIC ${ASSIMP_LIBRARY} Sofa.Core Sofa.Component.Constraint.Projective Sofa.Component.Mass Sofa.Component.Mapping Sofa.GL.Component.Rendering3D Sofa.Component.StateContainer Sofa.Component.Collision.Geometry) 
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${ASSIMP_LIBRARY} SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralRigid SofaMeshCollision)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC image)
 endif()

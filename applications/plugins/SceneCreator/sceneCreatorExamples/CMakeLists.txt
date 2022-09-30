@@ -2,16 +2,14 @@ cmake_minimum_required(VERSION 3.12)
 
 project(sceneCreatorExamples)
 
-sofa_find_package(Sofa.GUI.Common)
-sofa_find_package(SceneCreator)
+sofa_find_package(Sofa.GUI.Common REQUIRED)
+sofa_find_package(SceneCreator REQUIRED)
 
-SET( HEADERS
-
+set(HEADERS
     )
-
-set( SOURCES
+set(SOURCES
     SceneCreatorBenchmarks.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME} Sofa.GUI.Common SceneCreator)
+target_link_libraries(${PROJECT_NAME} SceneCreator Sofa.GUI.Common)

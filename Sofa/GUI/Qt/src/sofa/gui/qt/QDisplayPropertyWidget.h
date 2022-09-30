@@ -124,9 +124,6 @@ public:
 	static QString DefaultLogGroup()				{return "Log";}
 
 protected slots:
-	// call this slot when you rename a component of the scene graph to rename its corresponding list view item
-    void updateListViewItem();
-
 	// retrieve the component stored as a property in the signal emitter and clear its output messages
 	void clearComponentOutput();
 

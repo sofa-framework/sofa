@@ -23,4 +23,4 @@
 
 #include <SofaDenseSolver/SVDLinearSolver.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaDenseSolver/SVDLinearSolver.h")
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "SofaDenseSolver/SVDLinearSolver.h")

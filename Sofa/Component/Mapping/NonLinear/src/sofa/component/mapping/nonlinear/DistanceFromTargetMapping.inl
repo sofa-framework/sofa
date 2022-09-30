@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "DistanceFromTargetMapping.h"
+#include <sofa/component/mapping/nonlinear/DistanceFromTargetMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>

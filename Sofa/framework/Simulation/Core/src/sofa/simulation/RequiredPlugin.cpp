@@ -113,8 +113,13 @@ bool RequiredPlugin::loadPlugin()
         bool isNameLoaded = false;
         for (const auto& suffix : suffixVec)
         {
-            if ( pluginManager.pluginIsLoaded(name) || 
-                 pluginManager.loadPlugin(name, suffix, true, true, &errmsg) )
+            bool isPluginLoaded = pluginManager.pluginIsLoaded(name);
+            if (!isPluginLoaded)
+            {
+                const auto status = pluginManager.loadPlugin(name, suffix, true, true, &errmsg);
+                isPluginLoaded = (status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED);
+            }
+            if (isPluginLoaded)
             {
                 loadedPlugins.push_back(name);
                 isNameLoaded = true;

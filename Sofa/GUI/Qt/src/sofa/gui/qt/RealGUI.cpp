@@ -49,6 +49,7 @@
 #endif
 
 
+#include <mutex>
 #include <QScreen>
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
@@ -107,7 +108,7 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QDesktopServices>
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
-    #include <QDesktopWidget>
+#include <QDesktopWidget>
 #endif
 
 #   ifdef SOFA_GUI_INTERACTION
@@ -226,8 +227,41 @@ public:
 
 //======================= STATIC METHODS ========================= {
 
+void RealGUI::setupSurfaceFormat()
+{
+    static std::once_flag flag;
+    std::call_once(flag, []
+    {
+        QSurfaceFormat format;
+        if(!SOFA_GUI_QT_ENABLE_VSYNC)
+        {
+            format.setSwapInterval(0); //Setting an interval value of 0 will turn the vertical refresh syncing off
+        }
+
+        static constexpr int vmajor = 3, vminor = 2;
+        format.setVersion(vmajor,vminor); //Sets the desired major and minor OpenGL versions.
+        format.setProfile(QSurfaceFormat::CompatibilityProfile); //Sets the desired OpenGL context profile. CompatibilityProfile = Functionality from earlier OpenGL versions is available.
+        format.setOption(QSurfaceFormat::DeprecatedFunctions, true); //Used to request that deprecated functions be included in the OpenGL context profile. If not specified, you should get a forward compatible context without support functionality marked as deprecated. This requires OpenGL version 3.0 or higher.
+        format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+
+        if (mArgumentParser)
+        {
+            unsigned int viewerMSAANbSampling = 0;
+            mArgumentParser->getValueFromKey("msaa", viewerMSAANbSampling);
+            if (viewerMSAANbSampling > 1)
+            {
+                msg_info("RealGUI") << "Set multisampling anti-aliasing (MSAA) with " << viewerMSAANbSampling << " samples." ;
+                format.setSamples(static_cast<int>(viewerMSAANbSampling));
+            }
+        }
+
+        QSurfaceFormat::setDefaultFormat(format);
+    });
+}
+
 BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
 {
+    setupSurfaceFormat();
 
     CreateApplication();
 
@@ -240,7 +274,6 @@ BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr roo
     }
 
     InitApplication(gui);
-
     return gui;
 }
 
@@ -303,12 +336,12 @@ RealGUI::RealGUI ( const char* viewername)
       interactionButton( nullptr ),
       #endif
 
-#ifndef SOFA_GUI_QT_NO_RECORDER
+      #ifndef SOFA_GUI_QT_NO_RECORDER
       recorder(nullptr),
-#else
+      #else
       fpsLabel(nullptr),
       timeLabel(nullptr),
-#endif
+      #endif
 
       #ifdef SOFA_GUI_INTERACTION
       m_interactionActived(false),
@@ -325,12 +358,12 @@ RealGUI::RealGUI ( const char* viewername)
       #endif
 
       m_sofaMouseManager(nullptr),
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+      #if SOFAGUIQT_HAVE_QT5_CHARTS
       m_windowTimerProfiler(nullptr),
-#endif
-#if SOFA_GUI_QT_HAVE_NODEEDITOR
+      #endif
+      #if SOFAGUIQT_HAVE_NODEEDITOR
       m_sofaWindowDataGraph(nullptr),
-#endif
+      #endif
       simulationGraph(nullptr),
       m_createViewersOpt(true),
       m_isEmbeddedViewer(true),
@@ -363,7 +396,8 @@ RealGUI::RealGUI ( const char* viewername)
     
     ExpandAllButton->setIcon(QIcon(":/RealGUI/expandAll"));
     CollapseAllButton->setIcon(QIcon(":/RealGUI/collapseAll"));
-    for (auto* button : {ExpandAllButton, CollapseAllButton})
+    sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh"));
+    for (auto* button : {ExpandAllButton, CollapseAllButton, sceneGraphRefreshToggleButton})
     {
         button->setFixedWidth(button->height());
     }
@@ -382,7 +416,7 @@ RealGUI::RealGUI ( const char* viewername)
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
     connect ( this, SIGNAL ( quit() ), this, SLOT ( fileExit() ) );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
-    connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
+    connect ( ReloadSceneButton, SIGNAL ( clicked() ), this, SLOT ( fileReload() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
     connect ( realTimeCheckBox, SIGNAL ( stateChanged ( int ) ), this, SLOT ( updateDtEditState() ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
@@ -833,6 +867,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
         msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
         return;
     }
+
     if(reload)
         setSceneWithoutMonitor(mSimulation, filename.c_str(), temporaryFile);
     else{
@@ -862,6 +897,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if (m_sofaWindowDataGraph)
         m_sofaWindowDataGraph->resetNodeGraph(currentSimulation());
 #endif
+
 }
 
 
@@ -986,7 +1022,6 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
 {
     if (filename)
     {
-
         if (!temporaryFile)
             recentlyOpenedFilesManager.openFile(filename);
         m_saveReloadFile=temporaryFile;
@@ -1009,11 +1044,13 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
             root->f_bbox.setValue(b);
         }
 
+
         mSimulation = root;
         eventNewTime();
         startButton->setChecked(root->getContext()->getAnimate() );
+
         dtEdit->setText ( QString::number ( root->getDt() ) );
-        simulationGraph->Clear(root.get());
+        simulationGraph->setRoot(root.get());
         simulationGraph->collapseAll();
         simulationGraph->expandToDepth(0);
         simulationGraph->resizeColumnToContents(0);
@@ -1241,7 +1278,7 @@ void RealGUI::showWindowDataGraph()
     {
         createSofaWindowDataGraph();
     }
-    m_sofaWindowDataGraph->show(); 
+    m_sofaWindowDataGraph->show();
 
 #endif
 }
@@ -1782,10 +1819,10 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         sofaViewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
 
         sofaViewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::Policy ) 7,
-                                                              ( QSizePolicy::Policy ) 7
-                                                              //, 100, 1,
-                                                              //sofaViewer->getQWidget()->sizePolicy().hasHeightForWidth() )
-                                                              ));
+                                                                ( QSizePolicy::Policy ) 7
+                                                                //, 100, 1,
+                                                                //sofaViewer->getQWidget()->sizePolicy().hasHeightForWidth() )
+                                                                ));
 
         sofaViewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
         sofaViewer->getQWidget()->setMouseTracking ( true );
@@ -1826,7 +1863,7 @@ void RealGUI::parseOptions()
 
         if (m_enableInteraction)
             msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
-            "that may change or be removed in the future. ";
+                                      "that may change or be removed in the future. ";
     }
 }
 
@@ -1903,7 +1940,6 @@ void RealGUI::createBackgroundGUIInfos()
 }
 
 //------------------------------------
-
 void RealGUI::createSimulationGraph()
 {
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
@@ -1912,6 +1948,10 @@ void RealGUI::createSimulationGraph()
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect ( ExpandAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( expandAll() ) );
     connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( ExpandRootNodeOnly() ) );
+    connect ( sceneGraphRefreshToggleButton, &QPushButton::clicked , this, &RealGUI::onSceneGraphRefreshButtonClicked );
+    connect(simulationGraph, &QSofaListView::dirtynessChanged, this, &RealGUI::sceneGraphViewDirtynessChanged);
+    connect(simulationGraph, &QSofaListView::lockingChanged, this, &RealGUI::sceneGraphViewLockingChanged);
+
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( newRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( lockAnimation(bool) ) );
@@ -1924,6 +1964,83 @@ void RealGUI::createSimulationGraph()
     connect(simulationGraph, SIGNAL( dataModified( QString ) ), this, SLOT( appendToDataLogFile(QString ) ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
+
+    std::ifstream file( BaseGUI::getConfigDirectoryPath() + "/sceneGraphLock" );
+    if(file.is_open())
+    {
+        bool isLocked;
+        file >> isLocked;
+        if (isLocked)
+        {
+            simulationGraph->lock();
+        }
+        else
+        {
+            simulationGraph->unLock();
+        }
+        file.close();
+    }
+    else
+    {
+        simulationGraph->unLock();
+    }
+}
+
+// This slot is called when the sceneGraph view is set to dirty
+void RealGUI::sceneGraphViewDirtynessChanged(bool isDirty)
+{
+    if(isDirty)
+    {
+        sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-dirty"));
+    }
+    else if(simulationGraph->isLocked())
+    {
+        sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-locked"));
+    }
+    else
+    {
+        sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-unlocked"));
+    }
+}
+
+// This slot is called when the sceneGraph view has been locked/unlocked.
+// The locking state indicates how the view is taking into account the scene graph data changes.
+// when locked, the vue is not updated. When unlocked all changes are taken into account.
+void RealGUI::sceneGraphViewLockingChanged(bool isLocked)
+{
+    if(isLocked)
+    {
+        sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-locked"));
+    }
+    else
+    {
+        sceneGraphRefreshToggleButton->setIcon(QIcon(":/RealGUI/sceneGraphRefresh-unlocked"));
+    }
+}
+
+// The scene graph update button has three states
+// State 0: unlocked (all the changes on the graph are immediately taken into account)
+// State 1: locked (the changes on the graph are not done but the simulation graph is set to dirty if
+//          there is some changes on the graph. A click on the button unlocks the graph (go to state 0).
+// State 2: dirty, in that state the button reflect the fact that the scene graph view has changed but not displayed.
+//          A click on the button refreshes the graph view but does not change the Lock/Unlock state
+void RealGUI::onSceneGraphRefreshButtonClicked()
+{
+    if(simulationGraph->isLocked())
+    {
+        simulationGraph->unLock();
+    }
+    else
+    {
+        simulationGraph->lock();
+    }
+
+    std::ofstream file( BaseGUI::getConfigDirectoryPath() + "/sceneGraphLock" );
+    if(file)
+    {
+        file << simulationGraph->isLocked();
+        file.close();
+    }
 }
 
 void RealGUI::createPropertyWidget()
@@ -2356,9 +2473,9 @@ void RealGUI::clear()
 {
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
-        recorder->Clear(currentSimulation());
+        recorder->setRoot(currentSimulation());
 #endif
-    simulationGraph->Clear(currentSimulation());
+    simulationGraph->setRoot(currentSimulation());
     statWidget->CreateStats(currentSimulation());
 }
 
@@ -2498,9 +2615,7 @@ void RealGUI::currentTabChanged ( int index )
         currentTab = widget;
 
     if ( widget == TabGraph )
-        simulationGraph->Unfreeze( );
-    else if ( currentTab == TabGraph )
-        simulationGraph->Freeze();
+        simulationGraph->update();
     else if (widget == TabStats)
         statWidget->CreateStats(currentSimulation());
 

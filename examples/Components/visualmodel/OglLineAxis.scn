@@ -1,8 +1,8 @@
 <Node name="root" dt="0.01">
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
-    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglGrid OglLineAxis OglModel] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
     <OglModel name="VisualModel" src="@meshLoader_0" color="red" />
-    <OglGrid name="grid"/>
-    <OglLineAxis size="@grid.size"/>
+    <VisualGrid name="grid"/>
+    <LineAxis size="@grid.size"/>
 </Node>

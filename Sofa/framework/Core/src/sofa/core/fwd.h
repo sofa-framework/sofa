@@ -24,15 +24,20 @@
 #include <sofa/core/config.h>
 #include <iosfwd>
 
+
 namespace sofa::helper::visual { class DrawTool; }
 
 namespace sofa::core
 {
+
+
 class BaseState;
 class BaseMapping;
 class BehaviorModel;
 class CollisionModel;
 class CollisionElementIterator;
+class DataEngine;
+class DevBaseMonitor;
 
 class ExecParams;
 class ConstraintParams;
@@ -81,7 +86,6 @@ class AbstractDataLink;
 class ContextObject;
 class ConfigurationSetting;
 
-
 class Tag;
 SOFA_CORE_API std::ostream& operator<<(std::ostream& o, const Tag& t);
 SOFA_CORE_API std::istream& operator>>(std::istream& i, Tag& t);
@@ -104,7 +108,7 @@ class BaseInteractionForceField;
 class BaseProjectiveConstraintSet;
 class BaseInteractionProjectiveConstraintSet;
 class BaseInteractionConstraint;
-
+class LinearSolver;
 class MultiMatrixAccessor;
 
 template<class T>
@@ -157,7 +161,16 @@ SOFA_CORE_API const sofa::core::visual::DisplayFlags& getDisplayFlags(const Visu
 
 namespace sofa::core::collision
 {
+class CollisionGroupManager;
+class ContactManager;
+class Detection;
+class Intersection;
 class Pipeline;
+}
+
+namespace sofa::core::loader
+{
+class BaseLoader;
 }
 
 namespace sofa::core

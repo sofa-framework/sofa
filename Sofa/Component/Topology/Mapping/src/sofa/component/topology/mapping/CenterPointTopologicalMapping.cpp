@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CenterPointTopologicalMapping.h"
+#include <sofa/component/topology/mapping/CenterPointTopologicalMapping.h>
 
 #include <sofa/core/ObjectFactory.h>
 

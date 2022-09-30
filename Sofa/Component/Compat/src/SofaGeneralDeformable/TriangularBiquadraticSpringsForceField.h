@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/spring/TriangularBiquadraticSpringsForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/TriangularBiquadraticSpringsForceField.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/TriangularBiquadraticSpringsForceField.h")
 
 namespace sofa::component::forcefield
 {

@@ -23,6 +23,13 @@
 #include "CudaPenalityContactForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
+namespace sofa::component::collision::response::contact
+{
+using namespace sofa::gpu::cuda;
+template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3f1Types>;
+
+} // sofa::component::collision::response::contact
 namespace sofa::gpu::cuda
 {
 

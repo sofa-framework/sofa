@@ -34,8 +34,8 @@
 #include <set>
 #include <boost/shared_ptr.hpp>
 
-#include "ComponentInfo.h"
-#include "FileInfo.h"
+#include <sofa/helper/logging/ComponentInfo.h>
+#include <sofa/helper/logging/FileInfo.h>
 
 namespace sofa
 {

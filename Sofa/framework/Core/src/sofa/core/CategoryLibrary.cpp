@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "CategoryLibrary.h"
+#include <sofa/core/CategoryLibrary.h>
 
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
@@ -49,10 +49,7 @@
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/core/loader/BaseLoader.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 
@@ -205,5 +202,4 @@ void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
 }
 
 
-}
-}
+} // namespace sofa::core

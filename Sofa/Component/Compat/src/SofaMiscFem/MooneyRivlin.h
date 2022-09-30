@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h")
 
 namespace sofa::component::fem
 {

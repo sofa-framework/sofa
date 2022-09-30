@@ -91,6 +91,8 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
 template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solve(Matrix& M, Vector& x, Vector& b)
 {
+    SOFA_UNUSED(M);
+
     Inherit1::solve_cpu(&x[0],&b[0], m_mainThreadInvertData);
 }
 
@@ -104,6 +106,8 @@ template <class TMatrix, class TVector, class TThreadManager>
 bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::addJMInvJtLocal(TMatrix* M, ResMatrixType* result,
     const JMatrixType* J, SReal fact)
 {
+    SOFA_UNUSED(M);
+
     if (newInvertDataReady)
     {
         swapInvertData();

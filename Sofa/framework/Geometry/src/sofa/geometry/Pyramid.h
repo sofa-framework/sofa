@@ -28,7 +28,7 @@ namespace sofa::geometry
 
 struct Pyramid
 {
-    static const sofa::Size NumberOfNodes = 5;
+    static constexpr sofa::Size NumberOfNodes = 5;
 
     Pyramid() = delete;
 };

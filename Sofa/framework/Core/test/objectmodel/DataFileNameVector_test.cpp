@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/testing/config.h>
 
-#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/DataFileNameVector.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "SmoothMeshEngine.h"
+#include <sofa/component/engine/transform/SmoothMeshEngine.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>

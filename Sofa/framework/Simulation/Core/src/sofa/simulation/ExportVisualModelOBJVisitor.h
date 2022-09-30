@@ -57,8 +57,8 @@ protected:
 };
 
 using ExportOBJVisitor
-    SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "Use ExportVisualModelOBJVisitor instead.")
-    = ExportVisualModelOBJVisitor;
+    SOFA_ATTRIBUTE_DISABLED("v21.12", "v22.06", "Use ExportVisualModelOBJVisitor instead.")
+    = DeprecatedAndRemoved;
 
 } // namespace simulation
 
