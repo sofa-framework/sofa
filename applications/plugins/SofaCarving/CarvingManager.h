@@ -107,7 +107,7 @@ protected:
     // Pointer to the scene detection Method component (Narrow phase only)
     core::collision::NarrowPhaseDetection* m_detectionNP = nullptr;
 
-    // Bool to store the information if component has well be init and can be used.
+    // Bool to store the information if component has been initialized and can be used.
     bool m_carvingReady = false;
     
 };
