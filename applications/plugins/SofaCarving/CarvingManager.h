@@ -51,8 +51,6 @@ public:
     
     /// Sofa API init method of the component
     void init() override;
-    /// Sofa API reset method of the component
-    void reset() override;
 
     /// Method to handle various event like keyboard or omni.
     void handleEvent(sofa::core::objectmodel::Event* event) override;
@@ -101,10 +99,7 @@ public:
 protected:
     // Pointer to the target object collision model
     std::vector<core::CollisionModel*> m_surfaceCollisionModels;
-
-    // Bool to store the information if component has been initialized and can be used.
-    bool m_carvingReady = false;
-    
+   
 };
 
 } // namespace sofa::component::collision

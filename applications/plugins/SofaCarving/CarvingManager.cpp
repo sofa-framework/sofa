@@ -60,12 +60,16 @@ CarvingManager::CarvingManager()
 
 void CarvingManager::init()
 {
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
+
     // Search for collision model corresponding to the tool.
     if (!l_toolModel.get())
     {
         auto toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchRoot);
         if (toolCollisionModel != nullptr)
             l_toolModel.set(toolCollisionModel);
+
+
     }
 
     // Search for the surface collision model.
@@ -79,33 +83,38 @@ void CarvingManager::init()
         m_surfaceCollisionModels.push_back(getContext()->get<core::CollisionModel>(d_surfaceModelPath.getValue()));
     }
 
-    m_carvingReady = true;
-
-    if (l_toolModel.get() == nullptr) {
-        msg_error() << "Tool Collision Model not found. Set the link to toolModel or set tag 'CarvingTool' to the right collision model."; 
-        m_carvingReady = false; 
+    // If no NarrowPhaseDetection is set using the link try to find the component
+    if (l_detectionNP.get() == nullptr)
+    {
+        l_detectionNP.set(getContext()->get<core::collision::NarrowPhaseDetection>());
     }
-
-    if (m_surfaceCollisionModels.empty()) { 
-        msg_error() << "m_surfaceCollisionModels not found. Set tag 'CarvingSurface' to the right collision models."; 
-        m_carvingReady = false; 
-    }
-
-    if (l_detectionNP.get()) { msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene."; m_carvingReady = false; }
     
-    if (m_carvingReady) { msg_info() << "CarvingManager: init OK."; }
-}
 
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
-void CarvingManager::reset()
-{
+    if (l_toolModel.get() == nullptr) 
+    {
+        msg_error() << "Tool Collision Model not found. Set the link to toolModel or set tag 'CarvingTool' to the right collision model."; 
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 
+    if (m_surfaceCollisionModels.empty()) 
+    { 
+        msg_error() << "m_surfaceCollisionModels not found. Set tag 'CarvingSurface' to the right collision models."; 
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
+
+    if (l_detectionNP.get()) 
+    { 
+        msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene."; 
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 
 void CarvingManager::doCarve()
 {
-    if (!m_carvingReady)
+    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     // get the collision output
@@ -173,9 +182,8 @@ void CarvingManager::doCarve()
 
 void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (!m_carvingReady) {
+    if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
-    }
 
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
