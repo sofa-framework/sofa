@@ -28,6 +28,7 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/topology/TopologyChangeClasses.h>
 #include <vector>
 
 namespace sofa::component::collision::geometry
