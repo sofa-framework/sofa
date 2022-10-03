@@ -85,9 +85,18 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
+    const auto& positions_e1 = e1.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions_e2 = e2.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto& e1p1 = positions_e1[e1.i1()];
+    const auto& e1p2 = positions_e1[e1.i2()];
+    const auto& e2p1 = positions_e2[e2.i1()];
+    const auto& e2p2 = positions_e2[e2.i2()];
+
+    const Vector3 AB = e1p2-e1p1;
+    const Vector3 CD = e2p2-e2p1;
+    const Vector3 AC = e2p1-e1p1;
+
     Matrix2 A;
     Vector2 b;
 
@@ -341,7 +350,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     {
         const auto normalIndex = e2.getIndex();
         detection->normal = e2.model->getNormals()[normalIndex];
-    }    
+    }
 
     return 1;
 }
