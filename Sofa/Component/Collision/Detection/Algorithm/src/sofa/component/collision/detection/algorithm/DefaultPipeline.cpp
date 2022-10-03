@@ -29,6 +29,7 @@
 #include <sofa/core/collision/ContactManager.h>
 
 #include <sofa/simulation/Node.h>
+#include <sofa/core/STLParallelismSupport.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/Visitor.h>
@@ -152,35 +153,35 @@ void DefaultPipeline::doCollisionDetection(const type::vector<core::CollisionMod
 
         type::vector<CollisionModel*>::const_iterator it;
         const type::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
-        int nActive = 0;
 
         const int used_depth = (
                     (broadPhaseDetection && broadPhaseDetection->needsDeepBoundingTree()) ||
                     (narrowPhaseDetection && narrowPhaseDetection->needsDeepBoundingTree())
             ) ? d_depth.getValue() : 0;
 
-        for (it = collisionModels.begin(); it != itEnd; ++it)
+        if (continuous)
         {
-            msg_info_when(d_doPrintInfoMessage.getValue())
-                << "doCollisionDetection, consider model" ;
-
-            if (!(*it)->isActive()) continue;
-
-            if (continuous)
+            std::for_each(SOFA_STD_EXECUTION_PAR collisionModels.begin(), collisionModels.end(), [&](CollisionModel* cm)
             {
-                const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer bboxtimer(msg.c_str());
-                (*it)->computeContinuousBoundingTree(dt, used_depth);
-            }
-            else
+                if (!cm->isActive()) return;
+                cm->computeContinuousBoundingTree(dt, used_depth);
+            });
+        }
+        else
+        {
+            std::for_each(SOFA_STD_EXECUTION_PAR collisionModels.begin(), collisionModels.end(), [&](CollisionModel* cm)
             {
-                std::string msg = "Compute BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer bboxtimer(msg.c_str());
-                (*it)->computeBoundingTree(used_depth);
-            }
+                if (!cm->isActive()) return;
+                cm->computeBoundingTree(used_depth);
+            });
+        }
 
-            vectBoundingVolume.push_back ((*it)->getFirst());
-            ++nActive;
+        for (auto* collisionModel : collisionModels)
+        {
+            if (collisionModel && collisionModel->isActive())
+            {
+                vectBoundingVolume.push_back (collisionModel->getFirst());
+            }
         }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -188,7 +189,7 @@ void DefaultPipeline::doCollisionDetection(const type::vector<core::CollisionMod
 #endif
 
         msg_info_when(d_doPrintInfoMessage.getValue())
-                << "doCollisionDetection, Computed "<<nActive<<" BBoxs" ;
+                << "doCollisionDetection, Computed "<< vectBoundingVolume.size() <<" BBoxs" ;
     }
     // then we start the broad phase
     if (broadPhaseDetection == nullptr)
