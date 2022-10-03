@@ -279,9 +279,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 template<class DataTypes>
 bool ConstantForceField<DataTypes>::checkForce(const Deriv& force)
 {
-    const size_t size = Deriv::spatial_dimensions;
-
-    for (size_t i=0; i<size; i++)
+    for (typename Deriv::Size i=0; i<Deriv::spatial_dimensions; ++i)
     {
         if( std::isnan(force[i]) )
         {

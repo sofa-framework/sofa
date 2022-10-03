@@ -40,3 +40,12 @@
         "v22.06", "v22.12", \
         "As an alternative, use sofa::type::Rebind or sofa::type::rebind_to.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_TYPE
+#define SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__STATIC_MATRIX_IDENTITY() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12", "v23.06", \
+        "As an alternative, use sofa::type::Mat<L,C,real>::Identity().")
+#endif

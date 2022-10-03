@@ -407,7 +407,9 @@ bool BoxROI<DataTypes>::isPointInOrientedBox(const typename DataTypes::CPos& poi
 template <class DataTypes>
 bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box)
 {
-    for (std::size_t i = 0; i < DataTypes::spatial_dimensions; ++i)
+    static_assert(std::is_same_v<typename DataTypes::CPos::size_type, typename Vec6::size_type>);
+
+    for (typename Vec6::size_type i = 0; i < DataTypes::spatial_dimensions; ++i)
     {
         if (p[i] < box[i] || p[i] > box[i + 3])
         {

@@ -30,7 +30,10 @@ using sofa::simulation::Node ;
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject;
 
+#include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
+
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
 namespace customns
@@ -62,10 +65,10 @@ public:
     void testComponentState()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-        importPlugin("SofaComponentAll") ;
         const std::string scene = R"(
             <?xml version='1.0'?>
             <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+               <RequiredPlugin name='Sofa.Component.StateContainer'/>
                <DefaultAnimationLoop />
                <DefaultVisualManagerLoop />
                <Node name='child1'>

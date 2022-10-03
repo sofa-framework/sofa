@@ -51,7 +51,8 @@ public:
 
 protected:
     /// Destructor
-    ~NarrowPhaseDetection() override { }
+    ~NarrowPhaseDetection() override;
+
 public:
     /// Clear all the potentially colliding pairs detected in the previous simulation step
     virtual void beginNarrowPhase();
