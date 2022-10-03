@@ -21,43 +21,48 @@
         <RequiredPlugin name="SofaCarving"/> <!-- Needed to use components [CarvingManager] -->  
     </Node>
 
-  <VisualStyle displayFlags="showCollisionModels" />
-  
-  <DefaultPipeline verbose="0" />
-  <BruteForceBroadPhase/>
-  <BVHNarrowPhase/>
-  <DefaultContactManager response="PenalityContactForceField" />
-  <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.02"/>
-  
-  <CarvingManager active="true" carvingDistance="0.0"/>
+    <VisualStyle displayFlags="showCollisionModels" />
 
-  <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
-  <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-9" threshold="1e-9"/>
-  
-  <Node name="Cylinder">
-	<MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
-    <MechanicalObject src="@loader" name="Volume" />
-    <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-    <DiagonalMass massDensity="0.01" />
-	<BoxROI name="ROI1" box="-1 -1 -1 1 1 0.01" drawBoxes="1" />
-    <FixedConstraint indices="@ROI1.indices" />
-    <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="300" poissonRatio="0.3" method="large" />
-    <Node name="Surface">
-      <include href="Objects/TriangleSetTopology.xml" />
-      <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-      <TriangleCollisionModel name="triangleCol" tags="CarvingSurface"/>
-	  <PointCollisionModel name="pointCol" tags="CarvingSurface"/>
-      <Node name="Visu">
-        <OglModel name="Visual" material="Default Diffuse 1 0 1 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 1 0 1 Emissive 0 1 1 0 1 Shininess 1 100"/>
-        <IdentityMapping input="@../../Volume" output="@Visual" />
-      </Node>
+    <DefaultAnimationLoop />
+    <DefaultPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <DefaultContactManager response="PenalityContactForceField" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.02"/>
+
+    <CarvingManager active="true" carvingDistance="0.0"/>
+
+    <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-9" threshold="1e-9"/>
+
+    <Node name="Cylinder">
+        <MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
+        <MechanicalObject src="@loader" name="Volume" />
+        <TetrahedronSetTopologyContainer  name="Container" src="@loader"/>
+        <TetrahedronSetTopologyModifier   name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <DiagonalMass massDensity="0.01" />
+        <BoxROI name="ROI1" box="-1 -1 -1 1 1 0.01" drawBoxes="1" />
+        <FixedConstraint indices="@ROI1.indices" />
+        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="300" poissonRatio="0.3" method="large" />
+        <Node name="Surface">
+            <TriangleSetTopologyContainer  name="Container"/>
+            <TriangleSetTopologyModifier   name="Modifier" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
+            <TriangleCollisionModel name="triangleCol" tags="CarvingSurface"/>
+            <PointCollisionModel name="pointCol" tags="CarvingSurface"/>
+            <Node name="Visu">
+                <OglModel name="Visual" material="Default Diffuse 1 0 1 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 1 0 1 Emissive 0 1 1 0 1 Shininess 1 100"/>
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
     </Node>
-  </Node>
 
-  
-  <Node name="carvingElement">
-		<MechanicalObject name="Particles" template="Vec3d" position="0 0 1.4" velocity="0 0 0"/>
-		<UniformMass name="Mass" totalMass="1.0" />
-		<SphereCollisionModel radius="0.02" tags="CarvingTool"/>
-  </Node>
+
+    <Node name="carvingElement">
+        <MechanicalObject name="Particles" template="Vec3d" position="0 0 1.4" velocity="0 0 0"/>
+        <UniformMass name="Mass" totalMass="1.0" />
+        <SphereCollisionModel radius="0.02" tags="CarvingTool"/>
+    </Node>
 </Node>
