@@ -82,11 +82,7 @@ public:
         }
         type::Mat<BSIZE,BSIZE,Real> operator*(const type::Mat<BSIZE,BSIZE,Real>& m)
         {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
-        }
-        type::Mat<BSIZE,BSIZE,Real> operator*(const Block& m)
-        {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
+            return sofa::type::operator*(*this, m);
         }
         type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBlock& mt)
         {

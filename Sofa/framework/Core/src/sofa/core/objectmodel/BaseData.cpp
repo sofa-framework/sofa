@@ -25,16 +25,8 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
-
-namespace core
-{
-
-namespace objectmodel
-{
-
-//#define SOFA_DDG_TRACE
 
 BaseData::BaseData(const char* h, DataFlags dataflags) : BaseData(sofa::helper::safeCharToString(h), dataflags)
 {
@@ -57,7 +49,7 @@ BaseData::BaseData( const char* helpMsg, bool isDisplayed, bool isReadOnly) : Ba
 
 
 BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
-    : help(h), ownerClass(""), group(""), widget("")
+    : help(h), group(""), widget("")
     , m_counter(), m_isSet(), m_dataFlags(FLAG_DEFAULT), m_owner(nullptr), m_name("")
     , parentData(*this)
 {
@@ -69,7 +61,7 @@ BaseData::BaseData( const std::string& h, bool isDisplayed, bool isReadOnly)
 }
 
 BaseData::BaseData( const BaseInitData& init)
-    : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
+    : help(init.helpMsg), group(init.group), widget(init.widget)
     , m_counter(), m_isSet(), m_dataFlags(init.dataFlags)
     , m_owner(init.owner), m_name(init.name)
     , parentData(*this)
@@ -366,9 +358,10 @@ bool BaseData::read(const std::string& s)
     return true;
 }
 
-} // namespace objectmodel
+std::ostream& operator<<(std::ostream &out, const sofa::core::objectmodel::BaseData& df)
+{
+    out<<df.getValueString();
+    return out;
+}
 
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::objectmodel

@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BASESTATE_H
-#define SOFA_CORE_BASESTATE_H
-
+#pragma once
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/VecId.h>
 
-namespace sofa
+namespace sofa::core
 {
-
-namespace core
-{
-
 /**
  *  \brief Component storing position and velocity vectors.
  *
@@ -72,8 +66,5 @@ public:
 
 };
 
-} // namespace core
+} // namespace sofa::core
 
-} // namespace sofa
-
-#endif

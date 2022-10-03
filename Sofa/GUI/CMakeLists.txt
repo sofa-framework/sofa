@@ -28,26 +28,32 @@ if(TARGET ${PROJECT_NAME}.HeadlessRecorder)
     list(APPEND SOFAGUI_TARGETS ${PROJECT_NAME}.HeadlessRecorder)
 endif()
 
-if(SOFAGUI_MISSINGTARGETS)
-    message("${PROJECT_NAME}: package and library will not be created because some dependencies are missing or disabled: ${SOFAGUI_MISSINGTARGETS}")
-    return()
+option(LIBRARY_SOFA_GUI "Build the Sofa.Gui library." ON)
+
+if(LIBRARY_SOFA_GUI)
+
+    if(SOFAGUI_MISSINGTARGETS)
+        message("${PROJECT_NAME}: package and library will not be created because some dependencies are missing or disabled: ${SOFAGUI_MISSINGTARGETS}")
+        return()
+    endif()
+
+    set(HEADER_FILES
+        ${SOFAGUI_SOURCE_DIR}/config.h.in
+        ${SOFAGUI_SOURCE_DIR}/init.h
+    )
+    set(SOURCE_FILES
+        ${SOFAGUI_SOURCE_DIR}/init.cpp
+    )
+
+    add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
+
+    sofa_create_package_with_targets(
+        PACKAGE_NAME ${PROJECT_NAME}
+        PACKAGE_VERSION ${Sofa_VERSION}
+        TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+        INCLUDE_SOURCE_DIR "src"
+        INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    )
+
 endif()
-
-set(HEADER_FILES
-    ${SOFAGUI_SOURCE_DIR}/config.h.in
-    ${SOFAGUI_SOURCE_DIR}/init.h
-)
-set(SOURCE_FILES
-    ${SOFAGUI_SOURCE_DIR}/init.cpp
-)
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
-
-sofa_create_package_with_targets(
-    PACKAGE_NAME ${PROJECT_NAME}
-    PACKAGE_VERSION ${Sofa_VERSION}
-    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
-    INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
-)

@@ -50,7 +50,7 @@ int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input t
  */
 
 AbstractTransformMatrixEngine::AbstractTransformMatrixEngine()
-    : d_inT ( initData (&d_inT, Matrix4::s_identity, "inT", "input transformation if any") )
+    : d_inT ( initData (&d_inT, Matrix4::Identity(), "inT", "input transformation if any") )
     , d_outT( initData (&d_outT, "outT", "output transformation") )
 {
     addInput(&d_inT);
