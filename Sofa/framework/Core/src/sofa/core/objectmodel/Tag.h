@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_TAG_H
-#define SOFA_CORE_OBJECTMODEL_TAG_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <ostream>
 #include <set>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -72,22 +65,6 @@ protected:
     int id;
 };
 
-class SOFA_CORE_API TagSet : public std::set<Tag>
-{
-public:
-    TagSet() {}
-    /// Automatic conversion between a tag and a tagset composed of this tag
-    TagSet(const Tag& t) { this->insert(t); }
-    /// Returns true if this TagSet contains specified tag
-    bool includes(const Tag& t) const { return this->count(t) > 0; }
-    /// Returns true if this TagSet contains all specified tags
-    bool includes(const TagSet& t) const;
-};
+} // namespace sofa::core::objectmodel
 
-}
 
-} // namespace objectmodel
-
-} // namespace core
-
-#endif

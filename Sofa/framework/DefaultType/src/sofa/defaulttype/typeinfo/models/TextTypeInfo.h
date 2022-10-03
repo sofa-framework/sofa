@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+#include <sstream>
 
 namespace sofa::defaulttype
 {

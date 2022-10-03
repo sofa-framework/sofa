@@ -82,16 +82,16 @@ public:
     public:
         InitData() : value(T()) {}
         InitData(const T& v) : value(v) {}
-        InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(T()) {} 
+        InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(T()) {}
         T value;
     };
-    
-    SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Method Data::templateName() is deprecated, to fix your code you need to use Data::GetValueTypeInfo()->getTypeName().")    
+
+    SOFA_ATTRIBUTE_DEPRECATED__DATA_TYPEINFOAPI("Method Data::templateName() is deprecated, to fix your code you need to use Data::GetValueTypeInfo()->getTypeName().")
     static std::string templateName();
 
     // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
     BaseData* getNewInstance() override;
-    
+
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init);
 
@@ -142,11 +142,11 @@ public:
 
     const T& getValue() const;
     /// @}
-    
-    /// Get info about the value 'T' type 
+
+    /// Get info about the value 'T' type
     static const defaulttype::AbstractTypeInfo* GetValueTypeInfo();
-       
-    /// Get info about the value 'T' type 
+
+    /// Get info about the value 'T' type
     const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override;
 
     /** Try to read argument value from an input stream.
@@ -165,7 +165,7 @@ public:
 
     Data(const Data& ) = delete;
     Data& operator=(const Data& ) = delete;
-    
+
 protected:
     typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
 
@@ -179,8 +179,8 @@ private:
     const void* doGetValueVoidPtr() const override;
     void* doBeginEditVoidPtr() override;
     void doEndEditVoidPtr() override;
-    
-    static bool AbstractTypeInfoRegistration();    
+
+    static bool AbstractTypeInfoRegistration();
     static const sofa::defaulttype::AbstractTypeInfo* GetValueTypeInfoWithCompatibilityLayer();
 };
 
@@ -230,11 +230,11 @@ public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    ReadAccessor(const core::ExecParams*, const data_container_type& d) = delete;
 
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    ReadAccessor(const core::ExecParams*, const data_container_type* d) = delete;
 };
 
 /// Read/Write Accessor.
@@ -266,11 +266,11 @@ public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    WriteAccessor(const core::ExecParams*, data_container_type& d) = delete;
 
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    WriteAccessor(const core::ExecParams*, data_container_type* d) = delete;
     ~WriteAccessor() { data.endEdit(); }
 };
 
@@ -297,11 +297,11 @@ public:
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) = delete;
 
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
+    SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS()
+    WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) = delete;
 };
 
 
@@ -310,7 +310,7 @@ public:
 ///   auto points = getWriteOnlyAccessor(d_points)
 template<class T>
 WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::Data<T>& data)
-{ 
+{
     return WriteAccessor<core::objectmodel::Data<T> >(data);
 }
 

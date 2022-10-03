@@ -23,10 +23,11 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/objectmodel/TagSet.h>
 #include <sofa/core/datatype/DataRegistrationMacro.h>
 
 
 #ifndef SOFA_CORE_DATATYPE_DATATAG_DEFINITION
 DATATYPEINFO_DECLARE(sofa::core::objectmodel::Tag)
 DATATYPEINFO_DECLARE(sofa::core::objectmodel::TagSet)
-#endif 
+#endif

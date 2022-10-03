@@ -25,6 +25,7 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/objectmodel/TagSet.h>
 #include <sofa/helper/system/thread/CTime.h>
 
 #include <string>

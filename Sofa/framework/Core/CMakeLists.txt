@@ -164,6 +164,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
     ${SRC_ROOT}/objectmodel/Tag.h
+    ${SRC_ROOT}/objectmodel/TagSet.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
@@ -306,6 +307,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
+    ${SRC_ROOT}/objectmodel/TagSet.cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp

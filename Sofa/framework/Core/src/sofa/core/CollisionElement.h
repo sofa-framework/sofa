@@ -264,13 +264,13 @@ public:
     }
 
     /// Distance to the actual (visual) surface
-    double getProximity() { return model->getProximity(); }
+    [[nodiscard]] SReal getProximity() const { return model->getProximity(); }
 
     /// Contact stiffness
-    double getContactStiffness() { return model->getContactStiffness(index); }
+    [[nodiscard]] SReal getContactStiffness() const { return model->getContactStiffness(index); }
 
     /// Contact friction (damping) coefficient
-    double getContactFriction() { return model->getContactFriction(index); }
+    [[nodiscard]] SReal getContactFriction() const { return model->getContactFriction(index); }
 
 
     /// Render this element.

@@ -24,6 +24,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/defaulttype/typeinfo/models/VectorTypeInfo.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::defaulttype
 {
