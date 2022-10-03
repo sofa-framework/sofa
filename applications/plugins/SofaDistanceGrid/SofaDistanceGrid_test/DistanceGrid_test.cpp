@@ -33,7 +33,7 @@ namespace container
 {
 namespace _distancegrid_
 {
-using sofa::type::Vector3 ;
+using sofa::type::Vec3 ;
 
 struct DistanceGrid_test : public sofa::testing::NumericTest<SReal>
 {
