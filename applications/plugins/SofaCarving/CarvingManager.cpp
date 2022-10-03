@@ -43,7 +43,8 @@ const int CarvingManagerClass = core::RegisterObject("Manager handling carving o
 
 
 CarvingManager::CarvingManager()
-    : l_toolModel(initLink("toolModel", "link to the carving collision model, if not set, manager will search for a collision model with tag: CarvingTool"))
+    : l_toolModel(initLink("toolModel", "link to the carving collision model, if not set, manager will search for a collision model with tag: CarvingTool."))
+    , l_detectionNP(initLink("narrowPhaseDetection", "link to the narrow Phase Detection component, if not set, manager will search for it in root Node."))
     , d_surfaceModelPath( initData(&d_surfaceModelPath, "surfaceModelPath", "TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path"))
     , d_carvingDistance( initData(&d_carvingDistance, 0.0, "carvingDistance", "Collision distance at which cavring will start. Equal to contactDistance by default."))
     , d_active( initData(&d_active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
@@ -68,8 +69,6 @@ void CarvingManager::init()
         auto toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchRoot);
         if (toolCollisionModel != nullptr)
             l_toolModel.set(toolCollisionModel);
-
-
     }
 
     // Search for the surface collision model.
@@ -104,9 +103,9 @@ void CarvingManager::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 
-    if (l_detectionNP.get()) 
+    if (l_detectionNP.get() == nullptr)
     { 
-        msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene."; 
+        msg_error() << "NarrowPhaseDetection not found. Add a NarrowPhaseDetection method in your scene and link it using narrowPhaseDetection field."; 
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }

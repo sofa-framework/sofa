@@ -75,8 +75,6 @@ public:
     // link to the scene detection Method component (Narrow phase only)
     SingleLink<CarvingManager, core::collision::NarrowPhaseDetection, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_detectionNP;
 
-
-    Data < std::string > d_toolModelPath; 
     /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
 
