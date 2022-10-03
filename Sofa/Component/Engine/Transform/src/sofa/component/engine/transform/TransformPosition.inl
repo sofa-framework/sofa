@@ -42,7 +42,7 @@ TransformPosition<DataTypes>::TransformPosition()
     , f_translation(initData(&f_translation, "translation", "translation vector ") )
     , f_rotation(initData(&f_rotation, "rotation", "rotation vector ") )
     , f_scale(initData(&f_scale, Coord(1.0,1.0,1.0), "scale", "scale factor") )
-    , f_affineMatrix(initData(&f_affineMatrix, Mat4x4::s_identity, "matrix", "4x4 affine matrix") )
+    , f_affineMatrix(initData(&f_affineMatrix, Mat4x4::Identity(), "matrix", "4x4 affine matrix") )
     , f_method(initData(&f_method, "method", "transformation method either translation or scale or rotation or random or projectOnPlane") )
     , f_seed(initData(&f_seed, (long) 0, "seedValue", "the seed value for the random generator") )
     , f_maxRandomDisplacement(initData(&f_maxRandomDisplacement, (Real) 1.0, "maxRandomDisplacement", "the maximum displacement around initial position for the random transformation") )
@@ -177,7 +177,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
     if (stream)
     {
         std::string line;
-        Mat4x4 mat(Mat4x4::s_identity);
+        Mat4x4 mat(Mat4x4::Identity());
 
         bool found = false;
         while (getline(stream,line) && !found)
@@ -245,7 +245,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
     {
         std::string line;
         unsigned int nbLines = 0;
-        Mat4x4 mat(Mat4x4::s_identity);
+        Mat4x4 mat(Mat4x4::Identity());
 
         while (getline(stream,line))
         {
@@ -323,7 +323,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
     {
         std::string line;
         unsigned int nbLines = 0;
-        Mat4x4 mat(Mat4x4::s_identity);
+        Mat4x4 mat(Mat4x4::Identity());
 
         while (getline(stream,line))
         {

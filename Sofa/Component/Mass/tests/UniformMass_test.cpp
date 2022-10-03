@@ -80,8 +80,6 @@ struct UniformMassTest :  public BaseTest
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll") ;
-
         todo = true ;
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");

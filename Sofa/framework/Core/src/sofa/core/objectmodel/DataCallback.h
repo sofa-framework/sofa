@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
-#define SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
-
+#pragma once
 #include <functional>
 #include <vector>
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/DDGNode.h>
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /// Private namespace declaration, this allows to
@@ -91,11 +83,6 @@ private:
 /// Import DataCallback from its private namespace into the public one.
 using _datacallback_::DataCallback;
 
-}
+} /// sofa::core::objectmodel
 
-}
-
-}
-
-#endif /// SOFA_CORE_OBJECTMODEL_DATACALLBACK_H
 

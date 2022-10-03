@@ -101,7 +101,9 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
@@ -172,6 +174,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -213,6 +216,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -256,6 +260,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -299,6 +304,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -350,6 +356,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -382,6 +389,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -416,6 +424,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -453,6 +462,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -485,6 +495,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -517,6 +528,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -549,6 +561,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -582,6 +595,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -616,6 +630,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -650,6 +665,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -690,7 +706,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -735,7 +752,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -774,7 +792,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -812,7 +831,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -856,7 +876,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -894,7 +915,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -933,7 +955,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -975,7 +998,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1013,7 +1037,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1051,7 +1076,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1089,7 +1115,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1127,7 +1154,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1166,7 +1194,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1206,7 +1235,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1250,6 +1280,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Hexa' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1265,6 +1296,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Hexa' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1402,7 +1434,8 @@ public:
              scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                    "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                    "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Tetra' >                                                                           "
                     "            <MechanicalObject position='@../grid.position' />                                      "
@@ -1419,7 +1452,8 @@ public:
             scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
                 "            <MechanicalObject position='@../grid.position' />                                      "
@@ -1559,6 +1593,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Quad' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1574,6 +1609,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Quad' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1690,6 +1726,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Triangle' >                                                                        "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1705,6 +1742,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Triangle' >                                                                        "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1844,6 +1882,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Edge' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1859,6 +1898,7 @@ public:
             scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Edge' >                                                                            "
                 "            <MechanicalObject position = '@../grid.position' />                                    "

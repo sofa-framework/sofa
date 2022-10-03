@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/type/fixed_array.h>
+#include <gtest/gtest.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-
-namespace sofa::core::loader
+namespace sofa
 {
 
-bool SOFA_CORE_API canLoad(const char* filename);
-
-class SOFA_CORE_API BaseLoader : public objectmodel::BaseObject
+TEST(fixed_array, operatorLess)
 {
-public:
-    SOFA_ABSTRACT_CLASS(BaseLoader, objectmodel::BaseObject);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseLoader)
+    sofa::type::fixed_array<sofa::Index, 2> edge1 { 0, 0};
+    sofa::type::fixed_array<sofa::Index, 2> edge2 { 1, 0};
+    EXPECT_LT(edge1, edge2);
+    EXPECT_GT(edge2, edge1);
+}
 
-    virtual bool load() = 0;
-    virtual bool canLoad() ;
-
-    void parse(objectmodel::BaseObjectDescription *arg) override ;
-
-    void setFilename(std::string f)  ;
-    const std::string &getFilename() ;
-
-    objectmodel::DataFileName d_filename;
-
-    SOFA_ATTRIBUTE_DISABLED__LOADER_FILENAME("To fix your code, use d_filename")
-    DeprecatedAndRemoved f_filename{};
-
-protected:
-    BaseLoader() ;
-    ~BaseLoader() override ;
-
-    static void skipToEOL(FILE* f) ;
-    static bool readLine(char* buf, int size, FILE* f) ;
-};
-
-} /// namespace sofa::core::loader
-
+}
