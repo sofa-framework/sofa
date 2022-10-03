@@ -37,8 +37,13 @@ template<>
 void  SOFA_CORE_API Data<bool>::doRead( std::istringstream& str )
 {
     bool val;
-    char c;
-    str >> c;
+    int c = str.peek();
+    if(c==EOF)
+    {
+        str.setstate(std::ios::failbit);
+        return;
+    }
+
     if (c == 'T' || c == 't')
         val = true;
     else if (c == 'F' || c == 'f')
@@ -49,8 +54,10 @@ void  SOFA_CORE_API Data<bool>::doRead( std::istringstream& str )
         str >> numericValue;
         val = (numericValue != 0);
     }
-    else
-        str.setstate(std::ios::badbit);
+    else{
+        str.setstate(std::ios::failbit);
+        return;
+    }
     setValue(val);
 }
 
