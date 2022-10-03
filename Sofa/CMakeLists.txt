@@ -11,4 +11,4 @@ option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the 
 sofa_add_subdirectory(library GL Sofa.GL ON WHEN_TO_SHOW "SOFA_WITH_OPENGL" VALUE_IF_HIDDEN OFF)
 
 # GUI
-sofa_add_subdirectory(library GUI Sofa.GUI ON)
+add_subdirectory(GUI)

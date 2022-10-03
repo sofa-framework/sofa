@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
@@ -36,8 +35,6 @@ class SOFA_CORE_API Context : public BaseContext
 public:
     SOFA_CLASS(Context, BaseContext);
 
-
-
     Data<bool> is_activated; ///< To Activate a node
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     Data<SReal> dt_; ///< Time step
@@ -46,14 +43,12 @@ public:
     Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
     Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 
-
-
 protected:
     Context();
     virtual ~Context() override
     {}
-public:
 
+public:
     /// @name Parameters
     /// @{
 

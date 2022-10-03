@@ -49,6 +49,8 @@ class SOFA_HELPER_API OptionsGroup
 {
 public :
 
+    using size_type = type::vector<std::string>::size_type;
+
     /// @name Constructors
     /// @{
     /// Default constructor
@@ -70,7 +72,7 @@ public :
     /// @{
 
     ///Set the number of items
-    void setNbItems( unsigned int nbofRadioButton );
+    void setNbItems( size_type nbofRadioButton );
 
     ///Set the name of the id-th item
     void setItemName( unsigned int id_item, const std::string& name );
