@@ -1,7 +1,9 @@
 <!--To launch this scene launched before the scene kinect_capture.scn and activate SOFA-EXTERNAL_LIBFREENECT -->
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="0.02"  >
-  <RequiredPlugin pluginName="image"/>
+  <Node name="plugins">
+    <RequiredPlugin name="image"/>
+  </Node>
   <ImageContainer template="ImageUS" name="depth"  filename="data/Kinect-depth.raw" />
   <ImageContainer  name="image"  filename="data/Kinect-rgb.raw" />
 

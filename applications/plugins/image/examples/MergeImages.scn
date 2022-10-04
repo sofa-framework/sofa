@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 0" dt=".1"  >
-    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
-    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [LineAxis VisualGrid VisualStyle] -->
-    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
-    <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer MergeImages MeshToImageEngine] -->
+    <Node name="plugins">
+        <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [LineAxis VisualGrid VisualStyle] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
+        <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer MergeImages MeshToImageEngine] -->
+    </Node>
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <VisualGrid size="50"/>

@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <Node name="root"  >
-    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
-    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer] -->
-    
-        
+	<Node name="plugins">
+		<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+		<RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+		<RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer] -->
+	</Node>
+
 	<ImageContainer template="ImageUC" name="image"  filename="data/pelvis_f.raw" />
 	<ImageViewer template="ImageUC" name="viewer"  image="@image.image"  transform="@image.transform"  plane="0 226 50"/>
         
