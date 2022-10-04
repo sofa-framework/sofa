@@ -4,6 +4,7 @@
         <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
         <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer] -->
+        <RequiredPlugin name="MultiThreading"/>
     </Node>
   <AnimationLoopParallelScheduler name="mainLoop" threadNumber="2" />
   	<Node name="imageloader">
