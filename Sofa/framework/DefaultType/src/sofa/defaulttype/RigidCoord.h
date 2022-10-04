@@ -269,7 +269,7 @@ public:
     void toMatrix( Mat& m) const
     {
         m.identity();
-        orientation.toMatrix(m);
+        orientation.toHomogeneousMatrix(m);
         m[0][3] = (typename Mat::Real)center[0];
         m[1][3] = (typename Mat::Real)center[1];
         m[2][3] = (typename Mat::Real)center[2];
