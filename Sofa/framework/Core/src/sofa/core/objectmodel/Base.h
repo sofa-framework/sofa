@@ -132,7 +132,7 @@ public:
     /// Get the template type names (if any) used to instantiate this object
     /// To specify custom static template name you need to implement a single
     /// static std::string GetCustomTemplateName(){} method.
-    std::string getTemplateName() const ;
+    virtual std::string getTemplateName() const final;
 
     /// Get the template type names (if any) used to instantiate this object
     std::string getNameSpaceName() const ;
