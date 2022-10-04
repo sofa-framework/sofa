@@ -200,7 +200,8 @@ void RotationMatrix<Real>::mulTransposeMatrix(linearalgebra::BaseMatrix * bresul
             return;
         }
     }
-    linearalgebra::BaseMatrix::opMulTM(bresult,bm);
+
+    msg_error("RotationMatrix") << "Types of bresult and bm are not supported";
 }
 
 template<class Real>
