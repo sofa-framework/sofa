@@ -113,8 +113,8 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
     const Line::Coord CD = e2.p2()-e2.p1();
     const Line::Coord AC = e2.p1()-e1.p1();
 
-    Mat<2, 2, Line::Coord::value_type> A;
-    Vec<2, Line::Coord::value_type> b;
+    MatNoInit<2, 2, Line::Coord::value_type> A;
+    VecNoInit<2, Line::Coord::value_type> b;
 
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
