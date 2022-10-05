@@ -19,18 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MECHANICALPARAMS_H
-#define SOFA_CORE_MECHANICALPARAMS_H
+#pragma once
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/Link.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /// Class gathering parameters use by mechanical components methods, and transmitted by mechanical visitors
@@ -114,27 +109,32 @@ public:
 
     /// Read access to current position vector
     template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
+    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readX(state.get())")
+    const Data<typename S::VecCoord>* readX(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_x[state.get()].read();    }
 
     /// Read access to current velocity vector
     template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
+    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readV(state.get())")
+    const Data<typename S::VecDeriv>* readV(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_v[state.get()].read();    }
 
     /// Read access to current force vector
     template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecDeriv>* readF(const SingleLink<Owner,S,flags>& state) const
+    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readF(state.get())")
+    const Data<typename S::VecDeriv>* readF(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_f[state.get()].read();    }
 
     /// Read access to current dx vector (for implicit schemes)
     template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecDeriv>* readDx(const SingleLink<Owner,S,flags>& state) const
+    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readDx(state.get())")
+    const Data<typename S::VecDeriv>* readDx(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_dx[state.get()].read();    }
 
     /// Read access to current df vector (for implicit schemes)
     template<class Owner, class S, unsigned int flags>
-    const Data<typename S::VecDeriv>* readDf(const SingleLink<Owner,S,flags>& state) const
+    SOFA_ATTRIBUTE_DEPRECATED__READX_PARAMS("To fix your code use readDf(state.get())")
+    const Data<typename S::VecDeriv>* readDf(const sofa::core::objectmodel::SingleLink<Owner,S,flags>& state) const
     {   return m_df[state.get()].read();    }
 
     /// @}
@@ -288,14 +288,6 @@ public:
     void setImplicitPosition( SReal i ) { m_implicitPosition = i; }
     const SReal& implicitPosition() const { return m_implicitPosition; }
     /// @}
-
-
-
-
 };
 
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core
