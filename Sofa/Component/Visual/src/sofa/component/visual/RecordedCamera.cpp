@@ -569,29 +569,29 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
             return;
 
         vparams->drawTool()->disableLighting();
-        constexpr sofa::type::RGBAColor color(0,1,0.5,1);
+        static constexpr sofa::type::RGBAColor color(0.f,1.f,0.5f,1.f);
         std::vector<sofa::type::Vector3> vertices;
 
         // Camera positions
         for (unsigned int i=0; i<m_rotationPoints.size()-1; ++i)
         {
-            vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[i  ][0], (float)m_rotationPoints[i  ][1], (float)m_rotationPoints[i  ][2]));
-            vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[i+1][0], (float)m_rotationPoints[i+1][1], (float)m_rotationPoints[i+1][2]));
+            vertices.emplace_back(m_rotationPoints[i  ][0], m_rotationPoints[i  ][1], m_rotationPoints[i  ][2]);
+            vertices.emplace_back(m_rotationPoints[i+1][0], m_rotationPoints[i+1][1], m_rotationPoints[i+1][2]);
         }
-        vertices.push_back(sofa::type::Vector3((float)m_rotationPoints.back()[0], (float)m_rotationPoints.back()[1], (float)m_rotationPoints.back()[2]));
-        vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[0    ][0], (float)m_rotationPoints[0    ][1], (float)m_rotationPoints[0    ][2]));
+        vertices.emplace_back(m_rotationPoints.back()[0], m_rotationPoints.back()[1], m_rotationPoints.back()[2]);
+        vertices.emplace_back(m_rotationPoints[0    ][0], m_rotationPoints[0    ][1], m_rotationPoints[0    ][2]);
 
         vparams->drawTool()->drawLines(vertices,1,color);
         vertices.clear();
 
-        Vec3 _lookAt = m_rotationLookAt.getValue();
-        unsigned int dx = 4;
-        std::size_t ratio = m_rotationPoints.size()/dx;
+        const Vec3& _lookAt = m_rotationLookAt.getValue();
+        static constexpr unsigned int dx = 4;
+        const std::size_t ratio = m_rotationPoints.size()/dx;
 
         for (unsigned int i=0; i<dx; ++i)
         {
-            vertices.push_back(sofa::type::Vector3((float)m_rotationPoints[i*ratio][0], (float)m_rotationPoints[i*ratio][1], (float)m_rotationPoints[i*ratio][2]));
-            vertices.push_back(sofa::type::Vector3((float)_lookAt[0], (float)_lookAt[1], (float)_lookAt[2]));
+            vertices.emplace_back(m_rotationPoints[i*ratio][0], m_rotationPoints[i*ratio][1], m_rotationPoints[i*ratio][2]);
+            vertices.emplace_back(_lookAt[0], _lookAt[1], _lookAt[2]);
         }
         vparams->drawTool()->drawLines(vertices,1,color);
     }

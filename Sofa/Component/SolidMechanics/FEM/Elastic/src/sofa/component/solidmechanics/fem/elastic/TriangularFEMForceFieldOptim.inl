@@ -768,7 +768,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
             Coord c = x[t[2]];
             Coord fx = ts.frame[0];
             Coord fy = ts.frame[1];
-            Vector3 center = (a+b+c)*(1.0f/3.0f);
+            Vector3 center = (a+b+c)*(1.0_sreal/3.0_sreal);
             Real scale = (Real)(sqrt((b-a).cross(c-a).norm()*0.25f));
             points[0].push_back(center);
             points[0].push_back(center + ts.frame[0] * scale);

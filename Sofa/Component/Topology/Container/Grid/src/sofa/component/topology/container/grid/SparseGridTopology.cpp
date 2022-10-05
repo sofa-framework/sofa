@@ -80,12 +80,12 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     : _fillWeighted(initData(&_fillWeighted, true, "fillWeighted", "Is quantity of matter inside a cell taken into account? (.5 for boundary, 1 for inside)"))
     , d_bOnlyInsideCells(initData(&d_bOnlyInsideCells, false, "onlyInsideCells", "Select only inside cells (exclude boundary cells)"))
     , n(initData(&n, Vec3i(2,2,2), "n", "grid resolution"))
-    , _min(initData(&_min, Vector3(0,0,0), "min","Min"))
-    , _max(initData(&_max, Vector3(0,0,0), "max","Max"))
+    , _min(initData(&_min, Vector3(0_sreal,0_sreal,0_sreal), "min","Min"))
+    , _max(initData(&_max, Vector3(0_sreal,0_sreal,0_sreal), "max","Max"))
     , _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
     , _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)"))
     , dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File"))
-    , voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel"))
+    , voxelSize(initData(&voxelSize, Vector3(1_sreal,1_sreal,1_sreal), "voxelSize", "Dimension of one voxel"))
     , marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm"))
     , convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
     , facets(initData(&facets, "facets", "Input mesh facets"))
@@ -375,7 +375,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
     n.setValue(numPoints);
     _min.setValue(box.minBBox());
     _max.setValue(box.maxBBox());
-    Vector3 numVoxels(numPoints[0]-1,numPoints[1]-1,numPoints[2]-1);
+    Vec3i numVoxels(numPoints[0]-1,numPoints[1]-1,numPoints[2]-1);
 
     dataVoxels.beginEdit()->resize((unsigned int)(numVoxels[2] * numVoxels[1] * numVoxels[0]), (unsigned char) 0);
     dataVoxels.endEdit();
@@ -390,7 +390,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
             {
                 if ( *f )
                 {
-                    setVoxel(x + (int)numVoxels[0] * (y + (int)numVoxels[1] * z),1);
+                    setVoxel(x + numVoxels[0] * (y + numVoxels[1] * z),1);
                 }
                 f++;
             }
@@ -445,12 +445,14 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     {
         FILE *file = fopen( filename.c_str(), "r" );
         if (!file) { msg_error()<< "FILE " << filename << " not found"; return;}
+        const auto& dataResolutionValue = dataResolution.getValue();
         //Get the voxels from the file
-        dataVoxels.beginEdit()->resize(dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2], (unsigned char)0);
+        dataVoxels.beginEdit()->resize(dataResolutionValue[0]*dataResolutionValue[1]*dataResolutionValue[2], (unsigned char)0);
 
-        const Vector3 transform(                (getNx()-1)/(float)dataResolution.getValue()[0],
-                (getNy()-1)/(float)dataResolution.getValue()[1],
-                (getNz()-1)/(float)dataResolution.getValue()[2]);
+        const Vector3 transform(
+                (getNx()-1)/static_cast<SReal>(dataResolutionValue[0]),
+                (getNy()-1)/static_cast<SReal>(dataResolutionValue[1]),
+                (getNz()-1)/static_cast<SReal>(dataResolutionValue[2]));
 
         for (unsigned int i=0; i<dataVoxels.beginEdit()->size(); i++)
         {
@@ -476,7 +478,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         fclose(file);
     }
 
-    _min.setValue( Vector3( 0, 0, 0));
+    _min.setValue( Vector3( 0_sreal, 0_sreal, 0_sreal));
     _max.setValue( voxelSize.getValue().linearProduct(dataResolution.getValue())*(1));
 
     _regularGrid->setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
@@ -501,7 +503,7 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 
     _regularGrid->setPos(0,width*vsize[0],0,height*vsize[1],0,depth*vsize[2]);
 
-    _min.setValue( Vector3(0,0,0) );
+    _min.setValue( Vector3(0_sreal,0_sreal,0_sreal) );
     _max.setValue( Vector3(width*vsize[0],height*vsize[1],depth*vsize[2]) );
 
     const auto nbCubesRG = _regularGrid->getNbHexahedra();
@@ -513,7 +515,7 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 
     for(Index i=0; i<nbCubesRG; ++i)
     {
-        const Vec3i& hexacoord = _regularGrid->getCubeCoordinate(i);
+        const Vec3 hexacoord = _regularGrid->getCubeCoordinate(i);
         const RegularGridTopology::Hexa& hexa = _regularGrid->getHexahedron( hexacoord[0],hexacoord[1], hexacoord[2] );
 
         SReal p0x = _regularGrid->getPX( hexa[0] ) / vsize[0];
@@ -568,7 +570,7 @@ void SparseGridTopology::updateMesh()
 {
     if (!_usingMC || dataVoxels.beginEdit()->size() == 0) return;
 
-    _min.setValue( Vector3( 0, 0, 0));
+    _min.setValue( Vector3( 0_sreal, 0_sreal, 0_sreal));
     _max.setValue( voxelSize.getValue().linearProduct(dataResolution.getValue())*(1));
 
     //Creating if needed collision models and visual models
