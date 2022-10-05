@@ -1123,6 +1123,72 @@ public:
 
     /// @}
 
+    /// @name basic linear operations
+    /// @{
+
+    /// Multiply the matrix by vector v and put the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
+
+    /// Multiply the matrix by float vector v and put the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opMulV(float* result, const float* v) const;
+
+    /// Multiply the matrix by double vector v and put the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opMulV(double* result, const double* v) const;
+
+    /// Multiply the matrix by vector v and add the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opPMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
+
+    /// Multiply the matrix by float vector v and add the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opPMulV(float* result, const float* v) const;
+
+    /// Multiply the matrix by double vector v and add the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opPMulV(double* result, const double* v) const;
+
+
+    /// Multiply the transposed matrix by vector v and put the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
+
+    /// Multiply the transposed matrix by float vector v and put the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opMulTV(float* result, const float* v) const;
+
+    /// Multiply the transposed matrix by double vector v and put the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opMulTV(double* result, const double* v) const;
+
+    /// Multiply the transposed matrix by vector v and add the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opPMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
+
+    /// Multiply the transposed matrix by float vector v and add the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opPMulTV(float* result, const float* v) const;
+
+    /// Multiply the transposed matrix by double vector v and add the result in vector result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opPMulTV(double* result, const double* v) const;
+
+    /// Multiply the transposed matrix by matrix m and store the result in matrix result
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opMulTM(BaseMatrix * result,BaseMatrix * m) const;
+
+    /// Subtract the matrix to the m matrix and strore the result in m
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opAddM(linearalgebra::BaseMatrix* m,double fact) const;
+
+    /// Subtract the transposed matrix to the m matrix and strore the result in m
+    SOFA_BASEMATRIX_OP_DEPRECATED()
+    virtual void opAddMT(linearalgebra::BaseMatrix* m,double fact) const;
+
+    /// @}
+
     /// Declare that the operator << is friend so they can use private data.
     friend SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  sofa::linearalgebra::BaseMatrix& m );
     /// Declare that the operator >> is friend so they can use private data.
