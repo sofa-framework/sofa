@@ -14,7 +14,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/RigidDeriv.h
     ${SRC_ROOT}/RigidMass.h
     ${SRC_ROOT}/RigidTypes.h
-    ${SRC_ROOT}/RigidTypes.inl
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
     ${SRC_ROOT}/SolidTypes.inl
@@ -25,7 +24,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/VecTypes.h
-    ${SRC_ROOT}/VecTypes.inl
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h
@@ -62,13 +60,11 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
     ${SRC_ROOT}/MatrixExporter.cpp
-    ${SRC_ROOT}/RigidTypes.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/TypeInfoID.cpp
     ${SRC_ROOT}/TypeInfoRegistry.cpp
     ${SRC_ROOT}/TypeInfoRegistryTools.cpp
-    ${SRC_ROOT}/VecTypes.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Bool.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.cpp
