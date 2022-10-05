@@ -268,14 +268,18 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 applyRemovedPoints(pointsRemoved, mstateId);
             });
 
-        indices.linkToEdgeDataArray();  
-        indices.addTopologyEventCallBack(core::topology::TopologyChangeType::EDGESREMOVED,
-            [this, mstateId](const core::topology::TopologyChange* change)
-            {
-                const auto* edgesRemoved = static_cast<const core::topology::EdgesRemoved*>(change);
-                msg_info(this) << "Removed edges: [" << edgesRemoved->getArray() << "]";
-                applyRemovedEdges(edgesRemoved, mstateId);
-            });
+        if (topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
+        {
+            indices.linkToEdgeDataArray();  
+            indices.addTopologyEventCallBack(core::topology::TopologyChangeType::EDGESREMOVED,
+                [this, mstateId](const core::topology::TopologyChange* change)
+                {
+                    const auto* edgesRemoved = static_cast<const core::topology::EdgesRemoved*>(change);
+                    msg_info(this) << "Removed edges: [" << edgesRemoved->getArray() << "]";
+                    applyRemovedEdges(edgesRemoved, mstateId);
+                });
+        }
+        
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
             [this](const core::topology::TopologyChange*)
             {
