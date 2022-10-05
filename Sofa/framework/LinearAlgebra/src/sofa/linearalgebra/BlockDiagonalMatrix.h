@@ -264,4 +264,9 @@ typedef BlockDiagonalMatrix<6> BlockDiagonalMatrix6;
 typedef BlockDiagonalMatrix<9> BlockDiagonalMatrix9;
 typedef BlockDiagonalMatrix<12> BlockDiagonalMatrix12;
 
+#if !defined(SOFA_LINEARALGEBRA_BLOCKDIAGONALMATRIX_CPP)
+extern template class SOFA_LINEARALGEBRA_API BlockDiagonalMatrix<3, SReal>;
+#endif
+
+
 } // namespace sofa::linearalgebra

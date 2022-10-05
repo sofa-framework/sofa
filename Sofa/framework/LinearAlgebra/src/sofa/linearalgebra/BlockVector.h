@@ -23,6 +23,7 @@
 #include <sofa/linearalgebra/config.h>
 
 #include <sofa/linearalgebra/FullVector.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::linearalgebra
 {
@@ -40,7 +41,7 @@ public:
     typedef typename Inherit::iterator iterator;
     typedef typename Inherit::const_iterator const_iterator;
 
-    class Block : public type::Vec<N,T>
+    class Block : public sofa::type::Vec<N,T>
     {
     public:
         Index Nrows() const { return N; }
@@ -82,5 +83,9 @@ public:
 
     Block& asub(Index bi, Index);
 };
+
+#if !defined(SOFA_LINEARALGEBRA_BLOCKVECTOR_CPP)
+extern template class SOFA_LINEARALGEBRA_API linearalgebra::BlockVector<6, SReal>;
+#endif
 
 } // namespace sofa::linearalgebra

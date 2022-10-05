@@ -19,22 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP
+#include <sofa/linearalgebra/BTDMatrix.h>
+#include <gtest/gtest.h>
 
-#include <sofa/component/linearsolver/direct/BTDLinearSolver.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/linearalgebra/BTDMatrix.inl>
-#include <sofa/linearalgebra/BlockFullMatrix.inl>
-#include <sofa/linearalgebra/BlockVector.inl>
-#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
-
-namespace sofa::component::linearsolver::direct
+namespace sofa
 {
 
-int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-    .add< BTDLinearSolver<linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> > >(true)
-;
+TEST(BTDMatrix, name)
+{
+    const std::string BTDMatrix6f{sofa::linearalgebra::BTDMatrix<6, float>::Name()};
+    EXPECT_EQ(BTDMatrix6f, "BTDMatrix6f");
 
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BTDLinearSolver< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
+    const std::string BTDMatrix6d{sofa::linearalgebra::BTDMatrix<6, double>::Name()};
+    EXPECT_EQ(BTDMatrix6d, "BTDMatrix6d");
 
-} //namespace sofa::component::linearsolver::direct
+    const std::string BTDMatrix3d{sofa::linearalgebra::BTDMatrix<3, double>::Name()};
+    EXPECT_EQ(BTDMatrix3d, "BTDMatrix3d");
+}
+
+
+}
