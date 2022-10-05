@@ -58,7 +58,7 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
     const Triangle::Coord AC = e1.p3()-A;
     const Line::Coord& P = e2.p1();
     const Line::Coord PQ = e2.p2()-P;
-    Mat<3, 3, Triangle::Coord::value_type> M;
+    Mat<3, 3, Triangle::Coord::value_type> M(NOINIT);
     Mat<3, 3, Triangle::Coord::value_type> Minv;
     Triangle::Coord right(NOINIT);
     for (int i=0; i<3; i++)
