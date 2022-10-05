@@ -268,11 +268,22 @@ public:
     template<class Mat>
     void toMatrix( Mat& m) const
     {
+        static_assert(std::is_same_v<Mat, sofa::type::Mat<3,3,real> > || std::is_same_v<Mat, sofa::type::Mat<4,4,real> >, "toMatrix() only supports sofa::type::Mat<3,3,Real> or sofa::type::Mat<4,4,Real>");
+
         m.identity();
-        orientation.toHomogeneousMatrix(m);
-        m[0][3] = (typename Mat::Real)center[0];
-        m[1][3] = (typename Mat::Real)center[1];
-        m[2][3] = (typename Mat::Real)center[2];
+        if constexpr (std::is_same_v<Mat, sofa::type::Mat<3,3,real> >)
+        {
+            orientation.toMatrix(m);
+        }
+        else if constexpr (std::is_same_v<Mat, sofa::type::Mat<4,4,real> >)
+        {
+            orientation.toHomogeneousMatrix(m);
+            m[0][3] = (typename Mat::Real)center[0];
+            m[1][3] = (typename Mat::Real)center[1];
+            m[2][3] = (typename Mat::Real)center[2];
+        }
+
+
     }
 
     void toHomogeneousMatrix( HomogeneousMat& m) const
