@@ -101,6 +101,35 @@ type::vector<Real>& RotationMatrix<Real>::getVector()
     return data;
 }
 
+template <class TReal>
+void RotationMatrix<TReal>::opMulV(linearalgebra::BaseVector* result,
+    const linearalgebra::BaseVector* v) const
+{
+    mulVector(result, v);
+}
+
+template <class TReal>
+void RotationMatrix<TReal>::opMulTV(linearalgebra::BaseVector* result,
+    const linearalgebra::BaseVector* v) const
+{
+    mulVector(result, v);
+}
+
+template <class TReal>
+void RotationMatrix<TReal>::opMulTM(linearalgebra::BaseMatrix* bresult,
+    linearalgebra::BaseMatrix* bm) const
+{
+    if (auto* m = dynamic_cast<RotationMatrix<Real> * >(bm))
+    {
+        if (auto* result = dynamic_cast<RotationMatrix<Real> * >(bresult))
+        {
+            mulTransposeVector(result, m);
+            return;
+        }
+    }
+    msg_error("RotationMatrix") << "Types of bresult and bm are not supported";
+}
+
 template<class Real>
 void RotationMatrix<Real>::mulVector(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
@@ -134,74 +163,65 @@ void RotationMatrix<Real>::mulTransposeVector(linearalgebra::BaseVector* result,
 
 /// multiply the transpose current matrix by m matrix and strore the result in m
 template<class Real>
-void RotationMatrix<Real>::mulTransposeMatrix(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const
+void RotationMatrix<Real>::mulTransposeMatrix(RotationMatrix<Real> * result, RotationMatrix<Real> * m) const
 {
-    if (RotationMatrix<Real> * m = dynamic_cast<RotationMatrix<Real> * >(bm))
+    Real tmp[9];
+    std::size_t datSz = data.size() < m->data.size() ? data.size() : m->data.size();
+    std::size_t minSz = datSz < result->data.size() ? datSz : result->data.size();
+
+    for (std::size_t i=0; i<minSz; i+=9)
     {
-        if (RotationMatrix<Real> * result = dynamic_cast<RotationMatrix<Real> * >(bresult))
+        tmp[0] = data[i+0] * m->data[i+0] + data[i+1] * m->data[i+1] + data[i+2] * m->data[i+2];
+        tmp[1] = data[i+0] * m->data[i+3] + data[i+1] * m->data[i+4] + data[i+2] * m->data[i+5];
+        tmp[2] = data[i+0] * m->data[i+6] + data[i+1] * m->data[i+7] + data[i+2] * m->data[i+8];
+
+        tmp[3] = data[i+3] * m->data[i+0] + data[i+4] * m->data[i+1] + data[i+5] * m->data[i+2];
+        tmp[4] = data[i+3] * m->data[i+3] + data[i+4] * m->data[i+4] + data[i+5] * m->data[i+5];
+        tmp[5] = data[i+3] * m->data[i+6] + data[i+4] * m->data[i+7] + data[i+5] * m->data[i+8];
+
+        tmp[6] = data[i+6] * m->data[i+0] + data[i+7] * m->data[i+1] + data[i+8] * m->data[i+2];
+        tmp[7] = data[i+6] * m->data[i+3] + data[i+7] * m->data[i+4] + data[i+8] * m->data[i+5];
+        tmp[8] = data[i+6] * m->data[i+6] + data[i+7] * m->data[i+7] + data[i+8] * m->data[i+8];
+
+        result->data[i+0] = tmp[0]; result->data[i+1] = tmp[1]; result->data[i+2] = tmp[2];
+        result->data[i+3] = tmp[3]; result->data[i+4] = tmp[4]; result->data[i+5] = tmp[5];
+        result->data[i+6] = tmp[6]; result->data[i+7] = tmp[7]; result->data[i+8] = tmp[8];
+    }
+
+    if (minSz < result->data.size())
+    {
+        if (datSz<data.size())
         {
-            Real tmp[9];
-            std::size_t datSz = data.size() < m->data.size() ? data.size() : m->data.size();
-            std::size_t minSz = datSz < result->data.size() ? datSz : result->data.size();
-
-            for (std::size_t i=0; i<minSz; i+=9)
+            for (std::size_t i=minSz; i<data.size(); i+=9)
             {
-                tmp[0] = data[i+0] * m->data[i+0] + data[i+1] * m->data[i+1] + data[i+2] * m->data[i+2];
-                tmp[1] = data[i+0] * m->data[i+3] + data[i+1] * m->data[i+4] + data[i+2] * m->data[i+5];
-                tmp[2] = data[i+0] * m->data[i+6] + data[i+1] * m->data[i+7] + data[i+2] * m->data[i+8];
-
-                tmp[3] = data[i+3] * m->data[i+0] + data[i+4] * m->data[i+1] + data[i+5] * m->data[i+2];
-                tmp[4] = data[i+3] * m->data[i+3] + data[i+4] * m->data[i+4] + data[i+5] * m->data[i+5];
-                tmp[5] = data[i+3] * m->data[i+6] + data[i+4] * m->data[i+7] + data[i+5] * m->data[i+8];
-
-                tmp[6] = data[i+6] * m->data[i+0] + data[i+7] * m->data[i+1] + data[i+8] * m->data[i+2];
-                tmp[7] = data[i+6] * m->data[i+3] + data[i+7] * m->data[i+4] + data[i+8] * m->data[i+5];
-                tmp[8] = data[i+6] * m->data[i+6] + data[i+7] * m->data[i+7] + data[i+8] * m->data[i+8];
-
-                result->data[i+0] = tmp[0]; result->data[i+1] = tmp[1]; result->data[i+2] = tmp[2];
-                result->data[i+3] = tmp[3]; result->data[i+4] = tmp[4]; result->data[i+5] = tmp[5];
-                result->data[i+6] = tmp[6]; result->data[i+7] = tmp[7]; result->data[i+8] = tmp[8];
+                result->data[i+0] = data[i+0]; result->data[i+1] = data[i+1]; result->data[i+2] = data[i+2];
+                result->data[i+3] = data[i+3]; result->data[i+4] = data[i+4]; result->data[i+5] = data[i+5];
+                result->data[i+6] = data[i+6]; result->data[i+7] = data[i+7]; result->data[i+8] = data[i+8];
             }
-
-            if (minSz < result->data.size())
+            minSz = data.size();
+        }
+        else if (datSz<m->data.size())
+        {
+            for (std::size_t i=datSz; i<m->data.size(); i+=9)
             {
-                if (datSz<data.size())
-                {
-                    for (std::size_t i=minSz; i<data.size(); i+=9)
-                    {
-                        result->data[i+0] = data[i+0]; result->data[i+1] = data[i+1]; result->data[i+2] = data[i+2];
-                        result->data[i+3] = data[i+3]; result->data[i+4] = data[i+4]; result->data[i+5] = data[i+5];
-                        result->data[i+6] = data[i+6]; result->data[i+7] = data[i+7]; result->data[i+8] = data[i+8];
-                    }
-                    minSz = data.size();
-                }
-                else if (datSz<m->data.size())
-                {
-                    for (std::size_t i=datSz; i<m->data.size(); i+=9)
-                    {
-                        result->data[i+0] = m->data[i+0]; result->data[i+1] = m->data[i+1]; result->data[i+2] = m->data[i+2];
-                        result->data[i+3] = m->data[i+3]; result->data[i+4] = m->data[i+4]; result->data[i+5] = m->data[i+5];
-                        result->data[i+6] = m->data[i+6]; result->data[i+7] = m->data[i+7]; result->data[i+8] = m->data[i+8];
-                    }
-                    minSz = m->data.size();
-                }
+                result->data[i+0] = m->data[i+0]; result->data[i+1] = m->data[i+1]; result->data[i+2] = m->data[i+2];
+                result->data[i+3] = m->data[i+3]; result->data[i+4] = m->data[i+4]; result->data[i+5] = m->data[i+5];
+                result->data[i+6] = m->data[i+6]; result->data[i+7] = m->data[i+7]; result->data[i+8] = m->data[i+8];
             }
-
-            if (minSz < result->data.size())
-            {
-                for (std::size_t i=datSz; i<result->data.size(); i+=9)
-                {
-                    result->data[i+0] = 1; result->data[i+1] = 0; result->data[i+2] = 0;
-                    result->data[i+3] = 0; result->data[i+4] = 1; result->data[i+5] = 0;
-                    result->data[i+6] = 0; result->data[i+7] = 0; result->data[i+8] = 1;
-                }
-            }
-
-            return;
+            minSz = m->data.size();
         }
     }
 
-    msg_error("RotationMatrix") << "Types of bresult and bm are not supported";
+    if (minSz < result->data.size())
+    {
+        for (std::size_t i=datSz; i<result->data.size(); i+=9)
+        {
+            result->data[i+0] = 1; result->data[i+1] = 0; result->data[i+2] = 0;
+            result->data[i+3] = 0; result->data[i+4] = 1; result->data[i+5] = 0;
+            result->data[i+6] = 0; result->data[i+7] = 0; result->data[i+8] = 1;
+        }
+    }
+
 }
 
 template<class Real>

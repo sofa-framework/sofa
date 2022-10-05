@@ -60,11 +60,19 @@ public:
 
     virtual type::vector<Real> & getVector();
 
+    /// Deprecated (see PR #3335). Replaced by mulVector
+    void opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const final;
+    /// Deprecated (see PR #3335). Replaced by mulTransposeVector
+    void opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const final;
+    /// Deprecated (see PR #3335). Replaced by mulTransposeMatrix
+    void opMulTM(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const final;
+
+
     void mulVector(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
     void mulTransposeVector(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
 
-    /// multiply the transpose current matrix by m matrix and strore the result in m
-    void mulTransposeMatrix(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const;
+    /// multiply the transpose current matrix by m matrix and strore the result in result
+    void mulTransposeMatrix(RotationMatrix<Real>* result, RotationMatrix<Real>* m) const;
 
     void rotateMatrix(linearalgebra::BaseMatrix * mat,const linearalgebra::BaseMatrix * Jmat);
 
