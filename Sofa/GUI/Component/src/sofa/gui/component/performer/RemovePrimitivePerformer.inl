@@ -650,7 +650,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
     const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::Vec3> vertices_quads;
@@ -731,7 +731,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
     vparams->drawTool()->drawQuads(vertices_quads, color);
     vparams->drawTool()->drawTriangles(vertices_triangles, color);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

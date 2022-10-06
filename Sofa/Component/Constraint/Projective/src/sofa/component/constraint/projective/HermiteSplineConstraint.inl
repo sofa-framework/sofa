@@ -226,7 +226,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     Real dt = (Real) this->getContext()->getDt();
     Real DT = m_tEnd.getValue() - m_tBegin.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::Vec3> vertices;
@@ -265,7 +265,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     vertices.push_back(mx1 + mdx1*0.1);
 
     vparams->drawTool()->drawLines(vertices, 1.0, sofa::type::RGBAColor::red());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

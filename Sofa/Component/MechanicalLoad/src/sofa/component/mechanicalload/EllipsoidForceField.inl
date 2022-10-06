@@ -169,7 +169,7 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     Real cx=0, cy=0, cz=0;
     DataTypes::get(cx, cy, cz, center.getValue());
@@ -184,7 +184,7 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 	vparams->drawTool()->drawEllipsoid(vCenter, radii);
     vparams->drawTool()->disableLighting();
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

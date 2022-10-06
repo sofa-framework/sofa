@@ -336,7 +336,7 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -389,7 +389,7 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
 
     vparams->drawTool()->drawPoints(positions, scale, color);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

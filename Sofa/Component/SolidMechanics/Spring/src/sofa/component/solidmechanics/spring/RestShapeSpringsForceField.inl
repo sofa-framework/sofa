@@ -424,7 +424,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
@@ -454,7 +454,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
     vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

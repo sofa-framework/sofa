@@ -450,7 +450,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord* x0 = &f_X0.getValue();
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
@@ -571,7 +571,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawLines(vertices, _drawSize.getValue(), color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

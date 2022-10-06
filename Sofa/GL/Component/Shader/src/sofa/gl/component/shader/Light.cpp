@@ -600,9 +600,9 @@ GLuint DirectionalLight::getColorTexture()
 }
 
 PositionalLight::PositionalLight()
-    : d_fixed(initData(&d_fixed, (bool) false, "fixed", "Fix light position from the camera"))
-    , d_position(initData(&d_position, (Vec3) Vec3(-0.7,0.3,0.0), "position", "Set the position of the light"))
-    , d_attenuation(initData(&d_attenuation, (float) 0.0, "attenuation", "Set the attenuation of the light"))
+    : d_fixed(initData(&d_fixed, false, "fixed", "Fix light position from the camera"))
+    , d_position(initData(&d_position, Vec3(-0.7_sreal,0.3_sreal,0.0_sreal), "position", "Set the position of the light"))
+    , d_attenuation(initData(&d_attenuation, 0.0f, "attenuation", "Set the attenuation of the light"))
 {
 
 }

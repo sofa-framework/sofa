@@ -101,11 +101,11 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, Index in
     const Vec3& p1 = r.origin();
     const Vec3 p2 = p1 + r.direction()*r.l();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
     vparams->drawTool()->drawLine(p1,p2,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 void RayCollisionModel::draw(const core::visual::VisualParams* vparams)

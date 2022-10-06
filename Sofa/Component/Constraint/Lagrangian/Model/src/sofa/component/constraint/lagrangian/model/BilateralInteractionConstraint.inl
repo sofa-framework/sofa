@@ -514,7 +514,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
 {
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     constexpr sofa::type::RGBAColor colorActive = sofa::type::RGBAColor::magenta();
@@ -535,7 +535,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
 
     vparams->drawTool()->drawPoints(vertices, 10, (activated) ? colorActive : colorNotActive);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 //TODO(dmarchal): implementing keyboard interaction behavior directly in a component is not a valid

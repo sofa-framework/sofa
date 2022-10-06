@@ -477,7 +477,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0)) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& f = d_forces.getValue();
@@ -568,7 +568,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::mechanicalload

@@ -260,7 +260,8 @@ template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
-    vparams->drawTool()->saveLastState();
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     std::vector< sofa::type::Vec3 > points;
     sofa::type::Vec3 point;
 
@@ -272,7 +273,7 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
     }
 
     vparams->drawTool()->drawPoints(points, 7, sofa::type::RGBAColor::yellow());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

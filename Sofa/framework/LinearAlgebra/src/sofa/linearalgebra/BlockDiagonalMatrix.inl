@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/BlockDiagonalMatrix.h>
 
 namespace sofa::linearalgebra
 {

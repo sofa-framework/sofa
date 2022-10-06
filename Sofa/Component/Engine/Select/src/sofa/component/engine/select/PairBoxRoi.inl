@@ -184,7 +184,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     constexpr sofa::type::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     /// Draw inclusive box
     if( p_drawInclusiveBox.getValue())
     {
@@ -228,7 +228,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawPoints(vertices, pointsWidth, color);
     }
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

@@ -692,7 +692,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
@@ -767,7 +767,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     }
     vparams->drawTool()->drawQuads(vertices, sofa::type::RGBAColor::red());
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

@@ -656,7 +656,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
     if (! vparams->displayFlags().getShowBehaviorModels()) return;
     if (mstate==nullptr) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real& scale = this->draw_rotations_scale.getValue();
@@ -679,7 +679,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
         q.fromMatrix(RotMat);
         vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vec3(scale,scale,scale));
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::linearsolver::preconditioner

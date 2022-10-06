@@ -192,7 +192,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowMappings())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     const OutVecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();

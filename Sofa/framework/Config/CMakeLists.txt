@@ -167,12 +167,23 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "C
 endif()
 
 ## Windows-specific
-if(WIN32)    
+if(WIN32)
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_SECURE_NO_WARNINGS")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_NONSTDC_NO_DEPRECATE")
 
-    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4661")
+    set(SOFA_MSVC_NB_COMPILER_PROCESSES "0" CACHE STRING "The maximum number of processes that the compiler can create. 0 (default) for the number of effective processors on the computer")
+    if (SOFA_MSVC_NB_COMPILER_PROCESSES EQUAL "0")
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP")
+    else()
+        if (SOFA_MSVC_NB_COMPILER_PROCESSES MATCHES "^[0-9]+$")
+            list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP${SOFA_MSVC_NB_COMPILER_PROCESSES}")
+        else()
+            message(FATAL_ERROR "A number is expected for SOFA_MSVC_NB_COMPILER_PROCESSES")
+        endif()
+    endif()
+
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/wd4250;/wd4251;/wd4275;/wd4675;/wd4661")
     # 4661: no suitable definition provided for explicit template instantiation request
     # it happens because we put explicit instantiation in a separate translation unit
     # it is by design, so this warning is irrelevant in our project

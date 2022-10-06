@@ -51,11 +51,11 @@ void AttachConstraint<Rigid3Types>::calcRestRotations()
         {
             Vec3 dp0 = x0[indices2[i]].unprojectVector(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
             dp0.normalize();
-            Vec3 y = cross(dp0, Vec3(1,0,0));
+            Vec3 y = cross(dp0, Vec3(1_sreal,0_sreal,0_sreal));
             y.normalize();
             double alpha = acos(dp0[0]);
             q = Quat<SReal>(y,alpha);
-            msg_info() << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vec3(1,0,0));
+            msg_info() << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vec3(1_sreal,0_sreal,0_sreal));
         }
         restRotations[i] = q;
     }

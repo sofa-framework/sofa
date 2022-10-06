@@ -593,7 +593,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->d_drawSize.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->disableLighting();
 
@@ -740,7 +740,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
         vparams->drawTool()->drawLines(vertices, drawSize, sofa::type::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::select

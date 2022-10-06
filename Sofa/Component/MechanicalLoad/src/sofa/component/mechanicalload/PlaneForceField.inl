@@ -316,7 +316,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     points.push_back(corners[0]);
     points.push_back(corners[2]);
     points.push_back(corners[3]);
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
@@ -350,7 +350,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
         }
     }
     vparams->drawTool()->drawLines(pointsLine, 1, sofa::type::RGBAColor(1,0,0,1));
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <class DataTypes>

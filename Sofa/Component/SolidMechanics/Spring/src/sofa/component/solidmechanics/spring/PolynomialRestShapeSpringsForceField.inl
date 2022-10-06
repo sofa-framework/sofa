@@ -388,7 +388,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
         points.push_back(p0[ext_index]);
     }
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     vparams->drawTool()->drawLines(points, 5, d_springColor.getValue());
@@ -405,7 +405,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     }
 
     vparams->drawTool()->draw3DText_Indices(positions, float(scale), type::RGBAColor::white());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

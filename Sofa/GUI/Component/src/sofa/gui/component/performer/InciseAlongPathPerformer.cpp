@@ -271,7 +271,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
     positions[0] = pointA;
     positions[positions.size()-1] = pointB;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     constexpr sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
     std::vector<sofa::type::Vec3> vertices;
@@ -281,7 +281,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
         vertices.push_back(sofa::type::Vec3(positions[i][0], positions[i][1], positions[i][2]));
     }
     vparams->drawTool()->drawLines(vertices,1,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

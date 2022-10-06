@@ -297,7 +297,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString(
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (!p_showForces.getValue())
         return;
@@ -326,7 +326,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

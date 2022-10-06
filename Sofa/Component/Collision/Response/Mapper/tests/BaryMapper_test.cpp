@@ -57,12 +57,12 @@ struct BaryMapperTest  : public ::testing::Test{
 
 void BaryMapperTest::initTriPts(){
     triPts.resize(3);
-    triPts[0] = Vec3(-1,-1,0);
-    triPts[1] = Vec3(1,-1,0);
-    triPts[2] = Vec3(0,1,0);
+    triPts[0] = Vec3(-1_sreal,-1_sreal,0_sreal);
+    triPts[1] = Vec3(1_sreal,-1_sreal,0_sreal);
+    triPts[2] = Vec3(0_sreal,1_sreal,0_sreal);
 }
 
-SReal tol = 1e-6;
+SReal tol = 1e-6_sreal;
 SReal tol2 = tol*tol;
 //BaryMapperTest::initTriPts();
 
@@ -108,7 +108,7 @@ bool BaryMapperTest::test_outside(int index){
     //makeTri()
     component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
 
-    Vec3 the_point = (SReal)(2.0) * triPts[index] + (SReal)(10.0) * norm;
+    const Vec3 the_point = 2.0_sreal * triPts[index] + 10.0_sreal * norm;
 
     mapper->createPointInTriangle( the_point, 0, &triPts );
 

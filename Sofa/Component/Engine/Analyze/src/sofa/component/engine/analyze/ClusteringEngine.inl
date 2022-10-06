@@ -368,7 +368,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
         if(this->mstate==nullptr)
             return;
 
-        vparams->drawTool()->saveLastState();
+        const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
         const VecCoord& currentPositions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         ReadAccessor< Data< VVI > > clust = this->d_cluster;
@@ -398,7 +398,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
                 }
         }
         vparams->drawTool()->drawLines(vertices, 1.0, colors);
-        vparams->drawTool()->restoreLastState();
+
     }
 }
 

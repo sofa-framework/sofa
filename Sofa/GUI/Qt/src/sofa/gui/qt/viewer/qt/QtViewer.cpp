@@ -322,7 +322,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     // ---- Display a "X" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
 
-    gl::GlText::draw('X', sofa::type::Vec3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('X', sofa::type::Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal), fontScale);
 
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);

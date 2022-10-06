@@ -396,7 +396,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->disableLighting();
 
@@ -534,7 +534,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawLines(vertices, _drawSize.getValue(), color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::select

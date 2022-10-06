@@ -145,7 +145,7 @@ void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector
 
 void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     std::vector<sofa::type::Vec3> tetraVertices;
     std::vector<sofa::type::Vec3> normalVertices;
@@ -156,12 +156,12 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, 
     const auto c = getColor4f();
     vparams->drawTool()->drawTetrahedra(tetraVertices, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     if (mstate && m_topology && vparams->displayFlags().getShowCollisionModels())
     {
         if (vparams->displayFlags().getShowWireFrame())
@@ -193,7 +193,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
     if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)

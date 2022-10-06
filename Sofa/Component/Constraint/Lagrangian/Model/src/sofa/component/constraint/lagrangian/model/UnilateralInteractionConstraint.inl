@@ -391,7 +391,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
 {
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::Vec3> redVertices;
@@ -418,7 +418,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     vparams->drawTool()->drawLines(otherVertices, 3, otherColors);
 
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

@@ -241,7 +241,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     if (!p_showForces.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
@@ -273,7 +273,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

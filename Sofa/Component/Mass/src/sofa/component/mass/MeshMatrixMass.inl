@@ -2323,7 +2323,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
         totalMass += vertexMass[i] * m_massLumpingCoeff;
     }
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     sofa::type::RGBAColor color = sofa::type::RGBAColor::white();
 
@@ -2345,7 +2345,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
         }
     }
     vparams->drawTool()->drawLines(vertices,5,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

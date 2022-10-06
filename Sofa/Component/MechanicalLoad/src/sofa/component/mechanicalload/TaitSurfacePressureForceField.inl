@@ -280,7 +280,7 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
 {
     helper::WriteAccessor<DataVecDeriv> df = d_df;
     helper::ReadAccessor<DataVecDeriv> dx = d_dx;
-    helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
+    helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate.get());
     //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
     const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
     helper::ReadAccessor<VecDeriv> gradV = this->gradV;
@@ -345,7 +345,7 @@ template<class DataTypes>
 template<class MatrixWriter>
 void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
-    helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
+    helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate.get());
     const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());

@@ -213,7 +213,7 @@ void ParabolicConstraint<DataTypes>::projectJacobianMatrix(const core::Mechanica
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
@@ -260,7 +260,7 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
 
     vparams->drawTool()->drawPoints(vertices, 5.0, color);
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

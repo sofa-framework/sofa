@@ -402,7 +402,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
 template <class DataTypes>
 void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (p_drawVectors.getValue())
     {
@@ -440,7 +440,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
         vparams->drawTool()->drawLines(vertices, 1.0, colors);
 
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::select

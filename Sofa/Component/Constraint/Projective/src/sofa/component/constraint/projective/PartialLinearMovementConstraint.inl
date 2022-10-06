@@ -450,7 +450,7 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
@@ -491,6 +491,6 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         vparams->drawTool()->drawPoints(vertices, 10, color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 } // namespace sofa::component::constraint::projective
