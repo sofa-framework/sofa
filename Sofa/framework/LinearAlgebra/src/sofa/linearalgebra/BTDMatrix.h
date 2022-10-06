@@ -23,8 +23,9 @@
 #include <sofa/linearalgebra/config.h>
 
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/linearalgebra/BlocFullMatrix.h>
+#include <sofa/linearalgebra/BlockFullMatrix.h>
 #include <sofa/linearalgebra/FullVector.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 
 namespace sofa::linearalgebra
 {
@@ -113,7 +114,7 @@ public:
 
     typedef Block SubMatrixType;
     typedef sofa::type::Mat<N,N,Real> BlockType;
-    typedef BlocFullMatrix<N, T> InvMatrixType;
+    typedef BlockFullMatrix<N, T> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
     static Index getSubMatrixDim(Index) { return BSIZE; }
 
@@ -208,7 +209,15 @@ public:
         return res;
     }
 
-    static const char* Name();
+    static const char* Name()
+    {
+        static std::string name { "BTDMatrix" + std::to_string(N) + matrix_bloc_traits<T, Index>::Name() };
+        return name.c_str();
+    }
 };
+
+#if !defined(SOFA_LINEARALGEBRA_BTDMATRIX_CPP)
+extern template class SOFA_LINEARALGEBRA_API linearalgebra::BTDMatrix<6, SReal>;
+#endif
 
 } // namespace sofa::linearalgebra

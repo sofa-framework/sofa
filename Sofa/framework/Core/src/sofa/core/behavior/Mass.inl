@@ -48,7 +48,8 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
 {
     if (mparams)
     {
-            addMDx(mparams, *fid[this->mstate.get()].write(), *mparams->readDx(this->mstate), factor);
+        auto mstate = this->mstate.get();
+        addMDx(mparams, *fid[mstate].write(), *mparams->readDx(mstate), factor);
     }
 }
 
@@ -64,7 +65,8 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId 
 {
     if(mparams)
     {
-            accFromF(mparams, *aid[this->mstate.get()].write(), *mparams->readF(this->mstate));
+        auto mstate = this->mstate.get();
+        accFromF(mparams, *aid[mstate].write(), *mparams->readF(mstate));
     }
     else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
 }
@@ -97,7 +99,8 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
     this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
-        addMDx(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
+        addMDx(mparams, *dfId[this->mstate.get()].write(), 
+                *mparams->readDx(this->mstate.get()), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
     }
 }
 
@@ -105,7 +108,7 @@ template<class DataTypes>
 SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate));
+        return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate.get()));
     return 0.0;
 }
 
@@ -121,7 +124,7 @@ template<class DataTypes>
 SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate));
+        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate.get()));
     return 0.0;
 }
 
@@ -136,8 +139,9 @@ SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, c
 template<class DataTypes>
 type::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
 {
-    if (this->mstate)
-        return getMomentum(mparams, *mparams->readX(this->mstate), *mparams->readV(this->mstate));
+    auto state = this->mstate.get();
+    if (state)
+        return getMomentum(mparams, *mparams->readX(state), *mparams->readV(state));
     return type::Vector6();
 }
 
@@ -204,7 +208,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
     {
         if (m_gnuplotFileEnergy != nullptr)
             delete m_gnuplotFileEnergy;
-
+        
         m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_Energy.txt").c_str() );
     }
 }
@@ -233,7 +237,7 @@ void Mass<DataTypes>::getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) 
 {
     static const linearalgebra::BaseMatrix::Index dimension = (linearalgebra::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-
+    
     m->clear();
     msg_warning() << "Method getElementMass with Matrix not implemented";
 }

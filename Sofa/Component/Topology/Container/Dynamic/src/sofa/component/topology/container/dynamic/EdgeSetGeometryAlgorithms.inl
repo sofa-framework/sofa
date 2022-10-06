@@ -703,7 +703,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 {
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw Edges indices
     if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
@@ -751,7 +751,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

@@ -163,6 +163,9 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::type::ve
 {
     helper::WriteOnlyAccessor<Data<container_type> > data = this;
     
+    // Update last element index before removing elements. Warn is sent before updating Topology buffer
+    Index lastTopoElemId = this->getLastElementIndex();
+    
     // check for each element index to remove if it concern this subsetData
     for (Index elemId : index)
     {
@@ -190,12 +193,15 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::type::ve
         }
 
         // Need to check if last element index is in the map. If yes need to replace that value to follow topological changes
-        dataId = this->indexOfElement(this->m_lastElementIndex);
+        if (lastTopoElemId == sofa::InvalidID)
+            continue;
+
+        dataId = this->indexOfElement(lastTopoElemId);
         if (dataId != sofa::InvalidID)
         {
             updateLastIndex(dataId, elemId);
         }
-        this->m_lastElementIndex--;
+        lastTopoElemId--;
     }
 }
 

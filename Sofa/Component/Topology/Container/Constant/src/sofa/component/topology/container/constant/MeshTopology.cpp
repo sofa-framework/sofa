@@ -2675,7 +2675,7 @@ SReal MeshTopology::getPosZ(Index i) const
 
 void MeshTopology::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw Edges
     if(_drawEdges.getValue())
@@ -2783,7 +2783,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawLines(pos, 1.0f, sofa::type::RGBAColor(1.0f,0.0f,0.0f,1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::topology::container::constant

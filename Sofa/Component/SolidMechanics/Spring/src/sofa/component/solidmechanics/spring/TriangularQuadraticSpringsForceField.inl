@@ -415,7 +415,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::V
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
@@ -447,7 +447,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::V
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::spring

@@ -118,7 +118,7 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 {
     if (!d_drawFrame.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const Viewport& viewport = vparams->viewport();
 
@@ -190,7 +190,7 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     glMatrixMode(GL_MODELVIEW);
     vparams->drawTool()->popMatrix();
 
-    vparams->drawTool()->restoreLastState();
+
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
 }

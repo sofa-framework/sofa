@@ -36,10 +36,10 @@ using type::vector;
 /// defined only one the member initialization.
 RegularGridTopology::RegularGridTopology(const Vec3i& dimXYZ)
     : GridTopology(dimXYZ)
-    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal"))
-    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal"))
-    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points"))
-    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
+    , d_min(initData(&d_min,Vector3(0_sreal, 0_sreal, 0_sreal),"min", "Min end of the diagonal"))
+    , d_max(initData(&d_max,Vector3(1_sreal, 1_sreal, 1_sreal),"max", "Max end of the diagonal"))
+    , d_p0(initData(&d_p0,Vector3(0_sreal, 0_sreal, 0_sreal),"p0", "Offset all the grid points"))
+    , d_cellWidth(initData(&d_cellWidth, 0_sreal, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
 {
 }
 
@@ -130,26 +130,26 @@ void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax,
     const auto n = d_n.getValue();
 
     if (n[0]>1)
-        setDx(Vector3((xmax-xmin)/(n[0]-1),0,0));
+        setDx(Vector3((xmax-xmin)/(n[0]-1),0_sreal,0_sreal));
     else
     {
-        setDx(Vector3(xmax-xmin,0,0));
+        setDx(Vector3(xmax-xmin, 0_sreal, 0_sreal));
         p0x = (xmax+xmin)/2;
     }
 
     if (n[1]>1)
-        setDy(Vector3(0,(ymax-ymin)/(n[1]-1),0));
+        setDy(Vector3(0_sreal,(ymax-ymin)/(n[1]-1),0_sreal));
     else
     {
-        setDy(Vector3(0,ymax-ymin,0));
+        setDy(Vector3(0_sreal, ymax-ymin, 0_sreal));
         p0y = (ymax+ymin)/2;
     }
 
     if (n[2]>1)
-        setDz(Vector3(0,0,(zmax-zmin)/(n[2]-1)));
+        setDz(Vector3(0_sreal,0_sreal,(zmax-zmin)/(n[2]-1)));
     else
     {
-        setDz(Vector3(0,0,zmax-zmin));
+        setDz(Vector3(0_sreal, 0_sreal, zmax-zmin));
         //p0z = (zmax+zmin)/2;
         p0z = zmin;
     }
@@ -358,11 +358,11 @@ void RegularGridTopology::createTexCoords()
     Vec3ui axes;
 
     if (_n[0] == 1)
-        axes = Vec3i(1, 2, 0);
+        axes = Vec3ui(1u, 2u, 0u);
     else if (_n[1] == 1)
-        axes = Vec3i(0, 2, 1);
+        axes = Vec3ui(0u, 2u, 1u);
     else
-        axes = Vec3i(0, 1, 2);
+        axes = Vec3ui(0u, 1u, 2u);
 
     SReal Uscale = 1/(SReal)(_n[ axes[0] ]-1);
     SReal Vscale = 1/(SReal)(_n[ axes[1] ]-1);

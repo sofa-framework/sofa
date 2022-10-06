@@ -415,7 +415,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     if (!p_showForces.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const SReal aSC = arrowSizeCoef.getValue();
 
@@ -442,7 +442,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->drawLines(vertices, 1, color);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::mechanicalload

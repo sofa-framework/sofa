@@ -494,7 +494,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
@@ -524,7 +524,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
         vparams->drawTool()->drawLines(points, 1, color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<>

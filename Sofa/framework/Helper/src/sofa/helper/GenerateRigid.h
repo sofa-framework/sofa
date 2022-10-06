@@ -119,16 +119,16 @@ void generateRigid(Rigid3MassType& mass, type::Vec3& center, const helper::io::M
         }
     }
 
-    afIntegral[0] /= (SReal)6.0;
-    afIntegral[1] /= (SReal)24.0;
-    afIntegral[2] /= (SReal)24.0;
-    afIntegral[3] /= (SReal)24.0;
-    afIntegral[4] /= (SReal)60.0;
-    afIntegral[5] /= (SReal)60.0;
-    afIntegral[6] /= (SReal)60.0;
-    afIntegral[7] /= (SReal)120.0;
-    afIntegral[8] /= (SReal)120.0;
-    afIntegral[9] /= (SReal)120.0;
+    afIntegral[0] /= 6.0_sreal;
+    afIntegral[1] /= 24.0_sreal;
+    afIntegral[2] /= 24.0_sreal;
+    afIntegral[3] /= 24.0_sreal;
+    afIntegral[4] /= 60.0_sreal;
+    afIntegral[5] /= 60.0_sreal;
+    afIntegral[6] /= 60.0_sreal;
+    afIntegral[7] /= 120.0_sreal;
+    afIntegral[8] /= 120.0_sreal;
+    afIntegral[9] /= 120.0_sreal;
 
     // mass
     mass.volume = afIntegral[0];

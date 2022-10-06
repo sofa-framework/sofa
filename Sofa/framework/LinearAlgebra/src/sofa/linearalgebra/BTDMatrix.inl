@@ -35,7 +35,7 @@ BTDMatrix<N, T>::BTDMatrix()
 
 template<std::size_t N, typename T>
 BTDMatrix<N, T>::BTDMatrix(Index nbRow, Index nbCol)
-    : data(new T[3*(nbRow/BSIZE)]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(3*(nbRow/BSIZE))
+    : data(new Block[3*(nbRow/BSIZE)]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(3*(nbRow/BSIZE))
 {
 }
 
@@ -121,9 +121,9 @@ const typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::asub(Index bi, Index bj,
 }
 
 template<std::size_t N, typename T>
-const typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index) const
+const typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::sub(Index i, Index j, Index k, Index l) const
 {
-    return asub(i/BSIZE,j/BSIZE);
+    return asub(i/BSIZE,j/BSIZE,k,l);
 }
 
 template<std::size_t N, typename T>
@@ -136,9 +136,9 @@ typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::asub(Index bi, Index bj, Index
 }
 
 template<std::size_t N, typename T>
-typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index)
+typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::sub(Index i, Index j, Index k, Index l)
 {
-    return asub(i/BSIZE,j/BSIZE);
+    return asub(i/BSIZE,j/BSIZE,k,l);
 }
 
 template<std::size_t N, typename T>
@@ -235,20 +235,5 @@ void BTDMatrix<N, T>::clear()
     for (Index i=0; i<3*nBRow; ++i)
         data[i].clear();
 }
-
-
-template<> const char* BTDMatrix<1, double>::Name() { return "BTDMatrix1d"; }
-template<> const char* BTDMatrix<2, double>::Name() { return "BTDMatrix2d"; }
-template<> const char* BTDMatrix<3, double>::Name() { return "BTDMatrix3d"; }
-template<> const char* BTDMatrix<4, double>::Name() { return "BTDMatrix4d"; }
-template<> const char* BTDMatrix<5, double>::Name() { return "BTDMatrix5d"; }
-template<> const char* BTDMatrix<6, double>::Name() { return "BTDMatrix6d"; }
-
-template<> const char* BTDMatrix<1, float>::Name() { return "BTDMatrix1f"; }
-template<> const char* BTDMatrix<2, float>::Name() { return "BTDMatrix2f"; }
-template<> const char* BTDMatrix<3, float>::Name() { return "BTDMatrix3f"; }
-template<> const char* BTDMatrix<4, float>::Name() { return "BTDMatrix4f"; }
-template<> const char* BTDMatrix<5, float>::Name() { return "BTDMatrix5f"; }
-template<> const char* BTDMatrix<6, float>::Name() { return "BTDMatrix6f"; }
 
 } // namespace sofa::linearalgebra

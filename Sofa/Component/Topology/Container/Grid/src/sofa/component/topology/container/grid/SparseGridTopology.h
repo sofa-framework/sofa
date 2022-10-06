@@ -174,7 +174,7 @@ public:
     void getMesh( sofa::helper::io::Mesh &m);
 
     void setDimVoxels( int a, int b, int c) { dataResolution.setValue(Vec3i(a,b,c));}
-    void setSizeVoxel( float a, float b, float c) { voxelSize.setValue(Vector3(a,b,c));}
+    void setSizeVoxel( SReal a, SReal b, SReal c) { voxelSize.setValue(Vector3(a,b,c));}
 
     bool getVoxel(unsigned int x, unsigned int y, unsigned int z)
     {

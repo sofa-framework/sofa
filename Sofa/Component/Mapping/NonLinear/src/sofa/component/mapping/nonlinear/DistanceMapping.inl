@@ -224,9 +224,9 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
     if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
-    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
     const SReal& kfactor = mparams->kFactor();
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
 
     if( K.compressedMatrix.nonZeros() )
     {
@@ -354,7 +354,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     const SeqEdges& links = l_topology->getEdges();
@@ -380,7 +380,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 ///////////////////////////////////////////////////////

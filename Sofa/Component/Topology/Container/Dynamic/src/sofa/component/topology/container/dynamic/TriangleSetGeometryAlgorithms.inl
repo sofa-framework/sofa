@@ -4832,7 +4832,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 {
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw Triangles indices
     if (showTriangleIndices.getValue() && this->m_topology->getNbTriangles() != 0)
@@ -4968,7 +4968,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         vparams->drawTool()->drawLines(vertices,1.0f,colors);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

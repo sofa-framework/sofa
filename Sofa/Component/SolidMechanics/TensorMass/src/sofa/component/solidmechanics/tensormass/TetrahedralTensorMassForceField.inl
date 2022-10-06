@@ -465,7 +465,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -488,7 +488,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
         vertices.push_back(sofa::type::Vector3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::tensormass

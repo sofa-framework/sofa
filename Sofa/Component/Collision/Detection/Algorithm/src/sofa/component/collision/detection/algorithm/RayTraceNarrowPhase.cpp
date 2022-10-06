@@ -234,7 +234,7 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
     if (!bDraw.getValue ())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
@@ -265,7 +265,7 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
         }
     }
     vparams->drawTool()->drawLines(vertices,3,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::collision::detection::algorithm

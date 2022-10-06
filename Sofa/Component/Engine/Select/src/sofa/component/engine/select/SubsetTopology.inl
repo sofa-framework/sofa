@@ -784,7 +784,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord* x0 = &f_X0.getValue();
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
@@ -868,7 +868,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawLines(vertices, 1.0, color);
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <class DataTypes>

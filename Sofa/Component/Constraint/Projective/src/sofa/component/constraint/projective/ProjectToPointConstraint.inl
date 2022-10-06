@@ -287,7 +287,7 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = f_indices.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -326,7 +326,7 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

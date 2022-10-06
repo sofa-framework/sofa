@@ -162,7 +162,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (!vparams->displayFlags().getShowVisualModels() || m_topology == nullptr) return;
 
     using sofa::type::Vec;
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
 
@@ -214,7 +214,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (wireframe)
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::transform

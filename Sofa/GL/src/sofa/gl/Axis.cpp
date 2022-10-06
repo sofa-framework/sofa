@@ -51,9 +51,9 @@ void Axis::initDraw()
     if (Lmax > Lmin*2 && Lmin > 0.0)
         Lmax = Lmin*2;
     if (Lmax > Lmin*2)
-        Lmin = Lmax/(SReal)1.414;
-    Vector3 l(Lmin / (SReal)10, Lmin / (SReal)10, Lmin / (SReal)10);
-    Vector3 lc(Lmax / (SReal)5, Lmax / (SReal)5, Lmax / (SReal)5); // = L / 5;
+        Lmin = Lmax/1.414_sreal;
+    Vector3 l(Lmin / 10_sreal, Lmin / 10_sreal, Lmin / 10_sreal);
+    Vector3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
     Vector3 Lc = lc;
 
 
@@ -198,14 +198,14 @@ Axis::Axis(SReal len)
 {
     quadratic = nullptr;
     length = Vector3(len,len,len);
-    update(Vector3(0,0,0),  Quaternion(1,0,0,0));
+    update(Vector3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
 }
 
 Axis::Axis(const Vector3& len)
 {
     quadratic = nullptr;
     length = len;
-    update(Vector3(0,0,0),  Quaternion(1,0,0,0));
+    update(Vector3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
 }
 
 Axis::Axis(const Vector3& center, const Quaternion& orient, const Vector3& len)
