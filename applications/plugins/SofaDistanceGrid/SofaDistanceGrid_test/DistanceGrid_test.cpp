@@ -48,12 +48,12 @@ struct DistanceGrid_test : public sofa::testing::NumericTest<SReal>
         EXPECT_EQ(grid.getNy(), 10) ;
         EXPECT_EQ(grid.getNz(), 10) ;
 
-        EXPECT_FALSE(grid.inBBox(Vector3(-2, 0, 0), 0.0f)) ;
-        EXPECT_FALSE(grid.inBBox(Vector3( 0,-2, 0), 0.0f)) ;
-        EXPECT_FALSE(grid.inBBox(Vector3( 0, 0,-2), 0.0f)) ;
-        EXPECT_FALSE(grid.inBBox(Vector3( 2, 0, 0), 0.0f)) ;
-        EXPECT_FALSE(grid.inBBox(Vector3( 0, 2, 0), 0.0f)) ;
-        EXPECT_FALSE(grid.inBBox(Vector3( 0, 0, 2), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(type::Vec3(-2, 0, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(type::Vec3( 0,-2, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(type::Vec3( 0, 0,-2), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(type::Vec3( 2, 0, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(type::Vec3( 0, 2, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(type::Vec3( 0, 0, 2), 0.0f)) ;
 
         EXPECT_EQ(grid.size(), 10*10*10);
 
