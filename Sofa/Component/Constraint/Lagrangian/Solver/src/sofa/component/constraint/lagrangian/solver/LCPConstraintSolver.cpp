@@ -1321,7 +1321,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // from http://colorexplorer.com/colormatch.aspx
     const unsigned int colors[72]= { 0x2F2FBA, 0x111145, 0x2FBA8C, 0x114534, 0xBA8C2F, 0x453411, 0x2F72BA, 0x112A45,
@@ -1417,7 +1417,6 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
         coordFact *= merge_spatial_step;
 
     }
-    vparams->drawTool()->saveLastState();
 
 }
 

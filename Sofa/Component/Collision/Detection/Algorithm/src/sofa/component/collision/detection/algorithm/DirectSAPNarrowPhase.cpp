@@ -372,7 +372,7 @@ void DirectSAPNarrowPhase::draw(const core::visual::VisualParams* vparams)
     if (!d_draw.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::RGBAColor> colors;
@@ -442,7 +442,6 @@ void DirectSAPNarrowPhase::draw(const core::visual::VisualParams* vparams)
     }
 
     vparams->drawTool()->drawLines(vertices, 3, colors);
-    vparams->drawTool()->restoreLastState();
 }
 
 inline void DSAPBox::show()const

@@ -187,7 +187,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core:
 template<>
 void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
 	if (showIndices.getValue())
@@ -245,7 +245,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
             vparams->drawTool()->popMatrix();
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::statecontainer

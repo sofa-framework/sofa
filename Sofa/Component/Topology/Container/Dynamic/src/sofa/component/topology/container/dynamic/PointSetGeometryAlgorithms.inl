@@ -272,7 +272,7 @@ bool PointSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (d_showPointIndices.getValue())
     {
@@ -296,7 +296,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <class DataTypes>

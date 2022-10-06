@@ -316,7 +316,7 @@ template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels() || d_keyTimes.getValue().size() == 0 ) return;
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->disableLighting();
 
@@ -338,7 +338,7 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->drawLines(vertices, 1.0, color);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

@@ -608,7 +608,7 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     const SetIndexArray & indices1 = f_indices1.getValue();
@@ -637,7 +637,7 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
         vertices.push_back(sofa::type::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
     }
     vparams->drawTool()->drawLines(vertices,1,color2);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

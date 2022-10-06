@@ -209,7 +209,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -264,7 +264,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
     
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::generate

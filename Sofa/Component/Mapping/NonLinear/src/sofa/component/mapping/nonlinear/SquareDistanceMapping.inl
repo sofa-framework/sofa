@@ -271,7 +271,7 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     const SeqEdges& links = l_topology->getEdges();
@@ -298,7 +298,7 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
         }
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::mapping::nonlinear

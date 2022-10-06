@@ -184,6 +184,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/RoutingMessageHandler.cpp
     ${SRC_ROOT}/logging/ExceptionMessageHandler.cpp
     ${SRC_ROOT}/messaging/FileMessage.cpp
+    ${SRC_ROOT}/visual/DrawTool.cpp
     ${SRC_ROOT}/visual/Transformation.cpp
     ${SRC_ROOT}/visual/Trackball.cpp
 )

@@ -354,7 +354,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     const SeqEdges& links = l_topology->getEdges();
@@ -380,7 +380,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 ///////////////////////////////////////////////////////

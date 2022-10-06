@@ -39,7 +39,7 @@ namespace sofa::helper::visual
  *k
  */
 
-class DrawTool
+class SOFA_HELPER_API DrawTool
 {
 
 public:
@@ -208,6 +208,13 @@ public:
     virtual void saveLastState() = 0;
     virtual void restoreLastState() = 0;
 
+    struct StateLifeCycle;
+
+    /// Use RAII to bind state save and restore to the returned object: saveLastState is called
+    /// at object creation, and restoreLastState is called when the object is destroyed.
+    [[nodiscard]]
+    StateLifeCycle makeStateLifeCycle();
+
     /// @name Overlay methods
 
     /// draw 2D text at position (x,y) from top-left corner
@@ -226,6 +233,16 @@ public:
 
     /// Compatibility wrapper functions 
     using Vec4f = sofa::type::Vec4f;
+};
+
+struct SOFA_HELPER_API DrawTool::StateLifeCycle
+{
+    StateLifeCycle() = delete;
+    StateLifeCycle(const StateLifeCycle&) = delete;
+    StateLifeCycle(DrawTool* drawTool);
+    ~StateLifeCycle();
+private:
+    DrawTool* m_drawTool { nullptr };
 };
 
 } // namespace sofa::helper::visual

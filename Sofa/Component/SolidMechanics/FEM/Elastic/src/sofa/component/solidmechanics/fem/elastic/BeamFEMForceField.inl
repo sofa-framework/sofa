@@ -637,7 +637,7 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -657,7 +657,7 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     vparams->drawTool()->drawLines(points[1], 1, sofa::type::RGBAColor::green());
     vparams->drawTool()->drawLines(points[2], 1, sofa::type::RGBAColor::blue());
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

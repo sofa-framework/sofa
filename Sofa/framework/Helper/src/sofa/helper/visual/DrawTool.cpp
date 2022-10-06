@@ -19,57 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/visual/DrawTool.h>
 
-#include <sofa/component/visual/Visual3DText.h>
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
-
-
-namespace sofa::component::visual
+namespace sofa::helper::visual
 {
 
-int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
-        .add< Visual3DText >()
-        ;
-
-
-
-Visual3DText::Visual3DText()
-    : d_text(initData(&d_text, "text", "Test to display"))
-    , d_position(initData(&d_position, type::Vec3f(), "position", "3d position"))
-    , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
-    , d_color(initData(&d_color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
-    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
+DrawTool::StateLifeCycle::StateLifeCycle(DrawTool* drawTool)
+    : m_drawTool(drawTool)
 {
+    m_drawTool->saveLastState();
 }
 
-
-void Visual3DText::init()
+DrawTool::StateLifeCycle::~StateLifeCycle()
 {
-    VisualModel::init();
-
-    reinit();
-
-    updateVisual();
+    m_drawTool->restoreLastState();
 }
 
-void Visual3DText::reinit()
+DrawTool::StateLifeCycle DrawTool::makeStateLifeCycle()
 {
+    // copy elision if compiler uses RVO
+    return StateLifeCycle{ this };
 }
 
-void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
-{
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
-    const type::Vec3f& pos = d_position.getValue();
-    float scale = d_scale.getValue();
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    vparams->drawTool()->disableDepthTest();
-    vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
-
 }
-
-} // namespace sofa::component::visual
