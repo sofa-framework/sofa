@@ -344,9 +344,9 @@ bool EdgeSetTopology_test::checkEdgeDataGraph()
     EXPECT_EQ(vertexHandlers.size(), 1);
     EXPECT_EQ(edgeHandlers.size(), 2);
 
-    sofa::core::topology::TopologyHandler* vertexH0 = vertexHandlers.front();
-    sofa::core::topology::TopologyHandler* edgeH0 = edgeHandlers.front();
-    sofa::core::topology::TopologyHandler* edgeH1 = edgeHandlers.back();
+    sofa::core::topology::TopologyHandler* vertexH0 = *vertexHandlers.cbegin();
+    sofa::core::topology::TopologyHandler* edgeH0 = *vertexHandlers.cbegin();
+    sofa::core::topology::TopologyHandler* edgeH1 = *(vertexHandlers.cbegin()++);
 
     EXPECT_EQ(vertexH0->getName(), "TopologyDataHandler( MeshMatrixMass )vertexMass");
     EXPECT_EQ(edgeH0->getName(), "TopologyDataHandler( MeshMatrixMass )edgeMass");
