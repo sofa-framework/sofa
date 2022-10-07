@@ -183,7 +183,7 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     type::Vec3d center;
     DataTypes::get(center[0], center[1], center[2], sphereCenter.getValue());
@@ -194,7 +194,7 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     vparams->drawTool()->drawSphere(center, (float)(r*0.99) );
     vparams->drawTool()->disableLighting();
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

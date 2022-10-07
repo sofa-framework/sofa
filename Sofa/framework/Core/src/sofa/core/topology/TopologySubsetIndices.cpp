@@ -34,9 +34,9 @@ TopologySubsetIndices::TopologySubsetIndices(const typename sofa::core::topology
 
 }
 
-Index TopologySubsetIndices::indexOfElement(Index index)
+Index TopologySubsetIndices::indexOfElement(Index index) const
 {
-    const container_type& data = this->getValue();
+    const container_type& data = m_value.getValue();
     for (Index idElem = 0; idElem < data.size(); idElem++)
     {
         if (data[idElem] == index)
@@ -51,6 +51,11 @@ void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMesh
     this->Inherit::createTopologyHandler(_topology);
 }
 
+Index TopologySubsetIndices::getLastElementIndex() const
+{
+    auto nbr = Index(m_topology->getNbPoints());
+    return (nbr == 0) ? sofa::InvalidID : nbr - 1;
+}
 
 void TopologySubsetIndices::swapPostProcess(Index i1, Index i2)
 {

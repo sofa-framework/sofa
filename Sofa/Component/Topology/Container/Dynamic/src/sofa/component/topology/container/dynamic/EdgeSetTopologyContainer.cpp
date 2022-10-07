@@ -52,10 +52,13 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer()
 
 void EdgeSetTopologyContainer::init()
 {
-    d_edge.updateIfDirty(); // make sure m_edge is up to date
-
     helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
-    if (!m_edge.empty() && !d_initPoints.isSet()) // if d_initPoints is set, we don't overwrite it.
+    
+    if (d_initPoints.isSet())
+    {
+        setNbPoints(Size(d_initPoints.getValue().size()));
+    }
+    else if (!m_edge.empty())
     {
         for (size_t i=0; i<m_edge.size(); ++i)
         {

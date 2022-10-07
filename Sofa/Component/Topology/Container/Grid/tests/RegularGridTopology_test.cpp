@@ -45,19 +45,19 @@ bool RegularGridTopology_test::regularGridCreation()
     // Creating a good Grid in 3D
     RegularGridTopology::SPtr regGrid3 = New<RegularGridTopology>(5, 5, 5);
     EXPECT_NE(regGrid3, nullptr);
-    EXPECT_EQ(regGrid3->d_p0.getValue(), Vector3(0.0f, 0.0f, 0.0f));
+    EXPECT_EQ(regGrid3->d_p0.getValue(), Vector3(0.0_sreal, 0.0_sreal, 0.0_sreal));
     EXPECT_EQ(regGrid3->d_cellWidth.getValue(), 0.0);
 
     // Creating a good Grid in 2D
     RegularGridTopology::SPtr regGrid2 = New<RegularGridTopology>(5, 5, 1);
     EXPECT_NE(regGrid2, nullptr);
-    EXPECT_EQ(regGrid2->d_p0.getValue(), Vector3(0.0f, 0.0f, 0.0f));
+    EXPECT_EQ(regGrid2->d_p0.getValue(), Vector3(0.0_sreal, 0.0_sreal, 0.0_sreal));
     EXPECT_EQ(regGrid2->d_cellWidth.getValue(), 0.0);
 
     // Creating a good Grid in 3D
     RegularGridTopology::SPtr regGrid1 = New<RegularGridTopology>(5, 1, 1);
     EXPECT_NE(regGrid1, nullptr);
-    EXPECT_EQ(regGrid1->d_p0.getValue(), Vector3(0.0f, 0.0f, 0.0f));
+    EXPECT_EQ(regGrid1->d_p0.getValue(), Vector3(0.0_sreal, 0.0_sreal, 0.0_sreal));
     EXPECT_EQ(regGrid1->d_cellWidth.getValue(), 0.0);
 
     return true;

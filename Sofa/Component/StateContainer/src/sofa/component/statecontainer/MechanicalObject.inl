@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/defaulttype/DataTypeOperations.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/Visitor.h>
@@ -77,19 +78,19 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , m(initData(&m, "mappingJacobian", "mappingJacobian applied to the degrees of freedom"))
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
     , reset_velocity(initData(&reset_velocity, "reset_velocity", "reset velocity coordinates of the degrees of freedom"))
-    , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)"))
+    , restScale(initData(&restScale, 1.0_sreal, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)"))
     , d_useTopology(initData(&d_useTopology, true, "useTopology", "Shall this object rely on any active topology to initialize its size and positions"))
     , showObject(initData(&showObject, (bool) false, "showObject", "Show objects. (default=false)"))
-    , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display. (default=0.1)"))
+    , showObjectScale(initData(&showObjectScale, 0.1f, "showObjectScale", "Scale for object display. (default=0.1)"))
     , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices. (default=false)"))
-    , showIndicesScale(initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
+    , showIndicesScale(initData(&showIndicesScale, 0.02f, "showIndicesScale", "Scale for indices display. (default=0.02)"))
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
-    , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
+    , showVectorsScale(initData(&showVectorsScale, 0.0001f, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
     , d_color(initData(&d_color, type::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
-    , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
+    , scale(initData(&scale, Vector3(1_sreal, 1_sreal, 1_sreal), "scale3d", "Scale of the DOFs in 3 dimensions"))
     , translation2(initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
     , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
     , d_size(initData(&d_size, 0, "size", "Size of the vectors"))
@@ -1786,15 +1787,15 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
             {
                 helper::WriteOnlyAccessor< Data<VecCoord> >vv( *this->write(core::VecCoordId(v)) );
                 vv.resize(d_size.getValue());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = Coord();
+
+                sofa::defaulttype::resetDataTypeVec(vv.wref());
             }
             else
             {
                 helper::WriteOnlyAccessor< Data<VecDeriv> >vv( *this->write(core::VecDerivId(v)) );
                 vv.resize(d_size.getValue());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = Deriv();
+
+                sofa::defaulttype::resetDataTypeVec(vv.wref());
             }
         }
         else
@@ -1858,17 +1859,13 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
             {
                 helper::WriteOnlyAccessor< Data<VecCoord> > vv(*this->write(core::VecCoordId(v)) );
                 helper::ReadAccessor< Data<VecCoord> > va(*this->read(core::ConstVecCoordId(a)) );
-                vv.resize(va.size());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = va[i];
+                vv.wref() = va.ref();
             }
             else
             {
                 helper::WriteOnlyAccessor< Data<VecDeriv> > vv(*this->write(core::VecDerivId(v)) );
                 helper::ReadAccessor< Data<VecDeriv> > va(*this->read(core::ConstVecDerivId(a)) );
-                vv.resize(va.size());
-                for (unsigned int i=0; i<vv.size(); i++)
-                    vv[i] = va[i];
+                vv.wref() = va.ref();
             }
         }
         else
@@ -2484,8 +2481,7 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
 
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
-        for (unsigned i = 0; i < f.size(); ++i)
-            f[i].clear();
+        sofa::defaulttype::resetDataTypeVec(f.wref());
     }
 }
 
@@ -2496,10 +2492,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > a( *this->write(aId) );
-        for (unsigned i = 0; i < a.size(); ++i)
-        {
-            a[i] = Deriv();
-        }
+        sofa::defaulttype::resetDataTypeVec(a.wref());
     }
 }
 
@@ -2725,7 +2718,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     if (showIndices.getValue())
@@ -2771,7 +2764,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             break;
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

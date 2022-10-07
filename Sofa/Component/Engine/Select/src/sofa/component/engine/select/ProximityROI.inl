@@ -249,7 +249,7 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
@@ -286,7 +286,7 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawPoints(vertices, 5.0, color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::select

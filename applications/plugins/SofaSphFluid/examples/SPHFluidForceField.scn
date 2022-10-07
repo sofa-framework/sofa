@@ -1,9 +1,12 @@
 <?xml version="1.0" ?>
 <Node dt="0.01" gravity="0 -10 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaSphFluid"/>
-    <RequiredPlugin name='SofaExplicitOdeSolver'/>
-    <RequiredPlugin name='SofaBoundaryCondition'/>
+    <RequiredPlugin name="SofaSphFluid"/> <!-- Needed to use components [SPHFluidForceField, SpatialGridContainer] -->  
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->  
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+    <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->  
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField] -->  
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <Node>

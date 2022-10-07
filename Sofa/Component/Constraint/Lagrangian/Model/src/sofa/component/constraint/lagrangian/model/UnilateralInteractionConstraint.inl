@@ -389,13 +389,10 @@ bool UnilateralInteractionConstraint<DataTypes>::isActive() const
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    vparams->drawTool()->saveLastState();
-
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
-    vparams->drawTool()->saveLastState();
 
     std::vector<sofa::type::Vector3> redVertices;
     std::vector<sofa::type::Vector3> otherVertices;
@@ -421,7 +418,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     vparams->drawTool()->drawLines(otherVertices, 3, otherColors);
 
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

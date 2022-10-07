@@ -363,7 +363,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->setLightingEnabled(true);
 
@@ -446,7 +446,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     }
     vparams->drawTool()->drawLines(vertices,1, colors);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <class DataTypes>

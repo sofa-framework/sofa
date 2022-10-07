@@ -696,7 +696,7 @@ void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopolo
 template<class DataTypes>
 void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
     {
@@ -712,7 +712,7 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->draw3DText(tmpPt, showTextScaleFactor.getValue(), color, oss.str().c_str());
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

@@ -42,7 +42,7 @@ TriangleOctreeModel::TriangleOctreeModel ()
 
 void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     TriangleCollisionModel<sofa::defaulttype::Vec3Types>::draw(vparams);
     if (isActive () && vparams->displayFlags().getShowCollisionModels ())
@@ -63,7 +63,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
             vparams->drawTool()->setPolygonMode(0, false);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)

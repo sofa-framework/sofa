@@ -279,9 +279,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 template<class DataTypes>
 bool ConstantForceField<DataTypes>::checkForce(const Deriv& force)
 {
-    const size_t size = Deriv::spatial_dimensions;
-
-    for (size_t i=0; i<size; i++)
+    for (typename Deriv::Size i=0; i<Deriv::spatial_dimensions; ++i)
     {
         if( std::isnan(force[i]) )
         {
@@ -479,7 +477,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0)) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& f = d_forces.getValue();
@@ -570,7 +568,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::mechanicalload

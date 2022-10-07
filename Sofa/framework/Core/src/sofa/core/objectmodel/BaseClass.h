@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASECLASS_H
-#define SOFA_CORE_OBJECTMODEL_BASECLASS_H
+#pragma once
 
 #include <sofa/core/config.h>
+#include <sofa/core/fwd.h>
 #include <sofa/helper/NameDecoder.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <map>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
 
-namespace core
-{
-
-namespace objectmodel
-{
-
-class Base;
 using sofa::helper::NameDecoder;
 
 /**
@@ -364,13 +357,6 @@ public:
     }
 };
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
-
-} // namespace sofa
-
-
-
-#endif
 

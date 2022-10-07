@@ -216,7 +216,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     if(this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid || !mstate1 || !mstate2)
         return ;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if(vparams->displayFlags().getShowForceFields())
     {
@@ -270,7 +270,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
             vparams->drawTool()->drawLines(points, float(drawSpringSize), sofa::type::RGBAColor{ float(R), float(G), float(B), 1.f });
         }
 
-        vparams->drawTool()->restoreLastState();
+
     }
 }
 

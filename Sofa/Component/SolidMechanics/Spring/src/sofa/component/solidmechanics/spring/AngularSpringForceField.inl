@@ -168,7 +168,7 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
@@ -180,7 +180,7 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vertices.push_back(p[index].getCenter());
     }
     vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::spring

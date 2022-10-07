@@ -144,19 +144,20 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
         return drawLines(points, size, RGBAColor::red());
     }
 
-    glLineWidth(size);
-    if (getLightEnabled()) disableLighting();
-    glBegin(GL_LINES);
+    // gather lines with same colors
+    std::map<RGBAColor, std::vector<Vector3> > colorPointsMap;
+    for (std::size_t i = 0; i < colors.size(); ++i)
     {
-        for (std::size_t i=0; i<points.size()/2; ++i)
-        {
-            setMaterial(colors[i]);
-            internalDrawLine(points[2*i],points[2*i+1], colors[i] );
-            resetMaterial(colors[i]);
-        }
-    } glEnd();
-    if (getLightEnabled()) enableLighting();
-    glLineWidth(1);
+        colorPointsMap[colors[i]].push_back(points[2 * i]);
+        colorPointsMap[colors[i]].push_back(points[2 * i + 1]);
+    }
+
+    // call the drawLine method which takes only one color
+    for (const auto& [color, points] : colorPointsMap)
+    {
+        drawLines(points, size, color);
+    }
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -627,20 +628,20 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
 void DrawToolGL::drawCube( const float& radius, const RGBAColor& color, const int& subd)
 {
     // X Axis
-    drawCylinder( Vector3(-1.0, -1.0, -1.0), Vector3(1.0, -1.0, -1.0), radius, color, subd);
-    drawCylinder( Vector3(-1.0,  1.0, -1.0), Vector3(1.0,  1.0, -1.0), radius, color, subd);
-    drawCylinder( Vector3(-1.0, -1.0,  1.0), Vector3(1.0, -1.0,  1.0), radius, color, subd);
-    drawCylinder( Vector3(-1.0,  1.0,  1.0), Vector3(1.0,  1.0,  1.0), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal, -1.0_sreal, -1.0_sreal), Vector3(1.0_sreal, -1.0_sreal, -1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal,  1.0_sreal, -1.0_sreal), Vector3(1.0_sreal,  1.0_sreal, -1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal, -1.0_sreal,  1.0_sreal), Vector3(1.0_sreal, -1.0_sreal,  1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal,  1.0_sreal,  1.0_sreal), Vector3(1.0_sreal,  1.0_sreal,  1.0_sreal), radius, color, subd);
     // Y Axis
-    drawCylinder( Vector3(-1.0, -1.0, -1.0), Vector3(-1.0, 1.0, -1.0), radius, color, subd);
-    drawCylinder( Vector3(-1.0, -1.0,  1.0), Vector3(-1.0, 1.0,  1.0), radius, color, subd);
-    drawCylinder( Vector3( 1.0, -1.0, -1.0), Vector3( 1.0, 1.0, -1.0), radius, color, subd);
-    drawCylinder( Vector3( 1.0, -1.0,  1.0), Vector3( 1.0, 1.0,  1.0), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal, -1.0_sreal, -1.0_sreal), Vector3(-1.0_sreal, 1.0_sreal, -1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal, -1.0_sreal,  1.0_sreal), Vector3(-1.0_sreal, 1.0_sreal,  1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3( 1.0_sreal, -1.0_sreal, -1.0_sreal), Vector3( 1.0_sreal, 1.0_sreal, -1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3( 1.0_sreal, -1.0_sreal,  1.0_sreal), Vector3( 1.0_sreal, 1.0_sreal,  1.0_sreal), radius, color, subd);
     // Z Axis
-    drawCylinder( Vector3(-1.0, -1.0, -1.0), Vector3(-1.0, -1.0, 1.0), radius, color, subd);
-    drawCylinder( Vector3(-1.0,  1.0, -1.0), Vector3(-1.0,  1.0, 1.0), radius, color, subd);
-    drawCylinder( Vector3( 1.0, -1.0, -1.0), Vector3( 1.0, -1.0, 1.0), radius, color, subd);
-    drawCylinder( Vector3( 1.0,  1.0, -1.0), Vector3( 1.0,  1.0, 1.0), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal, -1.0_sreal, -1.0_sreal), Vector3(-1.0_sreal, -1.0_sreal, 1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3(-1.0_sreal,  1.0_sreal, -1.0_sreal), Vector3(-1.0_sreal,  1.0_sreal, 1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3( 1.0_sreal, -1.0_sreal, -1.0_sreal), Vector3( 1.0_sreal, -1.0_sreal, 1.0_sreal), radius, color, subd);
+    drawCylinder( Vector3( 1.0_sreal,  1.0_sreal, -1.0_sreal), Vector3( 1.0_sreal,  1.0_sreal, 1.0_sreal), radius, color, subd);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -654,7 +655,7 @@ void DrawToolGL::drawCylinder(const Vector3& p1, const Vector3 &p2, float radius
 
 void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color, int subd)
 {
-    Vector3 p3 = p1*.2+p2*.8;
+    Vector3 p3 = p1*.2+p2*.8_sreal;
     drawCylinder( p1,p3,radius,color,subd);
     drawCone( p3,p2,radius*2.5f,0,color,subd);
 }

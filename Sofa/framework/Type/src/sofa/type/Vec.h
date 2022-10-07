@@ -39,7 +39,7 @@ namespace sofa::type
 namespace // anonymous
 {
     template<typename real>
-    constexpr real rabs(const real r)
+    real rabs(const real r)
     {
         if constexpr (std::is_signed<real>())
             return std::abs(r);
@@ -441,7 +441,7 @@ public:
     }
 
     /// Euclidean norm.
-    constexpr ValueType norm() const noexcept
+    ValueType norm() const noexcept
     {
         return ValueType(std::sqrt(norm2()));
     }
@@ -449,7 +449,7 @@ public:
     /// l-norm of the vector
     /// The type of norm is set by parameter l.
     /// Use l<0 for the infinite norm.
-    constexpr ValueType lNorm( int l ) const
+    ValueType lNorm( int l ) const
     {
         if( l==2 ) return norm(); // euclidian norm
         else if( l<0 ) // infinite norm
@@ -504,21 +504,21 @@ public:
 
     /// Normalize the vector.
     /// returns false iff the norm is too small
-    constexpr bool normalize(ValueType threshold=std::numeric_limits<ValueType>::epsilon()) noexcept
+    bool normalize(ValueType threshold=std::numeric_limits<ValueType>::epsilon()) noexcept
     {
         return normalizeWithNorm(norm(),threshold);
     }
 
     /// Normalize the vector with a failsafe.
     /// If the norm is too small, the vector becomes the failsafe.
-    constexpr void normalize(Vec<N,ValueType> failsafe, ValueType threshold=std::numeric_limits<ValueType>::epsilon()) noexcept
+    void normalize(Vec<N,ValueType> failsafe, ValueType threshold=std::numeric_limits<ValueType>::epsilon()) noexcept
     {
         if( !normalize(threshold) ) *this=failsafe;
     }
 
     /// Return the normalized vector.
     /// @warning 'this' is not normalized.
-    constexpr Vec<N,ValueType> normalized() const noexcept
+    Vec<N,ValueType> normalized() const noexcept
     {
         Vec<N,ValueType> r(*this);
         r.normalize();
@@ -526,7 +526,7 @@ public:
     }
 
     /// return true if norm()==1
-    constexpr bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const
+    bool isNormalized( ValueType threshold=std::numeric_limits<ValueType>::epsilon()*(ValueType)10 ) const
     { 
         return rabs( norm2() - static_cast<ValueType>(1) ) <= threshold;
     }

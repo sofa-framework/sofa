@@ -164,7 +164,7 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
         }
         else           // unconstrained particle: set diagonal to identity block
         {
-            jacobian.insertBackBlock(i,i,Block::s_identity); // only one block to create
+            jacobian.insertBackBlock(i,i,Block::Identity()); // only one block to create
         }
         i++;
     }
@@ -242,7 +242,7 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const Indices & indices = f_indices.getValue();
 
@@ -270,7 +270,7 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

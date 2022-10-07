@@ -396,7 +396,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
@@ -458,7 +458,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawPoints(points, 10, color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

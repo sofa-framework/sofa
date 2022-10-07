@@ -787,7 +787,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
     if (!vparams->displayFlags().getShowBehaviorModels() || !m_rotations.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     using sofa::core::behavior::RotationFinder;
 
@@ -826,7 +826,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

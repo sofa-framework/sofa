@@ -1199,7 +1199,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         return;
     }
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
@@ -1326,7 +1326,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         colorVector.clear();
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic
