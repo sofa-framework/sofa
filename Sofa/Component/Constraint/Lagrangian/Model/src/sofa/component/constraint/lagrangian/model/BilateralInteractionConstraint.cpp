@@ -56,7 +56,7 @@ public:
         const BilateralInteractionConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
         const BilateralInteractionConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
-        unsigned minp = std::min(m1Indices.size(),m2Indices.size());
+        auto minp = std::min(m1Indices.size(),m2Indices.size());
 
         const typename BilateralInteractionConstraint<T>::DataVecCoord &d_x1 = *self.mstate1->read(core::ConstVecCoordId::position());
         const typename BilateralInteractionConstraint<T>::DataVecCoord &d_x2 = *self.mstate2->read(core::ConstVecCoordId::position());
@@ -64,7 +64,7 @@ public:
         const typename BilateralInteractionConstraint<T>::VecCoord &x1 = d_x1.getValue();
         const typename BilateralInteractionConstraint<T>::VecCoord &x2 = d_x2.getValue();
 
-        for (unsigned pid=0; pid<minp; pid++)
+        for (auto pid=0; pid<minp; pid++)
         {
             const typename BilateralInteractionConstraint<T>::Coord P = x1[m1Indices[pid]];
             const typename BilateralInteractionConstraint<T>::Coord Q = x2[m2Indices[pid]];
@@ -93,9 +93,9 @@ public:
                                         unsigned int& offset, double tolerance)
     {
         SOFA_UNUSED(cParams);
-        unsigned minp=std::min(self.m1.getValue().size(),
+        auto minp=std::min(self.m1.getValue().size(),
                                self.m2.getValue().size());
-        for (unsigned pid=0; pid<minp; pid++)
+        for (auto pid=0; pid<minp; pid++)
         {
             resTab[offset] = new BilateralConstraintResolution3Dof();
             offset += 3;
@@ -120,7 +120,7 @@ public:
         const BilateralInteractionConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
         const BilateralInteractionConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
-        unsigned minp = std::min(m1Indices.size(),m2Indices.size());
+        auto minp = std::min(m1Indices.size(),m2Indices.size());
         self.cid.resize(minp);
 
         typename BilateralInteractionConstraint<T>::MatrixDeriv &c1 = *c1_d.beginEdit();
@@ -129,7 +129,7 @@ public:
         const Vec<3, typename BilateralInteractionConstraint<T>::Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
         const Vec<3, typename BilateralInteractionConstraint<T>::Real> vZero(0,0,0);
 
-        for (unsigned pid=0; pid<minp; pid++)
+        for (auto pid=0; pid<minp; pid++)
         {
             int tm1 = m1Indices[pid];
             int tm2 = m2Indices[pid];
@@ -193,14 +193,14 @@ public:
         const BilateralInteractionConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
         const BilateralInteractionConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
-        unsigned min = std::min(m1Indices.size(), m2Indices.size());
+        auto min = std::min(m1Indices.size(), m2Indices.size());
         const  typename BilateralInteractionConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
         self.dfree.resize(min);
 
         const  typename BilateralInteractionConstraint<T>::VecCoord &x1 = d_x1.getValue();
         const  typename BilateralInteractionConstraint<T>::VecCoord &x2 = d_x2.getValue();
 
-        for (unsigned pid=0; pid<min; pid++)
+        for (auto pid=0; pid<min; pid++)
         {
             //typename BilateralInteractionConstraint<T>::Coord dof1 = x1[m1Indices[pid]];
             //typename BilateralInteractionConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
