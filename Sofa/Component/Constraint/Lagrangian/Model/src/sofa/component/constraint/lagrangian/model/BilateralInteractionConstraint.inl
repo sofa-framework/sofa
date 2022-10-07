@@ -49,7 +49,7 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
 
     , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
                                     "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
-    , d_activate( initData(&d_activate, true, "activate", "controle constraint activation (true by default)"))
+    , d_activate( initData(&d_activate, true, "activate", "control constraint activation (true by default)"))
 
     //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
