@@ -24,8 +24,8 @@ sofa_find_package(Sofa.Component.Playback QUIET)
 
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 sofa_find_package(Sofa.GUI.Common REQUIRED)
-sofa_find_package(Sofa.GUI.Qt QUIET)
 sofa_find_package(SceneChecking REQUIRED)
+sofa_find_package(SofaGui REQUIRED)
 
 set(HEADER_FILES
     runSofaValidation.h
@@ -62,8 +62,9 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_con
 target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
 
 target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Graph)
-target_link_libraries(${PROJECT_NAME} SofaGui)
+target_link_libraries(${PROJECT_NAME} Sofa.GUI.Common)
 target_link_libraries(${PROJECT_NAME} SceneChecking)
+target_link_libraries(${PROJECT_NAME} SofaGui)
 
 if(Sofa.Component.Playback_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.Component.Playback)

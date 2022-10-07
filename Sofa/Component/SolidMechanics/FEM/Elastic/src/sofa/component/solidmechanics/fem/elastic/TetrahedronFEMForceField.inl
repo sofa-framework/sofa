@@ -1788,7 +1788,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue()) && isComputeVonMisesStressMethodSet();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
     {
@@ -1962,7 +1962,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawLines(points[2], 5, sofa::type::RGBAColor::blue());
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

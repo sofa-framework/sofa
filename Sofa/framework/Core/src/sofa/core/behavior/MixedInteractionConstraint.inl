@@ -51,7 +51,8 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(
 {
     if (cParams)
     {
-        getConstraintViolation(cParams, v, *cParams->readX(this->mstate1), *cParams->readX(this->mstate2), *cParams->readV(this->mstate1), *cParams->readV(this->mstate2));
+        getConstraintViolation(cParams, v, *cParams->readX(this->mstate1.get()), *cParams->readX(this->mstate2.get()), 
+                                           *cParams->readV(this->mstate1.get()), *cParams->readV(this->mstate2.get()));
     }
 }
 
@@ -60,7 +61,8 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(c
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[this->mstate1.get()].write(), *cId[this->mstate2.get()].write(), cIndex, *cParams->readX(this->mstate1), *cParams->readX(this->mstate2));
+        buildConstraintMatrix(cParams, *cId[this->mstate1.get()].write(), *cId[this->mstate2.get()].write(), cIndex, 
+                                        *cParams->readX(this->mstate1.get()), *cParams->readX(this->mstate2.get()));
     }
 }
 

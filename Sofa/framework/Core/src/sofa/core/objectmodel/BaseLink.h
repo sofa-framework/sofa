@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASELINK_H
-#define SOFA_CORE_OBJECTMODEL_BASELINK_H
-
+#pragma once 
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>
 #include <string>
@@ -210,4 +208,3 @@ using core::objectmodel::BaseLink;
 
 } // namespace sofa
 
-#endif

@@ -19,15 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASE_H
-#define SOFA_CORE_OBJECTMODEL_BASE_H
+#pragma once
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/TagSet.h>
 #include <list>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/sptr.h>
 
 #include <deque>
@@ -37,65 +38,6 @@
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerCallback.h>
 #include <sofa/type/fwd.h>
-
-// forward declaration of castable classes
-// @author Matthieu Nesme, 2015
-// it is not super elegant, but it is way more efficient than dynamic_cast
-namespace sofa::core {
-    class BaseState;
-    class BaseMapping;
-    class BehaviorModel;
-    class CollisionModel;
-    class DataEngine;
-    class DevBaseMonitor;
-namespace objectmodel {
-    class BaseContext;
-    class BaseObject;
-    class BaseNode;
-    class ContextObject;
-    class ConfigurationSetting;
-} // namespace objectmodel
-namespace behavior {
-    class BaseAnimationLoop;
-    class OdeSolver;
-    class BaseLinearSolver;
-    class LinearSolver;
-    class ConstraintSolver;
-    class BaseMass;
-    class BaseMechanicalState;
-    class BaseInteractionForceField;
-    class BaseInteractionConstraint;
-    class BaseForceField;
-    class BaseProjectiveConstraintSet;
-    class BaseInteractionProjectiveConstraintSet;
-    class BaseConstraintSet;
-    class BaseConstraint;
-} // namespace behavior
-namespace visual {
-    class VisualModel;
-    class VisualManager;
-    class VisualLoop;
-    class Shader;
-} // namespace visual
-namespace topology {
-    class Topology;
-    class BaseMeshTopology;
-    class BaseTopologyObject;
-} // namespace topology
-namespace collision {
-    class CollisionGroupManager;
-    class ContactManager;
-    class Detection;
-    class Intersection;
-    class Pipeline;
-} // namespace collision
-namespace loader {
-    class BaseLoader;
-} // namespace loader
-} // namespace sofa::core
-
-// VisitorScheduler
-
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
@@ -557,4 +499,3 @@ inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base*
 
 } // namespace sofa::helper::logging
 
-#endif

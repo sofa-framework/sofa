@@ -311,7 +311,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
 
     if (showFiber.getValue() && lfd.size() >= (unsigned)m_topology->getNbTriangles())
     {
-        vparams->drawTool()->saveLastState();
+        const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
         constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::black();
         std::vector<sofa::type::Vector3> vertices;
 
@@ -335,7 +335,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
             }
         }
         vparams->drawTool()->drawLines(vertices,1,color);
-        vparams->drawTool()->restoreLastState();
+
     }
     localFiberDirection.endEdit();
 }

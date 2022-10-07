@@ -34,10 +34,10 @@ template <class DataTypes>
 TransformEngine<DataTypes>::TransformEngine()
     : f_inputX ( initData (&f_inputX, "input_position", "input array of 3d points") )
     , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
-    , translation(initData(&translation, type::Vector3(0,0,0),"translation", "translation vector ") )
-    , rotation(initData(&rotation, type::Vector3(0,0,0), "rotation", "rotation vector ") )
-    , quaternion(initData(&quaternion, type::Quat<SReal>(0,0,0,1), "quaternion", "rotation quaternion ") )
-    , scale(initData(&scale, type::Vector3(1,1,1),"scale", "scale factor") )
+    , translation(initData(&translation, type::Vector3(0_sreal,0_sreal,0_sreal),"translation", "translation vector ") )
+    , rotation(initData(&rotation, type::Vector3(0_sreal,0_sreal,0_sreal), "rotation", "rotation vector ") )
+    , quaternion(initData(&quaternion, type::Quat<SReal>(0_sreal,0_sreal,0_sreal,1_sreal), "quaternion", "rotation quaternion ") )
+    , scale(initData(&scale, type::Vector3(1_sreal,1_sreal,1_sreal),"scale", "scale factor") )
     , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
 {
     addInput(&f_inputX);
@@ -272,16 +272,16 @@ void TransformEngine<DataTypes>::doUpdate()
     //Create the object responsible for the transformations
     Transform<DataTypes> transformation;
     const bool inv = inverse.getValue();
-    if (s != type::Vector3(1,1,1))
+    if (s != type::Vector3(1_sreal,1_sreal,1_sreal))
         transformation.add(new Scale<DataTypes>, inv)->configure(s, inv);
 
-    if (r != type::Vector3(0,0,0))
+    if (r != type::Vector3(0_sreal,0_sreal,0_sreal))
         transformation.add(new Rotation<DataTypes>, inv)->configure(r, inv);
 
-    if (q != type::Quat<SReal>(0,0,0,1))
+    if (q != type::Quat<SReal>(0_sreal,0_sreal,0_sreal,1_sreal))
         transformation.add(new Rotation<DataTypes>, inv)->configure(q, inv, this);
 
-    if (t != type::Vector3(0,0,0))
+    if (t != type::Vector3(0_sreal,0_sreal,0_sreal))
         transformation.add(new Translation<DataTypes>, inv)->configure(t, inv);
 
     //Get input

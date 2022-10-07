@@ -1261,7 +1261,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -1310,7 +1310,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
         vparams->drawTool()->setPolygonMode(0,false);
 
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

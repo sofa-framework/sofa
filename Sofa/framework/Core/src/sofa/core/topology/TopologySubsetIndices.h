@@ -45,9 +45,11 @@ public:
     /// Default Constructor to init Data
     explicit TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data);
     
-    Index indexOfElement(Index index) override;
+    Index indexOfElement(Index index) const override;
 
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology) override;
+
+    Index getLastElementIndex() const override;
 
 protected:
     void swapPostProcess(Index i1, Index i2) override;

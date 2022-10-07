@@ -41,7 +41,7 @@ int VoxelGridLoaderClass = RegisterObject("Voxel loader based on RAW files").add
 
 VoxelGridLoader::VoxelGridLoader()
     : VoxelLoader(),
-      voxelSize ( initData ( &voxelSize, Vector3 ( 1.0f,1.0f,1.0f ), "voxelSize", "Dimension of one voxel" ) ),
+      voxelSize ( initData ( &voxelSize, Vector3 ( 1.0_sreal,1.0_sreal,1.0_sreal ), "voxelSize", "Dimension of one voxel" ) ),
       dataResolution ( initData ( &dataResolution, Vec3i ( 0,0,0 ), "resolution", "Resolution of the voxel file" ) ),
       roi ( initData ( &roi, Vec6i ( 0,0,0, 0xFFFF, 0xFFFF, 0xFFFF ), "ROI", "Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)" ) ),
       headerSize ( initData ( &headerSize, 0, "header", "Header size in bytes" ) ),

@@ -547,7 +547,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
 {
     if (vparams->displayFlags().getShowMappings())
     {
-        vparams->drawTool()->saveLastState();
+        const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
         std::vector< sofa::type::Vector3 > points;
         std::vector< sofa::type::Vector3 > pointsLine;
@@ -573,7 +573,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
         vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
         vparams->drawTool()->drawLines(pointsLine, 1, sofa::type::RGBAColor::blue());
 
-        vparams->drawTool()->restoreLastState();
+
     }
 }
 } //namespace sofa::component::mapping

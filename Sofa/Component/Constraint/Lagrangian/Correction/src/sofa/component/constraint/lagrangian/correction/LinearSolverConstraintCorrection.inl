@@ -536,8 +536,9 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     systemMatrix_buf   = l_linearSolver.get()->getSystemBaseMatrix();
     systemRHVector_buf = l_linearSolver.get()->getSystemRHBaseVector();
     systemLHVector_buf = l_linearSolver.get()->getSystemLHBaseVector();
+    systemLHVector_buf_fullvector = dynamic_cast<linearalgebra::FullVector<Real>*>(systemLHVector_buf); // Cast checking whether the LH vector is a FullVector to improve performances
 
-    const unsigned int derivDim = Deriv::size();
+    constexpr const auto derivDim = Deriv::total_size;
     const unsigned int systemSize = mstate->getSize() * derivDim;
     systemRHVector_buf->resize(systemSize) ;
     systemLHVector_buf->resize(systemSize) ;
@@ -575,16 +576,36 @@ template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin, int end)
 {
     const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const auto derivDim = Deriv::size();
 
     last_disp = begin;
 
-
-    l_linearSolver.get()->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
+    l_linearSolver->partial_solve(Vec_I_list_dof[last_disp], Vec_I_list_dof[last_force], _new_force);
 
     _new_force = false;
 
-    const auto positionIntegrationFactor = l_ODESolver.get()->getPositionIntegrationFactor();
+    // Lambda function adding the constraint displacement using [] if a FullVector is detected or element() else
+    constexpr auto addConstraintDisplacement_impl = [](double* d, unsigned int id, auto* systemLHVector_buf, double positionIntegrationFactor, unsigned int dof, const Deriv& val)
+    {
+        constexpr const auto derivDim = Deriv::total_size;
+        Deriv disp(type::NOINIT);
+
+        for (Size j = 0; j < derivDim; j++)
+        {
+            if constexpr (std::is_same_v<decltype(systemLHVector_buf), linearalgebra::FullVector<SReal>*>)
+            {
+                disp[j] = (*systemLHVector_buf)[dof * derivDim + j] * positionIntegrationFactor;
+            }
+            else
+            {
+                disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j)) * positionIntegrationFactor;
+            }
+        }
+
+        d[id] += val * disp;
+    };
+
+    const auto positionIntegrationFactor = l_ODESolver->getPositionIntegrationFactor();
+
     // TODO => optimisation => for each bloc store J[bloc,dof]
     for (int i = begin; i <= end; i++)
     {
@@ -594,17 +615,19 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
         {
             MatrixDerivColConstIterator rowEnd = rowIt.end();
 
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
+            if (systemLHVector_buf_fullvector)
             {
-                const auto dof = colIt.index();
-                Deriv disp(type::NOINIT);
-
-                for(Size j = 0; j < derivDim; j++)
+                for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
                 {
-                    disp[j] = (Real)(systemLHVector_buf->element(dof * derivDim + j) * positionIntegrationFactor);
+                    addConstraintDisplacement_impl(d, i, systemLHVector_buf_fullvector, positionIntegrationFactor, colIt.index(), colIt.val());
                 }
-
-                d[i] += colIt.val() * disp;
+            }
+            else
+            {
+                for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowEnd; ++colIt)
+                {
+                    addConstraintDisplacement_impl(d, i, systemLHVector_buf, positionIntegrationFactor, colIt.index(), colIt.val());
+                }
             }
         }
     }
@@ -613,18 +636,15 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
 {
-
-
-    const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int derivDim = Deriv::size();
-
-
     last_force = begin;
 
     if (!update)
         return;
 
     _new_force = true;
+
+    constexpr const auto derivDim = Deriv::total_size;
+    const MatrixDeriv& constraints = mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     // TODO => optimisation !!!
     for (int i = begin; i <= end; i++)

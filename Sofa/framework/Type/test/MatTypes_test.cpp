@@ -33,13 +33,100 @@ using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
+TEST(MatTypesTest, lineAccess)
+{
+    Matrix2 mat2;
+
+    mat2.x();
+    mat2.y();
+    //mat2.z(); // z is not available due to the size of the matrix
+
+    Matrix3 mat3;
+
+    mat3.x();
+    mat3.y();
+    mat3.z();
+    //mat3.w(); // z is not available due to the size of the matrix
+}
+
+TEST(MatTypesTest, mat3x3product)
+{
+    static constexpr Matrix3 a{ Matrix3::Line{1., 2., 3.}, Matrix3::Line{4., 5., 6.}, Matrix3::Line{7., 8., 9.} };
+    static constexpr auto a2 = a * a;
+
+    EXPECT_FLOATINGPOINT_EQ(a2[0][0], 30.)
+    EXPECT_FLOATINGPOINT_EQ(a2[0][1], 36.)
+    EXPECT_FLOATINGPOINT_EQ(a2[0][2], 42.)
+
+    EXPECT_FLOATINGPOINT_EQ(a2[1][0], 66.)
+    EXPECT_FLOATINGPOINT_EQ(a2[1][1], 81.)
+    EXPECT_FLOATINGPOINT_EQ(a2[1][2], 96.)
+
+    EXPECT_FLOATINGPOINT_EQ(a2[2][0], 102.)
+    EXPECT_FLOATINGPOINT_EQ(a2[2][1], 126.)
+    EXPECT_FLOATINGPOINT_EQ(a2[2][2], 150.)
+}
+
+TEST(MatTypesTest, multTranspose)
+{
+    sofa::type::Mat<3,4, int> a
+    {
+        sofa::type::Mat<3,4, int>::Line{1, 2, 3, 4},
+        sofa::type::Mat<3,4, int>::Line{5, 6, 7, 8},
+        sofa::type::Mat<3,4, int>::Line{9, 10, 11, 12}
+    };
+
+    sofa::type::Mat<3,2, int> b
+    {
+        sofa::type::Mat<3,2, int>::Line{1, 2},
+        sofa::type::Mat<3,2, int>::Line{3, 4},
+        sofa::type::Mat<3,2, int>::Line{5, 6}
+    };
+
+    sofa::type::Mat<4, 2, int> aTb = a.multTranspose(b);
+
+    EXPECT_EQ(aTb[0][0], 61);
+    EXPECT_EQ(aTb[0][1], 76);
+
+    EXPECT_EQ(aTb[1][0], 70);
+    EXPECT_EQ(aTb[1][1], 88);
+
+    EXPECT_EQ(aTb[2][0], 79);
+    EXPECT_EQ(aTb[2][1], 100);
+
+    EXPECT_EQ(aTb[3][0], 88);
+    EXPECT_EQ(aTb[3][1], 112);
+
+    sofa::type::Mat<3, 3, int> c
+    {
+        sofa::type::Mat<3, 3, int>::Line{1., 2., 3.},
+        sofa::type::Mat<3, 3, int>::Line{4., 5., 6.},
+        sofa::type::Mat<3, 3, int>::Line{7., 8., 9.}
+    };
+    sofa::type::Mat<3, 3, int> cTc = c.multTranspose(c);
+
+    EXPECT_EQ(cTc[0][0], 66);
+    EXPECT_EQ(cTc[0][1], 78);
+    EXPECT_EQ(cTc[0][2], 90);
+
+    EXPECT_EQ(cTc[1][0], 78);
+    EXPECT_EQ(cTc[1][1], 93);
+    EXPECT_EQ(cTc[1][2], 108);
+
+    EXPECT_EQ(cTc[2][0], 90);
+    EXPECT_EQ(cTc[2][1], 108);
+    EXPECT_EQ(cTc[2][2], 126);
+
+
+}
+
 void test_transformInverse(Matrix4 const& M)
 {
     Matrix4 M_inv;
     M_inv.transformInvert(M);
     Matrix4 res = M*M_inv;
     Matrix4 I;I.identity();
-    EXPECT_MAT_NEAR(I, res, (SReal)1e-12);
+    EXPECT_MAT_NEAR(I, res, 1e-12_sreal);
 }
 
 TEST(MatTypesTest, transformInverse)
@@ -212,4 +299,17 @@ TEST(MatTypesTest, tensorProduct)
     Mat<2, 2, SReal> M(Mat<2, 2, SReal>::Line(0.,  0.),
                        Mat<2, 2, SReal>::Line( 1., 2.));
     EXPECT_EQ(M, Mtest);
+}
+
+TEST(MatTypesTest, identity)
+{
+    const sofa::type::Mat<3, 3, SReal>& id = sofa::type::Mat<3, 3, SReal>::Identity();
+
+    for (sofa::Index i = 0; i < 3; ++i)
+    {
+        for (sofa::Index j = 0; j < 3; ++j)
+        {
+            EXPECT_FLOATINGPOINT_EQ(id(i,j), static_cast<SReal>(i == j))
+        }
+    }
 }

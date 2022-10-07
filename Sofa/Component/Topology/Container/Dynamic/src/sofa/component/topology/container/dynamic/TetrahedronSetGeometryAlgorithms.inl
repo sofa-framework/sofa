@@ -3243,7 +3243,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
     //Draw tetra indices
@@ -3344,7 +3344,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             vparams->drawTool()->setPolygonMode(0, false);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

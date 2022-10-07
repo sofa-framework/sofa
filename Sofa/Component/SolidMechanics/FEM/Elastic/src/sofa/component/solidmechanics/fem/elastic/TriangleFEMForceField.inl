@@ -536,7 +536,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -563,7 +563,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     }
     vparams->drawTool()->drawTriangles(vertices, colorVector);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

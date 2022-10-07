@@ -2,13 +2,12 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaBaseLinearSolver REQUIRED)
-find_package(SofaBaseMechanics REQUIRED)
-find_package(SofaBaseTopology REQUIRED)
-find_package(SofaBoundaryCondition REQUIRED)
+find_package(Sofa.Component.LinearSolver.Iterative REQUIRED)
+find_package(Sofa.Component.Topology REQUIRED)
+find_package(Sofa.Component.Constraint.Projective REQUIRED)
 find_package(SofaGraphComponent REQUIRED)
-find_package(SofaImplicitOdeSolver REQUIRED)
-find_package(SofaSimpleFem REQUIRED)
+find_package(Sofa.Component.ODESolver.Backward REQUIRED)
+find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

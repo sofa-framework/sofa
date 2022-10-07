@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
-#define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/fwd.h>
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -228,10 +222,5 @@ public:
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
 };
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

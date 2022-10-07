@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_BASELOADER_H
-#define SOFA_CORE_LOADER_BASELOADER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace loader
+namespace sofa::core::loader
 {
 
 bool SOFA_CORE_API canLoad(const char* filename);
@@ -63,10 +56,5 @@ protected:
     static bool readLine(char* buf, int size, FILE* f) ;
 };
 
-} /// namespace loader
+} /// namespace sofa::core::loader
 
-} /// namespace core
-
-} /// namespace sofa
-
-#endif /// SOFA_CORE_LOADER_BASELOADER_H

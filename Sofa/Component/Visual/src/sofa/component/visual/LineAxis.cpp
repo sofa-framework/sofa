@@ -23,6 +23,7 @@
 #include <sofa/component/visual/LineAxis.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/narrow_cast.h>
 
 
 namespace sofa::component::visual
@@ -83,36 +84,36 @@ void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (!d_draw.getValue()) return;
 
-    const float s = d_size.getValue();
+    const double s = sofa::helper::narrow_cast<double>(d_size.getValue());
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if(m_drawX)
     {
         vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vector3(-s*0.5f, 0.0f, 0.0f),
-            helper::visual::DrawTool::Vector3(s*0.5f, 0.0f, 0.0f),
+            helper::visual::DrawTool::Vector3(-s*0.5, 0.0, 0.0),
+            helper::visual::DrawTool::Vector3(s*0.5, 0.0, 0.0),
             helper::visual::DrawTool::RGBAColor(1.0f, 0.0f, 0.0f, 1.0f));
     }
 
     if(m_drawY)
     {
         vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vector3(0.0f, -s*0.5f, 0.0f),
-            helper::visual::DrawTool::Vector3(0.0f,  s*0.5f, 0.0f),
+            helper::visual::DrawTool::Vector3(0.0, -s*0.5, 0.0),
+            helper::visual::DrawTool::Vector3(0.0,  s*0.5, 0.0),
             helper::visual::DrawTool::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f));
     }
 
     if(m_drawZ)
     {
         vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vector3(0.0f, 0.0f, -s*0.5f),
-            helper::visual::DrawTool::Vector3(0.0f, 0.0f, s*0.5f),
+            helper::visual::DrawTool::Vector3(0.0, 0.0, -s*0.5),
+            helper::visual::DrawTool::Vector3(0.0, 0.0, s*0.5),
             helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 
