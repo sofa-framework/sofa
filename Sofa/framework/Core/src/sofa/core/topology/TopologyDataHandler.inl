@@ -77,8 +77,7 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
 
     if (m_topology->linkTopologyHandlerToData(this, elementType))
     {
-        bool res = m_topology->addTopologyHandler(this, elementType);
-        if (!res)
+        if (m_topology->addTopologyHandler(this, elementType) == false)
         {
             msg_warning(m_topologyData->getOwner()) << "TopologyHandler linked to Data '" << m_data_name << "' has already been registered.";
         }
