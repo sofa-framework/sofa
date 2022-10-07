@@ -178,8 +178,8 @@ public:
 private:
     void unspecializedInit() ;
 
-    /// Method to get the index position of a @param point Id inside @sa m1 (resp. @sa 2m) if @param objectId is equal to 0 (resp. to 1). Return InvalidID if not found.
-    Index indexOfElemConstraint(int objectId, Index Id);
+    /// Method to get the index position of a @param point Id inside @sa m1 or @sa m2) depending of the value passed in @param cIndices. Return InvalidID if not found.
+    Index indexOfElemConstraint(const SubsetIndices& cIndices, Index Id);
 };
 
 
