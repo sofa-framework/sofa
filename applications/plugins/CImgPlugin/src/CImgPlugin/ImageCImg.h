@@ -19,7 +19,7 @@ namespace io
 class SOFA_CIMGPLUGIN_API ImageCImgCreators
 {
 
-    std::vector<std::unique_ptr<sofa::helper::io::Image::FactoryImage::Creator>> creators;
+    std::vector<std::shared_ptr<sofa::helper::io::Image::FactoryImage::Creator>> creators;
 public:
     static std::vector<std::string> cimgSupportedExtensions;
 
