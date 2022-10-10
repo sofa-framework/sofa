@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/helper/config.h>
+
 namespace sofa::helper
 {
 
@@ -56,9 +58,12 @@ public:
     iterator end() { return vref->end(); }
 
     void clear() { vref->clear(); }
-    void resize(Size s, bool /*init*/ = true) { vref->resize(s); }
+    SOFA_WRITEACCESSOR_RESIZE_DEPRECATED() void resize(Size s, bool) { vref->resize(s); }
+    void resize(Size s) { vref->resize(s); }
     void reserve(Size s) { vref->reserve(s); }
     void push_back(const value_type& v) { vref->push_back(v); }
+    template <class... Args>
+    reference emplace_back(Args&&... args) { return vref->emplace_back(std::forward<Args>(args)...);}
 
     ////// Access the container in reading & writing //////
     operator  container_type () { return  *vref; }
