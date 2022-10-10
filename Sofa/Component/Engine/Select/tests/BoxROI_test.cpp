@@ -127,9 +127,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "</Node>                                                       ";
 
         EXPECT_MSG_EMIT(Error); // Unable to find a MechanicalObject for this component.
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -157,9 +155,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -203,9 +199,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
         BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI");

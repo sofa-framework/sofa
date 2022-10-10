@@ -103,9 +103,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
@@ -128,9 +126,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
              "  <DefaultContactManager/>                                                     \n"
              "</Node>                                                                        \n" ;
 
-    root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -152,9 +148,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -175,9 +169,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -198,9 +190,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -221,9 +211,7 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
-    root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     //EXPECT_NE( (root.get()), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
