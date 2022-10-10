@@ -172,14 +172,15 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, O
 
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
 {
+    static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal    dist2 = alarmDist*alarmDist;
-    const Vector3& p1 = e1.p1();
-    const Vector3& p2 = e1.p2();
-    const Vector3& p3 = e1.p3();
-    const Vector3& pn = e1.n();
-    const Vector3& q1 = e2.p1();
-    const Vector3& q2 = e2.p2();
+    const Triangle::Coord& p1 = e1.p1();
+    const Triangle::Coord& p2 = e1.p2();
+    const Triangle::Coord& p3 = e1.p3();
+    const Triangle::Deriv& pn = e1.n();
+    const Line::Coord& q1 = e2.p1();
+    const Line::Coord& q2 = e2.p2();
 
     const int f1 = e1.flags();
 

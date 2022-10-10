@@ -314,14 +314,16 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
-        std::vector< type::Vector3 > points;
+        std::vector<helper::visual::DrawTool::Vector3> points;
+        points.reserve(size * 2);
         for (Size i=0; i<size; i++)
         {
             TLine<DataTypes> l(this,i);
             if(l.isActive())
             {
-                points.push_back(l.p1());
-                points.push_back(l.p2());
+                // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vector3, Coord>
+                points.emplace_back(helper::visual::DrawTool::Vector3{l.p1()});
+                points.emplace_back(helper::visual::DrawTool::Vector3{l.p2()});
             }
         }
 
@@ -468,7 +470,7 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        const SReal distance = (SReal)this->proximity.getValue();
+        const SReal distance = this->proximity.getValue();
         for (Size i=0; i<size; i++)
         {
             type::Vector3 minElem, maxElem;
@@ -565,16 +567,16 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 
     if( !onlyVisible ) return;
 
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
     for (Size i=0; i<size; i++)
     {
         Element e(this,i);
-        const type::Vector3& pt1 = e.p1();
-        const type::Vector3& pt2 = e.p2();
+        const Coord& pt1 = e.p1();
+        const Coord& pt2 = e.p2();
 
         for (int c=0; c<3; c++)
         {
