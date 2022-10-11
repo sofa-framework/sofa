@@ -32,7 +32,7 @@ The scene compares two simulations in which only the vertices order differs:
 
     <Node name="NoReorder" activated="true">
         <EulerImplicitSolver name="odeImplicitSolver" />
-        <SparseLUSolver name="solver"/>
+        <SparseLUSolver name="solver" template="CompressedRowSparseMatrixd"/>
 
         <GlobalSystemMatrixImage/>
 
@@ -47,7 +47,7 @@ The scene compares two simulations in which only the vertices order differs:
 
     <Node name="Reorder" activated="true">
         <EulerImplicitSolver name="odeImplicitSolver" />
-        <SparseLUSolver name="solver"/>
+        <SparseLUSolver name="solver" template="CompressedRowSparseMatrixd"/>
 
         <GlobalSystemMatrixImage/>
 
@@ -60,7 +60,7 @@ The scene compares two simulations in which only the vertices order differs:
         <MechanicalObject name="dofs" position="@transform.output_position"/>
         <MeshMatrixMass totalMass="15" topology="@topologyContainer"/>
 
-        <MapIndices name="perm" in="@../NoReorder/fix.indices" indices="@reorder.permutation"/>
+        <MapIndices name="perm" template="int" in="@../NoReorder/fix.indices" indices="@reorder.permutation"/>
         <FixedConstraint indices="@perm.out" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.49" method="large" />
 
