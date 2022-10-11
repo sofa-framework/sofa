@@ -130,7 +130,7 @@ public:
 
         if (arg->getAttribute("activateAtIteration"))
         {
-            msg_warning() << "input data 'activateAtIteration' has been deprecated, please use 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327).";
+            msg_warning() << "input data 'activateAtIteration' has been deprecated, please use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327).";
         }
     }
 
