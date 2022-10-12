@@ -138,7 +138,7 @@ if (IS_IPO_SUPPORTED)
     # Focus on max speed with link-time optimization
     option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable interprocedural optimization" OFF)
     if (SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
-        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE PARENT_SCOPE)
     endif()
 else()
     message(STATUS "IPO / LTO not supported: <${IPO_ERROR}>")
@@ -204,11 +204,6 @@ if(WIN32)
 
     if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
         list(APPEND SOFACONFIG_COMPILE_OPTIONS "/Zc:__cplusplus")
-    endif()
-
-    if(SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "/GL")
-        list(APPEND SOFACONFIG_LINK_OPTIONS_RELEASE "/LTCG")
     endif()
 
     # Experimental: compilation with MSVC/Clang-cl
