@@ -38,19 +38,19 @@ namespace sofa
 	namespace defaulttype
 	{
 
-		template<> struct DataTypeName< type::vector<sofa::type::Vec3d> > { static const char* name() { return "vector<Vec3d>"; } };
-		template<> struct DataTypeName< type::vector<sofa::type::Vec2d> > { static const char* name() { return "vector<Vec2d>"; } };
-		template<> struct DataTypeName< type::vector<double> > { static const char* name() { return "vector<double>"; } };
-		template<> struct DataTypeName< type::vector<sofa::type::Vec3f> > { static const char* name() { return "vector<Vec3f>"; } };
-		template<> struct DataTypeName< type::vector<sofa::type::Vec2f> > { static const char* name() { return "vector<Vec2f>"; } };
-		template<> struct DataTypeName< type::vector<float> > { static const char* name() { return "vector<float>"; } };
-		template<> struct DataTypeName<double> { static const char* name() { return "double"; } };
-		template<> struct DataTypeName<float> { static const char* name() { return "float"; } };
-		template<> struct DataTypeName< type::vector<int> > { static const char* name() { return "vector<int>"; } };
-		template<> struct DataTypeName< type::vector<unsigned int> > { static const char* name() { return "vector<unsigned_int>"; } };
-		template<> struct DataTypeName<bool> { static const char* name() { return "bool"; } };
+		template<> class DataTypeName< type::vector<sofa::type::Vec3d> > { public: static const std::string name() { return "vector<Vec3d>"; } };
+		template<> class DataTypeName< type::vector<sofa::type::Vec2d> > { public: static const std::string name() { return "vector<Vec2d>"; } };
+		template<> class DataTypeName< type::vector<double> > { public: static const std::string name() { return "vector<double>"; } };
+		template<> class DataTypeName< type::vector<sofa::type::Vec3f> > { public: static const std::string name() { return "vector<Vec3f>"; } };
+		template<> class DataTypeName< type::vector<sofa::type::Vec2f> > { public: static const std::string name() { return "vector<Vec2f>"; } };
+		template<> class DataTypeName< type::vector<float> > { public: static const std::string name() { return "vector<float>"; } };
+		template<> class DataTypeName<double> { public: static const std::string name() { return "double"; } };
+		template<> class DataTypeName<float> { public: static const std::string name() { return "float"; } };
+		template<> class DataTypeName< type::vector<int> > { public: static const std::string name() { return "vector<int>"; } };
+		template<> class DataTypeName< type::vector<unsigned int> > { public: static const std::string name() { return "vector<unsigned_int>"; } };
+		template<> class DataTypeName<bool> { public: static const std::string name() { return "bool"; } };
 		
-		//template<> struct DataTypeName< sofa::gpu::cuda::CudaVector<sofa::gpu::cuda::CudaVec2fTypes> > { static const char* name() { return "cudavector<CudaVec2f>"; } };
+		//template<> struct DataTypeName< sofa::gpu::cuda::CudaVector<sofa::gpu::cuda::CudaVec2fTypes> > { static const std::string name() { return "cudavector<CudaVec2f>"; } };
 		
 
 	} // namespace defaulttype
