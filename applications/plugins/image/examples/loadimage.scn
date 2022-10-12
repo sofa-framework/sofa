@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-    <RequiredPlugin name="SofaOpenglVisual"/>
-  <RequiredPlugin pluginName="image"/>
+  <Node name="plugins">
+      <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+      <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+      <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer] -->
+  </Node>
   <ImageContainer  name="image" filename="textures/cubemap_bk.bmp" transform="-5 -10 0 0 0 0 0.1 0.1 15 0 1 1" drawBB="1"/>
   <ImageViewer  name="viewer" src="@image" />
   <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
