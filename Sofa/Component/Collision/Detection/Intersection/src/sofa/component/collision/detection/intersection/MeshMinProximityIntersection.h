@@ -48,7 +48,7 @@ public:
     bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
     template<class T> bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&);
 
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);        
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
     template<class T> int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, OutputVector*);
     int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
     template<class T> int computeIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&, OutputVector*);
@@ -171,10 +171,11 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
 template <class T>
 bool MeshMinProximityIntersection::testIntersection(collision::geometry::Line& e2, collision::geometry::TSphere<T>& e1)
 {
+    static_assert(std::is_same_v<collision::geometry::Line::Coord, typename collision::geometry::TSphere<T>::Coord>, "Data mismatch");
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const type::Vec3 x32 = e2.p1()-e2.p2();
-    const type::Vec3 x31 = e1.center()-e2.p2();
+    const geometry::Line::Coord x32 = e2.p1()-e2.p2();
+    const auto x31 = e1.center()-e2.p2();
     SReal A;
     SReal b;
     A = x32*x32;
@@ -205,16 +206,15 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Line& e
 template <class T>
 int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line& e2, collision::geometry::TSphere<T>& e1, OutputVector* contacts)
 {
+    static_assert(std::is_same_v<collision::geometry::Line::Coord, typename collision::geometry::TSphere<T>::Coord>, "Data mismatch");
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const type::Vec3 x32 = e2.p1()-e2.p2();
-    const type::Vec3 x31 = e1.center()-e2.p2();
-    SReal A;
-    SReal b;
-    A = x32*x32;
-    b = x32*x31;
+    const geometry::Line::Coord x32 = e2.p1()-e2.p2();
+    const auto x31 = e1.center()-e2.p2();
+    const geometry::Line::Coord::value_type A=x32*x32;
+    const geometry::Line::Coord::value_type b=x32*x31;
 
-    SReal alpha = 0.5;
+    geometry::Line::Coord::value_type alpha = 0.5;
 
     //if (A < -0.000001 || A > 0.000001)
     {
@@ -223,10 +223,9 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line&
             return 0;
     }
 
-    type::Vec3 P = e1.center();
-    type::Vec3 Q = e2.p1() - x32 * alpha;
-    type::Vec3 QP = P-Q;
-    //Vector3 PQ = Q-P;
+    const geometry::Line::Coord& P = e1.center();
+    const geometry::Line::Coord Q = e2.p1() - x32 * alpha;
+    const geometry::Line::Coord QP = P-Q;
 
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;

@@ -266,7 +266,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     if( !onlyVisible )
         return;
 
-    static const Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
     Real maxBBox[3] = {-max_real,-max_real,-max_real}; //Warning: minimum of float/double is 0, not -inf
     Real minBBox[3] = {max_real,max_real,max_real};
 

@@ -172,14 +172,15 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, O
 
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
 {
+    static_assert(std::is_same_v<Triangle::Coord, Line::Coord>, "Data mismatch");
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal    dist2 = alarmDist*alarmDist;
-    const Vec3& p1 = e1.p1();
-    const Vec3& p2 = e1.p2();
-    const Vec3& p3 = e1.p3();
-    const Vec3& pn = e1.n();
-    const Vec3& q1 = e2.p1();
-    const Vec3& q2 = e2.p2();
+    const Triangle::Coord& p1 = e1.p1();
+    const Triangle::Coord& p2 = e1.p2();
+    const Triangle::Coord& p3 = e1.p3();
+    const Triangle::Deriv& pn = e1.n();
+    const Line::Coord& q1 = e2.p1();
+    const Line::Coord& q2 = e2.p2();
 
     const int f1 = e1.flags();
 
@@ -241,11 +242,11 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         return 0;
     }
 
-    bool neighbor =  e1.getCollisionModel() == e2.getCollisionModel() && 
+    bool neighbor =  e1.getCollisionModel() == e2.getCollisionModel() &&
         (e1.p1Index()==e2.p1Index() || e1.p1Index()==e2.p2Index() || e1.p1Index()==e2.p3Index() ||
          e1.p2Index()==e2.p1Index() || e1.p2Index()==e2.p2Index() || e1.p2Index()==e2.p3Index() ||
          e1.p3Index()==e2.p1Index() || e1.p3Index()==e2.p2Index() || e1.p3Index()==e2.p3Index());
-    
+
 
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
@@ -258,7 +259,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     const auto& q3 = e2.p3();
     auto& qn = e2.n();
 
-    
+
     if(neighbor)
         return 0;
 
@@ -279,7 +280,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         if(!bothSide1)
             qn = -pn;
         else
-            if(!bothSide2) 
+            if(!bothSide2)
                 pn = -qn;
 
     int n = 0;

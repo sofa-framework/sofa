@@ -73,6 +73,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef TPoint<DataTypes> Element;
+    static_assert(std::is_same_v<typename Element::Coord, Coord>, "Data mismatch");
     typedef type::vector<Index> VecIndex;
 
     friend class TPoint<DataTypes>;
