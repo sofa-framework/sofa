@@ -300,15 +300,15 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     if (npoints != size)
         return;
 
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
     for (Size i=0; i<size; i++)
     {
         Element e(this,i);
-        const type::Vector3& p = e.p();
+        const Coord& p = e.p();
 
         for (int c=0; c<3; c++)
         {
