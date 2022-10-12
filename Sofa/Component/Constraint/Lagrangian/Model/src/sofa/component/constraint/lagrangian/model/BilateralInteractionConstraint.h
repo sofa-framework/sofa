@@ -130,11 +130,11 @@ public:
         {
             msg_warning() << "input data 'activateAtIteration' has been deprecated, please use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327).";
         }
-        else if (arg->getAttribute("merge"))
+        if (arg->getAttribute("merge"))
         {
             msg_warning() << "input Data 'merge' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).";
         }
-        else if (arg->getAttribute("derivative"))
+        if (arg->getAttribute("derivative"))
         {
             msg_warning() << "input Data 'derivative' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).";
         }
