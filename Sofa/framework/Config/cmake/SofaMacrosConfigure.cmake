@@ -136,7 +136,7 @@ macro(sofa_add_generic directory name type)
         endif()
 
         if(${option})
-            message("Adding ${type_lower} ${name}")
+            message(STATUS "Adding ${type_lower} ${name}")
             add_subdirectory(${directory} "${ARG_BINARY_DIR}")
         endif()
 
