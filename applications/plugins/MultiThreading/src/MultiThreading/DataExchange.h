@@ -92,23 +92,6 @@ namespace sofa
             }
 
 			template<class T>
-			static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-			{
-				std::string dataTypeName = defaulttype::DataTypeName<DataTypes>::name();
-				// check for the right template
-                if ( std::strcmp( dataTypeName.c_str(), arg->getAttribute("template") ) != 0 )
-				{
-					return false;
-					// try to guess from the "from" and "to" data types
-				}
-
-
-				return BaseObject::canCreate(obj, context, arg);
-			}
-
-
-
-			template<class T>
 			static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
 			{	
 				std::string fromPath;
