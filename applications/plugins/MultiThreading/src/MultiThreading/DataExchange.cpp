@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_MULTITHREADING_PLUGIN_DATAEXCHANGE_CPP
 #include <MultiThreading/DataExchange.inl>
 
 #include <MultiThreading/config.h>
