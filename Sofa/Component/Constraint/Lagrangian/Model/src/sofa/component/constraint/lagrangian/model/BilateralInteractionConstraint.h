@@ -106,11 +106,10 @@ protected:
     Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
 
 
-    /// Link to be set to the topology container in the component graph.
+    SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
     SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1;
 
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2;
+    SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2; ///< Link to be set to the second topology container in order to support topological changes
 
     std::vector<Vec3d> prevForces;
 
