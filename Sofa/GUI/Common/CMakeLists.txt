@@ -74,7 +74,7 @@ set (COMPAT_HEADER_FILES
     ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ViewerFactory.h
 )
 
-find_package(Sofa.Simulation.Common REQUIRED)
+sofa_find_package(Sofa.Simulation.Common REQUIRED)
 sofa_find_package(Sofa.Component.Setting REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
 sofa_find_package(Sofa.GUI.Component REQUIRED)

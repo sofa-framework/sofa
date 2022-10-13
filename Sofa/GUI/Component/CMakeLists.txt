@@ -52,7 +52,7 @@ set(SOURCE_FILES
 
 )
 
-find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Setting REQUIRED)
 sofa_find_package(Sofa.Component.Visual REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
