@@ -1,6 +1,12 @@
 <Node name="root" dt="0.04">
 	<VisualStyle displayFlags="showBehaviorModels showForceFields" />
-	<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
+	<RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [IndexValueMapper] -->
+	<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+	<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+	<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+	<RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+	<RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedConstraint MechanicalObject PlaneForceField TetrahedronFEMForceField UniformMass] -->
 	
 	<Node name="M1">
 		<MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />

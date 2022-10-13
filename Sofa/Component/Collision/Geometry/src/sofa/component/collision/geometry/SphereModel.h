@@ -40,6 +40,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real   Real;
     typedef typename TDataTypes::CPos Coord;
+    static_assert(std::is_same_v<TSphere<DataTypes>::Coord, Coord>, "Data mismatch");
 
     typedef SphereCollisionModel<DataTypes> ParentModel;
 

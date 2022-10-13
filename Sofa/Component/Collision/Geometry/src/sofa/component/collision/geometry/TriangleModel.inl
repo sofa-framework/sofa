@@ -383,17 +383,17 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
     for (Size i=0; i<size; i++)
     {
         Element t(this,i);
-        const type::Vector3& pt1 = t.p1();
-        const type::Vector3& pt2 = t.p2();
-        const type::Vector3& pt3 = t.p3();
+        const Coord& pt1 = t.p1();
+        const Coord& pt2 = t.p2();
+        const Coord& pt3 = t.p3();
 
         for (int c=0; c<3; c++)
         {
