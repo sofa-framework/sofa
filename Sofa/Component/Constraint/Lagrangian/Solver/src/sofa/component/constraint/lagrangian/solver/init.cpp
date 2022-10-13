@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/constraint/lagrangian/solver/init.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -28,6 +29,7 @@ extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -52,6 +54,13 @@ void init()
     {
         first = false;
     }
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
 }
 
 } // namespace sofa::component::constraint::lagrangian::solver
