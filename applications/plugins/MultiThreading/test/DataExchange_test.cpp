@@ -42,7 +42,7 @@ TEST(DataExchange, getTemplateName)
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<sofa::type::vector<double>>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "vector<double>");
+        EXPECT_EQ(engine->getTemplateName(), "vector<d>");
     }
     {
         const auto engine = sofa::core::objectmodel::New<
@@ -54,7 +54,7 @@ TEST(DataExchange, getTemplateName)
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<double>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "double");
+        EXPECT_EQ(engine->getTemplateName(), "d");
     }
 
 
@@ -75,7 +75,7 @@ TEST(DataExchange, getTemplateName)
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<sofa::type::vector<float>>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "vector<float>");
+        EXPECT_EQ(engine->getTemplateName(), "vector<f>");
     }
     {
         const auto engine = sofa::core::objectmodel::New<
@@ -87,20 +87,20 @@ TEST(DataExchange, getTemplateName)
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<float>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "float");
+        EXPECT_EQ(engine->getTemplateName(), "f");
     }
 
     {
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<sofa::type::vector<int>>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "vector<int>");
+        EXPECT_EQ(engine->getTemplateName(), "vector<i>");
     }
     {
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<sofa::type::vector<unsigned int>>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "vector<unsigned_int>");
+        EXPECT_EQ(engine->getTemplateName(), "vector<I>");
     }
     {
         const auto engine = sofa::core::objectmodel::New<
