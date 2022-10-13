@@ -341,7 +341,13 @@ BarycentricMapperMeshTopology<In,Out>::createPointInLine ( const typename Out::C
     const typename In::Coord p0 = ( *points ) [elem[0]];
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
-    baryCoords[0] = ( ( pos*pA ) /pA.norm2() );
+
+    const SReal L2 = pA.norm2(); 
+    if (L2 < FLT_EPSILON) // in case of null length edge, avoid division by 0
+        baryCoords[0] = 0.0;
+    else
+        baryCoords[0] = ((pos * pA) / L2);
+
     return this->addPointInLine ( lineIndex, baryCoords );
 }
 
