@@ -127,25 +127,26 @@ void RegularGridTopology::setPos(BoundingBox b)
 void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)
 {
     SReal p0x=xmin, p0y=ymin, p0z=zmin;
+    const Vec3i _n = d_n.getValue() - Vec3i(1,1,1);
 
-    if (d_n.getValue()[0]>1)
-        setDx(Vector3((xmax-xmin)/(d_n.getValue()[0]-1), 0_sreal, 0_sreal));
+    if (_n[0] > 0.0)
+        setDx(Vector3((xmax - xmin) / _n[0], 0_sreal, 0_sreal));
     else
     {
         setDx(Vector3(xmax-xmin, 0_sreal, 0_sreal));
         p0x = (xmax+xmin)/2;
     }
 
-    if (d_n.getValue()[1]>1)
-        setDy(Vector3(0_sreal,(ymax-ymin)/(d_n.getValue()[1]-1), 0_sreal));
+    if (_n[1] > 0)
+        setDy(Vector3(0_sreal, (ymax - ymin) / _n[1], 0_sreal));
     else
     {
         setDy(Vector3(0_sreal, ymax-ymin, 0_sreal));
         p0y = (ymax+ymin)/2;
     }
 
-    if (d_n.getValue()[2]>1)
-        setDz(Vector3(0_sreal, 0_sreal,(zmax-zmin)/(d_n.getValue()[2]-1)));
+    if (_n[2] > 0)
+        setDz(Vector3(0_sreal, 0_sreal, (zmax - zmin) / _n[2]));
     else
     {
         setDz(Vector3(0_sreal, 0_sreal, zmax-zmin));
