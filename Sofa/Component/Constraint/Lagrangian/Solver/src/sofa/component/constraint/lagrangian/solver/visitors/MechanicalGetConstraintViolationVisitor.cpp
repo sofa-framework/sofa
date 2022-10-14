@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,61 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/constraint/lagrangian/solver/config.h>
-
-#include <sofa/core/behavior/ConstraintSolver.h>
-
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintViolationVisitor.h>
-
-#include <sofa/linearalgebra/FullMatrix.h>
-
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 
+MechanicalGetConstraintViolationVisitor::MechanicalGetConstraintViolationVisitor(
+    const core::ConstraintParams* params, sofa::linearalgebra::BaseVector* v): simulation::BaseMechanicalVisitor(params)
+    , cparams(params)
+    , m_v(v)
+{}
 
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintProblem
+simulation::Visitor::Result MechanicalGetConstraintViolationVisitor::fwdConstraintSet(
+    simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
-public:
-    sofa::linearalgebra::LPtrFullMatrix<SReal> W;
-    sofa::linearalgebra::FullVector<SReal> dFree, f;
+    ctime_t t0 = begin(node, c);
+    c->getConstraintViolation(cparams, m_v);
+    end(node, c, t0);
+    return RESULT_CONTINUE;
+}
 
-    ConstraintProblem();
-    virtual ~ConstraintProblem();
-
-    SReal tolerance;
-    int maxIterations;
-
-    virtual void clear(int nbConstraints);
-    int getDimension()	{ return dimension; }
-    SReal** getW()		{ return W.lptr(); }
-    SReal* getDfree()	{ return dFree.ptr(); }
-    SReal* getF()		{ return f.ptr(); }
-
-    virtual void solveTimed(SReal tolerance, int maxIt, SReal timeout) = 0;
-
-    unsigned int getProblemId();
-
-protected:
-    int dimension;
-    unsigned int problemId;
-};
-
-
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintSolverImpl : public sofa::core::behavior::ConstraintSolver
+bool MechanicalGetConstraintViolationVisitor::stopAtMechanicalMapping(simulation::Node* node,
+    core::BaseMapping* base_mapping)
 {
-public:
-    SOFA_ABSTRACT_CLASS(ConstraintSolverImpl, sofa::core::behavior::ConstraintSolver)
+    return false; // !map->isMechanical();
+}
+}
 
-    ~ConstraintSolverImpl() override;
-
-    virtual ConstraintProblem* getConstraintProblem() = 0;
-
-    /// Do not use the following LCPs until the next call to this function.
-    /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
-    virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) = 0;
-};
-
-} //namespace sofa::component::constraint::lagrangian::solver
