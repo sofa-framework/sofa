@@ -95,7 +95,7 @@ void ConstraintForceExporter<DataTypes>::draw(const sofa::core::visual::VisualPa
     const float lineSize = 2.0f;
     const double forceScale = d_drawForceScale.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     std::vector<type::Vector3> vertices;
     vertices.reserve(constraintForces.size() * 2);
@@ -113,8 +113,6 @@ void ConstraintForceExporter<DataTypes>::draw(const sofa::core::visual::VisualPa
                                origin[2] + force[2] * forceScale );
     }
     vparams->drawTool()->drawLines(vertices, lineSize, sofa::type::RGBAColor::white());
-
-    vparams->drawTool()->restoreLastState();
 }
 
 template <class DataTypes>
