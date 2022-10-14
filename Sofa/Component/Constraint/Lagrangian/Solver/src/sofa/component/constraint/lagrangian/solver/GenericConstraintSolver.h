@@ -25,6 +25,7 @@
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/helper/map.h>
 
 #include <sofa/simulation/CpuTask.h>

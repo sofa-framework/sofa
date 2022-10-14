@@ -31,6 +31,12 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fwd.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
+using sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
+
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintInfoVisitor;
 
@@ -39,9 +45,6 @@ using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
-using sofa::simulation::mechanicalvisitor::MechanicalAccumulateConstraint;
 
 using sofa::core::VecId;
 
@@ -303,9 +306,17 @@ void LCPConstraintSolver::build_LCP()
     }
 
     {
-        helper::ScopedAdvancedTimer accumulateConstraintsTimer("Accumulate Constraint");
-        MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
-        accCtr.execute(context);
+        helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
+
+        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
+        buildConstraintMatrix.execute(context);
+    }
+
+    {
+        helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
+
+        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
+        accumulateMatrixDeriv.execute(context);
     }
 
     _mu = mu.getValue();
@@ -693,9 +704,17 @@ void LCPConstraintSolver::build_problem_info()
     }
 
     {
-        helper::ScopedAdvancedTimer accumulateConstraintsTimer("Accumulate Constraint");
-        MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
-        accCtr.execute(context);
+        helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
+
+        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
+        buildConstraintMatrix.execute(context);
+    }
+
+    {
+        helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
+
+        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
+        accumulateMatrixDeriv.execute(context);
     }
 
     _mu = mu.getValue();
