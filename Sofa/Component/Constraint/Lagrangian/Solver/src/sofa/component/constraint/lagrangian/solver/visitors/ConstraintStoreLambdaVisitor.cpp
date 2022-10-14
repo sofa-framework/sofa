@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h>
+#include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 #include <sofa/core/ConstraintParams.h>
 
 namespace sofa::component::constraint::lagrangian::solver
