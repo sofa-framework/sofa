@@ -31,7 +31,6 @@
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <functional>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
@@ -54,7 +53,6 @@ namespace sofa::component::constraint::lagrangian::solver
 namespace
 {
 
-using sofa::helper::ReadAccessor;
 using sofa::helper::WriteOnlyAccessor;
 using sofa::core::objectmodel::Data;
 
@@ -321,8 +319,7 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
             }
         }
 
-        if (!foundCC)
-            msg_error() << "WARNING: no constraintCorrection found for constraint" << c_id ;
+        msg_error_when(!foundCC) << "No constraintCorrection found for constraint" << c_id ;
 
         SReal** w =  current_cp->getW();
         for(unsigned int m = c_id; m < c_id + l; m++)
@@ -337,60 +334,72 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
         current_cp->change_sequence=true;
 }
 
+void GenericConstraintSolver::parallelBuildSystem_matrixAssembly(const core::ConstraintParams* cParams)
+{
+    simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
+    simulation::CpuTask::Status status;
+
+    type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
+    sofa::Index nbTasks = constraintCorrections.size();
+    tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
+    sofa::Index dim = current_cp->W.rowSize();
+
+    for (sofa::Index i=0; i<nbTasks; i++)
+    {
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        if (!cc->isActive())
+            continue;
+
+        tasks[i].set(cc, *cParams, dim);
+        taskScheduler->addTask(&tasks[i]);
+    }
+    taskScheduler->workUntilDone(&status);
+
+    auto & W = current_cp->W;
+
+    // Accumulate the contribution of each constraints
+    // into the system's compliant matrix W
+    for (sofa::Index i = 0; i < nbTasks; i++)
+    {
+        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        if (!cc->isActive())
+            continue;
+
+        const auto & Wi = tasks[i].W;
+
+        for (sofa::Index j = 0; j < dim; ++j)
+            for (sofa::Index l = 0; l < dim; ++l)
+                W.add(j, l, Wi.element(j,l));
+    }
+}
+
+void GenericConstraintSolver::sequentialBuildSystem_matrixAssembly(const core::ConstraintParams* cParams)
+{
+    for (auto* cc : constraintCorrections)
+    {
+        if (!cc->isActive())
+            continue;
+
+        sofa::helper::ScopedAdvancedTimer addComplianceInConstraintSpaceTimer("Object name: "+cc->getName());
+        cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
+    }
+}
+
 void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintParams *cParams)
 {
     sofa::helper::ScopedAdvancedTimer getComplianceTimer("Get Compliance");
-    msg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
+    dmsg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
     if(d_multithreading.getValue())
     {
-        simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
-        simulation::CpuTask::Status status;
-
-        type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
-        sofa::Index nbTasks = constraintCorrections.size();
-        tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
-        sofa::Index dim = current_cp->W.rowSize();
-
-        for (sofa::Index i=0; i<nbTasks; i++)
-        {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-            if (!cc->isActive())
-                continue;
-
-            tasks[i].set(cc, *cParams, dim);
-            taskScheduler->addTask(&tasks[i]);
-        }
-        taskScheduler->workUntilDone(&status);
-
-        auto & W = current_cp->W;
-
-        // Accumulate the contribution of each constraints
-        // into the system's compliant matrix W
-        for (sofa::Index i = 0; i < nbTasks; i++) {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-            if (!cc->isActive())
-                continue;
-
-            const auto & Wi = tasks[i].W;
-
-            for (sofa::Index j = 0; j < dim; ++j)
-                for (sofa::Index l = 0; l < dim; ++l)
-                    W.add(j, l, Wi.element(j,l));
-        }
-
-    } else {
-        for (auto* cc : constraintCorrections)
-        {
-            if (!cc->isActive())
-                continue;
-
-            sofa::helper::ScopedAdvancedTimer addComplianceInConstraintSpaceTimer("Object name: "+cc->getName());
-            cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
-        }
+        parallelBuildSystem_matrixAssembly(cParams);
+    }
+    else
+    {
+        sequentialBuildSystem_matrixAssembly(cParams);
     }
 
-    msg_info() << " computeCompliance_done "  ;
+    dmsg_info() << " computeCompliance_done "  ;
 }
 
 void GenericConstraintSolver::rebuildSystem(SReal massFactor, SReal forceFactor)
