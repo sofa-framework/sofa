@@ -30,6 +30,7 @@
 
 #include <sofa/simulation/CpuTask.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -199,33 +200,6 @@ private:
         core::ConstraintParams cparams;
         friend class GenericConstraintSolver;
     };
-};
-
-
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res);
-
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override;
-
-    bool isThreadSafe() const override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override { }
-#endif
-private:
-    /// Constraint parameters
-    const sofa::core::ConstraintParams *cparams;
-
-    std::vector<core::behavior::ConstraintResolution*>& _res;
-    unsigned int _offset;
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver
