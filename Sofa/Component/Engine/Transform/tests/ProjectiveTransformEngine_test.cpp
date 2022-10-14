@@ -19,28 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/MeanComputation.inl>
+#include <gtest/gtest.h>
+#include <sofa/component/engine/transform/ProjectiveTransformEngine.h>
 
-#include <sofa/core/ObjectFactory.h>
-
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-namespace sofa::component::engine
+namespace sofa
 {
-
-int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
-        .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
-        .add< MeanComputation<defaulttype::Vec1Types> >()
-        .add< MeanComputation<defaulttype::Vec2Types> >()
-        .add< MeanComputation<defaulttype::Rigid2Types> >()
-        .add< MeanComputation<defaulttype::Rigid3Types> >()
-        ;
-
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec3Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec1Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid3Types >;
-
-} // namespace sofa::component::engine
+TEST(ProjectiveTransformEngine, getTemplateName)
+{
+    const auto engine = sofa::core::objectmodel::New<
+        sofa::component::engine::transform::ProjectiveTransformEngine<sofa::defaulttype::Vec3Types>
+    >();
+    EXPECT_EQ(engine->getTemplateName(), "Vec3d");
+}
+}

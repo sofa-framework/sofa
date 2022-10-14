@@ -19,28 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/MeanComputation.inl>
+#include <gtest/gtest.h>
+#include <sofa/component/engine/transform/DisplacementMatrixEngine.h>
 
-#include <sofa/core/ObjectFactory.h>
-
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-namespace sofa::component::engine
+namespace sofa
 {
-
-int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
-        .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
-        .add< MeanComputation<defaulttype::Vec1Types> >()
-        .add< MeanComputation<defaulttype::Vec2Types> >()
-        .add< MeanComputation<defaulttype::Rigid2Types> >()
-        .add< MeanComputation<defaulttype::Rigid3Types> >()
-        ;
-
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec3Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec1Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid3Types >;
-
-} // namespace sofa::component::engine
+TEST(DisplacementTransformEngine, getTemplateName)
+{
+    {
+        const auto engine = sofa::core::objectmodel::New<
+            sofa::component::engine::transform::DisplacementTransformEngine<sofa::defaulttype::Rigid3Types, sofa::type::Mat4x4>
+        >();
+        EXPECT_EQ(engine->getTemplateName(), "Rigid3d,Mat4x4d");
+    }
+    {
+        const auto engine = sofa::core::objectmodel::New<
+            sofa::component::engine::transform::DisplacementTransformEngine<sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types::Coord>
+        >();
+        EXPECT_EQ(engine->getTemplateName(), "Rigid3d,RigidCoord3d");
+    }
+}
+}
