@@ -133,12 +133,15 @@ void ConstraintForceExporter<DataTypes>::computeForce()
     constraintForces.clear();
     constraintForces.resize(positions.size());
 
+    // force are supposed to already take into account dt
+    const auto dt = this->getContext()->getDt();
+
     for (auto rowIt = constraintMatrix.begin(); rowIt != constraintMatrix.end(); ++rowIt)
     {
         assert(rowIt.index() <= dimension);
         for (auto colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
         {
-            constraintForces[colIt.index()] += colIt.val() * lambdas[rowIt.index()];
+            constraintForces[colIt.index()] += colIt.val() * lambdas[rowIt.index()] / dt;
         }
     }
 }
