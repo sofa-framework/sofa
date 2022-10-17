@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,28 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/MeanComputation.inl>
 
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/constraint/lagrangian/solver/config.h>
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-namespace sofa::component::engine
+namespace sofa::component::constraint::lagrangian::solver
 {
 
-int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
-        .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
-        .add< MeanComputation<defaulttype::Vec1Types> >()
-        .add< MeanComputation<defaulttype::Vec2Types> >()
-        .add< MeanComputation<defaulttype::Rigid2Types> >()
-        .add< MeanComputation<defaulttype::Rigid3Types> >()
-        ;
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
+{
+public:
+    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res);
 
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec3Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec1Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid3Types >;
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
-} // namespace sofa::component::engine
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override;
+
+    bool isThreadSafe() const override;
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override { }
+#endif
+private:
+    /// Constraint parameters
+    const sofa::core::ConstraintParams *cparams;
+
+    std::vector<core::behavior::ConstraintResolution*>& _res;
+    unsigned int _offset;
+};
+
+}

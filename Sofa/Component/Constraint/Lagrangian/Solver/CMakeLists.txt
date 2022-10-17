@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SOFACOMPONENTCONSTRAINTLAGRANGIANSOLVER_SOURCE_DIR}/LCPConstraintSolver.h
 
     ${SOFACOMPONENTCONSTRAINTLAGRANGIANSOLVER_SOURCE_DIR}/visitors/MechanicalGetConstraintViolationVisitor.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIANSOLVER_SOURCE_DIR}/visitors/MechanicalGetConstraintResolutionVisitor.h
 )
 
 set(SOURCE_FILES
@@ -22,6 +23,7 @@ set(SOURCE_FILES
     ${SOFACOMPONENTCONSTRAINTLAGRANGIANSOLVER_SOURCE_DIR}/LCPConstraintSolver.cpp
 
     ${SOFACOMPONENTCONSTRAINTLAGRANGIANSOLVER_SOURCE_DIR}/visitors/MechanicalGetConstraintViolationVisitor.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIANSOLVER_SOURCE_DIR}/visitors/MechanicalGetConstraintResolutionVisitor.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)

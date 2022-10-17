@@ -27,6 +27,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <sofa/defaulttype/DataTypeInfo.h>
+
 namespace sofa::defaulttype
 {
 
@@ -127,4 +129,13 @@ static RegisterTemplateAlias Vec3dAlias("Vec3d", sofa::defaulttype::Vec3Types::N
 static RegisterTemplateAlias Vec6dAlias("Vec6d", sofa::defaulttype::Vec6Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid2dAlias("Rigid2d", sofa::defaulttype::Rigid2Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid3dAlias("Rigid3d", sofa::defaulttype::Rigid3Types::Name(), isSRealFloat());
+
+// Compatibility aliases used previously in DataExchange (see PR#3380)
+static RegisterTemplateAlias floatAlias("float", sofa::defaulttype::DataTypeName<float>::name(), true);
+static RegisterTemplateAlias doubleAlias("double", sofa::defaulttype::DataTypeName<double>::name(), true);
+static RegisterTemplateAlias vector_intAlias("vector<int>", sofa::defaulttype::DataTypeName<sofa::type::vector<int> >::name(), true);
+static RegisterTemplateAlias vector_uintAlias("vector<unsigned_int>", sofa::defaulttype::DataTypeName<sofa::type::vector<unsigned int> >::name(), true);
+static RegisterTemplateAlias vector_floatAlias("vector<float>", sofa::defaulttype::DataTypeName<sofa::type::vector<float> >::name(), true);
+static RegisterTemplateAlias vector_doubleAlias("vector<double>", sofa::defaulttype::DataTypeName<sofa::type::vector<double> >::name(), true);
+
 } // namespace sofa::defaulttype
