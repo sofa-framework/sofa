@@ -58,7 +58,7 @@ void init()
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(MODULE_NAME));
     return classes.c_str();
 }
 } // namespace sofa::component::engine::analyze
