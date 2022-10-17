@@ -345,13 +345,16 @@ bool EdgeSetTopology_test::checkEdgeDataGraph()
     EXPECT_EQ(edgeHandlers.size(), 2);
 
     sofa::core::topology::TopologyHandler* vertexH0 = *vertexHandlers.cbegin();
-    sofa::core::topology::TopologyHandler* edgeH0 = *vertexHandlers.cbegin();
-    sofa::core::topology::TopologyHandler* edgeH1 = *(vertexHandlers.cbegin()++);
-
     EXPECT_EQ(vertexH0->getName(), "TopologyDataHandler( MeshMatrixMass )vertexMass");
+
+    auto itHandler = edgeHandlers.begin();
+    sofa::core::topology::TopologyHandler* edgeH0 = *itHandler;
     EXPECT_EQ(edgeH0->getName(), "TopologyDataHandler( MeshMatrixMass )edgeMass");
+
+    itHandler++;
+    sofa::core::topology::TopologyHandler* edgeH1 = *itHandler;
     EXPECT_EQ(edgeH1->getName(), "TopologyDataHandler( VectorSpringForceField )springs");
-    
+        
     return true;
 }
 
