@@ -1338,47 +1338,6 @@ sofa::core::MultiVecDerivId GenericConstraintSolver::getDx() const
     return m_dxId;
 }
 
-MechanicalGetConstraintResolutionVisitor::MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res)
-: simulation::BaseMechanicalVisitor(params)
-, cparams(params)
-, _res(res)
-, _offset(0)
-{
-#ifdef SOFA_DUMP_VISITOR_INFO
-  setReadWriteVectors();
-#endif
-}
-
-MechanicalGetConstraintResolutionVisitor::Result MechanicalGetConstraintResolutionVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
-{
-  if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
-  {
-    ctime_t t0 = begin(node, c);
-    c->getConstraintResolution(cparams, _res, _offset);
-    end(node, c, t0);
-  }
-  return RESULT_CONTINUE;
-}
-
-/// Return a class name for this visitor
-/// Only used for debugging / profiling purposes
-const char* MechanicalGetConstraintResolutionVisitor::getClassName() const
-{
-    return "MechanicalGetConstraintResolutionVisitor";
-}
-
-bool MechanicalGetConstraintResolutionVisitor::isThreadSafe() const
-{
-    return false;
-}
-
-bool MechanicalGetConstraintResolutionVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-    {
-        SOFA_UNUSED(node);
-        SOFA_UNUSED(map);
-        return false;
-    }
-
 
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
         .add< GenericConstraintSolver >();
