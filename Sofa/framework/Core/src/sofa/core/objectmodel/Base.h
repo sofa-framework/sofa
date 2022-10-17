@@ -60,7 +60,7 @@ public:
     typedef Base* Ptr;
 
     using SPtr = sptr<Base>;
-    
+
     using MyClass = TClass< Base, void >;
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
@@ -327,8 +327,7 @@ public:
 
     void clearLoggedMessages() const ;
 
-    inline bool notMuted() const { return f_printLog.getValue(); }
-
+    inline bool notMuted() const { return !m_isMuted; }
 
 protected:
     /// Helper method used by initData()
@@ -342,8 +341,6 @@ protected:
         initData0( field, res, name, help, isDisplayed, isReadOnly );
         res.value = value;
     }
-
-
 
 public:
 
@@ -371,6 +368,8 @@ public:
 
     ///@}
 
+private:
+    bool m_isMuted {true};
 
 protected:
     /// List of fields (Data instances)
