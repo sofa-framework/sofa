@@ -314,7 +314,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
-        std::vector<helper::visual::DrawTool::Vector3> points;
+        std::vector<helper::visual::DrawTool::Vec3> points;
         points.reserve(size * 2);
         for (Size i=0; i<size; i++)
         {
@@ -322,8 +322,8 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             if(l.isActive())
             {
                 // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vector3, Coord>
-                points.emplace_back(helper::visual::DrawTool::Vector3{l.p1()});
-                points.emplace_back(helper::visual::DrawTool::Vector3{l.p2()});
+                points.emplace_back(helper::visual::DrawTool::Vec3{l.p1()});
+                points.emplace_back(helper::visual::DrawTool::Vec3{l.p2()});
             }
         }
 

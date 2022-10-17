@@ -823,39 +823,34 @@ void QtGLViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
-
-    //Tracking Mode
-
-    if( isControlPressed() ) // pass event to the scene data structure
+    if (!isControlPressed() && !e->isAutoRepeat())
     {
-        if (groot)
+        if (groot )
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
             groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         }
     }
-    else  // control the GUI
+
+    switch(e->key())
     {
-        switch(e->key())
-        {
-        case Qt::Key_A: // axis
-        case Qt::Key_H: // help page
-        case Qt::Key_G: // show grid
-        {
-            // these shortcuts are handled by qglviewer
-            QGLViewer::keyPressEvent(e);
-            break;
-        }
-        case Qt::Key_C:
-        {
-            viewAll();
-            break;
-        }
-        default:
-        {
-            SofaViewer::keyPressEvent(e);
-        }
-        }
+    case Qt::Key_A: // axis
+    case Qt::Key_H: // help page
+    case Qt::Key_G: // show grid
+    {
+        // these shortcuts are handled by qglviewer
+        QGLViewer::keyPressEvent(e);
+        break;
+    }
+    case Qt::Key_C:
+    {
+        viewAll();
+        break;
+    }
+    default:
+    {
+        SofaViewer::keyPressEvent(e);
+    }
     }
     update();
 }
@@ -1124,7 +1119,7 @@ QString QtGLViewer::helpString() const
                 <li><b>V</b>: TO SAVE A VIDEO<br>\
                 Each time the frame is updated a screenshot is saved<br></li>\
                 <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>"
-    );
+                );
 
     return text;
 }
