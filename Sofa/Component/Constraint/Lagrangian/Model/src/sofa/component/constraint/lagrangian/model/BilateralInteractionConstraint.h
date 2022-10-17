@@ -98,19 +98,16 @@ protected:
     VecCoord initialDifference;
 
     Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
-    Data<int> activateAtIteration; ///< activate constraint at specified interation (0 = always enabled, -1=disabled)
-    Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
-    Data<bool> derivative; ///< TEST: derivative
+    Data<bool> d_activate; ///< bool to control constraint activation
     Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
     std::vector<Vec3d> prevForces;
 
-    // grouped square constraints
-    bool squareXYZ[3];
-    Deriv dfree_square_total;
-
-
-    bool activated;
-    int iteration;
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data 'activateAtIteration' has been deprecated, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
+    Data<int> activateAtIteration; ///< activate constraint at specified interation (0 = always enabled, -1=disabled)
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data 'merge' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data 'derivative' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    Data<bool> derivative; ///< TEST: derivative
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2) ;
     BilateralInteractionConstraint(MechanicalState* object) ;
@@ -124,7 +121,24 @@ public:
 
     void reinit() override;
 
-    void reset() override;
+    /// Temporary function to warn the user when old attribute names are used
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    {
+        Inherit::parse(arg);
+
+        if (arg->getAttribute("activateAtIteration"))
+        {
+            msg_warning() << "input data 'activateAtIteration' has been deprecated, please use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327).";
+        }
+        if (arg->getAttribute("merge"))
+        {
+            msg_warning() << "input Data 'merge' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).";
+        }
+        if (arg->getAttribute("derivative"))
+        {
+            msg_warning() << "input Data 'derivative' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).";
+        }
+    }
 
     void buildConstraintMatrix(const ConstraintParams* cParams,
                                        DataMatrixDeriv &c1, DataMatrixDeriv &c2,

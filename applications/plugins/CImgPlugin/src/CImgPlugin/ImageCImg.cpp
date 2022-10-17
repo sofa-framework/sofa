@@ -40,7 +40,7 @@ ImageCImgCreators::ImageCImgCreators()
         const std::string& ext = cimgSupportedExtensions[i];
         if (!sofa::helper::io::Image::FactoryImage::HasKey(ext))
         {
-            creators.push_back(new Creator<helper::io::Image::FactoryImage, ImageCImg>(ext));
+            creators.push_back(std::make_shared<Creator<helper::io::Image::FactoryImage, ImageCImg>>(ext));
         }
     }
 

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-  <RequiredPlugin pluginName="image"/>
+  <Node name="plugins">
+    <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageViewer] -->
+  </Node>
   <ImageContainer name="image" template="ImageF" filename="data/vectors.inr.gz" />  
   <ImageViewer name="viewer" template="ImageF" src="@image"  vectorvis="4 4 1 0 1 LowerTriRowMajor"/>
 </Node>

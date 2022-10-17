@@ -39,7 +39,7 @@ set(SOURCE_FILES
     ${SOFA_SIMULATION_COMMON_SRC}/xml/XML.cpp
 )
 
-find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(TinyXML REQUIRED)
 

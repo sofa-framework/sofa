@@ -33,6 +33,36 @@
 #include <limits>
 #include <sofa/simulation/Node.h>
 
+namespace
+{
+    template<typename DataTypes>
+    void get3DFrameFromDPosNormal(const typename DataTypes::DPos& dposnormal, sofa::type::Vec3& v1, sofa::type::Vec3& v2, sofa::type::Vec3& normal)
+    {
+        for (auto i = 0; i < dposnormal.size() && i < 3; i++)
+            normal[i] = dposnormal[i];
+
+        // find a first vector inside the plane
+        if (std::abs(normal[0]) > 0.0)
+        {
+            v1 = sofa::type::Vec3(-normal[1] / normal[0], 1.0, 0.0);
+        }
+        else if (std::abs(normal[1]) > 0.0)
+        {
+            v1 = sofa::type::Vec3(1.0, -normal[0] / normal[1], 0.0);
+        }
+        else if (std::abs(normal[2]) > 0.0)
+        {
+            v1 = sofa::type::Vec3(1.0, 0.0, -normal[0] / normal[2]);
+        }
+
+        v1.normalize();
+
+        // find a second vector inside the plane and orthogonal to the first
+        v2 = v1.cross(normal);
+        v2.normalize();
+    }
+}
+
 namespace sofa::component::mechanicalload
 {
 
@@ -286,19 +316,8 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    type::Vec3d normal { d_planeNormal.getValue() };
-
-    // find a first vector inside the plane
-    type::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
-    v1.normalize();
-
-    // find a second vector inside the plane and orthogonal to the first
-    type::Vec3d v2;
-    v2 = v1.cross(normal);
-    v2.normalize();
+    type::Vec3 normal{type::NOINIT}, v1{ type::NOINIT }, v2{ type::NOINIT };
+    get3DFrameFromDPosNormal<DataTypes>(d_planeNormal.getValue(), v1, v2, normal);
 
     const type::Vec3d center = normal*d_planeD.getValue();
     type::Vec3d corners[4];
@@ -361,26 +380,18 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     if (onlyVisible && !d_drawIsEnabled.getValue())
         return;
 
-    const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    constexpr SReal max_real = std::numeric_limits<SReal>::max();
+    constexpr SReal min_real = std::numeric_limits<SReal>::lowest();
+    SReal maxBBox[3] = {min_real,min_real,min_real};
+    SReal minBBox[3] = {max_real,max_real,max_real};
 
-    type::Vec3d normal ( d_planeNormal.getValue() );
     const SReal size = d_drawSize.getValue();
 
-    // find a first vector inside the plane
-    type::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
-    v1.normalize();
+    type::Vec3 normal{}, v1{}, v2{};
+    get3DFrameFromDPosNormal<DataTypes>(d_planeNormal.getValue(), v1, v2, normal);
 
-    type::Vec3d v2 = v1.cross(normal);
-    v2.normalize();
-
-    const type::Vec3d center = normal*d_planeD.getValue();
-    type::Vec3d corners[4];
+    const type::Vec3& center = normal*d_planeD.getValue();
+    type::Vec3 corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
     corners[2] = center+v1*size+v2*size;
@@ -390,11 +401,11 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     {
         for (int c=0; c<3; c++)
         {
-            if (corners[i][c] > maxBBox[c]) maxBBox[c] = (Real)corners[i][c];
-            if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
+            if (corners[i][c] > maxBBox[c]) maxBBox[c] = corners[i][c];
+            if (corners[i][c] < minBBox[c]) minBBox[c] = corners[i][c];
         }
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 } // namespace sofa::component::mechanicalload

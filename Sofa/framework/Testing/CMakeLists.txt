@@ -39,7 +39,7 @@ set (COMPAT_HEADER_FILES
     ${COMPATSRC_ROOT}/SofaSimulationGraph/testing/BaseSimulationTest.h
 )
 
-find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
