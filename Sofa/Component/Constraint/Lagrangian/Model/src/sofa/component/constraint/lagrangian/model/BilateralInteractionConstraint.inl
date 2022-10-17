@@ -316,9 +316,6 @@ void BilateralInteractionConstraint<DataTypes>::removeContact(int objectId, Subs
     SubsetIndices& m2Indices = *this->m2.beginEdit();
     VecDeriv& wrest = *this->restVector.beginEdit();
 
-    int lastState1Id = this->mstate1->getSize() - 1;
-    int lastState2Id = this->mstate2->getSize() - 1;
-
     const SubsetIndices& cIndices1 = m1.getValue();
     const SubsetIndices& cIndices2 = m2.getValue();
 
