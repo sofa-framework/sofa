@@ -129,7 +129,7 @@ void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax,
     SReal p0x=xmin, p0y=ymin, p0z=zmin;
     const Vec3i _n = d_n.getValue() - Vec3i(1,1,1);
 
-    if (_n[0] > 0.0)
+    if (_n[0] > 0)
         setDx(Vector3((xmax - xmin) / _n[0], 0_sreal, 0_sreal));
     else
     {
