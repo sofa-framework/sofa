@@ -70,6 +70,7 @@ void DistanceGridForceField<DataTypes>::init()
     if (grid == nullptr)
     {
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        msg_error() << "Failed to initialize: Invalid distance grid";
         return;
     }
 
