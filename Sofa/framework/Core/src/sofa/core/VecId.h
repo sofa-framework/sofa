@@ -40,12 +40,7 @@ enum VecType
     V_MATDERIV,
 };
 
-static const std::unordered_map<VecType, std::string> VecTypeLabels {
-    {V_ALL, "(V_ALL)"},
-    {V_COORD, "(V_COORD)"},
-    {V_DERIV, "(V_DERIV)"},
-    {V_MATDERIV, "(V_MATDERIV)"}
-};
+extern const std::unordered_map<VecType, std::string> VecTypeLabels;
 
 /// Types of vectors that can be stored in State
 enum VecAccess
