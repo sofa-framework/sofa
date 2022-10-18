@@ -21,11 +21,10 @@
 ******************************************************************************/
 #include <sofa/core/VecId.h>
 
-
 namespace sofa::core
 {
 
-const std::unordered_map<VecType, std::string> VecTypeLabels {
+SOFA_CORE_API const std::unordered_map<VecType, std::string> VecTypeLabels {
     {V_ALL, "(V_ALL)"},
     {V_COORD, "(V_COORD)"},
     {V_DERIV, "(V_DERIV)"},

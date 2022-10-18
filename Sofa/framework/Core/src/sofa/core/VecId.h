@@ -22,7 +22,8 @@
 #ifndef SOFA_CORE_VECID_H
 #define SOFA_CORE_VECID_H
 
-#include <sofa/config.h>
+#include <sofa/core/config.h>
+
 #include <string>
 #include <sstream>
 #include <cassert>
@@ -40,7 +41,7 @@ enum VecType
     V_MATDERIV,
 };
 
-extern const std::unordered_map<VecType, std::string> VecTypeLabels;
+SOFA_CORE_API extern const std::unordered_map<VecType, std::string> VecTypeLabels;
 
 /// Types of vectors that can be stored in State
 enum VecAccess
