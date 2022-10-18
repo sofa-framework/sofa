@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa) # Cannot use VERSION with patch like "00"
 
+
+
 include(CMakeDependentOption)
 
 # Manually define VERSION
