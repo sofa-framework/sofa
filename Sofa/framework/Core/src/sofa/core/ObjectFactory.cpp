@@ -288,14 +288,14 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
         if (isUserTemplateNameInTemplateList)
         {
-            msg_warning(object.get()) << "Requested template '" << usertemplatename << "' "
+            msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
                                       << "is not compatible with the current context. "
                                       << "Falling back to the first compatible template: '"
                                       << object->getTemplateName() << "'.";
         }
         else
         {
-            msg_warning(object.get()) << "Requested template '" << usertemplatename << "' "
+            msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
                                       << "cannot be found in the list of available templates [" << ss.str() << "]. "
                                       << "Falling back to default template: '"
                                       << object->getTemplateName() << "'.";
