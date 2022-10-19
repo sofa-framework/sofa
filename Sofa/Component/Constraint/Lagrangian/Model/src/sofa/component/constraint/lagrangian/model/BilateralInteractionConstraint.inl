@@ -123,7 +123,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
     if (!d_activate.getValue())
         return;
 
-    auto minp = std::min(m1.getValue().size(), m2.getValue().size());
+    unsigned minp = std::min(m1.getValue().size(), m2.getValue().size());
     if (minp == 0)
         return;
 
@@ -137,7 +137,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
 
     const VecDeriv& restVector = this->restVector.getValue();
 
-    for (auto pid=0; pid<minp; pid++)
+    for (unsigned pid=0; pid<minp; pid++)
     {
         int tm1 = m1Indices[pid];
         int tm2 = m2Indices[pid];
@@ -182,7 +182,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
     const SubsetIndices& m1Indices = m1.getValue();
     const SubsetIndices& m2Indices = m2.getValue();
 
-    auto minp = std::min(m1Indices.size(), m2Indices.size());
+    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
 
     const VecDeriv& restVector = this->restVector.getValue();
 
@@ -197,7 +197,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
 
     dfree.resize(minp);
 
-    for (auto pid=0; pid<minp; pid++)
+    for (unsigned pid=0; pid<minp; pid++)
     {
         dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
 
@@ -226,7 +226,7 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
     const VecCoord &v1 = d_v1.getValue();
     const VecCoord &v2 = d_v2.getValue();
 
-    auto minp = std::min(m1Indices.size(), m2Indices.size());
+    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
     const VecDeriv& restVector = this->restVector.getValue();
 
     auto pos1 = this->getMState1()->readPositions();
@@ -235,7 +235,7 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
     const SReal dt = this->getContext()->getDt();
     const SReal invDt = SReal(1.0) / dt;
 
-    for (auto pid=0; pid<minp; ++pid)
+    for (unsigned pid=0; pid<minp; ++pid)
     {
 
         Deriv dPos = (pos2[m2Indices[pid]] - pos1[m1Indices[pid]]);
@@ -259,10 +259,10 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const Co
                                                                         unsigned int& offset)
 {
     SOFA_UNUSED(cParams);
-    auto minp=std::min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
 
     prevForces.resize(minp);
-    for (auto pid=0; pid<minp; pid++)
+    for (unsigned pid=0; pid<minp; pid++)
     {
         resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid]);
         offset += 3;
@@ -387,13 +387,13 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     constexpr sofa::type::RGBAColor colorNotActive = sofa::type::RGBAColor::green();
     std::vector< sofa::type::Vector3 > vertices;
 
-    auto minp = std::min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     auto positionsM1 = sofa::helper::getReadAccessor(*this->mstate1->read(ConstVecCoordId::position()));
     auto positionsM2 = sofa::helper::getReadAccessor(*this->mstate2->read(ConstVecCoordId::position()));
     auto indicesM1 = sofa::helper::getReadAccessor(m1);
     auto indicesM2 = sofa::helper::getReadAccessor(m2);
 
-    for (auto i=0; i<minp; i++)
+    for (unsigned i=0; i<minp; i++)
     {
         vertices.push_back(DataTypes::getCPos(positionsM1[indicesM1[i]]));
         vertices.push_back(DataTypes::getCPos(positionsM2[indicesM2[i]]));
