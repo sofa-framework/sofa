@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(SceneChecking LANGUAGES CXX)
 
-find_package(Sofa.Simulation.Core REQUIRED)
+find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
 

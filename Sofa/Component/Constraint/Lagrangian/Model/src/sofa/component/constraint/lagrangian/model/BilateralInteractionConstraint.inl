@@ -46,16 +46,9 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
     , m1(initData(&m1, "first_point","index of the constraint on the first model"))
     , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
-
     , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
                                     "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
-
-    //TODO(dmarchal): Such kind of behavior shouldn't be implemented in the component but externalized in a second component or in a python script controlling the scene.
-    , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
-
-    //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
-    , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
-    , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+    , d_activate( initData(&d_activate, true, "activate", "control constraint activation (true by default)"))
     , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
 {
     this->f_listening.setValue(true);
@@ -84,8 +77,6 @@ void BilateralInteractionConstraint<DataTypes>::unspecializedInit()
     assert(this->mstate2);
 
     prevForces.clear();
-    iteration = 0;
-    activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
 }
 
 template<class DataTypes>
@@ -98,19 +89,14 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::reinit()
 {
     prevForces.clear();
-    activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
 }
 
-template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::reset(){
-    init();
-}
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
                                                                       , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
-    if (!activated)
+    if (!d_activate.getValue())
         return;
 
     unsigned minp = std::min(m1.getValue().size(), m2.getValue().size());
@@ -127,155 +113,33 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
 
     const VecDeriv& restVector = this->restVector.getValue();
 
-    if (!merge.getValue())
+    for (unsigned pid=0; pid<minp; pid++)
     {
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            int tm1 = m1Indices[pid];
-            int tm2 = m2Indices[pid];
+        int tm1 = m1Indices[pid];
+        int tm2 = m2Indices[pid];
 
-            constexpr type::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+        constexpr type::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 
-            cid[pid] = constraintId;
-            constraintId += 3;
-
-            MatrixDerivRowIterator c1_it = c1.writeLine(cid[pid]);
-            c1_it.addCol(tm1, -cx);
-
-            MatrixDerivRowIterator c2_it = c2.writeLine(cid[pid]);
-            c2_it.addCol(tm2, cx);
-
-            c1_it = c1.writeLine(cid[pid] + 1);
-            c1_it.setCol(tm1, -cy);
-
-            c2_it = c2.writeLine(cid[pid] + 1);
-            c2_it.setCol(tm2, cy);
-
-            c1_it = c1.writeLine(cid[pid] + 2);
-            c1_it.setCol(tm1, -cz);
-
-            c2_it = c2.writeLine(cid[pid] + 2);
-            c2_it.setCol(tm2, cz);
-        }
-    }
-    else
-    {
-        this->m_constraintIndex.setValue(constraintId);
-
-
-        ///////////////// grouped constraints ///////////////
-        dfree_square_total.clear();
-
-        const DataVecCoord &d_x1 = *this->mstate1->read(ConstVecCoordId::position());
-        const DataVecCoord &d_x2 = *this->mstate2->read(ConstVecCoordId::position());
-
-        const VecCoord &x1 = d_x1.getValue();
-        const VecCoord &x2 = d_x2.getValue();
-
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            int tm1 = m1Indices[pid];
-            int tm2 = m2Indices[pid];
-
-            Deriv dfree_loc = x2[tm2] - x1[tm1];
-
-            if (pid < restVector.size())
-                dfree_loc -= restVector[pid];
-
-            dfree_square_total[0]+= dfree_loc[0]*dfree_loc[0];
-            dfree_square_total[1]+= dfree_loc[1]*dfree_loc[1];
-            dfree_square_total[2]+= dfree_loc[2]*dfree_loc[2];
-        }
-
-        for (unsigned int i=0; i<3; i++)
-        {
-            if (dfree_square_total[i]>1.0e-15)
-            {
-                dfree_square_total[i] = sqrt(dfree_square_total[i]);
-                squareXYZ[i]=derivative.getValue();
-            }
-            else
-                squareXYZ[i]=false;
-        }
-
-        dfree.resize(minp);
-
-        const DataVecCoord &d_x1free = *this->mstate1->read(ConstVecCoordId::freePosition());
-        const DataVecCoord &d_x2free = *this->mstate2->read(ConstVecCoordId::freePosition());
-
-        const VecCoord &x1free = d_x1free.getValue();
-        const VecCoord &x2free = d_x2free.getValue();
-
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            int tm1 = m1Indices[pid];
-            int tm2 = m2Indices[pid];
-
-            Deriv d_loc = x2[tm2] - x1[tm1];
-            Deriv dfree_loc = x2free[tm2] - x1free[tm1];
-
-            if (pid < restVector.size())
-            {
-                d_loc -= restVector[pid];
-                dfree_loc -= restVector[pid];
-            }
-            dfree[pid] = dfree_loc;
-
-            constexpr type::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
-
-            cid[pid] = constraintId;
-
-
-            // if not grouped constraint
-            // constraintId += 3;
-
-            // contribution along x axis
-            MatrixDerivRowIterator c1_it = c1.writeLine(cid[pid]);
-            MatrixDerivRowIterator c2_it = c2.writeLine(cid[pid]);
-            if(squareXYZ[0])
-            {
-                c1_it.addCol(tm1, -cx*dfree_loc[0]*2.0);
-                c2_it.addCol(tm2, cx*dfree_loc[0]*2.0);
-            }
-            else
-            {
-                c1_it.addCol(tm1, -cx*sofa::helper::sign(dfree_loc[0]) );
-                c2_it.addCol(tm2, cx*sofa::helper::sign(dfree_loc[0]));
-            }
-
-
-            // contribution along y axis
-            c1_it = c1.writeLine(cid[pid] + 1);
-            c2_it = c2.writeLine(cid[pid] + 1);
-            if(squareXYZ[1])
-            {
-
-                c1_it.addCol(tm1, -cy*dfree_loc[1]*2.0);
-                c2_it.addCol(tm2, cy*dfree_loc[1]*2.0);
-            }
-            else
-            {
-                c1_it.addCol(tm1, -cy*sofa::helper::sign(dfree_loc[1]));
-                c2_it.addCol(tm2, cy*sofa::helper::sign(dfree_loc[1]));
-            }
-
-            // contribution along z axis
-            c1_it = c1.writeLine(cid[pid] + 2);
-            c2_it = c2.writeLine(cid[pid] + 2);
-            if(squareXYZ[2])
-            {
-                c1_it.addCol(tm1, -cz*dfree_loc[2]*2.0);
-                c2_it.addCol(tm2, cz*dfree_loc[2]*2.0);
-            }
-            else
-            {
-                c1_it.addCol(tm1, -cz*sofa::helper::sign(dfree_loc[2]));
-                c2_it.addCol(tm2, cz*sofa::helper::sign(dfree_loc[2]));
-            }
-        }
-
-        // if grouped constraint
+        cid[pid] = constraintId;
         constraintId += 3;
+
+        MatrixDerivRowIterator c1_it = c1.writeLine(cid[pid]);
+        c1_it.addCol(tm1, -cx);
+
+        MatrixDerivRowIterator c2_it = c2.writeLine(cid[pid]);
+        c2_it.addCol(tm2, cx);
+
+        c1_it = c1.writeLine(cid[pid] + 1);
+        c1_it.setCol(tm1, -cy);
+
+        c2_it = c2.writeLine(cid[pid] + 1);
+        c2_it.setCol(tm2, cy);
+
+        c1_it = c1.writeLine(cid[pid] + 2);
+        c1_it.setCol(tm1, -cz);
+
+        c2_it = c2.writeLine(cid[pid] + 2);
+        c2_it.setCol(tm2, cz);
     }
 
     c1_d.endEdit();
@@ -289,7 +153,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
                                                                        const DataVecCoord &d_x1, const DataVecCoord &d_x2
                                                                        , const DataVecDeriv & d_v1, const DataVecDeriv & d_v2)
 {
-    if (!activated) return;
+    if (!d_activate.getValue()) return;
 
     const type::vector<int> &m1Indices = m1.getValue();
     const type::vector<int> &m2Indices = m2.getValue();
@@ -307,43 +171,18 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
     const VecCoord &x1 = d_x1.getValue();
     const VecCoord &x2 = d_x2.getValue();
 
-    if (!merge.getValue())
+    dfree.resize(minp);
+
+    for (unsigned pid=0; pid<minp; pid++)
     {
-        dfree.resize(minp);
+        dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
 
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
+        if (pid < restVector.size())
+            dfree[pid] -= restVector[pid];
 
-            if (pid < restVector.size())
-                dfree[pid] -= restVector[pid];
-
-            v->set(cid[pid]  , dfree[pid][0]);
-            v->set(cid[pid]+1, dfree[pid][1]);
-            v->set(cid[pid]+2, dfree[pid][2]);
-        }
-    }
-    else
-    {
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
-
-            if (pid < restVector.size())
-                dfree[pid] -= restVector[pid];
-
-            for (unsigned int i=0; i<3; i++)
-            {
-                if(squareXYZ[i])
-                    v->add(cid[pid]+i  , dfree[pid][i]*dfree[pid][i]);
-                else
-                {
-
-                    v->add(cid[pid]+i  , dfree[pid][i]*sofa::helper::sign(dfree[pid][i] ) );
-                }
-            }
-
-        }
+        v->set(cid[pid]  , dfree[pid][0]);
+        v->set(cid[pid]+1, dfree[pid][1]);
+        v->set(cid[pid]+2, dfree[pid][2]);
     }
 }
 
@@ -366,63 +205,26 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
     unsigned minp = std::min(m1Indices.size(), m2Indices.size());
     const VecDeriv& restVector = this->restVector.getValue();
 
-    if (!merge.getValue())
+    auto pos1 = this->getMState1()->readPositions();
+    auto pos2 = this->getMState2()->readPositions();
+
+    const SReal dt = this->getContext()->getDt();
+    const SReal invDt = SReal(1.0) / dt;
+
+    for (unsigned pid=0; pid<minp; ++pid)
     {
-        auto pos1 = this->getMState1()->readPositions();
-        auto pos2 = this->getMState2()->readPositions();
 
-        const SReal dt = this->getContext()->getDt();
-        const SReal invDt = SReal(1.0) / dt;
-
-        for (unsigned pid=0; pid<minp; ++pid)
+        Deriv dPos = (pos2[m2Indices[pid]] - pos1[m1Indices[pid]]);
+        if (pid < restVector.size())
         {
-
-            Deriv dPos = (pos2[m2Indices[pid]] - pos1[m1Indices[pid]]);
-            if (pid < restVector.size())
-            {
-                dPos -= -restVector[pid];
-            }
-            dPos *= invDt;
-            const Deriv dVfree = v2[m2Indices[pid]] - v1[m1Indices[pid]];
-
-            v->set(cid[pid]  , dVfree[0] + dPos[0] );
-            v->set(cid[pid]+1, dVfree[1] + dPos[1] );
-            v->set(cid[pid]+2, dVfree[2] + dPos[2] );
+            dPos -= -restVector[pid];
         }
-    }
-    else
-    {
-        VecDeriv dPrimefree;
-        dPrimefree.resize(minp);
-        dfree.resize(minp);
+        dPos *= invDt;
+        const Deriv dVfree = v2[m2Indices[pid]] - v1[m1Indices[pid]];
 
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            dPrimefree[pid] = v2[m2Indices[pid]] - v1[m1Indices[pid]];
-            dfree[pid] = x2[m2Indices[pid]] - x1[m1Indices[pid]];
-
-            if (pid < restVector.size())
-            {
-                dPrimefree[pid] -= restVector[pid];
-                dfree[pid] -= restVector[pid];
-            }
-
-            std::cout<<" x2 : "<<x2[m2Indices[pid]]<<" - x1 :"<<x1[m1Indices[pid]]<<" = "<<dfree[pid]<<std::endl;
-            std::cout<<" v2 : "<<v2[m2Indices[pid]]<<" - v1 :"<<v1[m1Indices[pid]]<<" = "<<dPrimefree[pid]<<std::endl;
-
-            for (unsigned int i=0; i<3; i++)
-            {
-                if(squareXYZ[i])
-                {
-                    v->add(cid[pid]+i  , 2*dPrimefree[pid][i]*dfree[pid][i]);
-                }
-                else
-                {
-                    v->add(cid[pid]+i  , dPrimefree[pid][i]*sofa::helper::sign(dfree[pid][i] ) );
-                }
-            }
-
-        }
+        v->set(cid[pid]  , dVfree[0] + dPos[0] );
+        v->set(cid[pid]+1, dVfree[1] + dPos[1] );
+        v->set(cid[pid]+2, dVfree[2] + dPos[2] );
     }
 }
 
@@ -435,20 +237,11 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const Co
     SOFA_UNUSED(cParams);
     unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
 
-    if (!merge.getValue())
+    prevForces.resize(minp);
+    for (unsigned pid=0; pid<minp; pid++)
     {
-        prevForces.resize(minp);
-        for (unsigned pid=0; pid<minp; pid++)
-        {
-            resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid]);
-            offset += 3;
-        }
-    }
-    else
-    {
-        prevForces.resize(1);
-        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[0]);
-        offset +=3;
+        resTab[offset] = new BilateralConstraintResolution3Dof(&prevForces[pid]);
+        offset += 3;
     }
 }
 
@@ -533,7 +326,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
         vertices.push_back(DataTypes::getCPos(positionsM2[indicesM2[i]]));
     }
 
-    vparams->drawTool()->drawPoints(vertices, 10, (activated) ? colorActive : colorNotActive);
+    vparams->drawTool()->drawPoints(vertices, 10, (d_activate.getValue()) ? colorActive : colorNotActive);
 
 
 }
@@ -552,22 +345,21 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
 
         case 'A':
         case 'a':
-            msg_info() << "Activating constraint" ;
-            activated = true;
+            if (d_activate.getValue())
+            {
+                msg_info() << "Unactivating constraint";
+                d_activate.setValue(false);
+            }
+            else
+            {
+                msg_info() << "Activating constraint";
+                d_activate.setValue(true);
+            }
+            
             break;
         }
     }
 
-
-    if (simulation::AnimateEndEvent::checkEventType(event) )
-    {
-        ++iteration;
-        if (!activated && activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration)
-        {
-            msg_info() << "Activating constraint" ;
-            activated = true;
-        }
-    }
 }
 
 
