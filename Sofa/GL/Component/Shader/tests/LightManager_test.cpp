@@ -74,9 +74,7 @@ void checkAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 

@@ -93,8 +93,7 @@ struct SceneChecker_test : public BaseSimulationTest
               << "</Node>                                                           \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size());
+                                                          scene.str().c_str());
         EXPECT_MSG_NOEMIT(Error);
 
         ASSERT_NE(root.get(), nullptr);
@@ -140,8 +139,7 @@ struct SceneChecker_test : public BaseSimulationTest
               << "</Node>                                                         \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size());
+                                                          scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -182,9 +180,7 @@ struct SceneChecker_test : public BaseSimulationTest
               << "      <ComponentDeprecated />                                   \n"
               << "</Node>                                                         \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -227,9 +223,7 @@ struct SceneChecker_test : public BaseSimulationTest
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckUsingAlias::newSPtr() );
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 

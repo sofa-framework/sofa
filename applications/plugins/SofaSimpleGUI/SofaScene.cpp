@@ -6,9 +6,9 @@ using std::cout;
 using std::endl;
 
 #include <sofa/helper/system/PluginManager.h>
-#include <SofaComponentAll/initSofaComponentAll.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/init.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 // sofa types should not be exposed
@@ -22,7 +22,7 @@ namespace simplegui {
 
 
 typedef sofa::type::Vector3 Vec3;
-typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
+typedef sofa::component::statecontainer::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
 
 
 SofaScene::SofaScene()
@@ -31,8 +31,8 @@ SofaScene::SofaScene()
     std::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;// = NULL;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
-    sofaSimulation = sofa::simulation::graph::getSimulation(); // creates one if it is not already created
-    sofa::component::initSofaComponentAll();
+    sofaSimulation = sofa::simulation::getSimulation(); // creates one if it is not already created
+    sofa::component::init();
 }
 
 void SofaScene::step( SReal dt)

@@ -24,12 +24,13 @@ set(SOURCE_FILES
     initSimpleGUI.cpp
 )
 
-sofa_find_package(SofaComponentAll REQUIRED)
+sofa_find_package(Sofa.Component REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 sofa_find_package(Sofa.GL REQUIRED)
+sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaComponentAll SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component Sofa.GL Sofa.Simulation.Graph)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFASIMPLEGUI_VERSION})
