@@ -43,8 +43,8 @@
 namespace sofa::component::topology::mapping
 {
 
+using namespace type;
 using namespace sofa::defaulttype;
-
 using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
@@ -58,9 +58,9 @@ int Edge2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     : TopologicalMapping()
     , d_nbPointsOnEachCircle( initData(&d_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
-    , d_radius( initData(&d_radius, 1., "radius", "Radius of created circles in yz plan"))
-    , d_radiusFocal( initData(&d_radiusFocal, 0., "radiusFocal", "If greater than 0., radius in focal axis of created ellipses"))
-    , d_focalAxis( initData(&d_focalAxis, Vec(0,0,1), "focalAxis", "In case of ellipses"))
+    , d_radius( initData(&d_radius, 1_sreal, "radius", "Radius of created circles in yz plan"))
+    , d_radiusFocal( initData(&d_radiusFocal, 0_sreal, "radiusFocal", "If greater than 0., radius in focal axis of created ellipses"))
+    , d_focalAxis( initData(&d_focalAxis, Vec3(0,0,1), "focalAxis", "In case of ellipses"))
     , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
     , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
 {
@@ -76,21 +76,21 @@ void Edge2QuadTopologicalMapping::init()
         return;
     }
 
-    if (d_radius.isSet() && d_radius.getValue() < std::numeric_limits<double>::min())
+    if (d_radius.isSet() && d_radius.getValue() < std::numeric_limits<SReal>::min())
     {
         msg_error() << "Radius is zero or negative";
         return;
     }
-    if (d_radiusFocal.isSet() && d_radiusFocal.getValue() < std::numeric_limits<double>::min())
+    if (d_radiusFocal.isSet() && d_radiusFocal.getValue() < std::numeric_limits<SReal>::min())
     {
         msg_warning() << "Focal Radius is zero or negative";
     }
 
-    double rho = d_radius.getValue();
+    SReal rho = d_radius.getValue();
 
     bool ellipse = false;
-    double rhoFocal{};
-    if (d_radiusFocal.isSet() && d_radiusFocal.getValue() >= std::numeric_limits<double>::min())
+    SReal rhoFocal{};
+    if (d_radiusFocal.isSet() && d_radiusFocal.getValue() >= std::numeric_limits<SReal>::min())
     {
         ellipse = true;
         rhoFocal = d_radiusFocal.getValue();
@@ -99,7 +99,6 @@ void Edge2QuadTopologicalMapping::init()
     unsigned int N = d_nbPointsOnEachCircle.getValue();
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
-
     core::behavior::MechanicalState<Rigid3Types>* from_mstate = dynamic_cast<core::behavior::MechanicalState<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
     core::behavior::MechanicalState<Vec3Types>* to_mstate = dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(toModel->getContext()->getMechanicalState());
 
@@ -111,32 +110,31 @@ void Edge2QuadTopologicalMapping::init()
         {
             msg_info() << "Edge2QuadTopologicalMapping - to = quad";
 
-            container::dynamic::QuadSetTopologyModifier *to_tstm;
-            toModel->getContext()->get(to_tstm);
+            container::dynamic::QuadSetTopologyModifier *to_modifier;
+            toModel->getContext()->get(to_modifier);
 
-            container::dynamic::QuadSetTopologyContainer *to_tstc;
-            toModel->getContext()->get(to_tstc);
+            container::dynamic::QuadSetTopologyContainer *to_container;
+            toModel->getContext()->get(to_container);
 
-            const sofa::type::vector<Edge> &edgeArray=fromModel->getEdges();
-
-            sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
-
+            const sofa::type::vector<Edge>& edgeArray = fromModel->getEdges();
+            
+            auto Loc2GlobVec = sofa::helper::getWriteOnlyAccessor(Loc2GlobDataVec);
             Loc2GlobVec.clear();
             In2OutMap.clear();
 
             // CREATION of the points (new DOFs for the output topology) along the circles around each point of the input topology
 
-            Vec X0(1.,0.,0.);
-            Vec Y0;
-            Vec Z0;
+            Vec3 X0(1.,0.,0.);
+            Vec3 Y0;
+            Vec3 Z0;
 
             if (ellipse){
                 Z0 = d_focalAxis.getValue();
                 Z0.normalize();
                 Y0 = cross(Z0,X0);
             } else {
-                Y0[0] = (Real) (0.0); Y0[1] = (Real) (1.0); Y0[2] = (Real) (0.0);
-                Z0[0] = (Real) (0.0); Z0[1] = (Real) (0.0); Z0[2] = (Real) (1.0);
+                Y0[0] = (SReal) (0.0); Y0[1] = (SReal) (1.0); Y0[2] = (SReal) (0.0);
+                Z0[0] = (SReal) (0.0); Z0[1] = (SReal) (0.0); Z0[2] = (SReal) (1.0);
             }
 
             if (to_mstate)
@@ -144,7 +142,7 @@ void Edge2QuadTopologicalMapping::init()
                 to_mstate->resize(fromModel->getNbPoints() * N);
             }
 
-            to_tstc->clear();
+            to_container->clear();
 
             toModel->setNbPoints(fromModel->getNbPoints() * N);
 
@@ -154,14 +152,14 @@ void Edge2QuadTopologicalMapping::init()
                 {
                     unsigned int p0=i;
 
-                    Mat rotation;
+                    Mat3x3 rotation;
                     (from_mstate->read(core::ConstVecCoordId::position())->getValue())[p0].writeRotationMatrix(rotation);
 
-                    Vec t;
+                    Vec3 t;
                     t=(from_mstate->read(core::ConstVecCoordId::position())->getValue())[p0].getCenter();
 
-                    Vec Y;
-                    Vec Z;
+                    Vec3 Y;
+                    Vec3 Z;
 
                     Y = rotation * Y0;
                     Z = rotation * Z0;
@@ -170,11 +168,11 @@ void Edge2QuadTopologicalMapping::init()
 
                     for(unsigned int j=0; j<N; ++j)
                     {
-                        Vec x;
+                        Vec3 x;
                         if(ellipse){
-                            x = t + Y*cos((Real) (2.0*j*M_PI/N))*((Real) rho) + Z*sin((Real) (2.0*j*M_PI/N))*((Real) rhoFocal);
+                            x = t + Y*cos((SReal) (2.0*j*M_PI/N))*((SReal) rho) + Z*sin((SReal) (2.0*j*M_PI/N))*((SReal) rhoFocal);
                         } else {
-                            x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
+                            x = t + (Y*cos((SReal) (2.0*j*M_PI/N)) + Z*sin((SReal) (2.0*j*M_PI/N)))*((SReal) rho);
                         }
                         to_x[p0*N+j] = x;
                     }
@@ -247,9 +245,9 @@ void Edge2QuadTopologicalMapping::init()
                         const Index q3 = p0*N+((j+1)%N);
 
                         if(d_flipNormals.getValue())
-                            to_tstm->addQuadProcess(Quad(q0, q3, q2, q1));
+                            to_modifier->addQuadProcess(Quad(q0, q3, q2, q1));
                         else
-                            to_tstm->addQuadProcess(Quad(q0, q1, q2, q3));
+                            to_modifier->addQuadProcess(Quad(q0, q1, q2, q3));
                         Loc2GlobVec.push_back(i);
                         out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                     }
@@ -259,11 +257,10 @@ void Edge2QuadTopologicalMapping::init()
 
             }
 
-            to_tstm->addQuads(quads_to_create);
-            Loc2GlobDataVec.endEdit();
+            to_modifier->addQuads(quads_to_create);
 
             // Need to fully init the target topology
-            to_tstm->init();
+            to_modifier->init();
 
             d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
@@ -289,8 +286,8 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     if (fromModel)
     {
 
-        container::dynamic::QuadSetTopologyModifier *to_tstm;
-        toModel->getContext()->get(to_tstm);
+        container::dynamic::QuadSetTopologyModifier *to_modifier;
+        toModel->getContext()->get(to_modifier);
 
         if (toModel)
         {
@@ -308,7 +305,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::ENDING_EVENT:
                 {
-                    to_tstm->notifyEndingEvent();
+                    to_modifier->notifyEndingEvent();
                     break;
                 }
 
@@ -354,15 +351,15 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 Loc2GlobVec.push_back(k);
                                 out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
 
-                                //to_tstm->addQuadsProcess(quads_to_create) ;
-                                //to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
-                                //to_tstm->propagateTopologicalChanges();
+                                //to_modifier->addQuadsProcess(quads_to_create) ;
+                                //to_modifier->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
+                                //to_modifier->propagateTopologicalChanges();
                             }
 
                             In2OutMap[k]=out_info;
                         }
 
-                        to_tstm->addQuads(quads_to_create);
+                        to_modifier->addQuads(quads_to_create);
                     }
                     break;
                 }
@@ -473,7 +470,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                     quads_to_remove.push_back(ind_list[j]);
                                 }
 
-                                to_tstm->removeQuads(quads_to_remove, true, true);
+                                to_modifier->removeQuads(quads_to_remove, true, true);
 
                             }
                             else
@@ -509,7 +506,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     sofa::type::vector<Index>& tab_indices = indices;
                     sofa::type::vector<Index>& inv_tab_indices = inv_indices;
 
-                    to_tstm->renumberPoints(tab_indices, inv_tab_indices, true);
+                    to_modifier->renumberPoints(tab_indices, inv_tab_indices, true);
                     break;
                 }
 
@@ -543,7 +540,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                         }
                     }
 
-                    to_tstm->addPoints(to_nVertices, to_ancestorsList, to_coefs, true);
+                    to_modifier->addPoints(to_nVertices, to_ancestorsList, to_coefs, true);
                     break;
                 }
 
