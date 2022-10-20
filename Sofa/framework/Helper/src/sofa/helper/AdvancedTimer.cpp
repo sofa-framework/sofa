@@ -92,13 +92,24 @@ public:
         this->id = id;
         std::string envvar = std::string("SOFA_TIMER_") + (std::string)id;
         const char* val = getenv(envvar.c_str());
+        if (val)
+        {
+            std::cout << "detected env variable " << envvar << " " << *val << std::endl;
+        }
         if (!val || !*val)
+        {
             val = getenv("SOFA_TIMER_ALL");
+            if (val)
+            {
+                std::cout << "detected env variable SOFA_TIMER_ALL " << *val << std::endl;
+            }
+        }
         if (val && *val)
             interval = atoi(val);
         else
             interval = 0;
         defaultInterval = (interval != 0) ? interval : DEFAULT_INTERVAL;
+        std::cout << "Setting defaultInterval to " << defaultInterval << std::endl;
         this->timerOutputType = AdvancedTimer::outputType::STDOUT;
     }
     void clear();
@@ -177,15 +188,31 @@ bool AdvancedTimer::isEnabled(IdTimer id)
 
 void AdvancedTimer::setEnabled(IdTimer id, bool val)
 {
+    std::cout << "Setting timer " << std::string(id) << " to " << val << std::endl;
     TimerData& data = timers[id];
-    if (!data.id)
+    if (!static_cast<int>(data.id))
     {
+        std::cout << "[setEnabled] Initialize TimerData for id " << std::string(id) << std::endl;
         data.init(id);
     }
+    else
+    {
+        std::cout << "[setEnabled] TimerData is already initialized for id " << std::string(id) << ": " << data.id << std::endl;
+    }
     if (val && data.interval == 0)
+    {
         data.interval = data.defaultInterval;
+        std::cout << "[setEnabled] TimerData interval for id " << std::string(id) << ": " << data.interval << " because defaultInterval is " << data.defaultInterval << std::endl;
+    }
     else if (!val && data.interval != 0)
+    {
         data.interval = 0;
+        std::cout << "[setEnabled] TimerData interval for id " << std::string(id) << " is set to 0" << std::endl;
+    }
+    else
+    {
+        std::cout << "[setEnabled] other case" << std::endl;
+    }
 }
 
 int  AdvancedTimer::getInterval(IdTimer id)
@@ -211,15 +238,23 @@ void AdvancedTimer::setInterval(IdTimer id, int val)
 
 void AdvancedTimer::begin(IdTimer id)
 {
+    std::cout << "[AdvancedTimer::begin] " << std::string(id) << std::endl;
     std::stack<AdvancedTimer::IdTimer>& curTimer = getCurTimer();
     curTimer.push(id);
     TimerData& data = timers[curTimer.top()];
-    if (!data.id)
+    if (!static_cast<int>(data.id))
     {
+        std::cout << "Initialize TimerData for id " << std::string(id) << std::endl;
         data.init(id);
     }
+    else
+    {
+        std::cout << "TimerData is already initialized for id " << std::string(id) << ": " << data.id << std::endl;
+    }
+    std::cout << "TimerData interval for id " << std::string(id) << ": " << data.interval << std::endl;
     if (data.interval == 0)
     {
+        std::cout << "Setting curRecordsThread to nullptr because data.interval == 0" << std::endl;
         setCurRecords(nullptr);
         return;
     }
@@ -360,7 +395,18 @@ bool AdvancedTimer::isActive()
 void AdvancedTimer::stepBegin(IdStep id)
 {
     type::vector<Record>* curRecords = getCurRecords();
-    if (!curRecords) return;
+    if (!curRecords)
+    {
+        if (std::string(id) == "AnimateVisitor" )
+        {
+            std::cout << "Cannot stepBegin AnimateVisitor" << std::endl;
+        }
+        return;
+    }
+    if (std::string(id) == "AnimateVisitor" )
+    {
+        std::cout << "stepBegin AnimateVisitor" << std::endl;
+    }
     Record r;
     r.time = CTime::getTime();
     r.type = Record::RSTEP_BEGIN;
@@ -483,7 +529,24 @@ void AdvancedTimer::end(const char* idStr)
 void AdvancedTimer::stepBegin(const char* idStr)
 {
     type::vector<Record>* curRecords = getCurRecords();
-    if (!curRecords) return;
+    if (!curRecords)
+    {
+        const auto s = std::string(idStr);
+        std::cout << "Cannot stepBegin " << s << std::endl;
+        if (s == "AnimateVisitor" )
+        {
+            std::cout << "Cannot stepBegin AnimateVisitor" << std::endl;
+            if (!activeTimers)
+                std::cout << "Because activeTimers is null" << std::endl;
+            else if (!curRecordsThread)
+                std::cout << "Because curRecordsThread is null" << std::endl;
+        }
+        return;
+    }
+    if (idStr == "AnimateVisitor" )
+    {
+        std::cout << "stepBegin AnimateVisitor" << std::endl;
+    }
     stepBegin(IdStep(idStr));
 }
 

@@ -108,6 +108,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     sofa::helper::AdvancedTimer::stepEnd("UpdateInternalDataVisitor");
 
 
+    std::cout << "DefaultAnimationLoop - AnimateVisitor" << std::endl;
     sofa::helper::AdvancedTimer::stepBegin("AnimateVisitor");
     AnimateVisitor act(params, dt);
     gnode->execute ( act );
