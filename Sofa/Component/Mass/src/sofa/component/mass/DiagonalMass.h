@@ -328,21 +328,7 @@ public:
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
         Inherited::parse(arg);
-
-        if (arg->getAttribute("template"))
-        {
-            auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
-            if (splitTemplates.size() > 1)
-            {
-                // check if the given 2nd template is the deprecated MassType one
-                if (splitTemplates[1] == "float" || splitTemplates[1] == "double" || splitTemplates[1].find("RigidMass") != std::string::npos)
-                {
-                    msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
-                        << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
-                    msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
-                }
-            }
-        }
+        parseMassTemplate<MassType>(arg, this);
         if (arg->getAttribute("mass"))
         {
             msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";

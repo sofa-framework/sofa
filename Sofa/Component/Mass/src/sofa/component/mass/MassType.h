@@ -43,5 +43,22 @@ struct MassType
     // using type = YourType;
 };
 
-
+template<class MassType>
+void parseMassTemplate(sofa::core::objectmodel::BaseObjectDescription* arg, core::behavior::BaseMass* mass)
+{
+    if (arg->getAttribute("template"))
+    {
+        auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
+        if (splitTemplates.size() > 1)
+        {
+            // check if the given 2nd template is the deprecated MassType one
+            if (splitTemplates[1] == "float" || splitTemplates[1] == "double" || splitTemplates[1].find("RigidMass") != std::string::npos)
+            {
+                msg_warning(mass) << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
+                    << "As your mass is templated on '" << mass->getTemplateName() << "', MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
+                msg_warning(mass) << "If you want to set the template, you must write now \"template='" << mass->getTemplateName() << "'\" .";
+            }
+        }
+    }
+}
 } // namespace sofa::component::mass
