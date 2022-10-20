@@ -32,7 +32,7 @@ BarycentricMapperQuadSetTopology<In,Out>::BarycentricMapperQuadSetTopology(sofa:
 {}
 
 template <class In, class Out>
-typename BarycentricMapperQuadSetTopology<In, Out>::Index  
+typename BarycentricMapperQuadSetTopology<In, Out>::Index
 BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const Index quadIndex, const SReal* baryCoords )
 {
     type::vector<MappingData>& vectorData = *(d_map.beginEdit());
@@ -46,7 +46,7 @@ BarycentricMapperQuadSetTopology<In,Out>::addPointInQuad ( const Index quadIndex
 }
 
 template <class In, class Out>
-typename BarycentricMapperQuadSetTopology<In, Out>::Index 
+typename BarycentricMapperQuadSetTopology<In, Out>::Index
 BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out::Coord& p, Index quadIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
@@ -114,7 +114,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::computeCenter(Vec3& center, const
 template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::computeDistance(SReal& d, const Vec3& v)
 {
-    d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
+    d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01_sreal,-v[2]-0.01_sreal ) ) );
 }
 
 template <class In, class Out>

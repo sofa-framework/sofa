@@ -106,7 +106,7 @@ bool BaseCamera::isActivated()
 }
 
 void BaseCamera::init()
-{    
+{
     if(p_position.isSet())
     {
         if(!p_orientation.isSet())
@@ -359,7 +359,7 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     this->getProjectionMatrix(projection.ptr());
 
     clipSpacePos = projection * (modelview * clipSpacePos);
-    if (isEqual(clipSpacePos.w(), 0.0))
+    if (isEqual(clipSpacePos.w(), 0.0_sreal))
         return Vec2(std::nan(""), std::nan(""));
 
     sofa::type::Vec3 ndcSpacePos = sofa::type::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();

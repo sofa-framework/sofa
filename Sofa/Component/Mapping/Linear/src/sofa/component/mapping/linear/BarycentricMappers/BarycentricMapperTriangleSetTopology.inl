@@ -38,7 +38,7 @@ BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopolo
 
 
 template <class In, class Out>
-typename BarycentricMapperTriangleSetTopology<In, Out>::Index 
+typename BarycentricMapperTriangleSetTopology<In, Out>::Index
 BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const Index triangleIndex, const SReal* baryCoords )
 {
     type::vector<MappingData>& vectorData = *(d_map.beginEdit());
@@ -52,7 +52,7 @@ BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const Index t
 }
 
 template <class In, class Out>
-typename BarycentricMapperTriangleSetTopology<In, Out>::Index 
+typename BarycentricMapperTriangleSetTopology<In, Out>::Index
 BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle ( const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points )
 {
     SReal baryCoords[2];
@@ -112,7 +112,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::computeCenter(Vec3& center, c
 template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::computeDistance(SReal& d, const Vec3& v)
 {
-    d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
+    d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01_sreal,v[0]+v[1]-1 ) );
 }
 
 template <class In, class Out>
