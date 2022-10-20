@@ -69,13 +69,6 @@ Base::Base()
         /// Increment the state counter but without changing the state.
         return d_componentState.getValue();
     }, {&d_componentState});
-
-    /// name change => component state update
-    addUpdateCallback("muted", {&f_printLog}, [this](const DataTracker&){
-        m_isMuted = f_printLog.getValue();
-        /// Increment the state counter but without changing the state.
-        return d_componentState.getValue();
-    }, {&d_componentState});
 }
 
 Base::~Base()
