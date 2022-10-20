@@ -24,6 +24,61 @@
 namespace sofa::core::topology
 {
 
+TopologicalMapping::TopologicalMapping()
+    : fromModel(initLink("input", "Input topology to map"))
+    , toModel(initLink("output", "Output topology to map"))
+{
+
+}
+
+
+void TopologicalMapping::setTopologies(In* from, Out* to)
+{
+    this->fromModel.set(from);
+    this->toModel.set(to);
+}
+
+
+Index TopologicalMapping::getGlobIndex(Index ind)
+{
+    if (ind < (Loc2GlobDataVec.getValue()).size())
+    {
+        return (Loc2GlobDataVec.getValue())[ind];
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+Index TopologicalMapping::getFromIndex(Index ind) 
+{ 
+    SOFA_UNUSED(ind);
+    return 0; 
+}
+
+
+void TopologicalMapping::dumpGlob2LocMap()
+{
+    std::map<Index, Index>::iterator itM;
+    msg_info() << "## Log Glob2LocMap - size: " << Glob2LocMap.size() << " ##";
+    for (itM = Glob2LocMap.begin(); itM != Glob2LocMap.end(); ++itM)
+        msg_info() << (*itM).first << " - " << (*itM).second;
+
+    msg_info() << "#################";
+}
+
+
+void TopologicalMapping::dumpLoc2GlobVec()
+{
+    const sofa::type::vector<Index>& buffer = Loc2GlobDataVec.getValue();
+    msg_info() << "## Log Loc2GlobDataVec - size: " << buffer.size() << " ##";
+    for (Index i = 0; i < buffer.size(); ++i)
+        msg_info() << i << " - " << buffer[i];
+
+    msg_info() << "#################";
+}
+
 
 } /// namespace sofa::core::topology
 

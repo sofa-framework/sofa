@@ -45,32 +45,26 @@ namespace topology
 * So, at each time step, the geometrical and adjacency information are consistent in both topologies.
 *
 */
-class TopologicalMapping : public virtual objectmodel::BaseObject
+class SOFA_CORE_API TopologicalMapping : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(TopologicalMapping, objectmodel::BaseObject);
 
     /// Input Topology
-    typedef BaseMeshTopology In;
+    using In = BaseMeshTopology;
     /// Output Topology
-    typedef BaseMeshTopology Out;
+    using Out = BaseMeshTopology;
 
     using Index = sofa::Index;
 
 protected:
-    TopologicalMapping()
-        : fromModel(initLink("input", "Input topology to map"))
-        , toModel(initLink("output", "Output topology to map"))
-    {}
+    TopologicalMapping();
 
     ~TopologicalMapping() override { }
+
 public:
     /// Specify the input and output models.
-    virtual void setTopologies(In* from, Out* to)
-    {
-        this->fromModel.set( from );
-        this->toModel.set( to );
-    };
+    virtual void setTopologies(In* from, Out* to);
 
     /// Set the path to the objects mapped in the scene graph
     void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
@@ -103,42 +97,13 @@ public:
 
     Data <sofa::type::vector<Index> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
 
-    virtual Index getGlobIndex(Index ind)
-    {
-        if(ind< (Loc2GlobDataVec.getValue()).size())
-        {
-            return (Loc2GlobDataVec.getValue())[ind];
-        }
-        else
-        {
-            return 0;
-        }
-    }
+    virtual Index getGlobIndex(Index ind);
 
-    virtual Index getFromIndex(Index /*ind*/)
-    {
-        return 0;
-    }
+    virtual Index getFromIndex(Index ind);
 
-    void dumpGlob2LocMap()
-    {
-        std::map<Index, Index>::iterator itM;
-        msg_info() << "## Log Glob2LocMap - size: " << Glob2LocMap.size() << " ##";
-        for (itM = Glob2LocMap.begin(); itM != Glob2LocMap.end(); ++itM)
-            msg_info() << (*itM).first << " - " << (*itM).second;
+    void dumpGlob2LocMap();
 
-        msg_info() << "#################";
-    }
-
-    void dumpLoc2GlobVec()
-    {
-        const sofa::type::vector<Index>& buffer = Loc2GlobDataVec.getValue();
-        msg_info() << "## Log Loc2GlobDataVec - size: " << buffer.size() << " ##";
-        for (Index i=0; i<buffer.size(); ++i)
-            msg_info() << i << " - " << buffer[i];
-
-        msg_info() << "#################";
-    }
+    void dumpLoc2GlobVec();
 
     /// Method to check the topology mapping maps regarding the upper topology
     virtual bool checkTopologies() {return false;}
@@ -235,10 +200,10 @@ public:
 protected:
     /// Input source BaseTopology
     SingleLink<TopologicalMapping, In, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> fromModel;
-    //In* fromModel;
+
     /// Output target BaseTopology
     SingleLink<TopologicalMapping, Out, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> toModel;
-    //Out* toModel;
+ 
 
     // Two index maps :
 
