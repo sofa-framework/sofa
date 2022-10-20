@@ -48,6 +48,8 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
         sofa::helper::AdvancedTimer::stepBegin(className + " - BuildSystem");
         continueSolving = buildSystem(cParams, res1, res2);
         sofa::helper::AdvancedTimer::stepEnd(className + " - BuildSystem");
+
+        postBuildSystem(cParams);
     }
 
     if (continueSolving)

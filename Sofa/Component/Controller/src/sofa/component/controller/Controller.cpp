@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/BuildConstraintSystemEndEvent.cpp>
 
 
 namespace sofa::component::controller
@@ -87,6 +88,11 @@ void Controller::handleEvent(core::objectmodel::Event *event)
     {
         sofa::core::objectmodel::GUIEvent *gev = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
         onGUIEvent(gev);
+    }
+    else if (sofa::simulation::BuildConstraintSystemEndEvent::checkEventType(event))
+    {
+        sofa::simulation::BuildConstraintSystemEndEvent *gev = static_cast<sofa::simulation::BuildConstraintSystemEndEvent*>(event);
+        onBuildConstraintSystemEndEvent();
     }
 }
 
