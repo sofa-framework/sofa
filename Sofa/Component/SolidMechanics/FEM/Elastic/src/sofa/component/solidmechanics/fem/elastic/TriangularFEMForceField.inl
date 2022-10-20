@@ -1157,10 +1157,41 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
     if (f_computePrincipalStress.getValue() || p_computeDrawInfo)
     {
         unsigned int nbTriangles = m_topology->getNbTriangles();
-        type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+        auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
         for (unsigned int i = 0; i < nbTriangles; ++i)
             computePrincipalStress(i, triangleInf[i].stress);
-        triangleInfo.endEdit();
+
+
+        if (showStressValue.getValue()) // if true will compute averageStress per point
+        {
+            auto triangles = m_topology->getTriangles();
+            auto vertexInf = sofa::helper::getWriteOnlyAccessor(vertexInfo);
+
+            m_minStress = std::numeric_limits<Real>::max();
+            m_maxStress = std::numeric_limits<Real>::min();
+            for (unsigned int i = 0; i < vertexInf.size(); i++)
+            {
+                const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
+                double averageStress = 0.0;
+                double sumArea = 0.0;
+                for (auto triID : triangles)
+                {
+                    if (triangleInf[triID].area)
+                    {
+                        averageStress += (fabs(triangleInf[triID].maxStress) * triangleInf[triID].area);
+                        sumArea += triangleInf[triID].area;
+                    }
+                }
+                if (sumArea)
+                    averageStress /= sumArea;
+
+                vertexInf[i].stress = averageStress;
+                if (averageStress < m_minStress)
+                    m_minStress = averageStress;
+                if (averageStress > m_maxStress)
+                    m_maxStress = averageStress;
+            }
+        }
     }
 }
 
@@ -1236,36 +1267,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showStressValue.getValue())
     {
-        type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-        Real minStress = std::numeric_limits<Real>::max();
-        Real maxStress = 0.0;
-        for (unsigned int i = 0; i < vertexInf.size(); i++)
-        {
-            const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
-            double averageStress = 0.0;
-            double sumArea = 0.0;
-            for (unsigned int v = 0; v < triangles.size(); v++)
-            {
-                if (triangleInfo.getValue()[triangles[v]].area)
-                {
-                    averageStress += (fabs(triangleInfo.getValue()[triangles[v]].maxStress) * triangleInfo.getValue()[triangles[v]].area);
-                    sumArea += triangleInfo.getValue()[triangles[v]].area;
-                }
-            }
-            if (sumArea)
-                averageStress /= sumArea;
-
-            vertexInf[i].stress = averageStress;
-            if (averageStress < minStress)
-                minStress = averageStress;
-            if (averageStress > maxStress)
-                maxStress = averageStress;
-        }
-
+        const type::vector<VertexInformation>& vertexInf = vertexInfo.getValue();
         std::vector<sofa::type::Vector3> vertices;
         std::vector<sofa::type::RGBAColor> colorVector;
-
-        auto evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
+ 
+        auto evalColor = p_drawColorMap->getEvaluator(m_minStress, m_maxStress);
         for (Size i = 0; i < nbTriangles; ++i)
         {
             const Triangle& tri = triangles[i];

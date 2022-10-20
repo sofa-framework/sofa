@@ -286,8 +286,10 @@ public:
 #endif
 
 private:
-    bool p_computeDrawInfo;
-    sofa::helper::ColorMap* p_drawColorMap;
+    bool p_computeDrawInfo; ///< bool set to true if at least one of @sa showStressValue, @sa showStressVector or @sa showFracturableTriangles is true
+    sofa::helper::ColorMap* p_drawColorMap; ///< colormap to display the gradiant of stress if @sa showStressValue is set to true
+    Real m_minStress = 0; ///< min stress computed for @sa showStressValue
+    Real m_maxStress = 0; ///< max stress computed for @sa showStressValue
 
     TriangleFEMUtils<DataTypes> m_triangleUtils;
 };
