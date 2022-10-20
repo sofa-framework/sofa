@@ -534,11 +534,11 @@ void MeshTopology::init()
 
     BaseMeshTopology::init();
 
-    const auto& hexahedra = seqHexahedra.getValue();
-    const auto& tetrahedra = seqTetrahedra.getValue();
-    const auto& quads = seqQuads.getValue();
-    const auto& triangles = seqTriangles.getValue();
-    const auto& edges = seqEdges.getValue();
+    const auto hexahedra = sofa::helper::getReadAccessor(seqHexahedra);
+    const auto tetrahedra = sofa::helper::getReadAccessor(seqTetrahedra);
+    const auto quads = sofa::helper::getReadAccessor(seqQuads);
+    const auto triangles = sofa::helper::getReadAccessor(seqTriangles);
+    const auto edges = sofa::helper::getReadAccessor(seqEdges);
 
     if (nbPoints==0)
     {
