@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 0" dt=".1"  >
+  <Node name="plugins">
     <RequiredPlugin name="SofaOpenglVisual"/>
-  <RequiredPlugin pluginName="Flexible"/>
-  <RequiredPlugin pluginName="image"/>
+    <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin name="image"/>
+  </Node>
 
   <VisualStyle displayFlags="showVisual showBehaviorModels" />
   <MeshOBJLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>

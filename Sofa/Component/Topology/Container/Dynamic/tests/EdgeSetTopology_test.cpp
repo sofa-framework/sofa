@@ -345,13 +345,30 @@ bool EdgeSetTopology_test::checkEdgeDataGraph()
     EXPECT_EQ(edgeHandlers.size(), 2);
 
     sofa::core::topology::TopologyHandler* vertexH0 = *vertexHandlers.cbegin();
-    sofa::core::topology::TopologyHandler* edgeH0 = *vertexHandlers.cbegin();
-    sofa::core::topology::TopologyHandler* edgeH1 = *(vertexHandlers.cbegin()++);
-
+    EXPECT_NE(vertexH0, nullptr);
     EXPECT_EQ(vertexH0->getName(), "TopologyDataHandler( MeshMatrixMass )vertexMass");
-    EXPECT_EQ(edgeH0->getName(), "TopologyDataHandler( MeshMatrixMass )edgeMass");
-    EXPECT_EQ(edgeH1->getName(), "TopologyDataHandler( VectorSpringForceField )springs");
-    
+
+    auto itHandler = edgeHandlers.begin();
+    sofa::core::topology::TopologyHandler* edgeH0 = *itHandler;
+    EXPECT_NE(edgeH0, nullptr);
+
+    // We need to pre-check as handlers are stored in a set (order not predefined)
+    bool firstOrder = edgeH0->getName().find("edgeMass") != std::string::npos ? true : false;
+
+    if (firstOrder)
+        EXPECT_EQ(edgeH0->getName(), "TopologyDataHandler( MeshMatrixMass )edgeMass");
+    else
+        EXPECT_EQ(edgeH0->getName(), "TopologyDataHandler( VectorSpringForceField )springs");
+
+    itHandler++;
+    sofa::core::topology::TopologyHandler* edgeH1 = *itHandler;
+    EXPECT_NE(edgeH1, nullptr);
+
+    if (firstOrder)
+        EXPECT_EQ(edgeH1->getName(), "TopologyDataHandler( VectorSpringForceField )springs");
+    else
+        EXPECT_EQ(edgeH1->getName(), "TopologyDataHandler( MeshMatrixMass )edgeMass");
+        
     return true;
 }
 

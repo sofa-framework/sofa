@@ -45,7 +45,7 @@ sofa_add_subdirectory(collection modules/SofaDenseSolver SofaDenseSolver ON WHEN
 
 sofa_add_subdirectory(collection modules/SofaNonUniformFem SofaNonUniformFem ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 
-find_package(Sofa.GL QUIET)
+sofa_find_package(Sofa.GL QUIET)
 sofa_add_subdirectory(collection modules/SofaOpenglVisual SofaOpenglVisual ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS AND Sofa.GL_FOUND" VALUE_IF_HIDDEN OFF)
 
 ## Misc

@@ -84,7 +84,6 @@ public:
     void linkToTopologyDataArray(sofa::geometry::ElementType elementType) override;
     void unlinkFromTopologyDataArray(sofa::geometry::ElementType elementType) override;
 
-
     using TopologyHandler::ApplyTopologyChange;
 
     /// Apply swap between indices elements.

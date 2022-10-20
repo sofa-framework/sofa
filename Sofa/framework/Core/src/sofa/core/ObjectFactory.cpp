@@ -137,7 +137,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
-                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+". As they have different precisions this may result in undefined behavior. To remove this message, please update your scene to use the generic 'Vec3' templates or one of 'Vec3f/Vec3d' that match your the precision of your Sofa binary.");
+                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+".");
             }
 
             name = alias->first;

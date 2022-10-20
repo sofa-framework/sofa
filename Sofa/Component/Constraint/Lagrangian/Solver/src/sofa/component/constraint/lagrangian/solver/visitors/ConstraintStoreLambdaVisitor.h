@@ -19,47 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h>
-#include <sofa/core/ConstraintParams.h>
+
+#pragma once
+#include <sofa/component/constraint/lagrangian/solver/config.h>
+
+#include <sofa/simulation/MechanicalVisitor.h>
+
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda)
-:simulation::BaseMechanicalVisitor(cParams)
-,m_cParams(cParams)
-,m_lambda(lambda)
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintStoreLambdaVisitor : public simulation::BaseMechanicalVisitor
 {
-}
+public:
+    ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda);
 
-simulation::Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
-{
-    if (core::behavior::BaseConstraint *c = dynamic_cast<core::behavior::BaseConstraint*>(cSet) )
-    {
-        ctime_t t0 = begin(node, c);
-        c->storeLambda(m_cParams, m_cParams->lambda(), m_lambda);
-        end(node, c, t0);
-    }
-    return RESULT_CONTINUE;
-}
+    Visitor::Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
-void ConstraintStoreLambdaVisitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-{
-    SOFA_UNUSED(node);
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
-    sofa::core::MechanicalParams mparams(*m_cParams);
-    mparams.setDx(m_cParams->dx());
-    mparams.setF(m_cParams->lambda());
-    map->applyJT(&mparams, m_cParams->lambda(), m_cParams->lambda());
-}
+    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
-bool ConstraintStoreLambdaVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-{
-    SOFA_UNUSED(node);
-    SOFA_UNUSED(map);
+private:
+    const sofa::core::ConstraintParams* m_cParams;
+    const sofa::linearalgebra::BaseVector* m_lambda;
+};
 
-    return false;
-}
 
 } // namespace sofa::component::constraint::lagrangian::solver

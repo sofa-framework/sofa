@@ -43,4 +43,9 @@ add_definitions("-DSOFA_BUILD_IMAGE_GUI")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} SofaGuiQt)
 
-sofa_install_targets(image ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_add_targets_to_package(
+    PACKAGE_NAME image
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    )

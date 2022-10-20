@@ -990,7 +990,7 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
     helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
     // resize array
     masses.clear();
-    masses.resize(this->mstate->getSize(), Real(0));
+    masses.resize(this->mstate->getSize());
 
     if constexpr (GeometricalTypes::spatial_dimensions >= 1)
     {
