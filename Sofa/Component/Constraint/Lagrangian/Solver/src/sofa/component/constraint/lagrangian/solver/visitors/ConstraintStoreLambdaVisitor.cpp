@@ -19,46 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/diffusion/init.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa::component::diffusion
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
+#include <sofa/core/ConstraintParams.h>
+
+namespace sofa::component::constraint::lagrangian::solver
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
+
+ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda)
+:simulation::BaseMechanicalVisitor(cParams)
+,m_cParams(cParams)
+,m_lambda(lambda)
+{
 }
 
-void initExternalModule()
+simulation::Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
 {
-    init();
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    if (core::behavior::BaseConstraint *c = dynamic_cast<core::behavior::BaseConstraint*>(cSet) )
     {
-        first = false;
+        ctime_t t0 = begin(node, c);
+        c->storeLambda(m_cParams, m_cParams->lambda(), m_lambda);
+        end(node, c, t0);
     }
+    return RESULT_CONTINUE;
 }
 
-const char* getModuleComponentList()
+void ConstraintStoreLambdaVisitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
-    return classes.c_str();
+    SOFA_UNUSED(node);
+
+    sofa::core::MechanicalParams mparams(*m_cParams);
+    mparams.setDx(m_cParams->dx());
+    mparams.setF(m_cParams->lambda());
+    map->applyJT(&mparams, m_cParams->lambda(), m_cParams->lambda());
 }
-} // namespace sofa::component::diffusion
+
+bool ConstraintStoreLambdaVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    SOFA_UNUSED(node);
+    SOFA_UNUSED(map);
+
+    return false;
+}
+
+} // namespace sofa::component::constraint::lagrangian::solver

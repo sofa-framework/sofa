@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ConstraintSolver.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintViolationVisitor.h>
 
 #include <sofa/linearalgebra/FullMatrix.h>
 
@@ -74,45 +74,6 @@ public:
     /// Do not use the following LCPs until the next call to this function.
     /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
     virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) = 0;
-};
-
-
-
-/// Gets the vector of constraint violation values
-class MechanicalGetConstraintViolationVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-
-    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params, sofa::linearalgebra::BaseVector *v)
-        : simulation::BaseMechanicalVisitor(params)
-        , cparams(params)
-        , m_v(v)
-    {}
-
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override
-    {
-        ctime_t t0 = begin(node, c);
-        c->getConstraintViolation(cparams, m_v);
-        end(node, c, t0);
-        return RESULT_CONTINUE;
-    }
-
-    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
-    {
-        return false; // !map->isMechanical();
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalGetConstraintViolationVisitor";}
-
-private:
-    /// Constraint parameters
-    const sofa::core::ConstraintParams *cparams;
-
-    /// Vector for constraint values
-    sofa::linearalgebra::BaseVector* m_v;
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

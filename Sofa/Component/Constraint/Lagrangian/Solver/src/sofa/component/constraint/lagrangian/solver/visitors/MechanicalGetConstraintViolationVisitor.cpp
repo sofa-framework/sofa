@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,46 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/diffusion/init.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa::component::diffusion
+#include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintViolationVisitor.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
+
+namespace sofa::component::constraint::lagrangian::solver
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
+
+MechanicalGetConstraintViolationVisitor::MechanicalGetConstraintViolationVisitor(
+    const core::ConstraintParams* params, sofa::linearalgebra::BaseVector* v): simulation::BaseMechanicalVisitor(params)
+    , cparams(params)
+    , m_v(v)
+{}
+
+simulation::Visitor::Result MechanicalGetConstraintViolationVisitor::fwdConstraintSet(
+    simulation::Node* node, core::behavior::BaseConstraintSet* c)
+{
+    ctime_t t0 = begin(node, c);
+    c->getConstraintViolation(cparams, m_v);
+    end(node, c, t0);
+    return RESULT_CONTINUE;
 }
 
-void initExternalModule()
+bool MechanicalGetConstraintViolationVisitor::stopAtMechanicalMapping(simulation::Node* node,
+    core::BaseMapping* base_mapping)
 {
-    init();
+    return false; // !map->isMechanical();
+}
 }
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
-    return classes.c_str();
-}
-} // namespace sofa::component::diffusion

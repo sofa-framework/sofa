@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,46 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/diffusion/init.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa::component::diffusion
-{
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
-}
 
-void initExternalModule()
-{
-    init();
-}
+#pragma once
+#include <sofa/component/constraint/lagrangian/solver/config.h>
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
-const char* getModuleName()
+namespace sofa::component::constraint::lagrangian::solver
 {
-    return MODULE_NAME;
-}
 
-const char* getModuleVersion()
+/// Gets the vector of constraint violation values
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API MechanicalGetConstraintViolationVisitor : public simulation::BaseMechanicalVisitor
 {
-    return MODULE_VERSION;
-}
+public:
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params, sofa::linearalgebra::BaseVector *v);
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
-    return classes.c_str();
+    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override;
+
+    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalGetConstraintViolationVisitor";}
+
+private:
+    /// Constraint parameters
+    const sofa::core::ConstraintParams *cparams;
+
+    /// Vector for constraint values
+    sofa::linearalgebra::BaseVector* m_v;
+};
+
 }
-} // namespace sofa::component::diffusion

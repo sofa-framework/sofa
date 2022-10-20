@@ -88,9 +88,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <ConstantForceField name='myForceField' indices='0' force='100.0 0.0 0'/>         \n"
                  "</Node>                                                                                                                                                               \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -139,9 +137,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                          "   <ConstantForceField name='myForceField' "<< kv.first << "='"<< v.first << "'/>  \n"
                          "</Node>                                                                        \n" ;
 
-                Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                                  scene.str().c_str(),
-                                                                  scene.str().size()) ;
+                Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
                 ASSERT_NE(root.get(), nullptr) << "Problem to load scene: " << scene.str() ;
                 EXPECT_MSG_EMIT(Error) ;
                 root->init(sofa::core::execparams::defaultInstance());
@@ -173,9 +169,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <ConstantForceField name='myPlaneForceField'/>                              \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -212,9 +206,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <ConstantForceField name='myPlaneForceField'/>                              \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

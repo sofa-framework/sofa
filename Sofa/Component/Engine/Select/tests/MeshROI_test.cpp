@@ -79,9 +79,7 @@ struct MeshROI_test : public BaseSimulationTest,
         "   </Node>                                                        "
         "</Node>                                                           " ;
 
-        m_root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                  scene2.c_str(),
-                                                  scene2.size()) ;
+        m_root = SceneLoaderXML::loadFromMemory("testscene", scene2.c_str());
 
         ASSERT_NE(m_root, nullptr) ;
 
@@ -144,9 +142,7 @@ struct MeshROI_test : public BaseSimulationTest,
         "   </Node>                                                        "
         "</Node>                                                           " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                  scene1.c_str(),
-                                                  scene1.size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.c_str());
         ASSERT_NE(root, nullptr) ;
 
         root->getChild("node")->getObject("MeshROI")->init();

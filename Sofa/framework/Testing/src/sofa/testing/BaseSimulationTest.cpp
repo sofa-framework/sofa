@@ -55,7 +55,7 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const 
         simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
 
     simulation = simulation::getSimulation() ;
-    root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str(), desc.size()) ;
+    root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str()) ;
 }
 
 BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFile(const std::string& filename)

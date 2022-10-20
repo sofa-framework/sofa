@@ -47,6 +47,9 @@ public:
     static NodeSPtr processXML(xml::BaseElement* xml, const char *filename);
 
     /// load a scene from memory (typically : an xml into a string)
+    static NodeSPtr loadFromMemory(const char* filename, const char* data);
+
+    SOFA_ATTRIBUTE_DEPRECATED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
     static NodeSPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
 
     /// get the file type description
