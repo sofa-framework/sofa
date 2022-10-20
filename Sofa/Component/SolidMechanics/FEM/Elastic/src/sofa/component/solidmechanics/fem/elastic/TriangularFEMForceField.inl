@@ -1199,6 +1199,12 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         return;
     }
 
+    p_computeDrawInfo = showStressVector.getValue() | showStressValue.getValue() | showFracturableTriangles.getValue();
+
+    if (!p_computeDrawInfo) {
+        return;
+    }
+
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -1206,20 +1212,17 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     vparams->drawTool()->disableLighting();
 
-    // Force stress computation to display ForceField
-    p_computeDrawInfo = showStressVector.getValue() | showStressValue.getValue() | showFracturableTriangles.getValue();
-
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
-    Size nbTriangles = m_topology->getNbTriangles();
+    auto triangles = m_topology->getTriangles();
+    Size nbTriangles = triangles.size();
 
     if (showStressVector.getValue())
     {
-        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         std::vector<sofa::type::Vector3> vertices;
         for (Size i = 0; i < nbTriangles; ++i)
         {
-            const Triangle& tri = m_topology->getTriangle(i);
+            const Triangle& tri = triangles[i];
             Index a = tri[0];
             Index b = tri[1];
             Index c = tri[2];
@@ -1265,7 +1268,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         auto evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
         for (Size i = 0; i < nbTriangles; ++i)
         {
-            const Triangle& tri = m_topology->getTriangle(i);
+            const Triangle& tri = triangles[i];
             Index a = tri[0];
             Index b = tri[1];
             Index c = tri[2];
@@ -1308,7 +1311,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             if (triangleInf[i].differenceToCriteria > 0)
             {
                 color = sofa::type::RGBAColor(float(0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference) / (maxDifference - minDifference)), 0.0f, 0.0f, 0.5f);
-                const Triangle& tri = m_topology->getTriangle(i);
+                const Triangle& tri = triangles[i];
                 Index a = tri[0];
                 Index b = tri[1];
                 Index c = tri[2];
