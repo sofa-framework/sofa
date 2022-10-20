@@ -60,7 +60,7 @@ Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     , d_nbPointsOnEachCircle( initData(&d_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles"))
     , d_radius( initData(&d_radius, 1_sreal, "radius", "Radius of created circles in yz plan"))
     , d_radiusFocal( initData(&d_radiusFocal, 0_sreal, "radiusFocal", "If greater than 0., radius in focal axis of created ellipses"))
-    , d_focalAxis( initData(&d_focalAxis, Vec3(0,0,1), "focalAxis", "In case of ellipses"))
+    , d_focalAxis( initData(&d_focalAxis, Vec3(0_sreal, 0_sreal, 1_sreal), "focalAxis", "In case of ellipses"))
     , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
     , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
 {
