@@ -1164,15 +1164,15 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
         if (showStressValue.getValue()) // if true will compute averageStress per point
         {
-            auto triangles = m_topology->getTriangles();
+           const auto& triangles = m_topology->getTriangles();
             auto vertexInf = sofa::helper::getWriteOnlyAccessor(vertexInfo);
 
             m_minStress = std::numeric_limits<Real>::max();
-            m_maxStress = std::numeric_limits<Real>::min();
+            m_maxStress = std::numeric_limits<Real>::lowest();
             for (unsigned int i = 0; i < vertexInf.size(); i++)
             {
                 const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
-                double averageStress = 0.0;
+                Real averageStress = 0.0;
                 double sumArea = 0.0;
                 for (auto triID : triangles)
                 {
@@ -1230,7 +1230,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         return;
     }
 
-    p_computeDrawInfo = showStressVector.getValue() | showStressValue.getValue() | showFracturableTriangles.getValue();
+    p_computeDrawInfo = showStressVector.getValue() || showStressValue.getValue() || showFracturableTriangles.getValue();
 
     if (!p_computeDrawInfo) {
         return;
@@ -1245,8 +1245,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
-    auto triangles = m_topology->getTriangles();
-    Size nbTriangles = triangles.size();
+    const auto& triangles = m_topology->getTriangles();
+    const Size nbTriangles = triangles.size();
 
     if (showStressVector.getValue())
     {
