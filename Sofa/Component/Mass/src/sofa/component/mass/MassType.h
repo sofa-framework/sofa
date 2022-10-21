@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mass/config.h>
+#include <sofa/core/behavior/BaseMass.h>
 
 namespace sofa::component::mass
 {
