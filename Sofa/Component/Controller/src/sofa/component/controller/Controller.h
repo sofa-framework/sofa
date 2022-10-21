@@ -103,11 +103,6 @@ public:
     virtual void onEndAnimationStep(const double /*dt*/) {}
 
     /**
-    * @brief End build constraint system event callback.
-    */
-    virtual void onBuildConstraintSystemEndEvent() {}
-
-    /**
     * @brief GUI event callback.
     */
     virtual void onGUIEvent(core::objectmodel::GUIEvent *) {}
