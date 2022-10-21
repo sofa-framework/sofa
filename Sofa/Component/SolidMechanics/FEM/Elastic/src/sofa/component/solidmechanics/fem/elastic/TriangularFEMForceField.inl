@@ -952,7 +952,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     unsigned int nbTriangles = m_topology->getNbTriangles();
-    auto triangles = m_topology->getTriangles();
+    const auto& triangles = m_topology->getTriangles();
     for (unsigned int i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -1067,7 +1067,7 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const
 {
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
     sofa::Size nbTriangles = m_topology->getNbTriangles();
-    auto triangles = m_topology->getTriangles();
+    const auto& triangles = m_topology->getTriangles();
     for (sofa::Index i = 0; i < nbTriangles; i++)
     {
         TriangleInformation& tInfo = triangleInf[i];
@@ -1164,7 +1164,7 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
         if (showStressValue.getValue()) // if true will compute averageStress per point
         {
-           const auto& triangles = m_topology->getTriangles();
+            const auto& triangles = m_topology->getTriangles();
             auto vertexInf = sofa::helper::getWriteOnlyAccessor(vertexInfo);
 
             m_minStress = std::numeric_limits<Real>::max();
