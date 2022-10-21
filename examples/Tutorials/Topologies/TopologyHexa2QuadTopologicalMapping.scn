@@ -46,7 +46,7 @@
             <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
             <TriangleCollisionModel name="default7" />
             <Node name="Visu">
-                <OglModel template="ExtVec3f" name="Visual" color="green" />
+                <OglModel name="Visual" color="green" />
                 <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@../../Hexa" output="@Visual" />
             </Node>
         </Node>

@@ -46,7 +46,7 @@
                 <Tetra2TriangleTopologicalMapping name="default8" input="@../Container" output="@Container" />
                 <TriangleCollisionModel name="default9" />
                 <Node name="Visu">
-                    <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+                    <OglModel name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
                     <IdentityMapping template="Vec3d,ExtVec3f" name="default12" input="@.." output="@Visual" />
                 </Node>
             </Node>

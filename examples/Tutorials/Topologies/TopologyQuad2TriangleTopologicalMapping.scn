@@ -34,7 +34,7 @@
         <QuadSetTopologyModifier name="Topology Modifier" />
         <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <!--<QuadularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="3000" damping="1"/>-->
-        <DiagonalMass name="Mass" template="Vec3d" massDensity="0.5" />
+        <DiagonalMass name="Mass" template="Vec3d,Vec3d" massDensity="0.5" />
         <FixedConstraint name="Fixed dof" template="Vec3d" indices="4 5 6 7" />
         <Node name="Visu">
             <OglModel name="Visual" template="ExtVec3f" color="green" />

@@ -33,7 +33,7 @@
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
 
-        <DiagonalMass massDensity="0.15" template="CudaVec3f,float"/>
+        <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
         <FixedConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>

@@ -297,7 +297,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         {
             msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
                                       << "cannot be found in the list of available templates [" << ss.str() << "]. "
-                                      << "Falling back to default template: '"
+                                      << "Falling back to the first compatible template: '"
                                       << object->getTemplateName() << "'.";
         }
     }

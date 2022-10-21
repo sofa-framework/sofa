@@ -44,7 +44,6 @@ namespace sofa::gl::component::rendering3d
  *  using OpenGL.
  *
  */
-
 class SOFA_GL_COMPONENT_RENDERING3D_API OglModel : public sofa::component::visual::VisualModelImpl
 {
 public:
