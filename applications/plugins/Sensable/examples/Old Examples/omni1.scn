@@ -25,7 +25,7 @@
 		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection2"  compliance="1e-005 1e-009 0 0 1e-009 0 1e-009" />
 		<Node 	name="Tool1VM"  >
 			<OglModel name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  />
-			<RigidMapping template="Rigid,ExtVec3f" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="0" />
+			<RigidMapping template="Rigid,Vec3d" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="0" />
 		</Node>
 		<Node 	name="Tool1CM"  >
 			<RegularGridTopology name="regularGridTopology1"  fileTopology="dt/aspi.trian"  n="1 2 1"  min="0 -350 0"  max="0 0 0"  p0="0 -350 0" />

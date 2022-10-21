@@ -52,7 +52,7 @@
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_0" />
-            <BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
+            <BarycentricMapping template="Vec3d,Vec3d" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
             <SphereLoader filename="mesh/liver.sph" />

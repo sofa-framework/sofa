@@ -47,7 +47,7 @@
             <TriangleCollisionModel name="default7" />
             <Node name="Visu">
                 <OglModel name="Visual" color="green" />
-                <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@../../Hexa" output="@Visual" />
+                <IdentityMapping template="Vec3d,Vec3d" name="default8" input="@../../Hexa" output="@Visual" />
             </Node>
         </Node>
     </Node>

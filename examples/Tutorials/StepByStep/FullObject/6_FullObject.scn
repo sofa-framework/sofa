@@ -30,7 +30,7 @@
         <Node name="VisualNode" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
             <OglModel name="Objective" src="@meshLoader_1" />
-            <BarycentricMapping template="Vec3d,ExtVec3f" name="Visual Mapping" output="@Objective"  />
+            <BarycentricMapping template="Vec3d,Vec3d" name="Visual Mapping" output="@Objective"  />
         </Node>
         <Node name="CollisionNode" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader1" filename="mesh/cube.obj" />
