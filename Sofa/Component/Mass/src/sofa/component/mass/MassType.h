@@ -43,12 +43,17 @@ struct MassType
     // using type = YourType;
 };
 
+
+/**
+ * Function used in parsing some classes derived from BaseMass to warn the user how the template
+ * attributes have changed since #2644
+ */
 template<class MassType>
-void parseMassTemplate(sofa::core::objectmodel::BaseObjectDescription* arg, core::behavior::BaseMass* mass)
+void parseMassTemplate(sofa::core::objectmodel::BaseObjectDescription* arg, const core::behavior::BaseMass* mass)
 {
     if (arg->getAttribute("template"))
     {
-        auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
+        const auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
         if (splitTemplates.size() > 1)
         {
             // check if the given 2nd template is the deprecated MassType one
