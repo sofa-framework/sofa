@@ -22,7 +22,7 @@
     </Node>
     <Node name="Second Object" gravity="0 -9.81 0">
         <VisualStyle displayFlags="showVisual hideBehavior hideCollision hideMapping hideOptions" />
-        <MechanicalObject template="Vec3d,double" name="Particles" restScale="1" position="2 0 0" />
+        <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="2 0 0" />
         <UniformMass template="Vec3d" name="Mass" />
     </Node>
 </Node>
