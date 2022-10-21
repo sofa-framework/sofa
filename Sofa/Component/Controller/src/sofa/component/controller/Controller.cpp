@@ -31,7 +31,7 @@
 #include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/events/BuildConstraintSystemEndEvent.cpp>
+#include <sofa/simulation/events/BuildConstraintSystemEndEvent.h>
 
 
 namespace sofa::component::controller

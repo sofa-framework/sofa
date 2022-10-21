@@ -22,7 +22,7 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/events/BuildConstraintSystemEndEvent.cpp>
+#include <sofa/simulation/events/BuildConstraintSystemEndEvent.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
