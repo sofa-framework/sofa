@@ -18,7 +18,7 @@
             <Node 	 name="GPUMesh"  >
                <OglModel template="Vec3d"  />
                 <IdentityMapping template="Vec3d,Vec3d" mapForces="0"  mapConstraints="0"  mapMasses="0"   />
-                <DisplacementTransformEngine name="BoneDisplacements" template="Rigid3d,Mat4x4f"  x0="@../../Bones.rest_position"  x="@../../Bones.position"   />
+                <DisplacementTransformEngine name="BoneDisplacements" template="Rigid3d,Mat4x4d"  x0="@../../Bones.rest_position"  x="@../../Bones.position"   />
                 <OglShader name="SkinningShader" fileFragmentShaders="['shaders/linearBlendSkinning.frag']" fileVertexShaders="['shaders/linearBlendSkinning.vert']"/>
                 <OglMatrix4VectorVariable  id="boneMatrix"  value="@BoneDisplacements.displacements"  transpose="1" />
                 <OglInt4Attribute   id="indices"  value="0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 1 0 0 0 1 0 0 0" />
