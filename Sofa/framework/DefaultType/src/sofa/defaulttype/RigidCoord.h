@@ -264,26 +264,17 @@ public:
         orientation.fromMatrix(rot);
     }
 
-    /// Write to the given matrix
-    template<class Mat>
-    void toMatrix( Mat& m) const
+    /// Write to the given 3x3 matrix
+    void toMatrix( sofa::type::Mat<3,3,real>& m) const
     {
-        static_assert(std::is_same_v<Mat, sofa::type::Mat<3,3,real> > || std::is_same_v<Mat, sofa::type::Mat<4,4,real> >, "toMatrix() only supports sofa::type::Mat<3,3,Real> or sofa::type::Mat<4,4,Real>");
-
         m.identity();
-        if constexpr (std::is_same_v<Mat, sofa::type::Mat<3,3,real> >)
-        {
-            orientation.toMatrix(m);
-        }
-        else if constexpr (std::is_same_v<Mat, sofa::type::Mat<4,4,real> >)
-        {
-            orientation.toHomogeneousMatrix(m);
-            m[0][3] = (typename Mat::Real)center[0];
-            m[1][3] = (typename Mat::Real)center[1];
-            m[2][3] = (typename Mat::Real)center[2];
-        }
+        orientation.toMatrix(m);
+    }
 
-
+    /// Write to the given 4x4 matrix
+    void toMatrix( sofa::type::Mat<4,4,real>& m) const
+    {
+        toHomogeneousMatrix(m);
     }
 
     void toHomogeneousMatrix( HomogeneousMat& m) const
