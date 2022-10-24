@@ -78,6 +78,7 @@ public:
 protected:
 
     void postBuildSystem(const core::ConstraintParams* cParams) override;
+    void postSolveSystem(const core::ConstraintParams* cParams) override;
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

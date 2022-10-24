@@ -57,6 +57,8 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
         sofa::helper::AdvancedTimer::stepBegin(className + " - SolveSystem");
         continueSolving = solveSystem(cParams, res1, res2);
         sofa::helper::AdvancedTimer::stepEnd(className + " - SolveSystem");
+
+        postSolveSystem(cParams);
     }
 
     if (continueSolving)

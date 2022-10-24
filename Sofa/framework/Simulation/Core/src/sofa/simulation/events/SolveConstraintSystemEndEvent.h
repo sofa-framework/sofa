@@ -19,58 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/events/BuildConstraintSystemEndEvent.h>
-#include <sofa/simulation/events/SolveConstraintSystemEndEvent.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/config.h>
 
-namespace sofa::component::constraint::lagrangian::solver
+namespace sofa::simulation
 {
 
-ConstraintProblem::ConstraintProblem()
-    : tolerance(0.00001), maxIterations(1000),
-      dimension(0), problemId(0)
+class SOFA_SIMULATION_CORE_API SolveConstraintSystemEndEvent : public sofa::core::objectmodel::Event
 {
-}
+public:
 
-ConstraintProblem::~ConstraintProblem()
-{
-}
+    SOFA_EVENT_H( SolveConstraintSystemEndEvent )
 
-void ConstraintProblem::clear(int nbConstraints)
-{
-    dimension = nbConstraints;
-    W.resize(nbConstraints, nbConstraints);
-    dFree.resize(nbConstraints);
-    f.resize(nbConstraints);
+    SolveConstraintSystemEndEvent() {}
+    ~SolveConstraintSystemEndEvent() override {}
 
-    static unsigned int counter = 0;
-    problemId = ++counter;
-}
+    inline static const char* GetClassName() { return "SolveConstraintSystemEndEvent"; }
 
-unsigned int ConstraintProblem::getProblemId()
-{
-    return problemId;
-}
+};
+} // namespace sofa::simulation
 
-ConstraintSolverImpl::~ConstraintSolverImpl()
-{}
-
-void ConstraintSolverImpl::postBuildSystem(const core::ConstraintParams* cParams)
-{
-    sofa::simulation::BuildConstraintSystemEndEvent evBegin;
-    sofa::simulation::PropagateEventVisitor eventPropagation( cParams, &evBegin);
-    eventPropagation.execute(this->getContext());
-}
-
-
-void ConstraintSolverImpl::postSolveSystem(const core::ConstraintParams* cParams)
-{
-    sofa::simulation::SolveConstraintSystemEndEvent evBegin;
-    sofa::simulation::PropagateEventVisitor eventPropagation( cParams, &evBegin);
-    eventPropagation.execute(this->getContext());
-}
-
-
-} //namespace sofa::component::constraint::lagrangian::solver

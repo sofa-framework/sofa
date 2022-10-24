@@ -77,6 +77,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
+    ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
@@ -200,6 +201,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
+    ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.cpp
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.cpp

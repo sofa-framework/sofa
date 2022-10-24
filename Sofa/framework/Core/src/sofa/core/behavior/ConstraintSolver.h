@@ -122,6 +122,7 @@ public:
 protected:
 
     virtual void postBuildSystem(const ConstraintParams* constraint_params) {}
+    virtual void postSolveSystem(const ConstraintParams* constraint_params) {}
 };
 
 } // namespace sofa::core::behavior
