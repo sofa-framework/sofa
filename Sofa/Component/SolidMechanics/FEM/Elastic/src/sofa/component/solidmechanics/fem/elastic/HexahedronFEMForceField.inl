@@ -1205,6 +1205,8 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!this->mstate) return;
     if (!m_topology) return;
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
