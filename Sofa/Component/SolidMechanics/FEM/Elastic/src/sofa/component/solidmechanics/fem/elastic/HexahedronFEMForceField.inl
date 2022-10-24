@@ -1222,9 +1222,21 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     const Real percentage = f_drawPercentageOffset.getValue();
     const Real oneMinusPercentage = static_cast<Real>(1) - percentage;
 
-    typename VecElement::const_iterator it;
-    sofa::Index i {};
     const auto* indexedElements = this->getIndexedElements();
+
+    sofa::type::fixed_array<std::vector<sofa::type::Vector3>, 6 > quads; //one list of quads per hexahedron face
+    sofa::type::fixed_array<std::vector<RGBAColor>, 6> colors; //one list of quads per hexahedron face
+
+    for (auto& q : quads)
+    {
+        q.reserve(indexedElements->size() * 4);
+    }
+    for (auto& c : colors)
+    {
+        c.reserve(indexedElements->size() * 4);
+    }
+
+    sofa::Index i {};
     for (const auto& element : *indexedElements)
     {
         const Coord& a = x[element[0]];
@@ -1239,37 +1251,72 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         const Coord center = (a + b + c + d + e + f + g + h ) * static_cast<Real>(0.125);
         const Coord centerPercent = center * percentage;
 
-        Coord pa = a * oneMinusPercentage + centerPercent;
-        Coord pb = b * oneMinusPercentage + centerPercent;
-        Coord pc = c * oneMinusPercentage + centerPercent;
-        Coord pd = d * oneMinusPercentage + centerPercent;
-        Coord pe = e * oneMinusPercentage + centerPercent;
-        Coord pf = f * oneMinusPercentage + centerPercent;
-        Coord pg = g * oneMinusPercentage + centerPercent;
-        Coord ph = h * oneMinusPercentage + centerPercent;
+        const Coord pa = a * oneMinusPercentage + centerPercent;
+        const Coord pb = b * oneMinusPercentage + centerPercent;
+        const Coord pc = c * oneMinusPercentage + centerPercent;
+        const Coord pd = d * oneMinusPercentage + centerPercent;
+        const Coord pe = e * oneMinusPercentage + centerPercent;
+        const Coord pf = f * oneMinusPercentage + centerPercent;
+        const Coord pg = g * oneMinusPercentage + centerPercent;
+        const Coord ph = h * oneMinusPercentage + centerPercent;
 
-        std::vector< type::Vector3 > points[6] =
-        {
-            { pa, pb, pc, pa, pc, pd },
-            { pe, pf, pg, pe, pg, ph },
-            { pc, pd, ph, pc, ph, pg },
-            { pa, pb, pf, pa, pf, pe },
-            { pa, pd, ph, pa, ph, pe },
-            { pb, pc, pg, pb, pg, pf },
-        };
+        quads[0].emplace_back(pa);
+        quads[0].emplace_back(pb);
+        quads[0].emplace_back(pc);
+        quads[0].emplace_back(pd);
+
+        quads[1].emplace_back(pe);
+        quads[1].emplace_back(pf);
+        quads[1].emplace_back(pg);
+        quads[1].emplace_back(ph);
+
+        quads[2].emplace_back(pc);
+        quads[2].emplace_back(pd);
+        quads[2].emplace_back(ph);
+        quads[2].emplace_back(pg);
+
+        quads[3].emplace_back(pa);
+        quads[3].emplace_back(pb);
+        quads[3].emplace_back(pf);
+        quads[3].emplace_back(pe);
+
+        quads[4].emplace_back(pa);
+        quads[4].emplace_back(pd);
+        quads[4].emplace_back(ph);
+        quads[4].emplace_back(pe);
+
+        quads[5].emplace_back(pb);
+        quads[5].emplace_back(pc);
+        quads[5].emplace_back(pg);
+        quads[5].emplace_back(pf);
 
         const float stiffnessCoef = _sparseGrid ? _sparseGrid->getStiffnessCoef(i) : 1.0f;
+        sofa::type::fixed_array<sofa::type::RGBAColor, 6> quadColors {
+            sofa::type::RGBAColor(0.7f,0.7f,0.1f,stiffnessCoef),
+            sofa::type::RGBAColor(0.7f,0.0f,0.0f,stiffnessCoef),
+            sofa::type::RGBAColor(0.0f,0.7f,0.0f,stiffnessCoef),
+            sofa::type::RGBAColor(0.0f,0.0f,0.7f,stiffnessCoef),
+            sofa::type::RGBAColor(0.1f,0.7f,0.7f,stiffnessCoef),
+            sofa::type::RGBAColor(0.7f,0.1f,0.7f,stiffnessCoef)
+        };
 
-        vparams->drawTool()->drawTriangles(points[0], sofa::type::RGBAColor(0.7f,0.7f,0.1f,stiffnessCoef));
-        vparams->drawTool()->drawTriangles(points[1], sofa::type::RGBAColor(0.7f,0.0f,0.0f,stiffnessCoef));
-        vparams->drawTool()->drawTriangles(points[2], sofa::type::RGBAColor(0.0f,0.7f,0.0f,stiffnessCoef));
-        vparams->drawTool()->drawTriangles(points[3], sofa::type::RGBAColor(0.0f,0.0f,0.7f,stiffnessCoef));
-        vparams->drawTool()->drawTriangles(points[4], sofa::type::RGBAColor(0.1f,0.7f,0.7f,stiffnessCoef));
-        vparams->drawTool()->drawTriangles(points[5], sofa::type::RGBAColor(0.7f,0.1f,0.7f,stiffnessCoef));
+        for (unsigned int j = 0; j < 6; ++j)
+        {
+            auto& faceColors = colors[j];
+            const auto& color = quadColors[j];
+            for (unsigned int k = 0; k < 4; ++k)
+            {
+                faceColors.emplace_back(color);
+            }
+        }
 
         ++i;
     }
 
+    for (unsigned int j = 0; j < 6; ++j)
+    {
+        vparams->drawTool()->drawQuads(quads[j], colors[j]);
+    }
 }
 
 
