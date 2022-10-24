@@ -34,6 +34,7 @@
 #include <cctype>
 #include <iostream>
 #include <atomic>
+#include <thread>
 
 #define DEFAULT_INTERVAL 100
 
@@ -188,6 +189,7 @@ bool AdvancedTimer::isEnabled(IdTimer id)
 
 void AdvancedTimer::setEnabled(IdTimer id, bool val)
 {
+    std::cout << "[AdvancedTimer::setEnabled] thread id " << std::this_thread::get_id() << std::endl;
     std::cout << "Setting timer " << std::string(id) << " to " << val << std::endl;
     TimerData& data = timers[id];
     if (!static_cast<int>(data.id))
@@ -238,6 +240,7 @@ void AdvancedTimer::setInterval(IdTimer id, int val)
 
 void AdvancedTimer::begin(IdTimer id)
 {
+    std::cout << "[AdvancedTimer::begin] thread id " << std::this_thread::get_id() << std::endl;
     std::cout << "[AdvancedTimer::begin] " << std::string(id) << std::endl;
     std::stack<AdvancedTimer::IdTimer>& curTimer = getCurTimer();
     curTimer.push(id);
