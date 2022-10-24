@@ -1209,38 +1209,44 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
+    vparams->drawTool()->setLightingEnabled(false);
+
+    if(_sparseGrid )
+    {
+        vparams->drawTool()->enableBlending();
+    }
+
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
+    const Real percentage = f_drawPercentageOffset.getValue();
+    const Real oneMinusPercentage = static_cast<Real>(1) - percentage;
+
     typename VecElement::const_iterator it;
-    sofa::Index i;
+    sofa::Index i {};
     const auto* indexedElements = this->getIndexedElements();
-    for(it = indexedElements->begin(), i = 0 ; it != indexedElements->end() ; ++it, ++i)
+    for (const auto& element : *indexedElements)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
-        Index d = (*it)[3];
-        Index c = (*it)[2];
-        Index e = (*it)[4];
-        Index f = (*it)[5];
-        Index h = (*it)[7];
-        Index g = (*it)[6];
+        const Coord& a = x[element[0]];
+        const Coord& b = x[element[1]];
+        const Coord& c = x[element[2]];
+        const Coord& d = x[element[3]];
+        const Coord& e = x[element[4]];
+        const Coord& f = x[element[5]];
+        const Coord& g = x[element[6]];
+        const Coord& h = x[element[7]];
 
-        Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.125;
-        Real percentage = f_drawPercentageOffset.getValue();
-        Coord pa = x[a]-(x[a]-center)*percentage;
-        Coord pb = x[b]-(x[b]-center)*percentage;
-        Coord pc = x[c]-(x[c]-center)*percentage;
-        Coord pd = x[d]-(x[d]-center)*percentage;
-        Coord pe = x[e]-(x[e]-center)*percentage;
-        Coord pf = x[f]-(x[f]-center)*percentage;
-        Coord pg = x[g]-(x[g]-center)*percentage;
-        Coord ph = x[h]-(x[h]-center)*percentage;
+        const Coord center = (a + b + c + d + e + f + g + h ) * static_cast<Real>(0.125);
+        const Coord centerPercent = center * percentage;
 
-        if(_sparseGrid )
-        {
-            vparams->drawTool()->enableBlending();
-        }
+        Coord pa = a * oneMinusPercentage + centerPercent;
+        Coord pb = b * oneMinusPercentage + centerPercent;
+        Coord pc = c * oneMinusPercentage + centerPercent;
+        Coord pd = d * oneMinusPercentage + centerPercent;
+        Coord pe = e * oneMinusPercentage + centerPercent;
+        Coord pf = f * oneMinusPercentage + centerPercent;
+        Coord pg = g * oneMinusPercentage + centerPercent;
+        Coord ph = h * oneMinusPercentage + centerPercent;
 
         std::vector< type::Vector3 > points[6] =
         {
@@ -1252,21 +1258,18 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             { pb, pc, pg, pb, pg, pf },
         };
 
-        vparams->drawTool()->setLightingEnabled(false);
-        vparams->drawTool()->drawTriangles(points[0], sofa::type::RGBAColor(0.7f,0.7f,0.1f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[1], sofa::type::RGBAColor(0.7f,0.0f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[2], sofa::type::RGBAColor(0.0f,0.7f,0.0f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[3], sofa::type::RGBAColor(0.0f,0.0f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[4], sofa::type::RGBAColor(0.1f,0.7f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
-        vparams->drawTool()->drawTriangles(points[5], sofa::type::RGBAColor(0.7f,0.1f,0.7f,(_sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0f)));
+        const float stiffnessCoef = _sparseGrid ? _sparseGrid->getStiffnessCoef(i) : 1.0f;
 
+        vparams->drawTool()->drawTriangles(points[0], sofa::type::RGBAColor(0.7f,0.7f,0.1f,stiffnessCoef));
+        vparams->drawTool()->drawTriangles(points[1], sofa::type::RGBAColor(0.7f,0.0f,0.0f,stiffnessCoef));
+        vparams->drawTool()->drawTriangles(points[2], sofa::type::RGBAColor(0.0f,0.7f,0.0f,stiffnessCoef));
+        vparams->drawTool()->drawTriangles(points[3], sofa::type::RGBAColor(0.0f,0.0f,0.7f,stiffnessCoef));
+        vparams->drawTool()->drawTriangles(points[4], sofa::type::RGBAColor(0.1f,0.7f,0.7f,stiffnessCoef));
+        vparams->drawTool()->drawTriangles(points[5], sofa::type::RGBAColor(0.7f,0.1f,0.7f,stiffnessCoef));
+
+        ++i;
     }
 
-    if (vparams->displayFlags().getShowWireFrame())
-        vparams->drawTool()->setPolygonMode(0,false);
-
-    if(_sparseGrid )
-       vparams->drawTool()->disableBlending();
 }
 
 
