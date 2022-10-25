@@ -38,6 +38,7 @@ using namespace defaulttype;
 int ImageToRigidMassEngineClass = core::RegisterObject("Compute rigid mass from a density image")
         .add<ImageToRigidMassEngine<ImageD> >(true)
         .add<ImageToRigidMassEngine<ImageUC> >()
+        .add<ImageToRigidMassEngine<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 //        .add<ImageToRigidMassEngine<ImageC> >()
 //        .add<ImageToRigidMassEngine<ImageI> >()
@@ -47,12 +48,12 @@ int ImageToRigidMassEngineClass = core::RegisterObject("Compute rigid mass from 
 //        .add<ImageToRigidMassEngine<ImageL> >()
 //        .add<ImageToRigidMassEngine<ImageUL> >()
 //        .add<ImageToRigidMassEngine<ImageF> >()
-        .add<ImageToRigidMassEngine<ImageB> >()
 #endif
         ;
 
 template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageD>;
 template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageUC>;
+template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageB>;
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 //template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageC>;
 //template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageI>;
@@ -62,7 +63,6 @@ template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageUC>;
 //template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageL>;
 //template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageUL>;
 //template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageF>;
-template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageB>;
 #endif
 
 
