@@ -7,7 +7,7 @@ sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
-sofa_find_package(SofaGuiQt REQUIRED QUIET)
+sofa_find_package(SofaGuiQt QUIET)
 
 set(SOFA_MODULES
     Sofa.Component.Constraint.Lagrangian.Solver
