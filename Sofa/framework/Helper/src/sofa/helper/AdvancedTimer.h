@@ -193,14 +193,6 @@ public:
                     const auto idsMapSize = sofa::helper::narrow_cast<unsigned int>(idfac.idsMap.size());
                     idfac.idsMap.insert(it, {name, idsMapSize});
                     idfac.idsList.push_back(name);
-                    if (name == "Animate")
-                    {
-                        std::cout << "New id for Animate: " << idsMapSize << std::endl;
-                    }
-                    if (name == "cg_timer")
-                    {
-                        std::cout << "New id for cg_timer: " << idsMapSize << std::endl;
-                    }
                     return idsMapSize;
                 }
 
