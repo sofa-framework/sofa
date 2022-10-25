@@ -43,6 +43,8 @@ int ImageFilterClass = core::RegisterObject("Filter an image")
 
         .add<ImageFilter<ImageD,ImageUC    > >()
         .add<ImageFilter<ImageD,ImageB    > >()
+        .add<ImageFilter<ImageB ,ImageD     > >()
+        .add<ImageFilter<ImageB ,ImageB     > >()
 
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageFilter<ImageC ,ImageC     > >()
@@ -53,7 +55,6 @@ int ImageFilterClass = core::RegisterObject("Filter an image")
         .add<ImageFilter<ImageL ,ImageL     > >()
         .add<ImageFilter<ImageUL,ImageUL    > >()
         .add<ImageFilter<ImageF ,ImageF     > >()
-        .add<ImageFilter<ImageB ,ImageB     > >()
 
         .add<ImageFilter<ImageC ,ImageD     > >()
         .add<ImageFilter<ImageI ,ImageD     > >()
@@ -63,7 +64,6 @@ int ImageFilterClass = core::RegisterObject("Filter an image")
         .add<ImageFilter<ImageL ,ImageD     > >()
         .add<ImageFilter<ImageUL,ImageD    > >()
         .add<ImageFilter<ImageF ,ImageD     > >()
-        .add<ImageFilter<ImageB ,ImageD     > >()
 
         .add<ImageFilter<ImageUS,ImageUC    > >()
         .add<ImageFilter<ImageUC,ImageUS    > >()
@@ -82,6 +82,9 @@ template class SOFA_IMAGE_API ImageFilter<ImageUC  ,ImageD    >;
 template class SOFA_IMAGE_API ImageFilter<ImageD  ,ImageUC    >;
 template class SOFA_IMAGE_API ImageFilter<ImageD  ,ImageB    >;
 
+template class SOFA_IMAGE_API ImageFilter<ImageB   ,ImageD     >;
+template class SOFA_IMAGE_API ImageFilter<ImageB   ,ImageB     >;
+
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageFilter<ImageC   ,ImageC     >;
 template class SOFA_IMAGE_API ImageFilter<ImageI   ,ImageI     >;
@@ -91,7 +94,6 @@ template class SOFA_IMAGE_API ImageFilter<ImageUS  ,ImageUS    >;
 template class SOFA_IMAGE_API ImageFilter<ImageL   ,ImageL     >;
 template class SOFA_IMAGE_API ImageFilter<ImageUL  ,ImageUL    >;
 template class SOFA_IMAGE_API ImageFilter<ImageF   ,ImageF     >;
-template class SOFA_IMAGE_API ImageFilter<ImageB   ,ImageB     >;
 
 template class SOFA_IMAGE_API ImageFilter<ImageC   ,ImageD     >;
 template class SOFA_IMAGE_API ImageFilter<ImageI   ,ImageD     >;
@@ -101,7 +103,6 @@ template class SOFA_IMAGE_API ImageFilter<ImageUS  ,ImageD    >;
 template class SOFA_IMAGE_API ImageFilter<ImageL   ,ImageD     >;
 template class SOFA_IMAGE_API ImageFilter<ImageUL  ,ImageD    >;
 template class SOFA_IMAGE_API ImageFilter<ImageF   ,ImageD     >;
-template class SOFA_IMAGE_API ImageFilter<ImageB   ,ImageD     >;
 
 template class SOFA_IMAGE_API ImageFilter<ImageUS   ,ImageUC     >;
 template class SOFA_IMAGE_API ImageFilter<ImageUC   ,ImageUS     >;
