@@ -31,6 +31,8 @@
 #include <unordered_map>
 #include <sofa/helper/narrow_cast.h>
 
+#include <mutex>
+
 namespace sofa::simulation
 {
     class Node;
@@ -168,6 +170,7 @@ public:
             /// the list of the id names. the Ids are the indices in the vector
             std::vector<std::string> idsList;
             std::unordered_map<std::string, unsigned int> idsMap;
+            inline static std::mutex s_mutex {};
 
             IdFactory()
             {
@@ -183,6 +186,7 @@ public:
             */
             static unsigned int getID(const std::string& name)
             {
+                std::lock_guard guard(s_mutex);
                 if (name.empty())
                     return 0;
                 IdFactory& idfac = getInstance();
@@ -201,12 +205,14 @@ public:
 
             static std::size_t getLastID()
             {
+                std::lock_guard guard(s_mutex);
                 return getInstance().idsList.size()-1;
             }
 
             /// return the name corresponding to the id in parameter
             static std::string getName(unsigned int id)
             {
+                std::lock_guard guard(s_mutex);
                 if (id < getInstance().idsList.size())
                     return getInstance().idsList[id];
                 else
