@@ -52,6 +52,8 @@ Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
     , m_outTopoModifier(nullptr)
 {
+    m_inputType = TopologyElementType::TRIANGLE;
+    m_outputType = TopologyElementType::EDGE;
 }
 
 
@@ -66,42 +68,17 @@ Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 
 void Triangle2EdgeTopologicalMapping::init()
 {
-    bool modelsOk = true;
-
-    // Check input topology
-    if (!fromModel)
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
-        msg_error() << "Pointer to input topology is invalid.";
-        modelsOk = false;
-    }
-    else
-    {
-        // Making sure the input topology includes triangle elements
-        if (fromModel.get()->getNbTriangles() != 0)
-        {
-            msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a valid triangle topology.";
-            modelsOk = false;
-        }
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return; 
     }
 
-    // Check output topology
-    if (!toModel)
-    {
-        msg_error() << "Pointer to output topology is invalid.";
-        modelsOk = false;
-    }
-    else
-    {
-        toModel->getContext()->get(m_outTopoModifier);
-        if (!m_outTopoModifier)
-        {
-            msg_error() << "No EdgeSetTopologyModifier found in the Edge topology Node.";
-            modelsOk = false;
-        }
-    }
 
-    if (!modelsOk)
+    toModel->getContext()->get(m_outTopoModifier);
+    if (!m_outTopoModifier)
     {
+        msg_error() << "No EdgeSetTopologyModifier found in the Edge topology Node.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }

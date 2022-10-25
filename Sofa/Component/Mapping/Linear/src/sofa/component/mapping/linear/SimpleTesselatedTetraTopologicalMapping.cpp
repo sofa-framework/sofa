@@ -49,55 +49,21 @@ int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Speci
 
 // Implementation
 SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ()
-    : tetrahedraMappedFromTetra( initData ( &tetrahedraMappedFromTetra, "tetrahedraMappedFromTetra", "Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided")),
-      tetraSource( initData ( &tetraSource, "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)")),
-      d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
-      d_pointMappedFromEdge( initData ( &d_pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint")),
-      d_pointSource( initData ( &d_pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
+    : sofa::core::topology::TopologicalMapping()
+    , tetrahedraMappedFromTetra( initData ( &tetrahedraMappedFromTetra, "tetrahedraMappedFromTetra", "Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided"))
+    , tetraSource( initData ( &tetraSource, "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)"))
+    , d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point"))
+    , d_pointMappedFromEdge( initData ( &d_pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint"))
+    , d_pointSource( initData ( &d_pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
 {
+    m_inputType = TopologyElementType::TETRAHEDRON;
+    m_outputType = TopologyElementType::TETRAHEDRON;
 }
 
 void SimpleTesselatedTetraTopologicalMapping::init()
 {
-    bool modelsOk = true;
-
-    // Check input topology
-    if (!fromModel)
-    {
-        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no input mesh topology could be found.
-        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-    else
-    {
-        // Making sure the input topology corresponds to a tetrahedral topology
-        if (fromModel.get()->getTopologyType() != sofa::geometry::ElementType::TETRAHEDRON)
-        {
-            msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a tetrahedral topology.";
-            modelsOk = false;
-        }
-    }
-
-    // Check output topology
-    if (!toModel)
-    {
-        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no output mesh topology could be found.
-        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-    else
-    {
-        // Making sure the output topology corresponds to a tetrahedral topology
-        if (toModel.get()->getTopologyType() != sofa::geometry::ElementType::TETRAHEDRON)
-        {
-            msg_error() << "The type of the output topology '" << toModel.getPath() << "' does not correspond to a tetrahedral topology.";
-            modelsOk = false;
-        }
-    }
-
-    if (!modelsOk)
+    // Check input/output topology
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;

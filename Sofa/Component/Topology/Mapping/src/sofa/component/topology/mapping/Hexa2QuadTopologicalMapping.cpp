@@ -54,69 +54,32 @@ int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of map
 // Implementation
 
 Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
-    : flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
+    : sofa::core::topology::TopologicalMapping()
+    , flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
 {
+    m_inputType = TopologyElementType::HEXAHEDRON;
+    m_outputType = TopologyElementType::QUAD;
 }
 
 void Hexa2QuadTopologicalMapping::init()
 {
     using namespace container::dynamic;
 
-    bool modelsOk = true;
-    // Check input topology
-    if (!fromModel)
-    {
-        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no input mesh topology could be found.
-        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-    else
-    {
-        // Making sure the input topology corresponds to a tetrahedral topology
-        if (fromModel.get()->getTopologyType() != sofa::geometry::ElementType::HEXAHEDRON)
-        {
-            msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a hexahedral topology.";
-            modelsOk = false;
-        }
-    }
-
-    // Check output topology
-    if (!toModel)
-    {
-        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no output mesh topology could be found.
-        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-    else
-    {
-        // Making sure the output topology is derived from the quad topology container
-        if (!dynamic_cast<QuadSetTopologyContainer *>(toModel.get()))
-        {
-            msg_error() << "The input topology '" << toModel.getPath() << "' is not homogeneous with a QuadSetTopologyContainer. The '" << toModel.getName() << "' data attribute must be linked to a valid component, among the following list of eligible components:" << msgendl
-                                   << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<container::dynamic::QuadSetTopologyContainer>();
-            modelsOk = false;
-        }
-        else
-        {
-            // Making sure a topology modifier exists at the same level as the output topology
-            QuadSetTopologyModifier *to_tstm;
-            toModel->getContext()->get(to_tstm);
-            if (!to_tstm) {
-                msg_error() << "No QuadSetTopologyModifier found in the output topology node '"
-                            << toModel->getContext()->getName() << "'.";
-                modelsOk = false;
-            }
-        }
-    }
-
-    if (!modelsOk)
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
+    // Making sure a topology modifier exists at the same level as the output topology
+    QuadSetTopologyModifier *to_tstm;
+    toModel->getContext()->get(to_tstm);
+    if (!to_tstm) {
+        msg_error() << "No QuadSetTopologyModifier found in the output topology node '"
+                    << toModel->getContext()->getName() << "'.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // Clear output topology
     toModel->clear();

@@ -48,50 +48,16 @@ int SimpleTesselatedHexaTopologicalMappingClass = core::RegisterObject ( "Specia
 
 // Implementation
 SimpleTesselatedHexaTopologicalMapping::SimpleTesselatedHexaTopologicalMapping()
+    : sofa::core::topology::TopologicalMapping()
 {
+    m_inputType = TopologyElementType::HEXAHEDRON;
+    m_outputType = TopologyElementType::HEXAHEDRON;
 }
 
 void SimpleTesselatedHexaTopologicalMapping::init()
 {
-    bool modelsOk = true;
-
-    // Check input topology
-    if (!fromModel)
-    {
-        // If the input topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no input mesh topology could be found.
-        msg_error() << "No input mesh topology found. Consider setting the '" << fromModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-    else
-    {
-        // Making sure the input topology corresponds to a hexahedral topology
-        if (fromModel.get()->getTopologyType() != sofa::geometry::ElementType::HEXAHEDRON)
-        {
-            msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a hexahedral topology.";
-            modelsOk = false;
-        }
-    }
-
-    // Check output topology
-    if (!toModel)
-    {
-        // If the output topology link isn't set by the user, the TopologicalMapping::create method tries to find it.
-        // If it is null at this point, it means no output mesh topology could be found.
-        msg_error() << "No output mesh topology found. Consider setting the '" << toModel.getName() << "' data attribute.";
-        modelsOk = false;
-    }
-    else
-    {
-        // Making sure the output topology corresponds to a hexahedral topology
-        if (toModel.get()->getTopologyType() != sofa::geometry::ElementType::HEXAHEDRON)
-        {
-            msg_error() << "The type of the output topology '" << toModel.getPath() << "' does not correspond to a hexahedral topology.";
-            modelsOk = false;
-        }
-    }
-
-    if (!modelsOk)
+    // Check input/output topology
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
