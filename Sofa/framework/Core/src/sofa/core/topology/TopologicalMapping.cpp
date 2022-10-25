@@ -80,5 +80,35 @@ void TopologicalMapping::dumpLoc2GlobVec()
 }
 
 
+bool TopologicalMapping::checkTopologyInputTypes()
+{
+    if (m_inputType == TopologyElementType::UNKNOWN)
+    {
+        dmsg_error() << "The input TopologyElementType has not be set. Define 'm_inputType' to the correct TopologyElementType in the constructor.";
+        return false;
+    }
+
+    if (m_outputType == TopologyElementType::UNKNOWN)
+    {
+        dmsg_error() << "The output TopologyElementType has not be set. Define 'm_outputType' to the correct TopologyElementType in the constructor.";
+        return false;
+    }
+
+
+    if (fromModel.get()->getTopologyType() != m_inputType)
+    {
+        msg_error() << "The type of the input topology '" << fromModel.getPath() << "' does not correspond to a valid '" << elementTypeToString(m_inputType) << "' topology.";
+        return false;
+    }
+
+    if (toModel.get()->getTopologyType() != m_outputType)
+    {
+        msg_error() << "The type of the output topology '" << toModel.getPath() << "' does not correspond to a valid '" << elementTypeToString(m_outputType) << "' topology.";
+        return false;
+    }
+
+    return true;
+}
+
 } /// namespace sofa::core::topology
 
