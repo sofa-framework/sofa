@@ -344,16 +344,16 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     force.resize(nb_dofs);
 
     ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-    double buf_tolerance=0, buf_threshold=0;
-    int buf_maxIter=0;
+    Real buf_tolerance=0, buf_threshold=0;
+    unsigned int buf_maxIter=0;
     if(CGlinearSolver)
     {
-        buf_tolerance = (double) CGlinearSolver->d_tolerance.getValue();
-        buf_maxIter   = (int) CGlinearSolver->d_maxIter.getValue();
-        buf_threshold = (double) CGlinearSolver->d_smallDenominatorThreshold.getValue();
-        CGlinearSolver->d_tolerance.setValue(1e-35);
-        CGlinearSolver->d_maxIter.setValue(5000);
-        CGlinearSolver->d_smallDenominatorThreshold.setValue(1e-25);
+        buf_tolerance = CGlinearSolver->d_tolerance.getValue();
+        buf_maxIter   = CGlinearSolver->d_maxIter.getValue();
+        buf_threshold = CGlinearSolver->d_smallDenominatorThreshold.getValue();
+        CGlinearSolver->d_tolerance.setValue(Real(1e-35));
+        CGlinearSolver->d_maxIter.setValue(5000u);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(Real(1e-25));
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 

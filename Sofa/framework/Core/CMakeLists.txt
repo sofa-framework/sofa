@@ -197,6 +197,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
+    ${SRC_ROOT}/VecId.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraint.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp

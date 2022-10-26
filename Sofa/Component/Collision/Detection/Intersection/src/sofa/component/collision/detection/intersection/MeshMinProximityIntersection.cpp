@@ -86,9 +86,18 @@ bool MeshMinProximityIntersection::testIntersection(Line& e1, Line& e2)
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     using Real = Line::Coord::value_type;
 
-    const Line::Coord AB = e1.p2()-e1.p1();
-    const Line::Coord CD = e2.p2()-e2.p1();
-    const Line::Coord AC = e2.p1()-e1.p1();
+    const auto& positions_e1 = e1.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions_e2 = e2.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto& e1p1 = positions_e1[e1.i1()];
+    const auto& e1p2 = positions_e1[e1.i2()];
+    const auto& e2p1 = positions_e2[e2.i1()];
+    const auto& e2p2 = positions_e2[e2.i2()];
+
+    const Line::Coord AB = e1p2-e1p1;
+    const Line::Coord CD = e2p2-e2p1;
+    const Line::Coord AC = e2p1-e1p1;
+
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
@@ -121,9 +130,17 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     using Real = Line::Coord::value_type;
 
-    const Line::Coord AB = e1.p2()-e1.p1();
-    const Line::Coord CD = e2.p2()-e2.p1();
-    const Line::Coord AC = e2.p1()-e1.p1();
+    const auto& positions_e1 = e1.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions_e2 = e2.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto& e1p1 = positions_e1[e1.i1()];
+    const auto& e1p2 = positions_e1[e1.i2()];
+    const auto& e2p1 = positions_e2[e2.i1()];
+    const auto& e2p2 = positions_e2[e2.i2()];
+
+    const Vector3 AB = e1p2-e1p1;
+    const Vector3 CD = e2p2-e2p1;
+    const Vector3 AC = e2p1-e1p1;
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
@@ -146,8 +163,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
             return 0;
     }
 
-    const Line::Coord P = e1.p1()+AB*alpha;
-    const Line::Coord Q = e2.p1()+CD*beta;
+    const Line::Coord P = e1p1+AB*alpha;
+    const Line::Coord Q = e2p1+CD*beta;
 
     Line::Coord PQ = Q - P;
     if (PQ.norm2() >= alarmDist*alarmDist)
@@ -200,9 +217,17 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
 
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Triangle::Coord AB = e2.p2()-e2.p1();
-    const Triangle::Coord AC = e2.p3()-e2.p1();
-    const auto AP = e1.p() -e2.p1();
+    const auto& positions_e1 = e1.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions_e2 = e2.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto& e1p1 = positions_e1[e1.getIndex()];
+    const auto& e2p1 = positions_e2[e2.p1Index()];
+    const auto& e2p2 = positions_e2[e2.p2Index()];
+    const auto& e2p3 = positions_e2[e2.p3Index()];
+
+    const Vector3 AB = e2p2 - e2p1;
+    const Vector3 AC = e2p3 - e2p1;
+    const Vector3 AP = e1p1 - e2p1;
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
@@ -244,9 +269,18 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Triangle::Coord AB = e2.p2()-e2.p1();
-    const Triangle::Coord AC = e2.p3()-e2.p1();
-    const auto AP = e1.p() -e2.p1();
+    const auto& positions_e1 = e1.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions_e2 = e2.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto& e1p1 = positions_e1[e1.getIndex()];
+    const auto& e2p1 = positions_e2[e2.p1Index()];
+    const auto& e2p2 = positions_e2[e2.p2Index()];
+    const auto& e2p3 = positions_e2[e2.p3Index()];
+
+    const Triangle::Coord AB = e2p2 - e2p1;
+    const Triangle::Coord AC = e2p3 - e2p1;
+    const auto AP = e1p1 - e2p1;
+
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
@@ -265,8 +299,8 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
             alpha + beta  > 0.999999)
         return 0;
 
-    const Point::Coord& P = e1.p();
-    const Triangle::Coord Q = e2.p1()+AB*alpha+AC*beta;
+    const Point::Coord& P = e1p1;
+    const Triangle::Coord Q = e2p1+AB*alpha+AC*beta;
     auto QP=P-Q;
 
     if (QP.norm2() >= alarmDist*alarmDist)
@@ -321,12 +355,18 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 
 bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
 {
-    static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
+    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     using Real = Line::Coord::value_type;
 
-    const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Line::Coord AB = e2.p2()-e2.p1();
-    const auto AP = e1.p()-e2.p1();
+    const auto& positions_e1 = e1.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions_e2 = e2.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto& e1p1 = positions_e1[e1.getIndex()];
+    const auto& e2p1 = positions_e2[e2.i1()];
+    const auto& e2p2 = positions_e2[e2.i2()];
+
+    const Vector3 AB = e2p2 - e2p1;
+    const Vector3 AP = e1p1 - e2p1;
 
     const Real A=AB*AB;
     const Real b=AP*AB;
@@ -347,8 +387,16 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
 
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Line::Coord AB = e2.p2()-e2.p1();
-    const auto AP = e1.p()-e2.p1();
+
+    const auto& positions_e1 = e1.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+    const auto& positions_e2 = e2.model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue();
+
+    const auto& e1p1 = positions_e1[e1.getIndex()];
+    const auto& e2p1 = positions_e2[e2.i1()];
+    const auto& e2p2 = positions_e2[e2.i2()];
+
+    const Vector3 AB = e2p2 - e2p1;
+    const Vector3 AP = e1p1 - e2p1;
 
     const Line::Coord::value_type A = AB * AB;
     const Line::Coord::value_type b = AP * AB;
@@ -358,16 +406,16 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     const Line::Coord::value_type alpha=b/A;
 
     if (alpha <= 0.0){
-        Q = e2.p1();
+        Q = e2p1;
     }
     else if (alpha >= 1.0){
-        Q = e2.p2();
+        Q = e2p2;
     }
     else{
-        Q = e2.p1() + AB * alpha;
+        Q = e2p1 + AB * alpha;
     }
 
-    const Point::Coord& P = e1.p();
+    const Point::Coord& P = e1p1;
     const auto QP= P - Q;
 
     if (QP.norm2() >= alarmDist*alarmDist)

@@ -533,16 +533,23 @@ void MeshTopology::init()
 {
 
     BaseMeshTopology::init();
+
+    const auto hexahedra = sofa::helper::getReadAccessor(seqHexahedra);
+    const auto tetrahedra = sofa::helper::getReadAccessor(seqTetrahedra);
+    const auto quads = sofa::helper::getReadAccessor(seqQuads);
+    const auto triangles = sofa::helper::getReadAccessor(seqTriangles);
+    const auto edges = sofa::helper::getReadAccessor(seqEdges);
+
     if (nbPoints==0)
     {
         // looking for upper topology
-        if (!seqHexahedra.getValue().empty())
+        if (!hexahedra.empty())
             m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
-        else if (!seqTetrahedra.getValue().empty())
+        else if (!tetrahedra.empty())
             m_upperElementType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
-        else if (!seqQuads.getValue().empty())
+        else if (!quads.empty())
             m_upperElementType = sofa::core::topology::TopologyElementType::QUAD;
-        else if (!seqTriangles.getValue().empty())
+        else if (!triangles.empty())
             m_upperElementType = sofa::core::topology::TopologyElementType::TRIANGLE;
         else
             m_upperElementType = sofa::core::topology::TopologyElementType::EDGE;
@@ -552,51 +559,30 @@ void MeshTopology::init()
     if (nbPoints==0)
     {
         unsigned int n = 0;
-        for (unsigned int i=0; i<seqEdges.getValue().size(); i++)
+        const auto countPoints = [&n](const auto& seqElements)
         {
-            for (unsigned int j=0; j<seqEdges.getValue()[i].size(); j++)
+            for (const auto& element : seqElements)
             {
-                if (n <= seqEdges.getValue()[i][j])
-                    n = 1 + seqEdges.getValue()[i][j];
+                for (const auto pointId : element)
+                {
+                    if (n <= pointId)
+                    {
+                        n = 1 + pointId;
+                    }
+                }
             }
-        }
-        for (unsigned int i=0; i<seqTriangles.getValue().size(); i++)
-        {
-            for (unsigned int j=0; j<seqTriangles.getValue()[i].size(); j++)
-            {
-                if (n <= seqTriangles.getValue()[i][j])
-                    n = 1 + seqTriangles.getValue()[i][j];
-            }
-        }
-        for (unsigned int i=0; i<seqQuads.getValue().size(); i++)
-        {
-            for (unsigned int j=0; j<seqQuads.getValue()[i].size(); j++)
-            {
-                if (n <= seqQuads.getValue()[i][j])
-                    n = 1 + seqQuads.getValue()[i][j];
-            }
-        }
-        for (unsigned int i=0; i<seqTetrahedra.getValue().size(); i++)
-        {
-            for (unsigned int j=0; j<seqTetrahedra.getValue()[i].size(); j++)
-            {
-                if (n <= seqTetrahedra.getValue()[i][j])
-                    n = 1 + seqTetrahedra.getValue()[i][j];
-            }
-        }
-        for (unsigned int i=0; i<seqHexahedra.getValue().size(); i++)
-        {
-            for (unsigned int j=0; j<seqHexahedra.getValue()[i].size(); j++)
-            {
-                if (n <= seqHexahedra.getValue()[i][j])
-                    n = 1 + seqHexahedra.getValue()[i][j];
-            }
-        }
+        };
+
+        countPoints(edges);
+        countPoints(triangles);
+        countPoints(quads);
+        countPoints(tetrahedra);
+        countPoints(hexahedra);
 
         nbPoints = n;
     }
 
-    if(seqEdges.getValue().empty() )
+    if(edges.empty() )
     {
         if(seqEdges.getParent() != nullptr )
         {
@@ -606,7 +592,7 @@ void MeshTopology::init()
         edgeUpdate->setName("edgeUpdate");
         this->addSlave(edgeUpdate);
     }
-    if(seqTriangles.getValue().empty() )
+    if(triangles.empty() )
     {
         if(seqTriangles.getParent() != nullptr)
         {
@@ -616,7 +602,7 @@ void MeshTopology::init()
         triangleUpdate->setName("triangleUpdate");
         this->addSlave(triangleUpdate);
     }
-    if(seqQuads.getValue().empty() )
+    if(quads.empty() )
     {
         if(seqQuads.getParent() != nullptr )
         {
@@ -631,14 +617,14 @@ void MeshTopology::init()
 void MeshTopology::clear()
 {
     nbPoints = 0;
-    seqPoints.beginWriteOnly()->clear(); seqPoints.endEdit();
-    seqEdges.beginWriteOnly()->clear(); seqEdges.endEdit();
-    seqTriangles.beginWriteOnly()->clear(); seqTriangles.endEdit();
-    seqQuads.beginWriteOnly()->clear(); seqQuads.endEdit();
-    seqTetrahedra.beginWriteOnly()->clear(); seqTetrahedra.endEdit();
-    seqHexahedra.beginWriteOnly()->clear(); seqHexahedra.endEdit();
 
-    seqUVs.beginWriteOnly()->clear(); seqUVs.endEdit();
+    helper::getWriteOnlyAccessor(seqPoints).clear();
+    helper::getWriteOnlyAccessor(seqEdges).clear();
+    helper::getWriteOnlyAccessor(seqTriangles).clear();
+    helper::getWriteOnlyAccessor(seqQuads).clear();
+    helper::getWriteOnlyAccessor(seqTetrahedra).clear();
+    helper::getWriteOnlyAccessor(seqHexahedra).clear();
+    helper::getWriteOnlyAccessor(seqUVs).clear();
 
     invalidate();
 }
@@ -2294,17 +2280,20 @@ bool MeshTopology::hasPos() const
 
 SReal MeshTopology::getPX(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
+    const auto& points = seqPoints.getValue();
+    return ((unsigned)i<points.size()?points[i][0]:0.0);
 }
 
 SReal MeshTopology::getPY(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
+    const auto& points = seqPoints.getValue();
+    return ((unsigned)i<points.size()?points[i][1]:0.0);
 }
 
 SReal MeshTopology::getPZ(Index i) const
 {
-    return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
+    const auto& points = seqPoints.getValue();
+    return ((unsigned)i<points.size()?points[i][2]:0.0);
 }
 
 void MeshTopology::invalidate()

@@ -585,7 +585,7 @@ void MechanicalObject<DataTypes>::resize(const Size size)
     if(size>0)
     {
         if (d_size.getValue() != static_cast<int>(size))
-            d_size.setValue(size);
+            d_size.setValue(static_cast<int>(size));
 
         for (unsigned int i = 0; i < vectorsCoord.size(); i++)
         {
