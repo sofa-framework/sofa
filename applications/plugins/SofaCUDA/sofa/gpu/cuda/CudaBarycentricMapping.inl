@@ -252,7 +252,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 
     CudaHexa.clear();
 
-    const sofa::type::vector<Hexahedron>& hexaArray = this->m_topology->getHexahedra();
+    const sofa::type::vector<Hexahedron>& hexaArray = this->topology->getHexahedra();
     for (unsigned i = 0; i < hexaArray.size(); i++)
     {
         const Hexahedron& cube = hexaArray[i];

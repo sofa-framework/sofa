@@ -101,7 +101,7 @@ void CudaHexahedronTLEDForceField::reinit()
         msg_error() << "no elements found.\n";
         return;
     }
-    const VecElement& inputElems = topology->getHexahedra();
+    VecElement inputElems = topology->getHexahedra();
 
     nbElems = inputElems.size();
 
