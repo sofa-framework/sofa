@@ -84,13 +84,13 @@ bool TopologicalMapping::checkTopologyInputTypes()
 {
     if (m_inputType == TopologyElementType::UNKNOWN)
     {
-        dmsg_error() << "The input TopologyElementType has not be set. Define 'm_inputType' to the correct TopologyElementType in the constructor.";
+        dmsg_error() << "The input TopologyElementType has not been set. Define 'm_inputType' to the correct TopologyElementType in the constructor.";
         return false;
     }
 
     if (m_outputType == TopologyElementType::UNKNOWN)
     {
-        dmsg_error() << "The output TopologyElementType has not be set. Define 'm_outputType' to the correct TopologyElementType in the constructor.";
+        dmsg_error() << "The output TopologyElementType has not been set. Define 'm_outputType' to the correct TopologyElementType in the constructor.";
         return false;
     }
 
