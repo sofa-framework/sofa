@@ -122,6 +122,11 @@ public:
     // inputs
     Data< type::vector< sofa::type::Vec<3,Real> > > d_scales; ///< scale matrices
     type::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
+
+    static std::string GetCustomTemplateName()
+    {
+        return DataTypes::Name();
+    }
 };
 
 } // namespace sofa::component::engine::transform
