@@ -95,9 +95,6 @@ public:
 
     /// Accessor to index maps :
     const std::map<Index, Index>& getGlob2LocMap() { return Glob2LocMap;}
-    //const sofa::type::vector<Index>& getLoc2GlobVec(){ return Loc2GlobVec.getValue();}
-
-    Data <sofa::type::vector<Index> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
 
     virtual Index getGlobIndex(Index ind);
 
@@ -202,23 +199,21 @@ public:
 protected:
     [[nodiscard]] bool checkTopologyInputTypes();
 
-protected:
+public:
     /// Input source BaseTopology
-    SingleLink<TopologicalMapping, In, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> fromModel;
+    SingleLink<TopologicalMapping, In, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> fromModel;
 
     /// Output target BaseTopology
-    SingleLink<TopologicalMapping, Out, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> toModel;
- 
-
-    // Two index maps :
+    SingleLink<TopologicalMapping, Out, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> toModel;
 
     // Array which gives for each index (local index) of an element in the OUTPUT topology
     // the corresponding index (global index) of the same element in the INPUT topology :
     Data <sofa::type::vector<Index> > Loc2GlobDataVec;
 
+protected:
     // Map which gives for each index (global index) of an element in the INPUT topology
     // the corresponding index (local index) of the same element in the OUTPUT topology :
-    std::map<Index, Index> Glob2LocMap;   //TODO put it in Data => Data allow map
+    std::map<Index, Index> Glob2LocMap;
 
     std::map<Index, sofa::type::vector<Index> > In2OutMap;
 
