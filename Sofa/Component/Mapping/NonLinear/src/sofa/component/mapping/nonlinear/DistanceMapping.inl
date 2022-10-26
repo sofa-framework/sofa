@@ -73,7 +73,7 @@ void DistanceMapping<TIn, TOut>::init()
         return;
     }
 
-    SeqEdges links = l_topology->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( links.size() );

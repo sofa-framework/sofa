@@ -166,7 +166,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topology->getTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& tri = m_topology->getTriangles();
 
     vparams->drawTool()->enableLighting();
 

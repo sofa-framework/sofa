@@ -68,7 +68,7 @@ void SquareDistanceMapping<TIn, TOut>::init()
         return;
     }
 
-    SeqEdges links = l_topology->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
 
     this->getToModel()->resize( links.size() );
 

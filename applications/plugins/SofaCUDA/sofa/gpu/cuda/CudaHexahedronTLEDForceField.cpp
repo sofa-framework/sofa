@@ -101,7 +101,7 @@ void CudaHexahedronTLEDForceField::reinit()
         msg_error() << "no elements found.\n";
         return;
     }
-    VecElement inputElems = topology->getHexahedra();
+    const VecElement& inputElems = topology->getHexahedra();
 
     nbElems = inputElems.size();
 
@@ -109,7 +109,7 @@ void CudaHexahedronTLEDForceField::reinit()
     std::map<int,int> nelems;
     for (int i=0; i<nbElems; i++)
     {
-        Element& e = inputElems[i];
+        const Element& e = inputElems[i];
         for (unsigned int j=0; j<e.size(); j++)
         {
             ++nelems[e[j]];
