@@ -24,7 +24,7 @@
 #include <SofaNewmat/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <cmath>
 
