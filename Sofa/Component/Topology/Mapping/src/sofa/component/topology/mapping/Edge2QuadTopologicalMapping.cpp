@@ -64,6 +64,8 @@ Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
     , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
 {
+    m_inputType = TopologyElementType::EDGE;
+    m_outputType = TopologyElementType::QUAD;
 }
 
 void Edge2QuadTopologicalMapping::init()
@@ -106,15 +108,6 @@ void Edge2QuadTopologicalMapping::init()
         return;
     }
 
-    
-    // Making sure the output topology is derived from the quad topology container
-    if (!dynamic_cast<container::dynamic::QuadSetTopologyContainer *>(toModel.get()))
-    {
-        msg_error() << "The input topology '" << toModel.getPath() << "' is not homogeneous with a QuadSetTopologyContainer. The '" << toModel.getName() << "' data attribute must be linked to a valid component, among the following list of eligible components:" << msgendl
-                                << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<container::dynamic::QuadSetTopologyContainer>();
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
     
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 
