@@ -109,7 +109,7 @@ void Hexa2QuadTopologicalMapping::init()
     toModel->setNbPoints(fromModel->getNbPoints());
 
     const sofa::type::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteOnlyAccessor(Loc2GlobDataVec);
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -132,7 +132,6 @@ void Hexa2QuadTopologicalMapping::init()
     }
 
     //to_tstm->propagateTopologicalChanges();
-    Loc2GlobDataVec.endEdit();
 
     // Need to fully init the target topology
     toModel->init();
@@ -165,7 +164,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    Topology::SetIndices & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteAccessor(Loc2GlobDataVec);
 
     while( itBegin != itEnd )
     {
@@ -401,7 +400,6 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Hexa2QuadTopologicalMapping");
 }
