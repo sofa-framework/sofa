@@ -50,6 +50,13 @@ void EdgeSetTopologyModifier::init()
 {
     PointSetTopologyModifier::init();
     getContext()->get(m_container);
+
+    if(!m_container)
+    {
+        msg_error() << "EdgeSetTopologyContainer not found in context";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 }
 
 void EdgeSetTopologyModifier::addEdgeProcess(Edge e)

@@ -43,8 +43,14 @@ using namespace sofa::core::topology;
 void TetrahedronSetTopologyModifier::init()
 {
     TriangleSetTopologyModifier::init();
-
     this->getContext()->get(m_container);
+
+    if(!m_container)
+    {
+        msg_error() << "TetrahedronSetTopologyContainer not found in context";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 }
 
 void TetrahedronSetTopologyModifier::reinit()

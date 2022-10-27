@@ -41,6 +41,13 @@ void HexahedronSetTopologyModifier::init()
 {
     QuadSetTopologyModifier::init();
     this->getContext()->get(m_container);
+
+    if(!m_container)
+    {
+        msg_error() << "HexahedronSetTopologyContainer not found in context";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 }
 
 
