@@ -370,11 +370,10 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping (only tetra for the moment)
             {
                 sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
-                const sofa::type::vector<Index>& topoMapIndices = topoMap->Loc2GlobDataVec.getValue();
                 if (topoMap)
                 {
                     // Mapping found: 1- get surface element ID in volumique topology, 2- get volume element ID behind surface element, 3- switching all variables to volumique case
-                    Index volTmp = topoMapIndices[selectedElem[0]];
+                    unsigned int volTmp = (topoMap->getLoc2GlobVec()).getValue()[selectedElem[0]];
                     topo_curr = topoMap->getFrom();
                     selectedElem[0] = topo_curr->getTetrahedraAroundTriangle(volTmp)[0];
                     surfaceOnVolume = true;
