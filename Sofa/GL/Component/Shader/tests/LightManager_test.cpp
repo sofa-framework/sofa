@@ -97,7 +97,7 @@ void checkAttributes()
 
 TEST_F(TestLightManager, checkAttributes)
 {
-    sofa::simpleapi::importPlugin("SofaOpenglVisual");
+    sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
     checkAttributes();
 }
 

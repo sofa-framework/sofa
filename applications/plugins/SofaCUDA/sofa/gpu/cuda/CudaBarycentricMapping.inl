@@ -129,12 +129,12 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {
-        type::Vector3 coefs;
-        int cube = topology->findCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        type::Vec3 coefs;
+        int cube = topology->findCube(type::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(type::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
         type::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
@@ -230,12 +230,12 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
     clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
     {
-        type::Vector3 coefs;
-        int cube = topology->findCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        type::Vec3 coefs;
+        int cube = topology->findCube(type::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(type::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(type::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
         type::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
@@ -531,7 +531,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
     const auto& triangles = topology->getTriangles();
     const auto& quads = topology->getQuads();
     sofa::type::vector<type::Matrix3> bases;
-    sofa::type::vector<type::Vector3> centers;
+    sofa::type::vector<type::Vec3> centers;
     clear(out.size()); // reserve space for mapping
     if (tetras.empty() && cubes.empty())
     {
@@ -561,8 +561,8 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int i=0; i<out.size(); i++)
         {
-            type::Vector3 pos = out[i];
-            type::Vector3 coefs;
+            type::Vec3 pos = out[i];
+            type::Vec3 coefs;
             int index = -1;
             double distance = 1e10;
             for (unsigned int t = 0; t < triangles.size(); t++)
@@ -617,20 +617,20 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
         }
         for (unsigned int i=0; i<out.size(); i++)
         {
-            type::Vector3 pos = out[i];
-            type::Vector3 coefs;
+            type::Vec3 pos = out[i];
+            type::Vec3 coefs;
             int index = -1;
             double distance = 1e10;
             for (unsigned int t = 0; t < tetras.size(); t++)
             {
-                type::Vector3 v = bases[t] * (pos - in[tetras[t][0]]);
+                type::Vec3 v = bases[t] * (pos - in[tetras[t][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(-v[2],v[0]+v[1]+v[2]-1));
                 if (d>0) d = (pos-centers[t]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = t; }
             }
             for (unsigned int c = 0; c < cubes.size(); c++)
             {
-                type::Vector3 v = bases[c0+c] * (pos - in[cubes[c][0]]);
+                type::Vec3 v = bases[c0+c] * (pos - in[cubes[c][0]]);
                 double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
                 if (d>0) d = (pos-centers[c0+c]).norm2();
                 if (d<distance) { coefs = v; distance = d; index = c0+c; }

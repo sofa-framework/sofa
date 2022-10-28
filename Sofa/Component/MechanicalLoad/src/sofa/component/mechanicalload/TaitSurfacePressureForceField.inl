@@ -448,20 +448,20 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
     const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
     std::vector< sofa::type::Vec3i > indices;
-    std::vector< type::Vector3 > normals;
+    std::vector< type::Vec3 > normals;
     if (m_drawForceScale.getValue() != (Real)0.0)
     {
-        std::vector< sofa::type::Vector3 > points;
+        std::vector< sofa::type::Vec3 > points;
         points.clear();
         const Real fscale = m_currentPressure.getValue()*m_drawForceScale.getValue();
         for (unsigned int i=0; i<pressureTriangles.size(); i++)
         {
             Triangle t = pressureTriangles[i];
-            sofa::type::Vector3 a = x[t[0]];
-            sofa::type::Vector3 b = x[t[1]];
-            sofa::type::Vector3 c = x[t[2]];
-            sofa::type::Vector3 n = cross(b-a,c-a) * fscale;
-            sofa::type::Vector3 center = (a+b+c)/(Real)3;
+            sofa::type::Vec3 a = x[t[0]];
+            sofa::type::Vec3 b = x[t[1]];
+            sofa::type::Vec3 c = x[t[2]];
+            sofa::type::Vec3 n = cross(b-a,c-a) * fscale;
+            sofa::type::Vec3 center = (a+b+c)/(Real)3;
             points.push_back(center);
             points.push_back(center+n);
         }

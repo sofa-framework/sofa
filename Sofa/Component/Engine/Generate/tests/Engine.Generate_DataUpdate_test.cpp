@@ -78,9 +78,9 @@ TestDataEngine< component::engine::generate::JoinPoints<defaulttype::Vec3Types> 
 TestDataEngine< component::engine::generate::MergeMeshes<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::generate::MergePoints<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::generate::MergeSets<int> >,
-TestDataEngine< component::engine::generate::MergeVectors< type::vector<type::Vector3> > >,
+TestDataEngine< component::engine::generate::MergeVectors< type::vector<type::Vec3> > >,
 TestDataEngine< component::engine::generate::MeshClosingEngine<defaulttype::Vec3Types> >,
-TestDataEngine< component::engine::generate::NormEngine<type::Vector3> >,
+TestDataEngine< component::engine::generate::NormEngine<type::Vec3> >,
 TestDataEngine< component::engine::generate::NormalsFromPoints<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::generate::RandomPointDistributionInSurface<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::generate::Spiral<defaulttype::Vec3Types> >

@@ -67,7 +67,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
     typedef type::vector<Index> Indices;
     typedef sofa::core::topology::TopologySubsetIndices IndexSubsetData;
     typedef linearalgebra::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;

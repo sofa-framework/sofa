@@ -151,8 +151,8 @@ void DirectSAPNarrowPhase::checkNewCollisionModels()
 
 int DirectSAPNarrowPhase::greatestVarianceAxis() const
 {
-    type::Vector3 variance;//variances for each axis
-    type::Vector3 mean;//means for each axis
+    type::Vec3 variance;//variances for each axis
+    type::Vec3 mean;//means for each axis
 
     //computing the mean value of end points on each axis
     for (const auto& dsapBox : m_boxes)
@@ -172,8 +172,8 @@ int DirectSAPNarrowPhase::greatestVarianceAxis() const
     //computing the variance of end points on each axis
     for (const auto& dsapBox : m_boxes)
     {
-        const type::Vector3 & min = dsapBox.cube.minVect();
-        const type::Vector3 & max = dsapBox.cube.maxVect();
+        const type::Vec3 & min = dsapBox.cube.minVect();
+        const type::Vec3 & max = dsapBox.cube.maxVect();
 
         for (unsigned int j = 0 ; j < 3; ++j)
         {
@@ -378,7 +378,7 @@ void DirectSAPNarrowPhase::draw(const core::visual::VisualParams* vparams)
     std::vector<sofa::type::RGBAColor> colors;
 
     vparams->drawTool()->setPolygonMode(0, true);
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     unsigned int boxId{ 0 };
     for (const auto& dsapBox : m_boxes)

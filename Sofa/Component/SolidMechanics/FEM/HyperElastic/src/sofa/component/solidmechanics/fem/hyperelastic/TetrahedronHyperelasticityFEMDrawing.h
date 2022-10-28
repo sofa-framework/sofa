@@ -32,7 +32,7 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 template <class VecCoord>
 void drawHyperelasticTets(const core::visual::VisualParams* vparams, const VecCoord& x, core::topology::BaseMeshTopology* topology, const std::string& materialName)
 {
-    std::vector<type::Vector3 > points[4];
+    std::vector<type::Vec3 > points[4];
     for(auto& p : points)
     {
         p.reserve(3 * topology->getNbTetrahedra());

@@ -65,8 +65,8 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 
         // expected child positions
         OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( type::Vector1( 3 ) );
-        expectedoutcoord.push_back( type::Vector1( 33 ) );
+        expectedoutcoord.push_back( type::Vec1( 3 ) );
+        expectedoutcoord.push_back( type::Vec1( 33 ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }

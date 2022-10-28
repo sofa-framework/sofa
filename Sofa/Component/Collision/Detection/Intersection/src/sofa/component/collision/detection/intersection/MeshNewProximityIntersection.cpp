@@ -242,11 +242,11 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         return 0;
     }
 
-    bool neighbor =  e1.getCollisionModel() == e2.getCollisionModel() && 
+    bool neighbor =  e1.getCollisionModel() == e2.getCollisionModel() &&
         (e1.p1Index()==e2.p1Index() || e1.p1Index()==e2.p2Index() || e1.p1Index()==e2.p3Index() ||
          e1.p2Index()==e2.p1Index() || e1.p2Index()==e2.p2Index() || e1.p2Index()==e2.p3Index() ||
          e1.p3Index()==e2.p1Index() || e1.p3Index()==e2.p2Index() || e1.p3Index()==e2.p3Index());
-    
+
 
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
@@ -259,7 +259,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     const auto& q3 = e2.p3();
     auto& qn = e2.n();
 
-    
+
     if(neighbor)
         return 0;
 
@@ -280,7 +280,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         if(!bothSide1)
             qn = -pn;
         else
-            if(!bothSide2) 
+            if(!bothSide2)
                 pn = -qn;
 
     int n = 0;

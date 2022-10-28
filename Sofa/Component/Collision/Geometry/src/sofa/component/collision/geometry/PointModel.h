@@ -55,7 +55,7 @@ public:
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
-    bool testLMD(const sofa::type::Vector3 &, double &, double &);
+    bool testLMD(const sofa::type::Vec3 &, double &, double &);
 };
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 

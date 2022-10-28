@@ -51,8 +51,8 @@ public:
     // The same principe for computing the strain given the displacement
 
 
-    virtual void computeStress (type::Vector3 & ,type::Vector3 &,unsigned int &) {}
-    virtual void computeDStress (type::Vector3 & ,type::Vector3 &) {}
+    virtual void computeStress (type::Vec3 & ,type::Vec3 &,unsigned int &) {}
+    virtual void computeDStress (type::Vec3 & ,type::Vec3 &) {}
 
     virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
 	

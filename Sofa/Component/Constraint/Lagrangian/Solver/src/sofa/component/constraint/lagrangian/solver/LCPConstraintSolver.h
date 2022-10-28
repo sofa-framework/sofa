@@ -98,8 +98,8 @@ public:
 
     Data<int> showLevels; ///< Number of constraint levels to display
     Data<SReal> showCellWidth; ///< Distance between each constraint cells
-    Data<type::Vector3> showTranslation; ///< Position of the first cell
-    Data<type::Vector3> showLevelTranslation; ///< Translation between levels
+    Data<type::Vec3> showTranslation; ///< Position of the first cell
+    Data<type::Vec3> showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread

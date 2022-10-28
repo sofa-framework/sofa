@@ -21,6 +21,9 @@
 ******************************************************************************/
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/events/BuildConstraintSystemEndEvent.h>
+#include <sofa/simulation/events/SolveConstraintSystemEndEvent.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -53,5 +56,21 @@ unsigned int ConstraintProblem::getProblemId()
 
 ConstraintSolverImpl::~ConstraintSolverImpl()
 {}
+
+void ConstraintSolverImpl::postBuildSystem(const core::ConstraintParams* cParams)
+{
+    sofa::simulation::BuildConstraintSystemEndEvent evBegin;
+    sofa::simulation::PropagateEventVisitor eventPropagation( cParams, &evBegin);
+    eventPropagation.execute(this->getContext());
+}
+
+
+void ConstraintSolverImpl::postSolveSystem(const core::ConstraintParams* cParams)
+{
+    sofa::simulation::SolveConstraintSystemEndEvent evBegin;
+    sofa::simulation::PropagateEventVisitor eventPropagation( cParams, &evBegin);
+    eventPropagation.execute(this->getContext());
+}
+
 
 } //namespace sofa::component::constraint::lagrangian::solver

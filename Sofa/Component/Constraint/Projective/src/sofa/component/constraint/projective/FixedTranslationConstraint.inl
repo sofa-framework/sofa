@@ -180,14 +180,14 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (f_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            sofa::type::Vector3 v;
+            sofa::type::Vec3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
@@ -199,7 +199,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            sofa::type::Vector3 v;
+            sofa::type::Vec3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];

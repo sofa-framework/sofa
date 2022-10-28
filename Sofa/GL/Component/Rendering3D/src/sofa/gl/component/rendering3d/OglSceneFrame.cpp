@@ -84,7 +84,7 @@ void OglSceneFrame::drawCylinders(const core::visual::VisualParams* vparams)
 
 void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
 {
-    using Vector3 = sofa::core::visual::DrawTool::Vector3;
+    using Vector3 = sofa::core::visual::DrawTool::Vec3;
     using Real = Vector3::value_type;
     static constexpr Real s = 0.25;
     static constexpr Vector3 p0 {-s, -s, -s};

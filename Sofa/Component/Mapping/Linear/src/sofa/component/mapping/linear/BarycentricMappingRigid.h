@@ -100,8 +100,6 @@ public:
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void resize( core::State<Out>* toModel ) override;
-
-    //virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::type::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 };
 
 template<class TInReal, class TOutReal>

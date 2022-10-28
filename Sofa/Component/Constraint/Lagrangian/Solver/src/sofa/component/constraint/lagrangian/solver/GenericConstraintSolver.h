@@ -54,7 +54,7 @@ public:
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void buildSystem_matrixFree(unsigned int numConstraints);
     void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
+    void rebuildSystem(double massFactor, double forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;

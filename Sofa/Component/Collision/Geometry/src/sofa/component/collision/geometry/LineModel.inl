@@ -314,7 +314,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
-        std::vector<helper::visual::DrawTool::Vector3> points;
+        std::vector<helper::visual::DrawTool::Vec3> points;
         points.reserve(size * 2);
         for (Size i=0; i<size; i++)
         {
@@ -322,8 +322,8 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             if(l.isActive())
             {
                 // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vector3, Coord>
-                points.emplace_back(helper::visual::DrawTool::Vector3{l.p1()});
-                points.emplace_back(helper::visual::DrawTool::Vector3{l.p2()});
+                points.emplace_back(helper::visual::DrawTool::Vec3{l.p1()});
+                points.emplace_back(helper::visual::DrawTool::Vec3{l.p2()});
             }
         }
 
@@ -332,7 +332,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
 
         if (m_displayFreePosition.getValue())
         {
-            std::vector< type::Vector3 > pointsFree;
+            std::vector< type::Vec3 > pointsFree;
             for (Size i=0; i<size; i++)
             {
                 TLine<DataTypes> l(this,i);
@@ -471,12 +471,12 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const SReal distance = this->proximity.getValue();
+        const auto& positions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         for (Size i=0; i<size; i++)
         {
-            type::Vector3 minElem, maxElem;
-            TLine<DataTypes> l(this,i);
-            const type::Vector3& pt1 = l.p1();
-            const type::Vector3& pt2 = l.p2();
+            type::Vec3 minElem, maxElem;
+            const type::Vec3& pt1 = positions[this->elems[i].p[0]];
+            const type::Vec3& pt2 = positions[this->elems[i].p[1]];
 
             for (int c = 0; c < 3; c++)
             {
@@ -503,7 +503,7 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
-    type::Vector3 minElem, maxElem;
+    type::Vec3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -512,10 +512,10 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
         for (Size i=0; i<size; i++)
         {
             TLine<DataTypes> t(this,i);
-            const type::Vector3& pt1 = t.p1();
-            const type::Vector3& pt2 = t.p2();
-            const type::Vector3 pt1v = pt1 + t.v1()*dt;
-            const type::Vector3 pt2v = pt2 + t.v2()*dt;
+            const type::Vec3& pt1 = t.p1();
+            const type::Vec3& pt2 = t.p2();
+            const type::Vec3 pt1v = pt1 + t.v1()*dt;
+            const type::Vec3 pt2v = pt2 + t.v2()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -572,11 +572,13 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
+    const auto& positions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
     for (Size i=0; i<size; i++)
     {
         Element e(this,i);
-        const Coord& pt1 = e.p1();
-        const Coord& pt2 = e.p2();
+        const Coord& pt1 = positions[this->elems[i].p[0]];
+        const Coord& pt2 = positions[this->elems[i].p[1]];
 
         for (int c=0; c<3; c++)
         {

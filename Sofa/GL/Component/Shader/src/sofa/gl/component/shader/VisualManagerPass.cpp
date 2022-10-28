@@ -37,14 +37,14 @@ int VisualManagerPassClass = core::RegisterObject("VisualManagerPass")
         ;
 
 VisualManagerPass::VisualManagerPass()
-    : factor(initData(&factor, (float)1.0, "factor","set the resolution factor for the output pass. default value:1.0")),
+    : factor(initData(&factor, 1.0f, "factor","set the resolution factor for the output pass. default value:1.0")),
       renderToScreen(initData(&renderToScreen, "renderToScreen", "if true, this pass will be displayed on screen (only one renderPass in the scene must be defined as renderToScreen)")),
       outputName(initData(&outputName, "outputName","name the output texture"))
 {
-    if(factor.getValue()==0.0)
+    if(factor.getValue()==0.0f)
     {
         msg_warning("VisualManagerPass") << this->getName()<<":\"factor\" attribute shall not be null. Using 1.0 instead...";
-        factor.setValue(1.0);
+        factor.setValue(1.0f);
     }
 
     prerendered=false;
