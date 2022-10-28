@@ -73,9 +73,9 @@ void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparam
 
     const SetIndexArray & indices = d_indices.getValue();
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    
-    std::vector< Vector3 > points;
-    
+
+    std::vector< type::Vec3 > points;
+
     if (d_fixAll.getValue())
     {
         for (unsigned i = 0; i < x.size(); i++)
