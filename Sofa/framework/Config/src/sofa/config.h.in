@@ -246,7 +246,13 @@ class DeprecatedAndRemoved {};
 #define SOFA_ATTRIBUTE_DISABLED__NOSTYLE_TYPEMEMBER(type) \
     SOFA_ATTRIBUTE_DISABLED( \
         "v22.12 (PR#3357)", "v24.12", \
-        "A coding style has been interoduced, to every class's member type (eg: MyObject::Real) must starts with M_ (eg: MyObject::M_Real).") \
+        "A coding style has been introduced, to every class's member type (eg: MyObject::Real) must starts with M_ (eg: MyObject::M_Real).") \
+        DeprecatedAndRemoved type
+
+#define SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(type) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.12 (PR#3357)", "v24.12", \
+        "Class's member type alias "+sofa_to_string(type)+" was not needed.") \
         DeprecatedAndRemoved type
 
 #define SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(type, newtype) \
