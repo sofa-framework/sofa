@@ -368,7 +368,10 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
 
     Mat4x4f matProj(fProjMat);
     Mat4x4f invmatProj;
-    invmatProj.invert(matProj);
+    if(!invmatProj.invert(matProj))
+    {
+        msg_error() << "matProj can not be inverted";
+    }
 
     m_spriteNormalShader.TurnOn();
 
