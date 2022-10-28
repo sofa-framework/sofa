@@ -294,7 +294,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
             std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
             std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
-            sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+            auto Loc2GlobVec = sofa::helper::getWriteAccessor(Loc2GlobDataVec);
 
             while( itBegin != itEnd )
             {
@@ -551,11 +551,8 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 ++itBegin;
             }
-
-            Loc2GlobDataVec.endEdit();
         }
     }
-
     return;
 }
 

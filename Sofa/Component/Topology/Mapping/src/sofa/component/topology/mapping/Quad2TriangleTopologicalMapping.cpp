@@ -122,7 +122,7 @@ void Quad2TriangleTopologicalMapping::init()
 
 
     const sofa::type::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteOnlyAccessor(Loc2GlobDataVec);
 
     Loc2GlobVec.clear();
     In2OutMap.clear();
@@ -182,7 +182,6 @@ void Quad2TriangleTopologicalMapping::init()
     toModel->init();
 
     //to_tstm->propagateTopologicalChanges();
-    Loc2GlobDataVec.endEdit();
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
@@ -207,7 +206,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteAccessor(Loc2GlobDataVec);
 
     while( itBegin != itEnd )
     {
@@ -426,7 +425,6 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Quad2TriangleTopologicalMapping");
 }
