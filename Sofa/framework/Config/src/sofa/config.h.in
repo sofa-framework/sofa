@@ -243,6 +243,18 @@ class DeprecatedAndRemoved {};
         "v21.06 (PR#1808)", "v21.12", \
         "replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
 
+#define SOFA_ATTRIBUTE_DISABLED__NOSTYLE_TYPEMEMBER(type) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.12 (PR#3357)", "v24.12", \
+        "A coding style has been interoduced, to every class's member type (eg: MyObject::Real) must starts with M_ (eg: MyObject::M_Real).") \
+        DeprecatedAndRemoved type
+
+#define SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(type, newtype) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.12 (PR#3357)", "v24.12", \
+        "This type member " sofa_to_string(type) ". To update your code please replace it with " sofa_to_string(newtype)) \
+        newtype type
+
 #define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v21.12 (PR#2292)", "v22.06", \
