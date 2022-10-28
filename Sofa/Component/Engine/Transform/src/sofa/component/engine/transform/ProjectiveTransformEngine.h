@@ -62,16 +62,6 @@ public:
 
     void doUpdate() override;
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const ProjectiveTransformEngine<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
 protected:
     Data<VecCoord> f_inputX;   ///< input position
     Data<VecCoord> f_outputX;  ///< output position: Z=focal_distance

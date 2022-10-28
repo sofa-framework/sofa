@@ -57,12 +57,7 @@ public:
         return core::DataEngine::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const SingleComponent<DataTypes>*)
+    static std::string GetCustomTemplateName()
     {
         return "int";
     }
