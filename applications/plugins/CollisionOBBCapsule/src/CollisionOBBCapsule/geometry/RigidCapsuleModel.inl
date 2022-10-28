@@ -130,8 +130,8 @@ void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::compute
             const Coord p2 = point2(i);
             r = radius(i);
 
-            type::Vector3 maxVec;
-            type::Vector3 minVec;
+            type::Vec3 maxVec;
+            type::Vec3 minVec;
 
             for(int dim = 0 ; dim < 3 ; ++dim){
                 if(p1(dim) > p2(dim)){

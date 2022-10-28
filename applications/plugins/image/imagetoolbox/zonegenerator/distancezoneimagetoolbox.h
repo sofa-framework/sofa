@@ -24,7 +24,7 @@ namespace engine
 
 using type::vector;
 using type::Vec;
-using type::Vector3;
+using type::Vec3;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 

@@ -80,27 +80,27 @@ int  RigidDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, Output
     float fEPSILON = 1e-4f;
 
     //Ray
-    const Vector3& v3Origin = rRay.origin();
-    const Vector3& v3Direction = rRay.direction();
+    const type::Vec3& v3Origin = rRay.origin();
+    const type::Vec3& v3Direction = rRay.direction();
 
     //Box
-    const Vector3 v3HalfExtents = rObb.extents();
-    const Vector3& v3BoxCenter = rObb.center();
+    const type::Vec3 v3HalfExtents = rObb.extents();
+    const type::Vec3& v3BoxCenter = rObb.center();
     const Quat<SReal>& qOrientation = rObb.orientation();
     Mat33 m33Orientation;
     qOrientation.toMatrix(m33Orientation);
 
     //Vector from origin of ray to center of box
-    Vector3 v3RayOriginToBoxCenter = v3BoxCenter - v3Origin;
+    type::Vec3 v3RayOriginToBoxCenter = v3BoxCenter - v3Origin;
 
     //Normal at near and far intersection points
-    Vector3 v3NormalAtNear(0.0f, 1.0f, 0.0f);
-    Vector3 v3NormalAtFar(0.0f, 1.0f, 0.0f);
+    type::Vec3 v3NormalAtNear(0.0f, 1.0f, 0.0f);
+    type::Vec3 v3NormalAtFar(0.0f, 1.0f, 0.0f);
 
     //For the 3 slabs
     for (unsigned int i = 0; i < 3; i++)
     {
-        Vector3 v3CurrAxis = m33Orientation.col(i); //TODO: implement the return of a reference instead of a copy of the column
+        type::Vec3 v3CurrAxis = m33Orientation.col(i); //TODO: implement the return of a reference instead of a copy of the column
         float fR = (float)(v3CurrAxis * v3RayOriginToBoxCenter);
         float fBoxMax = (float)v3HalfExtents[i];
         float fBoxMin = (float)-v3HalfExtents[i];
@@ -166,8 +166,8 @@ int  RigidDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, Output
     bool bHit = false;
 
     float fHitFraction = 0;
-    Vector3 v3Normal;
-    Vector3 v3HitLocation;
+    type::Vec3 v3Normal;
+    type::Vec3 v3HitLocation;
     // If ray starts inside box
     if (fNear < 0.f)
     {
