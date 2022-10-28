@@ -107,8 +107,8 @@ public:
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
 private:
-    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
-	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
+    type::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
+    type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
     void computeInitialGuess();
     void keepContactForcesValue();
 

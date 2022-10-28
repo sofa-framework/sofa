@@ -106,15 +106,18 @@ protected:
 
     void clearConstraintProblemLocks();
 
+    void parallelBuildSystem_matrixAssembly(const core::ConstraintParams* cParams);
+    void sequentialBuildSystem_matrixAssembly(const core::ConstraintParams* cParams);
+
     enum { CP_BUFFER_SIZE = 10 };
     sofa::type::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
-    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
-    std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
+    type::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
+    type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
 
-    sofa::core::objectmodel::BaseContext *context;
+    sofa::core::objectmodel::BaseContext *context { nullptr };
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
