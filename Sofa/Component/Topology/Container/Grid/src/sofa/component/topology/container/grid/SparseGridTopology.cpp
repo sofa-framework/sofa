@@ -134,50 +134,52 @@ void SparseGridTopology::init()
     for(unsigned i=0; i<seqPoints.getValue().size(); ++i)
         _nodeAdjacency[i].assign(InvalidID);
 
-    for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
+    const auto& hexahedra = seqHexahedra.getValue();
+
+    for(unsigned i=0; i<hexahedra.size(); ++i)
     {
-        _nodeAdjacency[ seqHexahedra.getValue()[i][0] ][RIGHT] = seqHexahedra.getValue()[i][1];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][0] ][UP] = seqHexahedra.getValue()[i][2];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][0] ][BEHIND] = seqHexahedra.getValue()[i][4];
+        _nodeAdjacency[ hexahedra[i][0] ][RIGHT] = hexahedra[i][1];
+        _nodeAdjacency[ hexahedra[i][0] ][UP] = hexahedra[i][2];
+        _nodeAdjacency[ hexahedra[i][0] ][BEHIND] = hexahedra[i][4];
 
-        _nodeAdjacency[ seqHexahedra.getValue()[i][1] ][LEFT] = seqHexahedra.getValue()[i][0];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][1] ][UP] = seqHexahedra.getValue()[i][3];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][1] ][BEHIND] = seqHexahedra.getValue()[i][5];
+        _nodeAdjacency[ hexahedra[i][1] ][LEFT] = hexahedra[i][0];
+        _nodeAdjacency[ hexahedra[i][1] ][UP] = hexahedra[i][3];
+        _nodeAdjacency[ hexahedra[i][1] ][BEHIND] = hexahedra[i][5];
 
-        _nodeAdjacency[ seqHexahedra.getValue()[i][2] ][RIGHT] = seqHexahedra.getValue()[i][3];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][2] ][DOWN] = seqHexahedra.getValue()[i][0];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][2] ][BEHIND] = seqHexahedra.getValue()[i][6];
+        _nodeAdjacency[ hexahedra[i][2] ][RIGHT] = hexahedra[i][3];
+        _nodeAdjacency[ hexahedra[i][2] ][DOWN] = hexahedra[i][0];
+        _nodeAdjacency[ hexahedra[i][2] ][BEHIND] = hexahedra[i][6];
 
-        _nodeAdjacency[ seqHexahedra.getValue()[i][3] ][LEFT] = seqHexahedra.getValue()[i][2];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][3] ][DOWN] = seqHexahedra.getValue()[i][1];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][3] ][BEHIND] = seqHexahedra.getValue()[i][7];
+        _nodeAdjacency[ hexahedra[i][3] ][LEFT] = hexahedra[i][2];
+        _nodeAdjacency[ hexahedra[i][3] ][DOWN] = hexahedra[i][1];
+        _nodeAdjacency[ hexahedra[i][3] ][BEHIND] = hexahedra[i][7];
 
-        _nodeAdjacency[ seqHexahedra.getValue()[i][4] ][RIGHT] = seqHexahedra.getValue()[i][5];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][4] ][UP] = seqHexahedra.getValue()[i][6];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][4] ][BEFORE] = seqHexahedra.getValue()[i][0];
+        _nodeAdjacency[ hexahedra[i][4] ][RIGHT] = hexahedra[i][5];
+        _nodeAdjacency[ hexahedra[i][4] ][UP] = hexahedra[i][6];
+        _nodeAdjacency[ hexahedra[i][4] ][BEFORE] = hexahedra[i][0];
 
-        _nodeAdjacency[ seqHexahedra.getValue()[i][5] ][LEFT] = seqHexahedra.getValue()[i][4];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][5] ][UP] = seqHexahedra.getValue()[i][7];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][5] ][BEFORE] = seqHexahedra.getValue()[i][1];
+        _nodeAdjacency[ hexahedra[i][5] ][LEFT] = hexahedra[i][4];
+        _nodeAdjacency[ hexahedra[i][5] ][UP] = hexahedra[i][7];
+        _nodeAdjacency[ hexahedra[i][5] ][BEFORE] = hexahedra[i][1];
 
-        _nodeAdjacency[ seqHexahedra.getValue()[i][6] ][RIGHT] = seqHexahedra.getValue()[i][7];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][6] ][DOWN] = seqHexahedra.getValue()[i][4];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][6] ][BEFORE] = seqHexahedra.getValue()[i][2];
+        _nodeAdjacency[ hexahedra[i][6] ][RIGHT] = hexahedra[i][7];
+        _nodeAdjacency[ hexahedra[i][6] ][DOWN] = hexahedra[i][4];
+        _nodeAdjacency[ hexahedra[i][6] ][BEFORE] = hexahedra[i][2];
 
-        _nodeAdjacency[ seqHexahedra.getValue()[i][7] ][LEFT] = seqHexahedra.getValue()[i][6];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][7] ][DOWN] = seqHexahedra.getValue()[i][5];
-        _nodeAdjacency[ seqHexahedra.getValue()[i][7] ][BEFORE] = seqHexahedra.getValue()[i][3];
+        _nodeAdjacency[ hexahedra[i][7] ][LEFT] = hexahedra[i][6];
+        _nodeAdjacency[ hexahedra[i][7] ][DOWN] = hexahedra[i][5];
+        _nodeAdjacency[ hexahedra[i][7] ][BEFORE] = hexahedra[i][3];
     }
 
 
     //	_nodeCubesAdjacency.clear();
     _nodeCubesAdjacency.resize(seqPoints.getValue().size() );
 
-    for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
+    for(unsigned i=0; i<hexahedra.size(); ++i)
     {
         for(int j=0; j<8; ++j)
         {
-            _nodeCubesAdjacency[ seqHexahedra.getValue()[i][j] ].push_back( i );
+            _nodeCubesAdjacency[ hexahedra[i][j] ].push_back( i );
         }
     }
 }
@@ -834,31 +836,32 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
     // TODO: regarder les cellules pleines, et les ajouter
     vector<bool> alreadyTested(typename vector<bool>::Size(regularGrid->getNbHexahedra()),false);
     std::stack< Vec3i > seed;
+    const auto regN = regularGrid->d_n.getValue();
     // x==0 and x=nx-2
-    for(int y=0; y<regularGrid->getNy()-1; ++y)
+    for(int y=0; y< regN[1]-1; ++y)
     {
-        for(int z=0; z<regularGrid->getNz()-1; ++z)
+        for(int z=0; z<regN[2]-1; ++z)
         {
             launchPropagationFromSeed(Vec3i(0,y,z), regularGrid, regularGridTypes, alreadyTested,seed );
-            launchPropagationFromSeed(Vec3i(regularGrid->getNx()-2,y,z), regularGrid, regularGridTypes, alreadyTested,seed );
+            launchPropagationFromSeed(Vec3i(regN[0]-2,y,z), regularGrid, regularGridTypes, alreadyTested,seed );
         }
 
         // y==0 and y=ny-2
-        for(int x=0; x<regularGrid->getNx()-1; ++x)
+        for(int x=0; x<regN[0]-1; ++x)
         {
-            for(int z=0; z<regularGrid->getNz()-1; ++z)
+            for(int z=0; z<regN[2]-1; ++z)
             {
                 launchPropagationFromSeed(Vec3i(x,0,z), regularGrid, regularGridTypes, alreadyTested,seed );
-                launchPropagationFromSeed(Vec3i(x,regularGrid->getNy()-2,z), regularGrid, regularGridTypes, alreadyTested,seed );
+                launchPropagationFromSeed(Vec3i(x,regN[1]-2,z), regularGrid, regularGridTypes, alreadyTested,seed );
             }
 
             // z==0 and z==Nz-2
-            for(int y=0; y<regularGrid->getNy()-1; ++y)
+            for(int y=0; y<regN[1]-1; ++y)
             {
-                for(int x=0; x<regularGrid->getNx()-1; ++x)
+                for(int x=0; x<regN[0]-1; ++x)
                 {
                     launchPropagationFromSeed(Vec3i(x,y,0), regularGrid, regularGridTypes, alreadyTested,seed );
-                    launchPropagationFromSeed(Vec3i(x,y,regularGrid->getNz()-2), regularGrid, regularGridTypes, alreadyTested,seed );
+                    launchPropagationFromSeed(Vec3i(x,y,regN[2]-2), regularGrid, regularGridTypes, alreadyTested,seed );
                 }
             }
         }
@@ -1274,11 +1277,13 @@ SparseGridTopology::Index SparseGridTopology::findCube(const Vector3& pos, SReal
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 SparseGridTopology::Index SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    if (seqHexahedra.getValue().size() == 0) return InvalidID;
+    const auto& hexahedra = seqHexahedra.getValue();
+    if (hexahedra.size() == 0) return InvalidID;
     Index indice = 0;
     float lgmin = 99999999.0f;
 
-    for(unsigned w=0; w<seqHexahedra.getValue().size(); ++w)
+    const auto& points = seqPoints.getValue();
+    for(unsigned w=0; w<hexahedra.size(); ++w)
     {
         if(!_usingMC && _types[w]!=BOUNDARY )continue;
 
@@ -1286,8 +1291,8 @@ SparseGridTopology::Index SparseGridTopology::findNearestCube(const Vector3& pos
         Index c0 = c[0];
         Index c7 = c[6];
 
-        Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
-        Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
+        const auto& p0 = points[c0];
+        const auto& p7 = points[c7];
 
         Vector3 barycenter = (p0+p7) * .5;
 

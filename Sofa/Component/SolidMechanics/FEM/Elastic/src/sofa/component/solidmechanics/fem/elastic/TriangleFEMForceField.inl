@@ -635,7 +635,7 @@ void TriangleFEMForceField<DataTypes>::setYoung(Real val)
     if (val < 0)
     {
         msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
-        f_young.setValue(1000);
+        f_young.setValue(Real(1000));
     }
     else if (val != f_young.getValue())
     {

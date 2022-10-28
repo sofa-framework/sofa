@@ -256,18 +256,18 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
 
         // Change the solver parameters
-        double buf_tolerance = 0, buf_threshold = 0;
-        int	   buf_maxIter = 0;
+        Real buf_tolerance = 0, buf_threshold = 0;
+        unsigned int	   buf_maxIter = 0;
 
         if (cgLinearSolver)
         {
-            buf_tolerance = (double) cgLinearSolver->d_tolerance.getValue();
-            buf_maxIter   = (int) cgLinearSolver->d_maxIter.getValue();
-            buf_threshold = (double) cgLinearSolver->d_smallDenominatorThreshold.getValue();
+            buf_tolerance = cgLinearSolver->d_tolerance.getValue();
+            buf_maxIter   = cgLinearSolver->d_maxIter.getValue();
+            buf_threshold = cgLinearSolver->d_smallDenominatorThreshold.getValue();
 
-            cgLinearSolver->d_tolerance.setValue(1e-20);
-            cgLinearSolver->d_maxIter.setValue(5000);
-            cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-35);
+            cgLinearSolver->d_tolerance.setValue(Real(1e-20));
+            cgLinearSolver->d_maxIter.setValue(5000u);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(Real(1e-35));
         }
 
 

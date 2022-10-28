@@ -582,11 +582,11 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
 {
     //TODO(dmarchal 2017-05-03) Who wrote this todo ? When will you fix this ? In one year I remove this one.
     /// @todo evaluate the criteria on the current position instead of relying on the computations during the force evaluation (based on the previous position)
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
 
     if ((unsigned)elementIndex < triangleInf.size())
     {
-        computePrincipalStress(elementIndex, triangleInf[elementIndex].stress);
+        computePrincipalStress(elementIndex, triangleInf[elementIndex]);
         direction = triangleInf[elementIndex].principalStressDirection;
         value = fabs(triangleInf[elementIndex].maxStress);
         if (value < 0)
@@ -594,7 +594,6 @@ void TriangularFEMForceField<DataTypes>::getFractureCriteria(int elementIndex, D
             direction.clear();
             value = 0;
         }
-        triangleInfo.endEdit();
     }
     else
     {
@@ -619,13 +618,13 @@ void TriangularFEMForceField<DataTypes>::computeStiffness(Stiffness& K, const St
 // ---	Compute direction of maximum strain (strain = JtD = BD)
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, type::Vec<3, Real>& strain)
+void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo)
 {
     Eigen::Matrix<Real, 2, 2> e;
-    e(0,0) = strain[0];
-    e(0,1) = strain[2];
-    e(1,0) = strain[2];
-    e(1,1) = strain[1];
+    e(0,0) = triangleInfo.strain[0];
+    e(0,1) = triangleInfo.strain[2];
+    e(1,0) = triangleInfo.strain[2];
+    e(1,1) = triangleInfo.strain[1];
     
     //compute eigenvalues and eigenvectors
     Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -636,26 +635,24 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     Coord v(V(0, 0), V(1, 0), 0.0);
     v.normalize();
 
-    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
+    triangleInfo.maxStrain = S(0);
 
-    triangleInf[elementIndex].maxStrain = S(0);
-
-    triangleInf[elementIndex].principalStrainDirection = triangleInf[elementIndex].rotation * Coord(v[0], v[1], v[2]);
-    triangleInf[elementIndex].principalStrainDirection *= triangleInf[elementIndex].maxStrain / 100.0;
+    triangleInfo.principalStrainDirection = triangleInfo.rotation * Coord(v[0], v[1], v[2]);
+    triangleInfo.principalStrainDirection *= triangleInfo.maxStrain / 100.0;
 }
 
 // --------------------------------------------------------------------------------------
 // ---	Compute direction of maximum stress (stress = KJtD = KBD)
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, type::Vec<3, Real>& stress)
+void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo)
 {
     Eigen::Matrix<Real, 2, 2> e;
     //voigt notation to symmetric matrix
-    e(0,0) = stress[0];
-    e(0,1) = stress[2];
-    e(1,0) = stress[2];
-    e(1,1) = stress[1];
+    e(0,0) = triangleInfo.stress[0];
+    e(0,1) = triangleInfo.stress[2];
+    e(1,0) = triangleInfo.stress[2];
+    e(1,1) = triangleInfo.stress[1];
 
     //compute eigenvalues and eigenvectors
     Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -673,48 +670,46 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     Coord direction(V(0,biggestIndex), V(1,biggestIndex), 0.0);    
     direction.normalize();
 
-    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
-
     //Hosford yield criterion
     //for plane stress : 1/2 * ( |S_1|^n + |S_2|^n) + 1/2 * |S_1 - S_2|^n = S_y^n
     //with S_i the principal stresses, n is a material-dependent exponent and S_y is the yield stress in uniaxial tension/compression
     double n = this->hosfordExponant.getValue();
-    triangleInf[elementIndex].differenceToCriteria = (Real)
+    triangleInfo.differenceToCriteria = (Real)
             pow(0.5 * (pow((double)fabs(S(0)), n) +  pow((double)fabs(S(1)), n) + pow((double)fabs(S(0) - S(1)),n)), 1.0/ n) - this->criteriaValue.getValue();
 
     //max stress is the highest eigenvalue
-    triangleInf[elementIndex].maxStress = fabs(S(biggestIndex));
+    triangleInfo.maxStress = fabs(S(biggestIndex));
 
     //the principal stress direction is the eigenvector corresponding to the highest eigenvalue
-    Coord principalStressDir = triangleInf[elementIndex].rotation * direction;//need to rotate to be in global frame instead of local
-    principalStressDir *= triangleInf[elementIndex].maxStress / 100.0;
+    Coord principalStressDir = triangleInfo.rotation * direction;//need to rotate to be in global frame instead of local
+    principalStressDir *= triangleInfo.maxStress / 100.0;
 
 
     //make an average of the n1 and n2 last stress direction to smooth it and avoid discontinuities
     unsigned int n2 = 30;
     unsigned int n1 = 10;
-    triangleInf[elementIndex].lastNStressDirection.push_back(principalStressDir);
+    triangleInfo.lastNStressDirection.push_back(principalStressDir);
 
     //remove useless data
-    if (triangleInf[elementIndex].lastNStressDirection.size() > n2)
+    if (triangleInfo.lastNStressDirection.size() > n2)
     {
-        for (unsigned int i = 0; i < triangleInf[elementIndex].lastNStressDirection.size() - n2; i++)
-            triangleInf[elementIndex].lastNStressDirection.erase(triangleInf[elementIndex].lastNStressDirection.begin() + i);
+        for (unsigned int i = 0; i < triangleInfo.lastNStressDirection.size() - n2; i++)
+            triangleInfo.lastNStressDirection.erase(triangleInfo.lastNStressDirection.begin() + i);
     }
 
     //make the average
     Coord averageVector2(0.0, 0.0, 0.0);
     Coord averageVector1(0.0, 0.0, 0.0);
-    for (unsigned int i = 0; i < triangleInf[elementIndex].lastNStressDirection.size(); i++)
+    for (unsigned int i = 0; i < triangleInfo.lastNStressDirection.size(); i++)
     {
-        averageVector2 = triangleInf[elementIndex].lastNStressDirection[i] + averageVector2;
+        averageVector2 = triangleInfo.lastNStressDirection[i] + averageVector2;
         if (i == n1)
             averageVector1 = averageVector2 / n1;
     }
-    if (triangleInf[elementIndex].lastNStressDirection.size())
-        averageVector2 /= triangleInf[elementIndex].lastNStressDirection.size();
+    if (triangleInfo.lastNStressDirection.size())
+        averageVector2 /= triangleInfo.lastNStressDirection.size();
 
-    triangleInf[elementIndex].principalStressDirection = averageVector2;
+    triangleInfo.principalStressDirection = averageVector2;
 }
 
 // --------------------------------------------------------------------------------------
@@ -1157,10 +1152,9 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
     if (f_computePrincipalStress.getValue() || p_computeDrawInfo)
     {
         unsigned int nbTriangles = m_topology->getNbTriangles();
-        type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+        auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
         for (unsigned int i = 0; i < nbTriangles; ++i)
-            computePrincipalStress(i, triangleInf[i].stress);
-        triangleInfo.endEdit();
+            computePrincipalStress(i, triangleInf[i]);
     }
 }
 

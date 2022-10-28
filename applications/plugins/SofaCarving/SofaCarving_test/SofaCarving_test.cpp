@@ -29,27 +29,54 @@ using namespace sofa::testing;
 using namespace sofa::component::collision;
 using namespace sofa::simpleapi;
 
+/// <summary>
+/// Class to test main methods and behavior of CarvingManager.
+/// </summary>
 class SofaCarving_test : public BaseSimulationTest
 {
 public:
     SofaCarving_test()
         : BaseSimulationTest()
-        , m_simu(NULL)
-        , m_root(NULL)
     {
         sofa::helper::system::DataRepository.addFirstPath(SOFACARVING_TEST_RESOURCES_DIR);
     }
 
+    
+    /// Test creation of CarvingManager outside from a simulation scene
+    void ManagerEmpty();
+    /// Test creation and empty init of CarvingManager in a basic scene and check componentState
+    void ManagerInit();
+    /// Test creation and init with links of CarvingManager in a basic scene and check componentState
+    void ManagerInitWithLinks();
+    
+    /// Test wrong init of CarvingManager in a basic scene and check componentState
+    void ManagerWrongInit();
+
+    
+    /// Test creation and init of CarvingManager in full scene. Will use @sa createScene
+    void ManagerSceneInit();
+    /// Test carving process with default parameters. Will check topology after carving.
+    void doCarving();
+    /// Test carving process with penetration parameters. Will check topology after carving.
+    void doCarvingWithPenetration();
+
+    /// Unload the scene
+    void TearDown() override
+    {
+        if (m_simu != nullptr && m_root != nullptr) {
+            m_simu->unload(m_root);
+        }
+    }
+
+protected:
+    /// Method to create full carving scene on a deformable object.
     bool createScene(const std::string& carvingDistance);
 
-    bool ManagerEmpty();
-    bool ManagerInit();
-    bool doCarving();
-    bool doCarvingWithPenetration();
-
 private:
-    sofa::simulation::Simulation::SPtr m_simu;
-    sofa::simulation::Node::SPtr m_root;
+    /// Pointer to SOFA simulation
+    sofa::simulation::Simulation::SPtr m_simu = nullptr;
+    /// Pointer to root Node
+    sofa::simulation::Node::SPtr m_root = nullptr;
 };
 
 
@@ -73,9 +100,9 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "name", "Contact Manager" },
         { "response", "PenalityContactForceField" }
     });
-    createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
+    createObject(m_root, "LocalMinDistance", { { "name","localmindistance" },
         { "alarmDistance", "0.5" },
-        { "contactDistance", "0.05" }
+        { "contactDistance", "0.1" }
     });
     
 
@@ -86,8 +113,8 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     });
     createObject(m_root, "CGLinearSolver", { { "name","Conjugate Gradient" },
         { "iterations","25" },
-        { "threshold", "0.000000001" },
-        { "tolerance", "0.000000001" } 
+        { "threshold", "1e-9" },
+        { "tolerance", "1e-9" } 
     });
     
     // create carving
@@ -168,14 +195,12 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
 
     createObject(nodeSurface, "TriangleCollisionModel", {
         { "name", "Triangle Model" },
-        { "tags", "CarvingSurface" },
-        { "group", "0" }
+        { "tags", "CarvingSurface" }
         });
 
     createObject(nodeSurface, "PointCollisionModel", {
         { "name", "Point Model" },
-        { "tags", "CarvingSurface" },
-        { "group", "0" }
+        { "tags", "CarvingSurface" }
         });
 
 
@@ -198,30 +223,174 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     createObject(nodeCarv, "SphereCollisionModel", {
         { "name", "Sphere Model" },
         { "radius", "0.02" },
-        { "tags", "CarvingTool" },
-        { "group", "1" }
+        { "tags", "CarvingTool" }
         });
         
     return true;
 }
 
 
-bool SofaCarving_test::ManagerEmpty()
+void SofaCarving_test::ManagerEmpty()
 {
     CarvingManager::SPtr carvingMgr = sofa::core::objectmodel::New< CarvingManager >();
     carvingMgr->doCarve(); // expect nothing to be done nor crash.
 
-    return true;
+    EXPECT_MSG_NOEMIT(Error);
+    EXPECT_MSG_NOEMIT(Warning);
 }
 
 
-bool SofaCarving_test::ManagerInit()
+void SofaCarving_test::ManagerInit()
 {
-    bool res = createScene("0.0");
-    if (!res)
-        return false;
+    sofa::simpleapi::importPlugin("Sofa.Component");
+
+    m_simu = createSimulation("DAG");
+    m_root = createRootNode(m_simu, "root");
+
+    // create collision pipeline
+    createObject(m_root, "DefaultAnimationLoop", { { "name","DefaultAnimationLoop " } });
+    createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
+    createObject(m_root, "DefaultContactManager", { { "response","PenalityContactForceField" } });
+    createObject(m_root, "BruteForceBroadPhase", { { "name","broadPhase" } });
+    createObject(m_root, "BVHNarrowPhase", { { "name","narrowPhase" } });
+    createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
+        { "alarmDistance", "0.5" },
+        { "contactDistance", "0.02" }
+    });
+
+    // create carving
+    createObject(m_root, "CarvingManager", { { "name","Carving Manager" },
+        { "active","1" },
+        { "carvingDistance", "0.1" }
+    });
+
+
+    // create empty collision model as CarvintTool just for init
+    createObject(m_root, "MechanicalObject", {
+        { "name","Particles" },
+        { "template","Vec3" },
+        { "position", "0 0 1.0" },
+        { "velocity", "0 0 0" }
+    });
+
+    createObject(m_root, "SphereCollisionModel", {
+        { "name", "tool" },
+        { "template","Vec3" },
+        { "radius", "0.02" },
+        { "tags", "CarvingTool" },
+        { "group", "0" }
+    });
+
+    createObject(m_root, "SphereCollisionModel", {
+        { "name", "tool" },
+        { "template","Vec3" },
+        { "radius", "0.02" },
+        { "tags", "CarvingSurface" },
+        { "group", "1" }
+    });
 
     // init scene
+    EXPECT_MSG_NOEMIT(Error);
+    EXPECT_MSG_NOEMIT(Warning);
+    m_simu->init(m_root.get());
+}
+
+
+void SofaCarving_test::ManagerInitWithLinks()
+{
+    sofa::simpleapi::importPlugin("Sofa.Component");
+
+    m_simu = createSimulation("DAG");
+    m_root = createRootNode(m_simu, "root");
+
+    // create collision pipeline
+    createObject(m_root, "DefaultAnimationLoop", { { "name","DefaultAnimationLoop " } });
+    createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
+    createObject(m_root, "DefaultContactManager", { { "response","PenalityContactForceField" } });
+    createObject(m_root, "BruteForceBroadPhase", { { "name","broadPhase" } });
+    createObject(m_root, "BVHNarrowPhase", { { "name","narrowPhase" } });
+    createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
+        { "alarmDistance", "0.5" },
+        { "contactDistance", "0.02" }
+    });
+
+    // create carving
+    createObject(m_root, "CarvingManager", { { "name","Carving Manager" },
+        { "active","1" },
+        { "carvingDistance", "0.1" },
+        { "narrowPhaseDetection", "@narrowPhase" },
+        { "toolModel", "@tool" }
+    });
+
+
+    // create empty collision model as CarvintTool just for init
+    createObject(m_root, "MechanicalObject", {
+        { "name","Particles" },
+        { "template","Vec3" },
+        { "position", "0 0 1.0" },
+        { "velocity", "0 0 0" }
+    });
+
+    createObject(m_root, "SphereCollisionModel", {
+        { "name", "tool" },
+        { "template","Vec3" },
+        { "radius", "0.02" },
+        { "group", "1" }
+    });
+
+    createObject(m_root, "SphereCollisionModel", {
+        { "name", "tool" },
+        { "template","Vec3" },
+        { "radius", "0.02" },
+        { "tags", "CarvingSurface" },
+        { "group", "1" }
+    });
+
+    // init scene
+    EXPECT_MSG_NOEMIT(Error);
+    EXPECT_MSG_NOEMIT(Warning);
+    m_simu->init(m_root.get());
+}
+
+
+void SofaCarving_test::ManagerWrongInit()
+{
+    sofa::simpleapi::importPlugin("Sofa.Component");
+
+    m_simu = createSimulation("DAG");
+    m_root = createRootNode(m_simu, "root");
+
+    // create collision pipeline
+    createObject(m_root, "DefaultAnimationLoop", { { "name","DefaultAnimationLoop " } });
+    createObject(m_root, "CollisionPipeline", { { "name","Collision Pipeline" } });
+    createObject(m_root, "DefaultContactManager", { { "response","PenalityContactForceField" } });
+    createObject(m_root, "BruteForceBroadPhase", { { "name","broadPhase" } });
+    createObject(m_root, "BVHNarrowPhase", { { "name","narrowPhase" } });
+    createObject(m_root, "MinProximityIntersection", { { "name","Proximity" },
+        { "alarmDistance", "0.5" },
+        { "contactDistance", "0.05" }
+    });
+
+    // create carving
+    createObject(m_root, "CarvingManager", { { "name","Carving Manager" },
+        { "active","1" },
+        { "carvingDistance", "0.1" }
+    });
+
+    // init scene
+    EXPECT_MSG_EMIT(Error);
+    m_simu->init(m_root.get());
+}
+
+
+void SofaCarving_test::ManagerSceneInit()
+{
+    bool res = createScene("0.0");
+    EXPECT_TRUE(res);
+
+    // init scene
+    EXPECT_MSG_NOEMIT(Error);
+    EXPECT_MSG_NOEMIT(Warning);
     m_simu->init(m_root.get());
     
     // get node of the mesh
@@ -237,18 +406,17 @@ bool SofaCarving_test::ManagerInit()
     EXPECT_EQ(topo->getNbEdges(), 3119);
     EXPECT_EQ(topo->getNbTriangles(), 5040);
     EXPECT_EQ(topo->getNbTetrahedra(), 2430);
-
-    return res;
 }
 
 
-bool SofaCarving_test::doCarving()
+void SofaCarving_test::doCarving()
 {
     bool res = createScene("0.0");
-    if (!res)
-        return false;
+    EXPECT_TRUE(res);
 
     // init scene
+    EXPECT_MSG_NOEMIT(Error);
+    EXPECT_MSG_NOEMIT(Warning);
     m_simu->init(m_root.get());
 
     // get node of the mesh
@@ -270,18 +438,17 @@ bool SofaCarving_test::doCarving()
     EXPECT_LE(topo->getNbEdges(), 2900);
     EXPECT_LE(topo->getNbTriangles(), 4500);
     EXPECT_LE(topo->getNbTetrahedra(), 2200);
-    
-    return true;
 }
 
 
-bool SofaCarving_test::doCarvingWithPenetration()
+void SofaCarving_test::doCarvingWithPenetration()
 {
     bool res = createScene("-0.02");
-    if (!res)
-        return false;
+    EXPECT_TRUE(res);
 
     // init scene
+    EXPECT_MSG_NOEMIT(Error);
+    EXPECT_MSG_NOEMIT(Warning);
     m_simu->init(m_root.get());
 
     // get node of the mesh
@@ -303,30 +470,44 @@ bool SofaCarving_test::doCarvingWithPenetration()
     EXPECT_LT(topo->getNbEdges(), 3119);
     EXPECT_LT(topo->getNbTriangles(), 5040);
     EXPECT_LT(topo->getNbTetrahedra(), 2430);
-
-    return true;
 }
 
 
 
 TEST_F(SofaCarving_test, testManagerEmpty)
 {
-    ASSERT_TRUE(ManagerEmpty());
+    ManagerEmpty();
 }
 
 TEST_F(SofaCarving_test, testManagerInit)
 {
-    ASSERT_TRUE(ManagerInit());
+    ManagerInit();
+}
+
+TEST_F(SofaCarving_test, testManagerInitWithLinks)
+{
+    ManagerInitWithLinks();
+}
+
+
+TEST_F(SofaCarving_test, testManagerWrongInit)
+{
+    ManagerWrongInit();
+}
+
+TEST_F(SofaCarving_test, testCarvingSceneInit)
+{
+    ManagerSceneInit();
 }
 
 TEST_F(SofaCarving_test, testdoCarving)
 {
-    ASSERT_TRUE(doCarving());
+    doCarving();
 }
 
 TEST_F(SofaCarving_test, testdoCarvingWithPenetration)
 {
-    ASSERT_TRUE(doCarvingWithPenetration());
+    doCarvingWithPenetration();
 }
 
 

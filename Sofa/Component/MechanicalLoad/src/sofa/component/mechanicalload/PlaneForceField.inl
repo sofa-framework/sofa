@@ -104,17 +104,17 @@ void PlaneForceField<DataTypes>::init(){
         msg_warning(this) << "The 'stiffness="<< d_stiffness.getValueString() << "' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=500.0 .  "
                              "To remove this warning message you need to set the 'stiffness' attribute between [0, +INF[."
                              "  Emitted from ["<< this->getPathName() << "].";
-        d_stiffness.setValue(500) ;
+        d_stiffness.setValue(Real(500)) ;
     }
     if( d_damping.getValue() < 0.0 ){
         msg_warning(this) << "The 'damping="<< d_damping.getValueString() <<"' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=5.0 .  "
                              "To remove this warning message you need to set the 'damping' attribute between [0, +INF[." ;
-        d_damping.setValue(5) ;
+        d_damping.setValue(Real(5)) ;
     }
     if( d_maxForce.getValue() < 0.0 ){
         msg_warning(this) << "The 'maxForce="<< d_maxForce.getValueString() << "' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=0.0 (no max force).  "
                              "To remove this warning message you need to set the 'maxForce' attribute between [0, +INF[." ;
-        d_maxForce.setValue(0) ;
+        d_maxForce.setValue(Real(0)) ;
     }
 
     Vec<2,int> tmp = d_localRange.getValue() ;

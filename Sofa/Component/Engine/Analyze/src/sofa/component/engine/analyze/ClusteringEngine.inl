@@ -311,11 +311,24 @@ bool ClusteringEngine<DataTypes>::load()
     WriteOnlyAccessor< Data< VVI > > clust = this->d_cluster;
     clust.clear();
 
-    bool usetopo; fileStream >> usetopo;	this->d_useTopo.setValue(usetopo);
-    Real rad; fileStream >> rad;		this->d_radius.setValue(usetopo);
-    fileStream >> rad;		this->d_fixedRadius.setValue(usetopo);
-    unsigned int nb; fileStream >> nb;			clust.resize(nb);
-    int numb; fileStream >> numb;		this->d_nbClusters.setValue(usetopo);
+    bool usetopo = false; 
+    fileStream >> usetopo;	
+    this->d_useTopo.setValue(usetopo);
+
+    Real rad; 
+    fileStream >> rad;		
+    this->d_radius.setValue(rad);
+
+    fileStream >> rad;		
+    this->d_fixedRadius.setValue(rad);
+
+    unsigned int nb; 
+    fileStream >> nb;			
+    clust.resize(nb);
+
+    int numb; 
+    fileStream >> numb;		
+    this->d_nbClusters.setValue(numb);
 
     for (unsigned int i=0; i<nb; ++i)
     {

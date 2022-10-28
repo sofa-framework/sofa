@@ -80,7 +80,7 @@ bool PointSetTopologyContainer::checkTopology() const
 
 void PointSetTopologyContainer::clear()
 {
-    nbPoints.setValue(0);
+    nbPoints.setValue(sofa::Size(0));
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
 }
