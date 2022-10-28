@@ -1314,8 +1314,8 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     if (showLevels > hierarchy_constraintBlockInfo.size()) showLevels = hierarchy_constraintBlockInfo.size();
     if (!showLevels) return;
     SReal showCellWidth = this->showCellWidth.getValue();
-    type::Vector3 showTranslation = this->showTranslation.getValue();
-    type::Vector3 showLevelTranslation = this->showLevelTranslation.getValue();
+    type::Vec3 showTranslation = this->showTranslation.getValue();
+    type::Vec3 showLevelTranslation = this->showLevelTranslation.getValue();
 
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
@@ -1376,7 +1376,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
                 ConstDeriv dirFineT2 = constraintDirections[info.offsetDirection + 3*c + 2];
                 ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)(2*coordFact*coordFact*showCellWidth*showCellWidth);
 
-                type::Vector3 centerFine = showTranslation + showLevelTranslation*level;
+                type::Vec3 centerFine = showTranslation + showLevelTranslation*level;
                 for (int i=0; i<3; ++i) centerFine[i] += ((posFine[i]+0.5)*coordFact + coord0) * showCellWidth;
                 SReal radius = sqrt(area*0.5);
 

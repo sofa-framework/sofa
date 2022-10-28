@@ -3258,7 +3258,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
         const sofa::type::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
 
-        std::vector<type::Vector3> positions;
+        std::vector<type::Vec3> positions;
         for (size_t i =0; i<tetraArray.size(); i++)
         {
 
@@ -3267,7 +3267,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             Coord vertex2 = coords[ the_tetra[1] ];
             Coord vertex3 = coords[ the_tetra[2] ];
             Coord vertex4 = coords[ the_tetra[3] ];
-            type::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            type::Vec3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
             positions.push_back(center);
 
@@ -3285,7 +3285,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         sofa::type::RGBAColor color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
 
         const sofa::type::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
-        std::vector<type::Vector3>   pos;
+        std::vector<type::Vec3>   pos;
         pos.reserve(tetraArray.size() * 4u);
 
         for (size_t i = 0; i < tetraArray.size(); ++i)
@@ -3293,7 +3293,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             const Tetrahedron& tet = tetraArray[i];
             for (unsigned int j = 0u; j < 4u; ++j)
             {
-                pos.push_back(type::Vector3(DataTypes::getCPos(coords[tet[j]])));
+                pos.push_back(type::Vec3(DataTypes::getCPos(coords[tet[j]])));
             }
         }
 
@@ -3320,7 +3320,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         // Draw bad tetra
         if (!m_badTetraIds.empty())
         {
-            std::vector<type::Vector3> posBad;
+            std::vector<type::Vec3> posBad;
             posBad.reserve(m_badTetraIds.size() * 4u);
 
             for (size_t i = 0; i < m_badTetraIds.size(); ++i)
@@ -3328,7 +3328,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
                 const Tetrahedron& tet = tetraArray[m_badTetraIds[i]];
                 for (unsigned int j = 0u; j < 4u; ++j)
                 {
-                    posBad.push_back(type::Vector3(DataTypes::getCPos(coords[tet[j]])));
+                    posBad.push_back(type::Vec3(DataTypes::getCPos(coords[tet[j]])));
                 }
             }
 

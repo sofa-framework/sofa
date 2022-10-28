@@ -92,24 +92,24 @@ void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
     if(m_drawX)
     {
         vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vector3(-s*0.5, 0.0, 0.0),
-            helper::visual::DrawTool::Vector3(s*0.5, 0.0, 0.0),
+            helper::visual::DrawTool::Vec3(-s*0.5, 0.0, 0.0),
+            helper::visual::DrawTool::Vec3(s*0.5, 0.0, 0.0),
             helper::visual::DrawTool::RGBAColor(1.0f, 0.0f, 0.0f, 1.0f));
     }
 
     if(m_drawY)
     {
         vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vector3(0.0, -s*0.5, 0.0),
-            helper::visual::DrawTool::Vector3(0.0,  s*0.5, 0.0),
+            helper::visual::DrawTool::Vec3(0.0, -s*0.5, 0.0),
+            helper::visual::DrawTool::Vec3(0.0,  s*0.5, 0.0),
             helper::visual::DrawTool::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f));
     }
 
     if(m_drawZ)
     {
         vparams->drawTool()->drawLine(
-            helper::visual::DrawTool::Vector3(0.0, 0.0, -s*0.5),
-            helper::visual::DrawTool::Vector3(0.0, 0.0, s*0.5),
+            helper::visual::DrawTool::Vec3(0.0, 0.0, -s*0.5),
+            helper::visual::DrawTool::Vec3(0.0, 0.0, s*0.5),
             helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
     }
 

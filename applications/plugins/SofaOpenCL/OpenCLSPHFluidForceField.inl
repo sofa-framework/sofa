@@ -209,7 +209,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::v
     vparams->drawTool()->enableDepthTest();
 
     std::vector<sofa::type::Vec4f> colorVector;
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     for (unsigned int i = 0; i < m_particles.size(); i++)
     {
@@ -224,7 +224,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::v
         {
             colorVector.push_back(sofa::type::Vec4f(f - 1, 0, 2 - f, 1));
         }
-        vertices.push_back(sofa::type::Vector3(x[i]));
+        vertices.push_back(sofa::type::Vec3(x[i]));
     }
 
     vparams->drawTool()->drawPoints(vertices, 5, colorVector);

@@ -12,7 +12,7 @@ using std::endl;
 #include <sofa/core/ObjectFactory.h>
 
 // sofa types should not be exposed
-//typedef sofa::type::Vector3 Vec3;
+//typedef sofa::type::Vec3 Vec3;
 //typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
 typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
 

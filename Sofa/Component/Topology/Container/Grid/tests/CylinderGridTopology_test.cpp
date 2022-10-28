@@ -96,8 +96,8 @@ bool CylinderGridTopology_test::cylinderGridPosition()
     SReal length = cylGrid->d_length.getValue();
 
     // Check first circle with
-    sofa::type::Vector3 p0 = cylGrid->getPoint(0);
-    sofa::type::Vector3 p1 = cylGrid->getPoint(nx-1);
+    sofa::type::Vec3 p0 = cylGrid->getPoint(0);
+    sofa::type::Vec3 p1 = cylGrid->getPoint(nx-1);
     // Check first point
     EXPECT_NE(p0[0], 0);
     EXPECT_EQ(p0[0], p0[1]);
@@ -110,13 +110,13 @@ bool CylinderGridTopology_test::cylinderGridPosition()
     EXPECT_EQ(p0[2], 0);
 
     // check last point of first level
-    sofa::type::Vector3 p1Last = cylGrid->getPoint(nx*ny -1);
+    sofa::type::Vec3 p1Last = cylGrid->getPoint(nx*ny -1);
     EXPECT_NE(p1Last[0], 0);
     EXPECT_EQ(p1[0], p1Last[0]);
     EXPECT_EQ(p1[1], -p1Last[1]);
 
     // Check first point of last level of the cylinder
-    sofa::type::Vector3 p0Last = cylGrid->getPoint(nx*ny*(nz-1));
+    sofa::type::Vec3 p0Last = cylGrid->getPoint(nx*ny*(nz-1));
     EXPECT_EQ(p0Last[2], length);
     EXPECT_EQ(p0Last[0], p0[0]);
     EXPECT_EQ(p0Last[1], p0[1]);

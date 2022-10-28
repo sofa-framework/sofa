@@ -66,14 +66,14 @@ protected:
     void loadMesh();
 
 public:
-    Data<type::vector<sofa::type::Vector3> > _positionsI; ///< input: vertices position of whole mesh
-    Data<type::vector<sofa::type::Vector3> > _positionsO; ///< output: vertices position of the component
+    Data<type::vector<sofa::type::Vec3> > _positionsI; ///< input: vertices position of whole mesh
+    Data<type::vector<sofa::type::Vec3> > _positionsO; ///< output: vertices position of the component
     Data<type::vector<type::fixed_array <unsigned int,2> > > _edgesI; ///< input: edges of whole mesh
     Data<type::vector<type::fixed_array <unsigned int,2> > > _edgesO; ///< output: edges of the component
     Data<type::vector<type::fixed_array <unsigned int,3> > > _trianglesI; ///< input: triangles of whole mesh
     Data<type::vector<type::fixed_array <unsigned int,3> > > _trianglesO; ///< output: triangles of the component
-    Data<type::vector<sofa::type::Vector3> > _normalsI; ///< input: normals of the whole mesh
-    Data<type::vector<sofa::type::Vector3> > _normalsO; ///< output: normals of the component
+    Data<type::vector<sofa::type::Vec3> > _normalsI; ///< input: normals of the whole mesh
+    Data<type::vector<sofa::type::Vec3> > _normalsO; ///< output: normals of the component
     Data<type::vector<sofa::type::Vector2> > _uvI; ///< input: UV coordinates of the whole mesh
     Data<type::vector<sofa::type::Vector2> > _uvO; ///< output: UV coordinates of the component
     Data<type::vector<type::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles

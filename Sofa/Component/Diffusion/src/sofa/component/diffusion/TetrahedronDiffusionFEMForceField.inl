@@ -421,11 +421,11 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         }
 
         constexpr auto colorLine = sofa::type::RGBAColor::red();
-        type::vector<sofa::type::Vector3> vertices;
+        type::vector<sofa::type::Vec3> vertices;
 
         for (sofa::Index i=0; i<surfaceTri.size(); ++i)
         {
-            sofa::type::Vector3 point[3];
+            sofa::type::Vec3 point[3];
             const auto& tri = m_topology->getTriangle(surfaceTri[i]);
             for (unsigned int j=0; j<3; ++j)
                 point[j] = restPosition[tri[j]];

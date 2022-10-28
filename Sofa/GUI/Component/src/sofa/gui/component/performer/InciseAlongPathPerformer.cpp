@@ -161,11 +161,11 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     sofa::component::statecontainer::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
     const auto& positions = MechanicalObject->read(core::ConstVecCoordId::position())->getValue();
-    const sofa::type::Vector3& the_point = positions[initialNbPoints];
+    const sofa::type::Vec3& the_point = positions[initialNbPoints];
 
     // Get triangle index that will be incise
     // - Creating direction of incision
-    sofa::type::Vector3 dir = startBody.point - the_point;
+    sofa::type::Vec3 dir = startBody.point - the_point;
     // - looking for triangle in this direction
     const auto& shell = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
     auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
@@ -274,11 +274,11 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     constexpr sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     for (unsigned int i = 1; i<positions.size(); ++i)
     {
-        vertices.push_back(sofa::type::Vector3(positions[i-1][0], positions[i-1][1], positions[i-1][2]));
-        vertices.push_back(sofa::type::Vector3(positions[i][0], positions[i][1], positions[i][2]));
+        vertices.push_back(sofa::type::Vec3(positions[i-1][0], positions[i-1][1], positions[i-1][2]));
+        vertices.push_back(sofa::type::Vec3(positions[i][0], positions[i][1], positions[i][2]));
     }
     vparams->drawTool()->drawLines(vertices,1,color);
 

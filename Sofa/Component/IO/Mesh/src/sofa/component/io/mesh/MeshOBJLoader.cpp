@@ -185,7 +185,7 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
     getWriteOnlyAccessor(d_quadsGroups).clear();
 
     int vtn[3];
-    Vector3 result;
+    Vec3 result;
     helper::WriteOnlyAccessor<Data<type::vector< PrimitiveGroup> > > my_faceGroups[NBFACETYPE] =
     {
         d_edgesGroups,
@@ -213,19 +213,19 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
         {
             // vertex
             values >> result[0] >> result[1] >> result[2];
-            my_positions.push_back(Vector3(result[0],result[1], result[2]));
+            my_positions.push_back(Vec3(result[0],result[1], result[2]));
         }
         else if (token == "vn")
         {
             // normal
             values >> result[0] >> result[1] >> result[2];
-            my_normals.push_back(Vector3(result[0],result[1], result[2]));
+            my_normals.push_back(Vec3(result[0],result[1], result[2]));
         }
         else if (token == "vt")
         {
             // texcoord
             values >> result[0] >> result[1];
-            my_texCoords.push_back(Vector2(result[0],result[1]));
+            my_texCoords.push_back(Vec2(result[0],result[1]));
         }
         else if ((token == "mtllib") && d_loadMaterial.getValue())
         {
@@ -411,8 +411,8 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
                 unsigned int ni = nIndices[i];
                 unsigned int ti = tIndices[i];
                 if (pi >= vertexCount) continue;
-                if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::type::Vector2() ||
-                                                 (my_texCoords[ti]-vTexCoords[pi])*sofa::type::Vector2(-1,1) > 0))
+                if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::type::Vec2() ||
+                                                 (my_texCoords[ti]-vTexCoords[pi])*sofa::type::Vec2(-1,1) > 0))
                     vTexCoords[pi] = my_texCoords[ti];
                 if (ni < my_normals.size())
                     vNormals[pi] += my_normals[ni];
@@ -462,7 +462,7 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // Then we can create the final arrays
 
-        type::vector<sofa::type::Vector3> vertices2;
+        type::vector<sofa::type::Vec3> vertices2;
         auto vnormals = getWriteOnlyAccessor(d_normals);
         auto vtexcoords = getWriteOnlyAccessor(d_texCoords);
         auto vertPosIdx = getWriteOnlyAccessor(d_vertPosIdx);
@@ -509,7 +509,7 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
 
         // replace the original (non duplicated) vector with the new one
         my_positions.clear();
-        for(const sofa::type::Vector3& c : vertices2)
+        for(const sofa::type::Vec3& c : vertices2)
             my_positions.push_back(c);
 
         if( vsplit && nbNOut == nbVOut )

@@ -513,7 +513,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
     if (m_drawForceScale.getValue() && m_f.size()==x.size())
     {
-        std::vector< type::Vector3 > points;
+        std::vector< type::Vec3 > points;
         constexpr sofa::type::RGBAColor color(0,1,0.5,1);
 
         for (unsigned int i=0; i<x.size(); i++)

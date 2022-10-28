@@ -216,7 +216,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 
 template <class RigidTypes, class GeometricalTypes>
 template <class T>
-type::Vector6 DiagonalMass<RigidTypes, GeometricalTypes>::getMomentumRigid3Impl ( const MechanicalParams*,
+type::Vec6 DiagonalMass<RigidTypes, GeometricalTypes>::getMomentumRigid3Impl ( const MechanicalParams*,
                                                                     const DataVecCoord& vx,
                                                                     const DataVecDeriv& vv ) const
 {
@@ -225,7 +225,7 @@ type::Vector6 DiagonalMass<RigidTypes, GeometricalTypes>::getMomentumRigid3Impl 
 
     const MassVector &masses = d_vertexMass.getValue();
 
-    type::Vector6 momentum;
+    type::Vec6 momentum;
 
     for ( unsigned int i=0 ; i<v.size() ; i++ )
     {
@@ -241,7 +241,7 @@ type::Vector6 DiagonalMass<RigidTypes, GeometricalTypes>::getMomentumRigid3Impl 
 
 template <class Vec3Types, class GeometricalTypes >
 template <class T>
-type::Vector6 DiagonalMass<Vec3Types, GeometricalTypes>::getMomentumVec3Impl( const MechanicalParams*,
+type::Vec6 DiagonalMass<Vec3Types, GeometricalTypes>::getMomentumVec3Impl( const MechanicalParams*,
                                                                 const DataVecCoord& vx,
                                                                 const DataVecDeriv& vv ) const
 {
@@ -250,7 +250,7 @@ type::Vector6 DiagonalMass<Vec3Types, GeometricalTypes>::getMomentumVec3Impl( co
 
     const MassVector &masses = d_vertexMass.getValue();
 
-    Vector6 momentum;
+    Vec6 momentum;
 
     for ( unsigned int i=0 ; i<v.size() ; i++ )
     {
@@ -317,7 +317,7 @@ void DiagonalMass<Rigid2Types>::draw(const VisualParams* vparams)
 
 
 template <>
-type::Vector6 DiagonalMass<Vec3Types>::getMomentum ( const MechanicalParams* mparams,
+type::Vec6 DiagonalMass<Vec3Types>::getMomentum ( const MechanicalParams* mparams,
                                                         const DataVecCoord& vx,
                                                         const DataVecDeriv& vv ) const
 {
@@ -325,7 +325,7 @@ type::Vector6 DiagonalMass<Vec3Types>::getMomentum ( const MechanicalParams* mpa
 }
 
 template <>
-type::Vector6 DiagonalMass<Rigid3Types>::getMomentum ( const MechanicalParams* mparams,
+type::Vec6 DiagonalMass<Rigid3Types>::getMomentum ( const MechanicalParams* mparams,
                                                               const DataVecCoord& vx,
                                                               const DataVecDeriv& vv ) const
 {

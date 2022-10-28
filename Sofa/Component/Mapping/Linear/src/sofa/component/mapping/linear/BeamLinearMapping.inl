@@ -260,9 +260,10 @@ template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
+
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    std::vector< sofa::type::Vector3 > points;
-    sofa::type::Vector3 point;
+    std::vector< sofa::type::Vec3 > points;
+    sofa::type::Vec3 point;
 
     const typename Out::VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)

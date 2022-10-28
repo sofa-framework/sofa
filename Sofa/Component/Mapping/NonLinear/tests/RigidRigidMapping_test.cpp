@@ -160,7 +160,7 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         // Expected child coords
         OutVecCoord expectedChildCoords(1);
         //Center
-        type::Vector3 translationVector (tx,ty,tz);
+        type::Vec3 translationVector (tx,ty,tz);
         expectedChildCoords[0].getCenter() = rot3.rotate(xout[0].getCenter()) + translationVector;
         // Orientation
         expectedChildCoords[0].getOrientation() = xin[0].getOrientation();

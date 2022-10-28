@@ -64,7 +64,7 @@ void CubeCollisionModel::resize(Size size)
     }
 }
 
-void CubeCollisionModel::setParentOf(Index childIndex, const Vector3& min, const Vector3& max)
+void CubeCollisionModel::setParentOf(Index childIndex, const Vec3& min, const Vec3& max)
 {
     Index i = parentOf[childIndex];
     elems[i].minBBox = min;
@@ -72,7 +72,7 @@ void CubeCollisionModel::setParentOf(Index childIndex, const Vector3& min, const
     elems[i].coneAngle = 2*M_PI;
 }
 
-void CubeCollisionModel::setParentOf(Index childIndex, const Vector3& min, const Vector3& max, const Vector3& normal, const SReal angle)
+void CubeCollisionModel::setParentOf(Index childIndex, const Vec3& min, const Vec3& max, const Vec3& normal, const SReal angle)
 {
     Index i = parentOf[childIndex];
     elems[i].minBBox = min;
@@ -91,7 +91,7 @@ void CubeCollisionModel::setLeafCube(Index cubeIndex, Index childIndex)
     //elems[cubeIndex].maxBBox = max;
 }
 
-void CubeCollisionModel::setLeafCube(Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max)
+void CubeCollisionModel::setLeafCube(Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vec3& min, const Vec3& max)
 {
     elems[cubeIndex].minBBox = min;
     elems[cubeIndex].maxBBox = max;
@@ -119,8 +119,8 @@ void CubeCollisionModel::updateCube(Index index)
     if (subcells.first != subcells.second)
     {
         Cube c = subcells.first;
-        Vector3 minBBox = c.minVect();
-        Vector3 maxBBox = c.maxVect();
+        Vec3 minBBox = c.minVect();
+        Vec3 maxBBox = c.maxVect();
 
         elems[index].coneAxis = c.getConeAxis();
         elems[index].coneAngle = c.getConeAngle();
@@ -131,8 +131,8 @@ void CubeCollisionModel::updateCube(Index index)
         while(c != subcells.second)
         {
             subCellsNb++;
-            const Vector3& cmin = c.minVect();
-            const Vector3& cmax = c.maxVect();
+            const Vec3& cmin = c.minVect();
+            const Vec3& cmax = c.maxVect();
 
             SReal alpha = std::max<SReal>(elems[index].coneAngle, c.getConeAngle());
             if(alpha <= M_PI/2)
@@ -179,12 +179,12 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
 
     sofa::type::RGBAColor c(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
-    std::vector< Vector3 > points;
+    std::vector< Vec3 > points;
     points.reserve( size * 8 * 3);
     for (Index i=0; i<size; i++)
     {
-        const Vector3& vmin = elems[i].minBBox;
-        const Vector3& vmax = elems[i].maxBBox;
+        const Vec3& vmin = elems[i].minBBox;
+        const Vec3& vmax = elems[i].maxBBox;
 
         points.emplace_back(vmin[0], vmin[1], vmin[2]);
         points.emplace_back(vmin[0], vmin[1], vmax[2]);
@@ -289,7 +289,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
                     // Only split cells with more than 4 childs
                     // Find the biggest dimension
                     int splitAxis;
-                    Vector3 l = cell.maxVect()-cell.minVect();
+                    Vec3 l = cell.maxVect()-cell.minVect();
                     Index middle = subcells.first.getIndex()+(ncells+1)/2;
                     if(l[0]>l[1])
                         if (l[0]>l[2])

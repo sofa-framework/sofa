@@ -27,7 +27,6 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/helper/system/SetDirectory.h>
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -322,7 +321,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     // ---- Display a "X" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
 
-    gl::GlText::draw('X', sofa::type::Vector3(0.0_sreal, 0.0_sreal, 0.0_sreal), fontScale);
+    gl::GlText::draw('X', sofa::type::Vec3(0.0_sreal, 0.0_sreal, 0.0_sreal), fontScale);
 
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
@@ -338,7 +337,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Y" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Y', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Y', sofa::type::Vec3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -353,7 +352,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Z" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    gl::GlText::draw('Z', sofa::type::Vector3(0.0, 0.0, 0.0), fontScale);
+    gl::GlText::draw('Z', sofa::type::Vec3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -367,7 +366,7 @@ void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 {
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r == 0.0)
-        r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
+        r = (Vec3(maxBBox) - Vec3(minBBox)).norm() / 500;
 
     Enable<GL_DEPTH_TEST> depth;
     Enable<GL_LIGHTING> lighting;
@@ -383,7 +382,7 @@ void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
         glPushMatrix();
         glTranslated((corner & 1) ? minBBox[0] : maxBBox[0],
                 (corner & 2) ? minBBox[1] : maxBBox[1],
-                (corner & 4) ? minBBox[2] : maxBBox[2]);
+                                            (corner & 4) ? minBBox[2] : maxBBox[2]);
         gluSphere(_sphere, 2 * r, 20, 10);
         glPopMatrix();
     }
@@ -394,7 +393,7 @@ void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
     {
         glPushMatrix();
         glTranslated(minBBox[0], (corner & 1) ? minBBox[1] : maxBBox[1],
-                (corner & 2) ? minBBox[2] : maxBBox[2]);
+                                                             (corner & 2) ? minBBox[2] : maxBBox[2]);
         glRotatef(90, 0, 1, 0);
         gluCylinder(_tube, r, r, maxBBox[0] - minBBox[0], 10, 10);
         glPopMatrix();
@@ -427,7 +426,7 @@ void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
 void QtViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
-        double ymax, double step)
+                           double ymax, double step)
 {
     double x, y;
 
@@ -455,7 +454,7 @@ void QtViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
 void QtViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
-        double zmax, double step)
+                           double zmax, double step)
 {
     double y, z;
     Enable<GL_DEPTH_TEST> depth;
@@ -483,7 +482,7 @@ void QtViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
 void QtViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
-        double zmax, double step)
+                           double zmax, double step)
 {
     double x, z;
     Enable<GL_DEPTH_TEST> depth;
@@ -607,7 +606,7 @@ void QtViewer::DisplayOBJs()
             glMatrixMode(GL_MODELVIEW);
             glPushMatrix();
             glLoadIdentity();
-            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vec3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -702,34 +701,34 @@ void QtViewer::drawScene(void)
         if(stereo)
         {
             if (smode == sofa::component::visual::BaseCamera::STEREO_AUTO)
-        {
-            // auto-detect stereo mode
-            static int prevsmode = sofa::component::visual::BaseCamera::STEREO_AUTO;
-            if ((_W <= 1280 && _H == 1470) || (_W <= 1920 && _H == 2205))
             {
-                // standard HDMI 1.4 stereo frame packing format
-                smode = sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING;
-                if (smode != prevsmode) std::cout << "AUTO Stereo mode: Frame Packing" << std::endl;
+                // auto-detect stereo mode
+                static int prevsmode = sofa::component::visual::BaseCamera::STEREO_AUTO;
+                if ((_W <= 1280 && _H == 1470) || (_W <= 1920 && _H == 2205))
+                {
+                    // standard HDMI 1.4 stereo frame packing format
+                    smode = sofa::component::visual::BaseCamera::STEREO_FRAME_PACKING;
+                    if (smode != prevsmode) std::cout << "AUTO Stereo mode: Frame Packing" << std::endl;
+                }
+                else if (_W >= 2 * _H)
+                {
+                    smode = sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE;
+                    if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side" << std::endl;
+                }
+                else if (_H > _W)
+                {
+                    smode = sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM;
+                    if (smode != prevsmode) std::cout << "AUTO Stereo mode: Top Bottom" << std::endl;
+                }
+                else
+                {
+                    smode = sofa::component::visual::BaseCamera::STEREO_INTERLACED;
+                    if (smode != prevsmode) std::cout << "AUTO Stereo mode: Interlaced" << std::endl;
+                    //smode = STEREO_SYDE_BY_SIDE_HALF;
+                    //if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side Half" << std::endl;
+                }
+                prevsmode = smode;
             }
-            else if (_W >= 2 * _H)
-            {
-                smode = sofa::component::visual::BaseCamera::STEREO_SIDE_BY_SIDE;
-                if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side" << std::endl;
-            }
-            else if (_H > _W)
-            {
-                smode = sofa::component::visual::BaseCamera::STEREO_TOP_BOTTOM;
-                if (smode != prevsmode) std::cout << "AUTO Stereo mode: Top Bottom" << std::endl;
-            }
-            else
-            {
-                smode = sofa::component::visual::BaseCamera::STEREO_INTERLACED;
-                if (smode != prevsmode) std::cout << "AUTO Stereo mode: Interlaced" << std::endl;
-                //smode = STEREO_SYDE_BY_SIDE_HALF;
-                //if (smode != prevsmode) std::cout << "AUTO Stereo mode: Side by Side Half" << std::endl;
-            }
-            prevsmode = smode;
-        }
             switch (smode)
             {
             case sofa::component::visual::BaseCamera::STEREO_INTERLACED:
@@ -990,7 +989,7 @@ void QtViewer::paintGL()
 void QtViewer::paintEvent(QPaintEvent* qpe)
 {
     QOpenGLWidget::paintEvent(qpe );
-/*
+    /*
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::HighQualityAntialiasing, true);
@@ -1016,7 +1015,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
     const sofa::type::BoundingBox sceneBBox = vparams->sceneBBox();
     if (sceneBBox.isValid() && ! sceneBBox.isFlat())
         coeffDeplacement *= 0.001 * (sceneBBox.maxBBox()
-                - sceneBBox.minBBox()).norm();
+                                     - sceneBBox.minBBox()).norm();
     Quat<SReal> conjQuat, resQuat, _newQuatBckUp;
 
     float x1, x2, y1, y2;
@@ -1026,18 +1025,18 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
         if (_mouseInteractorRotationMode)
         {
             if ((_mouseInteractorSavedPosX != x) || (_mouseInteractorSavedPosY
-                    != y))
+                                                     != y))
             {
                 x1 = 0;
                 y1 = 0;
                 x2 = (2.0f * (x + (-_mouseInteractorSavedPosX + _W / 2.0f))
-                        - _W) / _W;
+                      - _W) / _W;
                 y2 = (_H - 2.0f
-                        * (y + (-_mouseInteractorSavedPosY + _H / 2.0f))) / _H;
+                      * (y + (-_mouseInteractorSavedPosY + _H / 2.0f))) / _H;
 
                 _mouseInteractorTrackball.ComputeQuaternion(x1, y1, x2, y2);
                 _mouseInteractorCurrentQuat
-                    = _mouseInteractorTrackball.GetQuaternion();
+                        = _mouseInteractorTrackball.GetQuaternion();
                 _mouseInteractorSavedPosX = x;
                 _mouseInteractorSavedPosY = y;
 
@@ -1054,14 +1053,14 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
         }
         else if (_mouseInteractorTranslationMode)
         {
-            _mouseInteractorAbsolutePosition = Vector3(0, 0, 0);
+            _mouseInteractorAbsolutePosition = Vec3(0, 0, 0);
 
             if (_translationMode == XY_TRANSLATION)
             {
                 _mouseInteractorAbsolutePosition[0] = coeffDeplacement * (x
-                        - _mouseInteractorSavedPosX);
+                                                                          - _mouseInteractorSavedPosX);
                 _mouseInteractorAbsolutePosition[1] = -coeffDeplacement * (y
-                        - _mouseInteractorSavedPosY);
+                                                                           - _mouseInteractorSavedPosY);
 
                 _mouseInteractorSavedPosX = x;
                 _mouseInteractorSavedPosY = y;
@@ -1069,7 +1068,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
             else if (_translationMode == Z_TRANSLATION)
             {
                 _mouseInteractorAbsolutePosition[2] = coeffDeplacement * (y
-                        - _mouseInteractorSavedPosY);
+                                                                          - _mouseInteractorSavedPosY);
 
                 _mouseInteractorSavedPosX = x;
                 _mouseInteractorSavedPosY = y;
@@ -1088,7 +1087,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 
 void QtViewer::keyPressEvent(QKeyEvent * e)
 {
-    if (isControlPressed()) // pass event to the scene data structure
+    if (!isControlPressed() && !e->isAutoRepeat())
     {
         if (groot)
         {
@@ -1096,41 +1095,30 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
             groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         }
     }
-    else
-        // control the GUI
-        switch (e->key())
-        {
 
-#ifdef TRACKING
-        case Qt::Key_X:
+    // control the GUI
+    switch (e->key())
+    {
+
+    case Qt::Key_C:
+        // --- switch interaction mode
+        if (!_mouseInteractorTranslationMode)
         {
-            tracking = !tracking;
-            break;
+            std::cout << "Interaction Mode ON\n";
+            _mouseInteractorTranslationMode = true;
+            _mouseInteractorRotationMode = false;
         }
-#endif // TRACKING
-        case Qt::Key_C:
+        else
         {
-            // --- switch interaction mode
-            if (!_mouseInteractorTranslationMode)
-            {
-                std::cout << "Interaction Mode ON\n";
-                _mouseInteractorTranslationMode = true;
-                _mouseInteractorRotationMode = false;
-            }
-            else
-            {
-                std::cout << "Interaction Mode OFF\n";
-                _mouseInteractorTranslationMode = false;
-                _mouseInteractorRotationMode = false;
-            }
-            break;
+            std::cout << "Interaction Mode OFF\n";
+            _mouseInteractorTranslationMode = false;
+            _mouseInteractorRotationMode = false;
         }
-        default:
-        {
-            SofaViewer::keyPressEvent(e);
-        }
-        update();
-        }
+        break;
+    default:
+        SofaViewer::keyPressEvent(e);
+    }
+    update();
 }
 
 void QtViewer::keyReleaseEvent(QKeyEvent * e)
@@ -1254,13 +1242,13 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
         case QEvent::MouseButtonRelease:
             // Mouse left button is released
             if ((e->button() == Qt::LeftButton) && (_translationMode
-                    == XY_TRANSLATION))
+                                                    == XY_TRANSLATION))
             {
                 _mouseInteractorMoving = false;
             }
             // Mouse right button is released
             else if ((e->button() == Qt::RightButton) && (_translationMode
-                    == Z_TRANSLATION))
+                                                          == Z_TRANSLATION))
             {
                 _mouseInteractorMoving = false;
             }
@@ -1364,8 +1352,8 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
                 _lightPosition[0] -= dx * 0.1;
                 _lightPosition[1] += dy * 0.1;
                 std::cout << "Light = " << _lightPosition[0] << " "
-                        << _lightPosition[1] << " " << _lightPosition[2]
-                        << std::endl;
+                          << _lightPosition[1] << " " << _lightPosition[2]
+                          << std::endl;
                 update();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -1502,17 +1490,17 @@ void QtViewer::newView()
     SofaViewer::newView();
 }
 
-void QtViewer::getView(Vector3& pos, Quat<SReal>& ori) const
+void QtViewer::getView(Vec3& pos, Quat<SReal>& ori) const
 {
     SofaViewer::getView(pos, ori);
 }
 
-void QtViewer::setView(const Vector3& pos, const Quat<SReal> &ori)
+void QtViewer::setView(const Vec3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::setView(pos, ori);
 }
 
-void QtViewer::moveView(const Vector3& pos, const Quat<SReal> &ori)
+void QtViewer::moveView(const Vec3& pos, const Quat<SReal> &ori)
 {
     SofaViewer::moveView(pos, ori);
 }
@@ -1559,26 +1547,26 @@ void QtViewer::setSizeH(int size)
 QString QtViewer::helpString() const
 {
     static QString
-    text(
-        "<H1>QtViewer</H1><hr>\
-<ul>\
-<li><b>Mouse</b>: TO NAVIGATE<br></li>\
-<li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
-<li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
-<li><b>C</b>: TO SWITCH INTERACTION MODE: press the KEY C.<br>\
-Allow or not the navigation with the mouse.<br></li>\
-<li><b>O</b>: TO EXPORT TO .OBJ<br>\
-The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
-<li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
-Each time the frame is updated an obj is exported<br></li>\
-<li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
-<li><b>S</b>: TO SAVE A SCREENSHOT<br>\
-The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
-<li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
-<li><b>V</b>: TO SAVE A VIDEO<br>\
-Each time the frame is updated a screenshot is saved<br></li>\
-<li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
-    return text;
+            text(
+                "<H1>QtViewer</H1><hr>\
+                <ul>\
+                <li><b>Mouse</b>: TO NAVIGATE<br></li>\
+                <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+                <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
+                <li><b>C</b>: TO SWITCH INTERACTION MODE: press the KEY C.<br>\
+                Allow or not the navigation with the mouse.<br></li>\
+                <li><b>O</b>: TO EXPORT TO .OBJ<br>\
+                The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
+                <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
+                Each time the frame is updated an obj is exported<br></li>\
+                <li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
+                <li><b>S</b>: TO SAVE A SCREENSHOT<br>\
+                The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
+                <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+                <li><b>V</b>: TO SAVE A VIDEO<br>\
+                Each time the frame is updated a screenshot is saved<br></li>\
+                <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
+                return text;
 }
 
 

@@ -193,7 +193,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             double x, y, z;
             file >> index >> x >> y >> z;
 
-            my_positions.push_back(Vector3(x, y, z));
+            my_positions.push_back(Vec3(x, y, z));
 
             if (pmap.size() <= index)
                 pmap.resize(index + 1);
@@ -420,7 +420,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 std::istringstream coordinates(cmd);
                 double x, y, z;
                 coordinates >> x >> y >> z;
-                my_positions.push_back(Vector3(x, y, z));
+                my_positions.push_back(Vec3(x, y, z));
                 nodeCount++;
             }
         }

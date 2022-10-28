@@ -59,11 +59,11 @@ public:
     Data <type::vector<sofa::type::Material> > d_materials; ///< List of materials
     Data <type::SVector <type::SVector <int> > > d_faceList; ///< List of face definitions.
     Data <type::SVector <type::SVector <int> > > d_texIndexList; ///< Indices of textures coordinates used in faces definition.
-    Data <type::vector<sofa::type::Vector3> > d_positionsList; ///< Vertex positions definition
-    Data< type::vector<sofa::type::Vector2> > d_texCoordsList; ///< Texture coordinates definition
+    Data <type::vector<sofa::type::Vec3> > d_positionsList; ///< Vertex positions definition
+    Data< type::vector<sofa::type::Vec2> > d_texCoordsList; ///< Texture coordinates definition
     Data <type::SVector<type::SVector<int> > > d_normalsIndexList; ///< List of normals of elements of the mesh loaded.
-    Data <type::vector<sofa::type::Vector3> > d_normalsList; ///< Normals definition
-    Data< type::vector<sofa::type::Vector2> > d_texCoords; ///< Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data
+    Data <type::vector<sofa::type::Vec3> > d_normalsList; ///< Normals definition
+    Data< type::vector<sofa::type::Vec2> > d_texCoords; ///< Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data
     Data< bool > d_computeMaterialFaces; ///< True to activate export of Data instances containing list of face indices for each material
     type::vector< Data <type::vector<unsigned int> >* > d_subsets_indices;
 

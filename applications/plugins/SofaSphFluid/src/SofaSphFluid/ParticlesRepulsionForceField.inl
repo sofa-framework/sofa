@@ -194,7 +194,7 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
     const Real h = distance.getValue();
 
     std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     for (unsigned int i=0; i<particles.size(); i++)
     {
@@ -212,8 +212,8 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
             {
                 colorVector.push_back({f - 1.0f, 0.0f, 2.0f - f, 1.0f - r_h});
             }
-            vertices.push_back(sofa::type::Vector3(x[i]));
-            vertices.push_back(sofa::type::Vector3(x[j]));
+            vertices.push_back(sofa::type::Vec3(x[i]));
+            vertices.push_back(sofa::type::Vec3(x[j]));
         }
     }
     vparams->drawTool()->drawLines(vertices,1,colorVector);

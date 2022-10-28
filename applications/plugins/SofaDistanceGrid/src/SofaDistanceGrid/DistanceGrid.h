@@ -49,14 +49,14 @@ namespace container
 namespace _distancegrid_
 {
 using sofa::helper::io::Mesh;
-using sofa::type::Vector3 ;
-typedef Vector3 Coord;
+using sofa::type::Vec3 ;
+typedef Vec3 Coord;
 
 class SOFA_SOFADISTANCEGRID_API DistanceGrid
 {
 public:
     static SReal maxDist() { return std::numeric_limits<SReal>::max(); }
-    typedef Vector3 Coord;
+    typedef type::Vec3 Coord;
     typedef type::vector<SReal> VecSReal;
     typedef type::vector<Coord> VecCoord;
 

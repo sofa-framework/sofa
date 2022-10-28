@@ -35,7 +35,7 @@ namespace sofa
 namespace helper
 {
 using sofa::type::Vec;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::vector;
 
 class SOFA_HELPER_API MarchingCubeUtility

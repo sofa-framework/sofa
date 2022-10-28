@@ -1224,7 +1224,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     const auto* indexedElements = this->getIndexedElements();
 
-    sofa::type::fixed_array<std::vector<sofa::type::Vector3>, 6 > quads; //one list of quads per hexahedron face
+    sofa::type::fixed_array<std::vector<sofa::type::Vec3>, 6 > quads; //one list of quads per hexahedron face
     sofa::type::fixed_array<std::vector<RGBAColor>, 6> colors; //one list of quads per hexahedron face
 
     for (auto& q : quads)

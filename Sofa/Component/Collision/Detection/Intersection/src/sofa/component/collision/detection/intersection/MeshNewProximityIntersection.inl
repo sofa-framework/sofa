@@ -29,13 +29,13 @@
 namespace sofa::component::collision::detection::intersection
 {
 
-inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q1, const type::Vector3& q2, OutputVector* contacts, int id, const type::Vector3& /*n*/, bool /*useNormal*/)
+inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& q1, const type::Vec3& q2, OutputVector* contacts, int id, const type::Vec3& /*n*/, bool /*useNormal*/)
 {  
     const auto AB = p2 - p1;
     const auto CD = q2 - q1;
     const auto AC = q1 - p1;
     type::Matrix2 A;
-    type::Vector2 b;
+    type::Vec2 b;
     A[0][0] = AB * AB;
     A[1][1] = CD * CD;
     A[0][1] = A[1][0] = -CD * AB;
@@ -55,7 +55,7 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, con
             return 0;
     }
 
-    type::Vector3 p,q;
+    type::Vec3 p,q;
     p = p1 + AB * alpha;
     q = q1 + CD * beta;
 
@@ -76,7 +76,7 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, con
     return 1;
 }
 
-inline int MeshNewProximityIntersection::doIntersectionLinePoint(SReal dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems)
+inline int MeshNewProximityIntersection::doIntersectionLinePoint(SReal dist2, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems)
 {
     const auto AB = p2 - p1;
     const auto AQ = q - p1;
@@ -118,15 +118,15 @@ inline int MeshNewProximityIntersection::doIntersectionLinePoint(SReal dist2, co
     return 1;
 }
 
-inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& /*n*/, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems)
+inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3, const type::Vec3& /*n*/, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems)
 {
     using collision::geometry::TriangleCollisionModel;
 
-    const type::Vector3 AB = p2-p1;
-    const type::Vector3 AC = p3-p1;
-    const type::Vector3 AQ = q -p1;
+    const type::Vec3 AB = p2-p1;
+    const type::Vec3 AC = p3-p1;
+    const type::Vec3 AQ = q -p1;
     type::Matrix2 A;
-    type::Vector2 b;
+    type::Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -196,7 +196,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
         }
     }
 
-    type::Vector3 p, pq;
+    type::Vec3 p, pq;
     p = p1 + AB * alpha + AC * beta;
     pq = q-p;
     SReal norm2 = pq.norm2();
@@ -222,15 +222,15 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
 
 
 
-inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& /*n*/, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems, bool /*useNormal*/)
+inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3, const type::Vec3& /*n*/, const type::Vec3& q, OutputVector* contacts, int id, bool swapElems, bool /*useNormal*/)
 {
     using collision::geometry::TriangleCollisionModel;
 
-    const type::Vector3 AB = p2-p1;
-    const type::Vector3 AC = p3-p1;
-    const type::Vector3 AQ = q -p1;
+    const type::Vec3 AB = p2-p1;
+    const type::Vec3 AC = p3-p1;
+    const type::Vec3 AQ = q -p1;
     type::Matrix2 A;
-    type::Vector2 b;
+    type::Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -302,7 +302,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
         }
     }
 
-    type::Vector3 p, pq;
+    type::Vec3 p, pq;
     p = p1 + AB * alpha + AC * beta;
     pq = q-p;
     SReal norm2 = pq.norm2();
@@ -399,11 +399,11 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::Trian
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     const SReal dist2 = alarmDist*alarmDist;
 
-    const type::Vector3 AB = e1.p2() - e1.p1();
-    const type::Vector3 AC = e1.p3() - e1.p1();
-    const type::Vector3 AQ = e2.center() - e1.p1();
+    const type::Vec3 AB = e1.p2() - e1.p1();
+    const type::Vec3 AC = e1.p3() - e1.p1();
+    const type::Vec3 AQ = e2.center() - e1.p1();
     type::Matrix2 A;
-    type::Vector2 b;
+    type::Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -473,7 +473,7 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::Trian
         }
     }
 
-    type::Vector3 p, pq;
+    type::Vec3 p, pq;
     p = e1.p1() + AB * alpha + AC * beta;
     pq = e2.center() - p;
     SReal norm2 = pq.norm2();
@@ -493,7 +493,7 @@ int MeshNewProximityIntersection::computeIntersection(collision::geometry::Trian
     else
     {
         msg_warning(intersection) <<"Null distance between contact detected";
-        detection->normal= type::Vector3(1,0,0);
+        detection->normal= type::Vec3(1,0,0);
     }
 
     detection->value -= (intersection->getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r());

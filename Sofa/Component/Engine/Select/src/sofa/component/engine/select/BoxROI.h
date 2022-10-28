@@ -63,9 +63,9 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef type::Vec<3,Real> Vec3;
-    typedef type::Vec<6,Real> Vec6;
-    typedef type::Vec<10,Real> Vec10;
+    typedef type::Vec<3,SReal> Vec3;
+    typedef type::Vec<6,SReal> Vec6;
+    typedef type::Vec<10,SReal> Vec10;
     typedef BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
@@ -194,7 +194,7 @@ extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec2T
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec6Types>;
- 
+
 #endif
 
 } // namespace sofa::component::engine::select::boxroi

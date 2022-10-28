@@ -387,7 +387,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
         ReadAccessor< Data< VVI > > clust = this->d_cluster;
         const unsigned int nbp = currentPositions.size();
 
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         std::vector<sofa::type::RGBAColor> colors;
         vparams->drawTool()->disableLighting();
         

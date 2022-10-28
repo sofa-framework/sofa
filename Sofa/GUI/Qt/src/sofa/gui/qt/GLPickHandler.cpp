@@ -100,8 +100,8 @@ void GLPickHandler::destroySelectionBuffer()
 }
 
 //WARNING: do not use this method with Ogre
-BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
-        const type::Vector3& direction)
+BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vec3& origin,
+        const type::Vec3& direction)
 {
     assert(_fboAllocated);
     BodyPicked result;
