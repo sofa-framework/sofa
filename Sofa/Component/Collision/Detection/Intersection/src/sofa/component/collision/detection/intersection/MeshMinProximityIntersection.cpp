@@ -138,9 +138,9 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     const auto& e2p1 = positions_e2[e2.i1()];
     const auto& e2p2 = positions_e2[e2.i2()];
 
-    const Vector3 AB = e1p2-e1p1;
-    const Vector3 CD = e2p2-e2p1;
-    const Vector3 AC = e2p1-e1p1;
+    const Vec3 AB = e1p2-e1p1;
+    const Vec3 CD = e2p2-e2p1;
+    const Vec3 AC = e2p1-e1p1;
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
@@ -176,7 +176,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree,ABfree,CDfree;
+        Vec3 Pfree,Qfree,ABfree,CDfree;
         ABfree = e1.p2Free()-e1.p1Free();
         CDfree = e2.p2Free()-e2.p1Free();
         Pfree = e1.p1Free() + ABfree * alpha;
@@ -225,9 +225,9 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
     const auto& e2p2 = positions_e2[e2.p2Index()];
     const auto& e2p3 = positions_e2[e2.p3Index()];
 
-    const Vector3 AB = e2p2 - e2p1;
-    const Vector3 AC = e2p3 - e2p1;
-    const Vector3 AP = e1p1 - e2p1;
+    const Vec3 AB = e2p2 - e2p1;
+    const Vec3 AC = e2p3 - e2p1;
+    const Vec3 AP = e1p1 - e2p1;
     MatNoInit<2, 2, Real> A;
     VecNoInit<2, Real> b;
 
@@ -306,7 +306,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
     if (QP.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    //Vector3 PQ = Q-P;
+    //Vec3 PQ = Q-P;
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
@@ -314,7 +314,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, O
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree,ABfree,ACfree;
+        Vec3 Pfree,Qfree,ABfree,ACfree;
         ABfree = e2.p2Free()-e2.p1Free();
         ACfree = e2.p3Free()-e2.p1Free();
         Pfree = e1.pFree();
@@ -365,8 +365,8 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, Point& e1)
     const auto& e2p1 = positions_e2[e2.i1()];
     const auto& e2p2 = positions_e2[e2.i2()];
 
-    const Vector3 AB = e2p2 - e2p1;
-    const Vector3 AP = e1p1 - e2p1;
+    const Vec3 AB = e2p2 - e2p1;
+    const Vec3 AP = e1p1 - e2p1;
 
     const Real A=AB*AB;
     const Real b=AP*AB;
@@ -395,8 +395,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
     const auto& e2p1 = positions_e2[e2.i1()];
     const auto& e2p2 = positions_e2[e2.i2()];
 
-    const Vector3 AB = e2p2 - e2p1;
-    const Vector3 AP = e1p1 - e2p1;
+    const Vec3 AB = e2p2 - e2p1;
+    const Vec3 AP = e1p1 - e2p1;
 
     const Line::Coord::value_type A = AB * AB;
     const Line::Coord::value_type b = AP * AB;
@@ -427,9 +427,9 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 ABfree = e2.p2Free()-e2.p1Free();
-        Vector3 Pfree = e1.pFree();
-        Vector3 Qfree = e2.p1Free() + ABfree * alpha;
+        Vec3 ABfree = e2.p2Free()-e2.p1Free();
+        Vec3 Pfree = e1.pFree();
+        Vec3 Qfree = e2.p1Free() + ABfree * alpha;
         detection->freePoint[0] = Qfree;
         detection->freePoint[1] = Pfree;
     }
@@ -483,7 +483,7 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree, Qfree;
+        Vec3 Pfree, Qfree;
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 

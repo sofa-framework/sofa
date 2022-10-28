@@ -321,7 +321,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
             TLine<DataTypes> l(this,i);
             if(l.isActive())
             {
-                // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vector3, Coord>
+                // note the conversion if !std::is_same_v<helper::visual::DrawTool::Vec3, Coord>
                 points.emplace_back(helper::visual::DrawTool::Vec3{l.p1()});
                 points.emplace_back(helper::visual::DrawTool::Vec3{l.p2()});
             }

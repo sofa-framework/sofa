@@ -392,9 +392,9 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 
     for (Size i=0; i<size; i++)
     {
-        const type::Vector3& pt1 = positions[(*this->m_triangles)[i][0]];
-        const type::Vector3& pt2 = positions[(*this->m_triangles)[i][1]];
-        const type::Vector3& pt3 = positions[(*this->m_triangles)[i][2]];
+        const type::Vec3& pt1 = positions[(*this->m_triangles)[i][0]];
+        const type::Vec3& pt2 = positions[(*this->m_triangles)[i][1]];
+        const type::Vec3& pt3 = positions[(*this->m_triangles)[i][2]];
 
         for (int c=0; c<3; c++)
         {
