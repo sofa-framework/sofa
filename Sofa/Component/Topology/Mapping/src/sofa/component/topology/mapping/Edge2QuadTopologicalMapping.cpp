@@ -280,6 +280,12 @@ void Edge2QuadTopologicalMapping::init()
         }
 
     }
+    else
+    {
+        // Check type Rigid3 of input mechanical object (required)
+        msg_error() << "Mechanical object associated with the input is not of type Rigid. Edge2QuadTopologicalMapping only supports Rigid3Types to Vec3Types";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 
