@@ -99,7 +99,6 @@ void Edge2QuadTopologicalMapping::init()
     }
 
     unsigned int N = d_nbPointsOnEachCircle.getValue();
-    bool modelsOk = true;
 
     // Check input/output topology
     if (!this->checkTopologyInputTypes()) // method will display error message if false
