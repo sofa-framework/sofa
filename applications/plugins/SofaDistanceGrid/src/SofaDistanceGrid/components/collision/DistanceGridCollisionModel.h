@@ -151,19 +151,19 @@ public:
 
     void init() override;
 
-    DistanceGrid* getGrid(Index index=0)
+    DistanceGrid* getGrid(sofa::Index index=0)
     {
         return elems[index].grid;
     }
-    bool isTransformed(Index index=0) const
+    bool isTransformed(sofa::Index index=0) const
     {
         return elems[index].isTransformed;
     }
-    const type::Matrix3& getRotation(Index index=0) const
+    const type::Matrix3& getRotation(sofa::Index index=0) const
     {
         return elems[index].rotation;
     }
-    const type::Vec3& getTranslation(Index index=0) const
+    const type::Vec3& getTranslation(sofa::Index index=0) const
     {
         return elems[index].translation;
     }
@@ -191,27 +191,27 @@ public:
         return flipNormals.getValue();
     }
 
-    void setGrid(DistanceGrid* surf, Index index=0);
+    void setGrid(DistanceGrid* surf, sofa::Index index=0);
 
-    DistanceGrid* getPrevGrid(Index index=0)
+    DistanceGrid* getPrevGrid(sofa::Index index=0)
     {
         return elems[index].prevGrid;
     }
-    const type::Matrix3& getPrevRotation(Index index=0) const
+    const type::Matrix3& getPrevRotation(sofa::Index index=0) const
     {
         return elems[index].prevRotation;
     }
-    const type::Vec3& getPrevTranslation(Index index=0) const
+    const type::Vec3& getPrevTranslation(sofa::Index index=0) const
     {
         return elems[index].prevTranslation;
     }
-    double getPrevDt(Index index=0) const
+    double getPrevDt(sofa::Index index=0) const
     {
         return elems[index].prevDt;
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(Index index, double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation);
+    void setNewState(sofa::Index index, double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation);
 
     /// @}
 
@@ -223,12 +223,12 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };
@@ -296,7 +296,7 @@ public:
         struct Point
         {
             GCoord bary; ///< Barycentric coordinates
-            Index index; ///< Index of corresponding point in DistanceGrid
+            sofa::Index index; ///< Index of corresponding point in DistanceGrid
         };
         type::vector<Point> points; ///< barycentric coordinates of included points
         type::vector<GCoord> normals; ///< normals in barycentric coordinates of included points
@@ -470,27 +470,27 @@ public:
 
     void init() override;
 
-    DistanceGrid* getGrid(Index index=0)
+    DistanceGrid* getGrid(sofa::Index index=0)
     {
         return elems[index].grid;
     }
 
-    DeformedCube& getDeformCube(Index index=0)
+    DeformedCube& getDeformCube(sofa::Index index=0)
     {
         return elems[index];
     }
 
-    void setGrid(DistanceGrid* surf, Index index=0);
+    void setGrid(DistanceGrid* surf, sofa::Index index=0);
 
     /// CollisionModel interface
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
+    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };

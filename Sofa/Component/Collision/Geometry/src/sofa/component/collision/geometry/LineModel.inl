@@ -47,7 +47,7 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
 
 
 template<class DataTypes>
-void LineCollisionModel<DataTypes>::resize(Size size)
+void LineCollisionModel<DataTypes>::resize(sofa::Size size)
 {
     this->core::CollisionModel::resize(size);
     elems.resize(size);
@@ -100,7 +100,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
     {
         resize(bmt->getNbEdges());
 
-        for(Size i = 0; i < bmt->getNbEdges(); i++)
+        for(sofa::Size i = 0; i < bmt->getNbEdges(); i++)
         {
             elems[i].p[0] = bmt->getEdge(i)[0];
             elems[i].p[1] = bmt->getEdge(i)[1];
@@ -130,9 +130,9 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
             {
                 const core::topology::EdgesAdded *ta = static_cast< const core::topology::EdgesAdded * >( *itBegin );
 
-                const Size elemsSize = Size(elems.size());
+                const sofa::Size elemsSize = sofa::Size(elems.size());
 
-                for (Size i = 0; i < ta->getNbAddedEdges(); ++i)
+                for (sofa::Size i = 0; i < ta->getNbAddedEdges(); ++i)
                 {
                     elems[elemsSize - ta->getNbAddedEdges() + i].p[0] = (ta->edgeArray[i])[0];
                     elems[elemsSize - ta->getNbAddedEdges() + i].p[1] = (ta->edgeArray[i])[1];
@@ -146,8 +146,8 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
 
             case core::topology::EDGESREMOVED :
             {
-                Index last;
-                Index ind_last;
+                sofa::Index last;
+                sofa::Index ind_last;
 
                 if (bmt)
                 {
@@ -155,21 +155,21 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                 }
                 else
                 {
-                    last = Size(elems.size()) -1;
+                    last = sofa::Size(elems.size()) -1;
                 }
 
                 const auto &tab = ( static_cast< const core::topology::EdgesRemoved *>( *itBegin ) )->getArray();
 
                 LineData tmp;
-                for (Size i = 0; i < tab.size(); ++i)
+                for (sofa::Size i = 0; i < tab.size(); ++i)
                 {
-                    Index ind_k = tab[i];
+                    sofa::Index ind_k = tab[i];
 
                     tmp = elems[ind_k];
                     elems[ind_k] = elems[last];
                     elems[last] = tmp;
 
-                    ind_last = Size(elems.size()) - 1;
+                    ind_last = sofa::Size(elems.size()) - 1;
 
                     if(last != ind_last)
                     {
@@ -177,7 +177,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                         elems[last] = elems[ind_last];
                         elems[ind_last] = tmp;
                     }
-                    resize(Size(elems.size()) - 1 );
+                    resize(sofa::Size(elems.size()) - 1 );
 
                     --last;
                 }
@@ -190,20 +190,20 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
             {
                 if (bmt)
                 {
-                    Index last = bmt->getNbPoints() - 1;
+                    sofa::Index last = bmt->getNbPoints() - 1;
 
-                    Index i,j;
+                    sofa::Index i,j;
                     const auto& tab = ( static_cast< const core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-                    sofa::type::vector<Index> lastIndexVec;
-                    for(Index i_init = 0; i_init < tab.size(); ++i_init)
+                    sofa::type::vector<sofa::Index> lastIndexVec;
+                    for(sofa::Index i_init = 0; i_init < tab.size(); ++i_init)
                     {
                         lastIndexVec.push_back(last - i_init);
                     }
 
                     for ( i = 0; i < tab.size(); ++i)
                     {
-                        Index i_next = i;
+                        sofa::Index i_next = i;
                         bool is_reached = false;
                         while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
                         {
@@ -220,7 +220,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
 
                         for (j = 0; j < shell.size(); ++j)
                         {
-                            Index ind_j = shell[j];
+                            sofa::Index ind_j = shell[j];
 
                             if (elems[ind_j].p[0] == last)
                             {
@@ -245,7 +245,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
             {
                 if (bmt)
                 {
-                    Index i;
+                    sofa::Index i;
 
                     const auto& tab = ( static_cast< const core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
@@ -281,13 +281,13 @@ void LineCollisionModel<DataTypes>::updateFromTopology()
 
         needsUpdate = true;
 
-        const Size nbPoints = mstate->getSize();
-        const Size nbLines = bmt->getNbEdges();
+        const sofa::Size nbPoints = mstate->getSize();
+        const sofa::Size nbLines = bmt->getNbEdges();
 
         resize( nbLines );
-        Index index = 0;
+        sofa::Index index = 0;
 
-        for (Size i = 0; i < nbLines; i++)
+        for (sofa::Size i = 0; i < nbLines; i++)
         {
             core::topology::BaseMeshTopology::Line idx = bmt->getEdge(i);
 
@@ -316,7 +316,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
 
         std::vector<helper::visual::DrawTool::Vec3> points;
         points.reserve(size * 2);
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             TLine<DataTypes> l(this,i);
             if(l.isActive())
@@ -333,7 +333,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
         if (m_displayFreePosition.getValue())
         {
             std::vector< type::Vec3 > pointsFree;
-            for (Size i=0; i<size; i++)
+            for (sofa::Size i=0; i<size; i++)
             {
                 TLine<DataTypes> l(this,i);
                 if(l.isActive())
@@ -354,7 +354,7 @@ void LineCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpara
 }
 
 template<class DataTypes>
-bool LineCollisionModel<DataTypes>::canCollideWithElement(Index index, CollisionModel* model2, Index index2)
+bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
 {
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
@@ -362,8 +362,8 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(Index index, Collision
     /*
         TODO : separate 2 case: the model is only composed of lines or is composed of triangles
     */
-    Index p11 = elems[index].p[0];
-    Index p12 = elems[index].p[1];
+    sofa::Index p11 = elems[index].p[0];
+    sofa::Index p12 = elems[index].p[1];
 
 
     if (!topology)
@@ -377,8 +377,8 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(Index index, Collision
     if (model2 == this)
     {
         // if point in common, return false:
-        Index p21 = elems[index2].p[0];
-        Index p22 = elems[index2].p[1];
+        sofa::Index p21 = elems[index2].p[0];
+        sofa::Index p22 = elems[index2].p[1];
 
         if (p11==p21 || p11==p22 || p12==p21 || p12==p22)
             return false;
@@ -388,10 +388,10 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(Index index, Collision
         const auto& EdgesAroundVertex21 =topology->getEdgesAroundVertex(p21);
         const auto& EdgesAroundVertex22 =topology->getEdgesAroundVertex(p22);
 
-        for (Size i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        for (sofa::Size i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
-            Index e11 = EdgesAroundVertex11[i1];
-            Size i2;
+            sofa::Index e11 = EdgesAroundVertex11[i1];
+            sofa::Size i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {
                 if (e11==EdgesAroundVertex21[i2])
@@ -404,10 +404,10 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(Index index, Collision
             }
         }
 
-        for (Size i1=0; i1<EdgesAroundVertex12.size(); i1++)
+        for (sofa::Size i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
-            Index e11 = EdgesAroundVertex12[i1];
-            Size i2;
+            sofa::Index e11 = EdgesAroundVertex12[i1];
+            sofa::Size i2;
             for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
             {
                 if (e11==EdgesAroundVertex21[i2])
@@ -432,17 +432,17 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(Index index, Collision
             return false;
 
         // if the point belong to the a segment in the neighborhood, return false
-        for (Size i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        for (sofa::Size i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
-            Index e11 = EdgesAroundVertex11[i1];
+            sofa::Index e11 = EdgesAroundVertex11[i1];
             p11 = elems[e11].p[0];
             p12 = elems[e11].p[1];
             if (index2==p11 || index2==p12)
                 return false;
         }
-        for (Size i1=0; i1<EdgesAroundVertex12.size(); i1++)
+        for (sofa::Size i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
-            Index e12 = EdgesAroundVertex12[i1];
+            sofa::Index e12 = EdgesAroundVertex12[i1];
             p11 = elems[e12].p[0];
             p12 = elems[e12].p[1];
             if (index2==p11 || index2==p12)
@@ -472,7 +472,7 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     {
         const SReal distance = this->proximity.getValue();
         const auto& positions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             type::Vec3 minElem, maxElem;
             const type::Vec3& pt1 = positions[this->elems[i].p[0]];
@@ -509,7 +509,7 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
     if (!empty())
     {
         const SReal distance = (SReal)this->proximity.getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             TLine<DataTypes> t(this,i);
             const type::Vec3& pt1 = t.p1();
@@ -538,7 +538,7 @@ void LineCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int 
 }
 
 template<class DataTypes>
-int LineCollisionModel<DataTypes>::getLineFlags(Index i)
+int LineCollisionModel<DataTypes>::getLineFlags(sofa::Index i)
 {
     int f = 0;
     if (topology)
@@ -547,7 +547,7 @@ int LineCollisionModel<DataTypes>::getLineFlags(Index i)
         i = getElemEdgeIndex(i);
         if (i < topology->getNbEdges())
         {
-            for (Index j=0; j<2; ++j)
+            for (sofa::Index j=0; j<2; ++j)
             {
                 const auto& eav = topology->getEdgesAroundVertex(e[j]);
                 if (eav[0] == (sofa::core::topology::BaseMeshTopology::EdgeID)i)
@@ -567,14 +567,14 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 
     if( !onlyVisible ) return;
 
-    static constexpr Real max_real = std::numeric_limits<Real>::max();
-    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    static constexpr M_Real max_real = std::numeric_limits<M_Real>::max();
+    static constexpr M_Real min_real = std::numeric_limits<M_Real>::lowest();
+    M_Real maxBBox[3] = {min_real,min_real,min_real};
+    M_Real minBBox[3] = {max_real,max_real,max_real};
 
     const auto& positions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    for (Size i=0; i<size; i++)
+    for (sofa::Size i=0; i<size; i++)
     {
         Element e(this,i);
         const Coord& pt1 = positions[this->elems[i].p[0]];
@@ -582,15 +582,15 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 
         for (int c=0; c<3; c++)
         {
-            if (pt1[c] > maxBBox[c]) maxBBox[c] = (Real)pt1[c];
-            else if (pt1[c] < minBBox[c]) minBBox[c] = (Real)pt1[c];
+            if (pt1[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt1[c];
+            else if (pt1[c] < minBBox[c]) minBBox[c] = (M_Real)pt1[c];
 
-            if (pt2[c] > maxBBox[c]) maxBBox[c] = (Real)pt2[c];
-            else if (pt2[c] < minBBox[c]) minBBox[c] = (Real)pt2[c];
+            if (pt2[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt2[c];
+            else if (pt2[c] < minBBox[c]) minBBox[c] = (M_Real)pt2[c];
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<M_Real>(minBBox,maxBBox));
 }
 
 template<class DataTypes>
@@ -638,7 +638,7 @@ template<class DataTypes>
 inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
 
 template<class DataTypes>
-inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(Index index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
+inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((M_Real)(2.0)); }
 
 template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }

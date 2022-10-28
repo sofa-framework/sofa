@@ -50,7 +50,7 @@ TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::resize(Size size)
+void TriangleCollisionModel<DataTypes>::resize(sofa::Size size)
 {
     this->core::CollisionModel::resize(size);
     m_normals.resize(size);
@@ -113,7 +113,7 @@ void TriangleCollisionModel<DataTypes>::init()
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::updateNormals()
 {
-    for (Size i=0; i<size; i++)
+    for (sofa::Size i=0; i<size; i++)
     {
         Element t(this,i);
         const type::Vec3& pt1 = t.p1();
@@ -134,8 +134,8 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
 
     m_topologyRevision = revision;
 
-    const Size nquads = m_topology->getNbQuads();
-    const Size ntris = m_topology->getNbTriangles();
+    const sofa::Size nquads = m_topology->getNbQuads();
+    const sofa::Size ntris = m_topology->getNbTriangles();
 
     if (nquads == 0) // only triangles
     {
@@ -144,15 +144,15 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
     }
     else
     {
-        const Size newsize = ntris+2*nquads;
-        const Size npoints = m_mstate->getSize();
+        const sofa::Size newsize = ntris+2*nquads;
+        const sofa::Size npoints = m_mstate->getSize();
 
         m_triangles = &m_internalTriangles;
         m_internalTriangles.resize(newsize);
         resize(newsize);
 
-        Index index = 0;
-        for (Index i=0; i<ntris; i++)
+        sofa::Index index = 0;
+        for (sofa::Index i=0; i<ntris; i++)
         {
             core::topology::BaseMeshTopology::Triangle idx = m_topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
@@ -165,7 +165,7 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
             m_internalTriangles[index] = idx;
             ++index;
         }
-        for (Index i=0; i<nquads; i++)
+        for (sofa::Index i=0; i<nquads; i++)
         {
             core::topology::BaseMeshTopology::Quad idx = m_topology->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
@@ -194,7 +194,7 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
 
 
 template<class DataTypes>
-bool TriangleCollisionModel<DataTypes>::canCollideWithElement(Index index, CollisionModel* model2, Index index2)
+bool TriangleCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2)
 {
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
@@ -240,7 +240,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const SReal distance = (SReal)this->proximity.getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
 
@@ -294,7 +294,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, 
     if (!empty())
     {
         const SReal distance = (SReal)this->proximity.getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
             const type::Vec3& pt1 = t.p1();
@@ -338,7 +338,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, 
 }
 
 template<class DataTypes>
-int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
+int TriangleCollisionModel<DataTypes>::getTriangleFlags(M_Topology::TriangleID i)
 {
     int f = 0;
     sofa::core::topology::BaseMeshTopology::Triangle t = (*m_triangles)[i];
@@ -383,14 +383,14 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    static constexpr Real max_real = std::numeric_limits<Real>::max();
-    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    static constexpr M_Real max_real = std::numeric_limits<M_Real>::max();
+    static constexpr M_Real min_real = std::numeric_limits<M_Real>::lowest();
+    M_Real maxBBox[3] = {min_real,min_real,min_real};
+    M_Real minBBox[3] = {max_real,max_real,max_real};
 
     const auto& positions = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    for (Size i=0; i<size; i++)
+    for (sofa::Size i=0; i<size; i++)
     {
         const type::Vec3& pt1 = positions[(*this->m_triangles)[i][0]];
         const type::Vec3& pt2 = positions[(*this->m_triangles)[i][1]];
@@ -398,23 +398,23 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 
         for (int c=0; c<3; c++)
         {
-            if (pt1[c] > maxBBox[c]) maxBBox[c] = (Real)pt1[c];
-            else if (pt1[c] < minBBox[c]) minBBox[c] = (Real)pt1[c];
+            if (pt1[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt1[c];
+            else if (pt1[c] < minBBox[c]) minBBox[c] = (M_Real)pt1[c];
 
-            if (pt2[c] > maxBBox[c]) maxBBox[c] = (Real)pt2[c];
-            else if (pt2[c] < minBBox[c]) minBBox[c] = (Real)pt2[c];
+            if (pt2[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt2[c];
+            else if (pt2[c] < minBBox[c]) minBBox[c] = (M_Real)pt2[c];
 
-            if (pt3[c] > maxBBox[c]) maxBBox[c] = (Real)pt3[c];
-            else if (pt3[c] < minBBox[c]) minBBox[c] = (Real)pt3[c];
+            if (pt3[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt3[c];
+            else if (pt3[c] < minBBox[c]) minBBox[c] = (M_Real)pt3[c];
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<M_Real>(minBBox,maxBBox));
 }
 
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams , Index index)
+void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams , sofa::Index index)
 {
     Element t(this,index);
 
@@ -446,7 +446,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
         std::vector< type::Vec<3,int> > indices;
         std::vector< type::Vec3 > normals;
         int index=0;
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
             normals.push_back(t.n());
@@ -467,7 +467,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
         if (vparams->displayFlags().getShowNormals())
         {
             std::vector< type::Vec3 > points;
-            for (Size i=0; i<size; i++)
+            for (sofa::Size i=0; i<size; i++)
             {
                 Element t(this,i);
                 points.push_back((t.p1()+t.p2()+t.p3())/3.0);
@@ -532,8 +532,8 @@ template<class DataTypes>
 inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->m_mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 template<class DataTypes>
-inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(Index index) const { return (m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][0]] + m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][1]] +
-                                                                                                m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
+inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][0]] + m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][1]] +
+                                                                                                m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((M_Real)(3.0)); }
 
 
 } //namespace sofa::component::collision::geometry
