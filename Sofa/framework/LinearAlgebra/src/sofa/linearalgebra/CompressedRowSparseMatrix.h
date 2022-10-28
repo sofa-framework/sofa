@@ -45,7 +45,7 @@ public:
     enum { NC = traits::NC };  ///< Number of columns of a block
 
     typedef Matrix Expr;
-    typedef CompressedRowSparseMatrix<double> matrix_type;
+    typedef CompressedRowSparseMatrix<Real> matrix_type;
     enum { category = MATRIX_SPARSE };
     enum { operand = 1 };
 

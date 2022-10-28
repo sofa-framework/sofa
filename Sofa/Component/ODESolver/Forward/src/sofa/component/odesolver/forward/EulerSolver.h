@@ -85,12 +85,12 @@ public:
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
-    double getSolutionIntegrationFactor(int outputDerivative) const override ;
+    SReal getSolutionIntegrationFactor(int outputDerivative) const override ;
 
     void init() override ;
 
