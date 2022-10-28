@@ -373,7 +373,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                 if (topoMap)
                 {
                     // Mapping found: 1- get surface element ID in volumique topology, 2- get volume element ID behind surface element, 3- switching all variables to volumique case
-                    unsigned int volTmp = (topoMap->getLoc2GlobVec()).getValue()[selectedElem[0]];
+                    unsigned int volTmp = topoMap->Loc2GlobDataVec.getValue()[selectedElem[0]];
                     topo_curr = topoMap->getFrom();
                     selectedElem[0] = topo_curr->getTetrahedraAroundTriangle(volTmp)[0];
                     surfaceOnVolume = true;
