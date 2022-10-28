@@ -34,26 +34,26 @@ using type::vector;
 /// this object is using the delegating constructor feature of c++ x11.
 /// The following constructor is "chained" by the other constructors to
 /// defined only one the member initialization.
-RegularGridTopology::RegularGridTopology(const Vec3i& dimXYZ)
+RegularGridTopology::RegularGridTopology(const type::Vec3i& dimXYZ)
     : GridTopology(dimXYZ)
-    , d_min(initData(&d_min,Vector3(0_sreal, 0_sreal, 0_sreal),"min", "Min end of the diagonal"))
-    , d_max(initData(&d_max,Vector3(1_sreal, 1_sreal, 1_sreal),"max", "Max end of the diagonal"))
-    , d_p0(initData(&d_p0,Vector3(0_sreal, 0_sreal, 0_sreal),"p0", "Offset all the grid points"))
+    , d_min(initData(&d_min,type::Vec3(0_sreal, 0_sreal, 0_sreal),"min", "Min end of the diagonal"))
+    , d_max(initData(&d_max,type::Vec3(1_sreal, 1_sreal, 1_sreal),"max", "Max end of the diagonal"))
+    , d_p0(initData(&d_p0,type::Vec3(0_sreal, 0_sreal, 0_sreal),"p0", "Offset all the grid points"))
     , d_cellWidth(initData(&d_cellWidth, 0_sreal, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
 {
 }
 
 RegularGridTopology::RegularGridTopology()
-    : RegularGridTopology(Vec3i(2,2,2))
+    : RegularGridTopology(type::Vec3i(2,2,2))
 {
 }
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
-    : RegularGridTopology(Vec3i(nx,ny,nz))
+    : RegularGridTopology(type::Vec3i(nx,ny,nz))
 {
 }
 
-RegularGridTopology::RegularGridTopology(const Vec3i& n, BoundingBox b)
+RegularGridTopology::RegularGridTopology(const type::Vec3i& n, type::BoundingBox b)
     : RegularGridTopology(n)
 {
     setPos(b);
@@ -82,8 +82,8 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         float xmax = arg->getAttributeAsFloat("xmax",1);
         float ymax = arg->getAttributeAsFloat("ymax",1);
         float zmax = arg->getAttributeAsFloat("zmax",1);
-        d_min.setValue(Vector3((SReal)xmin*scale, (SReal)ymin*scale, (SReal)zmin*scale));
-        d_max.setValue(Vector3((SReal)xmax*scale, (SReal)ymax*scale, (SReal)zmax*scale));
+        d_min.setValue(type::Vec3((SReal)xmin*scale, (SReal)ymin*scale, (SReal)zmin*scale));
+        d_max.setValue(type::Vec3((SReal)xmax*scale, (SReal)ymax*scale, (SReal)zmax*scale));
     }
     this->setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
 
@@ -95,7 +95,7 @@ void RegularGridTopology::init()
     {
         SReal w = d_cellWidth.getValue();
 
-        Vec3i grid;
+        type::Vec3i grid;
         grid[0]= (int)ceil((d_max.getValue()[0]-d_min.getValue()[0]) / w)+1;
         grid[1]= (int)ceil((d_max.getValue()[1]-d_min.getValue()[1]) / w)+1;
         grid[2]= (int)ceil((d_max.getValue()[2]-d_min.getValue()[2]) / w)+1;
@@ -118,47 +118,47 @@ void RegularGridTopology::changeGridResolutionPostProcess()
     setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
 }
 
-void RegularGridTopology::setPos(BoundingBox b)
+void RegularGridTopology::setPos(type::BoundingBox b)
 {
-    Vector3 m=b.minBBox(), M=b.maxBBox();
+    type::Vec3 m=b.minBBox(), M=b.maxBBox();
     setPos(m[0],M[0],m[1],M[1],m[2],M[2]);
 }
 
 void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)
 {
     SReal p0x=xmin, p0y=ymin, p0z=zmin;
-    const Vec3i _n = d_n.getValue() - Vec3i(1,1,1);
+    const type::Vec3i _n = d_n.getValue() - type::Vec3i(1,1,1);
 
     if (_n[0] > 0)
-        setDx(Vector3((xmax - xmin) / _n[0], 0_sreal, 0_sreal));
+        setDx(type::Vec3((xmax - xmin) / _n[0], 0_sreal, 0_sreal));
     else
     {
-        setDx(Vector3(xmax-xmin, 0_sreal, 0_sreal));
+        setDx(type::Vec3(xmax-xmin, 0_sreal, 0_sreal));
         p0x = (xmax+xmin)/2;
     }
 
     if (_n[1] > 0)
-        setDy(Vector3(0_sreal, (ymax - ymin) / _n[1], 0_sreal));
+        setDy(type::Vec3(0_sreal, (ymax - ymin) / _n[1], 0_sreal));
     else
     {
-        setDy(Vector3(0_sreal, ymax-ymin, 0_sreal));
+        setDy(type::Vec3(0_sreal, ymax-ymin, 0_sreal));
         p0y = (ymax+ymin)/2;
     }
 
     if (_n[2] > 0)
-        setDz(Vector3(0_sreal, 0_sreal, (zmax - zmin) / _n[2]));
+        setDz(type::Vec3(0_sreal, 0_sreal, (zmax - zmin) / _n[2]));
     else
     {
-        setDz(Vector3(0_sreal, 0_sreal, zmax-zmin));
+        setDz(type::Vec3(0_sreal, 0_sreal, zmax-zmin));
         //p0z = (zmax+zmin)/2;
         p0z = zmin;
     }
 
-    d_min.setValue(Vector3(xmin,ymin,zmin));
-    d_max.setValue(Vector3(xmax,ymax,zmax));
+    d_min.setValue(type::Vec3(xmin,ymin,zmin));
+    d_max.setValue(type::Vec3(xmax,ymax,zmax));
     if (!d_p0.isSet())
     {
-        setP0(Vector3(p0x,p0y,p0z));
+        setP0(type::Vec3(p0x,p0y,p0z));
     }
 }
 
@@ -167,14 +167,14 @@ sofa::type::Vec3 RegularGridTopology::getPointInGrid(int i, int j, int k) const
     return d_p0.getValue()+dx*i+dy*j+dz*k;
 }
 
-RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& position) const
+RegularGridTopology::Index RegularGridTopology::findPoint(const type::Vec3& position) const
 {
-    const Vector3 p0 = d_p0.getValue();
-    const Vec3i   n  = d_n.getValue();
-    const Vector3 d (dx[0], dy[1], dz[2]);
+    const type::Vec3 p0 = d_p0.getValue();
+    const type::Vec3i   n  = d_n.getValue();
+    const type::Vec3 d (dx[0], dy[1], dz[2]);
 
     // Get the position relative to the corner of the grid
-    const Vector3 p = position-p0;
+    const type::Vec3 p = position-p0;
 
     // Get the index of the closest node by rounding the number of cells in the x, y and z direction
     // from the corner of the grid to the queried point
@@ -193,14 +193,14 @@ RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& positio
     return getIndex(ix, iy, iz);
 }
 
-RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& position, const SReal epsilon) const
+RegularGridTopology::Index RegularGridTopology::findPoint(const type::Vec3& position, const SReal epsilon) const
 {
-    const Vector3 p0 = d_p0.getValue();
-    const Vec3i   n  = d_n.getValue();
-    const Vector3 d (dx[0], dy[1], dz[2]);
+    const type::Vec3 p0 = d_p0.getValue();
+    const type::Vec3i   n  = d_n.getValue();
+    const type::Vec3 d (dx[0], dy[1], dz[2]);
 
     // Get the position relative to the corner of the grid
-    const Vector3 p = position-p0;
+    const type::Vec3 p = position-p0;
 
     // Get the index of the closest node by rounding the number of cells in the x, y and z direction
     // from the corner of the grid to the queried point
@@ -219,7 +219,7 @@ RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& positio
     const auto node_index = getIndex(ix, iy, iz);
 
     // Make sure the node lies inside a sphere of radius (d * epsilon) centered on the queried position
-    const auto node_position = Vector3(ix*d[0], iy*d[1], iz*d[2]);
+    const auto node_position = type::Vec3(ix*d[0], iy*d[1], iz*d[2]);
     const auto m = epsilon*d[0]; // allowed margin
     const auto e = p-node_position; // vector between the node and the queried position
 
@@ -230,12 +230,12 @@ RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& positio
 }
 
 /// return the cube containing the given point (or -1 if not found).
-RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos)
+RegularGridTopology::Index RegularGridTopology::findCube(const type::Vec3& pos)
 {
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2)
         return InvalidID;
-    Vector3 p = pos-d_p0.getValue();
+    type::Vec3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
@@ -255,11 +255,11 @@ RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos)
 }
 
 /// return the nearest cube (or -1 if not found).
-RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& pos)
+RegularGridTopology::Index RegularGridTopology::findNearestCube(const type::Vec3& pos)
 {
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
-    Vector3 p = pos-d_p0.getValue();
+    type::Vec3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
@@ -274,11 +274,11 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& p
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+RegularGridTopology::Index RegularGridTopology::findCube(const type::Vec3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
-    Vector3 p = pos-d_p0.getValue();
+    type::Vec3 p = pos-d_p0.getValue();
 
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
@@ -303,11 +303,11 @@ RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos, SRe
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+RegularGridTopology::Index RegularGridTopology::findNearestCube(const type::Vec3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
     const auto n = d_n.getValue();
     if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
-    Vector3 p = pos-d_p0.getValue();
+    type::Vec3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
@@ -333,7 +333,7 @@ RegularGridTopology::Index RegularGridTopology::getCubeIndex( int i, int j, int 
 sofa::type::Vec3 RegularGridTopology::getCubeCoordinate(RegularGridTopology::Index i) const
 {
     const auto n = d_n.getValue();
-    Vector3 result;
+    type::Vec3 result;
     result[0] = (SReal)(i%(n[0]-1)); i/=(n[0]-1);
     result[1] = (SReal)(i%(n[1]-1)); i/=(n[1]-1);
     result[2] = (SReal)i;
@@ -343,7 +343,7 @@ sofa::type::Vec3 RegularGridTopology::getCubeCoordinate(RegularGridTopology::Ind
 void RegularGridTopology::createTexCoords()
 {
     std::size_t nPts = this->getNbPoints();
-    const Vec3i& _n = d_n.getValue();
+    const type::Vec3i& _n = d_n.getValue();
 
     if ( (_n[0] == 1 && _n[1] == 1) || (_n[0] == 1 && _n[2] == 1) || (_n[1] == 1 && _n[2] == 1))
     {
@@ -355,14 +355,14 @@ void RegularGridTopology::createTexCoords()
     _texCoords.resize(nPts);
 
     // check if flat grid
-    Vec3ui axes;
+    type::Vec3u axes;
 
     if (_n[0] == 1)
-        axes = Vec3ui(1u, 2u, 0u);
+        axes = type::Vec3u(1u, 2u, 0u);
     else if (_n[1] == 1)
-        axes = Vec3ui(0u, 2u, 1u);
+        axes = type::Vec3u(0u, 2u, 1u);
     else
-        axes = Vec3ui(0u, 1u, 2u);
+        axes = type::Vec3u(0u, 1u, 2u);
 
     SReal Uscale = 1/(SReal)(_n[ axes[0] ]-1);
     SReal Vscale = 1/(SReal)(_n[ axes[1] ]-1);
