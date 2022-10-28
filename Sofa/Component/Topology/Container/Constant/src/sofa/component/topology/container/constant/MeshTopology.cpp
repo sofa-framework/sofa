@@ -2663,7 +2663,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     // Draw Edges
     if(_drawEdges.getValue())
     {
-        std::vector<type::Vector3> pos;
+        std::vector<type::Vec3> pos;
         pos.reserve(this->getNbEdges()*2u);
         for (EdgeID i=0; i<getNbEdges(); i++)
         {
@@ -2677,7 +2677,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     //Draw Triangles
     if(_drawTriangles.getValue())
     {
-        std::vector<type::Vector3> pos;
+        std::vector<type::Vec3> pos;
         pos.reserve(this->getNbTriangles()*3u);
         for (TriangleID i=0; i<getNbTriangles(); i++)
         {
@@ -2692,7 +2692,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     //Draw Quads
     if(_drawQuads.getValue())
     {
-        std::vector<type::Vector3> pos;
+        std::vector<type::Vec3> pos;
         pos.reserve(this->getNbQuads()*4u);
         for (QuadID i=0; i<getNbQuads(); i++)
         {
@@ -2708,8 +2708,8 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     //Draw Hexahedron
     if (_drawHexa.getValue())
     {
-        std::vector<type::Vector3> pos1;
-        std::vector<type::Vector3> pos2;
+        std::vector<type::Vec3> pos1;
+        std::vector<type::Vec3> pos2;
         pos1.reserve(this->getNbHexahedra()*8u);
         pos2.reserve(this->getNbHexahedra()*8u);
         for (HexahedronID i=0; i<getNbHexahedra(); i++)
@@ -2740,7 +2740,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     // Draw Tetra
     if(_drawTetra.getValue())
     {
-        std::vector<type::Vector3> pos;
+        std::vector<type::Vec3> pos;
         pos.reserve(this->getNbTetrahedra()*12u);
         for (TetrahedronID i=0; i<getNbTetras(); i++)
         {

@@ -152,7 +152,7 @@ public:
 
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
-        type::Vector3 vCenter = c1.getCenter() - c2.getCenter();
+        type::Vec3 vCenter = c1.getCenter() - c2.getCenter();
         type::Quat<SReal> quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
         // Transformation between c2 and c1 frames
         quat = quat1 * quat2.inverse();

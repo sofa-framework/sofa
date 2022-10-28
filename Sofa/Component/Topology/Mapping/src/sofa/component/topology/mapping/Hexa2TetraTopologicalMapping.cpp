@@ -95,8 +95,7 @@ void Hexa2TetraTopologicalMapping::init()
     // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
 
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
-
+    auto Loc2GlobVec = sofa::helper::getWriteOnlyAccessor(Loc2GlobDataVec);
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -177,8 +176,6 @@ void Hexa2TetraTopologicalMapping::init()
             Loc2GlobVec.push_back(i);
         Glob2LocMap[i] = (unsigned int)Loc2GlobVec.size()-1;
     }
-
-    Loc2GlobDataVec.endEdit();
 
     // Need to fully init the target topology
     toModel->init();

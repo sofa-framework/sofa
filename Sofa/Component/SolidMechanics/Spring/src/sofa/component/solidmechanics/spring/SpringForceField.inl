@@ -390,14 +390,14 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< Vector3 > points[4];
+    std::vector< Vec3 > points[4];
     bool external = (this->mstate1 != this->mstate2);
     const type::vector<Spring>& springs = this->springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
         Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
-        Vector3 point2, point1;
+        Vec3 point2, point1;
         point1 = DataTypes::getCPos(p1[springs[i].m1]);
         point2 = DataTypes::getCPos(p2[springs[i].m2]);
 

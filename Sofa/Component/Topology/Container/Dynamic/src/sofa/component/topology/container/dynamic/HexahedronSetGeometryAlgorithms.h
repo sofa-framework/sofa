@@ -52,7 +52,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-	typedef typename  type::Vector3 LocalCoord;
+	typedef typename  type::Vec3 LocalCoord;
 	typedef typename  HexahedronSetTopologyContainer::HexahedronBinaryIndex HexahedronBinaryIndex;
 protected:
 	bool initializedHexahedronCubatureTables;

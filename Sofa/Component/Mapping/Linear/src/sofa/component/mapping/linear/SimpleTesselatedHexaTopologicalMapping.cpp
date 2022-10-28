@@ -73,20 +73,20 @@ void SimpleTesselatedHexaTopologicalMapping::init()
     }
 
     size_t pointIndex = pointMappedFromPoint.size();
-    Vector3 p;
+    Vec3 p;
 
     for (std::size_t i=0; i<fromModel->getNbHexahedra(); ++i)
     {
         core::topology::BaseMeshTopology::Hexa h = fromModel->getHexahedron(i);
 
-        Vector3 p0(fromModel->getPX(h[0]), fromModel->getPY(h[0]), fromModel->getPZ(h[0]));
-        Vector3 p1(fromModel->getPX(h[1]), fromModel->getPY(h[1]), fromModel->getPZ(h[1]));
-        Vector3 p2(fromModel->getPX(h[2]), fromModel->getPY(h[2]), fromModel->getPZ(h[2]));
-        Vector3 p3(fromModel->getPX(h[3]), fromModel->getPY(h[3]), fromModel->getPZ(h[3]));
-        Vector3 p4(fromModel->getPX(h[4]), fromModel->getPY(h[4]), fromModel->getPZ(h[4]));
-        Vector3 p5(fromModel->getPX(h[5]), fromModel->getPY(h[5]), fromModel->getPZ(h[5]));
-        Vector3 p6(fromModel->getPX(h[6]), fromModel->getPY(h[6]), fromModel->getPZ(h[6]));
-        Vector3 p7(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
+        Vec3 p0(fromModel->getPX(h[0]), fromModel->getPY(h[0]), fromModel->getPZ(h[0]));
+        Vec3 p1(fromModel->getPX(h[1]), fromModel->getPY(h[1]), fromModel->getPZ(h[1]));
+        Vec3 p2(fromModel->getPX(h[2]), fromModel->getPY(h[2]), fromModel->getPZ(h[2]));
+        Vec3 p3(fromModel->getPX(h[3]), fromModel->getPY(h[3]), fromModel->getPZ(h[3]));
+        Vec3 p4(fromModel->getPX(h[4]), fromModel->getPY(h[4]), fromModel->getPZ(h[4]));
+        Vec3 p5(fromModel->getPX(h[5]), fromModel->getPY(h[5]), fromModel->getPZ(h[5]));
+        Vec3 p6(fromModel->getPX(h[6]), fromModel->getPY(h[6]), fromModel->getPZ(h[6]));
+        Vec3 p7(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
 
         // points mapped from edges
         std::pair<std::map<fixed_array<int,2>, int>::iterator, bool> insert_result;

@@ -320,7 +320,7 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
     const VecDeriv& keyVelocities = d_keyVelocities.getValue();
     const SetIndexArray & indices = d_indices.getValue();
@@ -331,8 +331,8 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
             const typename DataTypes::CPos& cpos0 = DataTypes::getCPos(x0[*it]+keyVelocities[i]);
             const typename DataTypes::CPos& cpos1 = DataTypes::getCPos(x0[*it]+keyVelocities[i+1]);
 
-            vertices.push_back(sofa::type::Vector3(cpos0));
-            vertices.push_back(sofa::type::Vector3(cpos1));
+            vertices.push_back(sofa::type::Vec3(cpos0));
+            vertices.push_back(sofa::type::Vec3(cpos1));
         }
     }
 

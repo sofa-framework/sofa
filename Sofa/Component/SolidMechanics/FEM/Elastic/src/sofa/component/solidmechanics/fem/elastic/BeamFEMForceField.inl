@@ -641,7 +641,7 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< type::Vector3 > points[3];
+    std::vector< type::Vec3 > points[3];
 
     if (m_partialListSegment)
     {
@@ -679,7 +679,7 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 
     for (size_t i=0; i<npoints; i++)
     {
-        const type::Vector3 &pt = p[i].getCenter();
+        const type::Vec3 &pt = p[i].getCenter();
 
         for (int c=0; c<3; c++)
         {
@@ -693,7 +693,7 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vector3 >* points, const VecCoord& x)
+void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vec3 >* points, const VecCoord& x)
 {
     Index a = (*m_indexedElements)[i][0];
     Index b = (*m_indexedElements)[i][1];

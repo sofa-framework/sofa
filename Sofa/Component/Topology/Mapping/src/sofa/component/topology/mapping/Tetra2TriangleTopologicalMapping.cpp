@@ -103,8 +103,7 @@ void Tetra2TriangleTopologicalMapping::init()
     const auto & triangleArray = fromModel->getTriangles();
     const bool flipN = flipNormals.getValue();
 
-    Topology::SetIndices & Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
-
+    auto Loc2GlobVec = sofa::helper::getWriteOnlyAccessor(Loc2GlobDataVec);
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -125,7 +124,6 @@ void Tetra2TriangleTopologicalMapping::init()
     // Need to fully init the target topology
     toModel->init();
 
-    Loc2GlobDataVec.endEdit();
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
@@ -153,7 +151,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
     auto itBegin=fromModel->beginChange();
     auto itEnd=fromModel->endChange();
 
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteAccessor(Loc2GlobDataVec);
 
     while( itBegin != itEnd )
     {
@@ -473,7 +471,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }    
-    Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Tetra2TriangleTopologicalMapping");
 }

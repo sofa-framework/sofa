@@ -56,7 +56,7 @@ public:
     void allocateSelectionBuffer(int width, int height) override;
     void destroySelectionBuffer() override;
 
-    common::BodyPicked findCollisionUsingColourCoding(const type::Vector3& origin, const type::Vector3& direction) override;
+    common::BodyPicked findCollisionUsingColourCoding(const type::Vec3& origin, const type::Vec3& direction) override;
 
 protected:
     bool _fboAllocated;

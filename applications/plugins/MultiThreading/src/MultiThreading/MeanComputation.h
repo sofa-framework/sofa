@@ -70,16 +70,6 @@ namespace sofa
 
                 void handleEvent(core::objectmodel::Event* event) override;
 
-                virtual std::string getTemplateName() const override
-                {
-                    return templateName(this);
-                }
-
-                static std::string templateName(const MeanComputation<DataTypes>* = NULL)
-                {
-                    return DataTypes::Name();
-                }
-
             private:
 
                 Data<VecCoord> d_result; ///< Result: mean computed from the input values

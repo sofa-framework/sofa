@@ -71,8 +71,8 @@ void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core
 GenericConstraintSolver::GenericConstraintSolver()
     : d_resolutionMethod( initData(&d_resolutionMethod, "resolutionMethod", "Method used to solve the constraint problem, among: \"ProjectedGaussSeidel\", \"UnbuiltGaussSeidel\" or \"for NonsmoothNonlinearConjugateGradient\""))
     , maxIt( initData(&maxIt, 1000, "maxIterations", "maximal number of iterations of the Gauss-Seidel algorithm"))
-    , tolerance( initData(&tolerance, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
-    , sor( initData(&sor, 1.0, "sor", "Successive Over Relaxation parameter (0-2)"))
+    , tolerance( initData(&tolerance, 0.001_sreal, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
+    , sor( initData(&sor, 1.0_sreal, "sor", "Successive Over Relaxation parameter (0-2)"))
     , scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance", "Scale the error tolerance with the number of constraints"))
     , allVerified( initData(&allVerified, false, "allVerified", "All contraints must be verified (each constraint's error < tolerance)"))
     , d_newtonIterations(initData(&d_newtonIterations, 100, "newtonIterations", "Maximum iteration number of Newton (for the NonsmoothNonlinearConjugateGradient solver only)"))
@@ -85,7 +85,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , currentNumConstraints(initData(&currentNumConstraints, 0, "currentNumConstraints", "OUTPUT: current number of constraints"))
     , currentNumConstraintGroups(initData(&currentNumConstraintGroups, 0, "currentNumConstraintGroups", "OUTPUT: current number of constraints"))
     , currentIterations(initData(&currentIterations, 0, "currentIterations", "OUTPUT: current number of constraint groups"))
-    , currentError(initData(&currentError, 0.0, "currentError", "OUTPUT: current error"))
+    , currentError(initData(&currentError, 0.0_sreal, "currentError", "OUTPUT: current error"))
     , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
     , d_constraintForces(initData(&d_constraintForces,"constraintForces","OUTPUT: constraint forces (stored only if computeConstraintForces=True)"))
     , d_computeConstraintForces(initData(&d_computeConstraintForces,false,
@@ -200,8 +200,8 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
     clearConstraintProblemLocks(); // NOTE: this assumes we solve only one constraint problem per step
 
     simulation::common::VectorOperations vop(cParams, this->getContext());
-    
-    
+
+
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
         lambda.realloc(&vop,false,true, core::VecIdProperties{"lambda", GetClass()->className});
@@ -216,7 +216,7 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
         m_dxId = dx.id();
 
         clearMultiVecId(getContext(), cParams, m_dxId);
-        
+
     }
 
     return true;
@@ -393,7 +393,7 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
     msg_info() << " computeCompliance_done "  ;
 }
 
-void GenericConstraintSolver::rebuildSystem(SReal massFactor, SReal forceFactor)
+void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
 {
     for (auto* cc : constraintCorrections)
     {
@@ -517,7 +517,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     msg_info() << "KeepContactForces done" ;
 
     AdvancedTimer::stepBegin("Compute And Apply Motion Correction");
-    
+
     if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
     {
         core::MultiVecCoordId xId(res1);

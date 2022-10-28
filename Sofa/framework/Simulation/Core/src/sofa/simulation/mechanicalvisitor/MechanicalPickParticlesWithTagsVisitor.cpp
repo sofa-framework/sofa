@@ -93,7 +93,7 @@ bool MechanicalPickParticlesWithTagsVisitor::isComponentTagIncluded(const core::
 }
 
 /// get the closest pickable particle
-void MechanicalPickParticlesWithTagsVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, type::Vector3& point, SReal& rayLength )
+void MechanicalPickParticlesWithTagsVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, type::Vec3& point, SReal& rayLength )
 {
     mstate = nullptr;
 
@@ -103,7 +103,7 @@ void MechanicalPickParticlesWithTagsVisitor::getClosestParticle( core::behavior:
 
     core::behavior::BaseMechanicalState* mstatei;
     unsigned int indexCollisionElementi;
-    type::Vector3 pointi;
+    type::Vec3 pointi;
     SReal rayLengthi;
 
     // particles are sorted from their distance to the ray

@@ -495,7 +495,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
     typename Grid::iterator end = grid->gridEnd();
     typename Grid::iterator it;
 
-    std::vector< sofa::type::Vector3 > points1;
+    std::vector< sofa::type::Vec3 > points1;
     for (it = grid->gridBegin(); it!=end; ++it)
     {
         typename Grid::Key p0 = it->first;
@@ -521,7 +521,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
     vparams->drawTool()->drawPoints(points1, 3, sofa::type::RGBAColor(1.,1.,1.,1.));
 
 
-    std::vector< sofa::type::Vector3 > points2;
+    std::vector< sofa::type::Vec3 > points2;
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<out.size(); ++i)
     {
@@ -530,7 +530,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vpar
     vparams->drawTool()->drawPoints(points2, 5, sofa::type::RGBAColor(0.5,1,0.5,1));
 
 
-    std::vector< sofa::type::Vector3 > points3;
+    std::vector< sofa::type::Vec3 > points3;
     for (it = grid->gridBegin(); it!=end; ++it)
     {
         typename Grid::Key p0 = it->first;
