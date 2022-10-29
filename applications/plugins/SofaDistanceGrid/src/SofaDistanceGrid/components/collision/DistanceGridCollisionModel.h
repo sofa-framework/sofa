@@ -215,13 +215,9 @@ public:
 
     /// @}
 
-    /// Set new grid and transform, keeping the old state to estimate velocity
-//    void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 
     /// Update transformation matrices from current rigid state
     void updateState();
-
-    // -- CollisionModel interface
 
     void resize(sofa::Size size) override;
 

@@ -80,14 +80,9 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     backgroundColour[2]=1.0f;
 
     // setup OpenGL mode for the window
-    //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
     timerAnimate = new QTimer(this);
     connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
-    //	_previousEyePos = Vector3(0.0, 0.0, 0.0);
-    // 	_zoom = 1.0;
-    // 	_zoomSpeed = 250.0;
-    // 	_panSpeed = 25.0;
     _video = false;
     m_bShowAxis = false;
     _background = 0;

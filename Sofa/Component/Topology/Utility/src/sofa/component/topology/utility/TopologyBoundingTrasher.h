@@ -42,9 +42,11 @@ namespace sofa::component::topology::container::dynamic
 
 namespace sofa::component::topology::utility
 {
-
-    using core::topology::BaseMeshTopology;
-    using core::behavior::MechanicalState;
+    namespace
+    {
+        using core::topology::BaseMeshTopology;
+        using core::behavior::MechanicalState;
+    }
 
 /** Read file containing topological modification. Or apply input modifications
  * A timestep has to be established for each modification.
@@ -55,14 +57,15 @@ class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher: public core::
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TopologyBoundingTrasher, DataTypes), core::objectmodel::BaseObject);
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef type::Vec<3, Real> Vec3;
-    typedef type::Vec<6, Real> Vec6;
 
-    using Index = sofa::Index;
-    using Vector3 = type::Vec3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, sofa::type::Vec6);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
 protected:
     TopologyBoundingTrasher();
@@ -72,7 +75,7 @@ protected:
     void filterElementsToRemove();
     void removeElements();
 
-    static constexpr bool isPointOutside(const Coord& value, const Vec6& bb);
+    static constexpr bool isPointOutside(const Coord& value, const type::Vec6& bb);
 
 public:
     void init() override;
@@ -84,7 +87,7 @@ public:
 
 public:
     Data<VecCoord> d_positions; ///< position coordinates of the topology object to interact with.
-    Data<Vec6>  d_borders; ///< List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data<type::Vec6>  d_borders; ///< List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data<bool>  d_drawBox; ///< draw bounding box
 
     /// Link to be set to the topology container in the component graph.
@@ -101,7 +104,7 @@ protected:
     sofa::core::sptr<container::dynamic::TetrahedronSetTopologyModifier> tetraModifier;
     sofa::core::sptr<container::dynamic::HexahedronSetTopologyModifier> hexaModifier;
 
-    type::vector<Index> m_indicesToRemove;
+    type::vector<sofa::Index> m_indicesToRemove;
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)

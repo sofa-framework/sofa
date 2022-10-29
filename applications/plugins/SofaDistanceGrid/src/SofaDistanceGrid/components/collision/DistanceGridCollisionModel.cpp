@@ -151,7 +151,7 @@ void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, sofa::Index in
     modified = true;
 }
 
-void RigidDistanceGridCollisionModel::setNewState(sofa::Index index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+void RigidDistanceGridCollisionModel::setNewState(sofa::Index index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vec3& translation)
 {
     grid->addRef();
     if (elems[index].prevGrid!=NULL)
@@ -165,7 +165,7 @@ void RigidDistanceGridCollisionModel::setNewState(sofa::Index index, double dt, 
     if (!elems[index].isTransformed)
     {
         Matrix3 I; I.identity();
-        if (!(rotation == I) || !(translation == Vector3()))
+        if (!(rotation == I) || !(translation == Vec3()))
             elems[index].isTransformed = true;
     }
     elems[index].prevDt = dt;
@@ -175,10 +175,10 @@ void RigidDistanceGridCollisionModel::setNewState(sofa::Index index, double dt, 
 /// Update transformation matrices from current rigid state
 void RigidDistanceGridCollisionModel::updateState()
 {
-    const Vector3& initTranslation = this->translation.getValue();
-    const Vector3& initRotation = this->rotation.getValue();
+    const Vec3& initTranslation = this->translation.getValue();
+    const Vec3& initRotation = this->rotation.getValue();
     bool useInitTranslation = (initTranslation != DistanceGrid::Coord());
-    bool useInitRotation = (initRotation != Vector3(0,0,0));
+    bool useInitRotation = (initRotation != Vec3(0,0,0));
 
     for (sofa::Size i=0; i<size; i++)
     {
@@ -223,12 +223,12 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     for (sofa::Size i=0; i<size; i++)
     {
-        Vector3 emin, emax;
+        Vec3 emin, emax;
         if (elems[i].isTransformed)
         {
             for (int j=0; j<8; j++)
             {
-                Vector3 corner = elems[i].translation + elems[i].rotation * (flipped ? elems[i].grid->getCorner(j) : elems[i].grid->getBBCorner(j));
+                Vec3 corner = elems[i].translation + elems[i].rotation * (flipped ? elems[i].grid->getCorner(j) : elems[i].grid->getBBCorner(j));
                 if (j == 0)
                 {
                     emin = corner;
@@ -600,14 +600,14 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     for (sofa::Size i=0; i<size; i++)
     {
-        Vector3 emin, emax;
+        Vec3 emin, emax;
         const DeformedCube& cube = getDeformCube(i);
         {
             emin = cube.corners[0];
             emax = emin;
             for (int j=1; j<8; j++)
             {
-                Vector3 corner = cube.corners[j];
+                Vec3 corner = cube.corners[j];
                 for(int c=0; c<3; c++)
                     if (corner[c] < emin[c]) emin[c] = corner[c];
                     else if (corner[c] > emax[c]) emax[c] = corner[c];

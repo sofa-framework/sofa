@@ -76,7 +76,8 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
     typedef sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
 
-    typedef sofa::type::Quat<Real> Quat;
+    typedef sofa::type::Quat<Real> M_Quat;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Quat, M_Quat);
 
     enum {
         LARGE = 0,   ///< Symbol of small displacements triangle solver
@@ -196,7 +197,7 @@ public:
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val);
     void setPoissonArray(const type::vector<Real>& values);
-    
+
     Real getYoung() { return (f_young.getValue())[0]; }
     void setYoung(Real val);
     void setYoungArray(const type::vector<Real>& values);

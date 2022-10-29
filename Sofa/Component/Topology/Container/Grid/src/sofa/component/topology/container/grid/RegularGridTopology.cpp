@@ -373,8 +373,8 @@ void RegularGridTopology::createTexCoords()
         {
             unsigned int pt1 = n0 + _n[ axes[0] ] * n1;
             unsigned int pt2 = n0 + _n[ axes[0] ] * (n1 + _n[ axes[1] ] * (_n[ axes[2] ]-1));
-            _texCoords[pt1] = Vector2(n0*Uscale, n1*Vscale);
-            _texCoords[pt2] = Vector2(1- n0*Uscale, 1 - n1*Vscale);
+            _texCoords[pt1] = Vec2(n0*Uscale, n1*Vscale);
+            _texCoords[pt2] = Vec2(1- n0*Uscale, 1 - n1*Vscale);
         }
     }
 
@@ -389,8 +389,8 @@ void RegularGridTopology::createTexCoords()
             {
                 unsigned int pt1 = n0 + _n[ axes[0] ] * n2;
                 unsigned int pt2 = n0 + _n[ axes[0] ] * (n2 + _n[ axes[2] ] * (_n[ axes[1] ]-1));
-                _texCoords[pt1] = Vector2(n0*Uscale, n2*Vscale);
-                _texCoords[pt2] = Vector2(1- n0*Uscale, 1 - n2*Vscale);
+                _texCoords[pt1] = Vec2(n0*Uscale, n2*Vscale);
+                _texCoords[pt2] = Vec2(1- n0*Uscale, 1 - n2*Vscale);
             }
         }
 
@@ -404,8 +404,8 @@ void RegularGridTopology::createTexCoords()
             {
                 unsigned int pt1 = n2 + _n[ axes[2] ] * n1;
                 unsigned int pt2 = n2 + _n[ axes[2] ] * (n1 + _n[ axes[1] ] * (_n[ axes[0] ])-1);
-                _texCoords[pt1] = Vector2(n2*Uscale, n1*Vscale);
-                _texCoords[pt2] = Vector2(1- n2*Uscale, 1 - n1*Vscale);
+                _texCoords[pt1] = Vec2(n2*Uscale, n1*Vscale);
+                _texCoords[pt2] = Vec2(1- n2*Uscale, 1 - n1*Vscale);
             }
         }
     }

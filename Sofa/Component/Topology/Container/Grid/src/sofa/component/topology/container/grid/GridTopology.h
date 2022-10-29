@@ -29,6 +29,11 @@
 namespace sofa::component::topology::container::grid
 {
 
+namespace
+{
+    using sofa::type::Vec2;
+    using sofa::type::Vec3;
+}
 
 enum class Grid_dimension
 {
@@ -50,12 +55,11 @@ using MeshTopology::getQuad;
 using MeshTopology::getHexahedron;
 
     SOFA_CLASS(GridTopology,MeshTopology);
-    typedef sofa::type::Vec3i Vec3i;
-    using Vector2 = sofa::type::Vec<2, SReal>;
-    using Vector3 = sofa::type::Vec3;
-    typedef Vector2 TextCoords2D;
+    SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(Vec3i);
+    SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(Vector2);
+    SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(Vector3);
+    typedef Vec2 TextCoords2D;
     friend class GridUpdate;
-
 
 private:
     class GridUpdate : public sofa::core::DataEngine
@@ -82,7 +86,7 @@ protected:
     /// Constructor with grid size by int
     GridTopology(int nx, int ny, int nz);
     /// Constructor with grid size by Vec3
-    GridTopology(const Vec3i& dimXYZ);
+    GridTopology(const type::Vec3i& dimXYZ);
 
     /// Internal method to set the number of point using grid resolution. Will call \sa MeshTopology::setNbPoints
     virtual void setNbGridPoints();
@@ -122,7 +126,7 @@ public:
     /** \brief Set grid resolution in the 3 directions, similar to \sa setSize(int nx, int ny, int nz)
      * @param Vec3i nXnYnZ resolution in 3D
      * */
-    void setSize( Vec3i nXnYnZ );
+    void setSize( type::Vec3i nXnYnZ );
 
     /// Set grid X resolution, @param value
     void setNx(int value) { (*d_n.beginEdit())[0] = value; setNbGridPoints(); }
@@ -144,11 +148,11 @@ public:
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
     bool hasPos()  const override { return true; }
 
-    /// Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
-    virtual Vector3 getPoint(Index i) const;
+    /// Get Point in grid @return Vec3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
+    virtual Vec3 getPoint(Index i) const;
 
-    /// Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
-    virtual Vector3 getPointInGrid(int i, int j, int k) const;
+    /// Get Point in grid @return Vec3 given its position in grid @param i, @param j, @param k
+    virtual Vec3 getPointInGrid(int i, int j, int k) const;
 
     /// get X from Point index @param i, will call @sa getPoint
     SReal getPX(Index i)  const override { return getPoint(i)[0]; }
@@ -174,10 +178,10 @@ public:
     /// Get Point index in Grid, will call method @sa getIndex
     Index point(int x, int y, int z) const { return getIndex(x,y,z); }
     /// Get Hexa index in Grid
-    Index hexa(int x, int y, int z) const 
-    { 
+    Index hexa(int x, int y, int z) const
+    {
         const auto& n = d_n.getValue();
-        return x+(n[0]-1)*(y+(n[1]-1)*z); 
+        return x+(n[0]-1)*(y+(n[1]-1)*z);
     }
     /// Get Cube index, similar to \sa hexa method
     Index cube(int x, int y, int z) const { return hexa(x,y,z); }
@@ -187,7 +191,7 @@ public:
 
 public:
     /// Data storing the size of the grid in the 3 directions
-    Data<Vec3i> d_n;
+    Data<type::Vec3i> d_n;
 
     /// Data bool to set option to compute topological elements
     Data<bool> d_computeHexaList;

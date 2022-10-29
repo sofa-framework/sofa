@@ -143,8 +143,8 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
             const Coord p2 = point2(i);
             r = radius(i);
 
-            Vector3 maxVec;
-            Vector3 minVec;
+            Vec3 maxVec;
+            Vec3 minVec;
 
             for(int dim = 0 ; dim < 3 ; ++dim){
                 if(p1(dim) > p2(dim)){

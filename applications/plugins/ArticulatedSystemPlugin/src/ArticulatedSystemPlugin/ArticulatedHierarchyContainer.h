@@ -209,7 +209,7 @@ public:
 
     /**
     *	An articulation is defined by an axis, an orientation and an index.
-    *	@param axis is a Vector3. It determines the motion axis
+    *	@param axis is a Vec3. It determines the motion axis
     *	@param rotation is a boolean. If true, it defines a rotation motion. Otherwise it does nothing.
     *	@param translation is a boolean. If true, it defines a translation motion. Otherwise it does nothing.
     *	@param articulationIndex is an integer. This index identifies, in an univocal way, one articulation

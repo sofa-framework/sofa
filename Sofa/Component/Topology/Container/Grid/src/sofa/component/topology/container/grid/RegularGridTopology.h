@@ -68,7 +68,7 @@ public:
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
-     * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
+     * Get Point in grid @return Vec3 given its position in grid @param i, @param j, @param k
      * */
     type::Vec3 getPointInGrid(int i, int j, int k) const override;
 
@@ -120,9 +120,9 @@ public:
     /// Get the position of the given cube
     type::Vec3 getCubeCoordinate(RegularGridTopology::Index i ) const;
 
-    /// get min value of the grid bounding box @return Vector3
+    /// get min value of the grid bounding box @return Vec3
     type::Vec3   getMin() const { return d_min.getValue();}
-    /// get max value of the grid bounding box @return Vector3
+    /// get max value of the grid bounding box @return Vec3
     type::Vec3   getMax() const { return d_max.getValue();}
 
     /// return the cube containing the given point (or -1 if not found).

@@ -66,7 +66,8 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef type::vector<Index> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
-    typedef sofa::type::Vec3 Vector3;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
 protected:
     ProjectToPointConstraint();
@@ -81,7 +82,7 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<ProjectToPointConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    
+
 protected:
     ProjectToPointConstraintInternalData<DataTypes>* data;
     friend class ProjectToPointConstraintInternalData<DataTypes>;

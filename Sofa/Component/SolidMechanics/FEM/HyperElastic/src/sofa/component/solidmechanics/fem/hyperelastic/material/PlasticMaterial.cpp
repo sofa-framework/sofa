@@ -39,13 +39,13 @@ PlasticMaterial::PlasticMaterial()
 	_epsilon.push_back(10000);
 
 	// contains the value of the stress at the upper extremity of each section
-	_sigma.push_back(Vector3(0, 0, 0));
-	Vector3 Stress;
+	_sigma.push_back(Vec3(0, 0, 0));
+	Vec3 Stress;
 //	computeStressOnSection(Stress, _epsilon[0], 0);
 	_sigma.push_back(Stress);
 }
 
-void PlasticMaterial::computeStress(Vector3& Stress, Vector3& Strain, unsigned int& elementIndex)
+void PlasticMaterial::computeStress(Vec3& Stress, Vec3& Strain, unsigned int& elementIndex)
 {
 	// Computes the Von Mises strain
     SReal vonMisesStrain = computeVonMisesStrain(Strain);
@@ -74,7 +74,7 @@ void PlasticMaterial::computeStress(Vector3& Stress, Vector3& Strain, unsigned i
 	_previousVonMisesStrain.push_back(vonMisesStrain);
 }
 
-void PlasticMaterial::computeDStress(Vector3& dStress, Vector3& dStrain)
+void PlasticMaterial::computeDStress(Vec3& dStress, Vec3& dStrain)
 {
 	dStress[0] = dStrain[0] + _poissonRatio.getValue() * dStrain[1];
 	dStress[1] = _poissonRatio.getValue() * dStrain[0] + dStrain[1];
@@ -83,7 +83,7 @@ void PlasticMaterial::computeDStress(Vector3& dStress, Vector3& dStrain)
 	dStress *= (_youngModulus.getValue() / (12 * (1 - _poissonRatio.getValue()*_poissonRatio.getValue())));
 }
 
-SReal PlasticMaterial::computeVonMisesStrain(Vector3 &strain)
+SReal PlasticMaterial::computeVonMisesStrain(Vec3 &strain)
 {
 	Eigen::Matrix<SReal, 2, 2> e;
 	e(0,0) = strain[0];
@@ -99,7 +99,7 @@ SReal PlasticMaterial::computeVonMisesStrain(Vector3 &strain)
 	return 1/(1+_poissonRatio.getValue())*sqrt( 0.5*( (S(0)-S(1))*(S(0)-S(1)) + (S(1)-S(2))*(S(1)-S(2)) + (S(2)-S(0))*(S(2)-S(0)) ));
 }
 
-void PlasticMaterial::computeStressOnSection(Vector3& Stress, Vector3 Strain, int section)
+void PlasticMaterial::computeStressOnSection(Vec3& Stress, Vec3 Strain, int section)
 {
 	Stress[0] = Strain[0] + _poissonRatio.getValue() * Strain[1];
 	Stress[1] = _poissonRatio.getValue() * Strain[0] + Strain[1];
