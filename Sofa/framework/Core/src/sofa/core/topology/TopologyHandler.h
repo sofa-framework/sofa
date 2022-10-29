@@ -145,10 +145,6 @@ public:
 
     size_t getNumberOfTopologicalChanges();
 
-
-    virtual void linkToTopologyDataArray(sofa::geometry::ElementType elementType);
-    virtual void unlinkFromTopologyDataArray(sofa::geometry::ElementType elementType);
-
     void setNamePrefix(const std::string& s) { m_prefix = s; }
     std::string getName() { return m_prefix + m_data_name; }
 
