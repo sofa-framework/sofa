@@ -48,7 +48,7 @@ TopologyData <TopologyElementType, VecT>::~TopologyData()
 { 
     if (m_isTopologyDynamic) {
         dmsg_info(this->getOwner()) << "TopologyData: " << this->getName() << " removed from dynamic topology: " << this->m_topology->getClassName();
-        this->unlinkFromElementDataArray((TopologyElementType*)nullptr);
+        this->m_topologyHandler->unlinkFromAllTopologyDataArray();
     }
     else {
         dmsg_info(this->getOwner()) << "TopologyData: " << this->getName() << " removed from static topology without TopologyHandler.";

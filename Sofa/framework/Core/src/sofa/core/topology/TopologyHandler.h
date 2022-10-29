@@ -165,6 +165,8 @@ protected:
 
     /// Bool to store the information if this topology handler is registered into Topology handler lists
     bool m_isRegistered = false;
+    /// Set to store the information which topology element this handler is linked. I.e in which handler list this handler is registered inside the Topology.
+    std::set<sofa::geometry::ElementType> m_registeredElements;
 
     sofa::core::topology::TopologyContainer* m_topology;
     std::map < core::topology::TopologyChangeType, TopologyChangeCallback> m_callbackMap;

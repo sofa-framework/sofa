@@ -81,6 +81,10 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
         {
             msg_warning(m_topologyData->getOwner()) << "TopologyHandler linked to Data '" << m_data_name << "' has already been registered.";
         }
+        else
+        {
+            m_registeredElements.insert(elementType);
+        }
 
         m_isRegistered = true;
     }
@@ -98,15 +102,35 @@ void TopologyDataHandler<TopologyElementType, VecT>::unlinkFromTopologyDataArray
     if (!m_isRegistered) // Will be false if topology has already been deleted
         return;
 
-    if (m_topology->unlinkTopologyHandlerToData(this, elementType))
+    auto it = m_registeredElements.find(elementType);
+    if (it == m_registeredElements.end()) // case if this element type has never been registered or topology has already been deleted
+        return;
+
+    bool res = m_topology->unlinkTopologyHandlerToData(this, elementType);
+    msg_error_when(!res, m_topologyData->getOwner()) << "Owner topology is not able to unlink with Data Array, Data '" << m_data_name << "' won't be unlinked.";
+    
+    m_topology->removeTopologyHandler(this, elementType);
+    m_registeredElements.erase(it);
+}
+
+
+
+
+template <typename TopologyElementType, typename VecT>
+void TopologyDataHandler<TopologyElementType, VecT>::unlinkFromAllTopologyDataArray()
+{
+    if (m_registeredElements.empty()) // Will be false if topology has already been deleted
+        return;
+
+    for (auto elementType : m_registeredElements)
     {
+        bool res = m_topology->unlinkTopologyHandlerToData(this, elementType);
+        msg_error_when(!res, m_topologyData->getOwner()) << "Owner topology is not able to unlink with Data Array, Data '" << m_data_name << "' won't be unlinked.";
+
         m_topology->removeTopologyHandler(this, elementType);
     }
-    else
-    {
-        msg_error(m_topologyData->getOwner()) << "Owner topology is not able to unlink with Data Array, Data '" << m_data_name << "' won't be unlinked.";
-        return;
-    }
+
+    m_registeredElements.clear();
 }
 
 
