@@ -41,7 +41,7 @@ void DynamicSparseGridTopologyModifier::init()
 
     if(!m_DynContainer)
     {
-        msg_error() << "DynamicSparseGridTopologyContainer not found in context";
+        msg_error() << "DynamicSparseGridTopologyContainer not found in current node: " << this->getContext()->getName();
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }

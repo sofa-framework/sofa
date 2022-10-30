@@ -53,7 +53,7 @@ void EdgeSetTopologyModifier::init()
 
     if(!m_container)
     {
-        msg_error() << "EdgeSetTopologyContainer not found in context";
+        msg_error() << "EdgeSetTopologyContainer not found in current node: " << this->getContext()->getName();
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }

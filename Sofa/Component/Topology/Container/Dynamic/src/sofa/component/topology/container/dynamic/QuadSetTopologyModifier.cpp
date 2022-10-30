@@ -46,7 +46,7 @@ void QuadSetTopologyModifier::init()
 
     if(!m_container)
     {
-        msg_error() << "QuadSetTopologyContainer not found in context";
+        msg_error() << "QuadSetTopologyContainer not found in current node: " << this->getContext()->getName();
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
