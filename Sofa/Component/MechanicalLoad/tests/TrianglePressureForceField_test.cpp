@@ -88,8 +88,6 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
     // Test that the force value is constant
     void test_constantForce()
     {
-        sofa::simulation::getSimulation()->init(Inherited::node.get());
-
         // Do a few animation steps
         for(int k=0;k<10;k++)
         {
