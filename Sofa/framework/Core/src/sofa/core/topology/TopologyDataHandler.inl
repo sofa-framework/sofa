@@ -59,7 +59,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::init()
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::handleTopologyChange()
 {
-    if (!m_isRegistered || m_topology == nullptr)
+    if (!this->isTopologyHandlerRegistered() || m_topology == nullptr)
         return;
 
     sofa::core::topology::TopologyHandler::ApplyTopologyChanges(m_topology->m_changeList.getValue(), m_topology->getNbPoints());
@@ -85,8 +85,6 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
         {
             m_registeredElements.insert(elementType);
         }
-
-        m_isRegistered = true;
     }
     else
     {
@@ -99,9 +97,6 @@ void TopologyDataHandler<TopologyElementType, VecT>::linkToTopologyDataArray(sof
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType, VecT>::unlinkFromTopologyDataArray(sofa::geometry::ElementType elementType)
 {
-    if (!m_isRegistered) // Will be false if topology has already been deleted
-        return;
-
     auto it = m_registeredElements.find(elementType);
     if (it == m_registeredElements.end()) // case if this element type has never been registered or topology has already been deleted
         return;

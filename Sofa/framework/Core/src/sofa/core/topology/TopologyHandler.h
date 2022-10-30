@@ -138,9 +138,9 @@ public:
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Hexahedron>::EMoved* /*event*/) {}
 
     /// Method to notify that this topologyHandler is not anymore registerd into a Topology Container
-    void unregisterTopologyHandler() { m_isRegistered = false; }
+    void unregisterTopologyHandler() { m_registeredElements.clear(); }
     /// Method to get the information if this topologyHandler is registered into a Topology Container
-    bool isTopologyHandlerRegistered() const { return m_isRegistered; }
+    bool isTopologyHandlerRegistered() const { return !m_registeredElements.empty(); }
 
 
     size_t getNumberOfTopologicalChanges();
@@ -163,8 +163,6 @@ protected:
     /// use to define data handled name.
     std::string m_data_name;
 
-    /// Bool to store the information if this topology handler is registered into Topology handler lists
-    bool m_isRegistered = false;
     /// Set to store the information which topology element this handler is linked. I.e in which handler list this handler is registered inside the Topology.
     std::set<sofa::geometry::ElementType> m_registeredElements;
 
