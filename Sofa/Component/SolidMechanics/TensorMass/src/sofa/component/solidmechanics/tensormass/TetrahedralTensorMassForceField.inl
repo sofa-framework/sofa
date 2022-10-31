@@ -63,7 +63,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
         const sofa::type::vector<sofa::type::vector<Index> > &,
         const sofa::type::vector<sofa::type::vector<SReal> > &)
 {
-    unsigned int i,j,k,l,u,v;
+    unsigned int j,k,l,u,v;
 
     typename DataTypes::Real val1,volume;
     typename DataTypes::Real lambda=getLambda();
@@ -74,17 +74,17 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
     const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
+    const auto& tetraArray = m_topology->getTetrahedra();
 
-    for (i=0; i<tetrahedronAdded.size(); ++i)
+    for (Index tetraId : tetrahedronAdded)
     {
-
         /// get a reference on the edge set of the ith added tetrahedron
-        const EdgesInTetrahedron &te= m_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
+        const EdgesInTetrahedron& te = m_topology->getEdgesInTetrahedron(tetraId);
         ///get a reference on the vertex set of the ith added tetrahedron
-        const Tetrahedron &t= m_topology->getTetrahedron(tetrahedronAdded[i]);
+        const Tetrahedron& tetra = tetraArray[tetraId];
         // store points
         for(j=0; j<4; ++j)
-            point[j]=(restPosition)[t[j]];
+            point[j]=(restPosition)[tetra[j]];
         /// compute 6 times the rest volume
         volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
         // store shape vectors
@@ -111,9 +111,9 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
             val1= dot(shapeVector[k],shapeVector[l])*mustar;
 
             // print if obtuse tetrahedron along that edge
-            msg_info_when(val1<0) << "negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]" ;
+            msg_info_when(val1 < 0) << "negative cotangent[" << tetrahedronAdded[tetraId] << "][" << j << "]";
 
-            if (m_topology->getEdge(te[j])[0]!=t[l])
+            if (m_topology->getEdge(te[j])[0]!= tetra[l])
             {
                 for (u=0; u<3; ++u)
                 {
