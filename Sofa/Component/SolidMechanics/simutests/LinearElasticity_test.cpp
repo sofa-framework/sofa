@@ -227,8 +227,10 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
         ff->setMethod(0); // small method
         return (ForceFieldSPtr )ff;
     }
-    bool testLinearElasticityInTraction(LinearElasticityFF createForceField)
-    {
+    bool testLinearElasticityInTraction(LinearElasticityFF createForceField){
+
+        sofa::simulation::getSimulation()->init(tractionStruct.root.get());
+
         size_t i,j,k;
         for (k=0;k<sizeYoungModulusArray;++k) {
             Real youngModulus=youngModulusArray[k];
@@ -241,12 +243,10 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                 for (i=0;i<sizePressureArray;++i) {
                     // set the pressure on the top part
                     Real pressure= pressureArray[i];
-                    tractionStruct.forceField.get()->pressure=Coord(0,0,pressure);
 
-                    // reset simulation and init the triangle pressure forcefield
+                    tractionStruct.forceField.get()->setPressure(Coord(0, 0, pressure));
                     sofa::simulation::getSimulation()->reset(tractionStruct.root.get());
-                    // sofa::simulation::getSimulation()->init(tractionStruct.root.get());
-                    tractionStruct.forceField.get()->init();
+                    
                     // record the initial point of a given vertex
                     Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
 
