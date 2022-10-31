@@ -53,7 +53,7 @@ public:
     const char* getClassName() const override { return "MechanicalPickParticles"; }
 
     /// get the closest pickable particle
-    void getClosestParticle(sofa::core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, type::Vector3& point, SReal& rayLength );
+    void getClosestParticle(sofa::core::behavior::BaseMechanicalState*& mstate, sofa::Index& indexCollisionElement, type::Vec3& point, SReal& rayLength );
 
 
 };

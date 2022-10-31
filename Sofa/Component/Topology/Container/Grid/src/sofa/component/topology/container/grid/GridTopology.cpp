@@ -73,6 +73,12 @@ void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     this->setNbGridPoints();
 }
 
+Size GridTopology::getNbHexahedra()
+{
+    const auto n = d_n.getValue();
+    return (n[0] - 1) * (n[1] - 1) * (n[2] - 1);
+}
+
 
 void GridTopology::GridUpdate::updateEdges()
 {
@@ -266,7 +272,8 @@ void GridTopology::reinit()
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
-    if (nx == this->d_n.getValue()[0] && ny == this->d_n.getValue()[1] && nz == this->d_n.getValue()[2])
+    const auto n = this->d_n.getValue();
+    if (nx == n[0] && ny == n[1] && nz == n[2])
         return;
     this->d_n.setValue(Vec3i(nx,ny,nz));
     setNbGridPoints();

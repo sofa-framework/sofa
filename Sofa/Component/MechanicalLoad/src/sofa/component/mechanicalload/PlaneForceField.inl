@@ -104,17 +104,17 @@ void PlaneForceField<DataTypes>::init(){
         msg_warning(this) << "The 'stiffness="<< d_stiffness.getValueString() << "' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=500.0 .  "
                              "To remove this warning message you need to set the 'stiffness' attribute between [0, +INF[."
                              "  Emitted from ["<< this->getPathName() << "].";
-        d_stiffness.setValue(500) ;
+        d_stiffness.setValue(Real(500)) ;
     }
     if( d_damping.getValue() < 0.0 ){
         msg_warning(this) << "The 'damping="<< d_damping.getValueString() <<"' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=5.0 .  "
                              "To remove this warning message you need to set the 'damping' attribute between [0, +INF[." ;
-        d_damping.setValue(5) ;
+        d_damping.setValue(Real(5)) ;
     }
     if( d_maxForce.getValue() < 0.0 ){
         msg_warning(this) << "The 'maxForce="<< d_maxForce.getValueString() << "' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=0.0 (no max force).  "
                              "To remove this warning message you need to set the 'maxForce' attribute between [0, +INF[." ;
-        d_maxForce.setValue(0) ;
+        d_maxForce.setValue(Real(0)) ;
     }
 
     Vec<2,int> tmp = d_localRange.getValue() ;
@@ -326,7 +326,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-    std::vector< type::Vector3 > points;
+    std::vector< type::Vec3 > points;
 
     points.push_back(corners[0]);
     points.push_back(corners[1]);
@@ -342,7 +342,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     vparams->drawTool()->drawTriangles(points, sofa::type::RGBAColor(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
     vparams->drawTool()->setPolygonMode(0,false); //No Culling
 
-    std::vector< type::Vector3 > pointsLine;
+    std::vector< type::Vec3 > pointsLine;
 
     // lines for points penetrating the plane
     unsigned int ibegin = 0;
@@ -354,7 +354,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
         iend = d_localRange.getValue()[1]+1;
 
-    type::Vector3 point1,point2;
+    type::Vec3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = DataTypes::getCPos(p1[i])*d_planeNormal.getValue()-d_planeD.getValue();

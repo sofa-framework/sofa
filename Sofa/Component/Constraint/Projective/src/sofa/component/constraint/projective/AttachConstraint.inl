@@ -56,7 +56,7 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::doProjectPosition(Coord&
             {
                 // gradually set the velocity along the direction axis
                 Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
-                sofa::type::Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
+                sofa::type::Vec3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
                 Real angle = acos(restRotations[index][3])*2;
                 x2.getOrientation() = x1.getOrientation()*sofa::type::Quat<SReal>(axis,angle*fact);
             }
@@ -617,13 +617,13 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     constexpr sofa::type::RGBAColor color1(1,0.5,0.5,1);
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         if (activeFlags.size() > i && !activeFlags[i])
             continue;
-        vertices.push_back(sofa::type::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
+        vertices.push_back(sofa::type::Vec3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
     }
     vparams->drawTool()->drawPoints(vertices,10,color1);
     vertices.clear();
@@ -633,8 +633,8 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     {
         if (activeFlags.size() > i && !activeFlags[i])
             continue;
-        vertices.push_back(sofa::type::Vector3(x1[indices1[i]][0],x1[indices1[i]][1],x1[indices1[i]][2]));
-        vertices.push_back(sofa::type::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
+        vertices.push_back(sofa::type::Vec3(x1[indices1[i]][0],x1[indices1[i]][1],x1[indices1[i]][2]));
+        vertices.push_back(sofa::type::Vec3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
     }
     vparams->drawTool()->drawLines(vertices,1,color2);
 

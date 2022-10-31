@@ -121,26 +121,21 @@ public:
     void setName(const std::string& n, int counter);
 
     /// Get the type name of this object (i.e. class and template types)
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getTypeName() method.
-    virtual std::string getTypeName() const ;
+    std::string getTypeName() const ;
 
     /// Get the class name of this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getClassName() method. To specify custom class name you need
-    /// to implement a single static std::string GetCustomClassName(){} method.
+    /// To specify custom static class name you need to implement a single
+    /// static std::string GetCustomClassName(){} method.
+    /// Override only if the class name cannot be known at compile-time (e.g. Python).
     virtual std::string getClassName() const ;
 
     /// Get the template type names (if any) used to instantiate this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getClassName() method. To specify custom class name you need
-    /// to implement a single static std::string GetCustomTemplateName(){} method.
-    virtual std::string getTemplateName() const ;
+    /// To specify custom static template name you need to implement a single
+    /// static std::string GetCustomTemplateName(){} method.
+    virtual std::string getTemplateName() const final;
 
     /// Get the template type names (if any) used to instantiate this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getNameSpaceName() method.
-    virtual std::string getNameSpaceName() const ;
+    std::string getNameSpaceName() const ;
 
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);

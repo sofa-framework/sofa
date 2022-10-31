@@ -309,7 +309,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
+    type::Vec6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
@@ -364,12 +364,12 @@ private:
     void initRigidImpl() ;
 
     template <class T>
-    type::Vector6 getMomentumRigid3Impl ( const core::MechanicalParams*,
+    type::Vec6 getMomentumRigid3Impl ( const core::MechanicalParams*,
                                                  const DataVecCoord& vx,
                                                  const DataVecDeriv& vv ) const ;
 
     template <class T>
-    type::Vector6 getMomentumVec3Impl ( const core::MechanicalParams*,
+    type::Vec6 getMomentumVec3Impl ( const core::MechanicalParams*,
                                                const DataVecCoord& vx,
                                                const DataVecDeriv& vv ) const ;
 };
@@ -393,9 +393,9 @@ void DiagonalMass<defaulttype::Rigid2Types>::init();
 template <>
 void DiagonalMass<defaulttype::Rigid2Types>::draw(const core::visual::VisualParams* vparams);
 template <>
-type::Vector6 DiagonalMass<defaulttype::Vec3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+type::Vec6 DiagonalMass<defaulttype::Vec3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 template <>
-type::Vector6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+type::Vec6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 
 
 

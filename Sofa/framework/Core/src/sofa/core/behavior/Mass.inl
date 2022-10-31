@@ -99,7 +99,7 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
     this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
-        addMDx(mparams, *dfId[this->mstate.get()].write(), 
+        addMDx(mparams, *dfId[this->mstate.get()].write(),
                 *mparams->readDx(this->mstate.get()), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
     }
 }
@@ -137,19 +137,19 @@ SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, c
 
 
 template<class DataTypes>
-type::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
+type::Vec6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
 {
     auto state = this->mstate.get();
     if (state)
         return getMomentum(mparams, *mparams->readX(state), *mparams->readV(state));
-    return type::Vector6();
+    return type::Vec6();
 }
 
 template<class DataTypes>
-type::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
+type::Vec6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
 {
     msg_warning() << "Method getMomentum( const MechanicalParams*, const DataVecCoord&, const DataVecDeriv& ) not implemented.";
-    return type::Vector6();
+    return type::Vec6();
 }
 
 
@@ -208,7 +208,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
     {
         if (m_gnuplotFileEnergy != nullptr)
             delete m_gnuplotFileEnergy;
-        
+
         m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_Energy.txt").c_str() );
     }
 }
@@ -237,7 +237,7 @@ void Mass<DataTypes>::getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) 
 {
     static const linearalgebra::BaseMatrix::Index dimension = (linearalgebra::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-    
+
     m->clear();
     msg_warning() << "Method getElementMass with Matrix not implemented";
 }

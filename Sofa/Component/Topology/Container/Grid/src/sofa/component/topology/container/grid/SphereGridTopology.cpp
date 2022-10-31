@@ -70,9 +70,10 @@ void SphereGridTopology::setRadius(SReal radius)
 
 sofa::type::Vec3 SphereGridTopology::getPoint(Index i) const
 {
-    int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
-    int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
-    int z = i%d_n.getValue()[2]; i/=d_n.getValue()[2];
+    const auto n = this->d_n.getValue();
+    int x = i%n[0]; i/=n[0];
+    int y = i%n[1]; i/=n[1];
+    int z = i%n[2]; i/=n[2];
     return getPointInGrid(x,y,z);
 }
 

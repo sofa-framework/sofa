@@ -142,7 +142,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
         {
             for (int corner=0; corner<8; ++corner)
             {
-                Vector3 p(
+                Vec3 p(
                     (corner&1)?sceneBBox.minBBox().x():sceneBBox.maxBBox().x(),
                     (corner&2)?sceneBBox.minBBox().y():sceneBBox.maxBBox().y(),
                     (corner&4)?sceneBBox.minBBox().z():sceneBBox.maxBBox().z()
@@ -295,7 +295,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
         {
             for (int corner=0; corner<8; ++corner)
             {
-                Vector3 p(
+                Vec3 p(
                     (corner&1)?sceneBBox.minBBox().x():sceneBBox.maxBBox().x(),
                     (corner&2)?sceneBBox.minBBox().y():sceneBBox.maxBBox().y(),
                     (corner&4)?sceneBBox.minBBox().z():sceneBBox.maxBBox().z()
@@ -452,11 +452,11 @@ void OglViewport::draw(const core::visual::VisualParams* vparams)
 		return;
 
 	if (!p_cameraRigid.isDisplayed())
-		vparams->drawTool()->drawFrame(p_cameraPosition.getValue(), p_cameraOrientation.getValue(), Vector3(0.1,0.1,0.1));
+		vparams->drawTool()->drawFrame(p_cameraPosition.getValue(), p_cameraOrientation.getValue(), Vec3(0.1,0.1,0.1));
 	else
 	{
 		RigidCoord rcam = p_cameraRigid.getValue();
-		vparams->drawTool()->drawFrame(rcam.getCenter(), rcam.getOrientation(), Vector3(0.1,0.1,0.1));
+		vparams->drawTool()->drawFrame(rcam.getCenter(), rcam.getOrientation(), Vec3(0.1,0.1,0.1));
 	}
 }
 

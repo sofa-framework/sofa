@@ -334,10 +334,10 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);
 
-    std::vector< sofa::type::Vector3 > pointsInit;
+    std::vector< sofa::type::Vec3 > pointsInit;
     for (unsigned int s = 0; s < m_lastpos.size(); s++)
     {
-        sofa::type::Vector3 point;
+        sofa::type::Vec3 point;
         point = DataTypes::getCPos(m_lastpos[s] + dpos);
         pointsInit.push_back(point);
     }

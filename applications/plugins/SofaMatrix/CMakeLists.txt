@@ -7,7 +7,7 @@ sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
-sofa_find_package(SofaGuiQt REQUIRED QUIET)
+sofa_find_package(Sofa.GUI.Qt QUIET)
 
 set(SOFA_MODULES
     Sofa.Component.Constraint.Lagrangian.Solver
@@ -42,8 +42,8 @@ set(MOC_FILES
 set(MOC_HEADER_FILES
 )
 
-if (NOT SofaGuiQt_FOUND)
-    message(NOTICE "[SofaMatrix] Module SofaGuiQt not found: some components (GlobalSystemMatrixImage) will not be compiled")
+if (NOT Sofa.GUI.Qt_FOUND)
+    message(NOTICE "[SofaMatrix] Module Sofa.GUI.Qt not found: some components (GlobalSystemMatrixImage) will not be compiled")
 else()
     list(APPEND HEADER_FILES
         ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.h
@@ -59,7 +59,7 @@ else()
         ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.h
     )
     list(APPEND SOFA_MODULES
-        SofaGuiQt
+        Sofa.GUI.Qt
     )
 
     find_package(Qt5 COMPONENTS Core QUIET)

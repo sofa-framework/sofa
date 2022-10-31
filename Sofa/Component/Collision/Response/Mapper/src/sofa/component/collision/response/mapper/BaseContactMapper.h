@@ -71,7 +71,7 @@ public:
 
     /// Adding a point of the global referentiel to the mapping, also giving the local referentiel
     /// Note that it cannot have the same name as addPoint otherwise it creates errors when a subclass only implement the version without barycoords
-    virtual Index addPointB(const Coord& P, Index elementId, Real& r, const sofa::type::Vector3& /*baryP*/)
+    virtual Index addPointB(const Coord& P, Index elementId, Real& r, const sofa::type::Vec3& /*baryP*/)
     {
         return addPoint(P, elementId, r);
     }

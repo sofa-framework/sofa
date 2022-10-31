@@ -48,7 +48,7 @@ public:
     bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
     template<class T> bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&);
 
-    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);        
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
     template<class T> int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Point&, OutputVector*);
     int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
     template<class T> int computeIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&, OutputVector*);
@@ -69,11 +69,11 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const type::Vector3 x13 = e2.p1()-e2.p2();
-    const type::Vector3 x23 = e2.p1()-e2.p3();
-    const type::Vector3 x03 = e2.p1()-e1.center();
+    const type::Vec3 x13 = e2.p1()-e2.p2();
+    const type::Vec3 x23 = e2.p1()-e2.p3();
+    const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
-    type::Vector2 b;
+    type::Vec2 b;
     A[0][0] = x13*x13;
     A[1][1] = x23*x23;
     A[0][1] = A[1][0] = x13*x23;
@@ -94,7 +94,7 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Triangl
             return false;
     }
 
-    type::Vector3 P,Q,PQ;
+    type::Vec3 P,Q,PQ;
     P = e1.center();
     Q = e2.p1() - x13 * alpha - x23 * beta;
     PQ = Q-P;
@@ -112,11 +112,11 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const type::Vector3 x13 = e2.p1()-e2.p2();
-    const type::Vector3 x23 = e2.p1()-e2.p3();
-    const type::Vector3 x03 = e2.p1()-e1.center();
+    const type::Vec3 x13 = e2.p1()-e2.p2();
+    const type::Vec3 x23 = e2.p1()-e2.p3();
+    const type::Vec3 x03 = e2.p1()-e1.center();
     type::Matrix2 A;
-    type::Vector2 b;
+    type::Vec2 b;
     A[0][0] = x13*x13;
     A[1][1] = x23*x23;
     A[0][1] = A[1][0] = x13*x23;
@@ -137,9 +137,9 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
             return 0;
     }
 
-    type::Vector3 P = e1.center();
-    type::Vector3 Q = e2.p1() - x13 * alpha - x23 * beta;
-    type::Vector3 QP = P-Q;
+    type::Vec3 P = e1.center();
+    type::Vec3 Q = e2.p1() - x13 * alpha - x23 * beta;
+    type::Vec3 QP = P-Q;
     //Vector3 PQ = Q-P;
 
     if (QP.norm2() >= alarmDist*alarmDist)
@@ -160,7 +160,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Trian
     else
     {
         msg_warning(intersection) << "Null distance between contact detected";
-        detection->normal= type::Vector3(1,0,0);
+        detection->normal= type::Vec3(1,0,0);
     }
     detection->value -= contactDist;
     detection->point[0]=Q;
@@ -190,7 +190,7 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::Line& e
             return false;
     }
 
-    type::Vector3 P,Q,PQ;
+    type::Vec3 P,Q,PQ;
     P = e1.center();
     Q = e2.p1() - x32 * alpha;
     PQ = Q-P;
@@ -245,7 +245,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::Line&
     else
     {
         msg_warning(intersection) << "Null distance between contact detected";
-        detection->normal= type::Vector3(1,0,0);
+        detection->normal= type::Vec3(1,0,0);
     }
     detection->point[0]=Q;
     detection->point[1]=e1.getContactPointByNormal( detection->normal );
@@ -258,7 +258,7 @@ bool MeshMinProximityIntersection::testIntersection(collision::geometry::TSphere
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    type::Vector3 P,Q,PQ;
+    type::Vec3 P,Q,PQ;
     P = e1.center();
     Q = e2.p();
     PQ = Q-P;
@@ -276,7 +276,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::TSphe
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    type::Vector3 P,Q,PQ;
+    type::Vec3 P,Q,PQ;
     P = e1.center();
     Q = e2.p();
     PQ = Q-P;
@@ -299,7 +299,7 @@ int MeshMinProximityIntersection::computeIntersection(collision::geometry::TSphe
     else
     {
         msg_warning(intersection) << "Null distance between contact detected";
-        detection->normal= type::Vector3(1,0,0);
+        detection->normal= type::Vec3(1,0,0);
     }
     detection->value -= contactDist;
     detection->point[0]=e1.getContactPointByNormal( -detection->normal );

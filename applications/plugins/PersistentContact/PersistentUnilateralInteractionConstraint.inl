@@ -206,8 +206,8 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(
 
             if (dt > 0.0 && dt < 1.0)
             {
-                const sofa::type::Vector3 Qt = c.Q * (1-dt) + Qfree * dt;
-                const sofa::type::Vector3 Pt = c.P * (1-dt) + Pfree * dt;
+                const sofa::type::Vec3 Qt = c.Q * (1-dt) + Qfree * dt;
+                const sofa::type::Vec3 Pt = c.P * (1-dt) + Pfree * dt;
 
                 dfree_t	= dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
                 dfree_s	= dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);

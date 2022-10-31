@@ -238,11 +238,11 @@ public:
 
     /// TopologyHandler interactions
     ///@{
-    const std::list<TopologyHandler*>& getTopologyHandlerList(sofa::geometry::ElementType elementType) const;
+    const std::set<TopologyHandler*>& getTopologyHandlerList(sofa::geometry::ElementType elementType) const;
 
     /** \brief Adds a TopologyHandler, linked to a certain type of Element.
     */
-    void addTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
+    [[nodiscard]] bool addTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
 
 
     /** \brief Free each Topology changes in the list and remove them from the list
@@ -263,7 +263,7 @@ public:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::array< std::list<TopologyHandler*>, sofa::geometry::NumberOfElementType> m_topologyHandlerListPerElement{};
+    std::array< std::set<TopologyHandler*>, sofa::geometry::NumberOfElementType> m_topologyHandlerListPerElement{};
 
     bool insertInNode( objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }

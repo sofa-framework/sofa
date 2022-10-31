@@ -21,74 +21,19 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/constraint/lagrangian/solver/config.h>
+#include <sofa/component/constraint/lagrangian/solver/GenericConstraintProblem.h>
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/helper/map.h>
 
 #include <sofa/simulation/CpuTask.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-
-class GenericConstraintSolver;
-
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintProblem : public ConstraintProblem
-{
-public:
-    sofa::linearalgebra::FullVector<SReal> _d;
-    std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
-    bool scaleTolerance, allVerified;
-    SReal sor;
-    SReal sceneTime;
-    SReal currentError;
-    int currentIterations;
-
-    // For unbuilt version :
-    sofa::linearalgebra::SparseMatrix<SReal> Wdiag;
-    std::list<unsigned int> constraints_sequence;
-    bool change_sequence;
-
-    typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;
-    typedef std::vector< core::behavior::BaseConstraintCorrection* >::iterator ConstraintCorrectionIterator;
-
-    std::vector< ConstraintCorrections > cclist_elems;
-
-
-    GenericConstraintProblem() : scaleTolerance(true), allVerified(false), sor(1.0)
-      , sceneTime(0.0), currentError(0.0), currentIterations(0)
-      , change_sequence(false) {}
-    ~GenericConstraintProblem() override { freeConstraintResolutions(); }
-
-    void clear(int nbConstraints) override;
-    void freeConstraintResolutions();
-    void solveTimed(SReal tol, int maxIt, SReal timeout) override;
-
-    /// Projective Gauss Seidel method building the compliance matrix
-    void gaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
-    /// Projective Gauss Seidel unbuilt method
-    void unbuiltGaussSeidel(SReal timeout=0, GenericConstraintSolver* solver = nullptr);
-    /// Method from:
-    /// A nonsmooth nonlinear conjugate gradient method for interactive contact force problems
-    /// - 2010, Silcowitz, Morten and Niebe, Sarah and Erleben, Kenny
-    void NNCG(GenericConstraintSolver* solver = nullptr, int iterationNewton = 1);
-
-    void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, sofa::type::vector<SReal>& tabErrors) const;
-    void result_output(GenericConstraintSolver* solver, SReal *force, SReal error, int iterCount, bool convergence);
-
-    int getNumConstraints();
-    int getNumConstraintGroups();
-
-protected:
-    sofa::linearalgebra::FullVector<SReal> m_lam;
-    sofa::linearalgebra::FullVector<SReal> m_deltaF;
-    sofa::linearalgebra::FullVector<SReal> m_deltaF_new;
-    sofa::linearalgebra::FullVector<SReal> m_p;
-
-};
 
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API GenericConstraintSolver : public ConstraintSolverImpl
 {
@@ -109,7 +54,7 @@ public:
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void buildSystem_matrixFree(unsigned int numConstraints);
     void buildSystem_matrixAssembly(const core::ConstraintParams *cParams);
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
+    void rebuildSystem(double massFactor, double forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
@@ -161,15 +106,18 @@ protected:
 
     void clearConstraintProblemLocks();
 
+    void parallelBuildSystem_matrixAssembly(const core::ConstraintParams* cParams);
+    void sequentialBuildSystem_matrixAssembly(const core::ConstraintParams* cParams);
+
     enum { CP_BUFFER_SIZE = 10 };
     sofa::type::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
     sofa::type::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
     GenericConstraintProblem *current_cp, *last_cp;
-    std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
-    std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
+    type::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
+    type::vector<bool> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
 
-    sofa::core::objectmodel::BaseContext *context;
+    sofa::core::objectmodel::BaseContext *context { nullptr };
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
@@ -199,33 +147,6 @@ private:
         core::ConstraintParams cparams;
         friend class GenericConstraintSolver;
     };
-};
-
-
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res);
-
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override;
-
-    bool isThreadSafe() const override;
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override { }
-#endif
-private:
-    /// Constraint parameters
-    const sofa::core::ConstraintParams *cparams;
-
-    std::vector<core::behavior::ConstraintResolution*>& _res;
-    unsigned int _offset;
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

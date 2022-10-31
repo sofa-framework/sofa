@@ -80,9 +80,7 @@ struct PlaneROI_test : public BaseSimulationTest,
         "   </Node>                                                        "
         "</Node>                                                           " ;
 
-        m_node2 = SceneLoaderXML::loadFromMemory ("testscene",
-                                                  scene1.c_str(),
-                                                  scene1.size()) ;
+        m_node2 = SceneLoaderXML::loadFromMemory ("testscene", scene1.c_str());
     }
 
 

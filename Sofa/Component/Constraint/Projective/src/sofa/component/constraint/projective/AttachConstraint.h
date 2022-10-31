@@ -55,8 +55,8 @@ public:
     Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)
     Data<bool> f_lastFreeRotation; ///< true to keep rotation of the last attached point free (only used for Rigid DOFs)
     Data<bool> f_restRotations; ///< true to use rest rotations local offsets (only used for Rigid DOFs)
-    Data<type::Vector3> f_lastPos; ///< position at which the attach constraint should become inactive
-    Data<type::Vector3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
+    Data<type::Vec3> f_lastPos; ///< position at which the attach constraint should become inactive
+    Data<type::Vec3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
     Data<bool> f_clamp; ///< true to clamp particles at lastPos instead of freeing them.
     Data<Real> f_minDistance; ///< the constraint become inactive if the distance between the points attached is bigger than minDistance.
     Data< Real > d_positionFactor;      ///< IN: Factor applied to projection of position

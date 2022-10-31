@@ -382,7 +382,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
 
     constexpr sofa::type::RGBAColor colorActive = sofa::type::RGBAColor::magenta();
     constexpr sofa::type::RGBAColor colorNotActive = sofa::type::RGBAColor::green();
-    std::vector< sofa::type::Vector3 > vertices;
+    std::vector< sofa::type::Vec3 > vertices;
 
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     auto positionsM1 = sofa::helper::getReadAccessor(*this->mstate1->read(ConstVecCoordId::position()));

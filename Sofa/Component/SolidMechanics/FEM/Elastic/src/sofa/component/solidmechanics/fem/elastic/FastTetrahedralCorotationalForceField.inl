@@ -610,7 +610,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
         vparams->drawTool()->setPolygonMode(0, true);
 
 
-    std::vector< type::Vector3 > points[4];
+    std::vector< type::Vec3 > points[4];
     for (size_t i = 0; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t = m_topology->getTetrahedron(i);

@@ -107,7 +107,7 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
     if ( !isMoving() && !cubeModel->empty() && !m_needsUpdate ) return; // No need to recompute BBox if immobile
 
     m_needsUpdate=false;
-    Vector3 minElem, maxElem;
+    Vec3 minElem, maxElem;
     const VecCoord& xHigh =_higher_mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x =m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -121,7 +121,7 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
         maxElem = xHigh[0];
         for ( unsigned i=1; i<xHigh.size(); ++i )
         {
-            const Vector3& pt1 = xHigh[i];
+            const Vec3& pt1 = xHigh[i];
             if ( pt1[0] > maxElem[0] ) maxElem[0] = pt1[0];
             else if ( pt1[0] < minElem[0] ) minElem[0] = pt1[0];
             if ( pt1[1] > maxElem[1] ) maxElem[1] = pt1[1];
@@ -133,9 +133,9 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
         for (std::size_t i=0; i<getSize(); ++i)
         {
             Triangle t(this,i);
-            const Vector3& pt1 = x[t.p1Index()];
-            const Vector3& pt2 = x[t.p2Index()];
-            const Vector3& pt3 = x[t.p3Index()];
+            const Vec3& pt1 = x[t.p1Index()];
+            const Vec3& pt2 = x[t.p2Index()];
+            const Vec3& pt3 = x[t.p3Index()];
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
         }

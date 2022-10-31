@@ -111,7 +111,7 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
         std::istringstream values(line);
 
         values >> vertex[0] >> vertex[1] >> vertex[2];
-        my_positions.push_back(Vector3(vertex[0],vertex[1], vertex[2]));
+        my_positions.push_back(Vec3(vertex[0],vertex[1], vertex[2]));
 
         currentNumberOfVertices++;
     }

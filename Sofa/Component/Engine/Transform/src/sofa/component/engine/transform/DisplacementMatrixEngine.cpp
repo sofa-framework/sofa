@@ -71,4 +71,6 @@ int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of R
     .add< DisplacementMatrixEngine<Rigid3Types> >()
 ;
 
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DisplacementMatrixEngine<Rigid3Types>;
+
 } // namespace sofa::component::engine::transform

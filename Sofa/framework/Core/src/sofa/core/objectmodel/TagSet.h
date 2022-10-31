@@ -32,11 +32,11 @@ namespace sofa::core::objectmodel
 class SOFA_CORE_API TagSet : public std::set<Tag>
 {
 public:
-    TagSet() {}
+    TagSet() = default;
     /// Automatic conversion between a tag and a tagset composed of this tag
-    TagSet(const Tag& t) { this->insert(t); }
+    TagSet(const Tag& t);
     /// Returns true if this TagSet contains specified tag
-    bool includes(const Tag& t) const { return this->count(t) > 0; }
+    bool includes(const Tag& t) const;
     /// Returns true if this TagSet contains all specified tags
     bool includes(const TagSet& t) const;
 };
