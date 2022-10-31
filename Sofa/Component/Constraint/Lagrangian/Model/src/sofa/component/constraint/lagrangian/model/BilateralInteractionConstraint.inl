@@ -312,9 +312,9 @@ void BilateralInteractionConstraint<DataTypes>::addContact(Deriv norm, Real cont
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::removeContact(int objectId, SubsetIndices indices)
 {
-    auto& m1Indices = sofa::helper::getWriteOnlyAccessor(this->m1);
-    auto& m2Indices = sofa::helper::getWriteOnlyAccessor(this->m2);
-    auto& wrest = sofa::helper::getWriteOnlyAccessor(this->restVector);
+    WriteAccessor<Data <SubsetIndices > > m1Indices = this->m1;
+    WriteAccessor<Data <SubsetIndices > > m2Indices = this->m2;
+    WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
 
     const SubsetIndices& cIndices1 = m1.getValue();
     const SubsetIndices& cIndices2 = m2.getValue();
