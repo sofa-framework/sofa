@@ -402,7 +402,7 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
     dmsg_info() << " computeCompliance_done "  ;
 }
 
-void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
+void GenericConstraintSolver::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
     for (auto* cc : constraintCorrections)
     {
