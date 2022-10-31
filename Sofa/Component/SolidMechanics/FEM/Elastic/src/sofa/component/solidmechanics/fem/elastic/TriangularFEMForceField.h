@@ -227,6 +227,7 @@ protected :
     void computeStiffness(Stiffness &K, const StrainDisplacement& J, const MaterialStiffness &D);
     void computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo);
     void computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo);
+    void computeStressPerVertex(); ///< Method to compute the averageStress per vertex. Call if @sa showStressValue is true
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );

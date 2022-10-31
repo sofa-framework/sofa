@@ -814,6 +814,40 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
     triangleInf[elementIndex].stress = stress;
 }
 
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::computeStressPerVertex()
+{
+    const auto& triangles = m_topology->getTriangles();
+    auto vertexInf = sofa::helper::getWriteOnlyAccessor(vertexInfo);
+    const auto& triangleInf = sofa::helper::getReadAccessor(triangleInfo);
+
+    m_minStress = std::numeric_limits<Real>::max();
+    m_maxStress = std::numeric_limits<Real>::lowest();
+    for (unsigned int i = 0; i < vertexInf.size(); i++)
+    {
+        const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
+        Real averageStress = 0.0;
+        double sumArea = 0.0;
+        for (auto triID : triangles)
+        {
+            if (triangleInf[triID].area)
+            {
+                averageStress += (fabs(triangleInf[triID].maxStress) * triangleInf[triID].area);
+                sumArea += triangleInf[triID].area;
+            }
+        }
+        if (sumArea)
+            averageStress /= sumArea;
+
+        vertexInf[i].stress = averageStress;
+        if (averageStress < m_minStress)
+            m_minStress = averageStress;
+        if (averageStress > m_maxStress)
+            m_maxStress = averageStress;
+    }
+}
+
 // ----------------------------------------------------------------------------------------------------------------------------------------
 // ---	Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
 // ----------------------------------------------------------------------------------------------------------------------------------------
@@ -1149,6 +1183,7 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
     }
     f.endEdit();
 
+
     if (f_computePrincipalStress.getValue() || p_computeDrawInfo)
     {
         unsigned int nbTriangles = m_topology->getNbTriangles();
@@ -1158,33 +1193,7 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
         if (showStressValue.getValue()) // if true will compute averageStress per point
         {
-            const auto& triangles = m_topology->getTriangles();
-            auto vertexInf = sofa::helper::getWriteOnlyAccessor(vertexInfo);
-
-            m_minStress = std::numeric_limits<Real>::max();
-            m_maxStress = std::numeric_limits<Real>::lowest();
-            for (unsigned int i = 0; i < vertexInf.size(); i++)
-            {
-                const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
-                Real averageStress = 0.0;
-                double sumArea = 0.0;
-                for (auto triID : triangles)
-                {
-                    if (triangleInf[triID].area)
-                    {
-                        averageStress += (fabs(triangleInf[triID].maxStress) * triangleInf[triID].area);
-                        sumArea += triangleInf[triID].area;
-                    }
-                }
-                if (sumArea)
-                    averageStress /= sumArea;
-
-                vertexInf[i].stress = averageStress;
-                if (averageStress < m_minStress)
-                    m_minStress = averageStress;
-                if (averageStress > m_maxStress)
-                    m_maxStress = averageStress;
-            }
+            computeStressPerVertex();
         }
     }
 }
