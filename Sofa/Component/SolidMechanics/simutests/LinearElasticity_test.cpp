@@ -42,6 +42,7 @@
 #include <sofa/component/constraint/projective/FixedConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
 #include <sofa/component/constraint/projective/ProjectToLineConstraint.h>
+#include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa {
 
@@ -91,6 +92,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     root->setAnimate(false);
     root->setDt(0.05);
 
+    sofa::modeling::addNew<sofa::simulation::DefaultAnimationLoop>(root, "animationLoop");
 
     // GenerateCylinder object
     typename sofa::component::engine::generate::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::generate::GenerateCylinder<DataTypes> >(root,"cylinder");

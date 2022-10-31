@@ -85,7 +85,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
-         root = simulation::getSimulation()->createNewGraph("root");
+        root = simulation::getSimulation()->createNewGraph("root");
 
     }
 
