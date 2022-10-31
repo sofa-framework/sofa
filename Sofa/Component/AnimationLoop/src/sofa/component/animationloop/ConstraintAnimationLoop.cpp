@@ -592,13 +592,13 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         totaltime = time;
         msg_info()<<msgendl;
     }
-    if (d_SRealBuffer.getValue())
+    if (d_doubleBuffer.getValue())
     {
         // SWAP BUFFER:
         bufCP1 = !bufCP1;
     }
 
-    ConstraintProblem& CP = (d_SRealBuffer.getValue() && bufCP1) ? CP2 : CP1;
+    ConstraintProblem& CP = (d_doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
 
 #if !defined(WIN32)
     if (d_realTimeCompensation.getValue())
@@ -1008,7 +1008,7 @@ void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 {
 
     SReal mu=0.8;
-    ConstraintProblem& CP = (d_SRealBuffer.getValue() && bufCP1) ? CP2 : CP1;
+    ConstraintProblem& CP = (d_doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
     helper::nlcp_gaussseidel(numConstraints, CP.getDfree()->ptr(), CP.getW()->lptr(), CP.getF()->ptr(), mu, d_tol.getValue(), d_maxIt.getValue(), false, EMIT_EXTRA_DEBUG_MESSAGE);
     CP.getF()->clear();
     CP.getF()->resize(numConstraints);
@@ -1017,7 +1017,7 @@ void ConstraintAnimationLoop::debugWithContact(int numConstraints)
 
 ConstraintProblem* ConstraintAnimationLoop::getCP()
 {
-    if (d_SRealBuffer.getValue() && bufCP1)
+    if (d_doubleBuffer.getValue() && bufCP1)
         return &CP2;
     else
         return &CP1;
