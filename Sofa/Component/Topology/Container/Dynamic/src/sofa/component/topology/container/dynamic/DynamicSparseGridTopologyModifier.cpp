@@ -38,10 +38,14 @@ void DynamicSparseGridTopologyModifier::init()
 {
     HexahedronSetTopologyModifier::init();
     this->getContext()->get ( m_DynContainer );
-    if ( ! m_DynContainer )
+
+    if(!m_DynContainer)
     {
-        msg_error() << "init(): DynamicSparseGridTopologyContainer was not found !";
+        msg_error() << "DynamicSparseGridTopologyContainer not found in current node: " << this->getContext()->getName();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
+
     everRenumbered = false;
 }
 
