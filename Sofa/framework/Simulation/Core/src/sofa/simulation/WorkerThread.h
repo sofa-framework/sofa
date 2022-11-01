@@ -22,11 +22,13 @@
 #pragma once
 
 #include <sofa/simulation/config.h>
-#include <string>
+
 #include <sofa/simulation/Task.h>
+#include <sofa/simulation/Locks.h>
+
 #include <thread>
 #include <deque>
-#include <sofa/simulation/Locks.h>
+#include <string>
 
 namespace sofa::simulation
 {
@@ -114,4 +116,4 @@ private:
     friend class DefaultTaskScheduler;
 };
 
-}
+} // namespace sofa::simulation

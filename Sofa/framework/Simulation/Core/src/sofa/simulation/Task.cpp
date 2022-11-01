@@ -23,46 +23,42 @@
 
 namespace sofa::simulation
 {
-    Task::Allocator* Task::_allocator = nullptr;
+Task::Allocator* Task::_allocator = nullptr;
 
-    Task::Task(int scheduledThread)
-    : m_scheduledThread(scheduledThread)
-    , m_id(0)
-    {
-    }
+Task::Task(int scheduledThread)
+: m_scheduledThread(scheduledThread)
+, m_id(0)
+{
+}
 
-    Task::~Task()
-    {
-    }
+void *Task::operator new(std::size_t sz)
+{
+    return _allocator->allocate(sz);
+}
 
-    void *Task::operator new(std::size_t sz)
-    {
-        return _allocator->allocate(sz);
-    }
+void Task::operator delete(void *ptr)
+{
+    _allocator->free(ptr, 0);
+}
 
-    void Task::operator delete(void *ptr)
-    {
-        _allocator->free(ptr, 0);
-    }
+void Task::operator delete(void *ptr, std::size_t sz)
+{
+    _allocator->free(ptr, sz);
+}
 
-    void Task::operator delete(void *ptr, std::size_t sz)
-    {
-        _allocator->free(ptr, sz);
-    }
+int Task::getScheduledThread() const
+{
+    return m_scheduledThread;
+}
 
-    int Task::getScheduledThread() const
-    {
-        return m_scheduledThread;
-    }
+Task::Allocator *Task::getAllocator()
+{
+    return _allocator;
+}
 
-    Task::Allocator *Task::getAllocator()
-    {
-        return _allocator;
-    }
-
-    void Task::setAllocator(Task::Allocator *allocator)
-    {
-        _allocator = allocator;
-    }
+void Task::setAllocator(Task::Allocator *allocator)
+{
+    _allocator = allocator;
+}
 
 } // namespace sofa
