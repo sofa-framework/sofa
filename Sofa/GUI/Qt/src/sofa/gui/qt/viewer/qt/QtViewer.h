@@ -59,7 +59,7 @@ namespace sofa::gui::qt::viewer::qt
 {
 
 //using namespace sofa::defaulttype;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::Quat;
 using namespace sofa::gl;
 using namespace sofa::helper::visual;
@@ -173,10 +173,10 @@ public slots:
     virtual void setSizeW(int) override;
     virtual void setSizeH(int) override;
 
-    virtual void getView(type::Vector3& pos, type::Quat<SReal>& ori) const override;
-    virtual void setView(const type::Vector3& pos, const type::Quat<SReal> &ori) override ;
+    virtual void getView(type::Vec3& pos, type::Quat<SReal>& ori) const override;
+    virtual void setView(const type::Vec3& pos, const type::Quat<SReal> &ori) override ;
     virtual void newView() override ;
-    virtual void moveView(const type::Vector3& pos, const type::Quat<SReal> &ori) override ;
+    virtual void moveView(const type::Vec3& pos, const type::Quat<SReal> &ori) override ;
     virtual void captureEvent()  override { SofaViewer::captureEvent(); }
     virtual void drawColourPicking (common::ColourPickingVisitor::ColourCode code) override ;
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node )  override { SofaViewer::fitNodeBBox(node); }
@@ -226,7 +226,7 @@ public:
     bool _mouseInteractorRotationMode;
     int _translationMode;
     Quat<SReal> _mouseInteractorCurrentQuat;
-    Vector3 _mouseInteractorAbsolutePosition;
+    Vec3 _mouseInteractorAbsolutePosition;
     Trackball _mouseInteractorTrackball;
     void ApplyMouseInteractorTransformation(int x, int y);
 

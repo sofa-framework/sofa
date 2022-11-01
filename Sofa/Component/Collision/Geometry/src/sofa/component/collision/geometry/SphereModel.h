@@ -61,12 +61,12 @@ public:
 
     Real r() const;
 
-    sofa::type::Vector3 getContactPointByNormal( const sofa::type::Vector3& contactNormal )
+    sofa::type::Vec3 getContactPointByNormal( const sofa::type::Vec3& contactNormal )
     {
         return center() - contactNormal * r();
     }
 
-    sofa::type::Vector3 getContactPointWithSurfacePoint( const sofa::type::Vector3& surfacePoint )
+    sofa::type::Vec3 getContactPointWithSurfacePoint( const sofa::type::Vec3& surfacePoint )
     {
         return surfacePoint;
     }
@@ -74,9 +74,9 @@ public:
 
 // Specializations
 template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-sofa::type::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::type::Vector3& /*contactNormal*/ );
+sofa::type::Vec3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::type::Vec3& /*contactNormal*/ );
 template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-sofa::type::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::type::Vector3& );
+sofa::type::Vec3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::type::Vec3& );
 
 
 template< class TDataTypes>

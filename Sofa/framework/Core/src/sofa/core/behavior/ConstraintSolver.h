@@ -116,10 +116,13 @@ public:
     /// @param c is the ConstraintCorrection
     virtual void removeConstraintCorrection(BaseConstraintCorrection *s) = 0;
 
-public:
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
+
+protected:
+
+    virtual void postBuildSystem(const ConstraintParams* constraint_params) {}
+    virtual void postSolveSystem(const ConstraintParams* constraint_params) {}
 };
 
 } // namespace sofa::core::behavior

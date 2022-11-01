@@ -309,7 +309,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
 
     vparams->drawTool()->disableLighting();
     const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
 
@@ -318,7 +318,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
         for(unsigned int j=0 ; j< 3 ; j++)
         {
             const Coord& c = x[m_topology->getTriangle(my_map[i])[j]];
-            vertices.push_back(sofa::type::Vector3(c[0], c[1], c[2]));
+            vertices.push_back(sofa::type::Vec3(c[0], c[1], c[2]));
         }
     }
     vparams->drawTool()->drawTriangles(vertices, color);

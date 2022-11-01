@@ -112,7 +112,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
 
         dataFile >> x >> y >> z;
 
-        my_positions.push_back (Vector3(x, y, z));
+        my_positions.push_back (Vec3(x, y, z));
     }
 
     // --- Loading Triangles array ---
@@ -199,7 +199,7 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
         SReal x,y,z;
 
         dataFile >> x >> y >> z;
-        my_positions.push_back (Vector3(x, y, z));
+        my_positions.push_back (Vec3(x, y, z));
     }
 
 
@@ -212,7 +212,7 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
         SReal x,y,z;
 
         dataFile >> x >> y >> z;
-        my_normals.push_back (Vector3(x, y, z));
+        my_normals.push_back (Vec3(x, y, z));
     }
 
 

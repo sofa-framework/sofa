@@ -50,8 +50,8 @@ bool TetrahedronDiscreteIntersection::testIntersection(Tetrahedron&, Point&)
 
 int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point& e2, OutputVector* contacts)
 {
-    Vector3 n = e2.n();
-    if (n == Vector3()) return 0; // no normal on point -> either an internal points or normal is not available
+    Vec3 n = e2.n();
+    if (n == Vec3()) return 0; // no normal on point -> either an internal points or normal is not available
 
     if (e1.getCollisionModel()->getMechanicalState() == e2.getCollisionModel()->getMechanicalState())
     {
@@ -61,13 +61,13 @@ int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point&
             return 0;
     }
 
-    Vector3 P = e2.p();
-    Vector3 b0 = e1.getBary(P);
+    Vec3 P = e2.p();
+    Vec3 b0 = e1.getBary(P);
     if (b0[0] < 0 || b0[1] < 0 || b0[2] < 0 || (b0[0]+b0[1]+b0[2]) > 1)
         return 1; // out of tetrahedron
 
     // Find the point on the surface of the tetrahedron in the direction of -n
-    Vector3 bdir = e1.getDBary(-n);
+    Vec3 bdir = e1.getDBary(-n);
     //msg_info() << "b0 = "<<b0<<" \tbdir = "<<bdir<<sendl;
     double l1 = 1.0e10;
     for (int c=0; c<3; ++c)
@@ -89,7 +89,7 @@ int TetrahedronDiscreteIntersection::computeIntersection(Tetrahedron& e1, Point&
     }
     if (l1 >= 1.0e9) l1 = 0;
     double l = l1;
-    Vector3 X = P-n*l;
+    Vec3 X = P-n*l;
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
@@ -110,10 +110,10 @@ bool TetrahedronDiscreteIntersection::testIntersection(Ray&, Tetrahedron&)
 
 int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e2, OutputVector* contacts)
 {
-    Vector3 P = e1.origin();
-    Vector3 PQ = e1.direction();
-    Vector3 b0 = e2.getBary(P);
-    Vector3 bdir = e2.getDBary(PQ);
+    Vec3 P = e1.origin();
+    Vec3 PQ = e1.direction();
+    Vec3 b0 = e2.getBary(P);
+    Vec3 bdir = e2.getDBary(PQ);
     //msg_info() << "b0 = "<<b0<<" \tbdir = "<<bdir<<sendl;
     double l0 = 0;
     double l1 = e1.l();
@@ -148,7 +148,7 @@ int TetrahedronDiscreteIntersection::computeIntersection(Ray& e1, Tetrahedron& e
     }
     if (l0 > l1) return 0; // empty intersection
     double l = l0; //(l0+l1)/2;
-    Vector3 X = P+PQ*l;
+    Vec3 X = P+PQ*l;
 
     //msg_info() << "tetra "<<e2.getIndex()<<": b0 = "<<b0<<" \tbdir = "<<bdir<<sendl;
     //msg_info() << "l0 = "<<l0<<" \tl1 = "<<l1<<" \tX = "<<X<<" \tbX = "<<e2.getBary(X)<<" \t?=? "<<(b0+bdir*l)<<sendl;

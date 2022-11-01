@@ -677,7 +677,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
         sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vector3(scale,scale,scale));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vec3(scale,scale,scale));
     }
 
 }

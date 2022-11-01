@@ -876,7 +876,7 @@ void SofaPhysicsSimulation::calcProjection()
     double offset;
     double xForeground, yForeground, zForeground, xBackground, yBackground,
            zBackground;
-    sofa::type::Vector3 center;
+    sofa::type::Vec3 center;
 
     /// Camera part
     if (!currentCamera)

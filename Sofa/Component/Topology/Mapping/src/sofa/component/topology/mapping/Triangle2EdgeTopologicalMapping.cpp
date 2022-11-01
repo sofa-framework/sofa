@@ -57,10 +57,9 @@ Triangle2EdgeTopologicalMapping::Triangle2EdgeTopologicalMapping()
 
 Triangle2EdgeTopologicalMapping::~Triangle2EdgeTopologicalMapping()
 {
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteOnlyAccessor(Loc2GlobDataVec);
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
-    Loc2GlobDataVec.endEdit();
 }
 
 
@@ -103,7 +102,7 @@ void Triangle2EdgeTopologicalMapping::init()
 
     // create topology maps and add edge into output topology
     const sofa::type::vector<core::topology::BaseMeshTopology::Edge> &edgeArray = fromModel->getEdges();
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteOnlyAccessor(Loc2GlobDataVec);
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
@@ -118,8 +117,6 @@ void Triangle2EdgeTopologicalMapping::init()
             Glob2LocMap[eId] = Loc2GlobVec.size() - 1;
         }
     }
-
-    Loc2GlobDataVec.endEdit();
 
     // Need to fully init the target topology
     toModel->init();
@@ -150,7 +147,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-    sofa::type::vector<Index>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+    auto Loc2GlobVec = sofa::helper::getWriteAccessor(Loc2GlobDataVec);
 
     while( itBegin != itEnd )
     {
@@ -445,7 +442,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         sofa::helper::AdvancedTimer::stepEnd(topoChangeType);
         ++itBegin;
     }
-    Loc2GlobDataVec.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("Update Triangle2EdgeTopologicalMapping");
 }

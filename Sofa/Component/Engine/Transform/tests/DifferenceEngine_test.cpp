@@ -104,7 +104,7 @@ struct DifferenceEngine_test : public BaseSimulationTest,
 };
 
 using ::testing::Types;
-typedef Types<type::Vector3> DataTypes;
+typedef Types<type::Vec3> DataTypes;
 
 TYPED_TEST_SUITE(DifferenceEngine_test, DataTypes);
 

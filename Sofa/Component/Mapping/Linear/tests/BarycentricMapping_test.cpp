@@ -35,7 +35,7 @@ using sofa::core::topology::BaseMeshTopology;
 using sofa::testing::BaseTest;
 
 
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::Vec3u;
 using sofa::core::objectmodel::New;
 
@@ -78,12 +78,12 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
 
     void SetUp() override
     {
-        m_in.push_back(Vector3(0.5, 1.5, 0.0));
-        m_in.push_back(Vector3(1.5, 0.0, 2.5));
-        m_in.push_back(Vector3(-0.5, -1.5, 0.0));
+        m_in.push_back(Vec3(0.5, 1.5, 0.0));
+        m_in.push_back(Vec3(1.5, 0.0, 2.5));
+        m_in.push_back(Vec3(-0.5, -1.5, 0.0));
 
-        m_out.push_back(Vector3{-0.5, -1.5, 0.0});
-        m_out.push_back(Vector3{0.5, 0.0, -10.0});
+        m_out.push_back(Vec3{-0.5, -1.5, 0.0});
+        m_out.push_back(Vec3{0.5, 0.0, -10.0});
 
         m_topology = New<TriangleSetTopologyContainer>();
         m_fromTopology = m_topology.get();

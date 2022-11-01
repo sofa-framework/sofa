@@ -88,11 +88,11 @@ struct Scene_test: public NumericTest<SReal>
         root->addObject(DOF);
         DOF->resize(4);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
-        x[0] = type::Vector3(0,0,0);
-        x[1] = type::Vector3(1,0,0);
-        x[2] = type::Vector3(0,1,0);
-        x[3] = type::Vector3(0,0,1);
-        type::Vector3 expectedMin(0,0,0), expectedMax(1,1,1);
+        x[0] = type::Vec3(0,0,0);
+        x[1] = type::Vec3(1,0,0);
+        x[2] = type::Vec3(0,1,0);
+        x[3] = type::Vec3(0,0,1);
+        type::Vec3 expectedMin(0,0,0), expectedMax(1,1,1);
         DOF->showObject.setValue(true); // bbox is updated only for drawn MO
 
         // end create scene
@@ -100,7 +100,7 @@ struct Scene_test: public NumericTest<SReal>
         sofa::simulation::getSimulation()->init(root.get());
         //*********
 
-        type::Vector3 sceneMinBBox, sceneMaxBBox;
+        type::Vec3 sceneMinBBox, sceneMaxBBox;
         simulation->computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if( vectorMaxDiff(sceneMinBBox,expectedMin)>this->epsilon() || vectorMaxDiff(sceneMaxBBox,expectedMax)>this->epsilon() )

@@ -66,7 +66,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
     typedef typename component::solidmechanics::spring::MeshSpringForceField<DataTypes> MeshSpringForceField;
     typedef typename component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes> TetraForceField;
     typedef type::Quat<SReal> Quat;
-    typedef type::Vector3 Vec3;
+    typedef type::Vec3 Vec3;
 
     /// Root of the scene graph
     simulation::Node::SPtr root;
@@ -85,7 +85,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
-         root = simulation::getSimulation()->createNewGraph("root");
+        root = simulation::getSimulation()->createNewGraph("root");
 
     }
 

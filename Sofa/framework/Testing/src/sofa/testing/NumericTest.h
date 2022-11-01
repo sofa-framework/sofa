@@ -289,7 +289,7 @@ void setRot(typename DataTypes::Coord& coord, const sofa::type::Quat<SReal>& rot
 
 /// Create a coord of the specified type from a Vector3 and a Quater
 template<class DataTypes>
-typename DataTypes::Coord createCoord(const sofa::type::Vector3& pos, const sofa::type::Quat<SReal>& rot)
+typename DataTypes::Coord createCoord(const sofa::type::Vec3& pos, const sofa::type::Quat<SReal>& rot)
 {
     typename DataTypes::Coord temp;
     DataTypes::set(temp, pos[0], pos[1], pos[2]);
