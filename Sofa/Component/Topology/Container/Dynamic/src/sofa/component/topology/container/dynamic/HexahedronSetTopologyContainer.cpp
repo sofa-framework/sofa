@@ -1232,4 +1232,17 @@ bool HexahedronSetTopologyContainer::linkTopologyHandlerToData(core::topology::T
     }
 }
 
+bool HexahedronSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::HEXAHEDRON)
+    {
+        d_hexahedron.delOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return QuadSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 } //namespace sofa::component::topology::container::dynamic
