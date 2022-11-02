@@ -43,4 +43,21 @@ enum class ElementType : sofa::Size
 
 constexpr sofa::Size NumberOfElementType = static_cast<sofa::Size>(sofa::geometry::ElementType::SIZE);
 
+constexpr const char* elementTypeToString(ElementType type)
+{
+    switch (type)
+    {
+    case ElementType::POINT: { return "Point"; }
+    case ElementType::EDGE: { return "Edge"; }
+    case ElementType::TRIANGLE: { return "Triangle"; }
+    case ElementType::QUAD: { return "Quad"; }
+    case ElementType::TETRAHEDRON: { return "Tetrahedron"; }
+    case ElementType::HEXAHEDRON: { return "Hexahedron"; }
+    case ElementType::PENTAHEDRON: { return "Pentahedron"; }
+    case ElementType::PYRAMID: { return "Pyramid"; }
+    default: 
+        return "Unknown";
+    }
+}
+
 } // namespace sofa::geometry
