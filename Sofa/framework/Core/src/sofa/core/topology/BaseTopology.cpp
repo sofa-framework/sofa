@@ -98,18 +98,33 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
     m_stateChangeList.endEdit();
 }
 
+const std::set<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
+{
+    return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
+}
+
 bool TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler, sofa::geometry::ElementType elementType)
 {
     auto [ptr, res] = m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].insert(_TopologyHandler);
     return res;
 }
 
-const std::set<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
+void TopologyContainer::removeTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType)
 {
-    return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
+    m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].erase(_TopologyHandler);
 }
 
 bool TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    // default implementation dont do anything
+    // as it does not hold any data itself
+    SOFA_UNUSED(topologyHandler);
+    SOFA_UNUSED(elementType);
+
+    return false;
+}
+
+bool TopologyContainer::unlinkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     // default implementation dont do anything
     // as it does not hold any data itself
@@ -169,6 +184,11 @@ void TopologyContainer::resetTopologyHandlerList()
 {
     for (auto& topologyHandlerList : m_topologyHandlerListPerElement)
     {
+        std::for_each(topologyHandlerList.begin(), topologyHandlerList.end(), [](TopologyHandler* topoHandler) 
+        {
+            topoHandler->unregisterTopologyHandler();
+            topoHandler = nullptr;
+        });
         topologyHandlerList.clear();
     }
 

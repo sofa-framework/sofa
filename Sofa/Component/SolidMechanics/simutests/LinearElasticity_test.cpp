@@ -42,6 +42,7 @@
 #include <sofa/component/constraint/projective/FixedConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
 #include <sofa/component/constraint/projective/ProjectToLineConstraint.h>
+#include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa {
 
@@ -91,6 +92,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     root->setAnimate(false);
     root->setDt(0.05);
 
+    sofa::modeling::addNew<sofa::simulation::DefaultAnimationLoop>(root, "animationLoop");
 
     // GenerateCylinder object
     typename sofa::component::engine::generate::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::generate::GenerateCylinder<DataTypes> >(root,"cylinder");
@@ -241,12 +243,10 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                 for (i=0;i<sizePressureArray;++i) {
                     // set the pressure on the top part
                     Real pressure= pressureArray[i];
-                    tractionStruct.forceField.get()->pressure=Coord(0,0,pressure);
 
-                    // reset simulation and init the triangle pressure forcefield
+                    tractionStruct.forceField.get()->setPressure(Coord(0, 0, pressure));
                     sofa::simulation::getSimulation()->reset(tractionStruct.root.get());
-                    // sofa::simulation::getSimulation()->init(tractionStruct.root.get());
-                    tractionStruct.forceField.get()->init();
+                    
                     // record the initial point of a given vertex
                     Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
 

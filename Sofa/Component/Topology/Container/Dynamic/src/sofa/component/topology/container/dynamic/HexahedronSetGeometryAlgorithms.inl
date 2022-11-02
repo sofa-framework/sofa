@@ -807,7 +807,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
     myfile << "$ENDNOD\n";
     myfile << "$ELM\n";
 
-    const sofa::type::vector<Hexahedron> hea = this->m_topology->getHexahedra();
+    const sofa::type::vector<Hexahedron>& hea = this->m_topology->getHexahedra();
 
     myfile << hea.size() <<"\n";
 
