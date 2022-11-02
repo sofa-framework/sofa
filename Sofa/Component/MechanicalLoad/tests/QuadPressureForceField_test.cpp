@@ -99,7 +99,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         }
 
         // run the forcefield_test
-        Inherited::run_test( x, v, f );
+        Inherited::run_test( x, v, f, false );
     }
 
 };

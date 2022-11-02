@@ -31,6 +31,12 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fwd.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
+using sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
+
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintInfoVisitor;
 
@@ -39,9 +45,6 @@ using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
-using sofa::simulation::mechanicalvisitor::MechanicalAccumulateConstraint;
 
 using sofa::core::VecId;
 
@@ -77,7 +80,9 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 
     // Test if the nodes containing the constraint correction are active (not sleeping)
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+    {
         constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
+    }
 
     if(build_lcp.getValue())
     {
@@ -301,9 +306,17 @@ void LCPConstraintSolver::build_LCP()
     }
 
     {
-        helper::ScopedAdvancedTimer accumulateConstraintsTimer("Accumulate Constraint");
-        MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
-        accCtr.execute(context);
+        helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
+
+        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
+        buildConstraintMatrix.execute(context);
+    }
+
+    {
+        helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
+
+        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
+        accumulateMatrixDeriv.execute(context);
     }
 
     _mu = mu.getValue();
@@ -691,9 +704,17 @@ void LCPConstraintSolver::build_problem_info()
     }
 
     {
-        helper::ScopedAdvancedTimer accumulateConstraintsTimer("Accumulate Constraint");
-        MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
-        accCtr.execute(context);
+        helper::ScopedAdvancedTimer buildConstraintMatrixTimer("Build Constraint Matrix");
+
+        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, cparams.j(), _numConstraints );
+        buildConstraintMatrix.execute(context);
+    }
+
+    {
+        helper::ScopedAdvancedTimer accumulateMatrixDerivTimer("Accumulate Matrix Deriv");
+
+        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, cparams.j());
+        accumulateMatrixDeriv.execute(context);
     }
 
     _mu = mu.getValue();
@@ -710,7 +731,7 @@ void LCPConstraintSolver::build_problem_info()
         MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
     }
 
-    dmsg_info() <<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu;
+    dmsg_info() << _numConstraints << " constraints, mu = "<<_mu;
 
     {
         helper::ScopedAdvancedTimer buildHierarchyTimer("Build Hierarchy");
@@ -767,9 +788,8 @@ void LCPConstraintSolver::computeInitialGuess()
             (*_result)[c+numContact] =  0.0;
         }
     }
-    for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
+    for (const ConstraintBlockInfo& info : constraintBlockInfo)
     {
-        const ConstraintBlockInfo& info = constraintBlockInfo[cb];
         if (!info.hasId) continue;
         std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end()) continue;
@@ -800,16 +820,15 @@ void LCPConstraintSolver::keepContactForcesValue()
     for (unsigned int c=0; c<_numConstraints; ++c)
         _previousForces[c] = (*_result)[c];
     // clear previous history
-    for (std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
+    for (auto& previousConstraint : _previousConstraints)
     {
-        ConstraintBlockBuf& buf = it->second;
-        for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
-            it2->second = -1;
+        ConstraintBlockBuf& buf = previousConstraint.second;
+        for (auto& it2 : buf.persistentToConstraintIdMap)
+            it2.second = -1;
     }
     // fill info from current ids
-    for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
+    for (const ConstraintBlockInfo& info : constraintBlockInfo)
     {
-        const ConstraintBlockInfo& info = constraintBlockInfo[cb];
         if (!info.parent) continue;
         if (!info.hasId) continue;
         ConstraintBlockBuf& buf = _previousConstraints[info.parent];
@@ -817,7 +836,9 @@ void LCPConstraintSolver::keepContactForcesValue()
         int nbl = info.nbLines;
         buf.nbLines = nbl;
         for (int c = 0; c < info.nbGroups; ++c)
+        {
             buf.persistentToConstraintIdMap[constraintIds[info.offsetId + c]] = c0 + c*nbl;
+        }
     }
 }
 

@@ -209,4 +209,18 @@ bool PointSetTopologyContainer::linkTopologyHandlerToData(core::topology::Topolo
 }
 
 
+bool PointSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::POINT)
+    {
+        d_initPoints.delOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 } //namespace sofa::component::topology::container::dynamic

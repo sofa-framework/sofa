@@ -43,6 +43,13 @@ void QuadSetTopologyModifier::init()
 {
     EdgeSetTopologyModifier::init();
     this->getContext()->get(m_container);
+
+    if(!m_container)
+    {
+        msg_error() << "QuadSetTopologyContainer not found in current node: " << this->getContext()->getName();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 }
 
 

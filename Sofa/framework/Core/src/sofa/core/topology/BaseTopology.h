@@ -244,6 +244,10 @@ public:
     */
     [[nodiscard]] bool addTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
 
+    /** \brief Remove a TopologyHandler, linked to a certain type of Element.
+    */
+    void removeTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
+
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
@@ -255,6 +259,11 @@ public:
     *
     */
     virtual bool linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
+
+    /** \ brief Generic function to link potential data (related to a type of element) with a topologyHandler
+    *
+    */
+    virtual bool unlinkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
