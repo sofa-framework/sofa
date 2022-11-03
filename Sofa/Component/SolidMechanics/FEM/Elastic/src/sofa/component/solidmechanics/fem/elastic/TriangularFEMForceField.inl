@@ -620,7 +620,9 @@ void TriangularFEMForceField<DataTypes>::computeStiffness(Stiffness& K, const St
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo)
 {
-    Eigen::Matrix<Real, 2, 2> e;
+    Eigen::Matrix<Real, -1, -1> e;
+    e.resize(2, 2);
+
     e(0,0) = triangleInfo.strain[0];
     e(0,1) = triangleInfo.strain[2];
     e(1,0) = triangleInfo.strain[2];
@@ -647,7 +649,9 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo)
 {
-    Eigen::Matrix<Real, 2, 2> e;
+    Eigen::Matrix<Real, -1, -1> e;
+    e.resize(2, 2);
+
     //voigt notation to symmetric matrix
     e(0,0) = triangleInfo.stress[0];
     e(0,1) = triangleInfo.stress[2];
