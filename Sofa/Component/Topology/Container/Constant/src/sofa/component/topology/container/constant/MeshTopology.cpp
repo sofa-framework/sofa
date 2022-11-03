@@ -553,10 +553,10 @@ void MeshTopology::init()
     else
         m_upperElementType = sofa::core::topology::TopologyElementType::POINT;
 
-    initContainers();
+    computeCrossElementBuffers();
 }
 
-void MeshTopology::initContainers()
+void MeshTopology::computeCrossElementBuffers()
 {
     const auto hexahedra = sofa::helper::getReadAccessor(seqHexahedra);
     const auto tetrahedra = sofa::helper::getReadAccessor(seqTetrahedra);

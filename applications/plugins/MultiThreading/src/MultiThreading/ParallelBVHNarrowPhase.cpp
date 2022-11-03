@@ -145,7 +145,7 @@ void ParallelBVHNarrowPhase::initializeTopology(sofa::core::topology::BaseMeshTo
     auto insertionIt = m_initializedTopology.insert(topology);
     if (insertionIt.second)
     {
-        topology->initContainers();
+        topology->computeCrossElementBuffers();
     }
 }
 
