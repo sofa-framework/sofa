@@ -86,7 +86,7 @@ public:
     void init() override;
 
     /// Method to be overriden by child class to create all the topology buffers
-    virtual void initContainers() {}
+    virtual void computeCrossElementBuffers() {}
 
     /// Load the topology from a file.
     ///

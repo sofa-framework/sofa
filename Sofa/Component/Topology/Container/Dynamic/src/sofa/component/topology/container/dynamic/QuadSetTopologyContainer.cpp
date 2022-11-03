@@ -72,13 +72,13 @@ void QuadSetTopologyContainer::init()
 
     // only init if triangles are present at init.
     if (!m_quads.empty())
-        initContainers();
+        computeCrossElementBuffers();
 }
 
-void QuadSetTopologyContainer::initContainers()
+void QuadSetTopologyContainer::computeCrossElementBuffers()
 {
     // Force creation of Edge Neighborhood buffers.
-    EdgeSetTopologyContainer::initContainers();
+    EdgeSetTopologyContainer::computeCrossElementBuffers();
 
     // Create triangle cross element buffers.
     createEdgesInQuadArray();

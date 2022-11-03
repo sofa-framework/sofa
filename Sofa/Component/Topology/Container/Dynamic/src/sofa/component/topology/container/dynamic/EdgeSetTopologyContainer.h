@@ -100,7 +100,7 @@ public:
     /// Dynamic Topology API
     /// @{
     /// Method called by component Init method. Will create all the topology neighborhood buffers.
-    void initContainers() override;
+    void computeCrossElementBuffers() override;
 
     /** \brief Checks if the topology is coherent
      *
