@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/config.h>
 
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -86,20 +87,28 @@ public:
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
 
+    using SubsetIndices = type::vector<Index>;
+    using DataSubsetIndices = sofa::core::topology::TopologySubsetIndices;
+
 protected:
     std::vector<Deriv> dfree;
     Quat<SReal> q;
 
     std::vector<unsigned int> cid;
 
-    Data<type::vector<int> > m1; ///< index of the constraint on the first model
-    Data<type::vector<int> > m2; ///< index of the constraint on the second model
+    DataSubsetIndices m1; ///< index of the constraint on the first model
+    DataSubsetIndices m2; ///< index of the constraint on the second model
     Data<VecDeriv> restVector; ///< Relative position to maintain between attached points (optional)
     VecCoord initialDifference;
 
     Data<double> d_numericalTolerance; ///< a real value specifying the tolerance during the constraint solving. (default=0.0001
     Data<bool> d_activate; ///< bool to control constraint activation
     Data<bool> keepOrientDiff; ///< keep the initial difference in orientation (only for rigids)
+
+
+    SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology1; ///< Link to be set to the first topology container in order to support topological changes
+    SingleLink<BilateralInteractionConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology2; ///< Link to be set to the second topology container in order to support topological changes
+
     std::vector<Vec3d> prevForces;
 
     SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data 'activateAtIteration' has been deprecated, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
@@ -174,8 +183,14 @@ public:
     void addContact(Deriv norm, Real contactDistance, int m1, int m2,
                     long id=0, PersistentID localid=0) ;
 
+    /// Method to remove a contact using point @param indices and id of buffer: @sa m1 (resp. @sa 2m) if @param objectId is equal to 0 (resp. to 1)
+    void removeContact(int objectId, SubsetIndices indices);
+
 private:
     void unspecializedInit() ;
+
+    /// Method to get the index position of a @param point Id inside @sa m1 or @sa m2) depending of the value passed in @param cIndices. Return InvalidID if not found.
+    Index indexOfElemConstraint(const SubsetIndices& cIndices, Index Id);
 };
 
 
