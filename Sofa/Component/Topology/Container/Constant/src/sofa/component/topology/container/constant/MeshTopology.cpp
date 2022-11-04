@@ -540,20 +540,21 @@ void MeshTopology::init()
     const auto triangles = sofa::helper::getReadAccessor(seqTriangles);
     const auto edges = sofa::helper::getReadAccessor(seqEdges);
 
-    if (nbPoints==0)
-    {
-        // looking for upper topology
-        if (!hexahedra.empty())
-            m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
-        else if (!tetrahedra.empty())
-            m_upperElementType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
-        else if (!quads.empty())
-            m_upperElementType = sofa::core::topology::TopologyElementType::QUAD;
-        else if (!triangles.empty())
-            m_upperElementType = sofa::core::topology::TopologyElementType::TRIANGLE;
-        else
-            m_upperElementType = sofa::core::topology::TopologyElementType::EDGE;
-    }
+
+    // looking for upper topology
+    if (!hexahedra.empty())
+        m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
+    else if (!tetrahedra.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::TETRAHEDRON;
+    else if (!quads.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::QUAD;
+    else if (!triangles.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::TRIANGLE;
+    else if (!edges.empty())
+        m_upperElementType = sofa::core::topology::TopologyElementType::EDGE;
+    else
+        m_upperElementType = sofa::core::topology::TopologyElementType::POINT;
+
 
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
     if (nbPoints==0)

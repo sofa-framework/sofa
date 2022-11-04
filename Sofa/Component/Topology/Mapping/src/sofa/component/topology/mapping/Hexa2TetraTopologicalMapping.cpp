@@ -55,8 +55,11 @@ int Hexa2TetraTopologicalMappingClass = core::RegisterObject("Special case of ma
 // Implementation
 
 Hexa2TetraTopologicalMapping::Hexa2TetraTopologicalMapping()
-    : swapping(initData(&swapping, false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
+    : sofa::core::topology::TopologicalMapping()
+    , swapping(initData(&swapping, false, "swapping","Boolean enabling to swapp hexa-edges\n in order to avoid bias effect"))
 {
+    m_inputType = TopologyElementType::HEXAHEDRON;
+    m_outputType = TopologyElementType::TETRAHEDRON;
 }
 
 Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()
@@ -67,37 +70,22 @@ void Hexa2TetraTopologicalMapping::init()
 {
     using namespace container::dynamic;
 
-    // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
-
-    // recheck models
-    bool modelsOk = true;
-    if (!fromModel)
-    {
-        msg_error() << "Pointer to input topology is invalid.";
-        modelsOk = false;
-    }
-
-    if (!toModel)
-    {
-        msg_error() << "Pointer to output topology is invalid.";
-        modelsOk = false;
-    }
-    else
-    {
-        TetrahedronSetTopologyModifier *to_tstm;
-        toModel->getContext()->get(to_tstm);
-        if (!to_tstm)
-        {
-            msg_error() << "No TetrahedronSetTopologyModifier found in the Tetrahedron topology Node.";
-            modelsOk = false;
-        }
-    }
-
-    if (!modelsOk)
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
+
+    TetrahedronSetTopologyModifier* to_tstm;
+    toModel->getContext()->get(to_tstm);
+    if (!to_tstm)
+    {
+        msg_error() << "No TetrahedronSetTopologyModifier found in the Tetrahedron topology Node.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
     TetrahedronSetTopologyContainer *to_tstc;
     toModel->getContext()->get(to_tstc);

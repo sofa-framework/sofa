@@ -64,6 +64,8 @@ Edge2QuadTopologicalMapping::Edge2QuadTopologicalMapping()
     , d_edgeList(initData(&d_edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered"))
     , d_flipNormals(initData(&d_flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
 {
+    m_inputType = TopologyElementType::EDGE;
+    m_outputType = TopologyElementType::QUAD;
 }
 
 void Edge2QuadTopologicalMapping::init()
@@ -98,6 +100,14 @@ void Edge2QuadTopologicalMapping::init()
 
     unsigned int N = d_nbPointsOnEachCircle.getValue();
 
+    // Check input/output topology
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
     core::behavior::MechanicalState<Rigid3Types>* from_mstate = dynamic_cast<core::behavior::MechanicalState<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
     core::behavior::MechanicalState<Vec3Types>* to_mstate = dynamic_cast<core::behavior::MechanicalState<Vec3Types>*>(toModel->getContext()->getMechanicalState());
@@ -265,6 +275,12 @@ void Edge2QuadTopologicalMapping::init()
             d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         }
 
+    }
+    else
+    {
+        // Check type Rigid3 of input mechanical object (required)
+        msg_error() << "Mechanical object associated with the input is not of type Rigid. Edge2QuadTopologicalMapping only supports Rigid3Types to Vec3Types";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }
 
