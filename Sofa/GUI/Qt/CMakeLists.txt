@@ -49,12 +49,12 @@ elseif (Qt6Core_FOUND)
     # Charts and WebEngine have been removed from Qt6 and may be reintroduced later
 
     # Profiling
-    # sofa_find_package(Qt6 COMPONENTS Charts QUIET BOTH_SCOPES)
-    # if(Qt6Charts_FOUND)
-    #     set(QT_TARGETS ${QT_TARGETS} Qt::Charts)
-    # else()
-    #     message(STATUS "${PROJECT_NAME}: Qt6 Charts not found. No chart nor Profile will be compiled")
-    # endif()
+    sofa_find_package(Qt6 COMPONENTS Charts QUIET BOTH_SCOPES)
+    if(Qt6Charts_FOUND)
+        set(QT_TARGETS ${QT_TARGETS} Qt::Charts)
+    else()
+        message(STATUS "${PROJECT_NAME}: Qt6 Charts not found. No chart nor Profile will be compiled")
+    endif()
 
     # # QDocBrowser
     # find_package(Qt6 COMPONENTS WebEngine QUIET) # if found, then QDocBrowser will be ON by default
@@ -261,7 +261,7 @@ if(Sofa.GL_FOUND)
 endif()
 
 # QtCharts
-if(Qt5Charts_FOUND)
+if(Qt5Charts_FOUND OR Qt6Charts_FOUND)
     list(APPEND MOC_HEADER_FILES 
         ${SRC_ROOT}/SofaWindowProfiler.h
         ${SRC_ROOT}/QGraphStatWidget.h
