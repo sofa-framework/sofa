@@ -45,8 +45,6 @@ if (Qt5Core_FOUND)
         set(QT_TARGETS ${QT_TARGETS} Qt5::WebEngine Qt5::WebEngineWidgets)
     endif()
 elseif (Qt6Core_FOUND)
-    # https://doc-snapshots.qt.io/qt6-dev/whatsnew60.html
-    # Charts and WebEngine have been removed from Qt6 and may be reintroduced later
 
     # Profiling
     sofa_find_package(Qt6 COMPONENTS Charts QUIET BOTH_SCOPES)
@@ -57,12 +55,13 @@ elseif (Qt6Core_FOUND)
     endif()
 
     # # QDocBrowser
-    # find_package(Qt6 COMPONENTS WebEngine QUIET) # if found, then QDocBrowser will be ON by default
-    # option(SOFA_GUI_QT_ENABLE_QDOCBROWSER "Build the QDocBrowser. QtWebEngine is needed." ${Qt6WebEngine_FOUND})
-    # if(SOFA_GUI_QT_ENABLE_QDOCBROWSER)
-    #     sofa_find_package(Qt6 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
-    #     set(QT_TARGETS ${QT_TARGETS} Qt::WebEngine Qt::WebEngineWidgets)
-    # endif()
+    find_package(Qt6 COMPONENTS WebEngineCore QUIET) # if found, then QDocBrowser will be ON by default
+    option(SOFA_GUI_QT_ENABLE_QDOCBROWSER "Build the QDocBrowser. QtWebEngine is needed." ${Qt6WebEngineCore_FOUND})
+    if(SOFA_GUI_QT_ENABLE_QDOCBROWSER)
+         # WebEngineCore needs Positioning WebChannel at cmake configure step (?)
+        sofa_find_package(Qt6 COMPONENTS Positioning WebChannel WebEngineCore WebEngineWidgets REQUIRED BOTH_SCOPES)
+        set(QT_TARGETS ${QT_TARGETS} Qt::WebEngineCore Qt::WebEngineWidgets)
+    endif()
 endif()
 
 find_package(Sofa.GL QUIET)
