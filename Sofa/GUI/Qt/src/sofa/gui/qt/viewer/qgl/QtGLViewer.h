@@ -23,7 +23,7 @@
 #include <sofa/gui/qt/config.h>
 
 #include <sofa/gl/gl.h>
-#include <qgl.h>
+
 #include <qtimer.h>
 #include <cmath>
 #include <cstdlib>

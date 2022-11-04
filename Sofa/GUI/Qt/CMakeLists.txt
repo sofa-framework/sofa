@@ -73,15 +73,11 @@ if(Sofa.GL_FOUND)
 
     # QGLViewer
     option(SOFA_GUI_QT_ENABLE_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
-    # Remove the discard once qglviewer is compatible with Qt6 (if ever)
-    if(Qt6Core_FOUND)
-        message(WARNING "QGLViewer is not (yet?) compatible with Qt6")
-        set(SOFA_GUI_QT_ENABLE_QGLVIEWER OFF)
-    endif()
+
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
         find_package(QGLViewer QUIET)
         if(NOT QGLViewer_FOUND)
-            add_subdirectory(libQGLViewer-2.7.1/QGLViewer)
+            add_subdirectory(libQGLViewer/QGLViewer)
         endif()
     endif()
 else()
