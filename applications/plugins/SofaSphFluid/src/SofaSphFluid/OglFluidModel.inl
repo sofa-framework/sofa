@@ -47,6 +47,7 @@ template<class DataTypes>
 void OglFluidModel<DataTypes>::init()
 { 
     VisualModel::init();
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>
@@ -370,7 +371,9 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     Mat4x4f invmatProj;
     if(!invmatProj.invert(matProj))
     {
-        msg_error() << "matProj can not be inverted";
+        msg_error() << "Rendering failed (drawSprites) due to invalid input parameter \'u_projectionMatrix\' in GLSLShader";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
     m_spriteNormalShader.TurnOn();
@@ -595,6 +598,8 @@ void OglFluidModel<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
     vxmax = vymax = txmax = tymax = 1.0;
 
     drawSprites(vparams);
+
+    if (this->d_componentState.getValue() != core::objectmodel::ComponentState::Valid) return;
 
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
