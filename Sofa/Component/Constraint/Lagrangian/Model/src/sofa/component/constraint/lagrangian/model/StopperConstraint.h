@@ -44,14 +44,14 @@ public:
     { 
     }
 
-    void init(int line, double** w, double *force) override
+    void init(int line, SReal** w, SReal*force) override
     {
         _w = w[line][line];
         _invW = 1.0/_w;
         force[line  ] = 0.0;
     }
 
-    void resolution(int line, double** /*w*/, double* d, double* force, double*) override
+    void resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal*) override
     {
         double dfree = d[line] - _w * force[line];
 
@@ -89,8 +89,8 @@ protected:
     unsigned int cid;
 
     Data<int> index; ///< index of the stop constraint
-    Data<double> min; ///< minimum value accepted
-    Data<double> max; ///< maximum value accepted
+    Data<SReal> min; ///< minimum value accepted
+    Data<SReal> max; ///< maximum value accepted
 
 
 

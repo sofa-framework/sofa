@@ -55,9 +55,11 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     const bool verbose  = f_verbose.getValue();
 
     /// Convert the matrix and the right-hand vector to Eigen objects
+    using EigenVectorX = Eigen::Matrix<SReal, Eigen::Dynamic, 1>;
+    using EigenMatrixX = Eigen::Matrix<SReal, Eigen::Dynamic, -1>;
 
-    Eigen::MatrixXd m(M.rowSize(),M.colSize());
-    Eigen::VectorXd rhs(M.rowSize());
+    EigenMatrixX m(M.rowSize(),M.colSize());
+    EigenVectorX rhs(M.rowSize());
     {
         sofa::helper::ScopedAdvancedTimer convertTimer("convertToEigen");
         for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
@@ -72,7 +74,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                            << m ;
 
     /// Compute the SVD decomposition and the condition number
-    Eigen::JacobiSVD<Eigen::MatrixXd> svd;
+    Eigen::JacobiSVD<EigenMatrixX> svd;
     {
         sofa::helper::ScopedAdvancedTimer svdDecompositionTimer("SVDDecomposition");
         svd.compute(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -95,8 +97,8 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     /// Solve the equation system and copy the solution to the SOFA vector
     {
         sofa::helper::ScopedAdvancedTimer solveSvdTimer("solveFromSVD");
-        Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;
-        Eigen::VectorXd S_Ut_b(M.colSize());
+        EigenVectorX Ut_b = svd.matrixU().transpose() *  rhs;
+        EigenVectorX S_Ut_b(M.colSize());
         for( unsigned i=0; i<(unsigned)M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
         {
             if( svd.singularValues()[i] > f_minSingularValue.getValue() )
@@ -104,7 +106,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             else
                 S_Ut_b[i] = (Real)0.0 ;
         }
-        Eigen::VectorXd solution = svd.matrixV() * S_Ut_b;
+        EigenVectorX solution = svd.matrixV() * S_Ut_b;
         for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
         {
             x[i] = (Real) solution(i);
