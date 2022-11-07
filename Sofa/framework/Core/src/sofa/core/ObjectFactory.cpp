@@ -208,7 +208,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         using sofa::helper::lifecycle::uncreatableComponents;
         if(it == registry.end())
         {
-            arg->logError("The object is not in the factory.");
+            arg->logError("The object '"+classname+"' is not in the factory.");
             auto uuncreatableComponent = uncreatableComponents.find(classname);
             if( uuncreatableComponent != uncreatableComponents.end() )
             {
@@ -223,9 +223,9 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 }
 
                 arg->logError("But the following exits:");
-                for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames))
+                for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames, 5, 0.6))
                 {
-                    arg->logError( "                      : " + name + " ("+ std::to_string(score)+"% match)");
+                    arg->logError( "                      : " + name + " ("+ std::to_string((int)(100*score))+"% match)");
                 }
             }
         }
