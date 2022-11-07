@@ -81,10 +81,17 @@ namespace sofa
 
 			void handleEvent( core::objectmodel::Event* event ) override;
 
-			static std::string GetCustomTemplateName()
-			{
-				return sofa::defaulttype::DataTypeName<DataTypes>::name();
-			}
+            static const std::string GetCustomTemplateName()
+            {
+                if constexpr (std::is_scalar_v<DataTypes>)
+                {
+                    return GetDefaultTemplateName();
+                }
+                else
+                {
+                    return sofa::defaulttype::DataTypeName<DataTypes>::name();
+                }
+            }
 
 			template<class T>
 			static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
