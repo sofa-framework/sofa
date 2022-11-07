@@ -915,16 +915,16 @@ void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
 
     const SeqPoints& outP = outputPoints.getValue();
 
-    std::vector<type::Vector3> verticesP;
-    std::vector<type::Vector3> verticesIntersections;
-    std::vector<type::Vector3> verticesDiags;
-    std::vector<type::Vector3> verticesSnaps;
-    auto fillVertices = [](std::vector<type::Vector3>& vertices, const SeqPoints& source)
+    std::vector<type::Vec3> verticesP;
+    std::vector<type::Vec3> verticesIntersections;
+    std::vector<type::Vec3> verticesDiags;
+    std::vector<type::Vec3> verticesSnaps;
+    auto fillVertices = [](std::vector<type::Vec3>& vertices, const SeqPoints& source)
     {
         vertices.reserve(source.size());
         for (const auto& p : source)
         {
-            vertices.emplace_back(type::Vector3{ double(p[0]), double(p[1]) , double(p[2]) });
+            vertices.emplace_back(type::Vec3{ double(p[0]), double(p[1]) , double(p[2]) });
         }
     };
     fillVertices(verticesP, outP);

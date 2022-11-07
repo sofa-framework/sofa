@@ -153,7 +153,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
             int index = i;
             double x, y, z;
             file >> index >> x >> y >> z;
-            m_vertices.push_back(sofa::type::Vector3(x, y, z));
+            m_vertices.push_back(sofa::type::Vec3(x, y, z));
             if ((int)pmap.size() <= index) pmap.resize(index + 1);
             pmap[index] = i; // In case of hole or swit
         }
@@ -379,7 +379,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                 std::istringstream coordinates(cmd);
                 double x, y, z;
                 coordinates >> x >> y >> z;
-                m_vertices.push_back(sofa::type::Vector3(x, y, z));
+                m_vertices.push_back(sofa::type::Vec3(x, y, z));
                 nodeCount++;
             }
         }

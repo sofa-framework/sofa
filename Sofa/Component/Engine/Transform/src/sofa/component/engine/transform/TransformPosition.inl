@@ -472,12 +472,12 @@ void TransformPosition<DataTypes>::doUpdate()
 template <class DataTypes>
 void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (f_drawInput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
-        std::vector<sofa::type::Vector3> points;
+        std::vector<sofa::type::Vec3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
         vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::type::RGBAColor(0.8f, 0.2f, 0.2f, 1.0f));
@@ -486,12 +486,12 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (f_drawOutput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > out = f_outputX;
-        std::vector<sofa::type::Vector3> points;
+        std::vector<sofa::type::Vec3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
         vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::type::RGBAColor(0.2f, 0.8f, 0.2f, 1.0f));
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

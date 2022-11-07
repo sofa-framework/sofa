@@ -28,10 +28,11 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
@@ -45,11 +46,18 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     sofa::core::MechanicalParams mparams(*this->params);
     mparams.setDt(dt);
 
+    core::ConstraintParams cparams;
     {
         unsigned int constraintId=0;
-        core::ConstraintParams cparams;
-        MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId).execute(node);
+        MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
+        buildConstraintMatrix.execute(node);
     }
+
+    {
+        MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+        accumulateMatrixDeriv.execute(node);
+    }
+
     obj->solve(params, dt);
 
     MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity()

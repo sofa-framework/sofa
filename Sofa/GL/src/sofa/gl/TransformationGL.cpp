@@ -75,7 +75,7 @@ void TransformationGL::ApplyInverse()
 
     InvertTransRotMatrix(rotation, iRotation);
 
-    gl::glScale((SReal)1.0 / scale[0], (SReal)1.0 / scale[1], (SReal)1.0 / scale[2]);
+    gl::glScale(1_sreal / scale[0], 1_sreal / scale[1], 1_sreal / scale[2]);
     gl::glMultMatrix((SReal *)rotation);
     gl::glTranslate(-translation[0], -translation[1], -translation[2]);
 }

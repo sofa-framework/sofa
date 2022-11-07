@@ -49,7 +49,7 @@ public:
 
 protected:
 
-    typedef type::Vector3 Vector3;
+    typedef type::Vec3 Vector3;
     typedef type::fixed_array <unsigned int,3> MTriangle;
     typedef type::fixed_array <unsigned int,4> MQuad;
     typedef type::vector<unsigned int> MPolygon;

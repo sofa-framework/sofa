@@ -19,24 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_VECTYPES_H
-#define SOFA_DEFAULTTYPE_VECTYPES_H
+#pragma once
 
 #include <sofa/defaulttype/fwd.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/random.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <algorithm>
 #include <memory>
-#include <sofa/helper/logging/Messaging.h>
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa:: defaulttype
 {
-
 
 template<class TCoord, class TDeriv, class TReal>
 class StdVectorTypes
@@ -56,11 +52,11 @@ public:
     typedef typename TCoord::Size Size;
 
     typedef Coord CPos;
-    static const CPos& getCPos(const Coord& c) { return c; }
-    static void setCPos(Coord& c, const CPos& v) { c = v; }
+    static constexpr const CPos& getCPos(const Coord& c) { return c; }
+    static constexpr void setCPos(Coord& c, const CPos& v) { c = v; }
     typedef Deriv DPos;
-    static const DPos& getDPos(const Deriv& d) { return d; }
-    static void setDPos(Deriv& d, const DPos& v) { d = v; }
+    static constexpr const DPos& getDPos(const Deriv& d) { return d; }
+    static constexpr void setDPos(Deriv& d, const DPos& v) { d = v; }
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
@@ -73,7 +69,7 @@ protected:
     template<Size N, class T>
     struct Impl
     {
-        static void set( Coord& c, T x, T y, T z )
+        static constexpr void set( Coord& c, T x, T y, T z )
         {
             if constexpr (N > 2)
             {
@@ -95,7 +91,7 @@ protected:
             }
         }
 
-        static void get( T& x, T& y, T& z, const Coord& c )
+        static constexpr void get( T& x, T& y, T& z, const Coord& c )
         {
             if constexpr(N > 2)
             {
@@ -120,7 +116,7 @@ protected:
             }
         }
 
-        static void add( Coord& c, T x, T y, T z )
+        static constexpr void add( Coord& c, T x, T y, T z )
         {
             if constexpr (N > 2)
             {
@@ -150,13 +146,13 @@ protected:
 public:
 
     template<typename T>
-    static void set(Coord& c, T x, T y, T z)
+    static constexpr void set(Coord& c, T x, T y, T z)
     {
         Impl<spatial_dimensions,T>::set(c,x,y,z);
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Coord& c)
+    static constexpr void get(T& x, T& y, T& z, const Coord& c)
     {
         Impl<spatial_dimensions,T>::get(x,y,z,c);
     }
@@ -169,13 +165,13 @@ public:
         return result;
     }
 
-    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    static constexpr Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         return (Deriv)(c1-c2);
     }
 
     template<typename T>
-    static void add(Coord& c, T x, T y, T z)
+    static constexpr void add(Coord& c, T x, T y, T z)
     {
         Impl<spatial_dimensions,T>::add(c,x,y,z);
     }
@@ -240,8 +236,4 @@ typedef StdVectorTypes<type::Vec2, type::Vec2, type::Vec2::value_type> Vec2Types
 typedef StdVectorTypes<type::Vec1, type::Vec1, type::Vec1::value_type> Vec1Types;
 
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa:: defaulttype

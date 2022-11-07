@@ -169,14 +169,14 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     Real cx=0, cy=0, cz=0;
     DataTypes::get(cx, cy, cz, center.getValue());
     Real rx=1, ry=1, rz=1;
     DataTypes::get(rx, ry, rz, vradius.getValue());
-    const sofa::type::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
-    const sofa::type::Vector3 vCenter(cx, cy, cz);
+    const sofa::type::Vec3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+    const sofa::type::Vec3 vCenter(cx, cy, cz);
 
     vparams->drawTool()->enableLighting();
     
@@ -184,7 +184,7 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 	vparams->drawTool()->drawEllipsoid(vCenter, radii);
     vparams->drawTool()->disableLighting();
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

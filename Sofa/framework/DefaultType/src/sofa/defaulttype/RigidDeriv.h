@@ -52,79 +52,79 @@ protected:
     Vec3 vOrientation;
 
 public:
-    friend class RigidCoord<3,real>;
+    friend class RigidCoord<3, real>;
 
-    RigidDeriv()
+    constexpr RigidDeriv()
     {
         clear();
     }
 
-    explicit RigidDeriv(type::NoInit)
+    explicit constexpr RigidDeriv(type::NoInit)
         : vCenter(type::NOINIT)
         , vOrientation(type::NOINIT)
     {
 
     }
 
-    RigidDeriv(const Vec3 &velCenter, const Vec3 &velOrient)
+    constexpr RigidDeriv(const Vec3& velCenter, const Vec3& velOrient)
         : vCenter(velCenter), vOrientation(velOrient)
     {}
 
     template<typename real2>
-    RigidDeriv(const RigidDeriv<3,real2>& c)
+    constexpr RigidDeriv(const RigidDeriv<3, real2>& c)
         : vCenter(c.getVCenter()), vOrientation(c.getVOrientation())
     {}
 
     template<typename real2>
-    RigidDeriv(const type::Vec<6,real2> &v)
-        : vCenter(type::Vec<3,real2>(v.data())), vOrientation(type::Vec<3,real2>(v.data()+3))
+    constexpr RigidDeriv(const type::Vec<6, real2>& v)
+        : vCenter(type::Vec<3, real2>(v.data())), vOrientation(type::Vec<3, real2>(v.data() + 3))
     {}
 
     template<typename real2>
-    RigidDeriv(const real2* ptr)
-        :vCenter(ptr),vOrientation(ptr+3)
+    constexpr RigidDeriv(const real2* ptr)
+        : vCenter(ptr), vOrientation(ptr + 3)
     {
     }
 
-    void clear()
+    constexpr void clear()
     {
         vCenter.clear();
         vOrientation.clear();
     }
 
     template<typename real2>
-    void operator=(const RigidDeriv<3,real2>& c)
+    constexpr void operator=(const RigidDeriv<3, real2>& c)
     {
         vCenter = c.getVCenter();
         vOrientation = c.getVOrientation();
     }
 
     template<typename real2>
-    void operator=(const type::Vec<3,real2>& v)
+    constexpr void operator=(const type::Vec<3, real2>& v)
     {
         vCenter = v;
     }
 
     template<typename real2>
-    void operator=(const type::Vec<6,real2>& v)
+    constexpr void operator=(const type::Vec<6, real2>& v)
     {
         vCenter = v;
-        vOrientation = type::Vec<3,real2>(v.data()+3);
+        vOrientation = type::Vec<3, real2>(v.data() + 3);
     }
 
-    void operator+=(const RigidDeriv& a)
+    constexpr void operator+=(const RigidDeriv& a)
     {
         vCenter += a.vCenter;
         vOrientation += a.vOrientation;
     }
 
-    void operator-=(const RigidDeriv& a)
+    constexpr void operator-=(const RigidDeriv& a)
     {
         vCenter -= a.vCenter;
         vOrientation -= a.vOrientation;
     }
 
-    RigidDeriv<3,real> operator+(const RigidDeriv<3,real>& a) const
+    constexpr RigidDeriv<3, real> operator+(const RigidDeriv<3, real>& a) const
     {
         RigidDeriv d;
         d.vCenter = vCenter + a.vCenter;
@@ -133,14 +133,14 @@ public:
     }
 
     template<typename real2>
-    void operator*=(real2 a)
+    constexpr void operator*=(real2 a)
     {
         vCenter *= a;
         vOrientation *= a;
     }
 
     template<typename real2>
-    void operator/=(real2 a)
+    constexpr void operator/=(real2 a)
     {
         vCenter /= a;
         vOrientation /= a;
@@ -148,64 +148,64 @@ public:
 
 
 
-    RigidDeriv<3,real> operator-() const
+    constexpr RigidDeriv<3, real> operator-() const
     {
         return RigidDeriv(-vCenter, -vOrientation);
     }
 
-    RigidDeriv<3,real> operator-(const RigidDeriv<3,real>& a) const
+    constexpr RigidDeriv<3, real> operator-(const RigidDeriv<3, real>& a) const
     {
-        return RigidDeriv<3,real>(this->vCenter - a.vCenter, this->vOrientation-a.vOrientation);
+        return RigidDeriv<3, real>(this->vCenter - a.vCenter, this->vOrientation - a.vOrientation);
     }
 
 
     /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator*(const RigidDeriv<3,real>& a) const
+    constexpr Real operator*(const RigidDeriv<3, real>& a) const
     {
-        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
-                +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
-                +vOrientation[2]*a.vOrientation[2];
+        return vCenter[0] * a.vCenter[0] + vCenter[1] * a.vCenter[1] + vCenter[2] * a.vCenter[2]
+            + vOrientation[0] * a.vOrientation[0] + vOrientation[1] * a.vOrientation[1]
+            + vOrientation[2] * a.vOrientation[2];
     }
 
 
     /// Euclidean norm
     real norm() const
     {
-        return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
+        return helper::rsqrt(vCenter * vCenter + vOrientation * vOrientation);
     }
 
 
-    Vec3& getVCenter() { return vCenter; }
-    Vec3& getVOrientation() { return vOrientation; }
-    const Vec3& getVCenter() const { return vCenter; }
-    const Vec3& getVOrientation() const { return vOrientation; }
+    constexpr Vec3& getVCenter() { return vCenter; }
+    constexpr Vec3& getVOrientation() { return vOrientation; }
+    constexpr const Vec3& getVCenter() const { return vCenter; }
+    constexpr const Vec3& getVOrientation() const { return vOrientation; }
 
-    Vec3& getLinear() { return vCenter; }
-    const Vec3& getLinear() const { return vCenter; }
-    Vec3& getAngular() { return vOrientation; }
-    const Vec3& getAngular() const { return vOrientation; }
+    constexpr Vec3& getLinear() { return vCenter; }
+    constexpr  const Vec3& getLinear() const { return vCenter; }
+    constexpr Vec3& getAngular() { return vOrientation; }
+    constexpr const Vec3& getAngular() const { return vOrientation; }
 
-    VecAll getVAll() const
+    constexpr VecAll getVAll() const
     {
         return VecAll(vCenter, vOrientation);
     }
 
     /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
-    Vec3 velocityAtRotatedPoint(const Vec3& p) const
+    constexpr Vec3 velocityAtRotatedPoint(const Vec3& p) const
     {
         return vCenter - cross(p, vOrientation);
     }
 
     /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<3,real>& v )
+    inline friend std::ostream& operator << (std::ostream& out, const RigidDeriv<3, real>& v)
     {
-        out<<v.vCenter<<" "<<v.vOrientation;
+        out << v.vCenter << " " << v.vOrientation;
         return out;
     }
     /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<3,real>& v )
+    inline friend std::istream& operator >> (std::istream& in, RigidDeriv<3, real>& v)
     {
-        in>>v.vCenter>>v.vOrientation;
+        in >> v.vCenter >> v.vOrientation;
         return in;
     }
 
@@ -215,38 +215,38 @@ public:
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
     static constexpr sofa::Size spatial_dimensions = 3;
 
-    real* ptr() { return vCenter.ptr(); }
-    const real* ptr() const { return vCenter.ptr(); }
+    constexpr real* ptr() { return vCenter.ptr(); }
+    constexpr const real* ptr() const { return vCenter.ptr(); }
 
-    static Size size() {return 6;}
+    static constexpr Size size() { return 6; }
 
     /// Access to i-th element.
-    real& operator[](Size i)
+    constexpr real& operator[](Size i)
     {
-        if (i<3)
+        if (i < 3)
             return this->vCenter(i);
         else
-            return this->vOrientation(i-3);
+            return this->vOrientation(i - 3);
     }
 
     /// Const access to i-th element.
-    const real& operator[](Size i) const
+    constexpr const real& operator[](Size i) const
     {
-        if (i<3)
+        if (i < 3)
             return this->vCenter(i);
         else
-            return this->vOrientation(i-3);
+            return this->vOrientation(i - 3);
     }
 
     /// @name Tests operators
     /// @{
 
-    bool operator==(const RigidDeriv<3,real>& b) const
+    constexpr bool operator==(const RigidDeriv<3, real>& b) const
     {
         return vCenter == b.vCenter && vOrientation == b.vOrientation;
     }
 
-    bool operator!=(const RigidDeriv<3,real>& b) const
+    constexpr bool operator!=(const RigidDeriv<3, real>& b) const
     {
         return vCenter != b.vCenter || vOrientation != b.vOrientation;
     }
@@ -256,70 +256,70 @@ public:
 };
 
 template<typename real, typename real2>
-inline  RigidDeriv<3,real> operator*(RigidDeriv<3, real> r, real2 a)
+constexpr RigidDeriv<3,real> operator*(RigidDeriv<3, real> r, real2 a)
 {
     r*=a;
     return r;
 }
 
 template<typename real, typename real2>
-inline RigidDeriv<3,real> operator/(RigidDeriv<3, real> r,real2 a)
+constexpr RigidDeriv<3,real> operator/(RigidDeriv<3, real> r,real2 a)
 {
     r/=a;
     return r;
 }
 
 template<sofa::Size N,typename T>
-typename RigidDeriv<N,T>::Pos& getLinear(RigidDeriv<N,T>& v)
+constexpr typename RigidDeriv<N,T>::Pos& getLinear(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
 template<sofa::Size N, typename T>
-const typename RigidDeriv<N,T>::Pos& getLinear(const RigidDeriv<N,T>& v)
+constexpr const typename RigidDeriv<N,T>::Pos& getLinear(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
 template<sofa::Size N, typename T>
-typename RigidDeriv<N,T>::Rot& getAngular(RigidDeriv<N,T>& v)
+constexpr typename RigidDeriv<N,T>::Rot& getAngular(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
 template<sofa::Size N, typename T>
-const typename RigidDeriv<N,T>::Rot& getAngular(const RigidDeriv<N,T>& v)
+constexpr const typename RigidDeriv<N,T>::Rot& getAngular(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
 template<sofa::Size N,typename T>
-typename RigidDeriv<N,T>::Pos& getVCenter(RigidDeriv<N,T>& v)
+constexpr typename RigidDeriv<N,T>::Pos& getVCenter(RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
 template<sofa::Size N, typename T>
-const typename RigidDeriv<N,T>::Pos& getVCenter(const RigidDeriv<N,T>& v)
+constexpr const typename RigidDeriv<N,T>::Pos& getVCenter(const RigidDeriv<N,T>& v)
 {
     return v.getLinear();
 }
 
 template<sofa::Size N, typename T>
-typename RigidDeriv<N,T>::Rot& getVOrientation(RigidDeriv<N,T>& v)
+constexpr typename RigidDeriv<N,T>::Rot& getVOrientation(RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
 template<sofa::Size N, typename T>
-const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
+constexpr const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<N,T>& v)
 {
     return v.getAngular();
 }
 
 /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
 template<typename T, typename R>
-type::Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const type::Vec<3,T>& p)
+constexpr type::Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const type::Vec<3,T>& p)
 {
     return getLinear(v) + cross( getAngular(v),p );
 }
@@ -341,93 +341,93 @@ private:
     Real vOrientation;
 
 public:
-    friend class RigidCoord<2,real>;
+    friend class RigidCoord<2, real>;
 
-    explicit RigidDeriv(type::NoInit)
+    explicit constexpr RigidDeriv(type::NoInit)
         : vCenter(type::NOINIT)
         , vOrientation(type::NOINIT)
     {
 
     }
 
-    RigidDeriv()
+    constexpr RigidDeriv()
     {
         clear();
     }
 
     template<typename real2>
-    RigidDeriv(const type::Vec<2,real2> &velCenter, const real2 &velOrient)
+    constexpr RigidDeriv(const type::Vec<2, real2>& velCenter, const real2& velOrient)
         : vCenter(velCenter), vOrientation((Real)velOrient)
     {}
 
     template<typename real2>
-    RigidDeriv(const type::Vec<3,real2> &v)
-        : vCenter(type::Vec<2,real2>(v.data())), vOrientation((Real)v[2])
+    constexpr RigidDeriv(const type::Vec<3, real2>& v)
+        : vCenter(type::Vec<2, real2>(v.data())), vOrientation((Real)v[2])
     {}
 
-    void clear()
+    constexpr void clear()
     {
         vCenter.clear();
-        vOrientation=0;
+        vOrientation = 0;
     }
 
     template<typename real2>
-    void operator=(const RigidDeriv<2,real2>& c)
+    constexpr void operator=(const RigidDeriv<2, real2>& c)
     {
         vCenter = c.getVCenter();
         vOrientation = (Real)c.getVOrientation();
     }
 
     template<typename real2>
-    void operator=(const type::Vec<2,real2>& v)
+    constexpr void operator=(const type::Vec<2, real2>& v)
     {
         vCenter = v;
     }
 
     template<typename real2>
-    void operator=(const type::Vec<3,real2>& v)
+    constexpr void operator=(const type::Vec<3, real2>& v)
     {
         vCenter = v;
         vOrientation = (Real)v[2];
     }
 
-    void operator+=(const RigidDeriv<2,real>& a)
+    constexpr void operator+=(const RigidDeriv<2, real>& a)
     {
         vCenter += a.vCenter;
         vOrientation += a.vOrientation;
     }
 
-    void operator-=(const RigidDeriv<2,real>& a)
+    constexpr void operator-=(const RigidDeriv<2, real>& a)
     {
         vCenter -= a.vCenter;
         vOrientation -= a.vOrientation;
     }
 
-    RigidDeriv<2,real> operator+(const RigidDeriv<2,real>& a) const
+    constexpr RigidDeriv<2, real> operator+(const RigidDeriv<2, real>& a) const
     {
-        RigidDeriv<2,real> d;
+        RigidDeriv<2, real> d;
         d.vCenter = vCenter + a.vCenter;
         d.vOrientation = vOrientation + a.vOrientation;
         return d;
     }
 
-    RigidDeriv<2,real> operator-(const RigidDeriv<2,real>& a) const
+    constexpr RigidDeriv<2, real> operator-(const RigidDeriv<2, real>& a) const
     {
-        RigidDeriv<2,real> d;
+        RigidDeriv<2, real> d;
         d.vCenter = vCenter - a.vCenter;
         d.vOrientation = vOrientation - a.vOrientation;
         return d;
     }
 
     template<typename real2>
-    void operator*=(real2 a)
+    constexpr void operator*=(real2 a)
     {
         vCenter *= a;
         vOrientation *= (Real)a;
     }
 
     template<typename real2>
-    void operator/=(real2 a)
+    constexpr void operator/=(real2 a)
     {
         vCenter /= a;
         vOrientation /= (Real)a;
@@ -435,81 +435,82 @@ public:
 
 
 
-    RigidDeriv<2,real> operator-() const
+    constexpr RigidDeriv<2, real> operator-() const
     {
-        return RigidDeriv<2,real>(-vCenter, -vOrientation);
+        return RigidDeriv<2, real>(-vCenter, -vOrientation);
     }
 
     /// dot product, mostly used to compute residuals as sqrt(x*x)
-    Real operator*(const RigidDeriv<2,real>& a) const
+    constexpr Real operator*(const RigidDeriv<2, real>& a) const
     {
-        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]
-                +vOrientation*a.vOrientation;
+        return vCenter[0] * a.vCenter[0] + vCenter[1] * a.vCenter[1]
+            + vOrientation * a.vOrientation;
     }
 
     /// Euclidean norm
     Real norm() const
     {
-        return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
+        return helper::rsqrt(vCenter * vCenter + vOrientation * vOrientation);
     }
 
-    Vec2& getVCenter() { return vCenter; }
-    Real& getVOrientation() { return vOrientation; }
-    const Vec2& getVCenter() const { return vCenter; }
-    const Real& getVOrientation() const { return vOrientation; }
+    constexpr Vec2& getVCenter() { return vCenter; }
+    constexpr Real& getVOrientation() { return vOrientation; }
+    constexpr const Vec2& getVCenter() const { return vCenter; }
+    constexpr const Real& getVOrientation() const { return vOrientation; }
 
-    Vec2& getLinear() { return vCenter; }
-    Real& getAngular() { return vOrientation; }
-    const Vec2& getLinear() const { return vCenter; }
-    const Real& getAngular() const { return vOrientation; }
+    constexpr Vec2& getLinear() { return vCenter; }
+    constexpr Real& getAngular() { return vOrientation; }
+    constexpr const Vec2& getLinear() const { return vCenter; }
+    constexpr const Real& getAngular() const { return vOrientation; }
 
-    VecAll getVAll() const
+    constexpr VecAll getVAll() const
     {
         return VecAll(vCenter, vOrientation);
     }
 
     /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
-    Vec2 velocityAtRotatedPoint(const Vec2& p) const
+    constexpr Vec2 velocityAtRotatedPoint(const Vec2& p) const
     {
         return vCenter + Vec2(-p[1], p[0]) * vOrientation;
     }
 
     /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<2,real>& v )
+    inline friend std::ostream& operator << (std::ostream& out, const RigidDeriv<2, real>& v)
     {
-        out<<v.vCenter<<" "<<v.vOrientation;
+        out << v.vCenter << " " << v.vOrientation;
         return out;
     }
     /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<2,real>& v )
+    inline friend std::istream& operator >> (std::istream& in, RigidDeriv<2, real>& v)
     {
-        in>>v.vCenter>>v.vOrientation;
+        in >> v.vCenter >> v.vOrientation;
         return in;
     }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
-    enum { total_size = 3 };
+    static constexpr sofa::Size total_size = 3;
+
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for rigids)
-    enum { spatial_dimensions = 2 };
+    static constexpr sofa::Size spatial_dimensions = 2;
 
-    real* ptr() { return vCenter.ptr(); }
-    const real* ptr() const { return vCenter.ptr(); }
+    constexpr real* ptr() { return vCenter.ptr(); }
+    constexpr const real* ptr() const { return vCenter.ptr(); }
 
-    static Size size() {return 3;}
+    static constexpr Size size() { return 3; }
 
     /// Access to i-th element.
-    real& operator[](Size i)
+    constexpr real& operator[](Size i)
     {
-        if (i<2)
+        if (i < 2)
             return this->vCenter(i);
         else
             return this->vOrientation;
     }
 
     /// Const access to i-th element.
-    const real& operator[](Size i) const
+    constexpr const real& operator[](Size i) const
     {
-        if (i<2)
+        if (i < 2)
             return this->vCenter(i);
         else
             return this->vOrientation;
@@ -519,12 +520,12 @@ public:
     /// @name Tests operators
     /// @{
 
-    bool operator==(const RigidDeriv<2,real>& b) const
+    constexpr bool operator==(const RigidDeriv<2, real>& b) const
     {
         return vCenter == b.vCenter && vOrientation == b.vOrientation;
     }
 
-    bool operator!=(const RigidDeriv<2,real>& b) const
+    constexpr bool operator!=(const RigidDeriv<2, real>& b) const
     {
         return vCenter != b.vCenter || vOrientation != b.vOrientation;
     }
@@ -533,14 +534,14 @@ public:
 };
 
 template<typename real, typename real2>
-inline RigidDeriv<2,real> operator*(RigidDeriv<2,real> r, real2 a)
+constexpr RigidDeriv<2,real> operator*(RigidDeriv<2,real> r, real2 a)
 {
     r *= a;
     return r;
 }
 
 template<typename real, typename real2>
-inline RigidDeriv<2,real> operator/(RigidDeriv<2,real> r, real2 a)
+constexpr RigidDeriv<2,real> operator/(RigidDeriv<2,real> r, real2 a)
 {
     r /= a;
     return r;
@@ -548,7 +549,7 @@ inline RigidDeriv<2,real> operator/(RigidDeriv<2,real> r, real2 a)
 
 /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
 template<typename R, typename T>
-type::Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const type::Vec<2,R>& p)
+constexpr type::Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const type::Vec<2,R>& p)
 {
     return getVCenter(v) + type::Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
 }

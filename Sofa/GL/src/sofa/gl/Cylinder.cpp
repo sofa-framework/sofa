@@ -141,14 +141,14 @@ Cylinder::Cylinder(SReal len)
 {
     quadratic = nullptr;
     length = Vector3(len,len,len);
-    update(Vector3(0,0,0),  Quaternion(1,0,0,0));
+    update(Vector3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
 }
 
 Cylinder::Cylinder(const Vector3& len)
 {
     quadratic = nullptr;
     length = len;
-    update(Vector3(0,0,0),  Quaternion(1,0,0,0));
+    update(Vector3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
 }
 
 Cylinder::Cylinder(const Vector3& center, const Quaternion& orient, const Vector3& len)

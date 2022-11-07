@@ -24,6 +24,16 @@
 namespace sofa::core::objectmodel
 {
 
+TagSet::TagSet(const Tag& t)
+{
+    this->insert(t);
+}
+
+bool TagSet::includes(const Tag& t) const
+{
+    return this->count(t) > 0;
+}
+
 bool TagSet::includes(const TagSet& t) const
 {
     if (t.empty())

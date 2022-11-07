@@ -53,8 +53,8 @@ public:
             wrest.resize(0);
         }
 
-        const type::vector<int> &m1Indices = self.m1.getValue();
-        const type::vector<int> &m2Indices = self.m2.getValue();
+        const typename BilateralInteractionConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
+        const typename BilateralInteractionConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
         unsigned minp = std::min(m1Indices.size(),m2Indices.size());
 
@@ -117,8 +117,8 @@ public:
                                       const typename BilateralInteractionConstraint<T>::DataVecCoord &/*x2*/)
     {
         SOFA_UNUSED(cParams) ;
-        const type::vector<int> &m1Indices = self.m1.getValue();
-        const type::vector<int> &m2Indices = self.m2.getValue();
+        const typename BilateralInteractionConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
+        const typename BilateralInteractionConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
         unsigned minp = std::min(m1Indices.size(),m2Indices.size());
         self.cid.resize(minp);
@@ -190,8 +190,8 @@ public:
                                 const  typename BilateralInteractionConstraint<T>::DataVecDeriv &/*v1*/,
                                 const  typename BilateralInteractionConstraint<T>::DataVecDeriv &/*v2*/)
     {
-        const type::vector<int> &m1Indices = self.m1.getValue();
-        const type::vector<int> &m2Indices = self.m2.getValue();
+        const typename BilateralInteractionConstraint<T>::SubsetIndices& m1Indices = self.m1.getValue();
+        const typename BilateralInteractionConstraint<T>::SubsetIndices& m2Indices = self.m2.getValue();
 
         unsigned min = std::min(m1Indices.size(), m2Indices.size());
         const  typename BilateralInteractionConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
@@ -239,8 +239,8 @@ public:
                            typename MyClass::Real /*contactDistance*/, int m1, int m2,
                            typename MyClass::Coord /*Pfree*/, typename MyClass::Coord /*Qfree*/, long /*id*/, typename MyClass::PersistentID /*localid*/)
     {
-        helper::WriteAccessor<Data<type::vector<int> > > wm1 = self.m1;
-        helper::WriteAccessor<Data<type::vector<int> > > wm2 = self.m2;
+        helper::WriteAccessor<Data<typename BilateralInteractionConstraint<T>::SubsetIndices > > wm1 = self.m1;
+        helper::WriteAccessor<Data<typename BilateralInteractionConstraint<T>::SubsetIndices > > wm2 = self.m2;
         helper::WriteAccessor<Data<typename MyClass::VecDeriv > > wrest = self.restVector;
         wm1.push_back(m1);
         wm2.push_back(m2);

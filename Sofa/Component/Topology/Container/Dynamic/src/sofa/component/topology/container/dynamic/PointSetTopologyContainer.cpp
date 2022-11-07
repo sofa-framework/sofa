@@ -80,7 +80,7 @@ bool PointSetTopologyContainer::checkTopology() const
 
 void PointSetTopologyContainer::clear()
 {
-    nbPoints.setValue(0);
+    nbPoints.setValue(sofa::Size(0));
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
 }
@@ -200,6 +200,20 @@ bool PointSetTopologyContainer::linkTopologyHandlerToData(core::topology::Topolo
     if (elementType == sofa::geometry::ElementType::POINT)
     {
         d_initPoints.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool PointSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::POINT)
+    {
+        d_initPoints.delOutput(topologyHandler);
         return true;
     }
     else

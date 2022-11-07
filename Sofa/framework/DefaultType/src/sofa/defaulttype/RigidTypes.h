@@ -49,12 +49,11 @@ class StdRigidTypes<3, real>
 {
 public:
     typedef real Real;
-    typedef RigidCoord<3,real> Coord;
-    typedef RigidDeriv<3,real> Deriv;
+    typedef RigidCoord<3, real> Coord;
+    typedef RigidDeriv<3, real> Deriv;
     typedef typename Coord::Vec3 Vec3;
     typedef typename Coord::Quat Quat;
-    typedef type::Vec<3,Real> AngularVector;
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef type::Vec<3, Real> AngularVector;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
     static constexpr sofa::Size coord_total_size = Coord::total_size;
@@ -62,108 +61,110 @@ public:
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
-    static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
-    static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
-    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
-    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+    static constexpr const CPos& getCPos(const Coord& c) { return c.getCenter(); }
+    static constexpr void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
+    static constexpr const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static constexpr void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
 
-    typedef type::Vec<3,real> DPos;
-    typedef type::Vec<3,real> DRot;
-    static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
-    static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
-    static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
-    static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
+    typedef type::Vec<3, real> DPos;
+    typedef type::Vec<3, real> DRot;
+    static constexpr const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
+    static constexpr void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
+    static constexpr const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
+    static constexpr void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
+
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     typedef type::vector<Coord> VecCoord;
     typedef type::vector<Deriv> VecDeriv;
     typedef type::vector<Real> VecReal;
 
     template<typename T>
-    static void set(Coord& c, T x, T y, T z)
+    static constexpr void set(Coord& c, T x, T y, T z)
     {
-        c.getCenter()[0] = (Real)x;
-        c.getCenter()[1] = (Real)y;
-        c.getCenter()[2] = (Real)z;
+        c.getCenter()[0] = static_cast<Real>(x);
+        c.getCenter()[1] = static_cast<Real>(y);
+        c.getCenter()[2] = static_cast<Real>(z);
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Coord& c)
+    static constexpr void get(T& x, T& y, T& z, const Coord& c)
     {
-        x = (T)c.getCenter()[0];
-        y = (T)c.getCenter()[1];
-        z = (T)c.getCenter()[2];
+        x = static_cast<T>(c.getCenter()[0]);
+        y = static_cast<T>(c.getCenter()[1]);
+        z = static_cast<T>(c.getCenter()[2]);
     }
 
     // set linear and angular velocities
     template<typename T>
-    static void set(Deriv& c, T x, T y, T z, T rx, T ry, T rz )
+    static constexpr void set(Deriv& c, T x, T y, T z, T rx, T ry, T rz)
     {
-        c.getLinear()[0] = (Real)x;
-        c.getLinear()[1] = (Real)y;
-        c.getLinear()[2] = (Real)z;
-        c.getAngular()[0] = (Real)rx;
-        c.getAngular()[1] = (Real)ry;
-        c.getAngular()[2] = (Real)rz;
+        c.getLinear()[0] = static_cast<Real>(x);
+        c.getLinear()[1] = static_cast<Real>(y);
+        c.getLinear()[2] = static_cast<Real>(z);
+        c.getAngular()[0] = static_cast<Real>(rx);
+        c.getAngular()[1] = static_cast<Real>(ry);
+        c.getAngular()[2] = static_cast<Real>(rz);
     }
 
     template<typename T>
-    static void add(Coord& c, T x, T y, T z)
+    static constexpr void add(Coord& c, T x, T y, T z)
     {
-        c.getCenter()[0] += (Real)x;
-        c.getCenter()[1] += (Real)y;
-        c.getCenter()[2] += (Real)z;
+        c.getCenter()[0] += static_cast<Real>(x);
+        c.getCenter()[1] += static_cast<Real>(y);
+        c.getCenter()[2] += static_cast<Real>(z);
     }
 
     template<typename T>
-    static void set(Deriv& c, T x, T y, T z)
+    static constexpr void set(Deriv& c, T x, T y, T z)
     {
-        getVCenter(c)[0] = (Real)x;
-        getVCenter(c)[1] = (Real)y;
-        getVCenter(c)[2] = (Real)z;
+        getVCenter(c)[0] = static_cast<Real>(x);
+        getVCenter(c)[1] = static_cast<Real>(y);
+        getVCenter(c)[2] = static_cast<Real>(z);
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Deriv& c)
+    static constexpr void get(T& x, T& y, T& z, const Deriv& c)
     {
-        x = (T)getVCenter(c)[0];
-        y = (T)getVCenter(c)[1];
-        z = (T)getVCenter(c)[2];
+        x = static_cast<T>(getVCenter(c)[0]);
+        y = static_cast<T>(getVCenter(c)[1]);
+        z = static_cast<T>(getVCenter(c)[2]);
     }
 
     template<typename T>
-    static void add(Deriv& c, T x, T y, T z)
+    static constexpr void add(Deriv& c, T x, T y, T z)
     {
-        getVCenter(c)[0] += (Real)x;
-        getVCenter(c)[1] += (Real)y;
-        getVCenter(c)[2] += (Real)z;
+        getVCenter(c)[0] += static_cast<Real>(x);
+        getVCenter(c)[1] += static_cast<Real>(y);
+        getVCenter(c)[2] += static_cast<Real>(z);
     }
 
     static constexpr const char* Name();
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude)
+    static Deriv randomDeriv(Real minMagnitude, Real maxMagnitude)
     {
         Deriv result;
-        set( result, Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)),
-                     Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)) );
+        set(result, Real(helper::drand(minMagnitude, maxMagnitude)), Real(helper::drand(minMagnitude, maxMagnitude)), Real(helper::drand(minMagnitude, maxMagnitude)),
+            Real(helper::drand(minMagnitude, maxMagnitude)), Real(helper::drand(minMagnitude, maxMagnitude)), Real(helper::drand(minMagnitude, maxMagnitude)));
         return result;
     }
 
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
-        type::Vector3 vCenter = c1.getCenter() - c2.getCenter();
+        type::Vec3 vCenter = c1.getCenter() - c2.getCenter();
         type::Quat<SReal> quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
         // Transformation between c2 and c1 frames
-        quat = quat1*quat2.inverse();
+        quat = quat1 * quat2.inverse();
         quat.normalize();
-        type::Vec3 axis; 
-        type::Quat<SReal>::value_type angle; 
+        type::Vec3 axis(type::NOINIT);
+        type::Quat<SReal>::value_type angle{};
         quat.quatToAxis(axis, angle);
-        axis*=angle;
+        axis *= angle;
         return Deriv(vCenter, axis);
     }
 
-    static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)
+    static Coord interpolate(const type::vector< Coord >& ancestors, const type::vector< Real >& coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -179,7 +180,7 @@ public:
             Real angle = acos(q[3]) * 2;
 
             // Axis extraction from the orientation quaternion.
-            type::Vec<3,Real> v(q[0], q[1], q[2]);
+            type::Vec<3, Real> v(q[0], q[1], q[2]);
             Real norm = v.norm();
             if (norm > 0.0005)
             {
@@ -201,7 +202,7 @@ public:
         return c;
     }
 
-    static Deriv interpolate(const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs)
+    static Deriv interpolate(const type::vector< Deriv >& ancestors, const type::vector< Real >& coefs)
     {
         assert(ancestors.size() == coefs.size());
 
@@ -216,26 +217,26 @@ public:
     }
 
     /// inverse rigid transform
-    static Coord inverse(const Coord& c)
+    static constexpr Coord inverse(const Coord& c)
     {
         CRot qinv = c.getOrientation().inverse();
-        return Coord( -(qinv.rotate(c.getCenter())),qinv );
+        return Coord(-(qinv.rotate(c.getCenter())), qinv);
     }
 
     /// matrix product
-    static Coord mult ( const Coord& a, const Coord& b )
+    static constexpr Coord mult(const Coord& a, const Coord& b)
     {
         return a.mult(b);
     }
 
     /// double cross product: a * ( b * c )
-    static Vec3 crosscross ( const Vec3& a, const Vec3& b, const Vec3& c)
+    static constexpr Vec3 crosscross(const Vec3& a, const Vec3& b, const Vec3& c)
     {
-        return cross( a, cross( b,c ));
+        return cross(a, cross(b, c));
     }
 
     /// create a rotation from Euler angles. For homogeneity with 2D.
-    static Quat rotationEuler( Real x, Real y, Real z){ return Quat::fromEuler(x,y,z); }
+    static Quat rotationEuler(Real x, Real y, Real z) { return Quat::fromEuler(x, y, z); }
 
 };
 
@@ -264,7 +265,6 @@ public:
     typedef RigidDeriv<2,Real> Deriv;
     typedef RigidCoord<2,Real> Coord;
     typedef Real AngularVector;
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
     static constexpr sofa::Size coord_total_size = Coord::total_size;
@@ -272,17 +272,17 @@ public:
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
-    static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
-    static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
-    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
-    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+    static constexpr const CPos& getCPos(const Coord& c) { return c.getCenter(); }
+    static constexpr void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
+    static constexpr const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static constexpr void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
 
     typedef type::Vec<2,real> DPos;
     typedef real DRot;
-    static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
-    static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
-    static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
-    static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
+    static constexpr const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
+    static constexpr void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
+    static constexpr const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
+    static constexpr void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
     static constexpr const char* Name();
 
@@ -290,57 +290,59 @@ public:
     typedef type::vector<Deriv> VecDeriv;
     typedef type::vector<Real> VecReal;
 
+    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+
     template<typename T>
-    static void set(Coord& c, T x, T y, T)
+    static constexpr void set(Coord& c, T x, T y, T)
     {
-        c.getCenter()[0] = (Real)x;
-        c.getCenter()[1] = (Real)y;
+        c.getCenter()[0] = static_cast<Real>(x);
+        c.getCenter()[1] = static_cast<Real>(y);
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Coord& c)
+    static constexpr void get(T& x, T& y, T& z, const Coord& c)
     {
-        x = (T)c.getCenter()[0];
-        y = (T)c.getCenter()[1];
-        z = (T)0;
+        x = static_cast<T>(c.getCenter()[0]);
+        y = static_cast<T>(c.getCenter()[1]);
+        z = static_cast<T>(0);
     }
 
     template<typename T>
-    static void add(Coord& c, T x, T y, T)
+    static constexpr void add(Coord& c, T x, T y, T)
     {
-        c.getCenter()[0] += (Real)x;
-        c.getCenter()[1] += (Real)y;
+        c.getCenter()[0] += static_cast<Real>(x);
+        c.getCenter()[1] += static_cast<Real>(y);
     }
 
     template<typename T>
-    static void set(Deriv& c, T x, T y, T)
+    static constexpr void set(Deriv& c, T x, T y, T)
     {
-        c.getVCenter()[0] = (Real)x;
-        c.getVCenter()[1] = (Real)y;
+        c.getVCenter()[0] = static_cast<Real>(x);
+        c.getVCenter()[1] = static_cast<Real>(y);
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Deriv& c)
+    static constexpr void get(T& x, T& y, T& z, const Deriv& c)
     {
-        x = (T)c.getVCenter()[0];
-        y = (T)c.getVCenter()[1];
-        z = (T)0;
+        x = static_cast<T>(c.getVCenter()[0]);
+        y = static_cast<T>(c.getVCenter()[1]);
+        z = static_cast<T>(0);
     }
 
     // Set linear and angular velocities, in 6D for uniformity with 3D
     template<typename T>
-    static void set(Deriv& c, T x, T y, T, T vrot, T, T )
+    static constexpr void set(Deriv& c, T x, T y, T, T vrot, T, T )
     {
-        c.getVCenter()[0] = (Real)x;
-        c.getVCenter()[1] = (Real)y;
-        c.getVOrientation() = (Real) vrot;
+        c.getVCenter()[0] = static_cast<Real>(x);
+        c.getVCenter()[1] = static_cast<Real>(y);
+        c.getVOrientation() = static_cast<Real>(vrot);
     }
 
     template<typename T>
-    static void add(Deriv& c, T x, T y, T)
+    static constexpr void add(Deriv& c, T x, T y, T)
     {
-        c.getVCenter()[0] += (Real)x;
-        c.getVCenter()[1] += (Real)y;
+        c.getVCenter()[0] += static_cast<Real>(x);
+        c.getVCenter()[1] += static_cast<Real>(y);
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
@@ -381,19 +383,19 @@ public:
     }
 
     /// specialized version of the double cross product: a * ( b * c ) for the variation of torque applied to the frame due to a small rotation with constant force.
-    static Real crosscross ( const Vec2& f, const Real& dtheta, const Vec2& OP)
+    static constexpr Real crosscross ( const Vec2& f, const Real& dtheta, const Vec2& OP)
     {
         return dtheta * dot( f,OP );
     }
 
     /// specialized version of the double cross product: a * ( b * c ) for point acceleration
-    static Vec2 crosscross ( const Real& omega, const Real& dtheta, const Vec2& OP)
+    static constexpr Vec2 crosscross ( const Real& omega, const Real& dtheta, const Vec2& OP)
     {
         return OP * omega * (-dtheta);
     }
 
     /// create a rotation from Euler angles (only the first is used). For homogeneity with 3D.
-    static CRot rotationEuler( Real x, Real , Real ){ return CRot(x); }
+    static constexpr CRot rotationEuler( Real x, Real , Real ){ return CRot(x); }
 
 
 };
@@ -417,11 +419,11 @@ template<> constexpr const char* Rigid2fTypes::Name() { return "Rigid2f"; }
   \param p point where we compute the velocity
   */
 template <class Vec3>
-static Vec3 rigidVelocity( const Vec3& omega, const Vec3& v, const Vec3& pv, const Vec3& p ) { return v + cross( omega, p-pv ); }
+static constexpr Vec3 rigidVelocity( const Vec3& omega, const Vec3& v, const Vec3& pv, const Vec3& p ) { return v + cross( omega, p-pv ); }
 
 /// Apply the given translation and rotation to each entry of vector v
 template<class V1, class Vec, class Rot>
-static void displace( V1& v, Vec translation, Rot rotation )
+static constexpr void displace( V1& v, Vec translation, Rot rotation )
 {
     for(sofa::Size i=0; i<v.size(); i++)
         v[i] = translation + rotation.rotate(v[i]);
@@ -429,7 +431,7 @@ static void displace( V1& v, Vec translation, Rot rotation )
 
 /// Apply the given translation and rotation to each entry of vector v
 template<class V1, class Rot>
-static void rotate( V1& v, Rot rotation )
+static constexpr void rotate( V1& v, Rot rotation )
 {
     for(sofa::Size i=0; i<v.size(); i++)
         v[i] = rotation.rotate(v[i]);

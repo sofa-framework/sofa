@@ -36,16 +36,16 @@ namespace sofa::gl
 class SOFA_GL_API Cylinder
 {
 public:
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
     typedef sofa::type::Quat<SReal> Quaternion;
-    Cylinder(SReal len=(SReal)1);
+    Cylinder(SReal len=1.0_sreal);
     Cylinder(const Vector3& len);
     Cylinder(const Vector3& center, const Quaternion &orient, const Vector3& length);
     Cylinder(const Vector3& center, const double orient[4][4], const Vector3& length);
     Cylinder(const double *mat, const Vector3& length);
-    Cylinder(const Vector3& center, const Quaternion &orient, SReal length=(SReal)1);
-    Cylinder(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
-    Cylinder(const double *mat, SReal length=(SReal)1.0);
+    Cylinder(const Vector3& center, const Quaternion &orient, SReal length=1.0_sreal);
+    Cylinder(const Vector3& center, const double orient[4][4], SReal length=1.0_sreal);
+    Cylinder(const double *mat, SReal length=1.0_sreal);
 
     ~Cylinder();
 
@@ -58,9 +58,9 @@ public:
     static void draw(const Vector3& center, const Quaternion& orient, const Vector3& length);
     static void draw(const Vector3& center, const double orient[4][4], const Vector3& length);
     static void draw(const double *mat, const Vector3& length);
-    static void draw(const Vector3& center, const Quaternion& orient, SReal length=(SReal)1);
-    static void draw(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
-    static void draw(const double *mat, SReal length=(SReal)1.0);
+    static void draw(const Vector3& center, const Quaternion& orient, SReal length=1.0_sreal);
+    static void draw(const Vector3& center, const double orient[4][4], SReal length=1.0_sreal);
+    static void draw(const double *mat, SReal length=1.0_sreal);
 
 private:
 

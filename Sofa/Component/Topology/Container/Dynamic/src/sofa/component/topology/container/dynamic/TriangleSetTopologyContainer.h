@@ -259,6 +259,8 @@ public:
     
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 
+    bool unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
+
 protected:
 
     /** \brief Creates the TriangleSet array.

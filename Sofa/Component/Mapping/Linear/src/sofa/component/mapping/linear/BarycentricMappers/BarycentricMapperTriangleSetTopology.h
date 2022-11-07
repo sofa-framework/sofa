@@ -27,7 +27,7 @@ namespace sofa::component::mapping::linear
 
 
 using sofa::type::Mat3x3d;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::defaulttype::Vec3Types;
 
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
@@ -57,8 +57,8 @@ protected:
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override;
-    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Triangle& element) override;
-    void computeDistance(SReal& d, const Vector3& v) override;
+    void computeCenter(Vec3& center, const typename In::VecCoord& in, const Triangle& element) override;
+    void computeDistance(SReal& d, const Vec3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     using Inherit1::d_map;

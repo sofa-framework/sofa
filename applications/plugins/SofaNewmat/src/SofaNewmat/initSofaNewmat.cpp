@@ -24,7 +24,7 @@
 
 #include <SofaNewmat/NewMatMatrix.h>
 #include <SofaNewmat/NewMatVector.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;

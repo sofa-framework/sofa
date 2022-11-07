@@ -53,7 +53,7 @@ public:
     }
 
     /// Add point in the duplicated mapping without using barycentric mappers.
-    virtual int addContactPointFromInputMapping(const sofa::type::Vector3& , std::vector< std::pair< int, double> >& )
+    virtual int addContactPointFromInputMapping(const sofa::type::Vec3& , std::vector< std::pair< int, double> >& )
     {
         std::cout << "AddContactPointFromInputMapping is not implemented for this mapping" << std::endl;
         return 0;

@@ -49,8 +49,8 @@ public:
     bool load() override;
     bool canLoad() override;
 
-    void setVoxelSize ( const type::Vector3 vSize );
-    type::Vector3 getVoxelSize () const override;
+    void setVoxelSize ( const type::Vec3 vSize );
+    type::Vec3 getVoxelSize () const override;
 
     void addBackgroundValue ( const int value );
     int getBackgroundValue( const unsigned int idx = 0) const;
@@ -72,7 +72,7 @@ public:
     // fill the texture by 'image' only where there is the 'segmentation' of 'activeValue' and give the 3D texture sizes
     void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth) override;
 
-    Data< type::Vector3 > voxelSize; ///< Dimension of one voxel
+    Data< type::Vec3 > voxelSize; ///< Dimension of one voxel
     Data< Vec3i > dataResolution; ///< Resolution of the voxel file
     Data< Vec6i > roi; ///< Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)
     Data< int > headerSize; ///< Header size in bytes

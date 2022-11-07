@@ -39,7 +39,7 @@ AngularSpringForceField<DataTypes>::AngularSpringForceField()
     , angularLimit(initData(&angularLimit, "limit", "angular limit (max; min) values where the force applies"))
     , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
     , springColor(initData(&springColor, type::RGBAColor::green(), "springColor","spring color"))
-{    
+{
 }
 
 
@@ -168,11 +168,11 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
-    sofa::type::vector< type::Vec3d > vertices;
+    sofa::type::vector< type::Vec3 > vertices;
 
     for (sofa::Index i=0; i<indices.getValue().size(); i++)
     {
@@ -180,7 +180,7 @@ void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vertices.push_back(p[index].getCenter());
     }
     vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::spring

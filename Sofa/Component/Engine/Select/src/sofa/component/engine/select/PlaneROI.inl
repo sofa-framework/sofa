@@ -396,13 +396,13 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->disableLighting();
 
     const VecCoord* x0 = &f_X0.getValue();
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -534,7 +534,7 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawLines(vertices, _drawSize.getValue(), color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::select

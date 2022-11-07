@@ -48,11 +48,13 @@ PairInteractionForceField<DataTypes>::~PairInteractionForceField()
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
-    if (this->mstate1 && this->mstate2)
+    auto state1 = this->mstate1.get();
+    auto state2 = this->mstate2.get();
+    if (state1 && state2)
     {
-        addForce(mparams, *fId[this->mstate1.get()].write(), *fId[this->mstate2.get()].write(),
-            *mparams->readX(this->mstate1), *mparams->readX(this->mstate2),
-            *mparams->readV(this->mstate1), *mparams->readV(this->mstate2));
+        addForce(mparams, *fId[state1].write(), *fId[state2].write(),
+            *mparams->readX(state1), *mparams->readX(state2),
+            *mparams->readV(state1), *mparams->readV(state2));
     }
     else
         msg_error() << "PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing";
@@ -61,11 +63,13 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
-    if (this->mstate1 && this->mstate2)
+    auto state1 = this->mstate1.get();
+    auto state2 = this->mstate2.get();    
+    if (state1 && state2)
     {
         addDForce(
-            mparams, *dfId[this->mstate1.get()].write(), *dfId[this->mstate2.get()].write(),
-            *mparams->readDx(this->mstate1), *mparams->readDx(this->mstate2));
+            mparams, *dfId[state1].write(), *dfId[state2].write(),
+            *mparams->readDx(state1), *mparams->readDx(state2));
     }
     else
         msg_error() << "PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing";
@@ -74,8 +78,10 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
 template<class DataTypes>
 SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
-    if (this->mstate1 && this->mstate2)
-        return getPotentialEnergy(mparams, *mparams->readX(this->mstate1),*mparams->readX(this->mstate2));
+    auto state1 = this->mstate1.get();
+    auto state2 = this->mstate2.get();
+    if (state1 && state2)
+        return getPotentialEnergy(mparams, *mparams->readX(state1),*mparams->readX(state2));
     else return 0.0;
 }
 

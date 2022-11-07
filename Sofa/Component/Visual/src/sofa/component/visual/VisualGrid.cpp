@@ -196,12 +196,12 @@ void VisualGrid::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (!d_draw.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     vparams->drawTool()->drawLines(m_drawnPoints, d_thickness.getValue(), d_color.getValue());
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

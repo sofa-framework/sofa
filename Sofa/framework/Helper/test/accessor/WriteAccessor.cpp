@@ -23,6 +23,7 @@
 
 #include <sofa/helper/accessor.h>
 #include <sofa/type/vector.h>
+#include <string>
 
 namespace sofa
 {
@@ -76,6 +77,31 @@ TEST(WriteAccessor, VectorTypes)
     accessor[3] = 6.f;
     EXPECT_FLOAT_EQ(accessor[3], 6.f);
     EXPECT_FLOAT_EQ(vector[3], 6.f);
+
+    accessor.push_back(5.f);
+    EXPECT_EQ(accessor.size(), vector.size());
+    EXPECT_EQ(accessor.size(), 6);
+
+    accessor.emplace_back(6.f);
+    EXPECT_EQ(accessor.size(), vector.size());
+    EXPECT_EQ(accessor.size(), 7);
+
+
+
+    struct Pair
+    {
+        bool isTrue;
+        std::string aString;
+        Pair(bool b, std::string s) : isTrue(b), aString(s) {}
+    };
+
+    sofa::type::vector<Pair> pairVector;
+    sofa::helper::WriteAccessor pairVectorAccessor(pairVector);
+    pairVectorAccessor.emplace_back(false, std::string{"hello"});
+    EXPECT_EQ(pairVector.size(), pairVectorAccessor.size());
+    EXPECT_EQ(pairVector.size(), 1);
+    EXPECT_EQ(pairVector.front().isTrue, false);
+    EXPECT_EQ(pairVector.front().aString, std::string{"hello"});
 }
 
 

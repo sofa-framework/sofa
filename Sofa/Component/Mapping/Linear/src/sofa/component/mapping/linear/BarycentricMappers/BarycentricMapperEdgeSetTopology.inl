@@ -84,13 +84,13 @@ void BarycentricMapperEdgeSetTopology<In,Out>::computeBase(Mat3x3d& base, const 
 }
 
 template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::computeCenter(Vector3& center, const typename In::VecCoord& in, const Edge& element)
+void BarycentricMapperEdgeSetTopology<In,Out>::computeCenter(Vec3& center, const typename In::VecCoord& in, const Edge& element)
 {
     center = (in[element[0]]+in[element[1]])*0.5;
 }
 
 template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::computeDistance(SReal& d, const Vector3& v)
+void BarycentricMapperEdgeSetTopology<In,Out>::computeDistance(SReal& d, const Vec3& v)
 {
     //Not implemented for Edge
     SOFA_UNUSED(d);

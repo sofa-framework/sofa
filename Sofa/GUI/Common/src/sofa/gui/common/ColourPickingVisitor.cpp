@@ -119,8 +119,8 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
 
-    type::vector<Vector3> points;
-    type::vector<Vector3> normals;
+    type::vector<Vec3> points;
+    type::vector<Vec3> normals;
     std::vector<sofa::type::RGBAColor> colours;
     type::vector<core::CollisionModel*> listCollisionModel;
     type::vector<core::CollisionModel*>::iterator iter;
@@ -189,7 +189,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
     // Check topological modifications
 
     const int npoints = smodel->getMechanicalState()->getSize();
-    std::vector<Vector3> points;
+    std::vector<Vec3> points;
     std::vector<float> radius;
     for (int i=0; i<npoints; i++)
     {
@@ -206,7 +206,7 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
     float ratio;
     for( int i=0; i<npoints; i++)
     {
-        Vector3 p = points[i];
+        Vec3 p = points[i];
 
         glPushMatrix();
         ratio = (float)i / (float)npoints;

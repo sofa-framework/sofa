@@ -112,28 +112,28 @@ protected:
 class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintProblem
 {
 protected:
-    sofa::linearalgebra::LPtrFullMatrix<double> _W;
-    sofa::linearalgebra::FullVector<double> _dFree, _force, _d, _df;// cf. These Duriez + _df for scheme correction
+    sofa::linearalgebra::LPtrFullMatrix<SReal> _W;
+    sofa::linearalgebra::FullVector<SReal> _dFree, _force, _d, _df;// cf. These Duriez + _df for scheme correction
     std::vector<core::behavior::ConstraintResolution*> _constraintsResolutions;
-    double _tol;
+    SReal _tol;
     int _dim;
     sofa::helper::system::thread::CTime *_timer;
 
 public:
     ConstraintProblem(bool printLog=false);
     virtual ~ConstraintProblem();
-    virtual void clear(int dim, const double &tol);
+    virtual void clear(int dim, const SReal &tol);
 
     inline int getSize(void) {return _dim;}
-    inline sofa::linearalgebra::LPtrFullMatrix<double>* getW(void) {return &_W;}
-    inline sofa::linearalgebra::FullVector<double>* getDfree(void) {return &_dFree;}
-    inline sofa::linearalgebra::FullVector<double>* getD(void) {return &_d;}
-    inline sofa::linearalgebra::FullVector<double>* getF(void) {return &_force;}
-    inline sofa::linearalgebra::FullVector<double>* getdF(void) {return &_df;}
+    inline sofa::linearalgebra::LPtrFullMatrix<SReal>* getW(void) {return &_W;}
+    inline sofa::linearalgebra::FullVector<SReal>* getDfree(void) {return &_dFree;}
+    inline sofa::linearalgebra::FullVector<SReal>* getD(void) {return &_d;}
+    inline sofa::linearalgebra::FullVector<SReal>* getF(void) {return &_force;}
+    inline sofa::linearalgebra::FullVector<SReal>* getdF(void) {return &_df;}
     inline std::vector<core::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;}
-    inline double *getTolerance(void) {return &_tol;}
+    inline SReal *getTolerance(void) {return &_tol;}
 
-    void gaussSeidelConstraintTimed(double &timeout, int numItMax);
+    void gaussSeidelConstraintTimed(SReal &timeout, int numItMax);
 };
 
 
@@ -154,21 +154,21 @@ public:
     void init() override;
 
     Data<bool> d_displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
-    Data<double> d_tol; ///< Tolerance of the Gauss-Seidel
+    Data<SReal> d_tol; ///< Tolerance of the Gauss-Seidel
     Data<int> d_maxIt; ///< Maximum number of iterations of the Gauss-Seidel
     Data<bool> d_doCollisionsFirst; ///< Compute the collisions first (to support penality-based contacts)
-    Data<bool> d_doubleBuffer; ///< Buffer the constraint problem in a double buffer to be accessible with an other thread
+    Data<bool> d_doubleBuffer; ///< Buffer the constraint problem in a SReal buffer to be accessible with an other thread
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
-    Data<double> d_sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<SReal> d_sor; ///< Successive Over Relaxation parameter (0-2)
     Data<bool> d_schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
     Data<bool> d_realTimeCompensation; ///< If the total computational time T < dt, sleep(dt-T)
 
     Data<bool> d_activateSubGraph;
 
-    Data<std::map < std::string, sofa::type::vector<double> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
-    Data<std::map < std::string, sofa::type::vector<double> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-    Data<std::map < std::string, sofa::type::vector<double> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
 
     ConstraintProblem *getConstraintProblem() {return bufCP1 ? &CP1 : &CP2;}
 
@@ -208,11 +208,11 @@ protected:
 
 
     /// method for predictive scheme:
-    void computePredictiveForce(int dim, double* force, std::vector<core::behavior::ConstraintResolution*>& res);
+    void computePredictiveForce(int dim, SReal* force, std::vector<core::behavior::ConstraintResolution*>& res);
 
 
 
-    void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::behavior::ConstraintResolution*>& res, double* df);
+    void gaussSeidelConstraint(int dim, SReal* dfree, SReal** w, SReal* force, SReal* d, std::vector<core::behavior::ConstraintResolution*>& res, SReal* df);
 
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 

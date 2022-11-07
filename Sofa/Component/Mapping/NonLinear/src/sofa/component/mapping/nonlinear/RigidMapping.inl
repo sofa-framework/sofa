@@ -355,7 +355,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
         auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
-        auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel));
+        auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel.get()));
         geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
     }
     else
@@ -365,7 +365,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
         {
             updateK( mparams, childForceId );
             auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
-            auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel));
+            auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel.get()));
 
             geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
             geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
@@ -375,9 +375,9 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
             assert( !mparams->symmetricMatrix() );
 
-            helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
+            helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel.get()));
             helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get()].write());
-            helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
+            helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel.get()));
             InReal kfactor = (InReal)mparams->kFactor();
 
             for(sofa::Index i=0 ; i< childForces.size() ; ++i)
@@ -692,8 +692,8 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings() || this->toModel==nullptr )
         return;
-    std::vector<type::Vector3> points;
-    type::Vector3 point;
+    std::vector<type::Vec3> points;
+    type::Vec3 point;
 
     const VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i = 0; i < x.size(); i++)

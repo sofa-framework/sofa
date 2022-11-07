@@ -19,47 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h>
-#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/VecId.h>
 
-namespace sofa::component::constraint::lagrangian::solver
+namespace sofa::core
 {
 
-ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda)
-:simulation::BaseMechanicalVisitor(cParams)
-,m_cParams(cParams)
-,m_lambda(lambda)
-{
-}
+SOFA_CORE_API const std::unordered_map<VecType, std::string> VecTypeLabels {
+    {V_ALL, "(V_ALL)"},
+    {V_COORD, "(V_COORD)"},
+    {V_DERIV, "(V_DERIV)"},
+    {V_MATDERIV, "(V_MATDERIV)"}
+};
 
-simulation::Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
-{
-    if (core::behavior::BaseConstraint *c = dynamic_cast<core::behavior::BaseConstraint*>(cSet) )
-    {
-        ctime_t t0 = begin(node, c);
-        c->storeLambda(m_cParams, m_cParams->lambda(), m_lambda);
-        end(node, c, t0);
-    }
-    return RESULT_CONTINUE;
-}
-
-void ConstraintStoreLambdaVisitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-{
-    SOFA_UNUSED(node);
-
-    sofa::core::MechanicalParams mparams(*m_cParams);
-    mparams.setDx(m_cParams->dx());
-    mparams.setF(m_cParams->lambda());
-    map->applyJT(&mparams, m_cParams->lambda(), m_cParams->lambda());
-}
-
-bool ConstraintStoreLambdaVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-{
-    SOFA_UNUSED(node);
-    SOFA_UNUSED(map);
-
-    return false;
-}
-
-} // namespace sofa::component::constraint::lagrangian::solver
+} // namespace sofa::core

@@ -572,7 +572,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -584,7 +584,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

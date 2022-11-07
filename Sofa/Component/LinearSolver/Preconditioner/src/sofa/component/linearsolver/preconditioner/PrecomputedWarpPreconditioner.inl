@@ -344,16 +344,16 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     force.resize(nb_dofs);
 
     ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-    double buf_tolerance=0, buf_threshold=0;
-    int buf_maxIter=0;
+    Real buf_tolerance=0, buf_threshold=0;
+    unsigned int buf_maxIter=0;
     if(CGlinearSolver)
     {
-        buf_tolerance = (double) CGlinearSolver->d_tolerance.getValue();
-        buf_maxIter   = (int) CGlinearSolver->d_maxIter.getValue();
-        buf_threshold = (double) CGlinearSolver->d_smallDenominatorThreshold.getValue();
-        CGlinearSolver->d_tolerance.setValue(1e-35);
-        CGlinearSolver->d_maxIter.setValue(5000);
-        CGlinearSolver->d_smallDenominatorThreshold.setValue(1e-25);
+        buf_tolerance = CGlinearSolver->d_tolerance.getValue();
+        buf_maxIter   = CGlinearSolver->d_maxIter.getValue();
+        buf_threshold = CGlinearSolver->d_smallDenominatorThreshold.getValue();
+        CGlinearSolver->d_tolerance.setValue(Real(1e-35));
+        CGlinearSolver->d_maxIter.setValue(5000u);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(Real(1e-25));
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -656,7 +656,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
     if (! vparams->displayFlags().getShowBehaviorModels()) return;
     if (mstate==nullptr) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real& scale = this->draw_rotations_scale.getValue();
@@ -677,9 +677,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
         sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vector3(scale,scale,scale));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vec3(scale,scale,scale));
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::linearsolver::preconditioner

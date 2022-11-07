@@ -32,29 +32,29 @@ using sofa::testing::NumericTest;
 
 using sofa::component::engine::transform::TransformEngine;
 
-sofa::type::Vector3		nullptr_VEC(0,0,0);
-sofa::type::Vector3		nullptr_SCALE(1,1,1);
+sofa::type::Vec3		nullptr_VEC(0,0,0);
+sofa::type::Vec3		nullptr_SCALE(1,1,1);
 
-sofa::type::Vector3		INPUT_POS(1,0,0);
+sofa::type::Vec3		INPUT_POS(1,0,0);
 sofa::type::Quat<SReal>		INPUT_QUAT(0,0,0,1);
 
-sofa::type::Vector3		TRANSLATION(1,2,3);
-sofa::type::Vector3		OUTPUT_TRANSLATION_POS(2,2,3);
+sofa::type::Vec3		TRANSLATION(1,2,3);
+sofa::type::Vec3		OUTPUT_TRANSLATION_POS(2,2,3);
 
-sofa::type::Vector3		ROTATION(0,0,90);
-sofa::type::Vector3		OUTPUT_ROTATION_POS(0,1,0);
+sofa::type::Vec3		ROTATION(0,0,90);
+sofa::type::Vec3		OUTPUT_ROTATION_POS(0,1,0);
 sofa::type::Quat<SReal>		OUTPUT_ROTATION_QUAT(0,0,0.7071,0.7071);
 
-sofa::type::Vector3		SCALE(5,10,20);
-sofa::type::Vector3		OUTPUT_SCALE_POS(5,0,0);
+sofa::type::Vec3		SCALE(5,10,20);
+sofa::type::Vec3		OUTPUT_SCALE_POS(5,0,0);
 
-sofa::type::Vector3		OUTPUT_ROTATION_SCALE_POS(0,5,0);
+sofa::type::Vec3		OUTPUT_ROTATION_SCALE_POS(0,5,0);
 
 
 namespace sofa 
 {
 
-using type::Vector3;
+using type::Vec3;
 
 template <typename _DataTypes>
 class TransformEngine_test : public ::testing::Test, public TransformEngine<_DataTypes>
@@ -87,7 +87,7 @@ public:
 		return testVec;
 	}
 
-	void setInputTransformation(Vector3 translation, Vector3 rotation, Vector3 scale)
+	void setInputTransformation(Vec3 translation, Vec3 rotation, Vec3 scale)
 	{
 		this->f_inputX.setValue(initInputVecCoord()); 
 
@@ -96,7 +96,7 @@ public:
 		this->scale.setValue( scale );
 	}
 
-	void testOutput(Vector3 pos, Quat quat = Quat())
+	void testOutput(Vec3 pos, Quat quat = Quat())
 	{
 		Coord output = this->f_outputX.getValue()[0];
 		Coord referenceCoord = sofa::testing::createCoord<DataTypes>(pos, quat);
@@ -134,11 +134,11 @@ namespace
 // Define the list of DataTypes to instanciate
 using ::testing::Types;
 typedef Types<
-	defaulttype::Vec1Types,
-	defaulttype::Vec2Types,
+    defaulttype::Vec1Types,
+    defaulttype::Vec2Types,
     defaulttype::Vec3Types,
-	defaulttype::Rigid2Types,
-	defaulttype::Rigid3Types
+    defaulttype::Rigid2Types,
+    defaulttype::Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations

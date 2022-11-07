@@ -136,8 +136,8 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const type::Vector3& pt = p.p();
-            cubeModel->setParentOf(i, pt - type::Vector3(distance,distance,distance), pt + type::Vector3(distance,distance,distance));
+            const type::Vec3& pt = p.p();
+            cubeModel->setParentOf(i, pt - type::Vec3(distance,distance,distance), pt + type::Vec3(distance,distance,distance));
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -158,7 +158,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
 
     if (computeNormals.getValue()) updateNormals();
 
-    type::Vector3 minElem, maxElem;
+    type::Vec3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -169,8 +169,8 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int
         for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const type::Vector3& pt = p.p();
-            const type::Vector3 ptv = pt + p.v()*dt;
+            const type::Vec3& pt = p.p();
+            const type::Vec3 ptv = pt + p.v()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -300,15 +300,15 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     if (npoints != size)
         return;
 
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
     for (Size i=0; i<size; i++)
     {
         Element e(this,i);
-        const type::Vector3& p = e.p();
+        const Coord& p = e.p();
 
         for (int c=0; c<3; c++)
         {
@@ -343,8 +343,8 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         if (npoints != size)
             return;
 
-        std::vector< type::Vector3 > pointsP;
-        std::vector< type::Vector3 > pointsL;
+        std::vector< type::Vec3 > pointsP;
+        std::vector< type::Vec3 > pointsL;
         for (Size i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this, i);
@@ -365,7 +365,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
 
         if (m_displayFreePosition.getValue())
         {
-            std::vector< type::Vector3 > pointsPFree;
+            std::vector< type::Vec3 > pointsPFree;
 
             for (Size i = 0; i < size; i++)
             {

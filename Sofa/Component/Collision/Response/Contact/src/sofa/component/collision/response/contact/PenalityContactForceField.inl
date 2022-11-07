@@ -148,7 +148,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     const type::vector<Contact>& cc = contacts.getValue();
 
-    std::vector< type::Vector3 > points[4];
+    std::vector< type::Vec3 > points[4];
 
     for (sofa::Index i=0; i<cc.size(); i++)
     {
@@ -182,7 +182,7 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     vparams->drawTool()->drawLines(points[3], 1, RGBAColor::green());
 
 
-    std::vector< type::Vector3 > pointsN;
+    std::vector< type::Vec3 > pointsN;
     if (vparams->displayFlags().getShowNormals())
     {
         for (unsigned int i=0; i<cc.size(); i++)

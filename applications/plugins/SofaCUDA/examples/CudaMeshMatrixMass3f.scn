@@ -1,7 +1,11 @@
 <?xml version="1.0" ?>
 <Node name="lroot" gravity="0 -9.81 0" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping FixedConstraint MechanicalObject MeshMatrixMass MeshSpringForceField TetrahedronSetGeometryAlgorithms] -->
     
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />

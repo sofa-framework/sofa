@@ -50,7 +50,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef typename type::Vector3 Vec3;
+    typedef typename type::Vec3 Vec3;
 
     /// Rendering of lines between associated points (activation)
     Data < bool > f_draw;

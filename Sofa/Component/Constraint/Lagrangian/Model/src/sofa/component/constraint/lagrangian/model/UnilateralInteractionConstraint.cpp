@@ -41,7 +41,7 @@ template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UnilateralInteract
 
 
 
-void UnilateralConstraintResolutionWithFriction::init(int line, double** w, double* force)
+void UnilateralConstraintResolutionWithFriction::init(int line, SReal** w, SReal* force)
 {
     _W[0]=w[line  ][line  ];
     _W[1]=w[line  ][line+1];
@@ -60,10 +60,10 @@ void UnilateralConstraintResolutionWithFriction::init(int line, double** w, doub
 
 }
 
-void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force, double * /*dfree*/)
+void UnilateralConstraintResolutionWithFriction::resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal * /*dfree*/)
 {
-    double f[2];
-    double normFt;
+    SReal f[2];
+    SReal normFt;
 
     f[0] = force[line]; f[1] = force[line+1];
     force[line] -= d[line] / _W[0];
@@ -81,16 +81,16 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
 
     normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
 
-    double fN = _mu*force[line];
+    SReal fN = _mu*force[line];
     if(normFt > fN)
     {
-        double factor = fN / normFt;
+        SReal factor = fN / normFt;
         force[line+1] *= factor;
         force[line+2] *= factor;
     }
 }
 
-void UnilateralConstraintResolutionWithFriction::store(int line, double* force, bool /*convergence*/)
+void UnilateralConstraintResolutionWithFriction::store(int line, SReal* force, bool /*convergence*/)
 {
     if(_prev)
     {

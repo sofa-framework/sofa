@@ -38,17 +38,17 @@ int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
 
 SphereGridTopology::SphereGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
-    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
-    , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
+    , d_center(initData(&d_center,Vector3(0_sreal, 0_sreal, 0_sreal),"center", "Center of the cylinder"))
+    , d_axis(initData(&d_axis,Vector3(0_sreal , 0_sreal, 1_sreal),"axis", "Main direction of the cylinder"))
+    , d_radius(initData(&d_radius, 1_sreal,"radius", "Radius of the cylinder"))
 {
 }
 
 SphereGridTopology::SphereGridTopology()
     : GridTopology()
-    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
-    , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
+    , d_center(initData(&d_center,Vector3(0_sreal, 0_sreal, 0_sreal),"center", "Center of the cylinder"))
+    , d_axis(initData(&d_axis,Vector3(0_sreal , 0_sreal, 1_sreal),"axis", "Main direction of the cylinder"))
+    , d_radius(initData(&d_radius, 1_sreal,"radius", "Radius of the cylinder"))
 {
 }
 
@@ -70,9 +70,10 @@ void SphereGridTopology::setRadius(SReal radius)
 
 sofa::type::Vec3 SphereGridTopology::getPoint(Index i) const
 {
-    int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
-    int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
-    int z = i%d_n.getValue()[2]; i/=d_n.getValue()[2];
+    const auto n = this->d_n.getValue();
+    int x = i%n[0]; i/=n[0];
+    int y = i%n[1]; i/=n[1];
+    int z = i%n[2]; i/=n[2];
     return getPointInGrid(x,y,z);
 }
 
@@ -82,7 +83,7 @@ sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
     SReal r = d_radius.getValue();
     Vector3 axisZ = d_axis.getValue();
     axisZ.normalize();
-    Vector3 axisX = ((axisZ-Vector3(1,0,0)).norm() < 0.000001 ? Vector3(0,1,0) : Vector3(1,0,0));
+    Vector3 axisX = ((axisZ-Vector3(1_sreal,0_sreal,0_sreal)).norm() < 0.000001 ? Vector3(0_sreal,1_sreal,0_sreal) : Vector3(1_sreal,0_sreal,0_sreal));
     Vector3 axisY = cross(axisZ,axisX);
     axisX = cross(axisY,axisZ);
     axisX.normalize();

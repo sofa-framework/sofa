@@ -84,7 +84,7 @@ void OglSceneFrame::drawCylinders(const core::visual::VisualParams* vparams)
 
 void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
 {
-    using Vector3 = sofa::core::visual::DrawTool::Vector3;
+    using Vector3 = sofa::core::visual::DrawTool::Vec3;
     using Real = Vector3::value_type;
     static constexpr Real s = 0.25;
     static constexpr Vector3 p0 {-s, -s, -s};
@@ -118,7 +118,7 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 {
     if (!d_drawFrame.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const Viewport& viewport = vparams->viewport();
 
@@ -190,7 +190,7 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     glMatrixMode(GL_MODELVIEW);
     vparams->drawTool()->popMatrix();
 
-    vparams->drawTool()->restoreLastState();
+
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
 }

@@ -84,7 +84,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
     if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    using sofa::type::Vector3;
+    using sofa::type::Vec3;
     using sofa::type::Matrix3;
     using sofa::type::Mat3x3d;
     using sofa::type::Vec3d;
@@ -125,7 +125,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = l_topology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = l_topology->getQuads();
     sofa::type::vector<Matrix3> bases;
-    sofa::type::vector<Vector3> centers;
+    sofa::type::vector<Vec3> centers;
 
     if ( tetrahedra.empty() && cubes.empty() )
     {
@@ -137,14 +137,14 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             if ( edges.empty() ) return;
 
             sofa::type::vector< SReal >   lengthEdges;
-            sofa::type::vector< Vector3 > unitaryVectors;
+            sofa::type::vector< Vec3 > unitaryVectors;
 
             unsigned int e;
             for ( e=0; e<edges.size(); e++ )
             {
                 lengthEdges.push_back ( ( (in)[edges[e][1]]-(in)[edges[e][0]] ).norm() );
 
-                Vector3 V12 = ( (in)[edges[e][1]]-(in)[edges[e][0]] ); V12.normalize();
+                Vec3 V12 = ( (in)[edges[e][1]]-(in)[edges[e][0]] ); V12.normalize();
                 unitaryVectors.push_back ( V12 );
             }
 
@@ -154,9 +154,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                 for ( e=0; e<edges.size(); e++ )
                 {
                     SReal lengthEdge = lengthEdges[e];
-                    Vector3 V12 =unitaryVectors[e];
+                    Vec3 V12 =unitaryVectors[e];
 
-                    coef = ( V12 ) *Vector3 ((out)[i]-(in)[edges[e][0]] ) /lengthEdge;
+                    coef = ( V12 ) *Vec3 ((out)[i]-(in)[edges[e][0]] ) /lengthEdge;
                     if ( coef >= 0 && coef <= 1 )
                     {
                         addPointInLine ( e, &coef );
