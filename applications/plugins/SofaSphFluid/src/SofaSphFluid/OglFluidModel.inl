@@ -167,7 +167,7 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     Mat4x4f invmatProj;
     if (!invmatProj.invert(matProj))
     {
-        msg_error() << "Rendering failed (drawSprites) as the current Projection Matrix is not inversible.";
+        msg_error() << "Rendering failed (drawSprites) as the current Projection Matrix is singular.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
