@@ -149,6 +149,29 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     if (positions.size() < 1)
         return;
 
+    // Fetch and prepare the matrices to be sent to the shaders
+    double projMat[16];
+    double modelMat[16];
+
+    vparams->getProjectionMatrix(projMat);
+    float fProjMat[16];
+    for (unsigned int i = 0; i < 16; i++)
+        fProjMat[i] = float(projMat[i]);
+
+    vparams->getModelViewMatrix(modelMat);
+    float fModelMat[16];
+    for (unsigned int i = 0; i < 16; i++)
+        fModelMat[i] = float(modelMat[i]);
+
+    Mat4x4f matProj(fProjMat);
+    Mat4x4f invmatProj;
+    if (!invmatProj.invert(matProj))
+    {
+        msg_error() << "Rendering failed (drawSprites) as the current Projection Matrix is not inversible.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     const float zNear = float(vparams->zNear());
     const float zFar = float(vparams->zFar());
 
@@ -167,18 +190,6 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     for (unsigned int i = 0; i<positions.size(); i++)
         indices.push_back(i);
     ////// Compute sphere and depth
-    double projMat[16];
-    double modelMat[16];
-
-    vparams->getProjectionMatrix(projMat);
-    float fProjMat[16];
-    for (unsigned int i = 0; i < 16; i++)
-        fProjMat[i] = float(projMat[i]);
-
-    vparams->getModelViewMatrix(modelMat);
-    float fModelMat[16];
-    for (unsigned int i = 0; i < 16; i++)
-        fModelMat[i] = float(modelMat[i]);
 
     m_spriteShader.TurnOn();
 
@@ -366,15 +377,6 @@ void OglFluidModel<DataTypes>::drawSprites(const core::visual::VisualParams* vpa
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
-
-    Mat4x4f matProj(fProjMat);
-    Mat4x4f invmatProj;
-    if(!invmatProj.invert(matProj))
-    {
-        msg_error() << "Rendering failed (drawSprites) due to invalid input parameter \'u_projectionMatrix\' in GLSLShader";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
 
     m_spriteNormalShader.TurnOn();
 
