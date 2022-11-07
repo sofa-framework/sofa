@@ -54,7 +54,7 @@ TEST(DataExchange, getTemplateName)
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<double>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "d");
+        EXPECT_EQ(engine->getTemplateName(), "double");
     }
 
 
@@ -87,7 +87,7 @@ TEST(DataExchange, getTemplateName)
         const auto engine = sofa::core::objectmodel::New<
             sofa::core::DataExchange<float>
         >("", "");
-        EXPECT_EQ(engine->getTemplateName(), "f");
+        EXPECT_EQ(engine->getTemplateName(), "float");
     }
 
     {
