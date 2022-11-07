@@ -25,8 +25,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
-#include <sofa/helper/difflib.h>
-#include <queue>
+#include <sofa/helper/DiffLib.h>
 
 namespace sofa::core
 {
@@ -217,50 +216,16 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             }
             else
             {
-                std::string a = classname;
-                std::vector<std::string> b;
-                for(auto k : registry)
+                std::vector<std::string> possibleNames;
+                for(auto& k : registry)
                 {
-                    b.push_back(k.first);
+                    possibleNames.push_back(k.first);
                 }
 
-                auto f = [](std::string a, std::vector<std::string> b) -> std::vector<std::string>
-                {
-                    class Tuple
-                    {
-                    public:
-                        Tuple(float ratio_, std::string value_)
-                        {
-                            ratio = ratio_;
-                            value = value_;
-                        }
-                        float ratio;
-                        std::string value;
-                    };
-                    auto cmp = [](Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
-                    std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
-
-                    for(auto& s : b)
-                    {
-                        auto foo = difflib::MakeSequenceMatcher(a,s);
-                        q3.push(Tuple(foo.ratio(), s));
-                    }
-                    std::vector<std::string> result;
-                    while(!q3.empty() && result.size()<=5)
-                    {
-                        if(q3.top().ratio < 0.55)
-                            break;
-                        result.push_back(q3.top().value);
-                        q3.pop();
-                    }
-                    return result;
-                };
-
-
                 arg->logError("But the following exits:");
-                for(auto t : f(a,b))
+                for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames))
                 {
-                    arg->logError( "                      : " + t);
+                    arg->logError( "                      : " + name + " ("+ std::to_string(score)+"% match)");
                 }
             }
         }
