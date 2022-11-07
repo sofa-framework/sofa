@@ -1,0 +1,10 @@
+find_path(DIFFLIB_INCLUDE_DIR difflib.h
+		  HINTS ${DIFFLIB_ROOT}
+	)
+
+include(FindPackageHandleStandardArgs)
+
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(DIFFLIB
+		REQUIRED_VARS DIFFLIB_INCLUDE_DIR
+)
+mark_as_advanced(DIFFLIB_INCLUDE_DIR)
