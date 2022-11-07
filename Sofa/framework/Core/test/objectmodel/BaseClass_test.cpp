@@ -148,6 +148,7 @@ public:
     DefaultTemplate3<DataOne, DataTwo, NotAType> m_ptr9;
     OuterClass<DataOne> m_ptr10;
     OuterClass<DataOne>::InnerClass<DataTwo> m_ptr11;
+    DefaultTemplate1<float> m_ptr12;
 
     sofa::core::objectmodel::Base* m_baseptr1 {&m_ptr1};
     sofa::core::objectmodel::Base* m_baseptr2 {&m_ptr2};
@@ -261,4 +262,11 @@ TEST_F(BaseClass_test, checkNestedClass)
 
     EXPECT_EQ(m_ptr11.getClassName(),"InnerClass") ;
     EXPECT_EQ(m_ptr11.getTemplateName(),"Two") ;
+}
+
+TEST_F(BaseClass_test, floatingPointType)
+{
+    EXPECT_EQ(sofa::defaulttype::DataTypeName<float>::name(), "f");
+    EXPECT_EQ(sofa::helper::NameDecoder::getTemplateName<DefaultTemplate1<float> >(), "float");
+    EXPECT_EQ(m_ptr12.getTemplateName(), "float");
 }
