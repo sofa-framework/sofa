@@ -187,7 +187,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
             minElem[c] = k[c]*cellSize;
             maxElem[c] = (k[c]+1)*cellSize;
         }
-        cubeModel->setLeafCube(i, std::make_pair(M_Iterator(this,pfirst),M_Iterator(this,plast+1)), minElem, maxElem); // define the bounding box of the current cell
+        cubeModel->setLeafCube(i, std::make_pair(Iterator(this,pfirst),Iterator(this,plast+1)), minElem, maxElem); // define the bounding box of the current cell
     }
     //sout << sendl;
     //cubeModel->computeBoundingTree(maxDepth);

@@ -300,10 +300,10 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     if (npoints != size)
         return;
 
-    static constexpr M_Real max_real = std::numeric_limits<M_Real>::max();
-    static constexpr M_Real min_real = std::numeric_limits<M_Real>::lowest();
-    M_Real maxBBox[3] = {min_real,min_real,min_real};
-    M_Real minBBox[3] = {max_real,max_real,max_real};
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
 
     for (sofa::Size i=0; i<size; i++)
     {
@@ -312,12 +312,12 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
 
         for (int c=0; c<3; c++)
         {
-            if (p[c] > maxBBox[c]) maxBBox[c] = (M_Real)p[c];
-            else if (p[c] < minBBox[c]) minBBox[c] = (M_Real)p[c];
+            if (p[c] > maxBBox[c]) maxBBox[c] = (Real)p[c];
+            else if (p[c] < minBBox[c]) minBBox[c] = (Real)p[c];
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<M_Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

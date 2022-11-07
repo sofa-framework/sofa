@@ -338,7 +338,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, 
 }
 
 template<class DataTypes>
-int TriangleCollisionModel<DataTypes>::getTriangleFlags(M_Topology::TriangleID i)
+int TriangleCollisionModel<DataTypes>::getTriangleFlags(Topology::TriangleID i)
 {
     int f = 0;
     sofa::core::topology::BaseMeshTopology::Triangle t = (*m_triangles)[i];
@@ -383,10 +383,10 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    static constexpr M_Real max_real = std::numeric_limits<M_Real>::max();
-    static constexpr M_Real min_real = std::numeric_limits<M_Real>::lowest();
-    M_Real maxBBox[3] = {min_real,min_real,min_real};
-    M_Real minBBox[3] = {max_real,max_real,max_real};
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
 
     const auto& positions = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -398,18 +398,18 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
 
         for (int c=0; c<3; c++)
         {
-            if (pt1[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt1[c];
-            else if (pt1[c] < minBBox[c]) minBBox[c] = (M_Real)pt1[c];
+            if (pt1[c] > maxBBox[c]) maxBBox[c] = (Real)pt1[c];
+            else if (pt1[c] < minBBox[c]) minBBox[c] = (Real)pt1[c];
 
-            if (pt2[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt2[c];
-            else if (pt2[c] < minBBox[c]) minBBox[c] = (M_Real)pt2[c];
+            if (pt2[c] > maxBBox[c]) maxBBox[c] = (Real)pt2[c];
+            else if (pt2[c] < minBBox[c]) minBBox[c] = (Real)pt2[c];
 
-            if (pt3[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt3[c];
-            else if (pt3[c] < minBBox[c]) minBBox[c] = (M_Real)pt3[c];
+            if (pt3[c] > maxBBox[c]) maxBBox[c] = (Real)pt3[c];
+            else if (pt3[c] < minBBox[c]) minBBox[c] = (Real)pt3[c];
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<M_Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -533,7 +533,7 @@ inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][0]] + m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][1]] +
-                                                                                                m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((M_Real)(3.0)); }
+                                                                                                m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
 
 
 } //namespace sofa::component::collision::geometry

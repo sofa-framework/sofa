@@ -76,7 +76,7 @@ class LineCollisionModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);
-    
+
     enum LineFlag
     {
         FLAG_P1  = 1<<0, ///< Point 1  is attached to this line
@@ -138,7 +138,7 @@ public:
     Deriv velocity(sofa::Index index)const;
 
     virtual sofa::Index getElemEdgeIndex(sofa::Index index) const { return index; }
-    
+
     int getLineFlags(sofa::Index i);
 
     Data<bool> bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
@@ -168,10 +168,10 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    
+
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
-    M_Topology* topology;
+    Topology* topology;
     PointCollisionModel<sofa::defaulttype::Vec3Types>* mpoints;
     int meshRevision;
 };

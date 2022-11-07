@@ -567,10 +567,10 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 
     if( !onlyVisible ) return;
 
-    static constexpr M_Real max_real = std::numeric_limits<M_Real>::max();
-    static constexpr M_Real min_real = std::numeric_limits<M_Real>::lowest();
-    M_Real maxBBox[3] = {min_real,min_real,min_real};
-    M_Real minBBox[3] = {max_real,max_real,max_real};
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
 
     const auto& positions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -582,15 +582,15 @@ void LineCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, 
 
         for (int c=0; c<3; c++)
         {
-            if (pt1[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt1[c];
-            else if (pt1[c] < minBBox[c]) minBBox[c] = (M_Real)pt1[c];
+            if (pt1[c] > maxBBox[c]) maxBBox[c] = (Real)pt1[c];
+            else if (pt1[c] < minBBox[c]) minBBox[c] = (Real)pt1[c];
 
-            if (pt2[c] > maxBBox[c]) maxBBox[c] = (M_Real)pt2[c];
-            else if (pt2[c] < minBBox[c]) minBBox[c] = (M_Real)pt2[c];
+            if (pt2[c] > maxBBox[c]) maxBBox[c] = (Real)pt2[c];
+            else if (pt2[c] < minBBox[c]) minBBox[c] = (Real)pt2[c];
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<M_Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 template<class DataTypes>
@@ -638,7 +638,7 @@ template<class DataTypes>
 inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
 
 template<class DataTypes>
-inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((M_Real)(2.0)); }
+inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
 
 template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }
