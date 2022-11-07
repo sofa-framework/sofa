@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaTypes.h"
-#include <SofaRigid/RigidMapping.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::component::mapping::nonlinear

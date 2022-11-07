@@ -171,7 +171,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     const Real b = (Real)tan((a/180*M_PI)) * h;
     const Coord c = coneCenter.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->enableBlending();
     vparams->drawTool()->enableLighting();
@@ -183,7 +183,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     vparams->drawTool()->disableBlending();
     vparams->drawTool()->disableBlending();
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

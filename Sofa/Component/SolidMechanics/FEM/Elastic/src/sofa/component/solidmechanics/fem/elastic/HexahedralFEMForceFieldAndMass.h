@@ -23,7 +23,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 
 
-#include "HexahedralFEMForceField.h"
+#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceField.h>
 #include <sofa/core/behavior/Mass.h>
 
 #include <sofa/core/topology/TopologyData.h>

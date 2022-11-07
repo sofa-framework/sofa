@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
-#define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/fwd.h>
-namespace sofa
-{
 
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -135,132 +129,6 @@ public:
     virtual void removeSlave(BaseObject::SPtr s);
     /// @}
 
-
-    /// @name Component accessors
-    /// @{
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->get<T>(BaseContext::Local)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::Local) to update.")
-    typename T::SPtr searchLocal() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->get<T>(BaseContext::SearchUp)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
-    typename T::SPtr searchUp() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->get<T>(BaseContext::SearchDown)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
-    typename T::SPtr searchDown() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->get<T>(BaseContext::SearchRoot)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchFromRoot) to update.")
-    typename T::SPtr searchFromRoot() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->get<T>(BaseContext::SearchParents)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
-    typename T::SPtr searchInParents() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::Local)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchLocal) to update.")
-    type::vector<typename T::SPtr> searchAllLocal() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchUp)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
-    type::vector<typename T::SPtr> searchAllUp() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchDown)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
-    type::vector<typename T::SPtr> searchAllDown() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
-    type::vector<typename T::SPtr> searchAllFromRoot() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchParents)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
-    type::vector<typename T::SPtr> searchAllInParents() const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::Local)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchLocal) to update.")
-    type::vector<typename T::SPtr> searchAllLocal(const Tag& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchUp)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
-    type::vector<typename T::SPtr> searchAllUp(const Tag& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchDown)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
-    type::vector<typename T::SPtr> searchAllDown(const Tag& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
-    type::vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchParents)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
-    type::vector<typename T::SPtr> searchAllInParents(const Tag& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::Local)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::Local) to update.")
-    type::vector<typename T::SPtr> searchAllLocal(const TagSet& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchUp)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchUp) to update.")
-    type::vector<typename T::SPtr> searchAllUp(const TagSet& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchDown)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchDown) to update.")
-    type::vector<typename T::SPtr> searchAllDown(const TagSet& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchRoot)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchRoot) to update.")
-    type::vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const = delete;
-
-    /// This function was removed as it duplicates the behavior that is already available by
-    /// using getContext()->getObjects<T>(BaseContext::SearchParents)
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__BASEOBJECT_SEARCH("Use getContext()->get<T>(BaseContext::SearchParents) to update.")
-    type::vector<typename T::SPtr> searchAllInParents(const TagSet& t) const = delete;
-
-    /// @}
-
     /// @name data access
     ///   Access to external data
     /// @{
@@ -354,10 +222,5 @@ public:
     virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
 };
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

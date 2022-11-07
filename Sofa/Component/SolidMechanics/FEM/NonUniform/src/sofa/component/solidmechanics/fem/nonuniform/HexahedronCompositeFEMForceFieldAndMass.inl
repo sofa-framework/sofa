@@ -868,7 +868,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
     {
         type::fixed_array<Index,8> finerChildren;
 
-        topology::SparseGridTopology::SPtr sparseGrid, finerSparseGrid;
+        topology::container::grid::SparseGridTopology::SPtr sparseGrid, finerSparseGrid;
 
         if (level == 0)
         {
@@ -1500,7 +1500,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
     }
     else
     {
-        topology::SparseGridTopology::SPtr sparseGrid;
+        topology::container::grid::SparseGridTopology::SPtr sparseGrid;
 
         sparseGrid = this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-level];
 
@@ -1555,7 +1555,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     if( d_drawType.getValue() == -1 ) return HexahedronFEMForceFieldAndMassT::draw(vparams);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -1594,7 +1594,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     }
     else
     {
-        std::vector< type::Vector3 > points;
+        std::vector< type::Vec3 > points;
 
         vparams->drawTool()->setLightingEnabled(false);
 
@@ -1614,7 +1614,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
     {
         colour=sofa::type::RGBAColor(0.95f, 0.95f, 0.7f,1.0f);
 
-        std::vector< sofa::type::Vector3 > points;
+        std::vector< sofa::type::Vec3 > points;
         for(unsigned i=0; i<x.size(); ++i)
             points.push_back( x[i] );
         vparams->drawTool()->drawSpheres(points, d_drawSize.getValue()*1.5f,colour);
@@ -1626,7 +1626,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::draw(const core::visual::Visual
 
     {
 
-        std::vector< sofa::type::Vector3 > points;
+        std::vector< sofa::type::Vec3 > points;
         for(unsigned i=0; i<sgr->getConnexions()->size(); ++i)
         {
             type::vector< topology::container::grid::SparseGridRamificationTopology::Connexion *>& con = (*sgr->getConnexions())[i];

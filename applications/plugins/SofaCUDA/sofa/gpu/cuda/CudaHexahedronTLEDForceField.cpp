@@ -109,7 +109,7 @@ void CudaHexahedronTLEDForceField::reinit()
     std::map<int,int> nelems;
     for (int i=0; i<nbElems; i++)
     {
-        Element& e = inputElems[i];
+        const Element& e = inputElems[i];
         for (unsigned int j=0; j<e.size(); j++)
         {
             ++nelems[e[j]];

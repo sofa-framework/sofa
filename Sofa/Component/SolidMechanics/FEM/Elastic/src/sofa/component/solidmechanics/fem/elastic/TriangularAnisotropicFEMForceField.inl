@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "TriangularAnisotropicFEMForceField.h"
+#include <sofa/component/solidmechanics/fem/elastic/TriangularAnisotropicFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
@@ -311,9 +311,9 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
 
     if (showFiber.getValue() && lfd.size() >= (unsigned)m_topology->getNbTriangles())
     {
-        vparams->drawTool()->saveLastState();
+        const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
         constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::black();
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         int nbTriangles=m_topology->getNbTriangles();
@@ -330,12 +330,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
                 Coord center = (x[a]+x[b]+x[c])/3;
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
                 d*=0.25;
-                vertices.push_back(sofa::type::Vector3(center-d));
-                vertices.push_back(sofa::type::Vector3(center+d));
+                vertices.push_back(sofa::type::Vec3(center-d));
+                vertices.push_back(sofa::type::Vec3(center+d));
             }
         }
         vparams->drawTool()->drawLines(vertices,1,color);
-        vparams->drawTool()->restoreLastState();
+
     }
     localFiberDirection.endEdit();
 }

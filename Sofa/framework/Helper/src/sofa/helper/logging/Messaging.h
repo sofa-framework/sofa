@@ -78,7 +78,7 @@
 #ifndef MESSAGING_H
 #define MESSAGING_H
 
-#include "MessageDispatcher.h"
+#include <sofa/helper/logging/MessageDispatcher.h>
 
 #define msgendl "  \n"
 

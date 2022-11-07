@@ -26,6 +26,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/type/vector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
@@ -60,16 +61,17 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef type::vector< sofa::Index > VecIndex;
+    typedef sofa::core::topology::TopologySubsetIndices DataSubsetIndex;
     typedef type::vector< Real >	 VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< type::vector< sofa::Index > > d_points; ///< points controlled by the rest shape springs
+    DataSubsetIndex d_points; ///< points controlled by the rest shape springs
     Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
     Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
     Data< type::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
-    Data< type::vector< sofa::Index > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< VecIndex > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
     Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
@@ -88,6 +90,8 @@ public:
 
     /// Add the forces.
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 

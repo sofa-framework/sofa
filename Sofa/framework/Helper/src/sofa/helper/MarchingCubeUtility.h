@@ -35,7 +35,7 @@ namespace sofa
 namespace helper
 {
 using sofa::type::Vec;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::vector;
 
 class SOFA_HELPER_API MarchingCubeUtility
@@ -45,6 +45,7 @@ public:
     typedef Vec<3, int> Vec3i;
     typedef Vec<6, int> Vec6i;
     using Vector3 = sofa::type::Vec3;
+    using Real = Vector3::value_type;
 
     MarchingCubeUtility();
 
@@ -76,11 +77,13 @@ public:
     void setBoundingBoxFromRealCoords ( const Vector3& min, const Vector3& max )
     {
         Vector3 gridSize = dataVoxelSize * cubeStep;
-		gridSize = Vector3 ( (SReal) 1.0 / gridSize[0], (SReal) 1.0 / gridSize[1], (SReal) 1.0 / gridSize[2] );
+		gridSize = Vector3 ( 1_sreal / gridSize[0], 1_sreal / gridSize[1], 1_sreal / gridSize[2] );
 
 //          Vec3i bbMin = ( min - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
 //          Vec3i bbMax = ( max - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
-        setBoundingBox( min, max);
+        setBoundingBox(
+            {static_cast<int>(min.x()), static_cast<int>(min.y()), static_cast<int>(min.z())},
+            {static_cast<int>(max.x()), static_cast<int>(max.y()), static_cast<int>(max.z())});
     }
 
     /// Set the bounding box (in the data space) to apply mCube localy.

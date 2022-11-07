@@ -118,7 +118,6 @@ set(SRC_ROOT src/sofa/gui/qt)
 
 set(MOC_HEADER_FILES
     ${SRC_ROOT}/AboutSOFADialog.h
-    ${SRC_ROOT}/AddObject.h
     ${SRC_ROOT}/DataFilenameWidget.h
     ${SRC_ROOT}/DataWidget.h
     ${SRC_ROOT}/DisplayFlagsDataWidget.h
@@ -144,6 +143,7 @@ set(MOC_HEADER_FILES
     ${SRC_ROOT}/SofaMouseManager.h    
     ${SRC_ROOT}/SofaVideoRecorderManager.h
     ${SRC_ROOT}/SofaPluginManager.h
+    ${SRC_ROOT}/SofaSceneGraphWidget.h
     ${SRC_ROOT}/WDoubleLineEdit.h    
     )
 set(HEADER_FILES
@@ -166,7 +166,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/AboutSOFADialog.cpp
-    ${SRC_ROOT}/AddObject.cpp
     ${SRC_ROOT}/DataFilenameWidget.cpp
     ${SRC_ROOT}/DataWidget.cpp
     ${SRC_ROOT}/DisplayFlagsDataWidget.cpp
@@ -200,6 +199,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TableDataWidget.cpp
     ${SRC_ROOT}/WDoubleLineEdit.cpp
     ${SRC_ROOT}/viewer/SofaViewer.cpp
+    ${SRC_ROOT}/SofaSceneGraphWidget.cpp
     ${SRC_ROOT}/viewer/VisualModelPolicy.cpp    
 )
 set(UI_FILES

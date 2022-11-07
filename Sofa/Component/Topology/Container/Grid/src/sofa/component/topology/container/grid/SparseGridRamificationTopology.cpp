@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sstream>
-#include "SparseGridRamificationTopology.h"
+#include <sofa/component/topology/container/grid/SparseGridRamificationTopology.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::topology::container::grid
@@ -1242,11 +1242,11 @@ bool SparseGridRamificationTopology::intersectionSegmentTriangle(Vector3 s0, Vec
     SReal fSign;
     if (fDdN > 1.0e-10)
     {
-        fSign = (SReal)1.0;
+        fSign = 1.0_sreal;
     }
-    else if (fDdN < -1.0e-10)
+    else if (fDdN < -1.0e-10_sreal)
     {
-        fSign = (SReal)-1.0;
+        fSign = -1.0_sreal;
         fDdN = -fDdN;
     }
     else

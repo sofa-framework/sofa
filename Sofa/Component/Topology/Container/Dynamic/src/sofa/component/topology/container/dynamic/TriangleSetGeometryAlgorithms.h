@@ -367,6 +367,8 @@ protected:
     /// include cubature points
     NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;
 
+    bool mustComputeBBox() const override;
+
 private:
     TriangleSetTopologyContainer*				m_container;
     TriangleSetTopologyModifier*				m_modifier;

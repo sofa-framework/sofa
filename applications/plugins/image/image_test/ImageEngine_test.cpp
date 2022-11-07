@@ -22,13 +22,14 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <SceneCreator/SceneCreator.h>
 //Including Simulation
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/DataEngine_test.h>
 #include <image/ImageContainer.h>
 #include <image/ImageViewer.h>
 #include "TestImageEngine.h"
+
+#include <sofa/testing/BaseTest.h>
+#include <sofa/component/engine/testing/DataEngineTestCreation.h>
 
 /// To activate showing the picture during the test.
 /// Set this to true.
@@ -43,7 +44,7 @@ namespace sofa {
  * Copy on Write option is true.
  * Note: the function draw of ImageViewer is actually not called in this test (it works with the gui).
   */
-struct ImageEngine_test : public Sofa_test<>
+struct ImageEngine_test : public sofa::testing::BaseTest
 {
 
     // Root of the scene graph

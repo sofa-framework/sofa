@@ -175,10 +175,10 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
     bool external = ( this->mstate1!=this->mstate2 );
@@ -221,7 +221,7 @@ void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     }
 
     vparams->drawTool()->drawLines(vertices, 1, colors);
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

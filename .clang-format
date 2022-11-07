@@ -42,7 +42,7 @@ BraceWrapping:
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Attach
+BreakBeforeBraces: Allman
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
@@ -162,7 +162,6 @@ StatementMacros:
 TabWidth:        8
 UseCRLF:         false
 UseTab:          Never
-BreakBeforeBraces: Allman
 DerivePointerAlignment: false
 PointerAlignment: Left
 ...

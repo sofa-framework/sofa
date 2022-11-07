@@ -19,15 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASE_H
-#define SOFA_CORE_OBJECTMODEL_BASE_H
+#pragma once
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/objectmodel/TagSet.h>
 #include <list>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/sptr.h>
 
 #include <deque>
@@ -37,67 +38,6 @@
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerCallback.h>
 #include <sofa/type/fwd.h>
-
-#include <sofa/helper/system/SofaOStream.h>
-
-// forward declaration of castable classes
-// @author Matthieu Nesme, 2015
-// it is not super elegant, but it is way more efficient than dynamic_cast
-namespace sofa::core {
-    class BaseState;
-    class BaseMapping;
-    class BehaviorModel;
-    class CollisionModel;
-    class DataEngine;
-    class DevBaseMonitor;
-namespace objectmodel {
-    class BaseContext;
-    class BaseObject;
-    class BaseNode;
-    class ContextObject;
-    class ConfigurationSetting;
-} // namespace objectmodel
-namespace behavior {
-    class BaseAnimationLoop;
-    class OdeSolver;
-    class BaseLinearSolver;
-    class LinearSolver;
-    class ConstraintSolver;
-    class BaseMass;
-    class BaseMechanicalState;
-    class BaseInteractionForceField;
-    class BaseInteractionConstraint;
-    class BaseForceField;
-    class BaseProjectiveConstraintSet;
-    class BaseInteractionProjectiveConstraintSet;
-    class BaseConstraintSet;
-    class BaseConstraint;
-} // namespace behavior
-namespace visual {
-    class VisualModel;
-    class VisualManager;
-    class VisualLoop;
-    class Shader;
-} // namespace visual
-namespace topology {
-    class Topology;
-    class BaseMeshTopology;
-    class BaseTopologyObject;
-} // namespace topology
-namespace collision {
-    class CollisionGroupManager;
-    class ContactManager;
-    class Detection;
-    class Intersection;
-    class Pipeline;
-} // namespace collision
-namespace loader {
-    class BaseLoader;
-} // namespace loader
-} // namespace sofa::core
-
-// VisitorScheduler
-
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
@@ -181,26 +121,21 @@ public:
     void setName(const std::string& n, int counter);
 
     /// Get the type name of this object (i.e. class and template types)
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getTypeName() method.
-    virtual std::string getTypeName() const ;
+    std::string getTypeName() const ;
 
     /// Get the class name of this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getClassName() method. To specify custom class name you need
-    /// to implement a single static std::string GetCustomClassName(){} method.
+    /// To specify custom static class name you need to implement a single
+    /// static std::string GetCustomClassName(){} method.
+    /// Override only if the class name cannot be known at compile-time (e.g. Python).
     virtual std::string getClassName() const ;
 
     /// Get the template type names (if any) used to instantiate this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getClassName() method. To specify custom class name you need
-    /// to implement a single static std::string GetCustomTemplateName(){} method.
-    virtual std::string getTemplateName() const ;
+    /// To specify custom static template name you need to implement a single
+    /// static std::string GetCustomTemplateName(){} method.
+    virtual std::string getTemplateName() const final;
 
     /// Get the template type names (if any) used to instantiate this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getNameSpaceName() method.
-    virtual std::string getNameSpaceName() const ;
+    std::string getNameSpaceName() const ;
 
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);
@@ -274,6 +209,16 @@ public:
 
     /// Update pointers in case the pointed-to objects have appeared
     virtual void updateLinks(bool logErrors = true);
+
+    /// Helper method used to initialize a data field containing a value of type T
+    template<class T>
+    BaseData::BaseInitData initData(::sofa::core::objectmodel::Data<T>* field, const char* name, const char* help,
+    ::sofa::core::objectmodel::BaseData::DataFlags dataflags)
+    {
+        ::sofa::core::objectmodel::BaseData::BaseInitData res;
+        this->initData0(field, res, name, help, dataflags);
+        return res;
+    }
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
@@ -365,21 +310,10 @@ public:
 
 private:
     /// effective ostringstream for logging
-    mutable std::ostringstream _serr, _sout;
     mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
-    /// write into component buffer + Message processedby message handlers
-    /// default message type = Warning
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
-    /// write into component buffer.
-    /// Message is processed by message handlers only if printLog==true
-    /// /// default message type = Info
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
-    /// runs the stream processing
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaEndl<Base> sendl;
-
-    void processStream(std::ostream& out);
+    mutable Data<int> d_messageLogCount;
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
     size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;
@@ -389,6 +323,7 @@ public:
     void clearLoggedMessages() const ;
 
     inline bool notMuted() const { return f_printLog.getValue(); }
+
 
 protected:
     /// Helper method used by initData()
@@ -407,47 +342,7 @@ protected:
 
 public:
 
-    /// Helper method & type for the NameDecoder class to it can detect inherited instances
-    /// The following code is only needed since #PR1283 to smooth the deprecation process.
-    /// Remove that after the 01.01.2021.
-    bool IsInheritingFromBase(){return true;}
     typedef Base BaseType;
-
-    /// Helper method to get the type name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = nullptr; std::string type = T::typeName(ptr); \endcode
-    /// This way derived classes can redefine the typeName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string typeName(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the class name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::className<B>(); \endcode
-    /// This way derived classes can redefine the className method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string className(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the namespace name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::namespaceName<T>(); \endcode
-    /// This way derived classes can redefine the namespaceName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string namespaceName(const T* ptr = nullptr) = delete;
-
-    /// Helper method to get the template name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  std::string type = Base::templateName<B>); \endcode
-    /// This way derived classes can redefine the templateName method
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__CLASSNAME_INTROSPECTION()
-    static std::string templateName(const T* ptr = nullptr) = delete;
 
     /// Helper method to get the shortname of a type derived from this class.
     /// The default implementation return the class name.
@@ -599,4 +494,3 @@ inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base*
 
 } // namespace sofa::helper::logging
 
-#endif

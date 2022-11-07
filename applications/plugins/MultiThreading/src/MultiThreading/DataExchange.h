@@ -22,16 +22,13 @@
 #ifndef SOFA_EXCHANGE_DATA_H
 #define SOFA_EXCHANGE_DATA_H
 
-
+#include <MultiThreading/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/State.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/Event.h>
-
-#include <SofaBaseMechanics/MechanicalObject.h>
-
 
 namespace sofa
 {
@@ -84,32 +81,10 @@ namespace sofa
 
 			void handleEvent( core::objectmodel::Event* event ) override;
 
-            virtual std::string getTemplateName() const  override
-            { 
-                return templateName(this);
-            }
-
-            static std::string templateName(const DataExchange<DataTypes>* = nullptr)
-            { 
-                return sofa::defaulttype::DataTypeName<DataTypes>::name();
-            }
-
-			template<class T>
-			static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+			static std::string GetCustomTemplateName()
 			{
-				std::string dataTypeName = defaulttype::DataTypeName<DataTypes>::name();
-				// check for the right template
-                if ( std::strcmp( dataTypeName.c_str(), arg->getAttribute("template") ) != 0 )
-				{
-					return false;
-					// try to guess from the "from" and "to" data types
-				}
-
-
-				return BaseObject::canCreate(obj, context, arg);
+				return sofa::defaulttype::DataTypeName<DataTypes>::name();
 			}
-
-
 
 			template<class T>
 			static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
@@ -169,29 +144,23 @@ namespace sofa
 
 
 
+#if !defined(SOFA_MULTITHREADING_PLUGIN_DATAEXCHANGE_CPP)
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec3d> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec2d> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<double> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::Vec3d >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< double >;
 
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec2dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec1dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec6dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2dTypes >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec3f> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec2f> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<float> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::Vec3f >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< float >;
 
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::type::Vec2fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec1fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec6fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2fTypes >;
-
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<int> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<unsigned int> >;
+extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< bool >;
+#endif
 
 	}
 

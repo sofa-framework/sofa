@@ -176,7 +176,7 @@ sofa::simulation::Task::MemoryAlloc BruteForcePairTest::run()
             continue;
         }
 
-        if (!BruteForceBroadPhase::keepCollisionBetween(lastCm_1, lastCm_2))
+        if (!detection::algorithm::BruteForceBroadPhase::keepCollisionBetween(lastCm_1, lastCm_2))
         {
             continue;
         }

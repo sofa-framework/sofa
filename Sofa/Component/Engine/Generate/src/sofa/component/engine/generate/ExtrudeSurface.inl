@@ -209,7 +209,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -218,7 +218,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     const type::vector<BaseMeshTopology::Triangle> &extrusionTriangles = f_extrusionTriangles.getValue();
     const VecCoord& extrusionVertices = f_extrusionVertices.getValue();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     //Triangles From Surface
     for (unsigned int i=0 ; i<surfaceTriangles.size()*2 ; i+=2)
@@ -228,7 +228,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int j=0 ; j<3 ; j++)
         {
             const Coord& p = (extrusionVertices[triangle[j]]);
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
         }
     }
 
@@ -243,7 +243,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int j=0 ; j<3 ; j++)
         {
             const Coord& p = (extrusionVertices[triangle[j]]);
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
         }
     }
     vparams->drawTool()->drawTriangles(vertices, sofa::type::RGBAColor::green());
@@ -256,7 +256,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int j=0 ; j<3 ; j++)
         {
             const Coord& p = (extrusionVertices[triangle[j]]);
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
         }
     }
     vparams->drawTool()->drawTriangles(vertices, sofa::type::RGBAColor::blue());
@@ -264,7 +264,7 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
     
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::generate

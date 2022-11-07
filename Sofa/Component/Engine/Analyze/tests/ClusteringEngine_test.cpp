@@ -23,10 +23,10 @@
 using sofa::testing::BaseSimulationTest;
 
 #include <sofa/helper/BackTrace.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-using sofa::component::container::MechanicalObject ;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using sofa::component::statecontainer::MechanicalObject ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
@@ -37,8 +37,8 @@ using sofa::simulation::graph::DAGSimulation;
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams;
 
-#include <SofaGeneralEngine/ClusteringEngine.h>
-using sofa::component::engine::ClusteringEngine ;
+#include <sofa/component/engine/analyze/ClusteringEngine.h>
+using sofa::component::engine::analyze::ClusteringEngine ;
 
 using sofa::type::vector;
 

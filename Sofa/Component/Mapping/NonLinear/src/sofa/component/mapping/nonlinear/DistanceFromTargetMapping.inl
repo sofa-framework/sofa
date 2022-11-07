@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "DistanceFromTargetMapping.h"
+#include <sofa/component/mapping/nonlinear/DistanceFromTargetMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
@@ -214,9 +214,9 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
      if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
-    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel.get()));  // parent displacement
     const SReal kfactor = mparams->kFactor();
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
     helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
 
     for(unsigned i=0; i<indices.size(); i++ )
@@ -330,12 +330,12 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
 
-    type::vector< sofa::type::Vector3 > points;
+    type::vector< sofa::type::Vec3 > points;
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        points.push_back( sofa::type::Vector3(TIn::getCPos(targetPositions[i]) ) );
-        points.push_back( sofa::type::Vector3(TIn::getCPos(pos[indices[i]]) ) );
+        points.push_back( sofa::type::Vec3(TIn::getCPos(targetPositions[i]) ) );
+        points.push_back( sofa::type::Vec3(TIn::getCPos(pos[indices[i]]) ) );
     }
 
     if( !arrowsize )

@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/gui/common/BaseGUI.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/BaseGUI.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/BaseGUI.h")
 
 namespace sofa::gui
 {

@@ -24,7 +24,7 @@
 namespace sofa::type
 {
 
-void Material::setColor(float r, float g, float b, float a)
+void Material::setColor(const float r, const float g, const float b, const float a)
 {
     ambient = RGBAColor(r*0.2f,g*0.2f,b*0.2f,a);
     diffuse = RGBAColor(r,g,b,a);
@@ -105,26 +105,26 @@ Material::Material(const Material& mat)
     bumpTextureFilename = mat.bumpTextureFilename;
 }
 
-Material & Material::operator= (const Material& mat) {
-    ambient =  mat.ambient;
-    diffuse =  mat.diffuse;
-    specular =  mat.specular;
-    emissive =  mat.emissive;
+Material & Material::operator= (const Material& other) {
+    ambient =  other.ambient;
+    diffuse =  other.diffuse;
+    specular =  other.specular;
+    emissive =  other.emissive;
 
-    shininess =  mat.shininess;
-    name = mat.name;
-    useAmbient =  mat.useAmbient;
-    useDiffuse =  mat.useDiffuse ;
-    useSpecular =  mat.useSpecular ;
-    useEmissive =  mat.useEmissive;
-    useShininess =  mat.useShininess ;
-    activated = mat.activated;
+    shininess =  other.shininess;
+    name = other.name;
+    useAmbient =  other.useAmbient;
+    useDiffuse =  other.useDiffuse ;
+    useSpecular =  other.useSpecular ;
+    useEmissive =  other.useEmissive;
+    useShininess =  other.useShininess ;
+    activated = other.activated;
 
-    useTexture = mat.useTexture;
-    textureFilename = mat.textureFilename;
+    useTexture = other.useTexture;
+    textureFilename = other.textureFilename;
 
-    useBumpMapping = mat.useBumpMapping;
-    bumpTextureFilename = mat.bumpTextureFilename;
+    useBumpMapping = other.useBumpMapping;
+    bumpTextureFilename = other.bumpTextureFilename;
     return *this;
 }
 

@@ -22,6 +22,8 @@
 #pragma once
 
 #include <sofa/type/config.h>
+SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "RGBAColor.h")
+
 #include <sofa/type/RGBAColor.h>
 
 namespace sofa::type

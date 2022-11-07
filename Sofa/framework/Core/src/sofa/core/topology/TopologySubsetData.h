@@ -60,7 +60,11 @@ public:
     * By default @sa m_addNewElements is set to false. 
     * @param {bool} to change m_addNewElements value. 
     */
-    void supportNewTopologyElements(bool value) { m_addNewElements = true; }
+    void supportNewTopologyElements(bool value)
+    {
+        SOFA_UNUSED(value);
+        m_addNewElements = true;
+    }
     
     /// Getter to the option @sa m_addNewElements
     bool isNewTopologyElementsSupported() const { return m_addNewElements; }
@@ -70,7 +74,7 @@ public:
     * @param {Index} element index of the full Data vector to find in the vector map
     * @return {Index} position of the element in the vector map. return sofa::InvalidID if not found.
     */
-    virtual Index indexOfElement(Index index);
+    virtual Index indexOfElement(Index index) const;
 
     /// Swaps values of this subsetmap at indices i1 and i2. (only if i1 and i2 < subset size())
     void swap(Index i1, Index i2) override;

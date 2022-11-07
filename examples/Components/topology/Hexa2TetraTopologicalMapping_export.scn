@@ -17,14 +17,12 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline name="default21" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="default22" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager name="default23" />
     <Node name="Cube" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -52,7 +50,7 @@
                 <Node name="Visu" gravity="0 -9.81 0">
                     <OglModel template="Vec3d" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
                     <IdentityMapping template="Vec3d,Vec3d" name="default33" input="@.." output="@Visual" />
-                    <OBJExporter filename="cube5x5x5-surface" exportAtBegin="true" />
+                    <VisualModelOBJExporter filename="cube5x5x5-surface" exportAtBegin="true" />
                 </Node>
             </Node>
         </Node>

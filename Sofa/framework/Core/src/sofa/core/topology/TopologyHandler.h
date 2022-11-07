@@ -137,19 +137,13 @@ public:
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Tetrahedron>::EMoved* /*event*/) {}
     virtual void ApplyTopologyChange(const TopologyChangeElementInfo<Topology::Hexahedron>::EMoved* /*event*/) {}
 
-
-
-    virtual bool isTopologyDataRegistered() { return false; }
+    /// Method to notify that this topologyHandler is not anymore registerd into a Topology Container
+    void unregisterTopologyHandler() { m_registeredElements.clear(); }
+    /// Method to get the information if this topologyHandler is registered into a Topology Container
+    bool isTopologyHandlerRegistered() const { return !m_registeredElements.empty(); }
 
 
     size_t getNumberOfTopologicalChanges();
-
-    virtual void linkToPointDataArray() {}
-    virtual void linkToEdgeDataArray() {}
-    virtual void linkToTriangleDataArray() {}
-    virtual void linkToQuadDataArray() {}
-    virtual void linkToTetrahedronDataArray() {}
-    virtual void linkToHexahedronDataArray() {}
 
     void setNamePrefix(const std::string& s) { m_prefix = s; }
     std::string getName() { return m_prefix + m_data_name; }
@@ -157,22 +151,20 @@ public:
     /** Function to link the topological Data with the engine and the current topology. And init everything.
     * This function should be used at the end of the all declaration link to this Data while using it in a component.
     */
-    virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology);
+    virtual bool registerTopology(sofa::core::topology::BaseMeshTopology* _topology, bool printLog = false);
 
     /// Method to add a CallBack method to be used when a @sa core::topology::TopologyChangeType event is fired. The call back should use the @TopologyChangeCallback 
     /// signature and pass the corresponding core::topology::TopologyChange* structure.
     void addCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback);
-
-
-    ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2085)", "v21.06 (PR#2085)", "This method has been removed as it is not part of the new topology change design.")
-    bool registerTopology() = delete;
 
 protected:
     /// use to define engine name.
     std::string m_prefix;
     /// use to define data handled name.
     std::string m_data_name;
+
+    /// Set to store the information which topology element this handler is linked. I.e in which handler list this handler is registered inside the Topology.
+    std::set<sofa::geometry::ElementType> m_registeredElements;
 
     sofa::core::topology::TopologyContainer* m_topology;
     std::map < core::topology::TopologyChangeType, TopologyChangeCallback> m_callbackMap;

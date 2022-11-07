@@ -26,12 +26,12 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaOpenglVisual/OglVariable.h>
-#include <SofaOpenglVisual/OglAttribute.h>
+#include <sofa/component/visual/VisualModelImpl.h>
+#include <sofa/gl/component/shader/OglVariable.h>
+#include <sofa/gl/component/shader/OglAttribute.h>
 
 
 namespace sofa
@@ -46,7 +46,7 @@ namespace visualmodel
  *
  */
 
-class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public Vec3State
+class SOFA_VOLUMETRICRENDERING_API OglVolumetricModel : public core::visual::VisualModel, public component::visual::Vec3State
 {
 public:
     SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, Vec3State);
@@ -71,7 +71,7 @@ protected:
 
 private:
     core::topology::BaseMeshTopology::SPtr m_topology;
-    component::visualmodel::OglShader::SPtr m_shader;
+    gl::component::shader::OglShader::SPtr m_shader;
 
     bool b_modified;
     bool b_useTopology;
@@ -86,11 +86,11 @@ private:
     void computeBarycenters();
 
     //Uniforms
-    sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_mappingTableValues;
-    sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_runSelectTableValues;
+    gl::component::shader::OglFloatVector4Variable::SPtr m_mappingTableValues;
+    gl::component::shader::OglFloatVector4Variable::SPtr m_runSelectTableValues;
 
     //Attributes
-    sofa::component::visualmodel::OglFloat4Attribute::SPtr m_vertexColors;
+    gl::component::shader::OglFloat4Attribute::SPtr m_vertexColors;
 
     sofa::type::vector<Tetrahedron> m_hexaToTetrahedra;
 

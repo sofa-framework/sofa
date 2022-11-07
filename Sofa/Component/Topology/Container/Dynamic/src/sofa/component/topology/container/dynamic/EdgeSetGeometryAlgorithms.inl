@@ -703,6 +703,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 {
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     // Draw Edges indices
     if (showEdgeIndices.getValue() && this->m_topology->getNbEdges() != 0)
     {        
@@ -714,14 +716,14 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::type::vector<Edge>& edgeArray = this->m_topology->getEdges();
 
-        std::vector<type::Vector3> positions;
+        std::vector<type::Vec3> positions;
         for (size_t i = 0; i < edgeArray.size(); i++)
         {
 
             Edge the_edge = edgeArray[i];
             Coord vertex1 = coords[the_edge[0]];
             Coord vertex2 = coords[the_edge[1]];
-            type::Vector3 center;
+            type::Vec3 center;
             center = (DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2;
 
             positions.push_back(center);
@@ -737,17 +739,18 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-        std::vector<type::Vector3> positions;
+        std::vector<type::Vec3> positions;
         positions.reserve(edgeArray.size()*2u);
         for (size_t i = 0; i<edgeArray.size(); i++)
         {
             const Edge& e = edgeArray[i];
-            positions.push_back(type::Vector3(DataTypes::getCPos(coords[e[0]])));
-            positions.push_back(type::Vector3(DataTypes::getCPos(coords[e[1]])));
+            positions.push_back(type::Vec3(DataTypes::getCPos(coords[e[0]])));
+            positions.push_back(type::Vec3(DataTypes::getCPos(coords[e[1]])));
         }
         vparams->drawTool()->drawLines(positions, 1.0f, _drawColor.getValue());
         vparams->drawTool()->drawPoints(positions, 4.0f, _drawColor.getValue());
     }
+
 
 }
 
@@ -943,5 +946,10 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     return is_intersect;
 }
 
+template <class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return ( (this->m_topology->getNbEdges() != 0 && (d_drawEdges.getValue() || showEdgeIndices.getValue())) || Inherit1::mustComputeBBox() );
+}
 
 } //namespace sofa::component::topology::container::dynamic

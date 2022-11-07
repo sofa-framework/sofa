@@ -2530,6 +2530,11 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
 }
 
 
+template <class DataTypes>
+bool TriangleSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return ((showTriangleIndices.getValue() || _draw.getValue()) && this->m_topology->getNbTriangles() != 0) || Inherit1::mustComputeBBox();
+}
 
 template<class Real>
 bool is_point_in_triangle(const sofa::type::Vec<3,Real>& p, const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b, const sofa::type::Vec<3,Real>& c)
@@ -4827,6 +4832,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 {
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     // Draw Triangles indices
     if (showTriangleIndices.getValue() && this->m_topology->getNbTriangles() != 0)
     {
@@ -4838,7 +4845,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
         const sofa::type::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
-        std::vector<type::Vector3> positions;
+        std::vector<type::Vec3> positions;
         for (size_t i =0; i<triangleArray.size(); i++)
         {
 
@@ -4846,7 +4853,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             Coord vertex1 = coords[ the_tri[0] ];
             Coord vertex2 = coords[ the_tri[1] ];
             Coord vertex3 = coords[ the_tri[2] ];
-            type::Vector3 center = type::Vector3((DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3);
+            type::Vec3 center = type::Vec3((DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3);
 
             positions.push_back(center);
 
@@ -4867,19 +4874,19 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
         {//   Draw Triangles
-            std::vector<type::Vector3> pos;
+            std::vector<type::Vec3> pos;
             pos.reserve(triangleArray.size()*3);
             for (size_t i = 0; i<triangleArray.size(); i++)
             {
                 const Triangle& t = triangleArray[i];
 
-                type::Vector3 bary = type::Vector3(0.0, 0.0, 0.0);
-                std::vector<type::Vector3> tmpPos;
+                type::Vec3 bary = type::Vec3(0.0, 0.0, 0.0);
+                std::vector<type::Vec3> tmpPos;
                 tmpPos.resize(3);
 
                 for (unsigned int j = 0; j<3; j++)
                 {
-                    tmpPos[j] = type::Vector3(DataTypes::getCPos(coords[t[j]]));
+                    tmpPos[j] = type::Vec3(DataTypes::getCPos(coords[t[j]]));
                     bary += tmpPos[j];
                 }
                 bary /= 3;
@@ -4893,14 +4900,14 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         if (!vparams->displayFlags().getShowWireFrame())
         {//   Draw triangle edges for better display
             const sofa::type::vector<Edge> &edgeArray = this->m_topology->getEdges();
-            std::vector<type::Vector3> pos;
+            std::vector<type::Vec3> pos;
             if (!edgeArray.empty())
             {
                 for (size_t i = 0; i<edgeArray.size(); i++)
                 {
                     const Edge& e = edgeArray[i];
-                    pos.push_back(type::Vector3(DataTypes::getCPos(coords[e[0]])));
-                    pos.push_back(type::Vector3(DataTypes::getCPos(coords[e[1]])));
+                    pos.push_back(type::Vec3(DataTypes::getCPos(coords[e[0]])));
+                    pos.push_back(type::Vec3(DataTypes::getCPos(coords[e[1]])));
                 }
             } else {
                 for (size_t i = 0; i<triangleArray.size(); i++)
@@ -4909,8 +4916,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
                     for (unsigned int j = 0; j<3; j++)
                     {
-                        pos.push_back(type::Vector3(DataTypes::getCPos(coords[t[j]])));
-                        pos.push_back(type::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
+                        pos.push_back(type::Vec3(DataTypes::getCPos(coords[t[j]])));
+                        pos.push_back(type::Vec3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
                     }
                 }
             }
@@ -4935,7 +4942,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         sofa::type::RGBAColor color;
         Real normalLength = _drawNormalLength.getValue();
 
-        sofa::type::vector<sofa::type::Vector3> vertices;
+        sofa::type::vector<sofa::type::Vec3> vertices;
         std::vector<sofa::type::RGBAColor> colors;
 
         for (size_t i =0; i<nbrTtri; i++)
@@ -4960,6 +4967,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         }
         vparams->drawTool()->drawLines(vertices,1.0f,colors);
     }
+
 
 }
 

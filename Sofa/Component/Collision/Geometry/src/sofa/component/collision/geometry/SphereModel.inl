@@ -131,14 +131,14 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
         // Check topological modifications
         const auto npoints = mstate->getSize();
 
-        std::vector<Vector3> points;
+        std::vector<Vec3> points;
         std::vector<float> radius;
         for (Size i=0; i<npoints; i++)
         {
             TSphere<DataTypes> t(this,i);
             if (t.isActive())
             {
-                Vector3 p = t.p();
+                Vec3 p = t.p();
                 points.push_back(p);
                 radius.push_back((float)t.r());
             }
@@ -201,7 +201,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 template <class DataTypes>
 void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
-    using sofa::type::Vector3 ;
+    using sofa::type::Vec3 ;
 
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
@@ -219,7 +219,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     if (!isMoving() && !cubeModel->empty() && !updated)
         return; // No need to recompute BBox if immobile
 
-    Vector3 minElem, maxElem;
+    Vec3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -228,8 +228,8 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
         for (Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
-            const Vector3& pt = p.p();
-            const Vector3 ptv = pt + p.v()*dt;
+            const Vec3& pt = p.p();
+            const Vec3 ptv = pt + p.v()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -240,7 +240,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
             }
 
             typename TSphere<DataTypes>::Real r = p.r() + distance;
-            cubeModel->setParentOf(i, minElem - Vector3(r,r,r), maxElem + Vector3(r,r,r));
+            cubeModel->setParentOf(i, minElem - Vec3(r,r,r), maxElem + Vec3(r,r,r));
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -266,7 +266,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     if( !onlyVisible )
         return;
 
-    static const Real max_real = std::numeric_limits<Real>::max();
+    static constexpr Real max_real = std::numeric_limits<Real>::max();
     Real maxBBox[3] = {-max_real,-max_real,-max_real}; //Warning: minimum of float/double is 0, not -inf
     Real minBBox[3] = {max_real,max_real,max_real};
 

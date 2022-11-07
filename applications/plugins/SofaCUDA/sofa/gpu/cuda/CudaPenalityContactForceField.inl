@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaPenalityContactForceField.h"
-#include <SofaObjectInteraction/PenalityContactForceField.inl>
+#include <sofa/gpu/cuda/CudaPenalityContactForceField.h>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.inl>
 #include <sofa/gl/template.h>
 
 namespace sofa::gpu::cuda

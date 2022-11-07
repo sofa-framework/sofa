@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.inl>
-#include <SofaMeshCollision/SubsetContactMapper.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaPointModel.h>
 #include <sofa/gpu/cuda/CudaSphereModel.h>
@@ -156,12 +156,12 @@ public:
 
 
 template <class DataTypes>
-class response::mapper::ContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> : public response::mapper::SubsetContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes>
+class response::mapper::ContactMapper<CudaSphereCollisionModel, DataTypes> : public response::mapper::SubsetContactMapper<CudaSphereCollisionModel, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    typedef SubsetContactMapper<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>,DataTypes> Inherit;
+    typedef SubsetContactMapper<CudaSphereCollisionModel, DataTypes> Inherit;
     typedef typename Inherit::MMechanicalState MMechanicalState;
     typedef typename Inherit::MCollisionModel MCollisionModel;
     typedef typename Inherit::MMapping MMapping;

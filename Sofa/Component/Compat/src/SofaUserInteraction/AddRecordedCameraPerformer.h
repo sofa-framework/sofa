@@ -27,7 +27,7 @@
 #include <sofa/gui/component/performer/AddRecordedCameraPerformer.h>
 #define SOFA_GUI_COMPONENT_ADDRECORDEDCAMERAPERFORMER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/AddRecordedCameraPerformer.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/AddRecordedCameraPerformer.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/AddRecordedCameraPerformer.h> instead of this one."

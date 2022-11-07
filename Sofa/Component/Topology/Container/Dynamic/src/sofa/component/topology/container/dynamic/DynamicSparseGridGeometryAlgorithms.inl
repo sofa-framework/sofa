@@ -65,7 +65,7 @@ unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getRegularGridIndex
 }
 
 template < class DataTypes >
-int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const
+int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vec3& baryC, Real& distance) const
 {
     int index = -1;
     distance = 1e10;

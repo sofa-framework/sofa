@@ -63,13 +63,15 @@ void HexahedronSetTopologyContainer::addHexa(Index a, Index b, Index c, Index d,
 
 void HexahedronSetTopologyContainer::init()
 {
-    d_hexahedron.updateIfDirty(); // make sure m_hexahedron is up to date
     helper::ReadAccessor< Data< sofa::type::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
-
-    // Todo (epernod 2019-03-12): optimise by removing this loop or at least create tetrahedronAV at the same time.
+    if (d_initPoints.isSet())
+    {
+        setNbPoints(Size(d_initPoints.getValue().size()));
+    }    
     if (!m_hexahedron.empty())
     {
+        // Todo (epernod 2019-03-12): optimise by removing this loop or at least create tetrahedronAV at the same time.
         for (size_t i=0; i<m_hexahedron.size(); ++i)
         {
             for(PointID j=0; j<8; ++j)
@@ -1227,6 +1229,19 @@ bool HexahedronSetTopologyContainer::linkTopologyHandlerToData(core::topology::T
     else
     {
         return QuadSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
+bool HexahedronSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::HEXAHEDRON)
+    {
+        d_hexahedron.delOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return QuadSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
     }
 }
 

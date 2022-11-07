@@ -93,14 +93,14 @@ void SingleComponent<DataTypes>::doUpdate()
 template <class DataTypes>
 void SingleComponent<DataTypes>::loadMesh()
 {
-    const type::vector<sofa::type::Vector3>& positionsI = _positionsI.getValue();
+    const type::vector<sofa::type::Vec3>& positionsI = _positionsI.getValue();
     const type::vector<type::fixed_array <unsigned int,3> >& trianglesI = _trianglesI.getValue();
-    const type::vector<sofa::type::Vector3>& normalsI = _normalsI.getValue();
+    const type::vector<sofa::type::Vec3>& normalsI = _normalsI.getValue();
     const type::vector<sofa::type::Vector2>& uvI = _uvI.getValue();
 
-    type::vector<sofa::type::Vector3>& my_positions = *(_positionsO.beginEdit());
+    type::vector<sofa::type::Vec3>& my_positions = *(_positionsO.beginEdit());
     type::vector<type::fixed_array <unsigned int,3> >& my_triangles = *(_trianglesO.beginEdit());
-    type::vector<sofa::type::Vector3>& my_normals = *(_normalsO.beginEdit());
+    type::vector<sofa::type::Vec3>& my_normals = *(_normalsO.beginEdit());
     type::vector<sofa::type::Vector2>& my_uv = *(_uvO.beginEdit());
 
     my_positions.clear();
@@ -114,7 +114,7 @@ void SingleComponent<DataTypes>::loadMesh()
 
     if (my_numberShape >= my_indicesComponents.size())
     {
-        serr << "Number of the shape not valid" << sendl;
+        msg_error() << "Number of the shape not valid";
     }
     else
     {

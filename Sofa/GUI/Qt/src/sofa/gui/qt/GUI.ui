@@ -71,7 +71,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -219,15 +219,15 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="ResetSceneButton">
+           <widget class="QPushButton" name="ReloadSceneButton">
             <property name="enabled">
              <bool>true</bool>
             </property>
             <property name="toolTip">
-             <string>Reset the Simulation  (t=0)</string>
+             <string>Reload the simulation file</string>
             </property>
             <property name="text">
-             <string>&amp;Reset Scene</string>
+             <string>&amp;Reload Scene</string>
             </property>
             <property name="shortcut">
              <string>Alt+R</string>
@@ -391,6 +391,21 @@
                 </property>
                 <property name="styleSheet">
                  <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="sceneGraphRefreshToggleButton">
+                <property name="toolTip">
+                 <string>The scene graph update button has three states
+State 0: unlocked (all the changes on the graph are immediately taken into account)
+State 1: locked (the changes on the graph are not done but the simulation graph is set to dirty if
+         there is some changes on the graph. A click on the button unlocks the graph (go to state 0).
+State 2: dirty, in that state the button reflect the fact that the scene graph view has changed but not displayed.
+         A click on the button refreshes the graph view but does not change the Lock/Unlock state</string>
                 </property>
                 <property name="text">
                  <string/>

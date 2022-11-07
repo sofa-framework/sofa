@@ -61,7 +61,7 @@ SphereROI<DataTypes>::SphereROI()
     , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
-    , _drawSize( initData(&_drawSize,0.0f,"drawSize","rendering size for box and topological elements") )
+    , _drawSize( initData(&_drawSize,1.0f,"drawSize","rendering size for box and topological elements") )
 {
     //Adding alias to handle TrianglesInSphereROI input/output
     addAlias(&p_drawSphere,"isVisible");
@@ -450,7 +450,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord* x0 = &f_X0.getValue();
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
@@ -460,7 +460,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         ///draw the boxes
         const type::vector<Vec3>& c=centers.getValue();
         const type::vector<Real>& r=radii.getValue();        
-        std::vector<sofa::type::Vector3> drawcenters;
+        std::vector<sofa::type::Vec3> drawcenters;
         std::vector<float> drawradii;
 
         for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
@@ -486,7 +486,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
 
     vparams->drawTool()->disableLighting();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     ///draw points in ROI
     if( p_drawPoints.getValue())
@@ -571,7 +571,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawLines(vertices, _drawSize.getValue(), color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

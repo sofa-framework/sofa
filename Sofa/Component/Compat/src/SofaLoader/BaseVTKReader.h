@@ -23,7 +23,7 @@
 
 #include <sofa/component/io/mesh/BaseVTKReader.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/BaseVTKReader.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/BaseVTKReader.h")
 
 namespace sofa::component::loader::basevtkreader
 {

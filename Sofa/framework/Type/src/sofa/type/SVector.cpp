@@ -34,7 +34,7 @@ SOFA_TYPE_API std::istream& SVector<std::string>::read( std::istream& in )
 {
     this->clear();
 
-    std::string s = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+    const std::string s = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
     size_t f = s.find_first_of('[');
     if( f == std::string::npos )
@@ -46,7 +46,7 @@ SOFA_TYPE_API std::istream& SVector<std::string>::read( std::istream& in )
     }
     else
     {
-        std::size_t f2 = s.find_first_not_of(' ',f);
+        const std::size_t f2 = s.find_first_not_of(' ',f);
         if( f2!=std::string::npos && f2 < f )
         {
             // the '[' must be the first character
@@ -56,7 +56,7 @@ SOFA_TYPE_API std::istream& SVector<std::string>::read( std::istream& in )
         }
     }
 
-    size_t e = s.find_last_of(']');
+    const size_t e = s.find_last_of(']');
     if( e == std::string::npos )
     {
         // a ']' must be present
@@ -67,7 +67,7 @@ SOFA_TYPE_API std::istream& SVector<std::string>::read( std::istream& in )
     else
     {
         // the ']' must be the last character
-        std::size_t e2 = s.find_last_not_of(' ');
+        const std::size_t e2 = s.find_last_not_of(' ');
         if( e2!=std::string::npos && e2 > e )
         {
             std::cerr << "Error (SVector) " << "read : Bad end character, expected ]" << std::endl;
@@ -95,7 +95,7 @@ SOFA_TYPE_API std::istream& SVector<std::string>::read( std::istream& in )
             return in;
         }
 
-        std::size_t i2 = s.find_last_of(s[f2],i-1);
+        const std::size_t i2 = s.find_last_of(s[f2],i-1);
         if( i2==std::string::npos )
         {
             std::cerr << "Error (SVector) " << "read : Bad end string character, expected "<<s[f2] << std::endl;
@@ -122,7 +122,8 @@ SOFA_TYPE_API std::ostream& SVector<std::string>::write( std::ostream& os ) cons
 {
     if ( !this->empty() )
     {
-        SVector<std::string>::const_iterator i = this->begin(), iend=this->end();
+        auto i = this->begin();
+        const auto iend = this->end();
         os << "[ '" << *i <<"'";
         ++i;
         for ( ; i!=iend; ++i )

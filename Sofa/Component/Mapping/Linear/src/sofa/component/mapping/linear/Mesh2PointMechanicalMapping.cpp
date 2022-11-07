@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP
-#include "Mesh2PointMechanicalMapping.inl"
+#include <sofa/component/mapping/linear/Mesh2PointMechanicalMapping.inl>
 
 
 #include <sofa/core/ObjectFactory.h>

@@ -45,12 +45,24 @@ class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BTDLinearSolver, Matrix, Vector), SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector));
 
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    Data<bool> problem; ///< display debug informations about subpartSolve computation
-    Data<bool> subpartSolve; ///< Allows for the computation of a subpart of the system
+    Data<bool> d_verbose; ///< Dump system state at each iteration
+    Data<bool> d_problem; ///< display debug informations about subpartSolve computation
+    Data<bool> d_subpartSolve; ///< Allows for the computation of a subpart of the system
+    Data<bool> d_verification; ///< verification of the subpartSolve
+    Data<int> d_blockSize; ///< dimension of the blocks in the matrix
 
-    Data<bool> verification; ///< verification of the subpartSolve
-    Data<bool> test_perf; ///< verification of performance
+    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("To fix your code, use d_verbose")
+    DeprecatedAndRemoved f_verbose;
+    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("To fix your code, use d_problem")
+    DeprecatedAndRemoved problem;
+    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("To fix your code, use d_subpartSolve")
+    DeprecatedAndRemoved subpartSolve;
+    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("To fix your code, use d_verification")
+    DeprecatedAndRemoved verification;
+    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("To fix your code, use d_blockSize")
+    DeprecatedAndRemoved f_blockSize;
+    SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("test_perf has been removed and not replaced.")
+    DeprecatedAndRemoved test_perf;
 
     typedef typename Vector::SubVectorType SubVector;
     typedef typename Matrix::SubMatrixType SubMatrix;
@@ -84,23 +96,20 @@ public:
 
     type::vector<Index> nBlockComputedMinv;
     Vector Y;
-
-    Data<int> f_blockSize; ///< dimension of the blocks in the matrix
 protected:
     BTDLinearSolver()
-        : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-        , problem(initData(&problem, false,"showProblem", "display debug informations about subpartSolve computation") )
-        , subpartSolve(initData(&subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
-        , verification(initData(&verification, false,"verification", "verification of the subpartSolve"))
-        , test_perf(initData(&test_perf, false,"test_perf", "verification of performance"))
-        , f_blockSize( initData(&f_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
+        : d_verbose( initData(&d_verbose,false,"verbose","Dump system state at each iteration") )
+        , d_problem(initData(&d_problem, false,"showProblem", "display debug informations about subpartSolve computation") )
+        , d_subpartSolve(initData(&d_subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
+        , d_verification(initData(&d_verification, false,"verification", "verification of the subpartSolve"))
+        , d_blockSize( initData(&d_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
     {
         Index bsize = Matrix::getSubMatrixDim(0);
         if (bsize > 0)
         {
             // the template uses fixed bloc size
-            f_blockSize.setValue((int)bsize);
-            f_blockSize.setReadOnly(true);
+            d_blockSize.setValue((int)bsize);
+            d_blockSize.setReadOnly(true);
         }
     }
 public:

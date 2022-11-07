@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/collision/response/contact/PenalityContactForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/PenalityContactForceField.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/PenalityContactForceField.h")
 
 namespace sofa::component::interactionforcefield
 {

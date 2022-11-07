@@ -27,7 +27,7 @@
 #include <sofa/gui/component/performer/MouseInteractor.h>
 #define SOFA_GUI_COMPONENT_MOUSEINTERACTOR
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/MouseInteractor.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/MouseInteractor.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/MouseInteractor.h> instead of this one."

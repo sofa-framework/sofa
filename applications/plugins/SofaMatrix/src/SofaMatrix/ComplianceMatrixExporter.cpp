@@ -47,7 +47,7 @@ void ComplianceMatrixExporter::doInit()
 {
     if (!l_constraintSolver)
     {
-        l_constraintSolver.set(this->getContext()->template get<sofa::component::constraintset::ConstraintSolverImpl>());
+        l_constraintSolver.set(this->getContext()->template get<sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl>());
     }
 
     if (!l_constraintSolver)

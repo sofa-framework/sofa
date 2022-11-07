@@ -39,7 +39,7 @@
 #include <sofa/helper/visual/Trackball.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/gl/Texture.h>
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/simulation//common/xml/Element.h>
 
 
 
@@ -53,7 +53,7 @@ namespace sofa::gui::qt::viewer::qgl
 
 class SOFA_GUI_QT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
-    typedef type::Vector3::value_type Real;
+    typedef type::Vec3::value_type Real;
     Q_OBJECT
 private:
 
@@ -94,8 +94,8 @@ public:
         common::BaseViewerArgument* pArg = &arg;
         common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
         return viewerArg ?
-                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
-                new QtGLViewer(nullptr, pArg->getName().c_str(), pArg->getNbMSAASamples() )
+                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
+                new QtGLViewer(nullptr, pArg->getName().c_str() )
                 ;
     }
 
@@ -105,13 +105,12 @@ public:
 
     virtual void drawColourPicking (common::ColourPickingVisitor::ColourCode code) override;
 
-    QtGLViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
+    QtGLViewer( QWidget* parent, const char* name="");
     ~QtGLViewer() override;
 
     QWidget* getQWidget() override { return this; }
 
 protected:
-     static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
 
     //     void calcProjection();
     void init() override;

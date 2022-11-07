@@ -40,7 +40,7 @@ using core::objectmodel::Event ;
 using core::loader::MeshLoader ;
 using core::ExecParams ;
 using type::TBoundingBox ;
-using type::Vector3 ;
+using type::Vec3 ;
 using type::Vec4f ;
 using helper::WriteOnlyAccessor ;
 using helper::ReadAccessor ;
@@ -87,7 +87,7 @@ BoxROI<DataTypes>::BoxROI()
     , d_drawTetrahedra( initData(&d_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra. (default = false)") )
     , d_drawHexahedra( initData(&d_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra. (default = false)") )
     , d_drawQuads( initData(&d_drawQuads,false,"drawQuads","Draw Quads. (default = false)") )
-    , d_drawSize( initData(&d_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
+    , d_drawSize( initData(&d_drawSize,1.0,"drawSize","rendering size for box and topological elements") )
     , d_doUpdate( initData(&d_doUpdate,(bool)true,"doUpdate","If true, updates the selection at the beginning of simulation steps. (default = true)") )
 
     /// In case you add a new attribute please also add it into to the BoxROI_test.cpp::attributesTests
@@ -407,7 +407,9 @@ bool BoxROI<DataTypes>::isPointInOrientedBox(const typename DataTypes::CPos& poi
 template <class DataTypes>
 bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box)
 {
-    for (std::size_t i = 0; i < DataTypes::spatial_dimensions; ++i)
+    static_assert(std::is_same_v<typename DataTypes::CPos::size_type, typename Vec6::size_type>);
+
+    for (typename Vec6::size_type i = 0; i < DataTypes::spatial_dimensions; ++i)
     {
         if (p[i] < box[i] || p[i] > box[i + 3])
         {
@@ -752,7 +754,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vector3> vertices;
+        std::vector<Vec3> vertices;
 
         const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
         const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
@@ -766,30 +768,30 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             const Real& Ymax=b[4];
             const Real& Zmin=b[2];
             const Real& Zmax=b[5];
-            vertices.push_back( Vector3(Xmin,Ymin,Zmin) );
-            vertices.push_back( Vector3(Xmin,Ymin,Zmax) );
-            vertices.push_back( Vector3(Xmin,Ymin,Zmin) );
-            vertices.push_back( Vector3(Xmax,Ymin,Zmin) );
-            vertices.push_back( Vector3(Xmin,Ymin,Zmin) );
-            vertices.push_back( Vector3(Xmin,Ymax,Zmin) );
-            vertices.push_back( Vector3(Xmin,Ymax,Zmin) );
-            vertices.push_back( Vector3(Xmax,Ymax,Zmin) );
-            vertices.push_back( Vector3(Xmin,Ymax,Zmin) );
-            vertices.push_back( Vector3(Xmin,Ymax,Zmax) );
-            vertices.push_back( Vector3(Xmin,Ymax,Zmax) );
-            vertices.push_back( Vector3(Xmin,Ymin,Zmax) );
-            vertices.push_back( Vector3(Xmin,Ymin,Zmax) );
-            vertices.push_back( Vector3(Xmax,Ymin,Zmax) );
-            vertices.push_back( Vector3(Xmax,Ymin,Zmax) );
-            vertices.push_back( Vector3(Xmax,Ymax,Zmax) );
-            vertices.push_back( Vector3(Xmax,Ymin,Zmax) );
-            vertices.push_back( Vector3(Xmax,Ymin,Zmin) );
-            vertices.push_back( Vector3(Xmin,Ymax,Zmax) );
-            vertices.push_back( Vector3(Xmax,Ymax,Zmax) );
-            vertices.push_back( Vector3(Xmax,Ymax,Zmin) );
-            vertices.push_back( Vector3(Xmax,Ymin,Zmin) );
-            vertices.push_back( Vector3(Xmax,Ymax,Zmin) );
-            vertices.push_back( Vector3(Xmax,Ymax,Zmax) );
+            vertices.push_back( Vec3(Xmin,Ymin,Zmin) );
+            vertices.push_back( Vec3(Xmin,Ymin,Zmax) );
+            vertices.push_back( Vec3(Xmin,Ymin,Zmin) );
+            vertices.push_back( Vec3(Xmax,Ymin,Zmin) );
+            vertices.push_back( Vec3(Xmin,Ymin,Zmin) );
+            vertices.push_back( Vec3(Xmin,Ymax,Zmin) );
+            vertices.push_back( Vec3(Xmin,Ymax,Zmin) );
+            vertices.push_back( Vec3(Xmax,Ymax,Zmin) );
+            vertices.push_back( Vec3(Xmin,Ymax,Zmin) );
+            vertices.push_back( Vec3(Xmin,Ymax,Zmax) );
+            vertices.push_back( Vec3(Xmin,Ymax,Zmax) );
+            vertices.push_back( Vec3(Xmin,Ymin,Zmax) );
+            vertices.push_back( Vec3(Xmin,Ymin,Zmax) );
+            vertices.push_back( Vec3(Xmax,Ymin,Zmax) );
+            vertices.push_back( Vec3(Xmax,Ymin,Zmax) );
+            vertices.push_back( Vec3(Xmax,Ymax,Zmax) );
+            vertices.push_back( Vec3(Xmax,Ymin,Zmax) );
+            vertices.push_back( Vec3(Xmax,Ymin,Zmin) );
+            vertices.push_back( Vec3(Xmin,Ymax,Zmax) );
+            vertices.push_back( Vec3(Xmax,Ymax,Zmax) );
+            vertices.push_back( Vec3(Xmax,Ymax,Zmin) );
+            vertices.push_back( Vec3(Xmax,Ymin,Zmin) );
+            vertices.push_back( Vec3(Xmax,Ymax,Zmin) );
+            vertices.push_back( Vec3(Xmax,Ymax,Zmax) );
             vparams->drawTool()->drawLines(vertices, linesWidth , color );
         }
 
@@ -840,12 +842,12 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         float pointsWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector<Vector3> vertices;
+        std::vector<Vec3> vertices;
         ReadAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
             CPos p = DataTypes::getCPos(pointsInROI[i]);
-            Vector3 pv;
+            Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -858,7 +860,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vector3> vertices;
+        std::vector<Vec3> vertices;
         ReadAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
@@ -866,7 +868,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<2 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[e[j]]);
-                Vector3 pv;
+                Vec3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
@@ -879,7 +881,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( d_drawTriangles.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector<Vector3> vertices;
+        std::vector<Vec3> vertices;
         ReadAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
@@ -887,7 +889,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<3 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                Vector3 pv;
+                Vec3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
@@ -901,7 +903,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vector3> vertices;
+        std::vector<Vec3> vertices;
         ReadAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
@@ -909,7 +911,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                Vector3 pv;
+                Vec3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
@@ -921,7 +923,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
 
             CPos p = DataTypes::getCPos(x0[t[0]]);
-            Vector3 pv;
+            Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -946,7 +948,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vector3> vertices;
+        std::vector<Vec3> vertices;
         ReadAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
         for (unsigned int i=0; i<hexahedraInROI.size() ; ++i)
         {
@@ -954,7 +956,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<8 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                Vector3 pv;
+                Vec3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
@@ -966,7 +968,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
 
             CPos p = DataTypes::getCPos(x0[t[0]]);
-            Vector3 pv;
+            Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -1007,7 +1009,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vector3> vertices;
+        std::vector<Vec3> vertices;
         ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadInROI;
         for (unsigned i=0; i<quadsInROI.size(); ++i)
         {
@@ -1015,7 +1017,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned j=0; j<4; j++)
             {
                 CPos p = DataTypes::getCPos(x0[q[j]]);
-                Vector3 pv;
+                Vec3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];
                 vertices.push_back(pv);
@@ -1023,7 +1025,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned j=0; j<4; j++)
             {
                 CPos p = DataTypes::getCPos(x0[q[(j+1)%4]]);
-                Vector3 pv;
+                Vec3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];
                 vertices.push_back(pv);

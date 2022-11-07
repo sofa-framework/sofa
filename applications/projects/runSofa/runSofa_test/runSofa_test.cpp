@@ -21,8 +21,7 @@
 ******************************************************************************/
 
 #include <fstream>
-#include <gtest/gtest.h>
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -34,7 +33,7 @@ using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::PluginManager;
 
-class runSofa_test : public Sofa_test<>
+class runSofa_test : public sofa::testing::BaseTest
 {
 protected:
     std::string m_testConfigPluginName;

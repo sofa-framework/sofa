@@ -339,7 +339,7 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
         for (std::size_t i = 0; i < indices.size(); ++i) {
             for(std::size_t j = 0; j < NOut; ++j) {
                 eigen.beginRow(MatrixIndex(i*NOut+j) );
-                eigen.insertBack(MatrixIndex(i*NOut+j), MatrixIndex(indices[i]*NIn+j) ,(SReal)1. );
+                eigen.insertBack(MatrixIndex(i*NOut+j), MatrixIndex(indices[i]*NIn+j) ,1._sreal );
             }
         }
         eigen.compress();

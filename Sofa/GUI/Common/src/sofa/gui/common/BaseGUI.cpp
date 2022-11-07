@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseGUI.h"
-#include "BaseViewer.h"
+#include <sofa/gui/common/BaseGUI.h>
+#include <sofa/gui/common/BaseViewer.h>
 
 #include <sofa/type/vector.h>
 #include <sofa/helper/Utils.h>

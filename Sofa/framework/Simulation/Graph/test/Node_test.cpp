@@ -87,6 +87,41 @@ TEST(Node_test, addObjectAtFront)
     ASSERT_EQ(b->getObjects()[1]->getName(), "A");
 }
 
+TEST(Node_test, addObjectPreventingSharedContext)
+{
+    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+
+    BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    auto child1 = sofa::simpleapi::createChild(root, "child1");
+    auto child2 = sofa::simpleapi::createChild(root, "child2");
+
+    // add the created object into the node named 'child1'
+    child1->addObject(A);
+    child1->addObject(B);
+
+    // check that the two objects are in node1
+    ASSERT_NE(child1->getObject(A->getName()), nullptr);
+    ASSERT_NE(child1->getObject(B->getName()), nullptr);
+
+    ASSERT_NE(A->getPathName(), "/root/child1/A");
+    ASSERT_NE(B->getPathName(), "/root/child1/B");
+
+    // try to add the object into a new context
+    {
+        EXPECT_MSG_EMIT(Error);
+        child2->addObject(A);
+    }
+
+    // try to add the object into a new context
+    {
+        EXPECT_MSG_NOEMIT(Error);
+        child2->moveObject(A);
+    }
+
+}
+
 
 }// namespace sofa
 

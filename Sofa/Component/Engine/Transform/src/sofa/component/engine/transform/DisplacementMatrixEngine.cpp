@@ -21,7 +21,7 @@
 ******************************************************************************/
 //#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_CPP
 
-#include "DisplacementMatrixEngine.inl"
+#include <sofa/component/engine/transform/DisplacementMatrixEngine.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -70,5 +70,7 @@ void DisplacementTransformEngine<Rigid3Types,Mat4x4>::mult( Mat4x4& out, const M
 int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
     .add< DisplacementMatrixEngine<Rigid3Types> >()
 ;
+
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DisplacementMatrixEngine<Rigid3Types>;
 
 } // namespace sofa::component::engine::transform

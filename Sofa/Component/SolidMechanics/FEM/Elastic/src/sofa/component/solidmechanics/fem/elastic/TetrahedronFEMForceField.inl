@@ -24,7 +24,7 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/container/grid/GridTopology.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -1419,7 +1419,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         int nx = 2;
         int ny = 1;
         {
-            topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(m_topology);
+            auto* grid = dynamic_cast<topology::container::grid::GridTopology*>(m_topology);
             if (grid != nullptr)
             {
                 nx = grid->getNx()-1;
@@ -1788,7 +1788,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue()) && isComputeVonMisesStressMethodSet();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
     {
@@ -1844,7 +1844,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         {
             // Draw nodes (if node option enabled)
             std::vector<sofa::type::RGBAColor> nodeColors(x.size());
-            std::vector<type::Vector3> pts(x.size());
+            std::vector<type::Vec3> pts(x.size());
             helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
             for (size_t nd = 0; nd < x.size(); nd++) {
                 pts[nd] = x[nd];
@@ -1856,7 +1856,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
 
     // Draw elements (if not "node only")
-    std::vector< type::Vector3 > points;
+    std::vector< type::Vec3 > points;
     std::vector< sofa::type::RGBAColor > colorVector;
     typename VecElement::const_iterator it;
     int i;
@@ -1933,7 +1933,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     if (vparams->displayFlags().getShowNormals())
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        std::vector< type::Vector3 > points[3];
+        std::vector< type::Vec3 > points[3];
         for(unsigned ii = 0; ii<  x.size() ; ii++)
         {
             Coord a = x[ii];
@@ -1962,7 +1962,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->drawLines(points[2], 5, sofa::type::RGBAColor::blue());
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

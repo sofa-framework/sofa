@@ -24,7 +24,7 @@
 #include "CudaTypes.h"
 #include "CudaMechanicalObject.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <SofaBaseMechanics/MappedObject.inl>
+#include <sofa/component/statecontainer/MappedObject.inl>
 #include <sofa/core/State.inl>
 
 namespace sofa::component::statecontainer

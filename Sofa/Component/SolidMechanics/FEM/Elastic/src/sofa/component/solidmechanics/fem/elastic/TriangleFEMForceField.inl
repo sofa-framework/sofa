@@ -536,14 +536,14 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
     std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -555,15 +555,15 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index c = (*it)[2];
 
         colorVector.push_back(sofa::type::RGBAColor::green());
-        vertices.push_back(sofa::type::Vector3(x[a]));
+        vertices.push_back(sofa::type::Vec3(x[a]));
         colorVector.push_back(sofa::type::RGBAColor(0, 0.5, 0.5, 1));
-        vertices.push_back(sofa::type::Vector3(x[b]));
+        vertices.push_back(sofa::type::Vec3(x[b]));
         colorVector.push_back(sofa::type::RGBAColor(0, 0, 1, 1));
-        vertices.push_back(sofa::type::Vector3(x[c]));
+        vertices.push_back(sofa::type::Vec3(x[c]));
     }
     vparams->drawTool()->drawTriangles(vertices, colorVector);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 
@@ -635,7 +635,7 @@ void TriangleFEMForceField<DataTypes>::setYoung(Real val)
     if (val < 0)
     {
         msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
-        f_young.setValue(1000);
+        f_young.setValue(Real(1000));
     }
     else if (val != f_young.getValue())
     {

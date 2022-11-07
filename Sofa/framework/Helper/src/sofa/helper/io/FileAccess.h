@@ -25,18 +25,12 @@
 
 #include <sofa/helper/config.h>
 
-#include "BaseFileAccess.h"
+#include <sofa/helper/io/BaseFileAccess.h>
 
 #include <fstream>
 #include <string>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 // \brief Allow reading and writing into a file.
@@ -61,11 +55,6 @@ private:
     std::fstream myFile;
 
 };
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io
 
 #endif // SOFA_HELPER_IO_FILEACCESS_H

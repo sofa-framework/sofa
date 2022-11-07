@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h")
 
 namespace sofa::component::fem
 {

@@ -3,8 +3,10 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Simulation.Core QUIET REQUIRED)
 set(SOFA_COMPONENT_IO_MISC_HAVE_ZLIB @SOFA_COMPONENT_IO_MISC_HAVE_ZLIB@)
+
+find_package(Sofa.Simulation.Common QUIET REQUIRED)
+
 if (SOFA_COMPONENT_IO_MISC_HAVE_ZLIB)
     find_package(ZLIB QUIET REQUIRED)
 endif()

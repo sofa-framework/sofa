@@ -22,17 +22,11 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-#include "File.h"
+#include <sofa/helper/io/File.h>
 
 #include <iostream>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 File::File() :
@@ -99,9 +93,4 @@ bool File::checkFileAccess() const
 
     return true;
 }
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io

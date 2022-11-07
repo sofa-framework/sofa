@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/helper/config.h>
-#include "CircularQueue.h"
+#include <sofa/helper/system/thread/CircularQueue.h>
 
 #include <thread>
 #include <iostream>

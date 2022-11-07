@@ -30,7 +30,7 @@ using namespace sofa::type::pairwise;
 namespace // anonymous
 {
     template<class T>
-    inline T rclamp(const T& value, const T& low, const T& high)
+    T rclamp(const T& value, const T& low, const T& high)
     {
         return value < low ? low : (value > high ? high : value);
     }
@@ -40,17 +40,17 @@ namespace // anonymous
 namespace sofa::type
 {
 
-static bool ishexsymbol(char c)
+static bool ishexsymbol(const char c)
 {
     return (c>='0' && c<='9') || (c>='a' && c<='f') || (c>='A' && c<='F') ;
 }
 
-static int hexval(char c)
+static int hexval(const char c)
 {
     if (c>='0' && c<='9') return c-'0';
-    else if (c>='a' && c<='f') return (c-'a')+10;
-    else if (c>='A' && c<='F') return (c-'A')+10;
-    else return 0;
+    if (c>='a' && c<='f') return (c-'a')+10;
+    if (c>='A' && c<='F') return (c-'A')+10;
+    return 0;
 }
 
 
@@ -91,21 +91,21 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
 }
 
 
-void RGBAColor::set(float r, float g, float b, float a)
+void RGBAColor::set(const float r, const float g, const float b, const float a)
 {
-    this->elems[0]=r;
-    this->elems[1]=g;
-    this->elems[2]=b;
-    this->elems[3]=a;
+    this->elems[0] = r;
+    this->elems[1] = g;
+    this->elems[2] = b;
+    this->elems[3] = a;
 }
 
 
-RGBAColor RGBAColor::fromString(const std::string& c)
+RGBAColor RGBAColor::fromString(const std::string& str)
 {
     RGBAColor color(1.0,1.0,1.0,1.0) ;
-    if( !RGBAColor::read(c, color) )
+    if( !RGBAColor::read(str, color) )
     {
-        throw std::invalid_argument("Unable to scan color from string '" + c + "'");
+        throw std::invalid_argument("Unable to scan color from string '" + str + "'");
     }
     return color;
 }
@@ -129,16 +129,16 @@ RGBAColor RGBAColor::fromVec4(const fixed_array<double, 4>& color)
 }
 
 
-RGBAColor RGBAColor::fromHSVA(float h, float s, float v, float a )
+RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const float a )
 {
     // H [0, 360] S, V and A [0.0, 1.0].
     RGBAColor rgba;
 
-    int i = (int)floor(h/60.0f) % 6;
-    float f = h/60.0f - floor(h/60.0f);
-    float p = v * (float)(1 - s);
-    float q = v * (float)(1 - s * f);
-    float t = v * (float)(1 - (1 - f) * s);
+    const int i = (int)floor(h/60.0f) % 6;
+    const float f = h/60.0f - floor(h/60.0f);
+    const float p = v * (float)(1 - s);
+    const float q = v * (float)(1 - s * f);
+    const float t = v * (float)(1 - (1 - f) * s);
     rgba[3]=a;
     switch (i)
     {
@@ -173,31 +173,31 @@ static std::istream& trimInitialSpaces(std::istream& in)
 }
 
 
-SOFA_TYPE_API std::istream& operator>>(std::istream& in, RGBAColor& t)
+SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
     float r=0.0,g=0.0, b=0.0, a=1.0;
 
-    trimInitialSpaces(in) ;
+    trimInitialSpaces(i) ;
 
     /// Let's remove the initial spaces.
-    if( in.eof() || in.fail() )
-        return in;
+    if( i.eof() || i.fail() )
+        return i;
 
-    char first = in.peek() ;
+    const char first = i.peek() ;
     if (std::isdigit(first, std::locale()))
     {
-        in >> r >> g >> b ;
-        if(!in.eof()){
-            in >> a;
+        i >> r >> g >> b ;
+        if(!i.eof()){
+            i >> a;
         }
     }
     else if (first=='#')
     {
         std::string str;
-        extractValidatedHexaString(in, str) ;
+        extractValidatedHexaString(i, str) ;
 
-        if(in.fail()){
-            return in;
+        if(i.fail()){
+            return i;
         }
 
         if(str.length()>=7){
@@ -216,13 +216,13 @@ SOFA_TYPE_API std::istream& operator>>(std::istream& in, RGBAColor& t)
                 a = (hexval(str[4])*17)/255.0f;
         }else{
             /// If we cannot parse the field we returns that with the fail bit.
-            in.setstate(std::ios_base::failbit) ;
-            return in;
+            i.setstate(std::ios_base::failbit) ;
+            return i;
         }
     } else {
         std::string str;
         /// Search for the first word, it is not needed to read more char than size("magenta"
-        std::getline(in, str, ' ');
+        std::getline(i, str, ' ');
 
         /// if end of line is returned before encountering ' ' or 7... is it fine
         /// so we can clear the failure bitset.
@@ -240,22 +240,22 @@ SOFA_TYPE_API std::istream& operator>>(std::istream& in, RGBAColor& t)
         else if (str == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
         else {
             /// If we cannot parse the field we returns that with the fail bit.
-            in.setstate(std::ios_base::failbit) ;
-            return in;
+            i.setstate(std::ios_base::failbit) ;
+            return i;
         }
     }
 
     t.set(r,g,b,a) ;
-    return in;
+    return i;
 }
 
 
 /// Write to an output stream
-SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v )
+SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const RGBAColor& t )
 {
     for( int i=0; i<3; ++i )
-        out<<v[i]<<" ";
-    out<<v[3];
+        out<<t[i]<<" ";
+    out<<t[3];
     return out;
 }
 

@@ -156,7 +156,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
         }
         else           // unconstrained particle: set diagonal to identity block
         {
-            jacobian.insertBackBlock(i,i,Block::s_identity);
+            jacobian.insertBackBlock(i,i,Block::Identity());
         }
         i++;
     }
@@ -244,14 +244,14 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const Indices & indices = f_indices.getValue();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);
@@ -261,8 +261,8 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
     }
     else // new drawing by spheres
     {
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);
@@ -270,7 +270,7 @@ void ProjectDirectionConstraint<DataTypes>::draw(const core::visual::VisualParam
         }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

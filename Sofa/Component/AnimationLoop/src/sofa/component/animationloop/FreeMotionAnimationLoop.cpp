@@ -113,8 +113,9 @@ void FreeMotionAnimationLoop::init()
             if (defaultSolver != nullptr)
             {
                 msg_warning() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
-                    " a default LCPConstraintSolver is automatically added in the scene for you. To remove this warning, add"
-                    " a ConstraintSolver in the scene.";
+                    " a default " << defaultSolver->getClassName() << " is automatically added in the scene for you. To remove this warning, add"
+                    " a ConstraintSolver in the scene. The list of available constraint solvers is: "
+                    << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::ConstraintSolver>();
                 getContext()->addObject(defaultSolver);
                 l_constraintSolver.set(defaultSolver);
                 defaultSolver = nullptr;
@@ -123,7 +124,8 @@ void FreeMotionAnimationLoop::init()
             {
                 msg_fatal() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
                     " a default LCPConstraintSolver could not be automatically added in the scene. To remove this error, add"
-                    " a ConstraintSolver in the scene.";
+                    " a ConstraintSolver in the scene. The list of available constraint solvers is: "
+                    << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::ConstraintSolver>();
             }
         }
         else
@@ -257,7 +259,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         if (cparams.constOrder() == core::ConstraintParams::VEL )
         {
             l_constraintSolver->solveConstraint(&cparams, vel);
-            pos.eq(pos, vel, dt);
+            pos.eq(pos, vel, dt); //position += velocity * dt
         }
         else
         {
@@ -296,7 +298,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         }
     }
 
-    if (!SOFA_NO_UPDATE_BBOX)
+    if (d_computeBoundingBox.getValue())
     {
         ScopedAdvancedTimer timer("UpdateBBox");
         gnode->execute<UpdateBoundingBoxVisitor>(params);

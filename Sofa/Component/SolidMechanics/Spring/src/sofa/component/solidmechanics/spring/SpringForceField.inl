@@ -105,6 +105,74 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 }
 
 template <class DataTypes>
+void SpringForceField<DataTypes>::applyRemovedEdges(const sofa::core::topology::EdgesRemoved* edgesRemoved, sofa::Index mstateId)
+{
+    if (edgesRemoved == nullptr)
+        return;
+
+    const type::vector<sofa::core::topology::Topology::EdgeID>& edges = edgesRemoved->getArray();
+
+    if (edges.empty())
+        return;
+    
+    core::topology::BaseMeshTopology* modifiedTopology;
+    if (mstateId == 0)
+    {
+        modifiedTopology = this->getMState1()->getContext()->getMeshTopology();
+    }
+    else
+    {
+        modifiedTopology = this->getMState2()->getContext()->getMeshTopology();
+    }
+
+    if (modifiedTopology == nullptr)
+        return;
+
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    
+    const auto& topologyEdges = modifiedTopology->getEdges();
+
+    type::vector<sofa::Index> springIdsToDelete;
+
+    for (const auto& edgeId : edges) // iterate on the edgeIds to remove and save the respective point pairs
+    {
+        auto& firstPointId = topologyEdges[edgeId][0];
+        auto& secondPointId = topologyEdges[edgeId][1];
+
+        // sane default value to check against, if no spring is found for the edge
+        int springIdToDelete = -1;
+        sofa::Index i = 0;
+
+        for (const auto& spring : springsValue) // loop on the list of springs to find the spring with targeted pointIds
+        {
+            auto& firstSpringPointId = mstateId == 0 ? spring.m1 : spring.m2;
+            auto& secondSpringPointId = mstateId == 0 ? spring.m2 : spring.m1;
+
+            if (firstSpringPointId == firstPointId && secondSpringPointId == secondPointId)
+            {
+                dmsg_info() << "Spring " << spring << " has an edge to be removed: REMOVED edgeId: " << edgeId;
+                springIdToDelete = i;
+                break; // break as soon as the first matching spring is found. TODO is there a valid case for having multiple springs on the same topology edge?
+            }
+            ++i;
+        }
+       
+        if (springIdToDelete != -1) // if a matching spring was found, add it to the vector of Ids that will be removed
+        {
+            springIdsToDelete.push_back(springIdToDelete);
+        }
+    }
+
+    // sort the edges to make sure we detele them from last to first
+    std::sort (springIdsToDelete.begin(), springIdsToDelete.end());
+    for (auto it = springIdsToDelete.rbegin(); it != springIdsToDelete.rend(); ++it) // delete accumulated springs to be removed
+    {
+        springsValue.erase(springsValue.begin() + (*it));
+    }
+}
+
+
+template <class DataTypes>
 void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId)
 {
     if (pointsRemoved == nullptr)
@@ -135,7 +203,7 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     {
         --nbPoints;
 
-        sofa::type::vector<sofa::Index> toDelete;
+        type::vector<sofa::Index> toDelete;
         sofa::Index i {};
         for (const auto& spring : springsValue) // loop on the list of springs to find springs with targeted pointId
         {
@@ -199,6 +267,19 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 msg_info(this) << "Removed points: [" << pointsRemoved->getArray() << "]";
                 applyRemovedPoints(pointsRemoved, mstateId);
             });
+
+        if (topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
+        {
+            indices.linkToEdgeDataArray();  
+            indices.addTopologyEventCallBack(core::topology::TopologyChangeType::EDGESREMOVED,
+                [this, mstateId](const core::topology::TopologyChange* change)
+                {
+                    const auto* edgesRemoved = static_cast<const core::topology::EdgesRemoved*>(change);
+                    msg_info(this) << "Removed edges: [" << edgesRemoved->getArray() << "]";
+                    applyRemovedEdges(edgesRemoved, mstateId);
+                });
+        }
+        
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
             [this](const core::topology::TopologyChange*)
             {
@@ -309,14 +390,14 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< Vector3 > points[4];
+    std::vector< Vec3 > points[4];
     bool external = (this->mstate1 != this->mstate2);
     const type::vector<Spring>& springs = this->springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
         Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
-        Vector3 point2, point1;
+        Vec3 point2, point1;
         point1 = DataTypes::getCPos(p1[springs[i].m1]);
         point2 = DataTypes::getCPos(p2[springs[i].m2]);
 
@@ -393,6 +474,8 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 template <class DataTypes>
 void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     if (!this->mstate1 || !this->mstate2)
@@ -411,10 +494,11 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 
     constexpr Real max_real = std::numeric_limits<Real>::max();
     constexpr Real min_real = std::numeric_limits<Real>::lowest();
+
     Real maxBBox[DataTypes::spatial_dimensions];
     Real minBBox[DataTypes::spatial_dimensions];
 
-    for (int c = 0; c < DataTypes::spatial_dimensions; ++c)
+    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
     {
         maxBBox[c] = min_real;
         minBBox[c] = max_real;
@@ -434,7 +518,7 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
                 const auto& b = p2[spring.m2];
                 for (const auto& p : {a, b})
                 {
-                    for (int c = 0; c < DataTypes::spatial_dimensions; ++c)
+                    for (sofa::Index c = 0; c < DataTypes::spatial_dimensions; ++c)
                     {
                         if (p[c] > maxBBox[c])
                             maxBBox[c] = p[c];

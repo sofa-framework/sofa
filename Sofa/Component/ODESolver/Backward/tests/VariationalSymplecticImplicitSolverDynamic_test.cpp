@@ -29,7 +29,7 @@ using sofa::testing::NumericTest;
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
@@ -37,7 +37,7 @@ using sofa::testing::NumericTest;
 using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
-#include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
+#include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -63,7 +63,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
     typedef typename DataTypes::Coord Coord;
 
     typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::VariationalSymplecticSolver VariationalSymplecticSolver;
+    typedef component::odesolver::backward::VariationalSymplecticSolver VariationalSymplecticSolver;
 
     /// Position and velocity array
     type::vector<double> positionsArray;

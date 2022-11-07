@@ -30,12 +30,19 @@ set(SOURCE_FILES
     src/MultiThreading/ParallelHexahedronFEMForceField.cpp
     )
 
-find_package(SofaMiscMapping REQUIRED)
-find_package(SofaSimulationCommon REQUIRED)
-find_package(SofaSimpleFem REQUIRED)
+find_package(Sofa.Simulation.Common REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint SofaSimulationCommon SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Common)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.Collision.Detection.Algorithm)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.FEM.Elastic)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.Mapping.Linear)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.StateContainer)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
 
 
@@ -47,3 +54,11 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     RELOCATABLE "plugins"
     )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(MULTITHREADING_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(MULTITHREADING_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()

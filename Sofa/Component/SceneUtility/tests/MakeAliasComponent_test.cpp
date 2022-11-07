@@ -27,7 +27,7 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/TestMessageHandler.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Simulation.h>
@@ -36,11 +36,11 @@ using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBaseUtils/MakeAliasComponent.h>
-using sofa::component::MakeAliasComponent ;
+#include <sofa/component/sceneutility/MakeAliasComponent.h>
+using sofa::component::sceneutility::MakeAliasComponent ;
 
 //TODO(dmarchal): all these lines are ugly...this is too much for simple initialization stuff.
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
@@ -54,7 +54,7 @@ using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 //TODO(dmarchal): handle properly the memory cycle of the simulation objects.
 // now it is soo ugly...
@@ -100,9 +100,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
         "       <MakeAlias/>                                                 "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeAliasComponent* component = nullptr;
@@ -126,9 +124,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
         "       <MakeAlias                            alias='NewName'/>      "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeAliasComponent* component = nullptr;
@@ -150,9 +146,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
         "       <MakeAlias targetcomponent='MakeAlias'/>                     "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeAliasComponent* component = nullptr;
@@ -176,9 +170,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
         "</Node>                                                             \n" ;
 
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeAliasComponent* component = nullptr;
@@ -200,9 +192,7 @@ TEST(MakeAliasComponent, checkValidBehavior)
         "       <MyAlias targetcomponent='MakeAlias' alias='ThirdName'/>     \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeAliasComponent* component = nullptr;

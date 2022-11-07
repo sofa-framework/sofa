@@ -73,7 +73,7 @@ struct Hexahedron
     {
         constexpr auto dimensions = sizeof(Node) / sizeof(T);
         auto centerRes = n0;
-        for (auto i = 0; i < dimensions; i++)
+        for (size_t i = 0; i < dimensions; i++)
         {
             centerRes[i] += n1[i] + n2[i] + n3[i] + n4[i] + n5[i] + n6[i] + n7[i];
             centerRes[i] /= static_cast<T>(NumberOfNodes);

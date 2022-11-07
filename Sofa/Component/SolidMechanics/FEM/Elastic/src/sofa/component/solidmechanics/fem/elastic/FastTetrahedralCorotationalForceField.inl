@@ -137,9 +137,7 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     : pointInfo(initData(&pointInfo, "pointInfo", "Internal point data"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
-    , m_topology(nullptr)
     , _initialPoints(0)
-    , updateMatrix(true)
     , f_method(initData(&f_method,std::string("qr"),"method"," method for rotation computation :\"qr\" (by QR) or \"polar\" or \"polar2\" or \"none\" (Linear elastic) "))
     , f_poissonRatio(initData(&f_poissonRatio,Real(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(initData(&f_youngModulus,Real(1000.),"youngModulus","Young modulus in Hooke's law"))
@@ -151,6 +149,8 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , drawColor3(initData(&drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
     , drawColor4(initData(&drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
+    , m_topology(nullptr)
+    , updateMatrix(true)
 {
     f_poissonRatio.setRequired(true);
     f_youngModulus.setRequired(true);
@@ -253,7 +253,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation()
 {
-    int nbTetrahedra=m_topology->getNbTetrahedra();
+    sofa::Size nbTetrahedra=m_topology->getNbTetrahedra();
 
     helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
 
@@ -602,7 +602,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -610,7 +610,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
         vparams->drawTool()->setPolygonMode(0, true);
 
 
-    std::vector< type::Vector3 > points[4];
+    std::vector< type::Vec3 > points[4];
     for (size_t i = 0; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t = m_topology->getTetrahedron(i);
@@ -654,7 +654,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

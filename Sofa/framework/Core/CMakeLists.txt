@@ -130,6 +130,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/DataCallback.h
     ${SRC_ROOT}/objectmodel/DataContentValue.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
+    ${SRC_ROOT}/objectmodel/DataFileNameVector.h
     ${SRC_ROOT}/objectmodel/DataLink.h
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.h
     ${SRC_ROOT}/objectmodel/Event.h
@@ -145,6 +146,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
     ${SRC_ROOT}/objectmodel/Tag.h
+    ${SRC_ROOT}/objectmodel/TagSet.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
@@ -195,6 +197,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
+    ${SRC_ROOT}/VecId.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraint.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
@@ -256,6 +259,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/DataCallback.cpp
     ${SRC_ROOT}/objectmodel/DataContentValue.cpp
     ${SRC_ROOT}/objectmodel/DataFileName.cpp
+    ${SRC_ROOT}/objectmodel/DataFileNameVector.cpp
     ${SRC_ROOT}/objectmodel/DataLink.cpp
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.cpp
     ${SRC_ROOT}/objectmodel/Event.cpp
@@ -268,6 +272,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
+    ${SRC_ROOT}/objectmodel/TagSet.cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
@@ -311,7 +316,8 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 # SOFA-NG: make everybody be able to use Sofa.Component.Compat
-if(TARGET Sofa.Component.Compat)
+sofa_find_package(Sofa.Component.Compat QUIET)
+if(Sofa.Component.Compat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Compat)
 endif()
 

@@ -25,7 +25,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/helper/BackTrace.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
@@ -104,7 +104,7 @@ struct DifferenceEngine_test : public BaseSimulationTest,
 };
 
 using ::testing::Types;
-typedef Types<type::Vector3> DataTypes;
+typedef Types<type::Vec3> DataTypes;
 
 TYPED_TEST_SUITE(DifferenceEngine_test, DataTypes);
 

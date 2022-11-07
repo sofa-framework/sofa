@@ -25,12 +25,6 @@
 #include <MultiThreading/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-//#include <sofa/type/Vec.h>
-//#include <sofa/core/topology/BaseMeshTopology.h>
-//#include <sofa/defaulttype/VecTypes.h>
-//#include <sofa/defaulttype/RigidTypes.h>
-
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa
 {
@@ -75,16 +69,6 @@ namespace sofa
                 void reinit() override;
 
                 void handleEvent(core::objectmodel::Event* event) override;
-
-                virtual std::string getTemplateName() const override
-                {
-                    return templateName(this);
-                }
-
-                static std::string templateName(const MeanComputation<DataTypes>* = NULL)
-                {
-                    return DataTypes::Name();
-                }
 
             private:
 

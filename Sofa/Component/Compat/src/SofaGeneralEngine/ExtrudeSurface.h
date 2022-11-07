@@ -23,7 +23,7 @@
 
 #include <sofa/component/engine/generate/ExtrudeSurface.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/ExtrudeSurface.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/ExtrudeSurface.h")
 
 namespace sofa::component::engine
 {

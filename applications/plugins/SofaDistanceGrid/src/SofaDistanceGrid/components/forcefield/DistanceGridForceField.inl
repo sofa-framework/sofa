@@ -67,6 +67,13 @@ void DistanceGridForceField<DataTypes>::init()
                                     nx.getValue(),ny.getValue(),nz.getValue(),
                                     box.getValue()[0],box.getValue()[1]);
 
+    if (grid == nullptr)
+    {
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        msg_error() << "Failed to initialize: Invalid distance grid";
+        return;
+    }
+
     if (this->stiffnessArea.getValue() != 0 && this->mstate)
     {
         core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
@@ -125,6 +132,7 @@ void DistanceGridForceField<DataTypes>::init()
         }
     }
 
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>
@@ -403,8 +411,8 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::Mechanica
             const int p = c.index;
             const Real fact = (Real)(c.fact * -kFactor);
             const Deriv& normal = c.normal;
-            for (int l=0; l<Deriv::total_size; ++l)
-                for (int c=0; c<Deriv::total_size; ++c)
+            for (sofa::Size l=0; l<Deriv::total_size; ++l)
+                for (sofa::Size c=0; c<Deriv::total_size; ++c)
                 {
                     SReal coef = normal[l] * fact * normal[c];
                     mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);

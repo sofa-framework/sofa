@@ -439,7 +439,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     assert(this->mstate1);
     assert(this->mstate2);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw any custom springs
     this->StiffSpringForceField<DataTypes>::draw(vparams);
@@ -447,8 +447,8 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< Vector3 > points;
-    Vector3 point1,point2;
+    std::vector< Vec3 > points;
+    Vec3 point1,point2;
     if (this->mstate1==this->mstate2)
     {
         if (topology != nullptr)
@@ -511,7 +511,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     }
 
     vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor(0.5,0.5,0.5,1));
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::spring

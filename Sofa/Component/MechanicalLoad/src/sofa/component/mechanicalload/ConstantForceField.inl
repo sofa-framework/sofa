@@ -279,9 +279,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 template<class DataTypes>
 bool ConstantForceField<DataTypes>::checkForce(const Deriv& force)
 {
-    const size_t size = Deriv::spatial_dimensions;
-
-    for (size_t i=0; i<size; i++)
+    for (typename Deriv::Size i=0; i<Deriv::spatial_dimensions; ++i)
     {
         if( std::isnan(force[i]) )
         {
@@ -477,9 +475,9 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 {
     const SReal aSC = d_showArrowSize.getValue();
 
-    if ((!vparams->displayFlags().getShowForceFields() && (aSC==0.0)) || (aSC < 0.0)) return;
+    if (!vparams->displayFlags().getShowForceFields() || (aSC <= 0.0)) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& f = d_forces.getValue();
@@ -487,7 +485,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     if( fabs(aSC)<1.0e-10 )
     {
-        std::vector<type::Vector3> points;
+        std::vector<type::Vec3> points;
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx = 0.0, xy = 0.0, xz = 0.0, fx = 0.0, fy = 0.0, fz = 0.0;
@@ -516,8 +514,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
 
             DataTypes::get(fx,fy,fz, f[i] );
-            points.push_back(type::Vector3(xx, xy, xz ));
-            points.push_back(type::Vector3(xx+fx, xy+fy, xz+fz ));
+            points.push_back(type::Vec3(xx, xy, xz ));
+            points.push_back(type::Vec3(xx+fx, xy+fy, xz+fz ));
         }
         vparams->drawTool()->drawLines(points, 2, sofa::type::RGBAColor::green());
     }
@@ -554,8 +552,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             DataTypes::get(fx,fy,fz, f[i] );
 
-            type::Vector3 p1( xx, xy, xz);
-            type::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
+            type::Vec3 p1( xx, xy, xz);
+            type::Vec3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
 
             const float norm = static_cast<float>((p2-p1).norm());
 
@@ -570,7 +568,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         }
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::mechanicalload

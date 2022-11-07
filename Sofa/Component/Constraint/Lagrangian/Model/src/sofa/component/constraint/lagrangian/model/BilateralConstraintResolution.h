@@ -36,32 +36,32 @@ using sofa::core::behavior::ConstraintResolution ;
 class BilateralConstraintResolution : public ConstraintResolution
 {
 public:
-    BilateralConstraintResolution(double* initF=nullptr) 
+    BilateralConstraintResolution(SReal* initF=nullptr) 
         : ConstraintResolution(1)
         , _f(initF) {}
-    void resolution(int line, double** w, double* d, double* force, double *dfree) override
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal *dfree) override
     {
         SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
     }
 
-    void init(int line, double** /*w*/, double* force) override
+    void init(int line, SReal** /*w*/, SReal* force) override
     {
         if(_f) { force[line] = *_f; }
     }
 
-    void initForce(int line, double* force) override
+    void initForce(int line, SReal* force) override
     {
         if(_f) { force[line] = *_f; }
     }
 
-    void store(int line, double* force, bool /*convergence*/) override
+    void store(int line, SReal* force, bool /*convergence*/) override
     {
         if(_f) *_f = force[line];
     }
 
 protected:
-    double* _f;
+    SReal* _f;
 };
 
 class BilateralConstraintResolution3Dof : public ConstraintResolution
@@ -73,9 +73,9 @@ public:
         , _f(vec)
     {
     }
-    void init(int line, double** w, double *force) override
+    void init(int line, SReal** w, SReal *force) override
     {
-        sofa::type::Mat<3,3,double> temp;
+        sofa::type::Mat<3,3,SReal> temp;
         temp[0][0] = w[line][line];
         temp[0][1] = w[line][line+1];
         temp[0][2] = w[line][line+2];
@@ -100,7 +100,7 @@ public:
         }
     }
 
-    void initForce(int line, double* force) override
+    void initForce(int line, SReal* force) override
     {
         if(_f)
         {
@@ -109,7 +109,7 @@ public:
         }
     }
 
-    void resolution(int line, double** /*w*/, double* d, double* force, double * dFree) override
+    void resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal * dFree) override
     {
         SOFA_UNUSED(dFree);
         for(int i=0; i<3; i++)
@@ -119,7 +119,7 @@ public:
         }
     }
 
-    void store(int line, double* force, bool /*convergence*/) override
+    void store(int line, SReal* force, bool /*convergence*/) override
     {
         if(_f)
         {
@@ -129,38 +129,40 @@ public:
     }
 
 protected:
-    sofa::type::Mat<3,3,double> invW;
+    sofa::type::Mat<3,3,SReal> invW;
     sofa::type::Vec3d* _f;
 };
 
 class BilateralConstraintResolutionNDof : public ConstraintResolution
 {
 public:
+    using EigenVectorX = Eigen::Matrix<SReal, Eigen::Dynamic, 1>;
+    using EigenMatrixX = Eigen::Matrix<SReal, Eigen::Dynamic, -1>;
     BilateralConstraintResolutionNDof(unsigned blockSize ) 
     : ConstraintResolution(blockSize)
-    , wBlock(Eigen::MatrixXd(blockSize, blockSize))
+    , wBlock(EigenMatrixX(blockSize, blockSize))
     {
     }
-    void init(int line, double** w, double * /*force*/) override
+    void init(int line, SReal** w, SReal * /*force*/) override
     {
         for (auto i = 0; i < wBlock.rows(); ++i)   
         {
-            wBlock.row(i) = Eigen::VectorXd::Map(&w[line + i][line], wBlock.cols());
+            wBlock.row(i) = EigenVectorX::Map(&w[line + i][line], wBlock.cols());
         }
         wBlockInv.compute(wBlock);
     }
 
-    void resolution(int line, double** /*w*/, double* displacement, double* force, double* /*dFree*/) override
+    void resolution(int line, SReal** /*w*/, SReal* displacement, SReal* force, SReal* /*dFree*/) override
     {
-        Eigen::Map< Eigen::VectorXd > f(&force[line], wBlock.cols());
-        Eigen::Map< Eigen::VectorXd > d(&displacement[line], wBlock.cols());
-        Eigen::VectorXd f_local = wBlockInv.solve(d);
+        Eigen::Map< EigenVectorX > f(&force[line], wBlock.cols());
+        Eigen::Map< EigenVectorX > d(&displacement[line], wBlock.cols());
+        EigenVectorX f_local = wBlockInv.solve(d);
         f -= f_local;
     }
 
 protected:
-    Eigen::MatrixXd  wBlock;
-    Eigen::LDLT< Eigen::MatrixXd > wBlockInv;
+    EigenMatrixX wBlock;
+    Eigen::LDLT< EigenMatrixX > wBlockInv;
 };
 
 } // namespace sofa::component::constraint::lagrangian::model::bilateralconstraintresolution

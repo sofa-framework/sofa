@@ -19,8 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_CPP
+
 #include <sofa/gpu/cuda/CudaTriangleModel.h>
-#include <SofaMeshCollision/TriangleModel.inl>
+#include <sofa/component/collision/geometry/TriangleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry
@@ -48,4 +50,3 @@ const int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side compu
         ;
 
 } // namespace sofa::gpu::cuda
-

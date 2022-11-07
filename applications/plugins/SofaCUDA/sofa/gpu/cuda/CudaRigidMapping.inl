@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaRigidMapping.h"
-#include <SofaRigid/RigidMapping.inl>
+#include <sofa/component/mapping/nonlinear/RigidMapping.inl>
 #include <sofa/helper/accessor.h>
 
 namespace sofa::gpu::cuda

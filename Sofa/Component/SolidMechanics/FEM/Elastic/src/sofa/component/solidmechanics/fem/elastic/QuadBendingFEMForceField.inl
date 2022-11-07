@@ -25,7 +25,7 @@
 *******************************************************************************/
 #pragma once
 
-#include "QuadBendingFEMForceField.h"
+#include <sofa/component/solidmechanics/fem/elastic/QuadBendingFEMForceField.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
@@ -437,10 +437,10 @@ void QuadBendingFEMForceField<DataTypes>::computeElementStiffness( Stiffness &K,
   //Index idx2 = m_topology->getQuad(elementIndex)[2];
   Index idx3 = m_topology->getQuad(elementIndex)[3];
   
-  Coord length_vec = p[idx1] - p[idx0];
-  Coord height_vec = p[idx3] - p[idx0];
-  float length = (sqrt(length_vec[0]*length_vec[0]+length_vec[1]*length_vec[1]+length_vec[2]*length_vec[2]))/2.0f; // length of quad element
-  float height = (sqrt(height_vec[0]*height_vec[0]+height_vec[1]*height_vec[1]+height_vec[2]*height_vec[2]))/2.0f; // height of quad element
+  const Coord length_vec = p[idx1] - p[idx0];
+  const Coord height_vec = p[idx3] - p[idx0];
+  const auto length = std::sqrt(length_vec[0]*length_vec[0]+length_vec[1]*length_vec[1]+length_vec[2]*length_vec[2])/2.0_sreal; // length of quad element
+  const auto height = std::sqrt(height_vec[0]*height_vec[0]+height_vec[1]*height_vec[1]+height_vec[2]*height_vec[2])/2.0_sreal; // height of quad element
  
   // Bending component of strain displacement
   type::Mat<20, 32, Real> Jb0_t;

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "console.h"
+#include <sofa/helper/system/console.h>
 
 #ifndef WIN32
 

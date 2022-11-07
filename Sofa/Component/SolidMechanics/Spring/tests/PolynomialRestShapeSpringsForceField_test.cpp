@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 using sofa::simulation::Node;
 
 #include <sofa/type/Vec.h>
@@ -35,13 +35,16 @@ public:
     bool testSpringForce()
     {
         double dt = 0.01;
-        sofa::simpleapi::importPlugin("SofaComponentAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
 
         /// no need of gravity, the file .data is just read
         root->setGravity(Vec3(0.0,0.0,0.0));
         root->setDt(dt);
+
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Forward");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
 
         Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
         sofa::simpleapi::createObject(childNode, "EulerExplicitSolver");

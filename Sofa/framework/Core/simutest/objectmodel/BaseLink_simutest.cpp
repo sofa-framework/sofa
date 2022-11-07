@@ -35,7 +35,10 @@ using sofa::core::objectmodel::BaseObject;
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
 
+#include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
+
+#include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
 namespace
@@ -49,10 +52,12 @@ public:
     Node* node {nullptr};
     BaseLink_test()
     {
-        importPlugin("SofaComponentAll") ;
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+                 "   <RequiredPlugin name='Sofa.Component.SceneUtility' />                   \n"
+                 "   <DefaultAnimationLoop />                                                \n"
+                 "   <DefaultVisualManagerLoop />                                            \n"
                  "   <MechanicalObject name='mstate0'/>                                      \n"
                  "   <InfoComponent name='obj'/>                                             \n"
                  "   <Node name='child1'>                                                    \n"

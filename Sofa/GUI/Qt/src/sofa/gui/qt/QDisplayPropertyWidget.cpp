@@ -270,7 +270,6 @@ void QDisplayPropertyWidget::addData(const QString& component, const QString& gr
     QDisplayDataWidget *displayDataWidget = new QDisplayDataWidget(widget, data, modifyObjectFlags);
     layout->addWidget(displayDataWidget);
 
-    connect(displayDataWidget, SIGNAL(DataOwnerDirty(bool)), this, SLOT(updateListViewItem()));
     connect(displayDataWidget, SIGNAL(WidgetDirty(bool)), widget, SLOT(updateDirtyWidget()));
 
     widget->setContentsMargins(0, 0, 0, 0);
@@ -315,7 +314,6 @@ void QDisplayPropertyWidget::addLink(const QString& component, const QString& gr
     QDisplayLinkWidget *displayLinkWidget = new QDisplayLinkWidget(widget, link, linkFlags);
     layout->addWidget(displayLinkWidget);
 
-    connect(displayLinkWidget, SIGNAL(LinkOwnerDirty(bool)), this, SLOT(updateListViewItem()));
     connect(displayLinkWidget, SIGNAL(WidgetDirty(bool)), widget, SLOT(updateDirtyWidget()));
 
     widget->setContentsMargins(0, 0, 0, 0);
@@ -567,35 +565,6 @@ void QDisplayPropertyWidget::clear()
 void QDisplayPropertyWidget::clearAll()
 {
     QTreeWidget::clear();
-}
-
-void QDisplayPropertyWidget::updateListViewItem()
-{
-    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, QTreeWidgetItem*> >::iterator objectIterator;
-    for(objectIterator = objects.begin(); objectIterator != objects.end(); ++objectIterator)
-    {
-        core::objectmodel::Base* object = objectIterator->second.first;
-        QTreeWidgetItem* item = objectIterator->second.second;
-
-        if (sofa::core::castTo<simulation::Node*>(object))
-        {
-            item->setText(0, QString::fromStdString(object->getName()));
-        }
-        else
-        {
-            QString currentName = item->text(0);
-
-            std::string name=item->text(0).toStdString();
-            std::string::size_type pos = name.find(' ');
-            if(pos != std::string::npos)
-                name = name.substr(0,pos);
-            name += "  ";
-            name += object->getName();
-            QString newName = QString::fromStdString(name);
-            if(newName != currentName)
-                item->setText(0,newName);
-        }
-    }
 }
 
 void QDisplayPropertyWidget::clearComponentOutput()

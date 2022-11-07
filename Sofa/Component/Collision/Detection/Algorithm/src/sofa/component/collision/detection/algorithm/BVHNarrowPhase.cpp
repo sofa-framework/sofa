@@ -68,6 +68,7 @@ void BVHNarrowPhase::addCollisionPair(const std::pair<core::CollisionModel*, cor
         std::swap(finestCollisionModel1, finestCollisionModel2);
     }
 
+    // NOTE: outputs is a reference to a pointer! The original pointer resides in a map in NarrowPhaseDetection and will be modified in beginIntersect
     sofa::core::collision::DetectionOutputVector*& outputs = this->getDetectionOutputs(finestCollisionModel1, finestCollisionModel2);
 
     finestIntersector->beginIntersect(finestCollisionModel1, finestCollisionModel2, outputs);//creates outputs if null
@@ -279,7 +280,7 @@ void BVHNarrowPhase::visitExternalChildren(const core::CollisionElementIterator 
             }
             else
             {
-                externalCells.push(std::move(externalChildren));
+                externalCells.push(externalChildren);
             }
         }
         else

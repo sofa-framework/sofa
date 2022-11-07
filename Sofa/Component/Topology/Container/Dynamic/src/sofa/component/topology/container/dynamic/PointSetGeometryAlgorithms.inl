@@ -263,10 +263,17 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const 
     }
 }
 
+template <class DataTypes>
+bool PointSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
+{
+    return this->m_topology->getNbPoints() != 0 && d_showPointIndices.getValue();
+}
 
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     if (d_showPointIndices.getValue())
     {
         sofa::type::Vec3 sceneMinBBox, sceneMaxBBox;
@@ -279,16 +286,34 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
         float scale = getIndicesScale();
 
-        std::vector<type::Vector3> positions;
+        std::vector<type::Vec3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
-            type::Vector3 center; center = DataTypes::getCPos(coords[i]);
+            type::Vec3 center; center = DataTypes::getCPos(coords[i]);
             positions.push_back(center);
 
         }
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
+
+
 }
 
+template <class DataTypes>
+void PointSetGeometryAlgorithms<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if (!onlyVisible) return;
+    if (!this->object) return;
+    if (!this->m_topology) return;
+
+    if (mustComputeBBox())
+    {
+        const auto bbox = this->object->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed
+        this->object->f_bbox.setValue(std::move(bbox));
+    }
+    this->f_bbox.setValue(type::BoundingBox());
+}
 
 } //namespace sofa::component::topology::container::dynamic

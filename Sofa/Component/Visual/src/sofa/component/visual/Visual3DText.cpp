@@ -65,11 +65,11 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
     const type::Vec3f& pos = d_position.getValue();
     float scale = d_scale.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableDepthTest();
     vparams->drawTool()->setLightingEnabled(true);
     vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::visual

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP
-#include "GroupFilterYoungModulus.inl"
+#include <sofa/component/engine/generate/GroupFilterYoungModulus.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

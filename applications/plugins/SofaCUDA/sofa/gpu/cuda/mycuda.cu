@@ -26,6 +26,7 @@
 #include "mycuda.h"
 #include <cuda.h>
 #include <cuda_gl_interop.h>
+#include <iostream>
 
 
 //#define NO_CUDA
@@ -196,7 +197,12 @@ int mycudaInit(int device)
 {
     if (cudaInitCalled) return 1;
     cudaInitCalled = true;
-    cudaCheck(cudaGetDeviceCount(&deviceCount),"cudaGetDeviceCount");
+    const cudaError_t getDeviceCountError = cudaGetDeviceCount(&deviceCount);
+    if (getDeviceCountError != cudaSuccess)
+    {
+        std::cerr << "CUDA error returned from cudaGetDeviceCount: " << cudaGetErrorString(getDeviceCountError) << "\n";
+        return 0;
+    }
     mycudaPrintf("CUDA: %d device(s) found.\n", deviceCount);
     for (int i=0; i<deviceCount; i++)
     {

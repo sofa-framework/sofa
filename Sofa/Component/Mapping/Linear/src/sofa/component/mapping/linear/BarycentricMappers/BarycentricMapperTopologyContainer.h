@@ -29,7 +29,7 @@ namespace sofa::component::mapping::linear::_barycentricmappertopologycontainer_
 {
 
 using sofa::type::Mat3x3d;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::Vec3i;
 using sofa::defaulttype::Vec3Types;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
@@ -134,7 +134,7 @@ protected:
     bool m_updateJ {false};
 
     type::vector<Mat3x3d> m_bases;
-    type::vector<Vector3> m_centers;
+    type::vector<Vec3> m_centers;
 
     // Spacial hashing utils
     Real m_gridCellSize;
@@ -150,9 +150,9 @@ protected:
     virtual type::vector<Element> getElements()=0;
     virtual type::vector<SReal> getBaryCoef(const Real* f)=0;
     virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element)=0;
-    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element)=0;
+    virtual void computeCenter(Vec3& center, const typename In::VecCoord& in, const Element& element)=0;
     virtual void addPointInElement(const Index elementIndex, const SReal* baryCoords)=0;
-    virtual void computeDistance(SReal& d, const Vector3& v)=0;
+    virtual void computeDistance(SReal& d, const Vec3& v)=0;
 
     /// Compute the distance between outPos and the element e. If this distance is smaller than the previously stored one,
     /// update nearestParams.
@@ -161,8 +161,8 @@ protected:
     /// \param inPos position of one point of the element
     /// \param nearestParams output parameters (nearest element id, distance, and barycentric coordinates)
     void checkDistanceFromElement(unsigned int e,
-                                  const Vector3& outPos,
-                                  const Vector3& inPos,
+                                  const Vec3& outPos,
+                                  const Vec3& inPos,
                                   NearestParams& nearestParams);
 
 
@@ -172,7 +172,7 @@ protected:
 
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-    type::Vec3i getGridIndices(const Vector3& pos);
+    type::Vec3i getGridIndices(const Vec3& pos);
     void initHashing(const typename In::VecCoord& in);
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);

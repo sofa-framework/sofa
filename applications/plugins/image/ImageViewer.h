@@ -30,8 +30,8 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaGeneralVisual/RecordedCamera.h>
+#include <sofa/component/visual/VisualModelImpl.h>
+#include <sofa/component/visual/RecordedCamera.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -141,7 +141,7 @@ public:
     Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
     Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
-    typedef sofa::component::visualmodel::VisualModelImpl VisuModelType;
+    typedef sofa::component::visual::VisualModelImpl VisuModelType;
 
     ImageViewer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
@@ -382,7 +382,7 @@ public:
             sofa::simulation::Node* root = dynamic_cast<simulation::Node*>(this->getContext());
             if(root)
             {
-                sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
+                sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
                 if(currentCamera)
                 {
                     currentCamera->m_translationPositions.setValue(this->points.getValue());

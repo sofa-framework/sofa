@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
 namespace sofa::core::behavior
 {
@@ -106,7 +107,7 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    virtual void rebuildSystem(double /*massFactor*/, double /*forceFactor*/);
+    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/);
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
@@ -122,9 +123,9 @@ public:
     /// @name Unbuilt constraint system during resolution
     /// @{
     virtual bool hasConstraintNumber(int /*index*/);
-    virtual void resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/);
-    virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/);
-    virtual void setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);	  // f += df
+    virtual void resetForUnbuiltResolution(SReal* /*f*/, std::list<unsigned int>& /*renumbering*/);
+    virtual void addConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/);
+    virtual void setConstraintDForce(SReal* /*df*/, int /*begin*/, int /*end*/, bool /*update*/);	  // f += df
     virtual void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/);
     /// @}
 

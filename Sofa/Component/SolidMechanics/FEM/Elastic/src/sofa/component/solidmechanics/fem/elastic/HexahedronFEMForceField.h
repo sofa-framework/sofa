@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
@@ -183,7 +183,7 @@ protected:
     SReal m_potentialEnergy;
 
     sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the topology container. Will be set by link @sa l_topology
-    topology::SparseGridTopology* _sparseGrid;
+    topology::container::grid::SparseGridTopology* _sparseGrid;
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
@@ -211,17 +211,17 @@ protected:
     type::vector<type::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
     type::vector<Transformation> _rotations;
     type::vector<Transformation> _initialrotations;
-    void initLarge(int i, const Element&elem);
+    void initLarge(sofa::Index i, const Element&elem);
     static void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
     virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// polar decomposition method
-    void initPolar(int i, const Element&elem);
+    void initPolar(sofa::Index i, const Element&elem);
     void computeRotationPolar( Transformation &r, type::Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     ////////////// small decomposition method
-    void initSmall(int i, const Element&elem);
+    void initSmall(sofa::Index i, const Element&elem);
     virtual void accumulateForceSmall( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     bool _alreadyInit;

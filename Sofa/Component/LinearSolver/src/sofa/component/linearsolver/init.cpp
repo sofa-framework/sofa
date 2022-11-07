@@ -36,16 +36,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofa::component::linearsolver::direct::init();
-        sofa::component::linearsolver::iterative::init();
-        sofa::component::linearsolver::preconditioner::init();
-
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -60,7 +51,16 @@ const char* getModuleVersion()
 
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::component::linearsolver::direct::init();
+        sofa::component::linearsolver::iterative::init();
+        sofa::component::linearsolver::preconditioner::init();
+
+        first = false;
+    }
 }
 
 } // namespace sofa::component::linearsolver

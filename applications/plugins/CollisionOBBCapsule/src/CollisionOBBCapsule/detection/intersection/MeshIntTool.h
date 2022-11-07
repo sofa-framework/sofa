@@ -232,15 +232,15 @@ int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,type
 
 #if  !defined(SOFA_COMPONENT_COLLISION_MESHINTTOOL_CPP)
 extern template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Vec3Types>& cap, const sofa::type::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Vec3Types>& cap, const sofa::type::Vec3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(TCapsule<sofa::defaulttype::Vec3Types>& cap,const sofa::type::Vector3 & q1,const sofa::type::Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(TCapsule<sofa::defaulttype::Vec3Types>& cap,const sofa::type::Vec3 & q1,const sofa::type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
 extern template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
 extern template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Rigid3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Rigid3Types>& cap, const sofa::type::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Rigid3Types>& cap, const sofa::type::Vec3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Rigid3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(TCapsule<sofa::defaulttype::Rigid3Types>& cap,const sofa::type::Vector3 & q1,const sofa::type::Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+extern template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(TCapsule<sofa::defaulttype::Rigid3Types>& cap,const sofa::type::Vec3 & q1,const sofa::type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
 extern template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Rigid3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 #endif
 

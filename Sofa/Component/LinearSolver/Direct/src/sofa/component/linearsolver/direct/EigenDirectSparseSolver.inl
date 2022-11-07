@@ -30,6 +30,7 @@ template <class TBlockType, class EigenSolver>
 void EigenDirectSparseSolver<TBlockType, EigenSolver>
     ::init()
 {
+    Inherit1::init();
     updateSolverOderingMethod();
 }
 

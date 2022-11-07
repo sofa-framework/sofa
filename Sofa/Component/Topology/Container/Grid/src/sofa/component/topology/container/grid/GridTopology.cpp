@@ -73,6 +73,12 @@ void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     this->setNbGridPoints();
 }
 
+Size GridTopology::getNbHexahedra()
+{
+    const auto n = d_n.getValue();
+    return (n[0] - 1) * (n[1] - 1) * (n[2] - 1);
+}
+
 
 void GridTopology::GridUpdate::updateEdges()
 {
@@ -266,7 +272,8 @@ void GridTopology::reinit()
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
-    if (nx == this->d_n.getValue()[0] && ny == this->d_n.getValue()[1] && nz == this->d_n.getValue()[2])
+    const auto n = this->d_n.getValue();
+    if (nx == n[0] && ny == n[1] && nz == n[2])
         return;
     this->d_n.setValue(Vec3i(nx,ny,nz));
     setNbGridPoints();
@@ -344,14 +351,16 @@ void GridTopology::computePointList()
 
 GridTopology::Index GridTopology::getIndex( int i, int j, int k ) const
 {
-    return Index(d_n.getValue()[0]* ( d_n.getValue()[1]*k + j ) + i);
+    const auto& n = d_n.getValue();
+    return Index(n[0]* ( n[1]*k + j ) + i);
 }
 
 
 sofa::type::Vec3 GridTopology::getPoint(Index i) const
 {
-    int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
-    int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
+    const auto& n = d_n.getValue();
+    int x = i%n[0]; i/=n[0];
+    int y = i%n[1]; i/=n[1];
     int z = int(i);
 
     return getPointInGrid(x,y,z);
@@ -359,9 +368,11 @@ sofa::type::Vec3 GridTopology::getPoint(Index i) const
 
 sofa::type::Vec3 GridTopology::getPointInGrid(int i, int j, int k) const
 {
+    const auto& spoints = seqPoints.getValue();
+
     Index id = this->getIndex(i, j, k);
-    if (id < seqPoints.getValue().size())
-        return seqPoints.getValue()[id];
+    if (id < spoints.size())
+        return spoints[id];
     else
         return sofa::type::Vec3();
 }
@@ -369,8 +380,10 @@ sofa::type::Vec3 GridTopology::getPointInGrid(int i, int j, int k) const
 
 GridTopology::Hexa GridTopology::getHexaCopy(Index i)
 {
-    int x = i%(d_n.getValue()[0]-1); i/=(d_n.getValue()[0]-1);
-    int y = i%(d_n.getValue()[1]-1); i/=(d_n.getValue()[1]-1);
+    const auto& n = d_n.getValue();
+
+    int x = i%(n[0]-1); i/=(n[0]-1);
+    int y = i%(n[1]-1); i/=(n[1]-1);
     int z = int(i);
     return getHexahedron(x,y,z);
 }
@@ -386,27 +399,29 @@ GridTopology::Hexa GridTopology::getHexahedron(int x, int y, int z)
 
 GridTopology::Quad GridTopology::getQuadCopy(Index i)
 {
-    if (d_n.getValue()[0] == 1)
+    const auto& n = d_n.getValue();
+
+    if (n[0] == 1)
     {
-        int y = i%(d_n.getValue()[1]-1);
-        i/=(d_n.getValue()[1]-1);
-        int z = i%(d_n.getValue()[2]-1);
+        int y = i%(n[1]-1);
+        i/=(n[1]-1);
+        int z = i%(n[2]-1);
 
         return getQuad(1,y,z);
     }
-    else if (d_n.getValue()[1] == 1)
+    else if (n[1] == 1)
     {
-        int x = i%(d_n.getValue()[0]-1);
-        i/=(d_n.getValue()[0]-1);
-        int z = i%(d_n.getValue()[2]-1);
+        int x = i%(n[0]-1);
+        i/=(n[0]-1);
+        int z = i%(n[2]-1);
 
         return getQuad(x,1,z);
     }
     else
     {
-        int x = i%(d_n.getValue()[0]-1);
-        i/=(d_n.getValue()[0]-1);
-        int y = i%(d_n.getValue()[1]-1);
+        int x = i%(n[0]-1);
+        i/=(n[0]-1);
+        int y = i%(n[1]-1);
 
         return getQuad(x,y,1);
     }
@@ -414,10 +429,12 @@ GridTopology::Quad GridTopology::getQuadCopy(Index i)
 
 GridTopology::Quad GridTopology::getQuad(int x, int y, int z)
 {
-    if (d_n.getValue()[2] == 1)
+    const auto& n = d_n.getValue();
+
+    if (n[2] == 1)
         return Quad(point(x, y, 1), point(x+1, y, 1),
                 point(x+1, y+1, 1), point(x, y+1, 1));
-    else if (d_n.getValue()[1] == 1)
+    else if (n[1] == 1)
         return Quad(point(x, 1, z), point(x+1, 1, z),
                 point(x+1, 1, z+1), point(x, 1, z+1));
     else

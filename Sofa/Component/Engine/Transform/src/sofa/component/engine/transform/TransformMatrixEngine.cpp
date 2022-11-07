@@ -50,7 +50,7 @@ int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input t
  */
 
 AbstractTransformMatrixEngine::AbstractTransformMatrixEngine()
-    : d_inT ( initData (&d_inT, Matrix4::s_identity, "inT", "input transformation if any") )
+    : d_inT ( initData (&d_inT, Matrix4::Identity(), "inT", "input transformation if any") )
     , d_outT( initData (&d_outT, "outT", "output transformation") )
 {
     addInput(&d_inT);
@@ -131,7 +131,7 @@ void RotateTransformMatrixEngine::init()
 void RotateTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
-    helper::ReadAccessor< Data<Vector3> > rotation = d_rotation;
+    helper::ReadAccessor< Data<Vec3> > rotation = d_rotation;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
     Matrix4 myT;
@@ -163,7 +163,7 @@ void ScaleTransformMatrixEngine::init()
 void ScaleTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
-    helper::ReadAccessor< Data<Vector3> > scale = d_scale;
+    helper::ReadAccessor< Data<Vec3> > scale = d_scale;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
     Matrix4 myT;

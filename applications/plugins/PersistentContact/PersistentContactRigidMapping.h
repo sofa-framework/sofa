@@ -80,7 +80,7 @@ public:
 
     void beginAddContactPoint() override;
 
-    int addContactPointFromInputMapping(const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords);
+    int addContactPointFromInputMapping(const sofa::type::Vec3& pos, std::vector< std::pair<int, double> > & baryCoords);
 
     int keepContactPointFromInputMapping(const int index) override;
 

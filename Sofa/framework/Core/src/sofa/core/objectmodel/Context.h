@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_CONTEXT_H
-#define SOFA_CORE_OBJECTMODEL_CONTEXT_H
-
+#pragma once
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -43,24 +35,20 @@ class SOFA_CORE_API Context : public BaseContext
 public:
     SOFA_CLASS(Context, BaseContext);
 
-
-
     Data<bool> is_activated; ///< To Activate a node
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     Data<SReal> dt_; ///< Time step
     Data<SReal> time_; ///< Current time
     Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
-	Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
-	Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
-
-
+    Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
+    Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 
 protected:
     Context();
     virtual ~Context() override
     {}
-public:
 
+public:
     /// @name Parameters
     /// @{
 
@@ -69,11 +57,11 @@ public:
     /// State of the context
     void setActive(bool val) override;
 
-	/// The Context is sleeping
-	bool isSleeping() const override;
+    /// The Context is sleeping
+    bool isSleeping() const override;
 
-	/// The Context can change its sleeping state
-	bool canChangeSleepingState() const override;
+    /// The Context can change its sleeping state
+    bool canChangeSleepingState() const override;
 
     /// Gravity in local coordinates
     const Vec3& getGravity() const override;
@@ -102,11 +90,11 @@ public:
     /// Animation flag
     void setAnimate(bool val) override;
 
-	/// Sleeping state of the context
-	void setSleeping(bool val) override;
+    /// Sleeping state of the context
+    void setSleeping(bool val) override;
 
-	/// Sleeping state change of the context
-	void setChangeSleepingState(bool val) override;
+    /// Sleeping state change of the context
+    void setChangeSleepingState(bool val) override;
 
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
@@ -120,11 +108,4 @@ public:
     void copySimulationContext(const Context& c);
 
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::objectmodel

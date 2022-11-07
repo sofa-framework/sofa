@@ -31,21 +31,21 @@ using sofa::testing::BaseSimulationTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 using ::testing::Types;
 
@@ -91,9 +91,7 @@ public:
                 "   <MeshExporter name='exporter1' format='"<< format <<"' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene1.str().c_str(),
-                                                          scene1.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -123,9 +121,7 @@ public:
                 "   <MeshExporter name='exporterA' format='"<< format <<"' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene1.str().c_str(),
-                                                          scene1.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

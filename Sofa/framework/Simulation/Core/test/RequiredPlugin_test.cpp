@@ -23,7 +23,8 @@
 using sofa::testing::BaseSimulationTest;
 
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
+
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
@@ -44,9 +45,7 @@ struct RequiredPlugin_test : public BaseSimulationTest
                  "   <RequiredPlugin name=\"notExist\" pluginName=\"SofaNotExist\" />            \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -62,9 +61,7 @@ struct RequiredPlugin_test : public BaseSimulationTest
                  "   <RequiredPlugin />            \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

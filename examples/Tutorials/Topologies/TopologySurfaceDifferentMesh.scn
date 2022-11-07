@@ -18,7 +18,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualModelImpl VisualStyle] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
@@ -26,7 +25,6 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
-    <DefaultCollisionGroupManager name="Group" />
 	
 
 	  <Node name="Cloth Dynamic Mesh (blue)">
@@ -43,7 +41,7 @@
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="80" />
         <TriangleCollisionModel name="models" />
         <Node >
-          <VisualModel name="Visual" color="blue" />
+          <VisualModelImpl name="Visual" color="blue" />
           <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -60,7 +58,7 @@
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="80" />
         <TriangleCollisionModel name="models" />
         <Node >
-          <VisualModel name="Visual" color="white" />
+          <VisualModelImpl name="Visual" color="white" />
           <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -75,7 +73,7 @@
         <RegularGridSpringForceField template="Vec3d" stiffness="300" damping="1"/>
         <QuadBendingSprings template="Vec3d" name="Bend" stiffness="20" damping="0" />
         <Node >
-          <VisualModel name="Visual" color="red" />
+          <VisualModelImpl name="Visual" color="red" />
           <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>

@@ -24,7 +24,8 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/defaulttype/fwd.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 namespace sofa
 {
 
@@ -142,6 +143,9 @@ public:
     const objectmodel::BaseData* baseRead(ConstVecId v) const override;
 
     /// @}
+
+    /// Compute the bounding box independently from the visibility parameters
+    sofa::type::TBoundingBox<Real> computeBBox() const;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };

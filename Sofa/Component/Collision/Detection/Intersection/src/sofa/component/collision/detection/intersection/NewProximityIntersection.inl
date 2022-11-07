@@ -29,12 +29,12 @@ namespace sofa::component::collision::detection::intersection
 {
 
 inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2,
-                                                       const type::Vector3& p,
-                                                       const type::Vector3& q,
+                                                       const type::Vec3& p,
+                                                       const type::Vec3& q,
                                                        OutputVector* contacts,
                                                        int id)
 {
-    const type::Vector3 pq = q-p;
+    const type::Vec3 pq = q-p;
 
     const SReal norm2 = pq.norm2();
 

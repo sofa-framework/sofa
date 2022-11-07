@@ -32,8 +32,8 @@
 #include <sofa/defaulttype/typeinfo/DataTypeInfoDynamicWrapper.h>
 
 #include <algorithm>
-#include "TypeInfoID.h"
-#include "TypeInfoRegistry.h"
+#include <sofa/defaulttype/TypeInfoID.h>
+#include <sofa/defaulttype/TypeInfoRegistry.h>
 
 namespace sofa::defaulttype
 {

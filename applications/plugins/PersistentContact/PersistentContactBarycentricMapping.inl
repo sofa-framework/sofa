@@ -38,7 +38,7 @@ namespace mapping
 {
 
 template <class In, class Out>
-int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vector3& _pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vec3& _pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     this->updateJ = true;
     int retValue = 0;
@@ -217,7 +217,7 @@ int PersistentContactBarycentricMapperMeshTopology<In,Out>::addContactPointFromI
 
 
 template <class In, class Out>
-int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactBarycentricMapperSparseGridTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vec3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     if (this->f_printLog.getValue())
     {
@@ -296,7 +296,7 @@ void PersistentContactBarycentricMapperSparseGridTopology<In,Out>::storeBarycent
 
 
 template <class In, class Out>
-int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vector3& pos
+int PersistentContactBarycentricMapperTetrahedronSetTopology<In,Out>::addContactPointFromInputMapping(const InVecDeriv& in, const sofa::type::Vec3& pos
         , std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
     if (this->f_printLog.getValue())
@@ -396,7 +396,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::beginAddContactPoint()
 
 
 template <class TIn, class TOut>
-int PersistentContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & baryCoords)
+int PersistentContactBarycentricMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::type::Vec3& pos, std::vector< std::pair<int, double> > & baryCoords)
 {
     if (m_persistentMapper)
     {

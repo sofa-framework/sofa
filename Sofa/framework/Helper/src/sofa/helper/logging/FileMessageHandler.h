@@ -26,7 +26,7 @@
 #ifndef FILEMESSAGEHANDLER_H
 #define FILEMESSAGEHANDLER_H
 
-#include "MessageHandler.h"
+#include <sofa/helper/logging/MessageHandler.h>
 #include <fstream>
 
 namespace sofa

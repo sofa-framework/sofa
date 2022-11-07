@@ -23,7 +23,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/core/topology/Topology.h>
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 
 class fake_TopologyScene
@@ -56,6 +56,9 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+
+        createObject(m_root, "DefaultAnimationLoop");
 
         std::string loaderType = "MeshOBJLoader";
         if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
@@ -102,6 +105,16 @@ public:
 
             createObject(m_root, topoType + "SetTopologyModifier", { { "name", "topoMod" } });
             createObject(m_root, topoType + "SetGeometryAlgorithms", { { "name", "topoGeo" } });
+
+            // Add some mechanical components
+            createObject(m_root, "MeshMatrixMass");
+
+            if (m_topoType == TopologyElementType::EDGE) {
+                sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
+                createObject(m_root, "VectorSpringForceField", { {"useTopology", "true"} });
+            }
+                
+                
         }
 
         m_simu->init(m_root.get());
@@ -112,7 +125,7 @@ public:
     /// Method to get acces to node containing the meshLoader and the toplogy container.
     sofa::simulation::Node::SPtr getNode() { return m_root; }
 
-protected:
+private:
     /// Simulation object
     sofa::simulation::Simulation::SPtr m_simu;
     /// Node containing the topology

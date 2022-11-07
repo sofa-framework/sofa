@@ -29,12 +29,12 @@ using std::string;
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
@@ -44,7 +44,7 @@ using sofa::component::collision::detection::intersection::LocalMinDistance ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 #include <gtest/gtest-spi.h> // for expected non fatal
 
@@ -88,9 +88,7 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -119,9 +117,7 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -144,9 +140,7 @@ void TestLocalMinDistance::checkAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -179,9 +173,7 @@ void TestLocalMinDistance::checkDoubleInit()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -209,9 +201,7 @@ void TestLocalMinDistance::checkInitReinit()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 

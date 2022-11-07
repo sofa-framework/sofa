@@ -25,18 +25,12 @@
 
 #include <sofa/helper/config.h>
 
-#include "BaseFileAccess.h"
+#include <sofa/helper/io/BaseFileAccess.h>
 
 #include <iostream>
 #include <string>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
+namespace sofa::helper::io
 {
 
 // \brief Abstract representation of a file (could be on disk, memory, network, etc.)
@@ -61,11 +55,6 @@ private:
     BaseFileAccess* myFileAccess;
 
 };
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper::io
 
 #endif // SOFA_HELPER_IO_FILEIO_H

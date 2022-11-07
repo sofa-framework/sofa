@@ -21,13 +21,13 @@
 ******************************************************************************/
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaMiscFem/TriangleFEMForceField.h>
-#include <SofaMiscFem/TriangularFEMForceField.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 
-#include <SofaSimulationGraph/SimpleApi.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -35,7 +35,7 @@ using sofa::simulation::Node;
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML;
 
 #include <string>
@@ -48,6 +48,7 @@ namespace sofa
 {
 using namespace sofa::defaulttype;
 using namespace sofa::simpleapi;
+using namespace sofa::component::solidmechanics::fem::elastic;
 using sofa::component::statecontainer::MechanicalObject;
 using sofa::helper::system::thread::ctime_t;
 
@@ -59,9 +60,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef MechanicalObject<DataTypes> MState;
-    using TriangleFEM = sofa::component::forcefield::TriangleFEMForceField<DataTypes>;
-    using TriangularFEM = sofa::component::forcefield::TriangularFEMForceField<DataTypes>;
-    using TriangularFEMOptim = sofa::component::forcefield::TriangularFEMForceFieldOptim<DataTypes>;
+    using TriangleFEM = TriangleFEMForceField<DataTypes>;
+    using TriangularFEM = TriangularFEMForceField<DataTypes>;
+    using TriangularFEMOptim = TriangularFEMForceFieldOptim<DataTypes>;
     using Vec3 = type::Vec<3, Real>;
     using Mat23 = type::Mat<2, 3, Real>;
     using Mat33 = type::Mat<3, 3, Real>;
@@ -77,7 +78,6 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
         simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
     }
 
@@ -449,7 +449,6 @@ public:
                 
                 Real factor = triFEM->getTriangleFactor(id); // ((Real)0.5)/(ti.bx*ti.cy); -> 1/(2 * det) = 1/area                
                 Real correctiveFactorStiff = 1 / (4 * factor); // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
-                Real correctiveFactorStrainD = factor * 2; // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
 
                 for (int i = 0; i < 3; ++i)
                 {

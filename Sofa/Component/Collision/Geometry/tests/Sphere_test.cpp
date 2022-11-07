@@ -35,7 +35,7 @@ using sofa::core::objectmodel::BaseObject ;
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/component/collision/detection/intersection/MinProximityIntersection.h>
@@ -58,7 +58,7 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
@@ -430,9 +430,7 @@ void checkAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -460,9 +458,7 @@ void checkSceneWithVec3MechanicalModel()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -481,9 +477,7 @@ void checkSceneWithRigid3dMechanicalModel()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -503,9 +497,7 @@ void checkGracefulHandlingWhenMechanicalModelIsMissing()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 

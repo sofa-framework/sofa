@@ -1,13 +1,19 @@
 <Node name="root" dt="0.04">
 	<VisualStyle displayFlags="showBehaviorModels showForceFields" />
-	<RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
+	<RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [IndexValueMapper] -->
+	<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+	<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+	<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+	<RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+	<RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedConstraint MechanicalObject PlaneForceField TetrahedronFEMForceField UniformMass] -->
 	
 	<Node name="M1">
 		<MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
 	<!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" />-->
 		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
-	<!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioners="precond" />
+        <!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioner="@precond" />
 		<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->
 		<MeshTopology src="@volume" />
 		<MechanicalObject template="CudaVec3f" />

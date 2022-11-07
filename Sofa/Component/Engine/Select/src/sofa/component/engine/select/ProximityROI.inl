@@ -44,7 +44,7 @@ ProximityROI<DataTypes>::ProximityROI()
     , f_indicesOut( initData(&f_indicesOut,"indicesOut","Indices of the points not contained in the ROI") )
     , p_drawSphere( initData(&p_drawSphere,false,"drawSphere","Draw shpere(s)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
+    , _drawSize( initData(&_drawSize,1.0,"drawSize","rendering size for box and topological elements") )
 {
     //Adding alias to handle TrianglesInSphereROI input/output
     addAlias(&p_drawSphere,"isVisible");
@@ -249,13 +249,13 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {
-        std::vector<sofa::type::Vector3> drawcenters;
+        std::vector<sofa::type::Vec3> drawcenters;
         std::vector<float> drawradii;
         ///draw the boxes
         const type::vector<Vec3>& c=centers.getValue();
@@ -277,7 +277,7 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->disableLighting();
 
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
@@ -286,7 +286,7 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawPoints(vertices, 5.0, color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::select

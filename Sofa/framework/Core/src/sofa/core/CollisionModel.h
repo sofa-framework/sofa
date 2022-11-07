@@ -94,7 +94,7 @@ public:
 
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
-    typedef sofa::type::Vector3::value_type Real;
+    typedef sofa::type::Vec3::value_type Real;
     using Index = sofa::Index;
     using Size = sofa::Size;
 
@@ -323,28 +323,28 @@ public:
     /// @{
 
     /// Get distance to the actual (visual) surface
-    SReal getProximity() { return proximity.getValue(); }
+    [[nodiscard]] SReal getProximity() const { return proximity.getValue(); }
 
     /// Get contact stiffness
-    SReal getContactStiffness(Index /*index*/) { return contactStiffness.getValue(); }
+    [[nodiscard]] SReal getContactStiffness(Index /*index*/) const { return contactStiffness.getValue(); }
     /// Set contact stiffness
     void setContactStiffness(SReal stiffness) { contactStiffness.setValue(stiffness); }
 
     /// Get contact friction (damping) coefficient
-    SReal getContactFriction(Index /*index*/) { return contactFriction.getValue(); }
+    [[nodiscard]] SReal getContactFriction(Index /*index*/) const { return contactFriction.getValue(); }
     /// Set contact friction (damping) coefficient
     void setContactFriction(SReal friction) { contactFriction.setValue(friction); }
 
     /// Get contact coefficient of restitution
-     SReal getContactRestitution(Index /*index*/) { return contactRestitution.getValue(); }
+    [[nodiscard]] SReal getContactRestitution(Index /*index*/) const { return contactRestitution.getValue(); }
     /// Set contact coefficient of restitution
     void setContactRestitution(SReal restitution) { contactRestitution.setValue(restitution); }
 
     /// Contact response algorithm
-    std::string getContactResponse() { return contactResponse.getValue(); }
+    [[nodiscard]] std::string getContactResponse() const { return contactResponse.getValue(); }
 
     /// Return the group IDs containing this model.
-    const std::set<int>& getGroups() const { return group.getValue(); }
+    [[nodiscard]] const std::set<int>& getGroups() const { return group.getValue(); }
 
     /// add the group ID to this model.
     void addGroup(const int groupId) { group.beginEdit()->insert(groupId); group.endEdit(); }

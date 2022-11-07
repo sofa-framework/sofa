@@ -49,7 +49,7 @@ protected:
 private:
 
     ///< if not empty, objects that do not intersect this bounding-box will be ignored
-    Data< type::fixed_array<sofa::type::Vector3,2> > box;
+    Data< type::fixed_array<sofa::type::Vec3,2> > box;
 
 public:
     void init() override;

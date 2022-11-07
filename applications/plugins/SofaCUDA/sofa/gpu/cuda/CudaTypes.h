@@ -34,7 +34,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
-#include <SofaBaseMechanics/MassType.h>
+#include <sofa/component/mass/MassType.h>
 #include <iostream>
 
 namespace sofa
@@ -93,9 +93,9 @@ public:
     typedef CudaVector<Real> VecReal;
     typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef Coord CPos;
     static const CPos& getCPos(const Coord& c) { return c; }
@@ -215,7 +215,7 @@ public:
         return coord;
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 };
 
 typedef sofa::type::Vec3f Vec3f;
@@ -433,7 +433,7 @@ typedef CudaVectorTypes<Vec3f,Vec3f,float> CudaVec3fTypes;
 typedef CudaVec3fTypes CudaVec3Types;
 
 template<>
-inline const char* CudaVec3fTypes::Name()
+constexpr const char* CudaVec3fTypes::Name()
 {
     return "CudaVec3f";
 }
@@ -443,7 +443,7 @@ typedef CudaVectorTypes<Vec1f,Vec1f,float> CudaVec1fTypes;
 typedef CudaVec1fTypes CudaVec1Types;
 
 template<>
-inline const char* CudaVec1fTypes::Name()
+constexpr const char* CudaVec1fTypes::Name()
 {
     return "CudaVec1f";
 }
@@ -452,7 +452,7 @@ typedef CudaVectorTypes<Vec2f,Vec2f,float> CudaVec2fTypes;
 typedef CudaVec2fTypes CudaVec2Types;
 
 template<>
-inline const char* CudaVec2fTypes::Name()
+constexpr const char* CudaVec2fTypes::Name()
 {
     return "CudaVec2f";
 }
@@ -460,7 +460,7 @@ inline const char* CudaVec2fTypes::Name()
 typedef CudaVectorTypes<Vec3f1,Vec3f1,float> CudaVec3f1Types;
 
 template<>
-inline const char* CudaVec3f1Types::Name()
+constexpr const char* CudaVec3f1Types::Name()
 {
     return "CudaVec3f1";
 }
@@ -469,10 +469,14 @@ typedef CudaVectorTypes<Vec6f,Vec6f,float> CudaVec6fTypes;
 typedef CudaVec6fTypes CudaVec6Types;
 
 template<>
-inline const char* CudaVec6fTypes::Name()
+constexpr const char* CudaVec6fTypes::Name()
 {
     return "CudaVec6f";
 }
+
+//=============================================================================
+// 3D Rigids
+//=============================================================================
 
 template<int N, typename real>
 class CudaRigidTypes;
@@ -492,9 +496,9 @@ public:
     typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
     typedef Vec3 AngularVector;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename Coord::Pos CPos;
     typedef typename Coord::Rot CRot;
@@ -616,7 +620,7 @@ public:
         return d;
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     /// double cross product: a * ( b * c )
     static Vec3 crosscross ( const Vec3& a, const Vec3& b, const Vec3& c)
@@ -629,9 +633,166 @@ typedef CudaRigidTypes<3,float> CudaRigid3fTypes;
 typedef CudaRigid3fTypes CudaRigid3Types;
 
 template<>
-inline const char* CudaRigid3fTypes::Name()
+constexpr const char* CudaRigid3fTypes::Name()
 {
     return "CudaRigid3f";
+}
+
+//=============================================================================
+// 2D Rigids
+//=============================================================================
+
+template<typename real>
+class CudaRigidTypes<2, real>
+{
+public:
+    typedef real Real;
+    typedef typename sofa::defaulttype::StdRigidTypes<2,Real>::Vec2 Vec2;
+
+    typedef sofa::defaulttype::RigidDeriv<2,real> Deriv;
+    typedef sofa::defaulttype::RigidCoord<2,real> Coord;
+    typedef Real AngularVector;
+
+    enum { spatial_dimensions = Coord::spatial_dimensions };
+    enum { coord_total_size = Coord::total_size };
+    enum { deriv_total_size = Deriv::total_size };
+
+    typedef typename Coord::Pos CPos;
+    typedef typename Coord::Rot CRot;
+    static const CPos& getCPos(const Coord& c) { return c.getCenter(); }
+    static void setCPos(Coord& c, const CPos& v) { c.getCenter() = v; }
+    static const CRot& getCRot(const Coord& c) { return c.getOrientation(); }
+    static void setCRot(Coord& c, const CRot& v) { c.getOrientation() = v; }
+
+    typedef typename sofa::defaulttype::StdRigidTypes<2,Real>::DPos DPos;
+    typedef real DRot;
+    static const DPos& getDPos(const Deriv& d) { return getVCenter(d); }
+    static void setDPos(Deriv& d, const DPos& v) { getVCenter(d) = v; }
+    static const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
+    static void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
+
+    static const char* Name();
+
+    typedef CudaVector<Coord> VecCoord;
+    typedef CudaVector<Deriv> VecDeriv;
+    typedef CudaVector<Real> VecReal;
+
+    typedef defaulttype::MapMapSparseMatrix<Deriv> MatrixDeriv;
+
+    template<typename T>
+    static void set(Coord& c, T x, T y, T)
+    {
+        c.getCenter()[0] = (Real)x;
+        c.getCenter()[1] = (Real)y;
+    }
+
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Coord& c)
+    {
+        x = (T)c.getCenter()[0];
+        y = (T)c.getCenter()[1];
+        z = (T)0;
+    }
+
+    template<typename T>
+    static void add(Coord& c, T x, T y, T)
+    {
+        c.getCenter()[0] += (Real)x;
+        c.getCenter()[1] += (Real)y;
+    }
+
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T)
+    {
+        c.getVCenter()[0] = (Real)x;
+        c.getVCenter()[1] = (Real)y;
+    }
+
+    template<typename T>
+    static void get(T& x, T& y, T& z, const Deriv& c)
+    {
+        x = (T)c.getVCenter()[0];
+        y = (T)c.getVCenter()[1];
+        z = (T)0;
+    }
+
+    // Set linear and angular velocities, in 6D for uniformity with 3D
+    template<typename T>
+    static void set(Deriv& c, T x, T y, T, T vrot, T, T )
+    {
+        c.getVCenter()[0] = (Real)x;
+        c.getVCenter()[1] = (Real)y;
+        c.getVOrientation() = (Real) vrot;
+    }
+
+    template<typename T>
+    static void add(Deriv& c, T x, T y, T)
+    {
+        c.getVCenter()[0] += (Real)x;
+        c.getVCenter()[1] += (Real)y;
+    }
+
+    /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
+    static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
+    {
+        Deriv result;
+        set( result, Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)),
+                     Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)), Real(helper::drand(minMagnitude,maxMagnitude)));
+        return result;
+    }
+
+    static Coord interpolate(const type::vector< Coord > & ancestors, const type::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Coord c;
+
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
+        {
+            c += ancestors[i] * coefs[i];
+        }
+
+        return c;
+    }
+
+    static Deriv interpolate(const type::vector< Deriv > & ancestors, const type::vector< Real > & coefs)
+    {
+        assert(ancestors.size() == coefs.size());
+
+        Deriv d;
+
+        for (sofa::Size i = 0; i < ancestors.size(); i++)
+        {
+            d += ancestors[i] * coefs[i];
+        }
+
+        return d;
+    }
+
+    /// specialized version of the double cross product: a * ( b * c ) for the variation of torque applied to the frame due to a small rotation with constant force.
+    static Real crosscross ( const Vec2& f, const Real& dtheta, const Vec2& OP)
+    {
+        return dtheta * dot( f,OP );
+    }
+
+    /// specialized version of the double cross product: a * ( b * c ) for point acceleration
+    static Vec2 crosscross ( const Real& omega, const Real& dtheta, const Vec2& OP)
+    {
+        return OP * omega * (-dtheta);
+    }
+
+    /// create a rotation from Euler angles (only the first is used). For homogeneity with 3D.
+    static CRot rotationEuler( Real x, Real , Real ){ return CRot(x); }
+
+};
+
+typedef CudaRigidTypes<2,float> CudaRigid2fTypes;
+typedef CudaRigid2fTypes CudaRigid2Types;
+
+template<>
+inline const char* CudaRigid2fTypes::Name()
+{
+    return "CudaRigid2f";
 }
 
 
@@ -649,7 +810,7 @@ typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
 //typedef CudaVec3dTypes CudaVec3Types;
 
 template<>
-inline const char* CudaVec3dTypes::Name()
+constexpr const char* CudaVec3dTypes::Name()
 {
     return "CudaVec3d";
 }
@@ -658,7 +819,7 @@ typedef CudaVectorTypes<Vec1d,Vec1d,double> CudaVec1dTypes;
 //typedef CudaVec1dTypes CudaVec1Types;
 
 template<>
-inline const char* CudaVec1dTypes::Name()
+constexpr const char* CudaVec1dTypes::Name()
 {
     return "CudaVec1d";
 }
@@ -667,7 +828,7 @@ typedef CudaVectorTypes<Vec2d,Vec2d,double> CudaVec2dTypes;
 //typedef CudaVec2dTypes CudaVec2Types;
 
 template<>
-inline const char* CudaVec2dTypes::Name()
+constexpr const char* CudaVec2dTypes::Name()
 {
     return "CudaVec2d";
 }
@@ -675,7 +836,7 @@ inline const char* CudaVec2dTypes::Name()
 typedef CudaVectorTypes<Vec3d1,Vec3d1,double> CudaVec3d1Types;
 
 template<>
-inline const char* CudaVec3d1Types::Name()
+constexpr const char* CudaVec3d1Types::Name()
 {
     return "CudaVec3d1";
 }
@@ -684,7 +845,7 @@ typedef CudaVectorTypes<Vec6d,Vec6d,double> CudaVec6dTypes;
 // typedef CudaVec6dTypes CudaVec6Types;
 
 template<>
-inline const char* CudaVec6dTypes::Name()
+constexpr const char* CudaVec6dTypes::Name()
 {
     return "CudaVec6d";
 }
@@ -694,10 +855,20 @@ typedef CudaRigidTypes<3,double> CudaRigid3dTypes;
 //typedef CudaRigid3dTypes CudaRigid3Types;
 
 template<>
-inline const char* CudaRigid3dTypes::Name()
+constexpr const char* CudaRigid3dTypes::Name()
 {
     return "CudaRigid3d";
 }
+
+typedef CudaRigidTypes<2,double> CudaRigid2dTypes;
+//typedef CudaRigid2dTypes CudaRigid2Types;
+
+template<>
+inline const char* CudaRigid2dTypes::Name()
+{
+    return "CudaRigid2d";
+}
+
 #endif
 
 

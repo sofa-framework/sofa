@@ -1,6 +1,7 @@
 #ifndef SOFA_HELPER_IO_IMAGECIMG_H
 #define SOFA_HELPER_IO_IMAGECIMG_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <sofa/helper/io/Image.h>
@@ -17,7 +18,8 @@ namespace io
 
 class SOFA_CIMGPLUGIN_API ImageCImgCreators
 {
-    std::vector<sofa::helper::io::Image::FactoryImage::Creator*> creators;
+
+    std::vector<std::shared_ptr<sofa::helper::io::Image::FactoryImage::Creator>> creators;
 public:
     static std::vector<std::string> cimgSupportedExtensions;
 

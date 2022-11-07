@@ -27,9 +27,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
-#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 
 #include "DistanceGridCollisionModel.h"
 
@@ -61,6 +61,8 @@ int FFDDistanceGridCollisionModelClass = core::RegisterObject("Grid-based deform
 
 using namespace sofa::type;
 using namespace defaulttype;
+using namespace sofa::component::collision::geometry;
+using namespace sofa::component::collision::response::mapper;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -461,8 +463,8 @@ void FFDDistanceGridCollisionModel::init()
     this->core::CollisionModel::init();
     ffd = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     ffdMesh = getContext()->getMeshTopology();
-    ffdRGrid = dynamic_cast< topology::RegularGridTopology* > (ffdMesh);
-    ffdSGrid = dynamic_cast< topology::SparseGridTopology* > (ffdMesh);
+    ffdRGrid = dynamic_cast< topology::container::grid::RegularGridTopology* > (ffdMesh);
+    ffdSGrid = dynamic_cast< topology::container::grid::SparseGridTopology* > (ffdMesh);
     if (!ffd || (!ffdRGrid && !ffdSGrid))
     {
         msg_error() << "Requires a Vec3-based deformable model with associated RegularGridTopology or SparseGridTopology";

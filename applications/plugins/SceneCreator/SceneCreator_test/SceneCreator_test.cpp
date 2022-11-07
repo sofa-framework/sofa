@@ -1,3 +1,25 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU General Public License as published by the Free  *
+* Software Foundation; either version 2 of the License, or (at your option)   *
+* any later version.                                                          *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+* more details.                                                               *
+*                                                                             *
+* You should have received a copy of the GNU General Public License along     *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
 #include <sofa/testing/BaseSimulationTest.h>
 using namespace sofa::testing;
 
@@ -7,24 +29,24 @@ using sofa::defaulttype::Vec3Types;
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-using sofa::component::container::MechanicalObject ;
-typedef sofa::component::container::MechanicalObject<Vec3Types>                   MechanicalObject3;
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using sofa::component::statecontainer::MechanicalObject ;
+typedef sofa::component::statecontainer::MechanicalObject<Vec3Types> MechanicalObject3;
 
-#include <SofaMiscFem/TriangularFEMForceField.h>
-using sofa::component::forcefield::TetrahedronFEMForceField;
-using sofa::component::forcefield::TriangularFEMForceField;
-typedef sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
-typedef sofa::component::forcefield::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
+#include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.h>
+using sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField;
+using sofa::component::solidmechanics::fem::elastic::TriangularFEMForceField;
+typedef sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
+typedef sofa::component::solidmechanics::fem::elastic::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
 
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaGeneralTopology/CylinderGridTopology.h>
-#include <SofaGeneralTopology/SphereGridTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/CylinderGridTopology.h>
+#include <sofa/component/topology/container/grid/SphereGridTopology.h>
 
-using sofa::component::topology::RegularGridTopology;
-using sofa::component::topology::CylinderGridTopology;
-using sofa::component::topology::SphereGridTopology;
+using sofa::component::topology::container::grid::RegularGridTopology;
+using sofa::component::topology::container::grid::CylinderGridTopology;
+using sofa::component::topology::container::grid::SphereGridTopology;
 
 using sofa::core::objectmodel::BaseContext;
 
@@ -36,7 +58,8 @@ class SceneCreator_test : public BaseSimulationTest
 public:
     void SetUp() override
     {
-        importPlugin("SofaComponentAll");
+        importPlugin("Sofa.Component");
+        importPlugin("Sofa.GL.Component.Rendering3D");
     }
 
     bool createCubeFailed();

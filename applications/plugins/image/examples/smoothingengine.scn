@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-    <RequiredPlugin name="SofaOpenglVisual"/>
-  <RequiredPlugin pluginName="image"/>
+  <Node name="plugins">
+      <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+      <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+      <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageFilter ImageViewer] -->
+  </Node>
   <ImageContainer  name="image" filename="data/pelvis_f.raw"/>
   <ImageFilter  param="2" filter="1" name="engine" src="@image" />
   <ImageViewer  name="viewer" src="@engine"  plane="50 50 20"/>

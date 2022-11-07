@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "GUIManager.h"
+#include <sofa/gui/common/GUIManager.h>
 
-#include "BaseGUI.h"
+#include <sofa/gui/common/BaseGUI.h>
 #include <sofa/gui/common/ArgumentParser.h>
 
 #include <sofa/helper/Utils.h>
@@ -29,7 +29,7 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationCommon/init.h>
+#include <sofa/simulation/common/init.h>
 
 #include <fstream>
 
@@ -235,11 +235,15 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
             msg_error("GUIManager") << "GUI '"<<valid_guiname<<"' creation failed." ;
             return 1;
         }
-        //Save this GUI type as the last used GUI
-        const std::string lastGuiFilePath = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
-        std::ofstream out(lastGuiFilePath.c_str(),std::ios::out);
-        out << valid_guiname << std::endl;
-        out.close();
+
+        if (currentGUI->canBeDefaultGUI())
+        {
+            //Save this GUI type as the last used GUI
+            const std::string lastGuiFilePath = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
+            std::ofstream out(lastGuiFilePath.c_str(),std::ios::out);
+            out << valid_guiname << std::endl;
+            out.close();
+        }
     }
     return 0;
 }

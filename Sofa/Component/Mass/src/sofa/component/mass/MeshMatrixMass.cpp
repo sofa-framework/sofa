@@ -31,7 +31,7 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 template <>
-Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vec6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
@@ -39,13 +39,13 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
     helper::ReadAccessor< DataVecCoord > x = vx;
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
-    Vector6 momentum;
+    Vec6 momentum;
     for( unsigned int i=0 ; i<v.size() ; i++ )
     {
         Deriv linearMomentum = v[i] * vertexMass[i];
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+        for( Index j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
         Deriv angularMomentum = cross( x[i], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+        for( Index j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
     const auto& edges = l_topology->getEdges();
@@ -58,14 +58,14 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
         const MassType m = edgeMass[i] * static_cast<MassType>(0.5);
 
         Deriv linearMomentum = v[v0] * m;
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+        for( Index j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
         Deriv angularMomentum = cross( x[v0], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+        for( Index j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
 
         linearMomentum = v[v1] * m;
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
+        for( Index j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
         angularMomentum = cross( x[v1], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
+        for( Index j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
     return momentum;

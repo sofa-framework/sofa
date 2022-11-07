@@ -37,7 +37,7 @@ namespace
 
 /// Compute compliance between 2 constraint Jacobians for Vec types
 template<Size N, typename Real, class VecReal>
-inline double UncoupledConstraintCorrection_computeCompliance(
+inline SReal UncoupledConstraintCorrection_computeCompliance(
     Index index,
     const sofa::type::Vec<N, Real>& n1, const sofa::type::Vec<N, Real>& n2,
     const Real comp0, const VecReal& comp)
@@ -47,7 +47,7 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 
 /// Compute compliance between 2 constraint Jacobians for Rigid types
 template<typename Real, class VecReal>
-inline double UncoupledConstraintCorrection_computeCompliance(
+inline SReal UncoupledConstraintCorrection_computeCompliance(
     Index index,
     const sofa::defaulttype::RigidDeriv<3, Real>& n1, const sofa::defaulttype::RigidDeriv<3, Real>& n2,
     const Real comp0, const VecReal& comp)
@@ -56,7 +56,7 @@ inline double UncoupledConstraintCorrection_computeCompliance(
     SOFA_UNUSED(comp0);
 
     // translation part
-    double w = (n1.getVCenter() * n2.getVCenter()) * comp[0];
+    SReal w = (n1.getVCenter() * n2.getVCenter()) * comp[0];
     // rotation part
     w += (n1.getVOrientation()[0] * comp[1] + n1.getVOrientation()[1] * comp[2] + n1.getVOrientation()[2] * comp[3]) * n2.getVOrientation()[0];
     w += (n1.getVOrientation()[0] * comp[2] + n1.getVOrientation()[1] * comp[4] + n1.getVOrientation()[2] * comp[5]) * n2.getVOrientation()[1];
@@ -265,7 +265,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     const bool verbose = f_verbose.getValue();
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
     // use the OdeSolver to get the position integration factor
-    double factor = 1.0;
+    SReal factor = 1.0;
     switch (cparams->constOrder())
     {
     case core::ConstraintParams::POS_AND_VEL :
@@ -304,7 +304,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
         // First the compliance of the constraint with itself
         {
-            double w = 0.0;
+            SReal w = 0.0;
             
             for (MatrixDerivColConstIterator colIt = colItBegin; colIt != colItEnd; ++colIt)
             {
@@ -335,7 +335,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
             // fact that the values are sorted on both rows to iterate through them in one pass,
             // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
 
-            double w = 0.0;
+            SReal w = 0.0;
 
             MatrixDerivColConstIterator colIt  = colItBegin;
             MatrixDerivColConstIterator colIt2 = rowIt2.begin();
@@ -514,7 +514,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalg
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        double fC1 = f->element(rowIt.index());
+        SReal fC1 = f->element(rowIt.index());
 
         if (fC1 != 0.0)
         {
@@ -584,7 +584,7 @@ bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
+void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal * f, std::list<unsigned int>& /*renumbering*/)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
@@ -604,7 +604,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double 
 
         // buf the value of force applied on concerned dof : constraint_force
         // buf a table of indice of involved dof : constraint_dofs
-        double fC = f[indexC];
+        SReal fC = f[indexC];
 
         if (fC != 0.0)
         {
@@ -624,7 +624,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double 
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double * d, int begin, int end)
+void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal * d, int begin, int end)
 {
 /// in the Vec1Types and Vec3Types case, compliance is a vector of size mstate->getSize()
 /// constraint_force contains the force applied on dof involved with the contact
@@ -653,7 +653,7 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double 
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, int begin, int end, bool update)
+void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, int begin, int end, bool update)
 {
     /// set a force difference on a set of constraints (between constraint number "begin" and constraint number "end"
     /// if update is false, do nothing
@@ -713,7 +713,7 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linear
 
         // First the compliance of the constraint with itself
         {
-            double w = 0.0;
+            SReal w = 0.0;
             
             for (MatrixDerivColConstIterator colIt = colItBegin; colIt != colItEnd; ++colIt)
             {
@@ -736,7 +736,7 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linear
             // fact that the values are sorted on both rows to iterate through them in one pass,
             // with a O(n+m) complexity instead of the brute-force O(n*m) nested loop version.
 
-            double w = 0.0;
+            SReal w = 0.0;
 
             MatrixDerivColConstIterator colIt  = colItBegin;
             MatrixDerivColConstIterator colIt2 = curConstraint2.begin();

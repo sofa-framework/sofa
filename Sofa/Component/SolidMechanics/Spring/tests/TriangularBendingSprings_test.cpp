@@ -26,8 +26,8 @@
 #include <sofa/component/solidmechanics/spring/TriangularBendingSprings.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-#include <SofaSimulationGraph/SimpleApi.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -69,8 +69,9 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
         simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
     }
 
     void TearDown() override

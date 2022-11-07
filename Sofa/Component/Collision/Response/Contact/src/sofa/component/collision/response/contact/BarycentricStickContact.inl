@@ -149,15 +149,9 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     }
     msg_info() << "BarycentricStickContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)." ;
 
-    //int size = contacts.size();
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);
-    //int i = 0;
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = oldIndex[i];

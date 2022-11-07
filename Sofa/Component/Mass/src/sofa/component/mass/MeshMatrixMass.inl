@@ -120,6 +120,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTriangleCreatio
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -176,6 +178,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTriangleCreation(
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -327,6 +331,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassQuadCreation(co
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::QUAD)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -384,6 +390,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassQuadCreation(cons
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::QUAD)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -541,6 +549,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassTetrahedronCrea
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -598,6 +608,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTetrahedronCreati
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -753,6 +765,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassHexahedronCreat
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -814,6 +828,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronCreatio
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
+    SOFA_UNUSED(elems);
+
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
         core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
@@ -1013,7 +1029,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
 {
     if (l_topology.empty())
     {
-        msg_warning() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_info() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
@@ -1030,7 +1046,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
 
     if (l_geometryState.empty())
     {
-        msg_warning() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
+        msg_info() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
         sofa::core::behavior::BaseMechanicalState::SPtr baseState;
         l_topology->getContext()->get(baseState);
 
@@ -2135,9 +2151,9 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getPotentialEnergy( const cor
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class GeometricalTypes>
-type::Vector6 MeshMatrixMass<DataTypes, GeometricalTypes>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+type::Vec6 MeshMatrixMass<DataTypes, GeometricalTypes>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return type::Vector6();
+    return type::Vec6();
 }
 
 
@@ -2288,16 +2304,16 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
     const auto &vertexMass= d_vertexMass.getValue();
 
     const auto& x = l_geometryState->read(core::ConstVecCoordId::position())->getValue();
-    type::Vector3 gravityCenter;
+    type::Vec3 gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  type::Vector3 > points;
-    constexpr auto dimensions = std::min(static_cast<std::size_t>(GeometricalTypes::spatial_dimensions), static_cast<std::size_t>(3));
+    std::vector<  type::Vec3 > points;
+    constexpr sofa::Size dimensions = std::min(static_cast<sofa::Size>(GeometricalTypes::spatial_dimensions), static_cast<sofa::Size>(3));
     for (unsigned int i = 0; i < x.size(); i++)
     {
         const auto& position = GeometricalTypes::getCPos(x[i]);
-        type::Vector3 p;
-        for (auto j = 0; j < dimensions; j++)
+        type::Vec3 p;
+        for (sofa::Index j = 0; j < dimensions; j++)
         {
             p[j] = position[j];
         }
@@ -2307,13 +2323,13 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
         totalMass += vertexMass[i] * m_massLumpingCoeff;
     }
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     sofa::type::RGBAColor color = sofa::type::RGBAColor::white();
 
     vparams->drawTool()->drawPoints(points, 2, color);
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     if(d_showCenterOfGravity.getValue())
     {
@@ -2322,14 +2338,14 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
         for(unsigned int i=0 ; i<Coord::spatial_dimensions ; i++)
         {
 
-            type::Vector3 v{};
+            type::Vec3 v{};
             v[i] = d_showAxisSize.getValue();
             vertices.push_back(gravityCenter - v); 
             vertices.push_back(gravityCenter + v);
         }
     }
     vparams->drawTool()->drawLines(vertices,5,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

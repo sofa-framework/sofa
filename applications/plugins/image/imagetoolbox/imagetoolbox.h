@@ -29,7 +29,7 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -112,7 +112,7 @@ public:
     Data<defaulttype::VectorVis> vectorVisualization;
     /**@}*/
     
-    typedef component::visualmodel::VisualModelImpl VisuModelType;
+    typedef component::visual::VisualModelImpl VisuModelType;
     
      typedef sofa::component::engine::LabelImageToolBox Label;
     typedef type::vector<Label*> VecLabel;

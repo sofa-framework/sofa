@@ -21,19 +21,17 @@
 ******************************************************************************/
 #include <sofa/gui/qt/GLPickHandler.h>
 
-#include <SofaUserInteraction/ComponentMouseInteraction.h>
-#include <SofaUserInteraction/RayContact.h>
 
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/gl/gl.h>
 #include <sofa/simulation/Simulation.h>
-
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-
-#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gui/component/performer/ComponentMouseInteraction.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/response/contact/RayContact.h>
+#include <sofa/component/setting/MouseButtonSetting.h>
 
 #include <iostream>
 #include <limits>
@@ -102,8 +100,8 @@ void GLPickHandler::destroySelectionBuffer()
 }
 
 //WARNING: do not use this method with Ogre
-BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
-        const type::Vector3& direction)
+BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vec3& origin,
+        const type::Vec3& direction)
 {
     assert(_fboAllocated);
     BodyPicked result;

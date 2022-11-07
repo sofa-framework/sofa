@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralEngine/IndicesFromValues.h>
-using sofa::component::engine::IndicesFromValues;
+#include <sofa/component/engine/select/IndicesFromValues.h>
+using sofa::component::engine::select::IndicesFromValues;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::objectmodel::New ;

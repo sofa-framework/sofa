@@ -34,7 +34,7 @@ using sofa::testing::NumericTest;
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/core/Mapping.h>
 
 #include <sofa/helper/logging/Messaging.h>

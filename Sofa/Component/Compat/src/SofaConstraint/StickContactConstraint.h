@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/collision/response/contact/StickContactConstraint.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/StickContactConstraint.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/StickContactConstraint.h")
 
 namespace sofa::component::collision
 {

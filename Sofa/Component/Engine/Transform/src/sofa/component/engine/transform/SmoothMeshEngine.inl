@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "SmoothMeshEngine.h"
+#include <sofa/component/engine/transform/SmoothMeshEngine.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
@@ -162,11 +162,11 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (!vparams->displayFlags().getShowVisualModels() || m_topology == nullptr) return;
 
     using sofa::type::Vec;
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
 
-    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topology->getTriangles();
+    const sofa::core::topology::BaseMeshTopology::SeqTriangles& tri = m_topology->getTriangles();
 
     vparams->drawTool()->enableLighting();
 
@@ -175,7 +175,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     if (this->showInput.getValue())
     {
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
         constexpr sofa::type::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
@@ -195,7 +195,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     if (this->showOutput.getValue())
     {
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
         constexpr sofa::type::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
 
@@ -214,7 +214,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     if (wireframe)
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::transform

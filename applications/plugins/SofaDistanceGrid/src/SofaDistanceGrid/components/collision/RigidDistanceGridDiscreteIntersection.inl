@@ -41,13 +41,13 @@ namespace collision
 {
 
 template<class T>
-bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, TSphere<T>&)
+bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, geometry::TSphere<T>&)
 {
     return true;
 }
 
 template<class T>
-int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, TSphere<T>& e2, OutputVector* contacts)
+int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, geometry::TSphere<T>& e2, OutputVector* contacts)
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();

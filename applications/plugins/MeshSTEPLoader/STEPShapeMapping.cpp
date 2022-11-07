@@ -8,6 +8,8 @@ namespace component
 namespace engine
 {
 using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::constant;
+
 using namespace sofa::component::engine;
 using namespace sofa::component::loader;
 
@@ -59,11 +61,11 @@ void STEPShapeExtractor::doUpdate()
         return;
     }
 
-    const type::vector<sofa::type::Vector3>& positionsI = input->d_positions.getValue();
+    const type::vector<sofa::type::Vec3>& positionsI = input->d_positions.getValue();
     const type::vector<Triangle >& trianglesI = input->d_triangles.getValue();
     const type::vector<sofa::type::Vector2>& uvI = input->_uv.getValue();
 
-    type::vector<sofa::type::Vector3>& my_positions = *(output->seqPoints.beginEdit());
+    type::vector<sofa::type::Vec3>& my_positions = *(output->seqPoints.beginEdit());
     type::vector<Triangle >& my_triangles = *(output->seqTriangles.beginEdit());
     type::vector<sofa::type::Vector2>& my_uv = *(output->seqUVs.beginEdit());
 

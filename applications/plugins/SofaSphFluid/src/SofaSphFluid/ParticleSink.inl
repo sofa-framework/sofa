@@ -116,7 +116,7 @@ void ParticleSink<DataTypes>::animateBegin(double /*dt*/, double time)
             msg_info() << "Remove: " << remove.size() << " out of: " << n <<" particles using PointSetTopologyModifier.";
             m_topoModifier->removePoints(remove);
         }
-        else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate.get()))
+        else if(statecontainer::MechanicalObject<DataTypes>* object = dynamic_cast<statecontainer::MechanicalObject<DataTypes>*>(this->mstate.get()))
         {
             msg_info() << "Remove "<<remove.size()<<" particles using MechanicalObject.";
             // deleting the vertices
@@ -236,12 +236,12 @@ void ParticleSink<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->disableLighting();
     vparams->drawTool()->setPolygonMode(0, true);
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
-    vertices.push_back(sofa::type::Vector3(corners[0]));
-    vertices.push_back(sofa::type::Vector3(corners[1]));
-    vertices.push_back(sofa::type::Vector3(corners[2]));
-    vertices.push_back(sofa::type::Vector3(corners[3]));
+    vertices.push_back(sofa::type::Vec3(corners[0]));
+    vertices.push_back(sofa::type::Vec3(corners[1]));
+    vertices.push_back(sofa::type::Vec3(corners[2]));
+    vertices.push_back(sofa::type::Vec3(corners[3]));
     vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), sofa::type::RGBAColor(0.0f, 0.5f, 0.2f, 1.0f));
 
     vparams->drawTool()->restoreLastState();

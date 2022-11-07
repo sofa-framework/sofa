@@ -52,7 +52,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-	typedef typename  type::Vector3 LocalCoord;
+	typedef typename  type::Vec3 LocalCoord;
 	typedef typename  HexahedronSetTopologyContainer::HexahedronBinaryIndex HexahedronBinaryIndex;
 protected:
 	bool initializedHexahedronCubatureTables;
@@ -158,6 +158,8 @@ protected:
     Data<sofa::type::RGBAColor> d_drawColorHexahedra; ///< RGB code color used to draw hexahedra.
 	/// include cubature points
 	NumericalIntegrationDescriptor<Real,3> hexahedronNumericalIntegration;
+
+	bool mustComputeBBox() const override;
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)

@@ -38,6 +38,8 @@ namespace sofa::component::linearsolver::direct
 template<class VecInt,class VecReal>
 class SparseLDLImplInvertData : public MatrixInvertData {
 public :
+    ~SparseLDLImplInvertData() override = default;
+
     int n, P_nnz, L_nnz;
     VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
     VecInt perm, invperm;

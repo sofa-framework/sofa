@@ -24,7 +24,7 @@
 #include <SofaImplicitField/config.h>
 
 #include <sofa/core/Mapping.h>
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -39,10 +39,10 @@ namespace mapping
 {
 
 template <class In, class Out>
-class ImplicitSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology
+class ImplicitSurfaceMapping : public core::Mapping<In, Out>, public topology::container::constant::MeshTopology
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(ImplicitSurfaceMapping, In, Out), SOFA_TEMPLATE2(core::Mapping, In, Out), topology::MeshTopology);
+    SOFA_CLASS2(SOFA_TEMPLATE2(ImplicitSurfaceMapping, In, Out), SOFA_TEMPLATE2(core::Mapping, In, Out),  topology::container::constant::MeshTopology);
 
     typedef core::Mapping<In, Out> Inherit;
     typedef typename Out::VecCoord OutVecCoord;

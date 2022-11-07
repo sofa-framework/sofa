@@ -16,7 +16,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaGraphComponent"/> <!-- Needed to use components [AttachBodyButtonSetting FixPickedParticleButtonSetting] -->
+    <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [AttachBodyButtonSetting FixPickedParticleButtonSetting] -->
     
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>

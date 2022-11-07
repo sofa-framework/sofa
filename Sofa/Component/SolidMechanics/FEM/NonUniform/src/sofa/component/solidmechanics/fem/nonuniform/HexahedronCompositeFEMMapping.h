@@ -27,7 +27,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/State.h>
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/component/solidmechanics/fem/nonuniform/HexahedronCompositeFEMForceFieldAndMass.h>
 
 #include <sofa/type/vector.h>
@@ -72,7 +72,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    typedef topology::SparseGridTopology SparseGridTopologyT;
+    typedef component::topology::container::grid::SparseGridTopology SparseGridTopologyT;
     typedef component::solidmechanics::fem::nonuniform::HexahedronCompositeFEMForceFieldAndMass<In> HexahedronCompositeFEMForceFieldAndMassT;
 
 

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/common/config.h>
-#include "OperationFactory.h"
+#include <sofa/gui/common/OperationFactory.h>
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Node.h>
@@ -90,7 +90,7 @@ public:
     void setPickingMethod(PickingMethod method) { pickingMethod = method; }
     bool useSelectionBufferMethod() const { return (pickingMethod == SELECTION_BUFFER); }
 
-    void updateRay(const sofa::type::Vector3 &position, const sofa::type::Vector3 &orientation);
+    void updateRay(const sofa::type::Vec3 &position, const sofa::type::Vec3 &orientation);
 
     void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button);
 
@@ -115,8 +115,8 @@ public:
     type::vector< CallBackPicker* > getCallBackPicker() {return callbacks;}
     void clearCallBacks() {for (unsigned int i=0; i<callbacks.size(); ++i) callbacks.clear();}
 
-    static BodyPicked findCollisionUsingBruteForce(const type::Vector3& origin, const type::Vector3& direction, double maxLength, core::objectmodel::BaseNode* root);
-    virtual BodyPicked findCollisionUsingColourCoding(const type::Vector3& origin, const type::Vector3& direction);
+    static BodyPicked findCollisionUsingBruteForce(const type::Vec3& origin, const type::Vec3& direction, double maxLength, core::objectmodel::BaseNode* root);
+    virtual BodyPicked findCollisionUsingColourCoding(const type::Vec3& origin, const type::Vec3& direction);
 
     ComponentMouseInteraction           *getInteraction();
     BodyPicked                          *getLastPicked() {return &lastPicked;}

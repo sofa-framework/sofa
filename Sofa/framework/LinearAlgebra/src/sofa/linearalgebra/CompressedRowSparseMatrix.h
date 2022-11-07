@@ -39,19 +39,17 @@ class CompressedRowSparseMatrix : public linearalgebra::BaseMatrix
 public:
     typedef CompressedRowSparseMatrix<TBlock,TVecBlock,TVecIndex> Matrix;
     typedef TBlock Block;
-    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef matrix_bloc_traits<Block, Matrix::Index> traits;
     typedef typename traits::Real Real;
     enum { NL = traits::NL };  ///< Number of rows of a block
     enum { NC = traits::NC };  ///< Number of columns of a block
 
     typedef Matrix Expr;
-    typedef CompressedRowSparseMatrix<double> matrix_type;
+    typedef CompressedRowSparseMatrix<Real> matrix_type;
     enum { category = MATRIX_SPARSE };
     enum { operand = 1 };
 
     typedef TVecBlock VecBlock;
-    using VecBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = VecBlock;
     typedef TVecIndex VecIndex;
     struct IndexedBlock
     {
@@ -85,9 +83,7 @@ public:
             return (l != b.l) || (c != b.c);
         }
     };
-    using IndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = IndexedBlock;
     typedef type::vector<IndexedBlock> VecIndexedBlock;
-    using VecIndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = VecIndexedBlock;
 
     static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL, Index>::split(index, modulo); }
     static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC, Index>::split(index, modulo); }
@@ -1431,7 +1427,7 @@ public:
 
                 // find the non-null row in m, if any
                 while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
-                if( mr==m.rowIndex.size() || (BaseMatrix::Index)m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
+                if( mr==m.rowIndex.size() || static_cast<sofa::Index>(m.rowIndex[mr]) > col ) continue;  // no matching row, ignore this block
 
                 // Accumulate  res[row] += b * m[col]
                 Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
@@ -1493,8 +1489,8 @@ public:
                 const Block& b = colsValue[xj]; // block value
 
                 // find the non-null row in m, if any
-                while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
-                if( mr==m.rowIndex.size() || (BaseMatrix::Index)m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
+                while( mr<m.rowIndex.size() && static_cast<Index>(m.rowIndex[mr])<col ) mr++;
+                if( mr==m.rowIndex.size() || static_cast<BaseMatrix::Index>(m.rowIndex[mr]) > col ) continue;  // no matching row, ignore this block
 
                 // Accumulate  res[row] += b^T * m[col]
                 Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
@@ -1769,7 +1765,7 @@ public:
                 return false;
             }
         }
-        if (a_p[m] != nzmax)
+        if (static_cast<std::size_t>(a_p[m]) != nzmax)
         {
             msg_error("CompressedRowSparseMatrix") << "Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] ;
             return false;
@@ -1780,7 +1776,7 @@ public:
         for (decltype(nzmax) i=0; i<nzmax; i++)
         {
             i++;
-            for (; i<a_p[k]; i++)
+            for (; i<static_cast<std::size_t>(a_p[k]); i++)
             {
                 if (a_i[i] <= a_i[i-1])
                 {
@@ -1796,7 +1792,7 @@ public:
             k++;
         }
 
-        for (Index i=0; i<nzmax; i++)
+        for (std::size_t i=0; i<nzmax; i++)
         {
             if (a_x[i]==0)
             {

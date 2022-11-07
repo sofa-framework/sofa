@@ -47,7 +47,7 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
 {
     SOFA_UNUSED(_dataSize);
 
-    if (!this->isTopologyDataRegistered())
+    if (!this->isTopologyHandlerRegistered())
         return;
 
     std::list<const core::topology::TopologyChange*>::iterator changeIt;
@@ -132,7 +132,7 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
 void TopologyHandler::update()
 {
     DDGNode::cleanDirty();
-    if (!this->isTopologyDataRegistered())
+    if (!this->isTopologyHandlerRegistered())
         return;
 
     std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
@@ -147,13 +147,14 @@ void TopologyHandler::addCallBack(core::topology::TopologyChangeType type, Topol
     m_callbackMap[type] = callback;
 }
 
-bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _topology)
+bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _topology, bool printLog)
 {
     m_topology = dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
     if (m_topology == nullptr)
     {
-        msg_info("TopologyHandler") << "Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        msg_info_when(printLog, "TopologyHandler") << "The " << m_prefix << " managing the TopologyData '" << m_data_name
+            << "' won't be registered because linked topology '" << _topology->getName() << "' is not dynamic. Topological changes won't be supported by this Data.";
         return false;
     }
 

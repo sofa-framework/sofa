@@ -19,24 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_VECTYPES_H
-#define SOFA_DEFAULTTYPE_VECTYPES_H
+#pragma once
 
 #include <sofa/defaulttype/fwd.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/random.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <algorithm>
 #include <memory>
-#include <sofa/helper/logging/Messaging.h>
-namespace sofa
-{
 
-namespace defaulttype
+namespace sofa:: defaulttype
 {
-
 
 template<class TCoord, class TDeriv, class TReal>
 class StdVectorTypes
@@ -49,18 +45,18 @@ public:
     typedef type::vector<Deriv> VecDeriv;
     typedef type::vector<Real> VecReal;
 
-    enum { spatial_dimensions = Coord::spatial_dimensions };
-    enum { coord_total_size = Coord::total_size };
-    enum { deriv_total_size = Deriv::total_size };
+    static constexpr sofa::Size spatial_dimensions = Coord::spatial_dimensions;
+    static constexpr sofa::Size coord_total_size = Coord::total_size;
+    static constexpr sofa::Size deriv_total_size = Deriv::total_size;
 
     typedef typename TCoord::Size Size;
 
     typedef Coord CPos;
-    static const CPos& getCPos(const Coord& c) { return c; }
-    static void setCPos(Coord& c, const CPos& v) { c = v; }
+    static constexpr const CPos& getCPos(const Coord& c) { return c; }
+    static constexpr void setCPos(Coord& c, const CPos& v) { c = v; }
     typedef Deriv DPos;
-    static const DPos& getDPos(const Deriv& d) { return d; }
-    static void setDPos(Deriv& d, const DPos& v) { d = v; }
+    static constexpr const DPos& getDPos(const Deriv& d) { return d; }
+    static constexpr void setDPos(Deriv& d, const DPos& v) { d = v; }
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
@@ -73,7 +69,7 @@ protected:
     template<Size N, class T>
     struct Impl
     {
-        static void set( Coord& c, T x, T y, T z )
+        static constexpr void set( Coord& c, T x, T y, T z )
         {
             if constexpr (N > 2)
             {
@@ -95,7 +91,7 @@ protected:
             }
         }
 
-        static void get( T& x, T& y, T& z, const Coord& c )
+        static constexpr void get( T& x, T& y, T& z, const Coord& c )
         {
             if constexpr(N > 2)
             {
@@ -120,7 +116,7 @@ protected:
             }
         }
 
-        static void add( Coord& c, T x, T y, T z )
+        static constexpr void add( Coord& c, T x, T y, T z )
         {
             if constexpr (N > 2)
             {
@@ -150,13 +146,13 @@ protected:
 public:
 
     template<typename T>
-    static void set(Coord& c, T x, T y, T z)
+    static constexpr void set(Coord& c, T x, T y, T z)
     {
         Impl<spatial_dimensions,T>::set(c,x,y,z);
     }
 
     template<typename T>
-    static void get(T& x, T& y, T& z, const Coord& c)
+    static constexpr void get(T& x, T& y, T& z, const Coord& c)
     {
         Impl<spatial_dimensions,T>::get(x,y,z,c);
     }
@@ -169,18 +165,18 @@ public:
         return result;
     }
 
-    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    static constexpr Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         return (Deriv)(c1-c2);
     }
 
     template<typename T>
-    static void add(Coord& c, T x, T y, T z)
+    static constexpr void add(Coord& c, T x, T y, T z)
     {
         Impl<spatial_dimensions,T>::add(c,x,y,z);
     }
 
-    static const char* Name();
+    static constexpr const char* Name();
 
     static Coord interpolate(const type::vector< Coord > &ancestors, const type::vector< Real > &coefs)
     {
@@ -200,35 +196,35 @@ public:
 
 /// 3D DOFs, double precision
 typedef StdVectorTypes<type::Vec3d,type::Vec3d,double> Vec3dTypes;
-template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
+template<> constexpr const char* Vec3dTypes::Name() { return "Vec3d"; }
 
 /// 2D DOFs, double precision
 typedef StdVectorTypes<type::Vec2d, type::Vec2d,double> Vec2dTypes;
-template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
+template<> constexpr const char* Vec2dTypes::Name() { return "Vec2d"; }
 
 /// 1D DOFs, double precision
 typedef StdVectorTypes<type::Vec1d, type::Vec1d,double> Vec1dTypes;
-template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
+template<> constexpr const char* Vec1dTypes::Name() { return "Vec1d"; }
 
 /// 6D DOFs, double precision
 typedef StdVectorTypes<type::Vec6d, type::Vec6d,double> Vec6dTypes;
-template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
+template<> constexpr const char* Vec6dTypes::Name() { return "Vec6d"; }
 
 /// 3f DOFs, single precision
 typedef StdVectorTypes<type::Vec3f, type::Vec3f,float> Vec3fTypes;
-template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
+template<> constexpr const char* Vec3fTypes::Name() { return "Vec3f"; }
 
 /// 2f DOFs, single precision
 typedef StdVectorTypes<type::Vec2f, type::Vec2f,float> Vec2fTypes;
-template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
+template<> constexpr const char* Vec2fTypes::Name() { return "Vec2f"; }
 
 /// 1f DOFs, single precision
 typedef StdVectorTypes<type::Vec1f, type::Vec1f,float> Vec1fTypes;
-template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
+template<> constexpr const char* Vec1fTypes::Name() { return "Vec1f"; }
 
 /// 6f DOFs, single precision
 typedef StdVectorTypes<type::Vec6f, type::Vec6f,float> Vec6fTypes;
-template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
+template<> constexpr const char* Vec6fTypes::Name() { return "Vec6f"; }
 
 /// 6D DOFs, double precision (default)
 typedef StdVectorTypes<type::Vec6, type::Vec6, type::Vec6::value_type> Vec6Types;
@@ -240,8 +236,4 @@ typedef StdVectorTypes<type::Vec2, type::Vec2, type::Vec2::value_type> Vec2Types
 typedef StdVectorTypes<type::Vec1, type::Vec1, type::Vec1::value_type> Vec1Types;
 
 
-} // namespace defaulttype
-
-} // namespace sofa
-
-#endif
+} // namespace sofa:: defaulttype

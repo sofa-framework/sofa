@@ -33,6 +33,36 @@
 #include <limits>
 #include <sofa/simulation/Node.h>
 
+namespace
+{
+    template<typename DataTypes>
+    void get3DFrameFromDPosNormal(const typename DataTypes::DPos& dposnormal, sofa::type::Vec3& v1, sofa::type::Vec3& v2, sofa::type::Vec3& normal)
+    {
+        for (auto i = 0; i < dposnormal.size() && i < 3; i++)
+            normal[i] = dposnormal[i];
+
+        // find a first vector inside the plane
+        if (std::abs(normal[0]) > 0.0)
+        {
+            v1 = sofa::type::Vec3(-normal[1] / normal[0], 1.0, 0.0);
+        }
+        else if (std::abs(normal[1]) > 0.0)
+        {
+            v1 = sofa::type::Vec3(1.0, -normal[0] / normal[1], 0.0);
+        }
+        else if (std::abs(normal[2]) > 0.0)
+        {
+            v1 = sofa::type::Vec3(1.0, 0.0, -normal[0] / normal[2]);
+        }
+
+        v1.normalize();
+
+        // find a second vector inside the plane and orthogonal to the first
+        v2 = v1.cross(normal);
+        v2.normalize();
+    }
+}
+
 namespace sofa::component::mechanicalload
 {
 
@@ -74,17 +104,17 @@ void PlaneForceField<DataTypes>::init(){
         msg_warning(this) << "The 'stiffness="<< d_stiffness.getValueString() << "' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=500.0 .  "
                              "To remove this warning message you need to set the 'stiffness' attribute between [0, +INF[."
                              "  Emitted from ["<< this->getPathName() << "].";
-        d_stiffness.setValue(500) ;
+        d_stiffness.setValue(Real(500)) ;
     }
     if( d_damping.getValue() < 0.0 ){
         msg_warning(this) << "The 'damping="<< d_damping.getValueString() <<"' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=5.0 .  "
                              "To remove this warning message you need to set the 'damping' attribute between [0, +INF[." ;
-        d_damping.setValue(5) ;
+        d_damping.setValue(Real(5)) ;
     }
     if( d_maxForce.getValue() < 0.0 ){
         msg_warning(this) << "The 'maxForce="<< d_maxForce.getValueString() << "' parameters is outside the validity range of [0, +INF[.  Continuing with the default value=0.0 (no max force).  "
                              "To remove this warning message you need to set the 'maxForce' attribute between [0, +INF[." ;
-        d_maxForce.setValue(0) ;
+        d_maxForce.setValue(Real(0)) ;
     }
 
     Vec<2,int> tmp = d_localRange.getValue() ;
@@ -208,8 +238,8 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
     for (unsigned int i=0; i<this->m_contacts.size(); i++)
     {
         unsigned int p = this->m_contacts[i];
-        for (int l=0; l<Deriv::total_size; ++l)
-            for (int c=0; c<Deriv::total_size; ++c)
+        for (sofa::Index l=0; l<Deriv::total_size; ++l)
+            for (sofa::Index c=0; c<Deriv::total_size; ++c)
             {
                 SReal coef = normal[l] * fact * normal[c];
                 mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
@@ -286,19 +316,8 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    type::Vec3d normal { d_planeNormal.getValue() };
-
-    // find a first vector inside the plane
-    type::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
-    v1.normalize();
-
-    // find a second vector inside the plane and orthogonal to the first
-    type::Vec3d v2;
-    v2 = v1.cross(normal);
-    v2.normalize();
+    type::Vec3 normal{type::NOINIT}, v1{ type::NOINIT }, v2{ type::NOINIT };
+    get3DFrameFromDPosNormal<DataTypes>(d_planeNormal.getValue(), v1, v2, normal);
 
     const type::Vec3d center = normal*d_planeD.getValue();
     type::Vec3d corners[4];
@@ -307,7 +326,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-    std::vector< type::Vector3 > points;
+    std::vector< type::Vec3 > points;
 
     points.push_back(corners[0]);
     points.push_back(corners[1]);
@@ -316,14 +335,14 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     points.push_back(corners[0]);
     points.push_back(corners[2]);
     points.push_back(corners[3]);
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
     vparams->drawTool()->drawTriangles(points, sofa::type::RGBAColor(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
     vparams->drawTool()->setPolygonMode(0,false); //No Culling
 
-    std::vector< type::Vector3 > pointsLine;
+    std::vector< type::Vec3 > pointsLine;
 
     // lines for points penetrating the plane
     unsigned int ibegin = 0;
@@ -335,7 +354,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
         iend = d_localRange.getValue()[1]+1;
 
-    type::Vector3 point1,point2;
+    type::Vec3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = DataTypes::getCPos(p1[i])*d_planeNormal.getValue()-d_planeD.getValue();
@@ -350,7 +369,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
         }
     }
     vparams->drawTool()->drawLines(pointsLine, 1, sofa::type::RGBAColor(1,0,0,1));
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <class DataTypes>
@@ -361,26 +380,18 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     if (onlyVisible && !d_drawIsEnabled.getValue())
         return;
 
-    const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    constexpr SReal max_real = std::numeric_limits<SReal>::max();
+    constexpr SReal min_real = std::numeric_limits<SReal>::lowest();
+    SReal maxBBox[3] = {min_real,min_real,min_real};
+    SReal minBBox[3] = {max_real,max_real,max_real};
 
-    type::Vec3d normal ( d_planeNormal.getValue() );
     const SReal size = d_drawSize.getValue();
 
-    // find a first vector inside the plane
-    type::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
-    v1.normalize();
+    type::Vec3 normal{}, v1{}, v2{};
+    get3DFrameFromDPosNormal<DataTypes>(d_planeNormal.getValue(), v1, v2, normal);
 
-    type::Vec3d v2 = v1.cross(normal);
-    v2.normalize();
-
-    const type::Vec3d center = normal*d_planeD.getValue();
-    type::Vec3d corners[4];
+    const type::Vec3& center = normal*d_planeD.getValue();
+    type::Vec3 corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
     corners[2] = center+v1*size+v2*size;
@@ -390,11 +401,11 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     {
         for (int c=0; c<3; c++)
         {
-            if (corners[i][c] > maxBBox[c]) maxBBox[c] = (Real)corners[i][c];
-            if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
+            if (corners[i][c] > maxBBox[c]) maxBBox[c] = corners[i][c];
+            if (corners[i][c] < minBBox[c]) minBBox[c] = corners[i][c];
         }
     }
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 } // namespace sofa::component::mechanicalload

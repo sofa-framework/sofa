@@ -95,6 +95,9 @@ Remember that:
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
 
+
+<center><figure><img src="https://www.sofa-framework.org/wp-content/uploads/2022/06/GitHub-PR-review-workflow.png" alt="PullRequestProcess" style="width:75%"><figcaption align = "center"><b>Workflow of a PR review</b></figcaption></figure></center>
+
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).
 
 

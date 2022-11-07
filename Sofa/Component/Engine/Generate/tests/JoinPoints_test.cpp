@@ -25,13 +25,13 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaGeneralEngine/JoinPoints.h>
-using sofa::component::engine::JoinPoints;
+#include <sofa/component/engine/generate/JoinPoints.h>
+using sofa::component::engine::generate::JoinPoints;
 
 namespace sofa
 {
 
-using type::Vector3;
+using type::Vec3;
 
 template <typename _DataTypes>
 class JoinPoints_test : public ::testing::Test, public JoinPoints<_DataTypes>

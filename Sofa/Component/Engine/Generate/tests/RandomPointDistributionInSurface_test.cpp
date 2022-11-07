@@ -26,13 +26,13 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/defaulttype/VecTypes.h>
 #include <thread>
 
-#include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
-using sofa::component::engine::RandomPointDistributionInSurface;
+#include <sofa/component/engine/generate/RandomPointDistributionInSurface.h>
+using sofa::component::engine::generate::RandomPointDistributionInSurface;
 
 namespace sofa
 {
 
-using type::Vector3;
+using type::Vec3;
 
 template <typename _DataTypes>
 class RandomPointDistributionInSurface_test : public ::testing::Test

@@ -157,7 +157,7 @@ bool SphereLoader::load()
             if (fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r) == EOF)
                 msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
-            my_positions.push_back(Vector3((SReal)cx,(SReal)cy,(SReal)cz));
+            my_positions.push_back(Vec3((SReal)cx,(SReal)cy,(SReal)cz));
             my_radius.push_back((SReal)r);
             ++totalNumSpheres;
         }

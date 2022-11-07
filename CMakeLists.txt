@@ -5,22 +5,17 @@ include(CMakeDependentOption)
 
 # Manually define VERSION
 set(Sofa_VERSION_MAJOR 22)
-set(Sofa_VERSION_MINOR 06)
+set(Sofa_VERSION_MINOR 12)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
 set(SOFA_VERSION_STR "\"${Sofa_VERSION}\"")
 set(SOFA_VERSION "${Sofa_VERSION_MAJOR}${Sofa_VERSION_MINOR}${Sofa_VERSION_PATCH}")
 
-set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
-if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR})
-    message(WARNING "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible. Backing up to default value.")
-    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel" FORCE)
-endif()
-
 ## Default build type
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "Setting build type to Release as none was specified.")
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
 endif()
 
 # Output Directories definition
@@ -42,6 +37,11 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
 # and https://cmake.org/cmake/help/v3.16/prop_tgt/DISABLE_PRECOMPILE_HEADERS.html
+
+# https://cmake.org/cmake/help/latest/policy/CMP0127.html
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.22)
+    cmake_policy(SET CMP0127 NEW)
+endif()
 cmake_dependent_option(SOFA_BUILD_WITH_PCH_ENABLED 
     "Compile SOFA using precompiled header (to accelerate the build process)" OFF
     "CMAKE_VERSION VERSION_GREATER_EQUAL 3.16" OFF)
@@ -75,13 +75,12 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/cmake)
 # adding paths to disabled plugins.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
-# Sofa.Config sets the environment (options, compiler flags, global variables)
-add_subdirectory(Sofa/framework/Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
-
 ## Custom Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Sofa/framework/Config/cmake")
 list(APPEND CMAKE_IGNORE_PATH "${CMAKE_INSTALL_PREFIX}") # ignore install directory for findXXX commands
+include(SofaMacros)
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
@@ -137,7 +136,6 @@ if(MSVC)
     install(DIRECTORY ${SOFA_DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
-
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 
@@ -159,72 +157,48 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+# Sofa.Config sets the environment (options, compiler flags, global variables)
+sofa_add_subdirectory(library Sofa/framework/Config Sofa.Config ON)
+
 ### Extlibs
 add_subdirectory(extlibs)
 
-# SOFA-NG
+### Compatibility
+option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders) and deprecated cmake modules." ON)
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    message("Using legacy headers is enabled.")
+    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
+endif()
+sofa_add_subdirectory(library Sofa/framework/Compat Sofa.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
+sofa_add_subdirectory(library Sofa/Component/Compat Sofa.Component.Compat ON WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
+
+### SOFA (framework and components)
 add_subdirectory(Sofa)
 
-# Deprecated (hollow) modules
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
+# SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
+sofa_add_subdirectory(collection applications/collections/deprecated/SofaGui SofaGui ON)
 
-# SOFA-NG Plugins
-option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
-if(SOFA_WITH_OPENGL)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
-endif()
-
-add_subdirectory(Sofa/GUI)
-
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules)
-add_subdirectory(modules)
-
-# This is all the applications GUI stuff. As there is a dependency to this one
-# In scene creator ...it is located here.
-add_subdirectory(SofaGui)
-
-## Collections
-## A collection is a "meta module" and containing several modules (usable at find level [find_package] and include/link level [add_library])
-# SofaAdvanced is legacy and deprecated since 20.06
-set(SOFA_LIST_OF_DEPRECATED_COLLECTIONS ${SOFA_KERNEL_SOURCE_DIR}/SofaCommon SofaGeneral SofaAdvanced SofaMisc)
-option(SOFA_BUILD_DEPRECATED_COLLECTIONS "Build legacy collections (${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})." ON)
-if(SOFA_BUILD_DEPRECATED_COLLECTIONS)
-    foreach(deprecated_collection ${SOFA_LIST_OF_DEPRECATED_COLLECTIONS})
-        add_subdirectory(${deprecated_collection})
-    endforeach()
-endif()
-## Customized collections
-# SofaComponentAll is a convenient collection to get all Sofa features
-add_subdirectory(applications/collections)
-
-## Scene creator option
-option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
+### Compatibility
+# Deprecated (hollow) framework and component modules.
+# All depend on SOFA_ENABLE_LEGACY_HEADERS
+# Some still contain (maybe useful) components not moved in Sofa/ yet.
+# TODO: finally empty those remnants
+add_subdirectory(applications/collections/deprecated)
 
 ## Tutorials option
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 
-# Activate SceneCreator when required
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS OR SOFA_BUILD_RELEASE_PACKAGE)
-    set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
-endif()
-
-
+# SceneCreator plugin
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
-if(SOFA_BUILD_SCENECREATOR)
-    add_subdirectory(applications/plugins/SceneCreator)
-endif()
+sofa_add_subdirectory(plugin applications/plugins/SceneCreator SceneCreator OFF
+    WHEN_TO_SHOW "NOT SOFA_BUILD_SCENECREATOR AND NOT SOFA_BUILD_TESTS AND NOT SOFA_BUILD_TUTORIALS AND NOT SOFA_BUILD_RELEASE_PACKAGE"
+    VALUE_IF_HIDDEN "ON")
 
 ## Plugins
 add_subdirectory(applications/plugins)
 
 ## Applications
 add_subdirectory(applications/projects)
-
 
 # Tutorial add subdirectory
 if(SOFA_BUILD_TUTORIALS)
@@ -292,8 +266,14 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
 endif()
 
-file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
+file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt"
+    "This folder will be automatically scanned by the Plugin Manager.\n"
+    "For all info about plugins, see https://www.sofa-framework.org/community/doc/using-sofa/lexicography/#plugin")
 install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
+file(WRITE "${CMAKE_BINARY_DIR}/collections/README.txt"
+    "This folder will be automatically scanned by the Plugin Manager.\n"
+    "For all info about collections, see https://www.sofa-framework.org/community/doc/using-sofa/lexicography/#collection")
+install(DIRECTORY ${CMAKE_BINARY_DIR}/collections/ DESTINATION collections COMPONENT resources)
 
 sofa_install_git_infos(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -461,7 +441,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         set(CPACK_NSIS_MENU_LINKS
             "https://www.sofa-framework.org/documentation/" "SOFA User Documentation"
             "https://www.sofa-framework.org/api/" "SOFA Developper API"
-            "https://www.sofa-framework.org/community/forum/" "SOFA Forum")
+            "https://github.com/sofa-framework/sofa/discussions" "SOFA Support")
     endif()
     #######################
 

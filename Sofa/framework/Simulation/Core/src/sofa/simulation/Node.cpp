@@ -195,6 +195,7 @@ void Node::addChild(core::objectmodel::BaseNode::SPtr node)
     notifyBeginAddChild(this, dynamic_cast<Node*>(node.get()));
     doAddChild(node);
     notifyEndAddChild(this, dynamic_cast<Node*>(node.get()));
+    node->setRoot(getRoot());
 }
 
 /// Remove a child
@@ -203,15 +204,26 @@ void Node::removeChild(core::objectmodel::BaseNode::SPtr node)
     // If node has no parent
     if (node->getFirstParent() == nullptr)
         return;
+
     notifyBeginRemoveChild(this, static_cast<Node*>(node.get()));
     doRemoveChild(node);
     notifyEndRemoveChild(this, static_cast<Node*>(node.get()));
-}
 
+    if(node->getFirstParent())
+        node->setRoot(node->getFirstParent()->getRoot());
+    else
+        node->setRoot(node.get());
+}
 
 /// Move a node from another node
 void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
 {
+    if(node->getRoot() != prev_parent->getRoot())
+    {
+        msg_error(this->getName()) << "Node::moveChild(BaseNode::SPtr node)\n" << node->getName() << " have different root node. Move is not allowed. use addChild instead!";
+        return;
+    }
+
     if (!prev_parent.get())
     {
         msg_error(this->getName()) << "Node::moveChild(BaseNode::SPtr node)\n" << node->getName() << " has no parent. Use addChild instead!";
@@ -220,9 +232,19 @@ void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
     }
     doMoveChild(node, prev_parent);
 }
+
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
+    // If an object we are trying to add already has a context, it is in another node in the
+    // graph: we need to remove it from this context before to insert it into the current
+    // one.
+    if(obj->getContext() != BaseContext::getDefault())
+    {
+        msg_error() << "Object '" << obj->getName() << "' already has a node ("<< obj->getPathName() << "). Please remove it from this node before adding it to a new one.";
+        return false;
+    }
+
     notifyBeginAddObject(this, obj);
     bool ret = doAddObject(obj, insertionLocation);
     notifyEndAddObject(this, obj);
@@ -256,97 +278,80 @@ void Node::moveObject(BaseObject::SPtr obj)
 
 void Node::notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onBeginAddChild(parent.get(), child.get());
 }
 
 void Node::notifyEndAddChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onEndAddChild(parent.get(), child.get());
 }
 
 void Node::notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onBeginRemoveChild(parent.get(), child.get());
 }
 
 void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onEndRemoveChild(parent.get(), child.get());
 }
 
 void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onBeginAddObject(parent.get(), obj.get());
 }
 
 void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onEndAddObject(parent.get(), obj.get());
 }
 
 void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onBeginRemoveObject(parent.get(), obj.get());
 }
 
 void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr obj) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onEndRemoveObject(parent.get(), obj.get());
 }
 
 void Node::notifyBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onBeginAddSlave(master, slave);
 }
 
 void Node::notifyEndAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onEndAddSlave(master, slave);
 }
 
 void Node::notifyBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onBeginRemoveSlave(master, slave);
 }
 
 void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
 {
-    Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
-    for (auto& listener : root->listener)
+    for (auto& listener : getRoot()->listener)
         listener->onEndRemoveSlave(master, slave);
 }
 
 void Node::notifySleepChanged(Node* node) const
 {
-    if (this->getFirstParent() == nullptr) {
-        for (type::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
-            (*it)->sleepChanged(node);
-    }
-    else {
-        dynamic_cast<Node*>(this->getFirstParent())->notifySleepChanged(node);
-    }
+    for (auto& listener : getRoot()->listener)
+        listener->sleepChanged(node);
 }
 
 void Node::addListener(MutationListener* obj)

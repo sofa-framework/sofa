@@ -21,14 +21,4 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/FullVector.h>
-
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/FullVector.h")
-
-namespace sofa::component::linearsolver
-{
-
-    template<typename T>
-    using FullVector = sofa::linearalgebra::FullVector<T>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/FullVector.h")

@@ -64,18 +64,23 @@ template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedConstraint<Rigid2Ty
 template <>
 void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (this->d_componentState.getValue() != ComponentState::Valid) return;
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const SetIndexArray & indices = d_indices.getValue();
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    
     std::vector< Vector3 > points;
-
-    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    if( d_fixAll.getValue()==true )
-        for (unsigned i=0; i<x.size(); i++ )
+    
+    if (d_fixAll.getValue())
+    {
+        for (unsigned i = 0; i < x.size(); i++)
             points.push_back(x[i].getCenter());
+    }
     else
     {
         if( x.size() < indices.size() )
@@ -94,42 +99,40 @@ void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparam
         vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     else
         vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+
+
 }
 
 template <>
 void FixedConstraint<Rigid2Types>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (this->d_componentState.getValue() != ComponentState::Valid) return;
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
-
-    const SetIndexArray & indices = d_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
+    const SetIndexArray& indices = d_indices.getValue();
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+
     vparams->drawTool()->setLightingEnabled(false);
     constexpr sofa::type::RGBAColor color (1,0.5,0.5,1);
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     if(d_fixAll.getValue())
     {
         for (unsigned i=0; i<x.size(); i++ )
-            vertices.push_back(sofa::type::Vector3(x[i].getCenter()[0],
-                                                          x[i].getCenter()[1],
-                                                          0.0));
+            vertices.emplace_back(x[i].getCenter()[0], x[i].getCenter()[1], 0.0);
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            vertices.push_back(sofa::type::Vector3(x[*it].getCenter()[0],
-                                                          x[*it].getCenter()[1],
-                                                          0.0));
+            vertices.emplace_back(x[*it].getCenter()[0], x[*it].getCenter()[1], 0.0);
     }
 
     vparams->drawTool()->drawPoints(vertices, 10, color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

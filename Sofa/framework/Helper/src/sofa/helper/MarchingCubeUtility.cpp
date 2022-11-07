@@ -375,8 +375,8 @@ const int MarchingCubeTriTable[256][16] =
 
 MarchingCubeUtility::MarchingCubeUtility()
     : cubeStep ( 1 ), convolutionSize ( 1 ),
-      dataResolution ( 0,0,0 ), dataVoxelSize ( 1.0f,1.0f,1.0f ),
-      verticesIndexOffset( 0), verticesTranslation( 0,0,0)
+      dataResolution ( 0,0,0 ), dataVoxelSize ( 1_sreal, 1_sreal, 1_sreal ),
+      verticesIndexOffset( 0), verticesTranslation( 0_sreal, 0_sreal, 0_sreal)
 {
     // // Computes non trivial faces.
     // int nonTrivialFaces[256];
@@ -414,9 +414,9 @@ void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
         const Vector3 &p1, const Vector3 &p2,
         const float valp1, const float valp2 ) const
 {
-    float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
+    const float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
     p = p1 + ( p2 - p1 ) * mu;
-    p = ( ( p + Vector3 ( 1.0f, 1.0f, 1.0f ) ) *0.5f ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2.0;
+    p = ( ( p + Vector3 ( 1_sreal, 1_sreal, 1_sreal) ) * 0.5_sreal ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2_sreal;
     p += verticesTranslation;
     p[0] = ( int ) helper::round( p[0] * (SReal)PRECISION ) / (SReal)PRECISION;
     p[1] = ( int ) helper::round( p[1] * (SReal)PRECISION ) / (SReal)PRECISION;
@@ -432,31 +432,32 @@ bool MarchingCubeUtility::testGrid ( const float v, const float isolevel ) const
 
 void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const unsigned char* data, const Vector3& gridStep, const Vec3i& dataGridStep ) const
 {
-    Vector3 vcurf ( ( float ) coord[0], ( float ) coord[1], ( float ) coord[2] );
+    const Vector3 vcurf {
+        static_cast<Real>(coord[0]), static_cast<Real>(coord[1]), static_cast<Real>(coord[2]) };
 
-    cell.pos[0]=vcurf.linearProduct ( gridStep )-Vector3 ( 1.0f,1.0f,1.0f );
+    cell.pos[0]=vcurf.linearProduct ( gridStep )-Vector3 ( 1_sreal, 1_sreal, 1_sreal );
     Vec3i valPos0=coord.linearProduct ( dataGridStep );
     cell.val[0]=(float)((( valPos0[0] >= roi.min[0]) && ( valPos0[1] >= roi.min[1]) && ( valPos0[2] >= roi.min[2]) && ( valPos0[0] < roi.max[0]) && ( valPos0[1] < roi.max[1]) && ( valPos0[2] < roi.max[2]))?data[valPos0[0] + valPos0[1]*dataResolution[0] + valPos0[2]*dataResolution[0]*dataResolution[1]]:0);
 
     Vec3i valPos;
 
-    cell.pos[1]=cell.pos[0]+Vector3 ( gridStep[0], 0, 0 );
+    cell.pos[1]=cell.pos[0]+Vector3 ( gridStep[0], 0_sreal, 0_sreal );
     valPos=valPos0+Vec3i ( dataGridStep[0], 0, 0 );
     cell.val[1]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
-    cell.pos[2]=cell.pos[0]+Vector3 ( gridStep[0], gridStep[1], 0 );
+    cell.pos[2]=cell.pos[0]+Vector3 ( gridStep[0], gridStep[1], 0_sreal );
     valPos=valPos0+Vec3i ( dataGridStep[0], dataGridStep[1], 0 );
     cell.val[2]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
-    cell.pos[3]=cell.pos[0]+Vector3 ( 0, gridStep[1], 0 );
+    cell.pos[3]=cell.pos[0]+Vector3 ( 0., gridStep[1], 0_sreal );
     valPos=valPos0+Vec3i ( 0, dataGridStep[1], 0 );
     cell.val[3]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
-    cell.pos[4]=cell.pos[0]+Vector3 ( 0, 0, gridStep[2] );
+    cell.pos[4]=cell.pos[0]+Vector3 ( 0_sreal, 0_sreal, gridStep[2] );
     valPos=valPos0+Vec3i ( 0, 0, dataGridStep[2] );
     cell.val[4]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
-    cell.pos[5]=cell.pos[0]+Vector3 ( gridStep[0], 0, gridStep[2] );
+    cell.pos[5]=cell.pos[0]+Vector3 ( gridStep[0], 0_sreal, gridStep[2] );
     valPos=valPos0+Vec3i ( dataGridStep[0], 0, dataGridStep[2] );
     cell.val[5]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
@@ -464,7 +465,7 @@ void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const u
     valPos=valPos0+Vec3i ( dataGridStep[0], dataGridStep[1], dataGridStep[2] );
     cell.val[6]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
-    cell.pos[7]=cell.pos[0]+Vector3 ( 0, gridStep[1], gridStep[2] );
+    cell.pos[7]=cell.pos[0]+Vector3 ( 0_sreal, gridStep[1], gridStep[2] );
     valPos=valPos0+Vec3i ( 0, dataGridStep[1], dataGridStep[2] );
     cell.val[7]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 }
@@ -579,7 +580,7 @@ void MarchingCubeUtility::propagateFrom ( const sofa::type::vector<Vec3i>& coord
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
     Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
-    Vector3 gridStep = Vector3 ( 2.0f/ ( ( float ) gridSize[0] ), 2.0f/ ( ( float ) gridSize[1] ), 2.0f/ ( ( float ) gridSize[2] ) );
+    const Vector3 gridStep { 2_sreal / static_cast<Real>(gridSize[0]), 2_sreal / static_cast<Real>(gridSize[1]), 2_sreal / static_cast<Real>(gridSize[2]) };
 
     Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
 
@@ -709,7 +710,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );
     Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
-    Vector3 gridStep = Vector3 ( 2.0f/ ( ( float ) gridSize[0] ), 2.0f/ ( ( float ) gridSize[1] ), 2.0f/ ( ( float ) gridSize[2] ) );
+    Vector3 gridStep { 2_sreal / static_cast<Real>(gridSize[0]), 2_sreal / static_cast<Real>(gridSize[1]), 2_sreal / static_cast<Real>(gridSize[2]) };
 
     Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
 
@@ -737,7 +738,7 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
         sofa::helper::io::Mesh &m ) const
 {
     using sofa::type::vector;
-    using sofa::type::Vector3;
+    using sofa::type::Vec3;
 
     msg_info() << "Creating Mesh using Marching Cubes\n";
     auto &vertices                 = m.getVertices();
@@ -802,7 +803,7 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
                     Vec3i currentCube ( i, j , k );
                     if ( parsedVoxels.find ( index ) == parsedVoxels.end() )
                     {
-                        seeds.push_back ( currentCube - Vector3 ( 1,0,0 ) );
+                        seeds.push_back ( currentCube - Vector3 ( 1_sreal, 0_sreal, 0_sreal ) );
                         // propager sur les autres voxels et les incrire ds parsedVoxels.
                         findConnectedVoxels ( parsedVoxels, isoValue, currentCube, data );
                     }
@@ -819,18 +820,19 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
 void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const
 {
     mCubeCoords.clear();
-    Vector3 gridSize = Vector3 ( (SReal) 1.0 / dataVoxelSize[0]*cubeStep, (SReal) 1.0 / dataVoxelSize[1]*cubeStep, (SReal) 1.0 / dataVoxelSize[2]*cubeStep );
+    Vector3 gridSize = Vector3 ( 1_sreal / dataVoxelSize[0]*cubeStep, 1_sreal / dataVoxelSize[1]*cubeStep, 1_sreal / dataVoxelSize[2]*cubeStep );
 
     for ( vector<Vector3>::const_iterator it = realCoords.begin(); it != realCoords.end(); ++it )
     {
-        Vec3i seed = ( ( *it ) - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
-        mCubeCoords.push_back ( seed );
-        assert ( seed[0] >= 0 );
-        assert ( seed[1] >= 0 );
-        assert ( seed[2] >= 0 );
-        assert ( seed[0] < gridSize[0] );
-        assert ( seed[1] < gridSize[1] );
-        assert ( seed[2] < gridSize[2] );
+        const Vector3 seed = ( ( *it ) - verticesTranslation - ( dataVoxelSize/ 2_sreal ) ).linearProduct ( gridSize );
+        const Vec3i intSeed {static_cast<int>(seed.x()), static_cast<int>(seed.y()), static_cast<int>(seed.z())};
+        mCubeCoords.push_back ( intSeed );
+        assert ( intSeed[0] >= 0 );
+        assert ( intSeed[1] >= 0 );
+        assert ( intSeed[2] >= 0 );
+        assert ( intSeed[0] < gridSize[0] );
+        assert ( intSeed[1] < gridSize[1] );
+        assert ( intSeed[2] < gridSize[2] );
     }
 }
 

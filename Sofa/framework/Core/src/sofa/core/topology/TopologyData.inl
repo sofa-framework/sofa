@@ -43,6 +43,18 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
 {
 }
 
+template <typename TopologyElementType, typename VecT>
+TopologyData <TopologyElementType, VecT>::~TopologyData()
+{ 
+    if (m_isTopologyDynamic) {
+        dmsg_info(this->getOwner()) << "TopologyData: " << this->getName() << " removed from dynamic topology: " << this->m_topology->getClassName();
+        this->m_topologyHandler->unlinkFromAllTopologyDataArray();
+    }
+    else {
+        dmsg_info(this->getOwner()) << "TopologyData: " << this->getName() << " removed from static topology without TopologyHandler.";
+    }
+}
+
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology)
@@ -54,13 +66,19 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     }
     this->m_topology = _topology;
 
+    if (this->m_topologyHandler != nullptr)
+    {
+        msg_error(this->getOwner()) << "TopologyData: " << this->getName() << " already has a TopologyDataHandler. createTopologyHandler should only be called once at init of the TopologyData.";
+        return;
+    }
+
     // Create TopologyHandler
     this->m_topologyHandler = std::make_unique<TopologyDataHandler< TopologyElementType, VecT> >(this, _topology);
     this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
     this->m_topologyHandler->init();
 
     // Register the TopologyHandler
-    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
+    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology, sofa::helper::logging::notMuted(this->getOwner()));
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);
@@ -75,7 +93,7 @@ void TopologyData <TopologyElementType, VecT>::linkToPointDataArray()
 {
     if (this->m_topologyHandler && m_isTopologyDynamic)
     {
-        this->m_topologyHandler->linkToPointDataArray();
+        this->m_topologyHandler->linkToTopologyDataArray(sofa::geometry::ElementType::POINT);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToPointDataArray ";
     }
     else
@@ -88,7 +106,7 @@ void TopologyData <TopologyElementType, VecT>::linkToEdgeDataArray()
 {
     if (this->m_topologyHandler && m_isTopologyDynamic)
     {
-        this->m_topologyHandler->linkToEdgeDataArray();
+        this->m_topologyHandler->linkToTopologyDataArray(sofa::geometry::ElementType::EDGE);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToEdgeDataArray ";
     }
     else
@@ -101,7 +119,7 @@ void TopologyData <TopologyElementType, VecT>::linkToTriangleDataArray()
 {
     if (this->m_topologyHandler && m_isTopologyDynamic)
     {
-        this->m_topologyHandler->linkToTriangleDataArray();
+        this->m_topologyHandler->linkToTopologyDataArray(sofa::geometry::ElementType::TRIANGLE);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToTriangleDataArray ";
     }
     else
@@ -114,7 +132,7 @@ void TopologyData <TopologyElementType, VecT>::linkToQuadDataArray()
 {
     if (this->m_topologyHandler && m_isTopologyDynamic)
     {
-        this->m_topologyHandler->linkToQuadDataArray();
+        this->m_topologyHandler->linkToTopologyDataArray(sofa::geometry::ElementType::QUAD);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToQuadDataArray ";
     }
     else
@@ -127,7 +145,7 @@ void TopologyData <TopologyElementType, VecT>::linkToTetrahedronDataArray()
 {
     if (this->m_topologyHandler && m_isTopologyDynamic)
     {
-        this->m_topologyHandler->linkToTetrahedronDataArray();
+        this->m_topologyHandler->linkToTopologyDataArray(sofa::geometry::ElementType::TETRAHEDRON);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToTetrahedronDataArray ";
     }
     else
@@ -140,7 +158,7 @@ void TopologyData <TopologyElementType, VecT>::linkToHexahedronDataArray()
 {
     if (this->m_topologyHandler && m_isTopologyDynamic)
     {
-        this->m_topologyHandler->linkToHexahedronDataArray();
+        this->m_topologyHandler->linkToTopologyDataArray(sofa::geometry::ElementType::HEXAHEDRON);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " linkToHexahedronDataArray ";
     }
     else
@@ -193,6 +211,43 @@ void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core
 }
 
 
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Point*)
+{
+    this->m_topologyHandler->unlinkFromTopologyDataArray(sofa::geometry::ElementType::POINT);
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*)
+{
+    this->m_topologyHandler->unlinkFromTopologyDataArray(sofa::geometry::ElementType::EDGE);
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*)
+{
+    this->m_topologyHandler->unlinkFromTopologyDataArray(sofa::geometry::ElementType::TRIANGLE);
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*)
+{
+    this->m_topologyHandler->unlinkFromTopologyDataArray(sofa::geometry::ElementType::QUAD);
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*)
+{
+    this->m_topologyHandler->unlinkFromTopologyDataArray(sofa::geometry::ElementType::TETRAHEDRON);
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*)
+{
+    this->m_topologyHandler->unlinkFromTopologyDataArray(sofa::geometry::ElementType::HEXAHEDRON);
+}
+
+
 ///////////////////// Protected functions on TopologyData changes /////////////////////////////
 
 template <typename TopologyElementType, typename VecT>
@@ -241,6 +296,8 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     const sofa::type::vector<sofa::type::vector<SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
+    SOFA_UNUSED(ancestorElems);
+
     std::size_t nbElements = index.size();
     if (nbElements == 0) 
         return;

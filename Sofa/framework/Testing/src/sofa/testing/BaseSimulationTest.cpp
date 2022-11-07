@@ -28,8 +28,8 @@ using sofa::core::execparams::defaultInstance;
 using sofa::simulation::SceneLoaderFactory ;
 using sofa::simulation::SceneLoader ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/helper/system/PluginManager.h>
@@ -40,7 +40,8 @@ namespace sofa::testing
 
 bool BaseSimulationTest::importPlugin(const std::string& name)
 {
-    return PluginManager::getInstance().loadPlugin(name) ;
+    const auto status = PluginManager::getInstance().loadPlugin(name);
+    return status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED;
 }
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const std::string& desc)
@@ -54,7 +55,7 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const 
         simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
 
     simulation = simulation::getSimulation() ;
-    root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str(), desc.size()) ;
+    root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str()) ;
 }
 
 BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFile(const std::string& filename)

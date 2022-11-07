@@ -23,7 +23,7 @@
 
 #include <sofa/component/collision/detection/intersection/LocalMinDistance.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/LocalMinDistance.h")
+SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/LocalMinDistance.h")
 
 namespace sofa::component::collision
 {

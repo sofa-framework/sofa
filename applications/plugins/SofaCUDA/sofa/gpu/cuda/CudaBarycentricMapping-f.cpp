@@ -56,7 +56,7 @@ namespace cuda
 using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::core::behavior;
-using namespace sofa::component::mapping;
+using namespace sofa::component::mapping::linear;
 
 int BarycentricMappingCudaClass_f = core::RegisterObject("Supports GPU-side computations using CUDA")
         ;

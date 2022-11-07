@@ -12,7 +12,7 @@ option(SOFADISTANCEGRID_USE_MESHCONV "Build meshconv, mainly used to generate Di
 if(SOFADISTANCEGRID_USE_MESHCONV)
     find_package(MiniFlowVR QUIET)
     if(MiniFlowVR_FOUND)
-        sofa_add_application(applications/meshconv meshconv OFF)
+        sofa_add_subdirectory(application applications/meshconv meshconv OFF)
     else()
         message(WARNING "meshconv needs miniFlowVR; enable SOFADISTANCEGRID_USE_MINIFLOWVR to build it.")
     endif()
@@ -53,15 +53,14 @@ set(EXTRA_FILES
     )
 
 
-sofa_find_package(MiniFlowVR QUIET)
-find_package(SofaMeshCollision REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaMiscCollision REQUIRED)
+find_package(MiniFlowVR QUIET)
+sofa_find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Component.Collision REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision)
 
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL)
@@ -75,10 +74,7 @@ else()
 endif()
 
 if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(SofaDistanceGrid_test)
-    endif()
+    add_subdirectory(SofaDistanceGrid_test)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files

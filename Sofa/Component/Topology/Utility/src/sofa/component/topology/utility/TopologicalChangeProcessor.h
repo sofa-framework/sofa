@@ -27,8 +27,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
 
 #if SOFAMISCTOPOLOGY_HAVE_ZLIB
 #include <zlib.h>
@@ -139,7 +138,7 @@ protected:
 
     std::vector<SReal> getValuesInLine(std::string line, size_t nbElements);
 
-    void findElementIndex(type::Vector3 coord, Index& triangleIndex, Index oldTriangleIndex);
+    void findElementIndex(type::Vec3 coord, Index& triangleIndex, Index oldTriangleIndex);
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
@@ -153,10 +152,10 @@ public:
     using Index = sofa::Index;
 
     std::vector<Index>      triangleIndices;
-    std::vector<type::Vector3>                barycentricCoordinates;
+    std::vector<type::Vec3>                barycentricCoordinates;
     SReal                                           timeToIncise;
 
-    std::vector<type::Vector3>                coordinates;
+    std::vector<type::Vec3>                coordinates;
 
     void display()
     {
@@ -177,9 +176,9 @@ public:
     }
 
 
-    std::vector<type::Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
+    std::vector<type::Vec3> computeCoordinates(core::topology::BaseMeshTopology *topology)
     {
-        sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeo;
+        sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeo;
         topology->getContext()->get(triangleGeo);
 
         coordinates.clear();

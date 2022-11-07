@@ -27,7 +27,7 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/TestMessageHandler.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Simulation.h>
@@ -36,15 +36,15 @@ using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaBaseUtils/messageHandlerComponent.h>
-using sofa::component::logging::MessageHandlerComponent ;
+#include <sofa/component/sceneutility/MessageHandlerComponent.h>
+using sofa::component::sceneutility::MessageHandlerComponent ;
 
 using sofa::helper::logging::MessageDispatcher ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 
 bool perTestInit()
 {
@@ -71,9 +71,7 @@ TEST(MessageHandlerComponent, simpleInit)
 
     sofa::simulation::setSimulation(new DAGSimulation());
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 
     MessageHandlerComponent* component = nullptr;
@@ -91,9 +89,7 @@ TEST(MessageHandlerComponent, missingHandler)
         "       <MessageHandlerComponent/>                   "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
@@ -109,9 +105,7 @@ TEST(MessageHandlerComponent, invalidHandler)
         "       <MessageHandlerComponent handler='thisisinvalid'/>           "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;
@@ -127,9 +121,7 @@ TEST(MessageHandlerComponent, clangHandler)
         "       <MessageHandlerComponent handler='clang'/>                   "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
 
     MessageHandlerComponent* component = nullptr;
     root->getTreeObject(component) ;

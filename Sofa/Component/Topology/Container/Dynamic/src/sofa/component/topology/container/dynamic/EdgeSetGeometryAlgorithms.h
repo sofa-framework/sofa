@@ -168,6 +168,8 @@ protected:
     Data<RGBAColor> _drawColor; ///< RGB code color used to draw edges.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,1> edgeNumericalIntegration;
+
+    bool mustComputeBBox() const override;
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)

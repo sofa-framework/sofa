@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "TopologicalChangeManager.h"
+#include <sofa/gui/component/performer/TopologicalChangeManager.h>
 
 
 #include <sofa/simulation/Node.h>
@@ -278,7 +278,7 @@ Index TopologicalChangeManager::removeItemsFromPointModel(PointCollisionModel<so
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
     Index res = vitems.size();
-    
+
 
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
@@ -290,6 +290,36 @@ Index TopologicalChangeManager::removeItemsFromPointModel(PointCollisionModel<so
     return res;
 }
 
+Index TopologicalChangeManager::removeItemsFromLineModel(LineCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
+{
+    // EdgeSetTopologyContainer
+    sofa::core::topology::BaseMeshTopology* topo_curr;
+    topo_curr = model->getCollisionTopology();
+
+    if(dynamic_cast<EdgeSetTopologyContainer*>(topo_curr) == nullptr){
+        msg_warning("TopologicalChangeManager") << "Topology is not an EdgeSetTopologyContainer. Only EdgeSetTopologyContainer implemented.";
+        return 0;
+    }
+
+    // copy indices to have a mutable version of the vector
+    type::vector<Index> unique_indices = indices;
+    // sort followed by unique, to remove all duplicates
+    std::sort(unique_indices.begin(), unique_indices.end());
+    unique_indices.erase(std::unique(unique_indices.begin(), unique_indices.end()), unique_indices.end());
+
+    EdgeSetTopologyModifier* topo_mod;
+    topo_curr->getContext()->get(topo_mod);
+    if(topo_mod  == nullptr){
+        msg_warning("TopologicalChangeManager") << "Cannot find an EdgeSetTopologyModifier to perform the changes.";
+        return 0;
+    }
+
+    topo_mod->removeItems(unique_indices);
+
+    topo_mod->notifyEndingEvent();
+
+    return indices.size();
+}
 
 Index TopologicalChangeManager::removeItemsFromSphereModel(SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
 {
@@ -398,6 +428,10 @@ Index TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collis
     else if(dynamic_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model)!= nullptr)
     {
         return removeItemsFromSphereModel(static_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
+    }
+    else if(dynamic_cast<LineCollisionModel<sofa::defaulttype::Vec3Types>*>(model)!= nullptr)
+    {
+        return removeItemsFromLineModel(static_cast<LineCollisionModel<sofa::defaulttype::Vec3Types>*>(model), indices);
     }
     else
         return 0;

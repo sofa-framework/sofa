@@ -26,16 +26,10 @@
 #ifndef EXCEPTIONMESSAGEHANDLER_H
 #define EXCEPTIONMESSAGEHANDLER_H
 
-#include "MessageHandler.h"
+#include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 
@@ -61,10 +55,6 @@ public:
     void process(Message &m) override;
 
 };
-
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa::helper::logging
 
 #endif // EXCEPTIONMESSAGEHANDLER_H

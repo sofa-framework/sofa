@@ -181,6 +181,8 @@ protected:
     TetrahedronSetTopologyContainer*					m_container;
     TetrahedronSetTopologyModifier*						m_modifier;
     unsigned int	m_intialNbPoints;
+
+    bool mustComputeBBox() const override;
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)

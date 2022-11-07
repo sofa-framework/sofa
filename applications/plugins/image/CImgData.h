@@ -14,8 +14,7 @@
 #include <sofa/helper/rmath.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
-
+#include <sofa/component/visual/VisualModelImpl.h>
 
 namespace sofa
 {
@@ -245,7 +244,7 @@ public:
     // returns a binary image cutting through 3D input meshes, corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
     // positions are in image coordinates
     template<typename Real>
-    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const type::Mat<2,3,unsigned int>& ROI,const type::vector<type::Vec<3,Real> >& position, const type::vector< sofa::component::visualmodel::VisualModelImpl::VisualTriangle >& triangles, const type::vector< sofa::component::visualmodel::VisualModelImpl::VisualQuad >& quads) const
+    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const type::Mat<2,3,unsigned int>& ROI,const type::vector<type::Vec<3,Real> >& position, const type::vector< sofa::component::visual::VisualModelImpl::VisualTriangle >& triangles, const type::vector< sofa::component::visual::VisualModelImpl::VisualQuad >& quads) const
     {
         const unsigned int dim[3]= {ROI[1][0]-ROI[0][0]+1,ROI[1][1]-ROI[0][1]+1,ROI[1][2]-ROI[0][2]+1};
         cimg_library::CImg<bool> ret;

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "HexahedralFEMForceFieldAndMass.h"
+#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceFieldAndMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
@@ -461,7 +461,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
-    std::vector<type::Vector3> pos;
+    std::vector<type::Vec3> pos;
     pos.resize(x.size());
     auto posIT = pos.begin();
     typename VecCoord::const_iterator xIT = x.begin();

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 0 0" dt="0.01" >
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="Geomagic"/> <!-- Needed to use components [GeomagicDriver] -->
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
-    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [RequiredPlugin] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [FreeMotionAnimationLoop, LCPConstraintSolver] -->
-    <RequiredPlugin pluginName="Geomagic"/>
 
 	<VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideMappings hideMechanicalMappings hideForceFields hideInteractionForceFields hideWireframe hideNormals" />
     <DefaultVisualManagerLoop />

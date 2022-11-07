@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>

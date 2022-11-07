@@ -82,7 +82,7 @@ struct Link_test : public BaseSimulationTest
         EXPECT_TRUE(withOwner.read("@/B"));
 
         // 2. setting C's context
-        si.root->addObject(B);
+        si.root->addObject(C);
 
         EXPECT_TRUE(withOwner.read("@/C"));
         EXPECT_TRUE(withOwner.read("@/B @/C"));

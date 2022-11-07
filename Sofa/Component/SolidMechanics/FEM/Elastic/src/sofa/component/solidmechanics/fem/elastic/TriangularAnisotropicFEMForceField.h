@@ -29,7 +29,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include "TriangularFEMForceField.h"
+#include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceField.h>
 #include <sofa/core/topology/TopologyData.h>
 
 

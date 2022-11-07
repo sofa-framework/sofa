@@ -534,14 +534,14 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowForceFields()) {return;}
     if (!this->mstate) {return;}
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame()){
         vparams->drawTool()->setPolygonMode(0, true);
     }
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
     vparams->drawTool()->disableLighting();
@@ -585,7 +585,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
         vparams->drawTool()->setPolygonMode(0, false);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::spring

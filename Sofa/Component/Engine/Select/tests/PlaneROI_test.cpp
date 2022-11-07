@@ -25,7 +25,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/helper/BackTrace.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
@@ -33,13 +33,13 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::graph::DAGSimulation;
 
-#include <SofaGeneralEngine/PlaneROI.h>
-using sofa::component::engine::PlaneROI ;
+#include <sofa/component/engine/select/PlaneROI.h>
+using sofa::component::engine::select::PlaneROI ;
 
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 using std::vector;
@@ -80,9 +80,7 @@ struct PlaneROI_test : public BaseSimulationTest,
         "   </Node>                                                        "
         "</Node>                                                           " ;
 
-        m_node2 = SceneLoaderXML::loadFromMemory ("testscene",
-                                                  scene1.c_str(),
-                                                  scene1.size()) ;
+        m_node2 = SceneLoaderXML::loadFromMemory ("testscene", scene1.c_str());
     }
 
 

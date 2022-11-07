@@ -21,15 +21,8 @@
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
 #include <sofa/core/objectmodel/Tag.h>
-//#include <algorithm> // for std::includes
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 Tag::Tag(const std::string& s)
@@ -55,42 +48,6 @@ Tag::operator std::string() const
     else return std::string("!")+helper::TagFactory::getName(unsigned(-id));
 }
 
-bool TagSet::includes(const TagSet& t) const
-{
-    if (t.empty())
-        return true;
-    if (empty())
-    {
-        // An empty TagSet satisfies the conditions only if either :
-        // t is also empty (already handled)
-        // t only includes negative tags
-        if (*t.rbegin() <= Tag(0))
-            return true;
-        // t includes the "0" tag
-        if (t.count(Tag(0)) > 0)
-            return true;
-        // otherwise the TagSet t does not "include" empty sets
-        return false;
-    }
-    for (std::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
-        first2 != last2; ++first2)
-    {
-        Tag t2 = *first2;
-        if (t2 == Tag(0)) continue; // tag "0" is used to indicate that we should include objects without any tag
-        if (!t2.negative())
-        {
-            if (this->count(t2) == 0)
-                return false; // tag not found in this
-        }
-        else
-        {
-            if (this->count(-t2) > 0)
-                return false; // tag found in this
-        }
-    }
-    return true;
-}
-
 std::ostream& operator<<(std::ostream& o, const Tag& t)
 {
     return o << std::string(t);
@@ -104,9 +61,4 @@ std::istream& operator>>(std::istream& i, Tag& t)
     return i;
 }
 
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

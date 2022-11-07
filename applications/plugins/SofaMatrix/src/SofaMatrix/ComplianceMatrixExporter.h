@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaMatrix/config.h>
 #include <sofa/simulation/BaseSimulationExporter.h>
-#include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::constraintset
@@ -48,7 +48,7 @@ protected:
 
     ComplianceMatrixExporter();
 
-    SingleLink<ComplianceMatrixExporter, sofa::component::constraintset::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
+    SingleLink<ComplianceMatrixExporter, sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 };
 
 } //namespace sofa::component::constraintset
