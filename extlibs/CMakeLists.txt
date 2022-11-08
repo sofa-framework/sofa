@@ -11,7 +11,6 @@ set(JSON_ROOT "${CMAKE_CURRENT_LIST_DIR}/json" CACHE PATH "Nlohmann JSON directo
 # STB (header-only)
 set(STB_ROOT "${CMAKE_CURRENT_LIST_DIR}/stb" CACHE PATH "STB directory")
 # DiffLib
-# STB (header-only)
 set(DIFFLIB_ROOT "${CMAKE_CURRENT_LIST_DIR}/difflib" CACHE PATH "DiffLib directory")
 
 # TinyXML
