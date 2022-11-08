@@ -34,10 +34,10 @@ template<class DataTypes>
 class ContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes>
 {
 public:
-    using Index = sofa::Index;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    Index addPoint(const Coord& P, Index index, Real&)
+    sofa::Index addPoint(const Coord& P, sofa::Index index, Real&)
     {
         collision::geometry::Tetrahedron t(this->model, index);
         auto b = t.getBary(P);

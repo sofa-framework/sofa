@@ -284,7 +284,7 @@ void BoxROI<DataTypes>::init()
     if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
     {
         auto alignedBoxes = sofa::helper::getWriteOnlyAccessor(d_alignedBoxes);
-        alignedBoxes.push_back(Vec6(0,0,0,1,1,1));
+        alignedBoxes.push_back(type::Vec6(0,0,0,1,1,1));
     }
 
     auto alignedBoxes = sofa::helper::getWriteOnlyAccessor(d_alignedBoxes);
@@ -337,27 +337,27 @@ void BoxROI<DataTypes>::computeOrientedBoxes()
     {
         const Vec10& box = orientedBoxes[i];
 
-        const Vec3 p0 = Vec3(box[0], box[1], box[2]);
-        const Vec3 p1 = Vec3(box[3], box[4], box[5]);
-        const Vec3 p2 = Vec3(box[6], box[7], box[8]);
+        const type::Vec3 p0 = type::Vec3(box[0], box[1], box[2]);
+        const type::Vec3 p1 = type::Vec3(box[3], box[4], box[5]);
+        const type::Vec3 p2 = type::Vec3(box[6], box[7], box[8]);
         double depth = box[9];
 
-        Vec3 normal = (p1-p0).cross(p2-p0);
+        type::Vec3 normal = (p1-p0).cross(p2-p0);
         normal.normalize();
 
-        const Vec3 p3 = p0 + (p2-p1);
-        const Vec3 p6 = p2 + normal * depth;
+        const type::Vec3 p3 = p0 + (p2-p1);
+        const type::Vec3 p6 = p2 + normal * depth;
 
-        Vec3 plane0 = (p1-p0).cross(normal);
+        type::Vec3 plane0 = (p1-p0).cross(normal);
         plane0.normalize();
 
-        Vec3 plane1 = (p2-p3).cross(p6-p3);
+        type::Vec3 plane1 = (p2-p3).cross(p6-p3);
         plane1.normalize();
 
-        Vec3 plane2 = (p3-p0).cross(normal);
+        type::Vec3 plane2 = (p3-p0).cross(normal);
         plane2.normalize();
 
-        Vec3 plane3 = (p2-p1).cross(p6-p2);
+        type::Vec3 plane3 = (p2-p1).cross(p6-p2);
         plane3.normalize();
 
 
@@ -384,8 +384,8 @@ bool BoxROI<DataTypes>::isPointInOrientedBox(const typename DataTypes::CPos& poi
     }
     else
     {
-        const Vec3 pv0 = Vec3(point[0]-box.p0[0], point[1]-box.p0[1], point[2]-box.p0[2]);
-        const Vec3 pv1 = Vec3(point[0]-box.p2[0], point[1]-box.p2[1], point[2]-box.p2[2]);
+        const type::Vec3 pv0 = type::Vec3(point[0]-box.p0[0], point[1]-box.p0[1], point[2]-box.p0[2]);
+        const type::Vec3 pv1 = type::Vec3(point[0]-box.p2[0], point[1]-box.p2[1], point[2]-box.p2[2]);
 
         if( fabs(dot(pv0, box.plane0)) <= box.width && fabs(dot(pv1, box.plane1)) <= box.width )
         {
@@ -405,11 +405,11 @@ bool BoxROI<DataTypes>::isPointInOrientedBox(const typename DataTypes::CPos& poi
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box)
+bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, const type::Vec6& box)
 {
-    static_assert(std::is_same_v<typename DataTypes::CPos::size_type, typename Vec6::size_type>);
+    static_assert(std::is_same_v<typename DataTypes::CPos::size_type, typename type::Vec6::size_type>);
 
-    for (typename Vec6::size_type i = 0; i < DataTypes::spatial_dimensions; ++i)
+    for (typename type::Vec6::size_type i = 0; i < DataTypes::spatial_dimensions; ++i)
     {
         if (p[i] < box[i] || p[i] > box[i + 3])
         {
@@ -422,7 +422,7 @@ bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, c
 template <class DataTypes>
 bool BoxROI<DataTypes>::isPointInBoxes(const typename DataTypes::CPos& p)
 {
-    const vector<Vec6>& alignedBoxes = d_alignedBoxes.getValue();
+    const vector<type::Vec6>& alignedBoxes = d_alignedBoxes.getValue();
 
     for (unsigned int i=0; i<alignedBoxes.size(); ++i)
         if (isPointInAlignedBox(p, alignedBoxes[i]))
@@ -629,7 +629,7 @@ void BoxROI<DataTypes>::doUpdate()
             return;
         }
 
-        const vector<Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
+        const vector<type::Vec6>&  alignedBoxes  = d_alignedBoxes.getValue();
         const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
 
         if (alignedBoxes.empty() && orientedBoxes.empty()) { return; }
@@ -754,44 +754,44 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vec3> vertices;
+        std::vector<type::Vec3> vertices;
 
-        const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
+        const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
         const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
 
         for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
         {
-            const Vec6& b=alignedBoxes[bi];
+            const type::Vec6& b=alignedBoxes[bi];
             const Real& Xmin=b[0];
             const Real& Xmax=b[3];
             const Real& Ymin=b[1];
             const Real& Ymax=b[4];
             const Real& Zmin=b[2];
             const Real& Zmax=b[5];
-            vertices.push_back( Vec3(Xmin,Ymin,Zmin) );
-            vertices.push_back( Vec3(Xmin,Ymin,Zmax) );
-            vertices.push_back( Vec3(Xmin,Ymin,Zmin) );
-            vertices.push_back( Vec3(Xmax,Ymin,Zmin) );
-            vertices.push_back( Vec3(Xmin,Ymin,Zmin) );
-            vertices.push_back( Vec3(Xmin,Ymax,Zmin) );
-            vertices.push_back( Vec3(Xmin,Ymax,Zmin) );
-            vertices.push_back( Vec3(Xmax,Ymax,Zmin) );
-            vertices.push_back( Vec3(Xmin,Ymax,Zmin) );
-            vertices.push_back( Vec3(Xmin,Ymax,Zmax) );
-            vertices.push_back( Vec3(Xmin,Ymax,Zmax) );
-            vertices.push_back( Vec3(Xmin,Ymin,Zmax) );
-            vertices.push_back( Vec3(Xmin,Ymin,Zmax) );
-            vertices.push_back( Vec3(Xmax,Ymin,Zmax) );
-            vertices.push_back( Vec3(Xmax,Ymin,Zmax) );
-            vertices.push_back( Vec3(Xmax,Ymax,Zmax) );
-            vertices.push_back( Vec3(Xmax,Ymin,Zmax) );
-            vertices.push_back( Vec3(Xmax,Ymin,Zmin) );
-            vertices.push_back( Vec3(Xmin,Ymax,Zmax) );
-            vertices.push_back( Vec3(Xmax,Ymax,Zmax) );
-            vertices.push_back( Vec3(Xmax,Ymax,Zmin) );
-            vertices.push_back( Vec3(Xmax,Ymin,Zmin) );
-            vertices.push_back( Vec3(Xmax,Ymax,Zmin) );
-            vertices.push_back( Vec3(Xmax,Ymax,Zmax) );
+            vertices.push_back( type::Vec3(Xmin,Ymin,Zmin) );
+            vertices.push_back( type::Vec3(Xmin,Ymin,Zmax) );
+            vertices.push_back( type::Vec3(Xmin,Ymin,Zmin) );
+            vertices.push_back( type::Vec3(Xmax,Ymin,Zmin) );
+            vertices.push_back( type::Vec3(Xmin,Ymin,Zmin) );
+            vertices.push_back( type::Vec3(Xmin,Ymax,Zmin) );
+            vertices.push_back( type::Vec3(Xmin,Ymax,Zmin) );
+            vertices.push_back( type::Vec3(Xmax,Ymax,Zmin) );
+            vertices.push_back( type::Vec3(Xmin,Ymax,Zmin) );
+            vertices.push_back( type::Vec3(Xmin,Ymax,Zmax) );
+            vertices.push_back( type::Vec3(Xmin,Ymax,Zmax) );
+            vertices.push_back( type::Vec3(Xmin,Ymin,Zmax) );
+            vertices.push_back( type::Vec3(Xmin,Ymin,Zmax) );
+            vertices.push_back( type::Vec3(Xmax,Ymin,Zmax) );
+            vertices.push_back( type::Vec3(Xmax,Ymin,Zmax) );
+            vertices.push_back( type::Vec3(Xmax,Ymax,Zmax) );
+            vertices.push_back( type::Vec3(Xmax,Ymin,Zmax) );
+            vertices.push_back( type::Vec3(Xmax,Ymin,Zmin) );
+            vertices.push_back( type::Vec3(Xmin,Ymax,Zmax) );
+            vertices.push_back( type::Vec3(Xmax,Ymax,Zmax) );
+            vertices.push_back( type::Vec3(Xmax,Ymax,Zmin) );
+            vertices.push_back( type::Vec3(Xmax,Ymin,Zmin) );
+            vertices.push_back( type::Vec3(Xmax,Ymax,Zmin) );
+            vertices.push_back( type::Vec3(Xmax,Ymax,Zmax) );
             vparams->drawTool()->drawLines(vertices, linesWidth , color );
         }
 
@@ -799,7 +799,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         {
             const Vec10& box=orientedBoxes[bi];
 
-            vector<Vec3> points;
+            vector<type::Vec3> points;
             points.resize(8);
             getPointsFromOrientedBox(box, points);
 
@@ -842,12 +842,12 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         float pointsWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector<Vec3> vertices;
+        std::vector<type::Vec3> vertices;
         ReadAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
             CPos p = DataTypes::getCPos(pointsInROI[i]);
-            Vec3 pv;
+            type::Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -860,7 +860,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vec3> vertices;
+        std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
@@ -868,7 +868,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<2 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[e[j]]);
-                Vec3 pv;
+                type::Vec3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
@@ -881,7 +881,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( d_drawTriangles.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector<Vec3> vertices;
+        std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
@@ -889,7 +889,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<3 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                Vec3 pv;
+                type::Vec3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
@@ -903,7 +903,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vec3> vertices;
+        std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
@@ -911,7 +911,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                Vec3 pv;
+                type::Vec3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
@@ -923,7 +923,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
 
             CPos p = DataTypes::getCPos(x0[t[0]]);
-            Vec3 pv;
+            type::Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -948,7 +948,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vec3> vertices;
+        std::vector<type::Vec3> vertices;
         ReadAccessor< Data<vector<Hexa> > > hexahedraInROI = d_hexahedraInROI;
         for (unsigned int i=0; i<hexahedraInROI.size() ; ++i)
         {
@@ -956,7 +956,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<8 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                Vec3 pv;
+                type::Vec3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
@@ -968,7 +968,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
 
             CPos p = DataTypes::getCPos(x0[t[0]]);
-            Vec3 pv;
+            type::Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -1009,7 +1009,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = d_drawSize.getValue() ? (float)d_drawSize.getValue() : 1;
-        std::vector<Vec3> vertices;
+        std::vector<type::Vec3> vertices;
         ReadAccessor<Data<vector<Quad> > > quadsInROI = d_quadInROI;
         for (unsigned i=0; i<quadsInROI.size(); ++i)
         {
@@ -1017,7 +1017,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned j=0; j<4; j++)
             {
                 CPos p = DataTypes::getCPos(x0[q[j]]);
-                Vec3 pv;
+                type::Vec3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];
                 vertices.push_back(pv);
@@ -1025,7 +1025,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned j=0; j<4; j++)
             {
                 CPos p = DataTypes::getCPos(x0[q[(j+1)%4]]);
-                Vec3 pv;
+                type::Vec3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];
                 vertices.push_back(pv);
@@ -1049,7 +1049,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
     if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
-    const vector<Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
+    const vector<type::Vec6>&  alignedBoxes =d_alignedBoxes.getValue();
     const vector<Vec10>& orientedBoxes=d_orientedBoxes.getValue();
 
     const Real max_real = std::numeric_limits<Real>::max();
@@ -1059,7 +1059,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
 
     for (unsigned int bi=0; bi<alignedBoxes.size(); ++bi)
     {
-        const Vec6& box=alignedBoxes[bi];
+        const type::Vec6& box=alignedBoxes[bi];
         if (box[0] < minBBox[0]) minBBox[0] = box[0];
         if (box[1] < minBBox[1]) minBBox[1] = box[1];
         if (box[2] < minBBox[2]) minBBox[2] = box[2];
@@ -1072,7 +1072,7 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
     {
         const Vec10& box=orientedBoxes[bi];
 
-        vector<Vec3> points;
+        vector<type::Vec3> points;
         points.resize(8);
         getPointsFromOrientedBox(box, points);
 
@@ -1092,15 +1092,15 @@ void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<Vec3>& points)
+void BoxROI<DataTypes>::getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3>& points)
 {
     points.resize(8);
-    points[0] = Vec3(box[0], box[1], box[2]);
-    points[1] = Vec3(box[3], box[4], box[5]);
-    points[2] = Vec3(box[6], box[7], box[8]);
+    points[0] = type::Vec3(box[0], box[1], box[2]);
+    points[1] = type::Vec3(box[3], box[4], box[5]);
+    points[2] = type::Vec3(box[6], box[7], box[8]);
     double depth = box[9];
 
-    Vec3 normal = (points[1]-points[0]).cross(points[2]-points[0]);
+    type::Vec3 normal = (points[1]-points[0]).cross(points[2]-points[0]);
     normal.normalize();
 
     points[0] += normal * depth/2;

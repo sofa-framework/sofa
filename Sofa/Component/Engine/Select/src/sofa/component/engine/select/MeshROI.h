@@ -46,7 +46,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef type::Vec<6,Real> Vec6;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, sofa::type::Vec6);
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
@@ -118,7 +118,7 @@ public:
     Data<bool> d_computeTemplateTriangles; ///< Compute with the mesh (not only bounding box)
 
     //Output
-    Data<Vec6> d_box; ///< Bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data<type::Vec6> d_box; ///< Bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data<SetIndex> d_indices; ///< Indices of the points contained in the ROI
     Data<SetIndex> d_edgeIndices; ///< Indices of the edges contained in the ROI
     Data<SetIndex> d_triangleIndices; ///< Indices of the triangles contained in the ROI
@@ -153,7 +153,7 @@ public:
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API MeshROI<defaulttype::Vec6Types>; //Phuoc
- 
+
 #endif
 
 } //namespace sofa::component::engine::select

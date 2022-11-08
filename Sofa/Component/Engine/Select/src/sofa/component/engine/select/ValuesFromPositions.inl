@@ -216,14 +216,14 @@ typename ValuesFromPositions<DataTypes>::Real ValuesFromPositions<DataTypes>::va
 
 
 template <class DataTypes>
-typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::vectorFromPosition(const CPos& p, const TempData& data)
+typename type::Vec3 ValuesFromPositions<DataTypes>::vectorFromPosition(const CPos& p, const TempData& data)
 {
     (void)p;
     return data.dir;
 }
 
 template <class DataTypes>
-typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::vectorFromPoint(const PointID& pid, const TempData& data)
+typename type::Vec3 ValuesFromPositions<DataTypes>::vectorFromPoint(const PointID& pid, const TempData& data)
 {
     const VecCoord* x0 = data.x0;
     CPos p =  DataTypes::getCPos((*x0)[pid]);
@@ -231,7 +231,7 @@ typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::ve
 }
 
 template <class DataTypes>
-typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::vectorFromEdge(const Edge& e, const TempData& data)
+typename type::Vec3 ValuesFromPositions<DataTypes>::vectorFromEdge(const Edge& e, const TempData& data)
 {
     const VecCoord* x0 = data.x0;
     CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
@@ -242,7 +242,7 @@ typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::ve
 }
 
 template <class DataTypes>
-typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::vectorFromTriangle(const Triangle& t, const TempData& data)
+typename type::Vec3 ValuesFromPositions<DataTypes>::vectorFromTriangle(const Triangle& t, const TempData& data)
 {
     const VecCoord* x0 = data.x0;
     CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
@@ -254,7 +254,7 @@ typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::ve
 }
 
 template <class DataTypes>
-typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::vectorFromTetrahedron(const Tetra &t, const TempData& data)
+typename type::Vec3 ValuesFromPositions<DataTypes>::vectorFromTetrahedron(const Tetra &t, const TempData& data)
 {
     const VecCoord* x0 = data.x0;
     CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
@@ -355,10 +355,10 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
     helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
-    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > pointVectors = f_pointVectors;
-    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > edgeVectors = f_edgeVectors;
-    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > triangleVectors = f_triangleVectors;
-    helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<type::Vec3> > > pointVectors = f_pointVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<type::Vec3> > > edgeVectors = f_edgeVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<type::Vec3> > > triangleVectors = f_triangleVectors;
+    helper::WriteAccessor< Data<sofa::type::vector<type::Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
     // Clear lists
     pointVectors.clear();
@@ -369,7 +369,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
     //Points
     for( unsigned int i=0; i<x0->size(); ++i )
     {
-        Vec3 v3 = vectorFromPoint(i, _data);
+        type::Vec3 v3 = vectorFromPoint(i, _data);
         pointVectors.push_back(v3);
     }
 
@@ -377,7 +377,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
     for(unsigned int i=0 ; i<edges.size() ; i++)
     {
         Edge e = edges[i];
-        Vec3 v3 = vectorFromEdge(e, _data);
+        type::Vec3 v3 = vectorFromEdge(e, _data);
         edgeVectors.push_back(v3);
     }
 
@@ -385,7 +385,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
     for(unsigned int i=0 ; i<triangles.size() ; i++)
     {
         Triangle t = triangles[i];
-        Vec3 v3 = vectorFromTriangle(t, _data);
+        type::Vec3 v3 = vectorFromTriangle(t, _data);
         triangleVectors.push_back(v3);
     }
 
@@ -393,7 +393,7 @@ void ValuesFromPositions<DataTypes>::updateVectors(TempData &_data)
     for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
     {
         Tetra t = tetrahedra[i];
-        Vec3 v3 = vectorFromTetrahedron(t, _data);
+        type::Vec3 v3 = vectorFromTetrahedron(t, _data);
         tetrahedronVectors.push_back(v3);
     }
 }
@@ -410,7 +410,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
 
         const VecCoord* x0 = &f_X0.getValue();
         helper::ReadAccessor< Data<type::vector<Tetra> > > tetrahedra = f_tetrahedra;
-        helper::WriteAccessor< Data<sofa::type::vector<Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
+        helper::WriteAccessor< Data<sofa::type::vector<type::Vec3> > > tetrahedronVectors = f_tetrahedronVectors;
 
         CPos point2, point1;
         std::vector<sofa::type::RGBAColor> colors;
@@ -433,7 +433,7 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
 
             colors.push_back(color);
             colors.push_back(color);
-            
+
             vertices.push_back(point1);
             vertices.push_back(point2);
         }

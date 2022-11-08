@@ -259,7 +259,7 @@ template <class DataTypes>
 void MeshROI<DataTypes>::computeBoundingBox()
 {
     // Bounding Box computation
-    Vec6 b=d_box.getValue();
+    type::Vec6 b=d_box.getValue();
     ReadAccessor<Data<VecCoord>> points_i = d_X0_i;
     if(points_i.size()>0)
     {
@@ -312,7 +312,7 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
     if(isPointInBoundingBox(p))
     {
         // Compute the reference point outside the bounding box
-        const Vec6 b = d_box.getValue();
+        const type::Vec6 b = d_box.getValue();
         typename DataTypes::CPos Vec;
         if (( (b[0]-p[0])*(b[0]-p[0]) + (b[1]-p[1])*(b[1]-p[1]) + (b[2]-p[2])*(b[2]-p[2]) ) < ( (b[3]-p[0])*(b[3]-p[0]) + (b[4]-p[1])*(b[4]-p[1]) + (b[5]-p[2])*(b[5]-p[2]) ) )
         {
@@ -381,7 +381,7 @@ bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId)
 template <class DataTypes>
 bool MeshROI<DataTypes>::isPointInBoundingBox(const typename DataTypes::CPos& p)
 {
-    const Vec6 b = d_box.getValue();
+    const type::Vec6 b = d_box.getValue();
     if( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] )
         return true;
     return false;
@@ -656,7 +656,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     if( d_drawBox.getValue())
     {
         vertices.clear();
-        const Vec6& b = d_box.getValue();
+        const type::Vec6& b = d_box.getValue();
         const sofa::type::Vec3 minBBox(b[0], b[1], b[2]);
         const sofa::type::Vec3 maxBBox(b[3], b[4], b[5]);
 

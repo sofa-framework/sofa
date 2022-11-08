@@ -48,12 +48,12 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef type::Vec<6,Real> Vec6;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, type::Vec6);
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
     typedef unsigned int PointID;
- 
+
 protected:
 
     PairBoxROI();
@@ -88,20 +88,20 @@ public:
     }
 
 protected:
-    bool isPointInBox(const CPos& p, const Vec6& b);
-    bool isPointInBox(const PointID& pid, const Vec6& b);
+    bool isPointInBox(const CPos& p, const type::Vec6& b);
+    bool isPointInBox(const PointID& pid, const type::Vec6& b);
 
 public:
     //Input
     /// A box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     //Box surrounding the mesh
-    Data<Vec6> inclusiveBox; ///< Inclusive box defined by xmin,ymin,zmin, xmax,ymax,zmax
-    //Box inside the mesh 
-    Data<Vec6> includedBox; ///< Included box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data<type::Vec6> inclusiveBox; ///< Inclusive box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    //Box inside the mesh
+    Data<type::Vec6> includedBox; ///< Included box defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
     // Point coordinates of the mesh in 3D in double.
     Data <VecCoord> positions; ///< Vertices of the mesh loaded
-   
+
 
     //Output
     Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
@@ -118,7 +118,7 @@ public:
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
- 
+
 #endif
 
 } //namespace sofa::component::engine::select

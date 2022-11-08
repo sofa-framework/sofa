@@ -38,8 +38,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::type::Vec<3,Real> Vec3;
-    typedef unsigned int Index;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
 protected:
 
@@ -52,7 +52,7 @@ public:
 
     //Input
     Data<sofa::type::vector<Real> > f_inputValues; ///< Already existing values (can be empty)
-    Data<sofa::type::vector<Index> > f_indices; ///< Indices to map value on
+    Data<sofa::type::vector<sofa::Index> > f_indices; ///< Indices to map value on
     Data<Real> f_value; ///< Value to map indices on
 
     //Output
@@ -65,7 +65,7 @@ public:
 
 #if  !defined(INDEXVALUEMAPPER_CPP_)
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API IndexValueMapper<sofa::defaulttype::Vec3Types>;
- 
+
 #endif
 
 } //namespace sofa::component::engine::transform

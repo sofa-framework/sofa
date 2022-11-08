@@ -57,7 +57,7 @@ template <class DataTypes>
 void IndexValueMapper<DataTypes>::doUpdate()
 {
     helper::ReadAccessor< Data< type::vector<Real> > > inputValues = f_inputValues;
-    helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices;
+    helper::ReadAccessor< Data< type::vector<sofa::Index> > > indices = f_indices;
     const Real& value = f_value.getValue();
 
     helper::WriteOnlyAccessor< Data< type::vector<Real> > > outputValues = f_outputValues;
@@ -73,14 +73,14 @@ void IndexValueMapper<DataTypes>::doUpdate()
     //add new value
     for(unsigned int i=0 ; i<indices.size() ; i++)
     {
-        Index ind = indices[i];
+        sofa::Index ind = indices[i];
         //new index may be bigger than the current existing map, so have to resize it
         if (ind >= outputValues.size())
         {
-            const auto oldSize = sofa::helper::narrow_cast<Index>(outputValues.size());
+            const auto oldSize = sofa::helper::narrow_cast<sofa::Index>(outputValues.size());
             outputValues.resize(ind+1);
             //if there is hole when resizing, put default value
-            for (Index j=oldSize ; j<ind+1 ; ++j)
+            for (sofa::Index j=oldSize ; j<ind+1 ; ++j)
                 outputValues[j] = defaultValue;
         }
         outputValues[ind] = value;

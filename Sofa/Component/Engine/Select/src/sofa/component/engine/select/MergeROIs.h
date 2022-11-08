@@ -40,17 +40,17 @@ namespace sofa::component::engine::select
 class SOFA_COMPONENT_ENGINE_SELECT_API MergeROIs : public sofa::core::DataEngine
 {
 public:
-    typedef core::DataEngine Inherited;
+    SOFA_CLASS(MergeROIs, DataEngine);
 
-    SOFA_CLASS(MergeROIs,Inherited);
-    typedef sofa::Index Index;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Inherited, Inherit1);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
     //Input
     Data<unsigned int> d_nbROIs; ///< size of indices/value vector
-    core::objectmodel::vectorData<type::vector<Index> > f_indices;
+    core::objectmodel::vectorData<type::vector<sofa::Index> > f_indices;
 
     //Output
-    Data<type::vector<type::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
+    Data<type::vector<type::SVector<sofa::Index> > > d_outputIndices; ///< Vector of ROIs
 
     void init() override;
     void reinit() override;
@@ -63,7 +63,7 @@ public:
 
 protected:
 
-    MergeROIs(): Inherited()
+    MergeROIs(): Inherit1()
         , d_nbROIs ( initData ( &d_nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
         , f_indices(this, "indices", "ROIs", sofa::core::objectmodel::DataEngineDataType::DataEngineInput)
         , d_outputIndices(initData(&d_outputIndices, "roiIndices", "Vector of ROIs"))
