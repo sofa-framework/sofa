@@ -208,7 +208,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         using sofa::helper::lifecycle::uncreatableComponents;
         if(it == registry.end())
         {
-            arg->logError("The object '"+classname+"' is not in the factory.");
+            arg->logError("The object '" + classname + "' is not in the factory.");
             auto uuncreatableComponent = uncreatableComponents.find(classname);
             if( uuncreatableComponent != uncreatableComponents.end() )
             {
