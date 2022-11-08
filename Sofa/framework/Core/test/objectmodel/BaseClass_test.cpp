@@ -26,6 +26,8 @@ using sofa::core::objectmodel::Base ;
 #include <sofa/helper/NameDecoder.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/defaulttype/VecTypes.h>
+
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
 
@@ -148,6 +150,10 @@ public:
     DefaultTemplate3<DataOne, DataTwo, NotAType> m_ptr9;
     OuterClass<DataOne> m_ptr10;
     OuterClass<DataOne>::InnerClass<DataTwo> m_ptr11;
+    DefaultTemplate1<float> m_ptr12;
+    DefaultTemplate1<sofa::type::vector<float>> m_ptr13;
+    DefaultTemplate1<sofa::type::Vec3d> m_ptr14;
+    DefaultTemplate1<sofa::defaulttype::Vec3dTypes> m_ptr15;
 
     sofa::core::objectmodel::Base* m_baseptr1 {&m_ptr1};
     sofa::core::objectmodel::Base* m_baseptr2 {&m_ptr2};
@@ -227,6 +233,11 @@ TEST_F(BaseClass_test, checkStaticDefaultTemplate  )
 
     EXPECT_EQ(m_ptr9.getClassName(),"DefaultTemplate3") ;
     EXPECT_EQ(m_ptr9.getTemplateName(),"One,Two,NotAType") ;
+
+    EXPECT_EQ(m_ptr12.getTemplateName(),"f") ;
+    EXPECT_EQ(m_ptr13.getTemplateName(),"vector<f>") ;
+    EXPECT_EQ(m_ptr14.getTemplateName(),"Vec3d") ;
+    EXPECT_EQ(m_ptr15.getTemplateName(),"Vec3d") ;
 }
 
 TEST_F(BaseClass_test, checkStaticDefaultTemplateOverridenByCustom  )

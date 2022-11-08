@@ -26,6 +26,11 @@
 #include <tuple>
 #include <sofa/helper/config.h>
 
+namespace sofa::defaulttype
+{
+    template<class T> class DataTypeInfo;
+}
+
 namespace sofa::helper
 {
 
@@ -62,6 +67,19 @@ class HasName
     typedef char NoType[2];
 
     template<typename C> static YesType& test( decltype (&C::Name) );
+    template<typename C> static NoType& test(...);
+
+public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
+template<class T>
+class HasDataTypeInfo
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&sofa::defaulttype::DataTypeInfo<C>::name) );
     template<typename C> static NoType& test(...);
 
 public:
@@ -264,6 +282,8 @@ std::string GetSofaTypeTemplateName(const std::string prefix)
 {
     if constexpr (HasName<T>::value )
             return prefix + T::Name();
+    if constexpr (HasDataTypeInfo<T>::value )
+            return prefix + sofa::defaulttype::DataTypeInfo<T>::name();
     return prefix + sofa::helper::NameDecoder::decodeTypeName(typeid(T));
 }
 
