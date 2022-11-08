@@ -424,6 +424,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     if (dataVec.empty() && linkVec.empty())
     {
         std::vector<std::string> possibleNames;
+        possibleNames.reserve(m_vecData.size() + m_vecLink.size());
         for(auto& data : m_vecData)
             possibleNames.emplace_back(data->getName());
         for(auto& link : m_vecLink)
