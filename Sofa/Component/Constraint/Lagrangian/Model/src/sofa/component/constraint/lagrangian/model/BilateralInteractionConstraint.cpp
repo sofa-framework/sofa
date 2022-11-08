@@ -29,10 +29,6 @@
 namespace sofa::component::constraint::lagrangian::model
 {
 
-namespace bilateralinteractionconstraint
-{
-
-
 class RigidImpl {};
 
 
@@ -330,7 +326,5 @@ int BilateralInteractionConstraintClass = core::RegisterObject("BilateralInterac
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint<Vec3Types>;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint<Rigid3Types>;
-
-}
 
 } //namespace sofa::component::constraint::lagrangian::model
