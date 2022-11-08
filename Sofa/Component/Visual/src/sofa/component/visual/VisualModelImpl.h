@@ -80,7 +80,7 @@ public:
     typedef type::vector<TexCoord> VecTexCoord;
 
     using Index = sofa::Index;
-    
+
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
 
@@ -326,7 +326,7 @@ public:
     {
         return m_quads.getValue();
     }
-    
+
     const VecVisualEdge& getEdges() const
     {
         return m_edges.getValue();
@@ -366,7 +366,7 @@ public:
     {
         m_quads.setValue(*q);
     }
-    
+
     void setEdges(VecVisualEdge * e)
     {
         m_edges.setValue(*e);
@@ -397,13 +397,6 @@ public:
     /// This method should update them
     void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, Index& vindex, Index& nindex, Index& tindex, int& count) override;
 
-    /// Returns the sofa class name. By default the name of the c++ class is exposed...
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static std::string GetCustomTemplateName()
-    {
-        return sofa::helper::NameDecoder::getTemplateName<Vec3State>();
-    }
-
     /// Utility method to compute tangent from vertices and texture coordinates.
     static Coord computeTangent(const Coord &v1, const Coord &v2, const Coord &v3,
             const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
@@ -421,7 +414,7 @@ public:
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 protected:
-    /// Internal buffer to be filled by topology Data @sa m_triangles callback when points are removed. Those dirty triangles will be updated at next updateVisual 
+    /// Internal buffer to be filled by topology Data @sa m_triangles callback when points are removed. Those dirty triangles will be updated at next updateVisual
     /// This avoid to update the whole mesh.
     std::set< sofa::core::topology::BaseMeshTopology::TriangleID> m_dirtyTriangles;
 

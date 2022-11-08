@@ -61,13 +61,6 @@ public:
 
     void doUpdate() override;
 
-    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName()
-    {
-        return Data<Value>::templateName();
-    }
-
     Data<unsigned int> f_nbInputs; ///< Number of input vectors
     core::objectmodel::vectorData<VecValue> vf_inputs;
     Data<VecValue> f_output; ///< Output vector
@@ -88,7 +81,7 @@ extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaultty
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
- 
+
 #endif
 
 } //namespace sofa::component::engine::generate

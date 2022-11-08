@@ -63,12 +63,6 @@ public:
     core::objectmodel::Data<VecIndex> f_otherIndices; ///< Output indices of the other values, (NOT the given ones) searched in global
     core::objectmodel::Data<bool> f_recursiveSearch; ///< if set to true, output are indices of the "global" data matching with one of the values
 
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
-    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
-    static std::string GetCustomTemplateName()
-    {
-        return sofa::defaulttype::DataTypeName<T>::name();
-    }
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
@@ -86,7 +80,7 @@ extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<type::V
 // extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
 // extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
 // extern template class SOFA_COMPONENT_ENGINE_SELECT_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
- 
+
 #endif
 
 } //namespace sofa::component::engine::select

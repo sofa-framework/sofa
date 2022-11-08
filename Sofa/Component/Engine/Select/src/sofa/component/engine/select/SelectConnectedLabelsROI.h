@@ -53,10 +53,6 @@ public:
     //Output
     Data<type::vector<Index> > d_indices; ///< selected point/cell indices
 
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
-    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
-    static std::string GetCustomTemplateName(){       return sofa::defaulttype::DataTypeName<T>::name();    }
-
     SelectConnectedLabelsROI(): Inherited()
       , d_nbLabels ( initData ( &d_nbLabels,(unsigned int)0,"nbLabels","number of label lists" ) )
       , d_labels(this, "labels", "lists of labels associated to each point/cell", core::objectmodel::DataEngineDataType::DataEngineInput)
