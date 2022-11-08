@@ -220,7 +220,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 possibleNames.reserve(registry.size());
                 for(auto& k : registry)
                 {
-                    possibleNames.push_back(k.first);
+                    possibleNames.emplace_back(k.first);
                 }
 
                 arg->logError("But the following exits:");
