@@ -217,6 +217,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             else
             {
                 std::vector<std::string> possibleNames;
+                possibleNames.reserve(registry.size());
                 for(auto& k : registry)
                 {
                     possibleNames.push_back(k.first);
