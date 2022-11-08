@@ -23,6 +23,7 @@
 #include <sofa/simulation/DefaultTaskScheduler.h>
 
 #include <cassert>
+#include <mutex>
 
 namespace sofa::simulation
 {
@@ -192,8 +193,6 @@ void WorkerThread::workUntilDone(Task::Status *status)
 
 bool WorkerThread::popTask(Task **task)
 {
-    TASK_SCHEDULER_PROFILER(Pop);
-
     simulation::ScopedLock lock(m_taskMutex);
     if (!m_tasks.empty())
     {
@@ -215,8 +214,6 @@ bool WorkerThread::pushTask(Task *task)
     }
 
     {
-        TASK_SCHEDULER_PROFILER(Push);
-
         simulation::ScopedLock lock(m_taskMutex);
         int taskId = task->getStatus()->setBusy(true);
         task->m_id = taskId;
@@ -248,34 +245,28 @@ bool WorkerThread::addTask(Task *task)
 
 bool WorkerThread::stealTask(Task **task)
 {
+    for (auto it : m_taskScheduler->_threads)
     {
-        //TASK_SCHEDULER_PROFILER(StealTask);
-
-        for (auto it : m_taskScheduler->_threads)
+        // if this is the main thread continue
+        if (std::this_thread::get_id() == it.first)
         {
-            // if this is the main thread continue
-            if (std::this_thread::get_id() == it.first)
-            {
-                continue;
-            }
-
-            WorkerThread *otherThread = it.second;
-
-            {
-                TASK_SCHEDULER_PROFILER(Steal);
-
-                simulation::ScopedLock lock(otherThread->m_taskMutex);
-                if (!otherThread->m_tasks.empty())
-                {
-                    *task = otherThread->m_tasks.front();
-                    otherThread->m_tasks.pop_front();
-                    return true;
-                }
-            }
-
+            continue;
         }
+
+        WorkerThread *otherThread = it.second;
+        {
+            simulation::ScopedLock lock(otherThread->m_taskMutex);
+            if (!otherThread->m_tasks.empty())
+            {
+                *task = otherThread->m_tasks.front();
+                otherThread->m_tasks.pop_front();
+                return true;
+            }
+        }
+
     }
 
     return false;
 }
-}
+
+} // namespace sofa::simulation

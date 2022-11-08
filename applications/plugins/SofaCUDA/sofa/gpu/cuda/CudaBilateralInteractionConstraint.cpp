@@ -19,40 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.inl>
+#include <sofa/core/behavior/PairInteractionConstraint.inl>
 
-#include <thread>
-
-
-namespace sofa::simulation
+namespace sofa::component::constraint::lagrangian::model
 {
 
-CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-: Task(scheduledThread)
-, m_status(status)
-{
-}
+template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3f1Types>;
 
-CpuTask::Status *CpuTask::getStatus(void) const
-{
-    return m_status;
-}
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BilateralInteractionConstraint<gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-bool CpuTask::Status::isBusy() const
-{
-    return (m_busy.load(std::memory_order_relaxed) > 0);
-}
+} //namespace sofa::component::constraint::lagrangian::model
 
-int CpuTask::Status::setBusy(bool busy)
+namespace sofa::gpu::cuda
 {
-    if (busy)
-    {
-        return m_busy.fetch_add(1, std::memory_order_relaxed);
-    }
-    else
-    {
-        return m_busy.fetch_sub(1, std::memory_order_relaxed);
-    }
-}
 
-} // namespace sofa::simulation
+using namespace sofa::component::constraint::lagrangian::model;
+
+int BilateralInteractionConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    .add< BilateralInteractionConstraint<CudaVec3fTypes> >()
+    .add< BilateralInteractionConstraint<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    .add< BilateralInteractionConstraint<CudaVec3dTypes> >()
+    .add< BilateralInteractionConstraint<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+    ;
+} // namespace sofa::gpu::cuda
