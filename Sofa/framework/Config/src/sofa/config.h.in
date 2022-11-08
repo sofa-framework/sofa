@@ -252,14 +252,14 @@ class DeprecatedAndRemoved {};
 #define SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(type) \
     SOFA_ATTRIBUTE_DISABLED( \
         "v22.12 (PR#3357)", "v24.12", \
-        "Class's member type alias "+sofa_to_string(type)+" was not needed.") \
+        "Class's member type alias " sofa_tostring(type) " was not needed.") \
         DeprecatedAndRemoved type
 
 #define SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(type, newtype) \
-    SOFA_ATTRIBUTE_DISABLED( \
+    SOFA_ATTRIBUTE_DEPRECATED( \
         "v22.12 (PR#3357)", "v24.12", \
-        "This type member " sofa_to_string(type) ". To update your code please replace it with " sofa_to_string(newtype)) \
-        newtype type
+        "This type member " sofa_tostring(type) " is not deprecated. To update your code please replace it with " sofa_tostring(newtype)) \
+        typedef newtype type
 
 #define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
     SOFA_ATTRIBUTE_DEPRECATED( \

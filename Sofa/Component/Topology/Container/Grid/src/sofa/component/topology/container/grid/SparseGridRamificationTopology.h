@@ -117,7 +117,7 @@ protected:
 
     std::map<int, std::pair<type::vector<Connexion*>,int> > _mapHexa_Connexion; // a hexa idx -> the corresponding connexion
 
-    bool intersectionSegmentTriangle(Vector3 s0, Vector3 s1, Vector3 t0, Vector3 t1, Vector3 t2);
+    bool intersectionSegmentTriangle(type::Vec3 s0, type::Vec3 s1, type::Vec3 t0, type::Vec3 t1, type::Vec3 t2);
 
 public :
 

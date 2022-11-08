@@ -36,7 +36,8 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SphereGridTopology : public Gri
 {
 public:
     SOFA_CLASS(SphereGridTopology,GridTopology);
-    using Vector3 = sofa::type::Vec3;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 protected:
     /// Default constructor
     SphereGridTopology();
@@ -47,12 +48,12 @@ public:
     /** \brief Overload method of @sa GridTopology::getPoint.
      * Get Point in grid @return Vec3 given its @param id i. Will call @sa getPointInGrid.
      * */
-    Vector3 getPoint(Index i) const override;
+    type::Vec3 getPoint(Index i) const override;
 
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
      * Get Point in grid @return Vec3 given its position in grid @param i, @param j, @param k
      * */
-    Vector3 getPointInGrid(int i, int j, int k) const override;
+    type::Vec3 getPointInGrid(int i, int j, int k) const override;
 
     /// Set Sphere grid center by @param 3 SReal
     void setCenter(SReal x, SReal y, SReal z);
@@ -63,9 +64,9 @@ public:
 
 public:
     /// Data storing the center position
-    Data< Vector3 > d_center;
+    Data< type::Vec3 > d_center;
     /// Data storing the axis direction
-    Data< Vector3 > d_axis;
+    Data< type::Vec3 > d_axis;
     /// Data storing the radius value
     Data< SReal > d_radius;
 
