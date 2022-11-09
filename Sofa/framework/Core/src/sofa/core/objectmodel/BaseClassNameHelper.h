@@ -263,9 +263,10 @@ std::string GetSofaTypeTemplateName(const std::string prefix)
 {
     if constexpr (HasName<T>::value )
             return prefix + T::Name();
-    if constexpr (HasDataTypeInfo<T>::value )
+    else if constexpr (HasDataTypeInfo<T>::value )
             return prefix + sofa::defaulttype::DataTypeInfo<T>::name();
-    return prefix + sofa::helper::NameDecoder::decodeTypeName(typeid(T));
+    else
+        return prefix + sofa::helper::NameDecoder::decodeTypeName(typeid(T));
 }
 
 template<typename T1, typename T2, typename ...Ts>
