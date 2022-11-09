@@ -32,13 +32,25 @@ class SOFA_HELPER_API NameDecoder
 {
 public:
     SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
-    DeprecatedAndRemoved getClassName;
+    template<class T>
+    std::string getClassName()
+    {
+        return decodeNamespaceName(typeid(T));
+    }
 
     SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
-    DeprecatedAndRemoved getTemplateName;
+    template<class T>
+    std::string getTemplateName()
+    {
+        return decodeTemplateName(typeid(T));
+    }
 
     SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
-    DeprecatedAndRemoved getShortName;
+    template<class T>
+    static std::string getShortName()
+    {
+        return shortName(decodeTypeName(typeid(T)));
+    }
 
     /// Helper method to get the type name
     template<class T>
