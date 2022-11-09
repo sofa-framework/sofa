@@ -243,6 +243,12 @@ class DeprecatedAndRemoved {};
         "v21.06 (PR#1808)", "v21.12", \
         "replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
 
+#define SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.12 (PR#1808)", "v23.12", \
+        "The feature has been move to BaseClassNameHelper. To update your code, replace sofa::helper::NameDecoder with sofa::core::objectmodel::BaseClassNameDecoder")
+
+
 #define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v21.12 (PR#2292)", "v22.06", \

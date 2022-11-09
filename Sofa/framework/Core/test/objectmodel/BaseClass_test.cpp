@@ -180,13 +180,13 @@ TEST_F(BaseClass_test, checkClassEquivalence  )
 
 TEST_F(BaseClass_test, checkStaticClassName  )
 {
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr1)>(),"EmptyObject");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr2)>(),"NumberedClass123");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr3)>(),"NumberedClass456");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr1)>(),"EmptyObject");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr2)>(),"NumberedClass123");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr3)>(),"NumberedClass456");
 
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::another_namespace::EmptyObject>(),"EmptyObject");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::NumberedClass123>(),"NumberedClass123");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::NumberedClass456>(),"NumberedClass456");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::another_namespace::EmptyObject>(),"EmptyObject");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::numbered_namespace_123::NumberedClass123>(),"NumberedClass123");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::numbered_namespace_123::NumberedClass456>(),"NumberedClass456");
 }
 
 TEST_F(BaseClass_test, checkDynamicClassName  )
@@ -258,11 +258,11 @@ TEST_F(BaseClass_test, checkNameSpace)
 TEST_F(BaseClass_test, checkStaticGetCustomClassNameOldWay  )
 {
     EXPECT_EQ(m_ptr5.getClass()->shortName,"MECHANICAL") ;
-    EXPECT_EQ(sofa::helper::NameDecoder::getShortName<sofa::numbered_namespace_123::CustomNameOldWay>(), "MECHANICAL" );
+    EXPECT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getShortName<sofa::numbered_namespace_123::CustomNameOldWay>(), "MECHANICAL" );
     ASSERT_EQ(m_ptr5.getClassName(),"ClassWithACustomNameOldWay") ;
     ASSERT_EQ(m_baseptr5->getClassName(),"ClassWithACustomNameOldWay") ;
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr5)>(),"ClassWithACustomNameOldWay") ;
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::CustomNameOldWay>(),"ClassWithACustomNameOldWay") ;
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr5)>(),"ClassWithACustomNameOldWay") ;
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::numbered_namespace_123::CustomNameOldWay>(),"ClassWithACustomNameOldWay") ;
 }
 
 TEST_F(BaseClass_test, checkNestedClass)

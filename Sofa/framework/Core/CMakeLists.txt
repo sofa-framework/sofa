@@ -114,6 +114,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/AspectPool.h
     ${SRC_ROOT}/objectmodel/Base.h
     ${SRC_ROOT}/objectmodel/BaseClass.h
+    ${SRC_ROOT}/objectmodel/BaseClassNameHelper.h
     ${SRC_ROOT}/objectmodel/BaseContext.h
     ${SRC_ROOT}/objectmodel/BaseData.h
     ${SRC_ROOT}/objectmodel/BaseLink.h
