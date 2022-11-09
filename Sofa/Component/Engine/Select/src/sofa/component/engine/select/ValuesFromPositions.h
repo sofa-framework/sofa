@@ -49,7 +49,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef type::vector<Real> VecReal;
     typedef typename DataTypes::CPos CPos;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
+    typedef type::Vec<3, Real> Vec3;
+
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
@@ -105,11 +106,11 @@ protected:
     Real valueFromTetrahedron(const Tetra &t, const TempData& data);
 
     void updateVectors(TempData& _data);
-    type::Vec3 vectorFromPosition(const CPos& p, const TempData& data);
-    type::Vec3 vectorFromPoint(const PointID& pid, const TempData& data);
-    type::Vec3 vectorFromEdge(const Edge& e, const TempData& data);
-    type::Vec3 vectorFromTriangle(const Triangle& t, const TempData& data);
-    type::Vec3 vectorFromTetrahedron(const Tetra &t, const TempData& data);
+    Vec3 vectorFromPosition(const CPos& p, const TempData& data);
+    Vec3 vectorFromPoint(const PointID& pid, const TempData& data);
+    Vec3 vectorFromEdge(const Edge& e, const TempData& data);
+    Vec3 vectorFromTriangle(const Triangle& t, const TempData& data);
+    Vec3 vectorFromTetrahedron(const Tetra &t, const TempData& data);
 
 public:
     //Input
@@ -127,20 +128,20 @@ public:
     Data<VecReal> f_tetrahedronValues; ///< Values of the tetrahedra contained in the ROI
 
     //Output vectors
-    Data<sofa::type::vector<type::Vec3> > f_pointVectors; ///< Vectors of the points contained in the ROI
-    Data<sofa::type::vector<type::Vec3> > f_edgeVectors; ///< Vectors of the edges contained in the ROI
-    Data<sofa::type::vector<type::Vec3> > f_triangleVectors; ///< Vectors of the triangles contained in the ROI
-    Data<sofa::type::vector<type::Vec3> > f_tetrahedronVectors; ///< Vectors of the tetrahedra contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_pointVectors; ///< Vectors of the points contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_edgeVectors; ///< Vectors of the edges contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_triangleVectors; ///< Vectors of the triangles contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_tetrahedronVectors; ///< Vectors of the tetrahedra contained in the ROI
 
     // parameters
     sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType; ///< field type of output elements
     Data <bool> p_drawVectors; ///< draw vectors line
-    Data <float> p_vectorLength; ///< vector length visualisation.
+    Data <float> p_vectorLength; ///< vector length visualisation. 
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromPositions<defaulttype::Rigid3Types>; 
 #endif
 
 } //namespace sofa::component::engine::select

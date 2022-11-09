@@ -47,13 +47,13 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
+    typedef type::Vec<3,Real> Vec3;
 
 protected:
-    RandomPointDistributionInSurface();
-    ~RandomPointDistributionInSurface() override {}
 
+    RandomPointDistributionInSurface();
+
+    ~RandomPointDistributionInSurface() override {}
 public:
     void init() override;
 
@@ -65,7 +65,7 @@ public:
 
     bool initialized;
     helper::RandomGenerator rg;
-    Data<unsigned int> randomSeed; ///< Set a specified seed for random generation (0 for "true pseudo-randomness"
+    Data<unsigned int> randomSeed; ///< Set a specified seed for random generation (0 for "true pseudo-randomness" 
     Data<bool> isVisible; ///< is Visible ?
     Data<bool> drawOutputPoints; ///< Output points visible ?
     Data<Real> minDistanceBetweenPoints; ///< Min Distance between 2 points (-1 for true randomness)
@@ -83,9 +83,9 @@ public:
 protected:
     VecCoord directions;
     helper::TriangleOctreeRoot trianglesOctree;
-    void getBBox(type::Vec3 &minBBox, type::Vec3 &maxBBox);
+    void getBBox(Vec3 &minBBox, Vec3 &maxBBox);
     void generateRandomDirections();
-    type::Vec3 generateRandomPoint(const type::Vec3 &minBBox, const type::Vec3 &maxBBox);
+    Vec3 generateRandomPoint(const Vec3 &minBBox, const Vec3 &maxBBox);
     bool isInside(Coord p);
     bool testDistance(Coord p);
 };

@@ -107,13 +107,13 @@ void PairBoxROI<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-bool PairBoxROI<DataTypes>::isPointInBox(const typename DataTypes::CPos& p, const type::Vec6& b)
+bool PairBoxROI<DataTypes>::isPointInBox(const typename DataTypes::CPos& p, const Vec6& b)
 {
     return ( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] );
 }
 
 template <class DataTypes>
-bool PairBoxROI<DataTypes>::isPointInBox(const PointID& pid, const type::Vec6& b)
+bool PairBoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 {
     const VecCoord* x0 = &f_X0.getValue();
     CPos p =  DataTypes::getCPos((*x0)[pid]);
@@ -126,10 +126,10 @@ void PairBoxROI<DataTypes>::doUpdate()
 {
    const VecCoord* x0 = &f_X0.getValue();
 
-   type::Vec6& maxvb = *(inclusiveBox.beginEdit());
-   type::Vec6& minvb = *(includedBox.beginEdit());
+   Vec6& maxvb = *(inclusiveBox.beginEdit());
+   Vec6& minvb = *(includedBox.beginEdit());
 
-    if (maxvb==type::Vec6(0,0,0,0,0,0)|| minvb==type::Vec6(0,0,0,0,0,0))
+    if (maxvb==Vec6(0,0,0,0,0,0)|| minvb==Vec6(0,0,0,0,0,0))
     {
         inclusiveBox.endEdit();
         includedBox.endEdit();
@@ -190,7 +190,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        const type::Vec6& vb=inclusiveBox.getValue();
+        const Vec6& vb=inclusiveBox.getValue();
         const sofa::type::Vec3 minBBox(vb[0], vb[1], vb[2]);
         const sofa::type::Vec3 maxBBox(vb[3], vb[4], vb[5]);
         vparams->drawTool()->setMaterial(color);
@@ -202,7 +202,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        const type::Vec6& vb=includedBox.getValue();
+        const Vec6& vb=includedBox.getValue();
         const sofa::type::Vec3 minBBox(vb[0], vb[1], vb[2]);
         const sofa::type::Vec3 maxBBox(vb[3], vb[4], vb[5]);
         vparams->drawTool()->setMaterial(color);

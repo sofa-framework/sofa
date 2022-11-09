@@ -40,7 +40,7 @@ using namespace sofa::core::topology;
 template <class DataTypes>
 TopologyBoundingTrasher<DataTypes>::TopologyBoundingTrasher()
     : d_positions(initData(&d_positions, "position", "position coordinates of the topology object to interact with."))
-    , d_borders(initData(&d_borders, type::Vec6(-1000, -1000, -1000, 1000, 1000, 1000), "box", "List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax"))
+    , d_borders(initData(&d_borders, Vec6(-1000, -1000, -1000, 1000, 1000, 1000), "box", "List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax"))
     , d_drawBox(initData(&d_drawBox, false, "drawBox", "Draw Boxes. (default = false)"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
@@ -79,7 +79,7 @@ void TopologyBoundingTrasher<DataTypes>::init()
         return;
     }
 
-
+    
     if (m_topology->getNbHexahedra() > 0)
     {
         m_topologyType = TopologyElementType::HEXAHEDRON;
@@ -88,7 +88,7 @@ void TopologyBoundingTrasher<DataTypes>::init()
         {
             msg_error() << "Hexahedron topology but no Modifier found. Add the component HexahedronSetTopologyModifier.";
             m_topologyType = TopologyElementType::UNKNOWN;
-        }
+        }        
     }
     else if (m_topology->getNbTetrahedra() > 0)
     {
@@ -98,7 +98,7 @@ void TopologyBoundingTrasher<DataTypes>::init()
         {
             msg_error() << "Tetrahedron topology but no modifier found. Add the component TetrahedronSetTopologyModifier.";
             m_topologyType = TopologyElementType::UNKNOWN;
-        }
+        }        
     }
     else if (m_topology->getNbQuads() > 0)
     {
@@ -108,7 +108,7 @@ void TopologyBoundingTrasher<DataTypes>::init()
         {
             msg_error() << "Quad topology but no modifier found. Add the component QuadSetTopologyModifier.";
             m_topologyType = TopologyElementType::UNKNOWN;
-        }
+        }        
     }
     else if (m_topology->getNbTriangles() > 0)
     {
@@ -118,7 +118,7 @@ void TopologyBoundingTrasher<DataTypes>::init()
         {
             msg_error() << "Triangle topology but no modifier found. Add the component TriangleSetTopologyModifier.";
             m_topologyType = TopologyElementType::UNKNOWN;
-        }
+        }        
     }
     else if (m_topology->getNbEdges() > 0)
     {
@@ -128,7 +128,7 @@ void TopologyBoundingTrasher<DataTypes>::init()
         {
             msg_error() << "Edge topology but no modifier found. Add the component EdgeSetTopologyModifier.";
             m_topologyType = TopologyElementType::UNKNOWN;
-        }
+        }        
     }
 
     reinit();
@@ -138,7 +138,7 @@ void TopologyBoundingTrasher<DataTypes>::init()
 template <class DataTypes>
 void TopologyBoundingTrasher<DataTypes>::reinit()
 {
-    const type::Vec6& border = d_borders.getValue();
+    const Vec6& border = d_borders.getValue();
     Real minBBox[3] = { border[0], border[1], border[2] };
     Real maxBBox[3] = { border[3], border[4], border[5] };
     this->f_bbox.setValue(type::TBoundingBox<Real>(minBBox, maxBBox));
@@ -150,7 +150,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
 {
     sofa::helper::AdvancedTimer::stepBegin("filterElementsToRemove");
     const VecCoord& positions = d_positions.getValue();
-    const type::Vec6& border = d_borders.getValue();
+    const Vec6& border = d_borders.getValue();
     m_indicesToRemove.clear();
     int cpt = 0;
     if (m_topologyType == TopologyElementType::HEXAHEDRON)
@@ -165,7 +165,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
             bary /= 8;
             if (isPointOutside(bary, border))
                 m_indicesToRemove.push_back(cpt);
-
+            
             cpt++;
         }
     }
@@ -233,7 +233,7 @@ void TopologyBoundingTrasher<DataTypes>::filterElementsToRemove()
             cpt++;
         }
     }
-
+   
     if (!m_indicesToRemove.empty())
         removeElements();
 
@@ -269,7 +269,7 @@ void TopologyBoundingTrasher<DataTypes>::removeElements()
 
 
 template <class DataTypes>
-constexpr bool TopologyBoundingTrasher<DataTypes>::isPointOutside(const Coord& value, const type::Vec6& bb)
+constexpr bool TopologyBoundingTrasher<DataTypes>::isPointOutside(const Coord& value, const Vec6& bb)
 {
     if (value[0] < bb[0] || value[0] > bb[3]) // check x
         return true;
@@ -299,39 +299,39 @@ void TopologyBoundingTrasher<DataTypes>::draw(const core::visual::VisualParams* 
 {
     if (d_drawBox.getValue())
     {
-        const type::Vec6& border = d_borders.getValue();
+        const Vec6& border = d_borders.getValue();
         constexpr auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
-        std::vector<type::Vec3> vertices;
+        std::vector<Vector3> vertices;
         const Real& Xmin = border[0];
         const Real& Xmax = border[3];
         const Real& Ymin = border[1];
         const Real& Ymax = border[4];
         const Real& Zmin = border[2];
         const Real& Zmax = border[5];
-        vertices.push_back(type::Vec3(Xmin, Ymin, Zmin));
-        vertices.push_back(type::Vec3(Xmin, Ymin, Zmax));
-        vertices.push_back(type::Vec3(Xmin, Ymin, Zmin));
-        vertices.push_back(type::Vec3(Xmax, Ymin, Zmin));
-        vertices.push_back(type::Vec3(Xmin, Ymin, Zmin));
-        vertices.push_back(type::Vec3(Xmin, Ymax, Zmin));
-        vertices.push_back(type::Vec3(Xmin, Ymax, Zmin));
-        vertices.push_back(type::Vec3(Xmax, Ymax, Zmin));
-        vertices.push_back(type::Vec3(Xmin, Ymax, Zmin));
-        vertices.push_back(type::Vec3(Xmin, Ymax, Zmax));
-        vertices.push_back(type::Vec3(Xmin, Ymax, Zmax));
-        vertices.push_back(type::Vec3(Xmin, Ymin, Zmax));
-        vertices.push_back(type::Vec3(Xmin, Ymin, Zmax));
-        vertices.push_back(type::Vec3(Xmax, Ymin, Zmax));
-        vertices.push_back(type::Vec3(Xmax, Ymin, Zmax));
-        vertices.push_back(type::Vec3(Xmax, Ymax, Zmax));
-        vertices.push_back(type::Vec3(Xmax, Ymin, Zmax));
-        vertices.push_back(type::Vec3(Xmax, Ymin, Zmin));
-        vertices.push_back(type::Vec3(Xmin, Ymax, Zmax));
-        vertices.push_back(type::Vec3(Xmax, Ymax, Zmax));
-        vertices.push_back(type::Vec3(Xmax, Ymax, Zmin));
-        vertices.push_back(type::Vec3(Xmax, Ymin, Zmin));
-        vertices.push_back(type::Vec3(Xmax, Ymax, Zmin));
-        vertices.push_back(type::Vec3(Xmax, Ymax, Zmax));
+        vertices.push_back(Vector3(Xmin, Ymin, Zmin));
+        vertices.push_back(Vector3(Xmin, Ymin, Zmax));
+        vertices.push_back(Vector3(Xmin, Ymin, Zmin));
+        vertices.push_back(Vector3(Xmax, Ymin, Zmin));
+        vertices.push_back(Vector3(Xmin, Ymin, Zmin));
+        vertices.push_back(Vector3(Xmin, Ymax, Zmin));
+        vertices.push_back(Vector3(Xmin, Ymax, Zmin));
+        vertices.push_back(Vector3(Xmax, Ymax, Zmin));
+        vertices.push_back(Vector3(Xmin, Ymax, Zmin));
+        vertices.push_back(Vector3(Xmin, Ymax, Zmax));
+        vertices.push_back(Vector3(Xmin, Ymax, Zmax));
+        vertices.push_back(Vector3(Xmin, Ymin, Zmax));
+        vertices.push_back(Vector3(Xmin, Ymin, Zmax));
+        vertices.push_back(Vector3(Xmax, Ymin, Zmax));
+        vertices.push_back(Vector3(Xmax, Ymin, Zmax));
+        vertices.push_back(Vector3(Xmax, Ymax, Zmax));
+        vertices.push_back(Vector3(Xmax, Ymin, Zmax));
+        vertices.push_back(Vector3(Xmax, Ymin, Zmin));
+        vertices.push_back(Vector3(Xmin, Ymax, Zmax));
+        vertices.push_back(Vector3(Xmax, Ymax, Zmax));
+        vertices.push_back(Vector3(Xmax, Ymax, Zmin));
+        vertices.push_back(Vector3(Xmax, Ymin, Zmin));
+        vertices.push_back(Vector3(Xmax, Ymax, Zmin));
+        vertices.push_back(Vector3(Xmax, Ymax, Zmax));
         vparams->drawTool()->drawLines(vertices, 1.0, color);
     }
 }

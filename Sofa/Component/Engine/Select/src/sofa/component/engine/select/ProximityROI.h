@@ -45,8 +45,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, sofa::type::Vec6);
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> Vec6;
     typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
@@ -87,7 +87,7 @@ public:
 
 public:
     //Input
-    Data< type::vector<type::Vec3> > centers; ///< Center(s) of the sphere(s)
+    Data< type::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
     Data< type::vector<Real> > radii; ///< Radius(i) of the sphere(s)
     Data<unsigned int> f_num; ///< Maximum number of points to select
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
@@ -108,7 +108,7 @@ public:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ProximityROI<defaulttype::Vec3Types>;
-
+ 
 #endif
 
 } //namespace sofa::component::engine::select

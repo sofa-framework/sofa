@@ -72,7 +72,7 @@ SubsetTopology<DataTypes>::SubsetTopology()
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize,1.0,"drawSize","rendering size for box and topological elements") )
 {
-    boxes.beginEdit()->push_back(type::Vec6(0,0,0,1,1,1));
+    boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
     boxes.endEdit();
     addAlias(&f_X0,"rest_position");
 
@@ -201,12 +201,12 @@ bool SubsetTopology<DataTypes>::isPointInROI(const CPos &p, unsigned int idROI)
 {
     if (typeROI == 0)
     {
-        const type::Vec6& b = boxes.getValue()[idROI];
+        const Vec6& b = boxes.getValue()[idROI];
         return ( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] );
     }
     else
     {
-        const type::Vec3& c = centers.getValue()[idROI];
+        const Vec3& c = centers.getValue()[idROI];
         const Real& r = radii.getValue()[idROI];
 
         if((p-c).norm() > r)
@@ -376,10 +376,10 @@ template <class DataTypes>
 void SubsetTopology<DataTypes>::doUpdate()
 {
     unsigned int ROInum = 0;
-    const type::vector<type::Vec3>& cen = (centers.getValue());
+    const type::vector<Vec3>& cen = (centers.getValue());
     const type::vector<Real>& rad = (radii.getValue());
 
-    type::vector<type::Vec6>& vb = *(boxes.beginEdit());
+    type::vector<Vec6>& vb = *(boxes.beginEdit());
     for (unsigned int bi=0; bi<vb.size(); ++bi)
     {
         if (vb[bi][0] > vb[bi][3]) std::swap(vb[bi][0],vb[bi][3]);
@@ -792,10 +792,10 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawROI.getValue())
     {
         ///draw the boxes
-        const type::vector<type::Vec6>& vb=boxes.getValue();
+        const type::vector<Vec6>& vb=boxes.getValue();
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
-            const type::Vec6& b=vb[bi];
+            const Vec6& b=vb[bi];
             const sofa::type::Vec3 minBBox(b[0], b[1], b[2]);
             const sofa::type::Vec3 maxBBox(b[3], b[4], b[5]);
             vparams->drawTool()->setMaterial(color);
@@ -877,7 +877,7 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
     SOFA_UNUSED(params);
     SOFA_UNUSED(onlyVisible);
 
-    const type::vector<type::Vec6>& vb=boxes.getValue();
+    const type::vector<Vec6>& vb=boxes.getValue();
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
@@ -885,7 +885,7 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
 
     for (unsigned int bi=0; bi<vb.size(); ++bi)
     {
-        const type::Vec6& b=vb[bi];
+        const Vec6& b=vb[bi];
         if (b[0] < minBBox[0]) minBBox[0] = b[0];
         if (b[1] < minBBox[1]) minBBox[1] = b[1];
         if (b[2] < minBBox[2]) minBBox[2] = b[2];

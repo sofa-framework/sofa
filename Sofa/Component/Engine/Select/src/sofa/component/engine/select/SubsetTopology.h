@@ -45,11 +45,11 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, sofa::type::Vec6);
+    typedef type::Vec<6,Real> Vec6;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
+    typedef type::Vec<3,Real> Vec3;
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
@@ -117,13 +117,13 @@ public:
 
     //Input
     //For cube
-    Data< type::vector<type::Vec6> > boxes; ///< Box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< type::vector<Vec6> > boxes; ///< Box defined by xmin,ymin,zmin, xmax,ymax,zmax
 
     //For sphere
-    Data< type::vector<type::Vec3> > centers; ///< Center(s) of the sphere(s)
+    Data< type::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
     Data< type::vector<Real> > radii; ///< Radius(i) of the sphere(s)
-    Data< type::Vec3 > direction; ///< Edge direction(if edgeAngle > 0)
-    Data< type::Vec3 > normal; ///< Normal direction of the triangles (if triAngle > 0)
+    Data< Vec3 > direction; ///< Edge direction(if edgeAngle > 0)
+    Data< Vec3 > normal; ///< Normal direction of the triangles (if triAngle > 0)
     Data< Real > edgeAngle; ///< Max angle between the direction of the selected edges and the specified direction
     Data< Real > triAngle; ///< Max angle between the normal of the selected triangle and the specified normal direction
 
@@ -154,7 +154,7 @@ public:
     Data<type::vector<Tetra> > f_tetrahedraOutROI; ///< Tetrahedra out of the ROI
     Data<type::vector<Hexa> > f_hexahedraInROI; ///< Hexahedra contained in the ROI
     Data<type::vector<Hexa> > f_hexahedraOutROI; ///< Hexahedra out of the ROI
-    Data<unsigned int> f_nbrborder; ///< If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology).
+    Data<unsigned int> f_nbrborder; ///< If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology). 
 
     //Parameter
     Data<bool> p_localIndices; ///< If true, will compute local dof indices in topological elements

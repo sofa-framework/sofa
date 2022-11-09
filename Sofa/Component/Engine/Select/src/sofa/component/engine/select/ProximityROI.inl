@@ -122,7 +122,7 @@ public:
 template <class DataTypes>
 void ProximityROI<DataTypes>::doUpdate()
 {
-    const type::vector<type::Vec3>& cen = (centers.getValue());
+    const type::vector<Vec3>& cen = (centers.getValue());
     const type::vector<Real>& rad = (radii.getValue());
 
     if (cen.empty())
@@ -258,7 +258,7 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         std::vector<sofa::type::Vec3> drawcenters;
         std::vector<float> drawradii;
         ///draw the boxes
-        const type::vector<type::Vec3>& c=centers.getValue();
+        const type::vector<Vec3>& c=centers.getValue();
         const type::vector<Real>& r=radii.getValue();
 
         for (unsigned int i=0; i<c.size() && i<r.size(); ++i)

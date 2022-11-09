@@ -46,7 +46,7 @@ public:
     typedef typename DataTypes::Coord     Coord;
     typedef typename DataTypes::VecCoord  VecCoord;
     typedef typename DataTypes::Real      Real;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
+    typedef type::Vec<3,Real>      Vec3;
 
 protected:
 
@@ -79,7 +79,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDEEDGESANDGENERATEQUADS_CPP)
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API ExtrudeEdgesAndGenerateQuads<defaulttype::Vec3Types>;
-
+ 
 #endif
 
 } //namespace sofa::component::engine::generate

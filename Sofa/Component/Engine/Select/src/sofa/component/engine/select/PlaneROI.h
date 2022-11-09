@@ -45,8 +45,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(PlaneROI,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, sofa::type::Vec6);
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> Vec6;
     typedef type::Vec<10,Real> Vec10;
     typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
@@ -131,14 +131,14 @@ public:
 
 private:
 
-    type::Vec3 p0, p1, p2, p3, p4, p5, p6, p7, plane0, plane1, plane2, plane3, vdepth;
+    Vec3 p0, p1, p2, p3, p4, p5, p6, p7, plane0, plane1, plane2, plane3, vdepth;
     Real width, length, depth;
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PLANEROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PlaneROI<defaulttype::Rigid3Types>;
-
+ 
 #endif
 
 } //namespace sofa::component::engine::select

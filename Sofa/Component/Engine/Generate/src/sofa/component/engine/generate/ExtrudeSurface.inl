@@ -81,7 +81,7 @@ void ExtrudeSurface<DataTypes>::doUpdate()
     std::map<int, int> pointMatching;
     std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
     std::set<int> pointsUsed;
-    std::map<int, std::pair<type::Vec3, unsigned int> > normals;
+    std::map<int, std::pair<Vec3, unsigned int> > normals;
     //first loop to compute normals per point
     for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)
     {
@@ -102,7 +102,7 @@ void ExtrudeSurface<DataTypes>::doUpdate()
         }
     }
     //average normals
-    typename std::map<int, std::pair<type::Vec3, unsigned int> >::iterator itNormals;
+    typename std::map<int, std::pair<Vec3, unsigned int> >::iterator itNormals;
     for (itNormals = normals.begin(); itNormals != normals.end() ; itNormals++)
     {
         //(*itNormals).second.first /= (*itNormals).second.second;

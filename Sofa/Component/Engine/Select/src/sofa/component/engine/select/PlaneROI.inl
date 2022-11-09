@@ -161,9 +161,9 @@ void PlaneROI<DataTypes>::computePlane(unsigned int planeIndex)
     const type::vector<Vec10>& vp=planes.getValue();
     const Vec10& p=vp[planeIndex];
 
-    p0 = type::Vec3(p[0], p[1], p[2]);
-    p1 = type::Vec3(p[3], p[4], p[5]);
-    p2 = type::Vec3(p[6], p[7], p[8]);
+    p0 = Vec3(p[0], p[1], p[2]);
+    p1 = Vec3(p[3], p[4], p[5]);
+    p2 = Vec3(p[6], p[7], p[8]);
     depth = p[9];
 
     vdepth = (p1-p0).cross(p2-p0);
@@ -195,8 +195,8 @@ void PlaneROI<DataTypes>::computePlane(unsigned int planeIndex)
 template <class DataTypes>
 bool PlaneROI<DataTypes>::isPointInPlane(const typename DataTypes::CPos& p)
 {
-    type::Vec3 pv0 = (p-p0);
-    type::Vec3 pv1 = (p-p2);
+    Vec3 pv0 = (p-p0);
+    Vec3 pv1 = (p-p2);
 
     if( fabs(dot(pv0, plane0)) <= width && fabs(dot(pv1, plane1)) <= width )
     {
@@ -411,23 +411,23 @@ void PlaneROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int pi=0; pi<vp.size(); ++pi)
         {
             const Vec10& p=vp[pi];
-            type::Vec3 p0 = type::Vec3(p[0], p[1], p[2]);
-            type::Vec3 p1 = type::Vec3(p[3], p[4], p[5]);
-            type::Vec3 p2 = type::Vec3(p[6], p[7], p[8]);
+            Vec3 p0 = Vec3(p[0], p[1], p[2]);
+            Vec3 p1 = Vec3(p[3], p[4], p[5]);
+            Vec3 p2 = Vec3(p[6], p[7], p[8]);
 
-            type::Vec3 p3 = p0 + (p2 - p1);
+            Vec3 p3 = p0 + (p2 - p1);
 
-            type::Vec3 n = (p1-p0).cross(p2-p0);
+            Vec3 n = (p1-p0).cross(p2-p0);
             n.normalize();
             const Real depth = p[9];
 
-            type::Vec3 p4 = p0 + n * (depth/2);
+            Vec3 p4 = p0 + n * (depth/2);
             p0 = p0 + (-n) * (depth/2);
-            type::Vec3 p5 = p1 + n * (depth/2);
+            Vec3 p5 = p1 + n * (depth/2);
             p1 = p1 + (-n) * (depth/2);
-            type::Vec3 p6 = p2 + n * (depth/2);
+            Vec3 p6 = p2 + n * (depth/2);
             p2 = p2 + (-n) * (depth/2);
-            type::Vec3 p7 = p3 + n * (depth/2);
+            Vec3 p7 = p3 + n * (depth/2);
             p3 = p3 + (-n) * (depth/2);
 
             vertices.push_back(p0);

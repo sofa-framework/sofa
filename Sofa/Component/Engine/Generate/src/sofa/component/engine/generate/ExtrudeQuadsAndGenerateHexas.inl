@@ -86,7 +86,7 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::doUpdate()
     type::vector<BaseMeshTopology::Hexa>* extrudedHexas = f_extrudedHexas.beginWriteOnly();
     extrudedHexas->clear();
 
-    std::map<int, std::pair<type::Vec3, unsigned int> > normals;
+    std::map<int, std::pair<Vec3, unsigned int> > normals;
     int nSlices = f_numberOfSlices.getValue();
 
     //first loop to compute normals per point
@@ -109,7 +109,7 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::doUpdate()
     }
 
     //average normals
-    typename std::map<int, std::pair<type::Vec3, unsigned int> >::iterator itNormals;
+    typename std::map<int, std::pair<Vec3, unsigned int> >::iterator itNormals;
     for (itNormals = normals.begin(); itNormals != normals.end() ; itNormals++)
         (*itNormals).second.first.normalize();
 

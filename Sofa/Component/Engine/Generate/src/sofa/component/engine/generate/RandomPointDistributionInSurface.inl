@@ -84,7 +84,7 @@ void RandomPointDistributionInSurface<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::getBBox(type::Vec3 &minBBox, type::Vec3 &maxBBox)
+void RandomPointDistributionInSurface<DataTypes>::getBBox(Vec3 &minBBox, Vec3 &maxBBox)
 {
     const VecCoord& vertices = f_vertices.getValue();
 
@@ -120,7 +120,7 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
     }
     */
 
-    type::Vec3 d;
+    Vec3 d;
     for (unsigned int i=0 ; i<numberOfTests.getValue() ; i++)
     {
         for (unsigned int i=0 ; i<3 ; i++)
@@ -134,9 +134,9 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
 }
 
 template <class DataTypes>
-type::Vec3 RandomPointDistributionInSurface<DataTypes>::generateRandomPoint(const type::Vec3 &minBBox, const type::Vec3 &maxBBox)
+type::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<DataTypes>::generateRandomPoint(const Vec3 &minBBox, const Vec3 &maxBBox)
 {
-    type::Vec3 r;
+    Vec3 r;
     for (unsigned int i= 0 ; i<3 ; i++)
         //r[i] = (minBBox[i] + ((maxBBox[i] - minBBox[i])*rand())/RAND_MAX);
         r[i] = (Real)rg.random<double>(minBBox[i], maxBBox[i]);
@@ -215,7 +215,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
 
     unsigned int indexInPoints = 0;
 
-    type::Vec3 minBBox, maxBBox;
+    Vec3 minBBox, maxBBox;
     getBBox(minBBox, maxBBox);
     safeCounter=0;
     while(indexInPoints < numberOfInPoints.getValue() && safeCounter < safeLimit)
@@ -252,7 +252,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
+    
     const VecCoord& in = f_inPoints.getValue();
     const VecCoord& out = f_outPoints.getValue();
     vparams->drawTool()->disableLighting();
