@@ -19,40 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
-#include <thread>
+#include <sofa/helper/DiffLib.h>
 
-
-namespace sofa::simulation
+namespace sofa
 {
 
-CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-: Task(scheduledThread)
-, m_status(status)
+class DiffLib_test : public BaseTest
 {
-}
-
-CpuTask::Status *CpuTask::getStatus(void) const
-{
-    return m_status;
-}
-
-bool CpuTask::Status::isBusy() const
-{
-    return (m_busy.load(std::memory_order_relaxed) > 0);
-}
-
-int CpuTask::Status::setBusy(bool busy)
-{
-    if (busy)
+public:
+    void getClosestMatch()
     {
-        return m_busy.fetch_add(1, std::memory_order_relaxed);
+        const auto& res = sofa::helper::getClosestMatch("MecahnicaObject", {"MechanicalObject", "Potatoes",
+                                                                            "MechanicalState", "Sprout"});
+        ASSERT_EQ( res.size(),  2 );
+        ASSERT_EQ( std::get<0>(res[0]), "MechanicalObject" );
+        ASSERT_EQ( std::get<0>(res[1]), "MechanicalState" );
     }
-    else
-    {
-        return m_busy.fetch_sub(1, std::memory_order_relaxed);
-    }
+};
+
+TEST_F(DiffLib_test, normalBehavior_getClosestMatch)
+{
+    getClosestMatch();
 }
 
-} // namespace sofa::simulation
+} //namespace sofa

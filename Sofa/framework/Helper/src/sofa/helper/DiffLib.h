@@ -19,40 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/CpuTask.h>
+#pragma once
 
-#include <thread>
+#include <sofa/helper/config.h>
+#include <vector>
+#include <string>
 
-
-namespace sofa::simulation
+namespace sofa::helper
 {
 
-CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-: Task(scheduledThread)
-, m_status(status)
-{
+/// Search for the the closest match to the string passed in the "needle" argument within the vector of "haystack" arguments.
+std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle, const std::vector<std::string>& haystack,
+                                                                            const Size numEntries=5, const SReal thresold=0.5_sreal);
+
 }
 
-CpuTask::Status *CpuTask::getStatus(void) const
-{
-    return m_status;
-}
-
-bool CpuTask::Status::isBusy() const
-{
-    return (m_busy.load(std::memory_order_relaxed) > 0);
-}
-
-int CpuTask::Status::setBusy(bool busy)
-{
-    if (busy)
-    {
-        return m_busy.fetch_add(1, std::memory_order_relaxed);
-    }
-    else
-    {
-        return m_busy.fetch_sub(1, std::memory_order_relaxed);
-    }
-}
-
-} // namespace sofa::simulation

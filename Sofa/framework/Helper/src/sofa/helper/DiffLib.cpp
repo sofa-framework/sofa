@@ -19,40 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/CpuTask.h>
+#include <cstring>
+#include <queue>
+#include <difflib.h>
+#include <sofa/helper/DiffLib.h>
 
-#include <thread>
-
-
-namespace sofa::simulation
+namespace sofa::helper
 {
 
-CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-: Task(scheduledThread)
-, m_status(status)
+std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle,
+                                                                            const std::vector<std::string>& haystack,
+                                                                            const Size numEntries, const SReal thresold)
 {
-}
-
-CpuTask::Status *CpuTask::getStatus(void) const
-{
-    return m_status;
-}
-
-bool CpuTask::Status::isBusy() const
-{
-    return (m_busy.load(std::memory_order_relaxed) > 0);
-}
-
-int CpuTask::Status::setBusy(bool busy)
-{
-    if (busy)
+    class Tuple
     {
-        return m_busy.fetch_add(1, std::memory_order_relaxed);
-    }
-    else
-    {
-        return m_busy.fetch_sub(1, std::memory_order_relaxed);
-    }
-}
+    public:
+        Tuple(float ratio_, std::string value_)
+        {
+            ratio = ratio_;
+            value = value_;
+        }
+        float ratio;
+        std::string value;
+    };
+    auto cmp = [](Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
+    std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
 
-} // namespace sofa::simulation
+    for(auto& s : haystack)
+    {
+        auto foo = difflib::MakeSequenceMatcher(needle,s);
+        q3.push(Tuple(foo.ratio(), s));
+    }
+    std::vector<std::tuple<std::string, SReal>> result;
+    while(!q3.empty() && result.size()<=numEntries)
+    {
+        if(q3.top().ratio < thresold)
+            break;
+        result.push_back(std::make_tuple(q3.top().value, q3.top().ratio));
+        q3.pop();
+    }
+    return result;
+};
+
+} // namespace sofa
+
