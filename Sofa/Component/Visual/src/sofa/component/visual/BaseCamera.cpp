@@ -346,7 +346,7 @@ type::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     return type::Vec3(pos[0], pos[1], pos[2]);
 }
 
-BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const type::Vec3& pos)
+type::Vec2 BaseCamera::worldToScreenCoordinates(const type::Vec3& pos)
 {
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
 
@@ -360,11 +360,11 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const type::Vec3& pos)
 
     clipSpacePos = projection * (modelview * clipSpacePos);
     if (isEqual(clipSpacePos.w(), 0.0_sreal))
-        return Vec2(std::nan(""), std::nan(""));
+        return type::Vec2(std::nan(""), std::nan(""));
 
     sofa::type::Vec3 ndcSpacePos = sofa::type::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
-    Vec2 screenCoord = Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
-    return screenCoord + Vec2(viewport[0], viewport[1]);
+    type::Vec2 screenCoord = type::Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
+    return screenCoord + type::Vec2(viewport[0], viewport[1]);
 }
 
 void BaseCamera::getModelViewMatrix(double mat[16])
@@ -606,13 +606,13 @@ type::Vec3 BaseCamera::viewportToWorldPoint(const type::Vec3& p)
     assert(canInvert2);
     SOFA_UNUSED(canInvert2);
 
-    Vec4 vsPosition = invertglP.transposed() * Vec4(nsPosition, 1.0);
+    type::Vec4 vsPosition = invertglP.transposed() * type::Vec4(nsPosition, 1.0);
     if(isEqual(vsPosition.w(), SReal(0.0)))
     {
         return type::Vec3(std::nan(""), std::nan(""), std::nan(""));
     }
     vsPosition /= vsPosition.w();
-    Vec4 v = (invertglM.transposed() * vsPosition);
+    type::Vec4 v = (invertglM.transposed() * vsPosition);
 
     return type::Vec3(v[0],v[1],v[2]);
 }
@@ -623,7 +623,7 @@ type::Vec3 BaseCamera::worldToScreenPoint(const type::Vec3& p)
     getOpenGLProjectionMatrix(glP.ptr());
     getOpenGLModelViewMatrix(glM.ptr());
 
-    Vec4 nsPosition = (glP.transposed() * glM.transposed() * Vec4(p, 1.0));
+    type::Vec4 nsPosition = (glP.transposed() * glM.transposed() * type::Vec4(p, 1.0));
 
     if(isEqual(nsPosition.w(), SReal(0.0)))
     {
