@@ -48,24 +48,21 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::CPos CPos;
+
     SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, type::Vec6);
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
-    typedef typename DataTypes::CPos CPos;
 
     typedef unsigned int PointID;
 
 protected:
-
     PairBoxROI();
-
     ~PairBoxROI() override {}
+
 public:
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
-
     void draw(const core::visual::VisualParams*) override;
 
     /// Pre-construction check method called by ObjectFactory.
@@ -102,7 +99,6 @@ public:
     // Point coordinates of the mesh in 3D in double.
     Data <VecCoord> positions; ///< Vertices of the mesh loaded
 
-
     //Output
     Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
     Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
@@ -118,7 +114,6 @@ public:
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
-
 #endif
 
 } //namespace sofa::component::engine::select

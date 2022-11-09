@@ -314,14 +314,14 @@ void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualPara
 
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const Index /*lineIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const sofa::Index /*lineIndex*/, const SReal* /*baryCoords*/)
 {
     msg_error() << "addPointInLine not implemented";
 
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const Index triangleIndex, const SReal* baryCoords,  const Index pointIndex)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const sofa::Index triangleIndex, const SReal* baryCoords,  const sofa::Index pointIndex)
 {
     auto baryPos = sofa::helper::getWriteOnlyAccessor(d_barycentricPositions);
     auto tableElts = sofa::helper::getWriteOnlyAccessor(d_tableElements);
@@ -364,13 +364,13 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const Index tria
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const Index /*quadIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const sofa::Index /*quadIndex*/, const SReal* /*baryCoords*/)
 {
     msg_error() << "addPointInQuad not implemented";
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const Index tetraIndex, const SReal* baryCoords, const Index pointIndex)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const sofa::Index tetraIndex, const SReal* baryCoords, const sofa::Index pointIndex)
 {
     auto baryPos = sofa::helper::getWriteOnlyAccessor(d_barycentricPositions);
     auto tableElts = sofa::helper::getWriteOnlyAccessor(d_tableElements);
@@ -415,7 +415,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const Index tetraIn
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const Index /*cubeIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const sofa::Index /*cubeIndex*/, const SReal* /*baryCoords*/)
 {
     msg_error() << "addPointInCube not implemented";
 }

@@ -32,8 +32,8 @@ GenerateGrid<DataTypes>::GenerateGrid()
     , d_quad( initData (&d_quad, "quads", "output mesh quads") )
     , d_triangle( initData (&d_triangle, "triangles", "output mesh triangles") )
     , d_hexahedron( initData (&d_hexahedron, "hexahedra", "output mesh hexahedra") )
-    , d_minCorner( initData (&d_minCorner,Vec3(), "min", "the 3 coordinates of the minimum corner") )
-    , d_maxCorner( initData (&d_maxCorner,Vec3(), "max", "the 3 coordinates of the maximum corner") )
+    , d_minCorner( initData (&d_minCorner,type::Vec3(), "min", "the 3 coordinates of the minimum corner") )
+    , d_maxCorner( initData (&d_maxCorner,type::Vec3(), "max", "the 3 coordinates of the maximum corner") )
     , d_resolution( initData (&d_resolution,Vec3Int(3,3,3), "resolution", "the number of cubes in the x,y,z directions. If resolution in the z direction is  0 then a 2D grid is generated") )
 {
     addAlias(&d_outputX,"position");
@@ -66,7 +66,7 @@ void GenerateGrid<DataTypes>::doUpdate()
 {
     helper::WriteAccessor<Data<VecCoord> > out = d_outputX;
 
-    Vec3 size=d_maxCorner.getValue()-d_minCorner.getValue();
+    type::Vec3 size=d_maxCorner.getValue()-d_minCorner.getValue();
 
     size_t freqL=d_resolution.getValue()[0];
     size_t freqH=d_resolution.getValue()[2];
@@ -106,7 +106,7 @@ void GenerateGrid<DataTypes>::doUpdate()
         for(j=0;j<=freqW;++j) {
             for(i=0;i<=freqL;i++) {
                 // handle Vec2D case
-                const Vec3 t { i * length, j * width, k * height };
+                const type::Vec3 t { i * length, j * width, k * height };
                 for (sofa::Index c = 0; c < Coord::spatial_dimensions; c++)
                 {
                     pos[c] = t[c];
