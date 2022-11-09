@@ -74,6 +74,11 @@ public:
     /// Do not use the following LCPs until the next call to this function.
     /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
     virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) = 0;
+
+protected:
+
+    void postBuildSystem(const core::ConstraintParams* cParams) override;
+    void postSolveSystem(const core::ConstraintParams* cParams) override;
 };
 
 } //namespace sofa::component::constraint::lagrangian::solver

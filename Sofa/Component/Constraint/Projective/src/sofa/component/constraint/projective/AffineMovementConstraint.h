@@ -64,7 +64,7 @@ public:
     typedef type::vector<Index> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef type::Quat<SReal> Quat;
-    typedef type::Vector3 Vector3;
+    typedef type::Vec3 Vector3;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;

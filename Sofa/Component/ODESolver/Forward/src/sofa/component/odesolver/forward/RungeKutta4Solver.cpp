@@ -63,9 +63,9 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
     MultiVecCoord newX(&vop);
 
-    double stepBy2 = double(dt / 2.0);
-    double stepBy3 = double(dt / 3.0);
-    double stepBy6 = double(dt / 6.0);
+    SReal stepBy2 = SReal(dt / 2.0);
+    SReal stepBy3 = SReal(dt / 3.0);
+    SReal stepBy6 = SReal(dt / 6.0);
 
     SReal startTime = this->getTime();
 

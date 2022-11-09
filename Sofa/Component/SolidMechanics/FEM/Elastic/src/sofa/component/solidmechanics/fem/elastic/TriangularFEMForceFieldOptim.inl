@@ -108,7 +108,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
         if (m_topology->getNbQuads() != 0)
         {
             msg_warning() << "The topology only contains quads while this forcefield only supports triangles." << msgendl;
-        }        
+        }
     }
 
     reinit();
@@ -142,10 +142,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
 {
     if (t[0] >= x0.size() || t[1] >= x0.size() || t[2] >= x0.size())
     {
-        msg_error() << "INVALID point index >= " << x0.size() << " in triangle " << i << " : " << t 
-            << " | nb points: " << m_topology->getNbPoints() 
+        msg_error() << "INVALID point index >= " << x0.size() << " in triangle " << i << " : " << t
+            << " | nb points: " << m_topology->getNbPoints()
             << " | nb triangles: " << m_topology->getNbTriangles() << msgendl;
-        
+
         return;
     }
     Coord a  = x0[t[0]];
@@ -158,8 +158,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleInfo(Index i, Triangle
         ac *= restScale;
     }
     // equivalent to computeRotationLarge but in 2D == do not store the ortogonal vector are framex ^ framey
-    computeTriangleRotation(ti.init_frame, ab, ac); 
-        
+    computeTriangleRotation(ti.init_frame, ab, ac);
+
     // compute initial position in local space A[0, 0] B[x, 0] C[x, y]
     ti.bx = ti.init_frame[0] * ab;
     ti.cx = ti.init_frame[0] * ac;
@@ -175,14 +175,14 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
         msg_error() << "INVALID point index >= " << x.size() << " in triangle " << i << " : " << t
             << " | nb points: " << m_topology->getNbPoints()
             << " | nb triangles: " << m_topology->getNbTriangles() << msgendl;
-       
+
         return;
     }
     Coord a  = x[t[0]];
     Coord ab = x[t[1]]-a;
     Coord ac = x[t[2]]-a;
     computeTriangleRotation(ts.frame, ab, ac);
-  
+
     ts.stress.clear();
 }
 
@@ -280,15 +280,15 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         Real dbx = ti.bx - ts.frame[0] * ab;
         Real dcx = ti.cx - ts.frame[0] * ac;
         Real dcy = ti.cy - ts.frame[1] * ac;
-                
-        /// Full StrainDisplacement matrix. 
+
+        /// Full StrainDisplacement matrix.
         // | beta1  0       beta2  0        beta3  0      |
         // | 0      gamma1  0      gamma2   0      gamma3 | / (2 * A)
         // | gamma1 beta1   gamma2 beta2    gamma3 beta3 |
 
         // As no displacement for Pa nor in Pb[y], Beta1, gamma1 and beta3 are not considered. Therefor we obtain:
         // | beta2  0        beta3  0      |
-        // | 0      gamma2   0      gamma3 | / (2 * A) 
+        // | 0      gamma2   0      gamma3 | / (2 * A)
         // | gamma2 beta2    gamma3 beta3 |
 
         // |   cy     0     0      0   |
@@ -300,7 +300,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         // |   0       -cx/(bx*cy)  0       1/cy |
         // | -cx/(bx*cy)  1/bx     1/cy      0   |
 
-        // StrainDisplacement: 
+        // StrainDisplacement:
         // beta2 = ti.cy;
         // gamma2 = -ti.cx;
         // gamma3 = ti.bx;
@@ -310,7 +310,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
             ti.cy * dbx,                   // ( cy,   0,  0,  0) * (dbx, dby(0), dcx, dcy)
             ti.bx * dcy,                   // (  0, -cx,  0, bx) * (dbx, dby(0), dcx, dcy)
             ti.bx * dcx - ti.cx * dbx);    // ( -cx, cy, bx,  0) * (dbx, dby(0), dcx, dcy)
-        
+
         // Stress = K * Strain
         Real gammaXY = gamma * (strain[0] + strain[1]);
         type::Vec<3,Real> stress (
@@ -319,7 +319,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
             (Real)(0.5)*mu*strain[2]);   // (       0,        0, mu/2) * strain
 
         stress *= ti.ss_factor;
-        
+
         Deriv fb = ts.frame[0] * (ti.cy * stress[0] - ti.cx * stress[2])  // (cy,   0, -cx) * stress
                 + ts.frame[1] * (ti.cy * stress[2] - ti.cx * stress[1]);  // ( 0, -cx,  cy) * stress
         Deriv fc = ts.frame[0] * (ti.bx * stress[2])                      // ( 0,   0,  bx) * stress
@@ -367,7 +367,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Real dby = ts.frame[1]*dab;
         Real dcx = ts.frame[0]*dac;
         Real dcy = ts.frame[1]*dac;
-        
+
         // Strain = StrainDisplacement * Displacement
         type::Vec<3, Real> dstrain(
             ti.cy * dbx,                                // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
@@ -381,7 +381,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
             mu*dstrain[0] + gammaXY,        // (gamma+mu, gamma   ,    0) * dstrain
             mu*dstrain[1] + gammaXY,        // (gamma   , gamma+mu,    0) * dstrain
             (Real)(0.5)*mu*dstrain[2]);     // (       0,        0, mu/2) * dstrain
-        
+
         dstress *= ti.ss_factor * kFactor;
         Deriv dfb = ts.frame[0] * (ti.cy * dstress[0] - ti.cx * dstress[2])  // (cy,   0, -cx) * stress
             + ts.frame[1] * (ti.cy * dstress[2] - ti.cx * dstress[1]);       // ( 0, -cx,  cy) * stress
@@ -404,7 +404,7 @@ template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    
+
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -566,7 +566,7 @@ type::fixed_array <typename TriangularFEMForceFieldOptim<DataTypes>::Coord, 3> T
     positions[0] = Coord(0, 0, 0);
     positions[1] = Coord(ti.bx, 0, 0);
     positions[2] = Coord(ti.cx, ti.cy, 0);
- 
+
     return positions;
 }
 
@@ -596,16 +596,16 @@ typename TriangularFEMForceFieldOptim<DataTypes>::MaterialStiffness TriangularFE
     }
 
     // (gamma+mu, gamma   ,    0)
-    // (gamma   , gamma+mu,    0)  
+    // (gamma   , gamma+mu,    0)
     // (       0,        0, mu/2)
     const Real gamma = this->gamma;
     const Real mu = this->mu;
 
-    MaterialStiffness mat; 
+    MaterialStiffness mat;
     mat[0][0] = mat[1][1] = gamma + mu;
     mat[0][1] = mat[1][0] = gamma;
     mat[2][2] = (Real)(0.5) * mu;
-   
+
     return mat;
 }
 
@@ -652,7 +652,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    using type::Vector3;
+    using type::Vec3;
     using type::Vec3i;
     using type::Vec4f;
 
@@ -718,19 +718,19 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         }
         if (showStressVector && maxStress > 0)
         {
-            std::vector< Vector3 > points[2];
+            std::vector< Vec3 > points[2];
             for (unsigned int i=0; i<nbTriangles; i++)
             {
                 Triangle t = triangles[i];
-                Vector3 a = x[t[0]];
-                Vector3 b = x[t[1]];
-                Vector3 c = x[t[2]];
-                Vector3 d1 = stressVectors[i];
+                Vec3 a = x[t[0]];
+                Vec3 b = x[t[1]];
+                Vec3 c = x[t[2]];
+                Vec3 d1 = stressVectors[i];
                 Real s1 = stresses[i];
-                Vector3 d2 = stressVectors2[i];
+                Vec3 d2 = stressVectors2[i];
                 Real s2 = stresses2[i];
-                Vector3 center = (a+b+c)/3;
-                Vector3 n = cross(b-a,c-a);
+                Vec3 center = (a+b+c)/3;
+                Vec3 n = cross(b-a,c-a);
                 Real fact = (Real)helper::rsqrt(n.norm())*(Real)0.5;
                 int g1 = (s1 < 0) ? 1 : 0;
                 int g2 = (s2 < 0) ? 1 : 0;
@@ -747,7 +747,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     }
     else
     {
-        std::vector< Vector3 > points[4];
+        std::vector< Vec3 > points[4];
 
         constexpr sofa::type::RGBAColor c0 = sofa::type::RGBAColor::red();
         constexpr sofa::type::RGBAColor c1 = sofa::type::RGBAColor::green();
@@ -768,7 +768,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
             Coord c = x[t[2]];
             Coord fx = ts.frame[0];
             Coord fy = ts.frame[1];
-            Vector3 center = (a+b+c)*(1.0_sreal/3.0_sreal);
+            Vec3 center = (a+b+c)*(1.0_sreal/3.0_sreal);
             Real scale = (Real)(sqrt((b-a).cross(c-a).norm()*0.25f));
             points[0].push_back(center);
             points[0].push_back(center + ts.frame[0] * scale);

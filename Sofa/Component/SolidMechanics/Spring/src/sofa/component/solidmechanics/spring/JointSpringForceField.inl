@@ -30,7 +30,7 @@ namespace sofa::component::solidmechanics::spring
 {
 
 using sofa::type::Vec4f;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField()
@@ -370,7 +370,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     bool external = (this->mstate1!=this->mstate2);
     const type::vector<Spring>& springs = d_springs.getValue();
 
-    type::vector<Vector3> vertices;
+    type::vector<Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
     constexpr auto yellow = sofa::type::RGBAColor::yellow();
@@ -395,8 +395,8 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
                 color = Vec4f(0,1,0.5f,1);
         }
 
-        Vector3 v0(p1[springs[i].m1].getCenter()[0], p1[springs[i].m1].getCenter()[1], p1[springs[i].m1].getCenter()[2]);
-        Vector3 v1(p2[springs[i].m2].getCenter()[0], p2[springs[i].m2].getCenter()[1], p2[springs[i].m2].getCenter()[2]);
+        Vec3 v0(p1[springs[i].m1].getCenter()[0], p1[springs[i].m1].getCenter()[1], p1[springs[i].m1].getCenter()[2]);
+        Vec3 v1(p2[springs[i].m2].getCenter()[0], p2[springs[i].m2].getCenter()[1], p2[springs[i].m2].getCenter()[2]);
 
         vertices.push_back(v0);
         vertices.push_back(v1);
@@ -406,23 +406,23 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         const float cylinderSize = float(d_showFactorSize.getValue() / 15.0f);
         if(springs[i].freeMovements[3] == 1)
         {
-            Vector3 axis((Real)(1.0*d_showFactorSize.getValue()),0,0);
-            Vector3 vrot = v0 + q0.rotate(axis);
+            Vec3 axis((Real)(1.0*d_showFactorSize.getValue()),0,0);
+            Vec3 vrot = v0 + q0.rotate(axis);
 
             vparams->drawTool()->drawCylinder(v0, vrot, cylinderSize,yellow );
         }
         if(springs[i].freeMovements[4] == 1)
         {
-            Vector3 axis(0,(Real)(1.0*d_showFactorSize.getValue()),0);
-            Vector3 vrot = v0 + q0.rotate(axis);
+            Vec3 axis(0,(Real)(1.0*d_showFactorSize.getValue()),0);
+            Vec3 vrot = v0 + q0.rotate(axis);
 
             vparams->drawTool()->drawCylinder(v0, vrot, cylinderSize,yellow );
 
         }
         if(springs[i].freeMovements[5] == 1)
         {
-            Vector3 axis(0,0,(Real)(1.0*d_showFactorSize.getValue()));
-            Vector3 vrot = v0 + q0.rotate(axis);
+            Vec3 axis(0,0,(Real)(1.0*d_showFactorSize.getValue()));
+            Vec3 vrot = v0 + q0.rotate(axis);
 
             vparams->drawTool()->drawCylinder(v0, vrot, cylinderSize,yellow );
         }
@@ -432,14 +432,14 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         if (d_showLawfulTorsion.getValue())
         {
             Vector vtemp = p1[springs[i].m1].projectPoint(springs[i].lawfulTorsion);
-            v1 = Vector3(vtemp[0], vtemp[1], vtemp[2]);
+            v1 = Vec3(vtemp[0], vtemp[1], vtemp[2]);
 
             vparams->drawTool()->drawArrow(v0, v1, arrowSize, yellow );
         }
         if (d_showExtraTorsion.getValue())
         {
             Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion);
-            v1 = Vector3(vtemp[0], vtemp[1], vtemp[2]);
+            v1 = Vec3(vtemp[0], vtemp[1], vtemp[2]);
 
             vparams->drawTool()->drawArrow(v0, v1, arrowSize, yellow );
         }
@@ -468,8 +468,8 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
     {
         const Spring& s = springs[i];
 
-        Vector3 v0 = p1[s.m1].getCenter();
-        Vector3 v1 = p2[s.m2].getCenter();
+        Vec3 v0 = p1[s.m1].getCenter();
+        Vec3 v1 = p2[s.m2].getCenter();
 
         for (sofa::Index c = 0; c<3; c++)
         {

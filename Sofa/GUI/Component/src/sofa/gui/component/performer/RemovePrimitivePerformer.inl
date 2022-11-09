@@ -370,10 +370,11 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
             for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping (only tetra for the moment)
             {
                 sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
+                const sofa::type::vector<Index>& topoMapIndices = topoMap->Loc2GlobDataVec.getValue();
                 if (topoMap)
                 {
                     // Mapping found: 1- get surface element ID in volumique topology, 2- get volume element ID behind surface element, 3- switching all variables to volumique case
-                    unsigned int volTmp = (topoMap->getLoc2GlobVec()).getValue()[selectedElem[0]];
+                    Index volTmp = topoMapIndices[selectedElem[0]];
                     topo_curr = topoMap->getFrom();
                     selectedElem[0] = topo_curr->getTetrahedraAroundTriangle(volTmp)[0];
                     surfaceOnVolume = true;
@@ -653,8 +654,8 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices_quads;
-    std::vector<sofa::type::Vector3> vertices_triangles;
+    std::vector<sofa::type::Vec3> vertices_quads;
+    std::vector<sofa::type::Vec3> vertices_triangles;
     constexpr sofa::type::RGBAColor color(0.3f, 0.8f, 0.3f, 1.0f);
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
@@ -673,10 +674,10 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<8; ++j)
             {
-                vertices_quads.push_back(sofa::type::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
-                vertices_quads.push_back(sofa::type::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
-                vertices_quads.push_back(sofa::type::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
-                vertices_quads.push_back(sofa::type::Vector3(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]));
+                vertices_quads.push_back(sofa::type::Vec3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_quads.push_back(sofa::type::Vec3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_quads.push_back(sofa::type::Vec3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
+                vertices_quads.push_back(sofa::type::Vec3(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]));
             }
             break;
         }
@@ -690,9 +691,9 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<4; ++j)
             {
-                vertices_triangles.push_back(sofa::type::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
-                vertices_triangles.push_back(sofa::type::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
-                vertices_triangles.push_back(sofa::type::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
+                vertices_triangles.push_back(sofa::type::Vec3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_triangles.push_back(sofa::type::Vec3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_triangles.push_back(sofa::type::Vec3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
             }
             break;
         }
@@ -703,7 +704,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<4; j++)
             {
                 Coord coordP = X[quad[j]];
-                vertices_quads.push_back(sofa::type::Vector3(coordP[0], coordP[1], coordP[2]));
+                vertices_quads.push_back(sofa::type::Vec3(coordP[0], coordP[1], coordP[2]));
             }
             break;
         }
@@ -714,12 +715,12 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                vertices_triangles.push_back(sofa::type::Vector3(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001));
+                vertices_triangles.push_back(sofa::type::Vec3(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001));
             }
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                vertices_triangles.push_back(sofa::type::Vector3(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999));
+                vertices_triangles.push_back(sofa::type::Vec3(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999));
             }
 
             break;

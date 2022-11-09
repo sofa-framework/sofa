@@ -95,7 +95,7 @@ public:
 public:
     sofa::simulation::TaskScheduler* _taskScheduler;
     sofa::simulation::CpuTask::Status _simStepStatus;
-    sofa::type::Vector3 m_toolForceFeedBack;
+    sofa::type::Vec3 m_toolForceFeedBack;
 
     std::mutex lockPosition;
 

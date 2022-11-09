@@ -79,13 +79,13 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::computeBase(Mat3x3d& base,
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element)
+void BarycentricMapperTetrahedronSetTopology<In,Out>::computeCenter(Vec3& center, const typename In::VecCoord& in, const Tetrahedron& element)
 {
     center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]] ) *0.25;
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::computeDistance(SReal& d, const Vector3& v)
+void BarycentricMapperTetrahedronSetTopology<In,Out>::computeDistance(SReal& d, const Vec3& v)
 {
     d = std::max ( std::max ( -v[0],-v[1] ), std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
 }
@@ -167,13 +167,13 @@ void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sof
 {
     const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
-    sofa::type::Vector3 coefs;
+    sofa::type::Vec3 coefs;
     int index = -1;
     double distance = std::numeric_limits<double>::max();
     for (unsigned int t = 0; t < tetrahedra.size(); t++)
     {
         sofa::type::Mat3x3d base;
-        sofa::type::Vector3 center;
+        sofa::type::Vec3 center;
         computeBase(base, in, tetrahedra[t]);
         computeCenter(center, in, tetrahedra[t]);
 

@@ -52,7 +52,7 @@ using sofa::core::VecCoordId;
 GenericConstraintCorrection::GenericConstraintCorrection()
 : l_linearSolver(initLink("linearSolver", "Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix"))
 , l_ODESolver(initLink("ODESolver", "Link towards the ODE solver used to recover the integration factors"))
-, d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
+, d_complianceFactor(initData(&d_complianceFactor, 1.0_sreal, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 {
 }
 
@@ -136,7 +136,7 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
     constraintsolvers.remove(s);
 }
 
-void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
+void GenericConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
 {    
     l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
@@ -144,10 +144,10 @@ void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceF
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
     if (!l_ODESolver.get()) return;
-    const double complianceFactor = d_complianceFactor.getValue();
+    const SReal complianceFactor = d_complianceFactor.getValue();
 
     // use the OdeSolver to get the position integration factor
-    double factor = 1.0;
+    SReal factor = 1.0;
 
     switch (cparams->constOrder())
     {
@@ -180,8 +180,8 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         MultiVecDerivId vId, 
                                                         MultiVecDerivId dxId,
                                                         ConstMultiVecDerivId correction,
-                                                        double positionFactor,
-                                                        double velocityFactor)
+                                                        SReal positionFactor,
+                                                        SReal velocityFactor)
 {
     MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, l_linearSolver.get()->getSystemMultiMatrixAccessor());
     l_linearSolver.get()->getContext()->executeVisitor(&v);
@@ -194,10 +194,10 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams *
                                                         ConstMultiVecDerivId correction)
 {
     if (!l_ODESolver.get()) return;
-    const double complianceFactor = d_complianceFactor.getValue();
+    const SReal complianceFactor = d_complianceFactor.getValue();
 
-    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
-    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor() * complianceFactor;
+    const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
+    const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor() * complianceFactor;
 
     applyMotionCorrection(cparams, xId, vId, dxId, correction, positionFactor, velocityFactor);
 }
@@ -209,8 +209,8 @@ void GenericConstraintCorrection::applyPositionCorrection(const ConstraintParams
 {
     if (!l_ODESolver.get()) return;
 
-    const double complianceFactor = d_complianceFactor.getValue();
-    const double positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
+    const SReal complianceFactor = d_complianceFactor.getValue();
+    const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor() * complianceFactor;
 
     applyMotionCorrection(cparams, xId, VecDerivId::null(), dxId, correctionId, positionFactor, 0);
 }
@@ -222,7 +222,7 @@ void GenericConstraintCorrection::applyVelocityCorrection(const ConstraintParams
 {
     if (!l_ODESolver.get()) return;
 
-    const double velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
+    const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
     applyMotionCorrection(cparams, VecCoordId::null(), vId, dvId, correctionId, 0, velocityFactor);
 }

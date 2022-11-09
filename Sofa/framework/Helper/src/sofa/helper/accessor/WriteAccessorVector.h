@@ -46,24 +46,43 @@ protected:
 public:
     WriteAccessorVector(container_type& container) : vref(&container) {}
 
+    ////// Capacity //////    
     bool empty() const { return vref->empty(); }
     Size size() const { return vref->size(); }
+    void reserve(Size s) { vref->reserve(s); }
 
-    const_reference operator[](Size i) const { return (*vref)[i]; }
-    reference operator[](Size i) { return (*vref)[i]; }
+    ////// Element access //////    
+    reference operator[](Size pos) { return (*vref)[pos]; }
+    const_reference operator[](Size pos) const { return (*vref)[pos]; }
 
+    reference front() { return vref->front(); }
+    const_reference front() const { return vref->front(); }
+
+    reference back() { return vref->back(); }
+    const_reference back() const { return vref->back(); }
+
+
+    ////// Iterators //////    
     const_iterator begin() const { return vref->begin(); }
     iterator begin() { return vref->begin(); }
     const_iterator end() const { return vref->end(); }
     iterator end() { return vref->end(); }
 
+
+    ////// Modifiers //////    
     void clear() { vref->clear(); }
     SOFA_WRITEACCESSOR_RESIZE_DEPRECATED() void resize(Size s, bool) { vref->resize(s); }
     void resize(Size s) { vref->resize(s); }
-    void reserve(Size s) { vref->reserve(s); }
+    
+    iterator insert(const_iterator pos, const T& value) { return vref->insert(pos, value); }
+    iterator erase(iterator pos) { return vref->erase(pos); }
+    iterator erase(const_iterator pos) { return vref->erase(pos); }
+
     void push_back(const value_type& v) { vref->push_back(v); }
     template <class... Args>
     reference emplace_back(Args&&... args) { return vref->emplace_back(std::forward<Args>(args)...);}
+    void pop_back() { vref->pop_back(); }
+
 
     ////// Access the container in reading & writing //////
     operator  container_type () { return  *vref; }

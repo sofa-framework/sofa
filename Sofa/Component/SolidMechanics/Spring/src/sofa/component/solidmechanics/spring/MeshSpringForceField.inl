@@ -247,7 +247,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         {
             const Spring& s = ss[i];
             const Coord pa[2] = {p1[s.m1], p2[s.m2]};
-            const std::vector<sofa::type::Vector3> points(pa, pa+2);
+            const std::vector<sofa::type::Vec3> points(pa, pa+2);
             Deriv v = pa[0] - pa[1];
             Real elongation = (s.initpos - v.norm()) / s.initpos;
             Real R = 0.;

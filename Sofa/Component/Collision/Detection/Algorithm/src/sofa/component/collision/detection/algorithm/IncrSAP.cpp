@@ -91,23 +91,12 @@ inline void ISAPBox::init(int boxID,EndPointID ** endPts){
     for(int i = 0 ; i < 3 ; ++i){
         _min[i]->setMinAndBoxID(boxID);
         _max[i]->setMaxAndBoxID(boxID);
-//        _min[i]->setBoxID(boxID);
-//        _max[i]->setBoxID(boxID);
-//        _min[i]->setMin();
-//        _max[i]->setMax();
     }
-
-    // update();
 }
 
 inline bool ISAPBox::endPointsOverlap(const ISAPBox & other, int axis) const{
     assert(axis >= 0);
     assert(axis < 3);
-//    const Vector3 & minVect_this = cube.minVect();
-//    const Vector3 & maxVect_this = cube.maxVect();
-//    const Vector3 & minVect_other = other.cube.minVect();
-//    const Vector3 & maxVect_other = other.cube.maxVect();
-
 
     if((min(axis).value >= other.max(axis).value) || (other.min(axis).value >= max(axis).value))
         return false;
@@ -125,64 +114,11 @@ inline bool ISAPBox::maxMoving(int axis,double alarmDist) const{
 
 inline bool ISAPBox::moving(int axis,double alarmDist) const{
     return minMoving(axis,alarmDist) || maxMoving(axis,alarmDist);
-//    const core::CollisionElementIterator & finE = finalElement();
-
-//    const core::CollisionModel * cm = finE.getCollisionModel();
-
-//    switch (cm->getEnumType()){
-//        case core::CollisionModel::OBB_TYPE:
-//            return fabs(((static_cast<const OBBModel*>(cm))->lvelocity(finE.getIndex()))[axis]) > tolerance;
-//            break;
-//        case core::CollisionModel::CAPSULE_TYPE:
-//            return fabs(((static_cast<const CapsuleModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-//            break;
-//        case core::CollisionModel::SPHERE_TYPE:
-//            return fabs(((static_cast<const SphereModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-//            break;
-//        case core::CollisionModel::TRIANGLE_TYPE:
-//            return fabs(((static_cast<const TriangleModel*>(cm))-> velocity(finE.getIndex()))[axis]) > tolerance;
-//            break;
-//        case core::CollisionModel::LINE_TYPE:
-//            return fabs(((static_cast<const LineModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-//            break;
-//        case core::CollisionModel::POINT_TYPE:
-//            return fabs(((static_cast<const PointModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
-//            break;
-//        default:
-//            msg_info()<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
-//            return true;
-//    }
 }
 
 inline bool ISAPBox::moving(double alarmDist) const{
     return moving(0,alarmDist) || moving(1,alarmDist) || moving(2,alarmDist);
-//    const core::CollisionElementIterator & finE = finalElement();
 
-//    const core::CollisionModel * cm = finE.getCollisionModel();
-
-//    switch (cm->getEnumType()){
-//        case core::CollisionModel::OBB_TYPE:
-//            return ((static_cast<const OBBModel*>(cm))->lvelocity(finE.getIndex())).norm2() > tolerance*tolerance;
-//            break;
-//        case core::CollisionModel::CAPSULE_TYPE:
-//            return ((static_cast<const CapsuleModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-//            break;
-//        case core::CollisionModel::SPHERE_TYPE:
-//            return ((static_cast<const SphereModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-//            break;
-//        case core::CollisionModel::TRIANGLE_TYPE:
-//            return ((static_cast<const TriangleModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-//            break;
-//        case core::CollisionModel::LINE_TYPE:
-//            return ((static_cast<const LineModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-//            break;
-//        case core::CollisionModel::POINT_TYPE:
-//            return ((static_cast<const PointModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
-//            break;
-//        default:
-//            msg_info()<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
-//            return true;
-//    }
 }
 
 inline const core::CollisionElementIterator ISAPBox::finalElement()const{
@@ -195,17 +131,14 @@ IncrSAP::IncrSAP()
     , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored")),
       _nothing_added(true)
 {
-    // _end_points = new EndPointList[3];
 }
 
 
-IncrSAP::~IncrSAP(){
+IncrSAP::~IncrSAP()
+{
     for(int i = 0 ; i < 3 ; ++i)
         for(EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
             delete (*it);
-
-
-    // delete[] _end_points;
 }
 
 
@@ -228,16 +161,6 @@ void IncrSAP::init()
 {
     reinit();
 }
-
-// 
-// void IncrSAP::initIntersectors(){
-//    for(typename std::set<CollModID>::const_iterator it = collisionModels.begin() ; it != collisionModels.end() ; ++it){
-//        for(std::set<CollModID>::const_iterator it2 = it ; it2 != collisionModels.end() ; ++it2){
-
-//        }
-//    }
-// }
-
 
 void IncrSAP::reinit()
 {
@@ -713,7 +636,7 @@ void IncrSAP::updateMovingBoxes(){
                 // we don't directly update the max of the box but a copy of it, because when
                 // moving an end point, only one end point can change its value. In this case, we could
                 // update the value of the max but not move it, it would mean that the max could not be at its right place and when moving
-                // the min backward (below), the list would not be sorted...                
+                // the min backward (below), the list would not be sorted...
                 cur_box.updatedMax(dim,updated_max,_alarmDist_d2);
 
                 cur_end_point_max = &(cur_box.max(dim));
@@ -822,10 +745,10 @@ void IncrSAP::updateMovingBoxes(){
 double ISAPBox::tolerance = (double)(1e-7);
 
 double ISAPBox::squaredDistance(const ISAPBox & other) const{
-    const type::Vector3 & min_vect0 = cube.minVect();
-    const type::Vector3 & max_vect0 = cube.maxVect();
-    const type::Vector3 & min_vect1 = other.cube.minVect();
-    const type::Vector3 & max_vect1 = other.cube.maxVect();
+    const type::Vec3 & min_vect0 = cube.minVect();
+    const type::Vec3 & max_vect0 = cube.maxVect();
+    const type::Vec3 & min_vect1 = other.cube.minVect();
+    const type::Vec3 & max_vect1 = other.cube.maxVect();
 
     double temp;
     double dist2 = 0;
@@ -849,10 +772,10 @@ double ISAPBox::squaredDistance(const ISAPBox & other) const{
 }
 
 bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
-    const type::Vector3 & min_vect0 = cube.minVect();
-    const type::Vector3 & max_vect0 = cube.maxVect();
-    const type::Vector3 & min_vect1 = other.cube.minVect();
-    const type::Vector3 & max_vect1 = other.cube.maxVect();
+    const type::Vec3 & min_vect0 = cube.minVect();
+    const type::Vec3 & max_vect0 = cube.maxVect();
+    const type::Vec3 & min_vect1 = other.cube.minVect();
+    const type::Vec3 & max_vect1 = other.cube.maxVect();
 
     for(int i = 0 ; i < 3 ; ++i){
         assert(min_vect0[i] <= max_vect0[i]);

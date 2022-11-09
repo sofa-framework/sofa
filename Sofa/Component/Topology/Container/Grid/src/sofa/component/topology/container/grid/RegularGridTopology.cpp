@@ -232,7 +232,8 @@ RegularGridTopology::Index RegularGridTopology::findPoint(const Vector3& positio
 /// return the cube containing the given point (or -1 if not found).
 RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos)
 {
-    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2)
+    const auto n = d_n.getValue();
+    if (n[0]<2 || n[1]<2 || n[2]<2)
         return InvalidID;
     Vector3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
@@ -241,9 +242,9 @@ RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos)
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (   (unsigned)ix <= (unsigned)d_n.getValue()[0]-2
-            && (unsigned)iy <= (unsigned)d_n.getValue()[1]-2
-            && (unsigned)iz <= (unsigned)d_n.getValue()[2]-2 )
+    if (   (unsigned)ix <= (unsigned)n[0]-2
+            && (unsigned)iy <= (unsigned)n[1]-2
+            && (unsigned)iz <= (unsigned)n[2]-2 )
     {
         return cube(ix,iy,iz);
     }
@@ -256,7 +257,8 @@ RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos)
 /// return the nearest cube (or -1 if not found).
 RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& pos)
 {
-    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return InvalidID;
+    const auto n = d_n.getValue();
+    if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
     Vector3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
@@ -264,9 +266,9 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& p
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (ix<0) ix=0; else if (ix>d_n.getValue()[0]-2) ix=d_n.getValue()[0]-2;
-    if (iy<0) iy=0; else if (iy>d_n.getValue()[1]-2) iy=d_n.getValue()[1]-2;
-    if (iz<0) iz=0; else if (iz>d_n.getValue()[2]-2) iz=d_n.getValue()[2]-2;
+    if (ix<0) ix=0; else if (ix>n[0]-2) ix=n[0]-2;
+    if (iy<0) iy=0; else if (iy>n[1]-2) iy=n[1]-2;
+    if (iz<0) iz=0; else if (iz>n[2]-2) iz=n[2]-2;
     return cube(ix,iy,iz);
 }
 
@@ -274,7 +276,8 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& p
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return InvalidID;
+    const auto n = d_n.getValue();
+    if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
     Vector3 p = pos-d_p0.getValue();
 
     SReal x = p*dx*inv_dx2;
@@ -285,7 +288,7 @@ RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos, SRe
     int iy = int(std::floor(y));
     int iz = int(std::floor(z));
 
-    if ((unsigned)ix<=(unsigned)d_n.getValue()[0]-2 && (unsigned)iy<=(unsigned)d_n.getValue()[1]-2 && (unsigned)iz<=(unsigned)d_n.getValue()[2]-2)
+    if ((unsigned)ix<=(unsigned)n[0]-2 && (unsigned)iy<=(unsigned)n[1]-2 && (unsigned)iz<=(unsigned)n[2]-2)
     {
         fx = x-ix;
         fy = y-iy;
@@ -302,7 +305,8 @@ RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos, SRe
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return InvalidID;
+    const auto n = d_n.getValue();
+    if (n[0]<2 || n[1]<2 || n[2]<2) return InvalidID;
     Vector3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
@@ -310,9 +314,9 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& p
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (ix<0) ix=0; else if (ix>d_n.getValue()[0]-2) ix=d_n.getValue()[0]-2;
-    if (iy<0) iy=0; else if (iy>d_n.getValue()[1]-2) iy=d_n.getValue()[1]-2;
-    if (iz<0) iz=0; else if (iz>d_n.getValue()[2]-2) iz=d_n.getValue()[2]-2;
+    if (ix<0) ix=0; else if (ix>n[0]-2) ix=n[0]-2;
+    if (iy<0) iy=0; else if (iy>n[1]-2) iy=n[1]-2;
+    if (iz<0) iz=0; else if (iz>n[2]-2) iz=n[2]-2;
     fx = x-ix;
     fy = y-iy;
     fz = z-iz;
@@ -322,14 +326,16 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const Vector3& p
 
 RegularGridTopology::Index RegularGridTopology::getCubeIndex( int i, int j, int k ) const
 {
-    return (d_n.getValue()[0]-1)* ( (d_n.getValue()[1]-1)*k + j ) + i;
+    const auto n = d_n.getValue();
+    return (n[0]-1)* ( (n[1]-1)*k + j ) + i;
 }
 
 sofa::type::Vec3 RegularGridTopology::getCubeCoordinate(RegularGridTopology::Index i) const
 {
+    const auto n = d_n.getValue();
     Vector3 result;
-    result[0] = (SReal)(i%(d_n.getValue()[0]-1)); i/=(d_n.getValue()[0]-1);
-    result[1] = (SReal)(i%(d_n.getValue()[1]-1)); i/=(d_n.getValue()[1]-1);
+    result[0] = (SReal)(i%(n[0]-1)); i/=(n[0]-1);
+    result[1] = (SReal)(i%(n[1]-1)); i/=(n[1]-1);
     result[2] = (SReal)i;
     return result;
 }

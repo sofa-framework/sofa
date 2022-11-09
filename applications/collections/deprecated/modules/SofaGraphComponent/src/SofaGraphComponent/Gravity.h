@@ -42,7 +42,7 @@ public:
 protected:
     Gravity();
 public:
-    Data<sofa::type::Vector3> f_gravity; ///< Gravity in the world coordinate system
+    Data<sofa::type::Vec3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the Node
     void apply() override;

@@ -360,14 +360,14 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    sofa::type::vector<type::Vector3> points;
-    sofa::type::vector<type::Vector3> linesX;
-    sofa::type::vector<type::Vector3> linesY;
-    sofa::type::vector<type::Vector3> linesZ;
-    sofa::type::vector<type::Vector3> colorFalloff;
+    sofa::type::vector<type::Vec3> points;
+    sofa::type::vector<type::Vec3> linesX;
+    sofa::type::vector<type::Vec3> linesY;
+    sofa::type::vector<type::Vec3> linesZ;
+    sofa::type::vector<type::Vec3> colorFalloff;
 
-    type::Vector3 point;
-    type::Vector3 line;
+    type::Vec3 point;
+    type::Vec3 line;
 
     // draw joints (not bones we draw them differently later)
     {

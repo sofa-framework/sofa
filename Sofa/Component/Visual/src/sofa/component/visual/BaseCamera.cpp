@@ -106,7 +106,7 @@ bool BaseCamera::isActivated()
 }
 
 void BaseCamera::init()
-{    
+{
     if(p_position.isSet())
     {
         if(!p_orientation.isSet())
@@ -351,7 +351,7 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
 
     const core::visual::VisualParams::Viewport viewport = vp->viewport();
-    sofa::type::Vector4 clipSpacePos = {pos.x(), pos.y(), pos.z(), 1.0};
+    sofa::type::Vec4 clipSpacePos = {pos.x(), pos.y(), pos.z(), 1.0};
     sofa::type::Mat4x4d modelview;
     sofa::type::Mat4x4d projection;
 
@@ -359,7 +359,7 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     this->getProjectionMatrix(projection.ptr());
 
     clipSpacePos = projection * (modelview * clipSpacePos);
-    if (isEqual(clipSpacePos.w(), 0.0))
+    if (isEqual(clipSpacePos.w(), 0.0_sreal))
         return Vec2(std::nan(""), std::nan(""));
 
     sofa::type::Vec3 ndcSpacePos = sofa::type::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
@@ -941,7 +941,7 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     dt->setLightingEnabled(false);
 
     Vec3 camPos = getPosition();
-    sofa::type::Vector3 p1, p2, p3, p4;
+    sofa::type::Vec3 p1, p2, p3, p4;
     p1 = viewportToWorldPoint(Vec3(0,0,0.994));
     p2 = viewportToWorldPoint(Vec3(1,0,0.994));
     p3 = viewportToWorldPoint(Vec3(1,1,0.994));

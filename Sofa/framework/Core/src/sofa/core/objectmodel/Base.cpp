@@ -34,6 +34,9 @@ using sofa::core::PathResolver;
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
 
+#include <sofa/helper/DiffLib.h>
+using sofa::helper::getClosestMatch;
+
 #include <map>
 #include <typeinfo>
 #include <cstring>
@@ -420,7 +423,20 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     std::vector< BaseLink* > linkVec = findLinks(attribute);
     if (dataVec.empty() && linkVec.empty())
     {
-        msg_warning() << "Unknown Data field or Link: " << attribute ;
+        std::vector<std::string> possibleNames;
+        possibleNames.reserve(m_vecData.size() + m_vecLink.size());
+        for(auto& data : m_vecData)
+            possibleNames.emplace_back(data->getName());
+        for(auto& link : m_vecLink)
+            possibleNames.emplace_back(link->getName());
+
+        std::stringstream tmp;
+        tmp << "Unknown Data field or Link for: " << attribute << msgendl;
+        tmp << "   the closest existing entries are: " << msgendl;
+        for(auto& [name, score] : getClosestMatch(attribute, possibleNames))
+            tmp << "     - " + name + " ("+ std::to_string((int)(100*score))+"% match)" << msgendl;
+
+        msg_warning() << tmp.str() ;
         return false; // no field found
     }
     bool ok = true;

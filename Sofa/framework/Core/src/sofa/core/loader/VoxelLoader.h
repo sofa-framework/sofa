@@ -57,7 +57,7 @@ public:
             unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
             unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7);
 
-    virtual type::Vector3 getVoxelSize () const = 0;
+    virtual type::Vec3 getVoxelSize () const = 0;
 
     virtual type::vector<unsigned int> getHexaIndicesInGrid() const=0;
 

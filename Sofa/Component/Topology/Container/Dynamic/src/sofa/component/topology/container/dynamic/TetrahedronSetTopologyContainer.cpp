@@ -1214,6 +1214,19 @@ bool TetrahedronSetTopologyContainer::linkTopologyHandlerToData(core::topology::
     }
 }
 
+bool TetrahedronSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::TETRAHEDRON)
+    {
+        d_tetrahedron.delOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return TriangleSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
 {
     helper::ReadAccessor< Data< sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;

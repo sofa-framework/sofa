@@ -136,7 +136,7 @@ public:
 
     SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
-    type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
+    type::Vec6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addMDxToVector(linearalgebra::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
@@ -176,11 +176,11 @@ private:
 
 
     template<class T>
-    type::Vector6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
+    type::Vec6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
                                                 const DataVecCoord& x,
                                                 const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
     template<class T>
-    type::Vector6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
+    type::Vec6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
                                               const DataVecCoord& x,
                                               const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
 

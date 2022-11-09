@@ -45,7 +45,7 @@ namespace sofa::component::mapping::linear
 {
 
 using namespace topology;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::Matrix3;
 using sofa::type::Mat3x3d;
 using sofa::type::Vec3d;
@@ -357,7 +357,7 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
 
     // Draw model (out) points
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    std::vector< Vector3 > points;
+    std::vector< Vec3 > points;
     for ( unsigned int i=0; i<out.size(); i++ )
     {
         points.push_back ( OutDataTypes::getCPos(out[i]) );
@@ -432,7 +432,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
         {
             const type::vector< topology::Triangle >& triangles = input_topology->getTriangles();
             type::vector< Mat3x3d > bases;
-            type::vector< Vector3 > centers;
+            type::vector< Vec3 > centers;
 
             // clear and reserve space for 2D mapping
             this->clear(out.size());
@@ -453,7 +453,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
             for ( unsigned int i=0; i<out.size(); i++ )
             {
                 Vec3d pos = Out::getCPos(out[i]);
-                Vector3 coefs;
+                Vec3 coefs;
                 int index = -1;
                 double distance = 1e10;
                 for ( unsigned int t = 0; t < triangles.size(); t++ )

@@ -23,19 +23,20 @@ define_property(TARGET
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-### Sofa using type double or float or both
-set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
+### Sofa using type double or float
+set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
     "Type used for floating point values in SOFA. It actually determines:
     - what template instanciations will be compiled (via the definition of the
     SOFA_FLOAT and SOFA_DOUBLE macros)
-    - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
-    is selected, SReal defaults to double.)")
-set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
+    - what is the type behind the 'SReal' typedef used throughout SOFA.")
+set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double)
 
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
+    set(SOFA_DOUBLE 1)
+    set(SOFA_FLOAT 0)
 elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
+    set(SOFA_DOUBLE 0)
+    set(SOFA_FLOAT 1)
 endif()
 
 # If you really don't understand the negated logics of SOFA_DOUBLE and
@@ -45,13 +46,11 @@ endif()
 # nedd to generate the double related code.
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
     set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 0)
 endif()
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
     set(SOFA_WITH_DOUBLE 1)
-endif()
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
-    set(SOFA_WITH_FLOAT 1)
-    set(SOFA_WITH_DOUBLE 1)
+    set(SOFA_WITH_FLOAT 0)
 endif()
 
 # Options

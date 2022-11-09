@@ -31,7 +31,7 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 template <>
-Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vec6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
@@ -39,7 +39,7 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
     helper::ReadAccessor< DataVecCoord > x = vx;
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
-    Vector6 momentum;
+    Vec6 momentum;
     for( unsigned int i=0 ; i<v.size() ; i++ )
     {
         Deriv linearMomentum = v[i] * vertexMass[i];
