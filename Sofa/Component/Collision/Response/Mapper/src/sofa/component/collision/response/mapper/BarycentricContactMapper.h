@@ -32,14 +32,14 @@ namespace sofa::component::collision::response::mapper
 {
 
 /// Base class for all mappers using BarycentricMapping
-template < class TCollisionModel, class DataTypes >
-class BarycentricContactMapper : public BaseContactMapper<DataTypes>
+template < class TCollisionModel, class TDataTypes >
+class BarycentricContactMapper : public BaseContactMapper<TDataTypes>
 {
 public:
-    typedef DataTypes M_DataTypes;
+    typedef TDataTypes DataTypes;
 
     typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord M_Coord;
+    typedef typename DataTypes::Coord Coord;
 
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
