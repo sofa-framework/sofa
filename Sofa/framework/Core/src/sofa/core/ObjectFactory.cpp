@@ -25,6 +25,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
+#include <sofa/helper/DiffLib.h>
 
 namespace sofa::core
 {
@@ -207,11 +208,26 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         using sofa::helper::lifecycle::uncreatableComponents;
         if(it == registry.end())
         {
-            arg->logError("The object is not in the factory.");
+            arg->logError("The object '" + classname + "' is not in the factory.");
             auto uuncreatableComponent = uncreatableComponents.find(classname);
             if( uuncreatableComponent != uncreatableComponents.end() )
             {
                 arg->logError( uuncreatableComponent->second.getMessage() );
+            }
+            else
+            {
+                std::vector<std::string> possibleNames;
+                possibleNames.reserve(registry.size());
+                for(auto& k : registry)
+                {
+                    possibleNames.emplace_back(k.first);
+                }
+
+                arg->logError("But the following exits:");
+                for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames, 5, 0.6))
+                {
+                    arg->logError( "                      : " + name + " ("+ std::to_string((int)(100*score))+"% match)");
+                }
             }
         }
         else
