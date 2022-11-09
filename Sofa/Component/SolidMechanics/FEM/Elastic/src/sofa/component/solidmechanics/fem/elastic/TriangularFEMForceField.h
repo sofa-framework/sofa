@@ -76,8 +76,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
     typedef sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
 
-    typedef sofa::type::Quat<Real> M_Quat;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Quat, M_Quat);
+    typedef sofa::type::Quat<Real> Quat;
 
     enum {
         LARGE = 0,   ///< Symbol of small displacements triangle solver

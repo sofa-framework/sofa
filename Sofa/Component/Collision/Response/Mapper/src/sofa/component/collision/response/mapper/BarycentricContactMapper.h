@@ -38,11 +38,8 @@ class BarycentricContactMapper : public BaseContactMapper<DataTypes>
 public:
     typedef DataTypes M_DataTypes;
 
-    typedef typename DataTypes::Real M_Real;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Real, M_Real);
-
+    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord M_Coord;
-    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Coord, M_Coord);
 
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
