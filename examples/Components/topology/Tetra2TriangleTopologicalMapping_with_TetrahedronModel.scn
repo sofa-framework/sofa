@@ -32,7 +32,7 @@
         <TetrahedronSetTopologyContainer src="@loader" name="Container" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass template="Vec3d,double" name="default3" massDensity="0.5" />
+        <DiagonalMass template="Vec3d,Vec3d" name="default3" massDensity="0.5" />
         <FixedPlaneConstraint template="Vec3d" name="default4" direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint template="Vec3d" name="default5" indices="0" />
         <TetrahedronCollisionModel />

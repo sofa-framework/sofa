@@ -38,6 +38,7 @@ using namespace defaulttype;
 int GenerateImageClass = core::RegisterObject("Create an image with custom dimensions")
         .add<GenerateImage<ImageUC> >(true)
         .add<GenerateImage<ImageD> >()
+        .add<GenerateImage<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<GenerateImage<ImageC> >()
         .add<GenerateImage<ImageI> >()
@@ -47,12 +48,12 @@ int GenerateImageClass = core::RegisterObject("Create an image with custom dimen
         .add<GenerateImage<ImageL> >()
         .add<GenerateImage<ImageUL> >()
         .add<GenerateImage<ImageF> >()
-        .add<GenerateImage<ImageB> >()
 #endif
         ;
 
 template class SOFA_IMAGE_API GenerateImage<ImageUC>;
 template class SOFA_IMAGE_API GenerateImage<ImageD>;
+template class SOFA_IMAGE_API GenerateImage<ImageB>;
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API GenerateImage<ImageC>;
 template class SOFA_IMAGE_API GenerateImage<ImageI>;
@@ -62,7 +63,6 @@ template class SOFA_IMAGE_API GenerateImage<ImageUS>;
 template class SOFA_IMAGE_API GenerateImage<ImageL>;
 template class SOFA_IMAGE_API GenerateImage<ImageUL>;
 template class SOFA_IMAGE_API GenerateImage<ImageF>;
-template class SOFA_IMAGE_API GenerateImage<ImageB>;
 #endif
 
 } //
