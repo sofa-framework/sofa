@@ -82,16 +82,14 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <RequiredPlugin name='SofaLoader' />                           \n"
+                "   <RequiredPlugin name='Sofa.Component.IO.Mesh' />               \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
                 "   <VisualModel src='@loader'/>                                      \n"
                 "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene1.str().c_str(),
-                                                          scene1.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) << scene1.str() ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -122,9 +120,7 @@ public:
                 "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene1.str().c_str(),
-                                                          scene1.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene1.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

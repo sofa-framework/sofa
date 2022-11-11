@@ -144,7 +144,7 @@ protected:
     int eventX, eventY; ///< Mouse current position in pixel
     double deviceX, deviceY, deviceZ;
     int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
-    sofa::type::Vector3 position;
+    sofa::type::Vec3 position;
     sofa::type::Quat<SReal> orientation;
     bool buttonDevice;
 };

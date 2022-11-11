@@ -73,7 +73,7 @@ void DistanceMapping<TIn, TOut>::init()
         return;
     }
 
-    SeqEdges links = l_topology->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( links.size() );
@@ -362,11 +362,11 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     if( d_showObjectScale.getValue() == 0 )
     {
         vparams->drawTool()->disableLighting();
-        type::vector< type::Vector3 > points;
+        type::vector< type::Vec3 > points;
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-            points.push_back( sofa::type::Vector3( TIn::getCPos(pos[links[i][1]]) ));
+            points.push_back( sofa::type::Vec3( TIn::getCPos(pos[links[i][0]]) ) );
+            points.push_back( sofa::type::Vec3( TIn::getCPos(pos[links[i][1]]) ));
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -375,8 +375,8 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->enableLighting();
         for(std::size_t i=0; i<links.size(); i++ )
         {
-            type::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
-            type::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
+            type::Vec3 p0 = TIn::getCPos(pos[links[i][0]]);
+            type::Vec3 p1 = TIn::getCPos(pos[links[i][1]]);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
@@ -793,7 +793,7 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
     if( d_showObjectScale.getValue() == 0 )
     {
-        type::vector< type::Vector3 > points;
+        type::vector< type::Vec3 > points;
         for(unsigned i=0; i<links.size(); i++ )
         {
             const type::Vec2i& pair0 = pairs[ links[i][0] ];
@@ -802,8 +802,8 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
             const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
             const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
 
-            points.push_back( type::Vector3( TIn::getCPos(pos0) ) );
-            points.push_back( type::Vector3( TIn::getCPos(pos1) ) );
+            points.push_back( type::Vec3( TIn::getCPos(pos0) ) );
+            points.push_back( type::Vec3( TIn::getCPos(pos1) ) );
         }
         vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
@@ -817,8 +817,8 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
             const InCoord& pos0 = this->getFromModels()[pair0[0]]->readPositions()[pair0[1]];
             const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
 
-            type::Vector3 p0 = TIn::getCPos(pos0);
-            type::Vector3 p1 = TIn::getCPos(pos1);
+            type::Vec3 p0 = TIn::getCPos(pos0);
+            type::Vec3 p1 = TIn::getCPos(pos1);
             vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }

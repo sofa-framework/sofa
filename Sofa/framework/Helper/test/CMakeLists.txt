@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Helper_test)
 
 set(SOURCE_FILES
+    DiffLib_test.cpp
     Factory_test.cpp
     KdTree_test.cpp
     NameDecoder_test.cpp

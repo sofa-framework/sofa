@@ -58,8 +58,7 @@ struct AddResourceRepository_test : public BaseSimulationTest
         std::string scene = START_STR + addRepoStr + END_STR;
         std::cout << scene << std::endl;
 
-        m_root = sofa::simulation::SceneLoaderXML::loadFromMemory(
-                "scene", scene.c_str(), scene.size());
+        m_root = sofa::simulation::SceneLoaderXML::loadFromMemory("scene", scene.c_str());
 
         EXPECT_NE(m_root, nullptr);
     }

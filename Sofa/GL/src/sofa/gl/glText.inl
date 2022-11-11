@@ -40,7 +40,7 @@ void GlText::setText ( const T& text )
 }
 
 template <typename T>
-void GlText::draw(const T& text, const type::Vector3& position, const double& scale)
+void GlText::draw(const T& text, const type::Vec3& position, const double& scale)
 {
     if (!s_asciiTexture)
     {

@@ -81,7 +81,7 @@ public:
 
     Data< double > scale; ///< Default scale applied to the Leap Motion Coordinates. 
     Data< Vec3d > translation; ///< Position of the tool/hand in the Leap Motion reference frame
-    Data< sofa::type::Vector3 > rotation; ///< Rotation of the DOFs of the hand
+    Data< sofa::type::Vec3 > rotation; ///< Rotation of the DOFs of the hand
     Data< Rigid3dTypes::Coord > handPalmCoordinate; ///< Coordinate of the hand detected by the Leap Motion
     Data< Vec3d > sphereCenter; ///< Center of the sphere of the hand detected by the Leap Motion
     Data< double > sphereRadius; ///< Radius of the sphere of the hand detected by the Leap Motion

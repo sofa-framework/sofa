@@ -27,7 +27,7 @@ namespace sofa::component::mapping::linear
 
 using sofa::defaulttype::Vec3Types;
 using sofa::type::Mat3x3d;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
 
 /// Class allowing barycentric mapping computation on a TetrahedronSetTopology
@@ -54,8 +54,8 @@ protected:
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
-    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
-    void computeDistance(SReal& d, const Vector3& v) override;
+    void computeCenter(Vec3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
+    void computeDistance(SReal& d, const Vec3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     //handle topology changes depending on the topology

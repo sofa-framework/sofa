@@ -131,7 +131,7 @@ void RotateTransformMatrixEngine::init()
 void RotateTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
-    helper::ReadAccessor< Data<Vector3> > rotation = d_rotation;
+    helper::ReadAccessor< Data<Vec3> > rotation = d_rotation;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
     Matrix4 myT;
@@ -163,7 +163,7 @@ void ScaleTransformMatrixEngine::init()
 void ScaleTransformMatrixEngine::doUpdate()
 {
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
-    helper::ReadAccessor< Data<Vector3> > scale = d_scale;
+    helper::ReadAccessor< Data<Vec3> > scale = d_scale;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
     Matrix4 myT;

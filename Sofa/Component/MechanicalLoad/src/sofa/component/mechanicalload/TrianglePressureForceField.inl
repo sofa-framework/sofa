@@ -251,17 +251,17 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     vparams->drawTool()->disableLighting();
 
     const sofa::type::RGBAColor&  color = sofa::type::RGBAColor::green();
-    std::vector< sofa::type::Vector3 > vertices;
+    std::vector< sofa::type::Vec3 > vertices;
 
     const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
     const sofa::type::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
-    std::vector< sofa::type::Vector3 > forceVectors;
+    std::vector< sofa::type::Vec3 > forceVectors;
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
         Deriv force = my_subset[i].force / 3;
         for (unsigned int j = 0; j < 3; j++)
         {
-            sofa::type::Vector3 p = x[m_topology->getTriangle(my_map[i])[j]];
+            sofa::type::Vec3 p = x[m_topology->getTriangle(my_map[i])[j]];
             vertices.push_back(p);
             forceVectors.push_back(p);
             forceVectors.push_back(p + force);

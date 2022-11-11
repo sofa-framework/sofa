@@ -38,10 +38,10 @@ public:
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
     /// @todo use real factors depending on the current RK4 step
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
-        double matrix[3][3] =
+        SReal matrix[3][3] =
         {
             { 1, dt/2, 0},
             { 0, 1, dt/2},
@@ -56,10 +56,10 @@ public:
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     /// @todo use real factors depending on the current RK4 step
-    double getSolutionIntegrationFactor(int outputDerivative) const override
+    SReal getSolutionIntegrationFactor(int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
-        double vect[3] = { 0.0, dt/2, 1};
+        SReal vect[3] = { 0.0, dt/2, 1};
         if (outputDerivative >= 3)
             return 0;
         else

@@ -41,9 +41,6 @@ using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateConstraint.h>
-using sofa::simulation::mechanicalvisitor::MechanicalAccumulateConstraint;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
 
@@ -52,6 +49,12 @@ using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVel
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
+using sofa::simulation::mechanicalvisitor::MechanicalAccumulateMatrixDeriv;
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
+using sofa::simulation::mechanicalvisitor::MechanicalBuildConstraintMatrix;
 
 using namespace sofa::core;
 
@@ -140,10 +143,16 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         sofa::core::MechanicalParams m_mparams(*this->params);
         m_mparams.setDt(dt);
 
+        core::ConstraintParams cparams;
         {
             unsigned int constraintId=0;
-            core::ConstraintParams cparams;
-            MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
+            MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
+            buildConstraintMatrix.execute(node);
+        }
+
+        {
+            MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+            accumulateMatrixDeriv.execute(node);
         }
 
         for( unsigned i=0; i<node->solver.size(); i++ )

@@ -61,7 +61,7 @@ public:
 #endif
 
     /// get the closest pickable particle
-    void getClosestParticle(sofa::core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, type::Vector3& point, SReal& rayLength );
+    void getClosestParticle(sofa::core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, type::Vec3& point, SReal& rayLength );
 
 private:
 

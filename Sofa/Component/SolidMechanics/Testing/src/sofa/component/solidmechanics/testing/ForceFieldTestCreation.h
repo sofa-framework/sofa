@@ -157,7 +157,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
      * The change of potential energy is compared to the dot product between displacement and force.
      * The  change of force is compared to the change computed by function addDForce, and to the product of the position change with the stiffness matrix.
      */
-    void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
+    void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef, bool initScene = true )
     {
         if( !(flags & TEST_POTENTIAL_ENERGY) ) msg_warning("ForceFieldTest") << "Potential energy is not tested";
 
@@ -176,7 +176,10 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         sofa::testing::copyToData( vdof, v );
 
         // init scene and compute force
-        sofa::simulation::getSimulation()->init(this->node.get());
+        if (initScene)
+        {
+            sofa::simulation::getSimulation()->init(this->node.get());
+        }
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());

@@ -37,13 +37,9 @@ namespace sofa::gl::component::rendering3d
 using sofa::type::RGBAColor;
 using sofa::type::Material;
 using namespace sofa::type;
-using namespace sofa::defaulttype;
 
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
     .add< OglModel >();
-
-template<class T>
-const T* getData(const sofa::type::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
@@ -901,7 +897,7 @@ void OglModel::updateVertexBuffer()
         glBufferSubData(GL_ARRAY_BUFFER,
                         positionsBufferSize + normalsBufferSize,
                         textureCoordsBufferSize,
-                        getData(vtexcoords));
+                        vtexcoords.data());
 
         if (hasTangents)
         {

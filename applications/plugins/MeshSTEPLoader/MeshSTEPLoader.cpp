@@ -311,7 +311,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
 
 void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
 {
-    type::vector<sofa::type::Vector3>& my_positions = *(d_positions.beginEdit());
+    type::vector<sofa::type::Vec3>& my_positions = *(d_positions.beginEdit());
 
     type::vector< Edge >& my_edges = *(d_edges.beginEdit());
     type::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
@@ -475,7 +475,7 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
 
 void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::vector<TopoDS_Solid>& vshape)
 {
-    type::vector<sofa::type::Vector3>& my_positions = *(d_positions.beginEdit());
+    type::vector<sofa::type::Vec3>& my_positions = *(d_positions.beginEdit());
 
     type::vector< Edge >& my_edges = *(d_edges.beginEdit());
     type::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());

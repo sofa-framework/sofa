@@ -44,6 +44,13 @@ void TriangleSetTopologyModifier::init()
 
     EdgeSetTopologyModifier::init();
     this->getContext()->get(m_container);
+
+    if(!m_container)
+    {
+        msg_error() << "TriangleSetTopologyContainer not found in current node: " << this->getContext()->getName();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 }
 
 void TriangleSetTopologyModifier::reinit()

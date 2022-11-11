@@ -95,8 +95,8 @@ bool SphereGridTopology_test::SphereGridPosition()
     int halfsphereSize = std::floor(sphereSize*0.5);
 
     for (int i=0; i<halfsphereSize; ++i){
-        sofa::type::Vector3 p0 = sphereGrid->getPoint(i);
-        sofa::type::Vector3 p1 = sphereGrid->getPoint(sphereSize-1-i);
+        sofa::type::Vec3 p0 = sphereGrid->getPoint(i);
+        sofa::type::Vec3 p1 = sphereGrid->getPoint(sphereSize-1-i);
 
         for (int j=0; j<3; ++j)
         {

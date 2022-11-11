@@ -33,7 +33,7 @@ using namespace sofa::type;
 using namespace core::behavior;
 
 Gravity::Gravity()
-    : f_gravity( initData(&f_gravity,Vector3(0,0,0),"gravity","Gravity in the world coordinate system") )
+    : f_gravity( initData(&f_gravity,Vec3(0,0,0),"gravity","Gravity in the world coordinate system") )
 {
 }
 

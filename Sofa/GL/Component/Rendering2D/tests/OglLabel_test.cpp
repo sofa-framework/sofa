@@ -69,9 +69,7 @@ public:
                  "  <OglLabel name='label1' color='0 0 0 0' selectContrastingColor='true' />     \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -102,9 +100,7 @@ public:
                  "  <OglLabel name='label1' color='contrast' printLog='true'/>                   \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -131,9 +127,7 @@ public:
                  "  <OglLabel name='label1'/>                                                    \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

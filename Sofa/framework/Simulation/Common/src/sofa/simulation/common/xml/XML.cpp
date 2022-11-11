@@ -231,7 +231,7 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
     return graph;
 }
 
-BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int /*size*/ )
+BaseElement* loadFromMemory(const char* filename, const char* data)
 {
     TiXmlDocument doc; // the resulting document tree
 
@@ -240,10 +240,16 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
     doc.Parse(data);
     if (doc.Error())
     {
-        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() ;
+        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol();
         return nullptr;
     }
     return processXMLLoading(filename, doc, true);
+}
+
+BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size )
+{
+    SOFA_UNUSED(size);
+    return loadFromMemory(filename, data);
 }
 
 BaseElement* loadFromFile(const char *filename)

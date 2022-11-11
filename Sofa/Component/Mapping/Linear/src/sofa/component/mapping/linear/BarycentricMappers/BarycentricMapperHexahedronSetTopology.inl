@@ -131,14 +131,14 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::computeBase(Mat3x3d& base, 
 
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron &element)
+void BarycentricMapperHexahedronSetTopology<In,Out>::computeCenter(Vec3& center, const typename In::VecCoord& in, const Hexahedron &element)
 {
     center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]]+in[element[4]]+in[element[5]]+in[element[6]]+in[element[7]] ) *0.125;
 }
 
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::computeDistance(SReal& d, const Vector3& v)
+void BarycentricMapperHexahedronSetTopology<In,Out>::computeDistance(SReal& d, const Vec3& v)
 {
     d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
 }

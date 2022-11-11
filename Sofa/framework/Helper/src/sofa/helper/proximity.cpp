@@ -66,10 +66,10 @@ DistanceTriTri::
 
 
 void DistanceTriTri::
-NewComputation(const Vector3& P1, const Vector3& P2, const Vector3& P3, const Vector3& Q1, const Vector3& Q2, const Vector3& Q3, Vector3 &Presult, Vector3 &Qresult)
+NewComputation(const Vec3& P1, const Vec3& P2, const Vec3& P3, const Vec3& Q1, const Vec3& Q2, const Vec3& Q3, Vec3 &Presult, Vec3 &Qresult)
 {
     double alphaP, betaP, alphaQ, betaQ;
-    Vector3 P1P2, P1P3, Q1Q2, Q1Q3, P1Q1;
+    Vec3 P1P2, P1P3, Q1Q2, Q1Q3, P1Q1;
     type::Mat<6, 6, SReal> A;
     type::Vec<6, SReal> b;
     type::Vec<12, SReal> result;
@@ -142,10 +142,10 @@ DistanceSegTri::
 //}
 
 void DistanceSegTri::
-NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Vector3 &Q1, const Vector3 &Q2, Vector3 &Presult, Vector3 &Qresult)
+NewComputation(const Vec3 &P1, const Vec3 &P2, const Vec3 &P3, const Vec3 &Q1, const Vec3 &Q2, Vec3 &Presult, Vec3 &Qresult)
 {
     double alpha, beta, gamma;
-    Vector3 P1P2, P1P3, Q1Q2, P1Q1;
+    Vec3 P1P2, P1P3, Q1Q2, P1Q1;
     type::Mat<5, 5, SReal> A;
     type::Vec<5, SReal> b;
     type::Vec<10, SReal> result;
@@ -208,10 +208,10 @@ DistancePointTri::
 }
 
 void DistancePointTri::
-NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Vector3 &Q, Vector3 &Presult)
+NewComputation(const Vec3 &P1, const Vec3 &P2, const Vec3 &P3, const Vec3 &Q, Vec3 &Presult)
 {
     double alpha, beta;
-    Vector3 P1P2, P1P3, P1Q;
+    Vec3 P1P2, P1P3, P1Q;
     type::Mat<3, 3, SReal> A;
     type::Vec3 b;
     type::Vec<6, SReal> result;

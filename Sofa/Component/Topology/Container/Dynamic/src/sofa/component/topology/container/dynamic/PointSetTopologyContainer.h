@@ -141,6 +141,8 @@ public:
 
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 
+    bool unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
+
 protected:
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean

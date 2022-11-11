@@ -549,8 +549,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     {
         const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-        std::vector< sofa::type::Vector3 > points;
-        std::vector< sofa::type::Vector3 > pointsLine;
+        std::vector< sofa::type::Vec3 > points;
+        std::vector< sofa::type::Vec3 > pointsLine;
 
         unsigned int i=0;
         for (const auto & ac: articulationCenters)

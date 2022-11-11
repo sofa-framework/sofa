@@ -211,7 +211,7 @@ private:
 
     Data<bool> bDraw; ///< enable/disable display of results
 
-    Data< type::fixed_array<type::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
+    Data< type::fixed_array<type::Vec3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     collision::geometry::CubeCollisionModel::SPtr boxModel;
 

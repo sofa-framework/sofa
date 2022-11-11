@@ -238,13 +238,13 @@ void EvalPointsDistance<DataTypes>::doDraw(const core::visual::VisualParams* vpa
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     for (int i=0; i<n; ++i)
     {
-        sofa::type::Vector3 v0(x1[s1+i][0],x1[s1+i][1],x1[s1+i][2]);
-        sofa::type::Vector3 v1(x2[s2+i][0],x2[s2+i][1],x2[s2+i][2]);
+        sofa::type::Vec3 v0(x1[s1+i][0],x1[s1+i][1],x1[s1+i][2]);
+        sofa::type::Vec3 v1(x2[s2+i][0],x2[s2+i][1],x2[s2+i][2]);
         vertices.push_back(v0);
         vertices.push_back(v1);
     }
