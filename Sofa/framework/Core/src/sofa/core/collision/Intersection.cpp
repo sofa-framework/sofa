@@ -48,11 +48,11 @@ helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
     if (it == castMap.end())
     {
         helper::TypeInfo t2 = t;
-        for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+        for (auto classInfoIt = classes.begin(); classInfoIt != classes.end(); ++classInfoIt)
         {
-            if ((*it)->isInstance(model))
+            if ((*classInfoIt)->isInstance(model))
             {
-                t2 = (*it)->type();
+                t2 = (*classInfoIt)->type();
                 break;
             }
         }
@@ -82,14 +82,14 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
 
 
     std::stringstream tmp;
-    for(InternalMap::const_iterator it = intersectorsMap.begin(), itEnd = intersectorsMap.end(); it != itEnd; ++it)
+    for(auto intersectorsMapIt = intersectorsMap.begin(), itEnd = intersectorsMap.end(); intersectorsMapIt != itEnd; ++intersectorsMapIt)
     {
-        helper::TypeInfo t1 = it->first.first;
-        helper::TypeInfo t2 = it->first.second;
+        auto typeInfo1 = intersectorsMapIt->first.first;
+        auto typeInfo2 = intersectorsMapIt->first.second;
         tmp << "  "
-                << gettypename(t1) << "-"
-                << gettypename(t2);
-        ElementIntersector* i = it->second;
+                << gettypename(typeInfo1) << "-"
+                << gettypename(typeInfo2);
+        ElementIntersector* i = intersectorsMapIt->second;
         if (!i)
             tmp << "  nullptr";
         else
