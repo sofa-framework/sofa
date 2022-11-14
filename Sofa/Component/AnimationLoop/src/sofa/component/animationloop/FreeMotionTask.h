@@ -22,6 +22,9 @@
 
 #pragma once
 
+#include <sofa/component/animationloop/config.h>
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.12", "v23.06")
+
 #include <sofa/simulation/CpuTask.h>
 
 #include <sofa/simulation/fwd.h>
@@ -31,7 +34,7 @@
 namespace sofa::component::animationloop
 {
 
-class FreeMotionTask : public sofa::simulation::CpuTask
+class SOFA_ATTRIBUTE_DEPRECATED_FREEMOTIONTASK() FreeMotionTask : public sofa::simulation::CpuTask
 {
 public:
     FreeMotionTask(

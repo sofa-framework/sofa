@@ -54,7 +54,7 @@ bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& t
         std::function<void()> m_task;
     };
 
-    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because of MemoryAlloc::Dynamic
+    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
 }
 
 TaskScheduler* TaskScheduler::create(const char* name)
