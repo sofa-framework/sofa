@@ -25,6 +25,7 @@
 #include <functional>
 #include <map>
 #include <optional>
+#include <memory>
 
 namespace sofa::simulation
 {
