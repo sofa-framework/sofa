@@ -62,6 +62,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/TaskSchedulerFactory.h>
 
 #include <cstdlib>
 #include <cmath>
@@ -95,11 +96,12 @@ void AnimationLoopParallelScheduler::init()
         mNbThread = threadNumber.getValue();
     }
 
-    _taskScheduler = TaskScheduler::getInstance();
+    _taskScheduler = TaskSchedulerFactory::create();
 
-    if (TaskScheduler::getCurrentName() != schedulerName.getValue())
+    if (!TaskSchedulerFactory::getLastCreated().has_value()
+            || TaskSchedulerFactory::getLastCreated().value().first != schedulerName.getValue())
     {
-        _taskScheduler = TaskScheduler::create(schedulerName.getValue().c_str());
+        _taskScheduler = TaskSchedulerFactory::create(schedulerName.getValue().c_str());
     }
     _taskScheduler->init( mNbThread );
 }

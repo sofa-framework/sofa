@@ -66,6 +66,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/BaseSimulationExporter.h
     ${SRC_ROOT}/TaskScheduler.h
+    ${SRC_ROOT}/TaskSchedulerFactory.h
     ${SRC_ROOT}/DefaultTaskScheduler.h
     ${SRC_ROOT}/Task.h
     ${SRC_ROOT}/InitTasks.h
@@ -191,6 +192,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp
+    ${SRC_ROOT}/TaskSchedulerFactory.cpp
     ${SRC_ROOT}/DefaultTaskScheduler.cpp
     ${SRC_ROOT}/Task.cpp
     ${SRC_ROOT}/InitTasks.cpp

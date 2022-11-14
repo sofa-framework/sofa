@@ -27,6 +27,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/simulation/TaskSchedulerFactory.h>
 
 namespace sofa::component::collision
 {
@@ -46,7 +47,7 @@ void ParallelBVHNarrowPhase::init()
 
     // initialize the thread pool
 
-    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
     assert(taskScheduler != nullptr);
     if (taskScheduler->getThreadCount() < 1)
     {
@@ -68,7 +69,7 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
         return;
     }
 
-    auto *taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto *taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
     assert(taskScheduler != nullptr);
 
     if (taskScheduler->getThreadCount() == 0)

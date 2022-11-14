@@ -32,6 +32,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/simulation/TaskSchedulerFactory.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
@@ -168,7 +169,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
     m_nbColsJ1 = ms1->getSize()*DerivSize1;
     m_nbColsJ2 = ms2->getSize()*DerivSize2;
 
-    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
     assert(taskScheduler != nullptr);
     if (d_parallelTasks.getValue())
     {
@@ -440,7 +441,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(mstate1, mstate2);
     MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(mstate2, mstate1);
 
-    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
     assert(taskScheduler != nullptr);
 
     ///////////////////////////     STEP 1      ////////////////////////////////////
