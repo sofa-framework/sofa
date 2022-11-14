@@ -43,38 +43,38 @@ public:
     virtual ~TaskScheduler() = default;
 
     /**
-        * Check if a TaskScheduler already exists with this name.
-        * If not, it creates and registers a new TaskScheduler of type DefaultTaskScheduler with
-        * name as a key
-        *
-        * @param name key to find or create a TaskScheduler
-        * @return A TaskScheduler
-        */
+     * Check if a TaskScheduler already exists with this name.
+     * If not, it creates and registers a new TaskScheduler of type DefaultTaskScheduler with
+     * name as a key
+     *
+     * @param name key to find or create a TaskScheduler
+     * @return A TaskScheduler
+     */
     static TaskScheduler* create(const char* name = "");
             
     typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
 
     /**
-        * Register a new scheduler in the factory
-        *
-        * @param name key in the factory
-        * @param creatorFunc function creating a new TaskScheduler or a derived class
-        * @return
-        */
+     * Register a new scheduler in the factory
+     *
+     * @param name key in the factory
+     * @param creatorFunc function creating a new TaskScheduler or a derived class
+     * @return
+     */
     static bool registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc);
 
     /**
-        * Get the current TaskScheduler instance.
-        *
-        * If not instance has been created yet, a new one with empty name is created.
-        * @return The current TaskScheduler instance
-        */
+     * Get the current TaskScheduler instance.
+     *
+     * If not instance has been created yet, a new one with empty name is created.
+     * @return The current TaskScheduler instance
+     */
     static TaskScheduler* getInstance();
 
     /**
-        * Get the name of the current TaskScheduler instance
-        * @return The name of the current TaskScheduler instance
-        */
+     * Get the name of the current TaskScheduler instance
+     * @return The name of the current TaskScheduler instance
+     */
     static const std::string& getCurrentName()  { return _currentSchedulerName; }
             
     // interface
