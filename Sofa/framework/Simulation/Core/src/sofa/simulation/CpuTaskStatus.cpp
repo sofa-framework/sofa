@@ -19,24 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/CpuTask.h>
-
-#include <thread>
-
+#include <sofa/simulation/CpuTaskStatus.h>
 
 namespace sofa::simulation
 {
+CpuTaskStatus::CpuTaskStatus(): m_busy(0)
+{}
 
-CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-: Task(scheduledThread)
-, m_status(status)
+bool CpuTaskStatus::isBusy() const
 {
+    return (m_busy.load(std::memory_order_relaxed) > 0);
 }
 
-CpuTask::Status *CpuTask::getStatus(void) const
+int CpuTaskStatus::setBusy(bool busy)
 {
-    return m_status;
+    if (busy)
+    {
+        return m_busy.fetch_add(1, std::memory_order_relaxed);
+    }
+    else
+    {
+        return m_busy.fetch_sub(1, std::memory_order_relaxed);
+    }
 }
-
-
-} // namespace sofa::simulation
+}
