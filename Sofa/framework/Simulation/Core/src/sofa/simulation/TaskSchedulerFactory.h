@@ -27,6 +27,7 @@
 #include <optional>
 #include <memory>
 #include <string>
+#include <set>
 
 namespace sofa::simulation
 {
@@ -51,6 +52,8 @@ public:
     static TaskScheduler* create();
 
     static const std::optional<std::pair<std::string, TaskScheduler*> >& getLastCreated();
+
+    static std::set<std::string> getAvailableSchedulers();
 
     /**
      * Clear the factory. Everything that was registered is lost.

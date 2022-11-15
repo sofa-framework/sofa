@@ -41,12 +41,13 @@ std::vector<std::string> SOFA_HELPER_API split(const std::string& s, char delimi
 ///
 /// Taken from https://github.com/ekg/split/blob/master/join.h (I don't know what is the licence
 /// but thank for the author.
-template<class S, class T>
-std::string join(std::vector<T>& elems, S& delim) {
+template<class S, class Container>
+std::string join(const Container& elems, const S& delim)
+{
     std::stringstream ss;
     if(elems.empty())
         return "";
-    typename std::vector<T>::iterator e = elems.begin();
+    auto e = elems.begin();
     ss << *e++;
     for (; e != elems.end(); ++e) {
         ss << delim << *e;

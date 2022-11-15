@@ -89,6 +89,16 @@ const std::optional<std::pair<std::string, TaskScheduler*> >& TaskSchedulerFacto
     return s_lastCreated;
 }
 
+std::set<std::string> TaskSchedulerFactory::getAvailableSchedulers()
+{
+    std::set<std::string> schedulers;
+    for (const auto& [name, _] : s_schedulerCreationFunctions)
+    {
+        schedulers.insert(name);
+    }
+    return schedulers;
+}
+
 void TaskSchedulerFactory::clear()
 {
     s_schedulers.clear();

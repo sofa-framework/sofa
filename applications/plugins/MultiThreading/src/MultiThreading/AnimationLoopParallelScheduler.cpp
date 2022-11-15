@@ -96,14 +96,32 @@ void AnimationLoopParallelScheduler::init()
         mNbThread = threadNumber.getValue();
     }
 
-    _taskScheduler = TaskSchedulerFactory::create();
-
-    if (!TaskSchedulerFactory::getLastCreated().has_value()
-            || TaskSchedulerFactory::getLastCreated().value().first != schedulerName.getValue())
+    if (schedulerName.isSet())
     {
-        _taskScheduler = TaskSchedulerFactory::create(schedulerName.getValue().c_str());
+        _taskScheduler = TaskSchedulerFactory::create(schedulerName.getValue() );
+        if (!_taskScheduler)
+        {
+            msg_error() << "'" << schedulerName.getValue()
+                << "' is not a valid name for a task scheduler. Falling back to the default "
+                "task scheduler. The list of available schedulers is: ["
+                << sofa::helper::join(TaskSchedulerFactory::getAvailableSchedulers(), ',')
+                << "]";
+        }
     }
-    _taskScheduler->init( mNbThread );
+
+    if (!_taskScheduler)
+    {
+        _taskScheduler = TaskSchedulerFactory::create();
+    }
+
+    if (_taskScheduler)
+    {
+        _taskScheduler->init( mNbThread );
+    }
+    else
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 void AnimationLoopParallelScheduler::bwdInit()
