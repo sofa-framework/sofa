@@ -89,4 +89,9 @@ const std::optional<std::pair<std::string, TaskScheduler*> >& TaskSchedulerFacto
     return s_lastCreated;
 }
 
+void TaskSchedulerFactory::clear()
+{
+    s_schedulers.clear();
+}
+
 }

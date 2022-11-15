@@ -52,6 +52,11 @@ public:
 
     static const std::optional<std::pair<std::string, TaskScheduler*> >& getLastCreated();
 
+    /**
+     * Clear the factory. Everything that was registered is lost.
+     */
+    static void clear();
+
 private:
     // factory map: registered schedulers: name, creation function
     static std::map<std::string, std::function<TaskScheduler*()> > s_schedulerCreationFunctions;
