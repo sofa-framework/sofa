@@ -51,14 +51,13 @@ TaskScheduler* TaskSchedulerFactory::create(const std::string& name)
         const auto creationIt = s_schedulerCreationFunctions.find(name);
         if (creationIt != s_schedulerCreationFunctions.end())
         {
-            const auto insertion = s_schedulers.insert({name,
-                std::unique_ptr<TaskScheduler>(creationIt->second())});
-            if (!insertion.second)
-            {
-                msg_error("TaskSchedulerFactory") << "Cannot create task scheduler '" << name
+            const auto [fst, snd] = s_schedulers.insert(
+                {name, std::unique_ptr<TaskScheduler>(creationIt->second())});
+
+            msg_error_when(!snd, "TaskSchedulerFactory") << "Cannot create task scheduler '" << name
                     << "' from the factory: a task scheduler with this name already exists";
-            }
-            scheduler = insertion.first->second.get();
+
+            scheduler = fst->second.get();
         }
         else
         {
