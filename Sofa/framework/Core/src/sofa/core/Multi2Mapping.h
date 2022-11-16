@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTI2MAPPING_H
-#define SOFA_CORE_MULTI2MAPPING_H
+#pragma once
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/PathResolver.h>
 #include <sofa/core/config.h>
 #include <sofa/core/State.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
  *  \brief Specialized interface to describe many to many mapping.
  *   The inputs can be of two different types, while all the outputs must be of the same type.
  */
-
 template <class TIn1, class TIn2, class TOut>
 class Multi2Mapping : public BaseMapping
 {
@@ -311,10 +306,5 @@ extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1Types, defau
 
 
 #endif
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core
 

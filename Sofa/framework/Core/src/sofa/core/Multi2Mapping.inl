@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTI2MAPPING_INL
-#define SOFA_CORE_MULTI2MAPPING_INL
+#pragma once
 
 #include <sofa/core/Multi2Mapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 template < class In1, class In2, class Out >
@@ -232,9 +229,4 @@ template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::disable()
 {
 }
-
-} // namespace core
-
 } // namespace sofa
-
-#endif // SOFA_CORE_MULTI2MAPPING_INL

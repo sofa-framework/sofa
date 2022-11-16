@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VISUAL_SHADER_H
-#define SOFA_CORE_VISUAL_SHADER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
+namespace sofa::core::visual
 {
 
 /**
@@ -50,8 +43,8 @@ protected:
     ~Shader() override { }
 	
 private:
-    Shader(const Shader& n);
-    Shader& operator=(const Shader& n);
+    Shader(const Shader& n) = delete;
+    Shader& operator=(const Shader& n) = delete;
 	
 public:
     /// Start the shader
@@ -80,8 +73,8 @@ protected:
     ~ShaderElement() override { }
 	
 private:
-    ShaderElement(const ShaderElement& n);
-    ShaderElement& operator=(const ShaderElement& n);
+    ShaderElement(const ShaderElement& n) = delete;
+    ShaderElement& operator=(const ShaderElement& n) = delete;
 	
 public:
     /// Returns the type of shader element (texture, macro, variable, or attribute)
@@ -97,11 +90,4 @@ public:
     // For attributes : return the number of values
     virtual int getSETotalSize() { return 0; }
 };
-
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
-
-#endif //SOFA_CORE_VISUAL_SHADER_H
+} // namespace sofa::core::visual

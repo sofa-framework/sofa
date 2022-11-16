@@ -19,25 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DETACHNODEEVENT_H
-#define SOFA_CORE_OBJECTMODEL_DETACHNODEEVENT_H
+#pragma once
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
  *  Event indicating that a child node is being detached from the scene.
- *  Any reference to ony of its descendant (such as active contacts) should be removed.
+ *  Any reference to one of its descendant (such as active contacts) should be removed.
 */
 class SOFA_CORE_API DetachNodeEvent : public Event
 {
@@ -59,11 +52,4 @@ public:
 protected:
     BaseNode* node;
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::objectmodel

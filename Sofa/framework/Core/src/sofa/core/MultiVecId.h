@@ -19,17 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTIVECID_H
-#define SOFA_CORE_MULTIVECID_H
+#pragma once
 
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <map>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 class SOFA_CORE_API BaseState;
@@ -663,9 +659,4 @@ typedef TMultiVecId<V_MATDERIV, V_READ> ConstMultiMatrixDerivId;
 typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
 typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

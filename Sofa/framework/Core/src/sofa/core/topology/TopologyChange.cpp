@@ -33,13 +33,7 @@ namespace sofa::core::objectmodel
     template class SOFA_CORE_API Data<std::list<const sofa::core::topology::TopologyChange*>>;
 }
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 SOFA_CORE_API TopologyElementType parseTopologyElementTypeFromString(const std::string& s)
@@ -427,9 +421,4 @@ HexahedraMoved_Adding::~HexahedraMoved_Adding()
 HexahedraRenumbering::~HexahedraRenumbering()
 {
 }
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::topology

@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_IMAGELOADER_H
-#define SOFA_CORE_LOADER_IMAGELOADER_H
+#pragma once
 
 #include <sofa/core/loader/BaseLoader.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace loader
+namespace sofa::core::loader
 {
 
 class ImageLoader : public BaseLoader
@@ -39,11 +32,4 @@ public:
     SOFA_CLASS(ImageLoader, BaseLoader);
 
 };
-
-} // namespace loader
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::loader

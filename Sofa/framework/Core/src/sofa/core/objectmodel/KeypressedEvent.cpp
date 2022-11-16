@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( KeypressedEvent )
@@ -47,10 +41,4 @@ char KeypressedEvent::getKey() const
 {
     return m_char;
 }
-
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

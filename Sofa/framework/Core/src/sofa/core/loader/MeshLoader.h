@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_MESHLOADER_H
-#define SOFA_CORE_LOADER_MESHLOADER_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/type/Quat.h>
@@ -234,5 +233,3 @@ protected:
 };
 
 } // namespace sofa::core::loader
-
-#endif
