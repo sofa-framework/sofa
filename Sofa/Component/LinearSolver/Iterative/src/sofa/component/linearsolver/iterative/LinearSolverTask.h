@@ -37,7 +37,6 @@ namespace sofa::component::linearsolver
 template<class Matrix, class Vector>
 class ComputeColumnTask: public sofa::simulation::CpuTask
 {
-
 public:
 
     typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
@@ -48,47 +47,16 @@ public:
     const JMatrixType* m_J;
     MatrixLinearSolver<Matrix,Vector> *m_solver;
     
-    ComputeColumnTask(int row
-                    ,Vector  *taskRH
-                    ,Vector  *taskLH
-                    ,sofa::simulation::CpuTask::Status *status
-                    ,const JMatrixType *J
-                    ,MatrixLinearSolver<Matrix,Vector> *solver
+    ComputeColumnTask(int row,
+                      Vector  *taskRH,
+                      Vector  *taskLH,
+                      sofa::simulation::CpuTask::Status *status,
+                      const JMatrixType *J,
+                      MatrixLinearSolver<Matrix,Vector> *solver
                      );
     ~ComputeColumnTask() override = default;
     sofa::simulation::Task::MemoryAlloc run() final;
 };
-
-template<class Matrix, class Vector>
-ComputeColumnTask<Matrix,Vector>::ComputeColumnTask(
-    int row,
-    Vector* taskRH,
-    Vector* taskLH,
-    sofa::simulation::CpuTask::Status* status,
-    const JMatrixType* J,
-    MatrixLinearSolver<Matrix, Vector>* solver)
-: sofa::simulation::CpuTask(status)
-, m_row(row)
-, m_taskRH(taskRH)
-, m_taskLH(taskLH)
-, m_J(J)
-, m_solver(solver)
-{}
-
-template<class Matrix, class Vector>
-sofa::simulation::Task::MemoryAlloc ComputeColumnTask<Matrix,Vector>::run()
-{
-    for(int col=0;col<m_J->colSize();col++)
-    {
-        m_taskRH->set( col , m_J->element(m_row,col) );
-    }
-
-    m_solver->solve( *(m_solver->linearSystem.systemMatrix), *m_taskLH, *m_taskRH );
-
-    return simulation::Task::Stack;
-}
-
-
 
 template<class Matrix, class Vector>
 class ProductTask: public sofa::simulation::CpuTask
@@ -103,7 +71,6 @@ public:
     sofa::linearalgebra::FullMatrix<double>* m_product;
     const JMatrixType* m_J;
 
-    ProductTask(sofa::simulation::CpuTask::Status *status);
     ProductTask(int row
                 ,Vector* colMinvJt
                 ,const JMatrixType *J
@@ -114,38 +81,5 @@ public:
     sofa::simulation::Task::MemoryAlloc run() final;  
 };
 
-template<class Matrix, class Vector>
-ProductTask<Matrix,Vector>::ProductTask(
-    int row
-    ,Vector* colMinvJt
-    ,const JMatrixType *J
-    ,sofa::linearalgebra::FullMatrix<double> *product
-    ,sofa::simulation::CpuTask::Status *status)
-:sofa::simulation::CpuTask(status)
-,m_row(row)
-,m_colMinvJt(colMinvJt)
-,m_product(product)
-,m_J(J)
-{}
-
-template<class Matrix, class Vector>
-sofa::simulation::Task::MemoryAlloc ProductTask<Matrix,Vector>::run()
-{
-    const typename linearalgebra::SparseMatrix<SReal>::LineConstIterator jitend = m_J->end();
-    for (typename linearalgebra::SparseMatrix<SReal>::LineConstIterator jit = m_J->begin(); jit != jitend; ++jit)
-    {
-        auto row2 = jit->first;
-        m_product->set(row2,m_row , 0 );
-
-        for (typename linearalgebra::SparseMatrix<SReal>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
-        {
-            auto col2 = i2->first;
-            double val2 = i2->second;
-            m_product->add(row2,m_row, val2 * m_colMinvJt->element(col2) );
-        }
-    }
-
-    return simulation::Task::Stack;
-}
 
 } // namespace sofa::component::linearsolver

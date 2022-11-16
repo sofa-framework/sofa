@@ -35,7 +35,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVi
 using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
 
 #include <sofa/simulation/TaskScheduler.h>
-#include<sofa/component/linearsolver/iterative/LinearSolverTask.h>
+#include <sofa/component/linearsolver/iterative/LinearSolverTask.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::component::linearsolver
@@ -267,17 +267,17 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
 
     
     sofa::type::vector< ComputeColumnTask<Matrix,Vector> > taskList;
-    
-    if( multithread )  taskList.reserve( J->rowSize() );
-    
-    sofa::simulation::CpuTask::Status status;
-    
-    
-        
-    sofa::type::vector< Vector  > listRH(J->rowSize()) ; // columns of Jt
-    for(int i=0;i<J->rowSize();i++) 
+    if( multithread )
     {
-        listRH[i].resize(J->colSize());
+        taskList.reserve( J->rowSize() );
+    }
+
+    sofa::simulation::CpuTask::Status status;
+
+    sofa::type::vector< Vector  > listRH(J->rowSize()) ; // columns of Jt
+    for (auto& rh : listRH)
+    {
+        rh.resize(J->colSize());
     }
 
     sofa::type::vector< Vector > listLH(J->rowSize()); // columns of MinvJt
@@ -295,8 +295,8 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     //STEPS 1&2: Copy Jt and compute Minv*Jt
 
     // one task per column of Jt
-    for (typename JMatrixType::Index col=0; col<J->rowSize(); col++)
-    {   
+    for (typename JMatrixType::Index col=0; col<J->rowSize(); ++col)
+    {
         if( multithread ) 
         {
             taskList.emplace_back(col , &listRH[col] , &listLH[col], &status , J , this  );
@@ -310,26 +310,25 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     }
     taskScheduler->workUntilDone(&status);
 
-
     // STEP 3 : compute the matricial product L*MinvJt
-    
     sofa::linearalgebra::FullMatrix<double> product(J->rowSize(),J->rowSize());
 
-
-    std::vector< ProductTask<Matrix,Vector> > ProductTaskList;
-    if( multithread )  ProductTaskList.reserve(J->rowSize());
+    std::vector< ProductTask<Matrix,Vector> > productTaskList;
+    if( multithread )
+    {
+        productTaskList.reserve(J->rowSize());
+    }
 
     {
         sofa::helper::ScopedAdvancedTimer productTimer("product");
         if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
         {
-        
-            for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+            for (typename JMatrixType::Index row=0; row<J->rowSize(); ++row)
             {
                 if( multithread )
                 {
-                    ProductTaskList.emplace_back(row, &listLH[row], J , &product , &status);
-                    taskScheduler->addTask( &(ProductTaskList.back()) );
+                    productTaskList.emplace_back(row, &listLH[row], J , &product , &status);
+                    taskScheduler->addTask( &(productTaskList.back()) );
                 }
                 else
                 {
@@ -347,7 +346,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
     }
 
     //STEP 4 : project the result
-    for (typename JMatrixType::Index row=0; row<J->rowSize(); row++)
+    for (typename JMatrixType::Index row=0; row<J->rowSize(); ++row)
     {
         const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J);
         const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();

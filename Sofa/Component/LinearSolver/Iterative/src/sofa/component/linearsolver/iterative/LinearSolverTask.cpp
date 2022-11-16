@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/linearsolver/iterative/LinearSolverTask.h>
+#include <sofa/component/linearsolver/iterative/LinearSolverTask.inl>
 
 namespace sofa::component::linearsolver
 {
@@ -39,5 +39,18 @@ template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ComputeColumnTask< Comp
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ComputeColumnTask< DiagonalMatrix<SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ComputeColumnTask< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ComputeColumnTask< RotationMatrix<SReal>, FullVector<SReal> >;
+
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< GraphScatteredMatrix, GraphScatteredVector >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< FullMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< SparseMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< CompressedRowSparseMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< CompressedRowSparseMatrix<type::Mat<2,2,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< DiagonalMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ProductTask< RotationMatrix<SReal>, FullVector<SReal> >;
 
 }//namespace lineasolver
