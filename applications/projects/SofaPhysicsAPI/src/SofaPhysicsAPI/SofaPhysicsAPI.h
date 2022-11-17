@@ -118,6 +118,7 @@ public:
     double getCurrentFPS() const;
 
     double* getGravity() const;
+    int getGravity(double* values) const;
     void setGravity(double* gravity);
 
     /// Return the number of currently active data monitors

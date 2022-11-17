@@ -177,6 +177,11 @@ double* SofaPhysicsAPI::getGravity() const
     return impl->getGravity();
 }
 
+int SofaPhysicsAPI::getGravity(double* values) const
+{
+    return impl->getGravity(values);
+}
+
 void SofaPhysicsAPI::setGravity(double* gravity)
 {
     impl->setGravity(gravity);
@@ -434,6 +439,22 @@ double *SofaPhysicsSimulation::getGravity() const
     }
 
     return gravityVec;
+}
+
+int SofaPhysicsSimulation::getGravity(double* values) const
+{
+    if (getScene())
+    {
+        const auto& g = getScene()->getContext()->getGravity();
+        values[0] = g.x();
+        values[1] = g.y();
+        values[2] = g.z();
+        return 1.0;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 void SofaPhysicsSimulation::setGravity(double* gravity)

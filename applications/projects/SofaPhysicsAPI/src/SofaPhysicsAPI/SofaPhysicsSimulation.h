@@ -77,6 +77,8 @@ public:
     double getTime() const;
     double getCurrentFPS() const;
     double* getGravity() const;
+    int getGravity(double* values) const;
+
     void setGravity(double* gravity);
 
     unsigned int getNbDataMonitors();
