@@ -34,9 +34,12 @@
 #include <QPixmap>
 #include <QFile>
 
-using namespace QtCharts;
-
 #include <fstream>
+
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using namespace QtCharts;
+#endif
 
 namespace sofa::gui::qt
 {
@@ -274,12 +277,12 @@ protected:
     QChartView* w;
 
     /// Pointer to the chart Data
-    QtCharts::QChart *m_chart;
+    QChart *m_chart;
 
     /// x axis pointer
-    QtCharts::QValueAxis* m_axisX;
+    QValueAxis* m_axisX;
     /// y axis pointer
-    QtCharts::QValueAxis* m_axisY;
+    QValueAxis* m_axisY;
 
     /// vector of series to be ploted
     std::map<QString, CurveData*> m_curves;

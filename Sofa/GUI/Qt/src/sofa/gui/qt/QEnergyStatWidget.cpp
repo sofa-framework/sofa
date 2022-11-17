@@ -25,6 +25,12 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
 
+#include <QLineSeries>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using namespace QtCharts;
+#endif
+
 namespace sofa::gui::qt
 {
 
