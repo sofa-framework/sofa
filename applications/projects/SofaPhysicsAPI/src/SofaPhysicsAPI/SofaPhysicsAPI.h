@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSAPI_H
-#define SOFAPHYSICSAPI_H
+#pragma once
 
 #include <SofaPhysicsAPI/config.h>
 
@@ -213,5 +212,3 @@ public:
     /// Internal implementation sub-class
     Impl* impl;
 };
-
-#endif // SOFAPHYSICSAPI_H

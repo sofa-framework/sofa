@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSSIMULATION_IMPL_H
-#define SOFAPHYSICSSIMULATION_IMPL_H
+#pragma once
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
@@ -155,5 +154,3 @@ public:
     }
 
 };
-
-#endif // SOFAPHYSICSSIMULATION_IMPL_H

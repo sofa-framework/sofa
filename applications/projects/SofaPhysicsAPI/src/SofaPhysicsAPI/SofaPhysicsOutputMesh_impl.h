@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSOUTPUTMESH_IMPL_H
-#define SOFAPHYSICSOUTPUTMESH_IMPL_H
+#pragma once
 
 #include "SofaPhysicsAPI.h"
 
@@ -82,5 +81,3 @@ public:
     SofaOutputMesh* getObject() { return sObj.get(); }
     void setObject(SofaOutputMesh* o);
 };
-
-#endif // SOFAPHYSICSOUTPUTMESH_IMPL_H
