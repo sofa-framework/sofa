@@ -86,14 +86,16 @@ void TrailRenderer<DataTypes>::drawVisual(const core::visual::VisualParams* vpar
         return;
     }
 
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+    helper::visual::DrawTool*& drawTool = vparams->drawTool();
 
-    const auto& color = d_color.getValue();
-    const auto thickness = d_thickness.getValue();
+    const auto stateLifeCycle = drawTool->makeStateLifeCycle();
+
+    const sofa::type::RGBAColor& color = d_color.getValue();
+    const float thickness = d_thickness.getValue();
 
     for (auto& queue : m_trail)
     {
-        vparams->drawTool()->drawLineStrip(queue, thickness, color);
+        drawTool->drawLineStrip(queue, thickness, color);
     }
 }
 
