@@ -59,6 +59,9 @@ public:
     void drawGL();
 
     unsigned int getNbOutputMeshes();
+    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID);
+    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name);
+
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
     SofaPhysicsOutputMesh** getOutputMeshes();
 

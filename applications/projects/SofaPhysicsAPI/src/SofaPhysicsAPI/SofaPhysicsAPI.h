@@ -76,6 +76,9 @@ public:
     /// Return the number of currently active output meshes
     unsigned int            getNbOutputMeshes();
 
+    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID);
+    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name);
+
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
 
     /// Return the number of currently active output Tetrahedron meshes
