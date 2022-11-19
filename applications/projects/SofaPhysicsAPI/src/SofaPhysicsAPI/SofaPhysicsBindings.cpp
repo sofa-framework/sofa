@@ -79,7 +79,11 @@ int sofaPhysicsAPI_loadScene(void* ptr, const char* filename)
 {
     SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
     if (api) {
-        return api->load(filename);
+        bool loaded = api->load(filename);
+        if (loaded)
+            return API_SUCCESS;
+        else
+            return API_SCENE_FAILED;
     }
     else
         return API_NULL;
