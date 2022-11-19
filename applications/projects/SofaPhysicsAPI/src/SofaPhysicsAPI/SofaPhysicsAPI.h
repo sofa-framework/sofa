@@ -54,6 +54,7 @@ public:
     int load(const char* filename);
     /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
     int unload();
+    std::string loadSofaIni(const char* pathIni);
 
     /// Get the current api Name behind this interface.
     virtual const char* APIName();

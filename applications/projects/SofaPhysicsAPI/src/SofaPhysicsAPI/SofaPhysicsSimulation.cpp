@@ -27,6 +27,8 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/gl/RAII.h>
 
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -79,6 +81,38 @@ int SofaPhysicsAPI::load(const char* filename)
 int SofaPhysicsAPI::unload()
 {
     return impl->unload();
+}
+
+std::string SofaPhysicsAPI::loadSofaIni(const char* pathIni)
+{
+    const std::string sofaIniFilePath = std::string(pathIni);
+
+    std::map<std::string, std::string> iniFileValues = sofa::helper::Utils::readBasicIniFile(sofaIniFilePath);
+    std::string shareDir = "SHARE_DIR Path Not found";
+    // and add them to DataRepository
+    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
+    {
+        shareDir = iniFileValues["SHARE_DIR"];
+        if (!sofa::helper::system::FileSystem::isAbsolute(shareDir))
+            shareDir = "./" + shareDir;
+        sofa::helper::system::DataRepository.addFirstPath(shareDir);
+    }
+    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
+    {
+        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
+        if (!sofa::helper::system::FileSystem::isAbsolute(examplesDir))
+            examplesDir = "./" + examplesDir;
+        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
+    }
+    if (iniFileValues.find("PYTHON_DIR") != iniFileValues.end())
+    {
+        std::string pythonDir = iniFileValues["PYTHON_DIR"];
+        if (!sofa::helper::system::FileSystem::isAbsolute(pythonDir))
+            pythonDir = "./" + pythonDir;
+        sofa::helper::system::DataRepository.addFirstPath(pythonDir);
+    }
+
+    return shareDir;
 }
 
 void SofaPhysicsAPI::createScene()

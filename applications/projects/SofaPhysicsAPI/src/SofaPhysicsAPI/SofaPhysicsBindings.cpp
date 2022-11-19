@@ -96,6 +96,21 @@ int sofaPhysicsAPI_unloadScene(void* api_ptr)
         return API_NULL;
 }
 
+const char* sofaPhysicsAPI_loadSofaIni(void* ptr, const char* pathIni)
+{
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api) {
+        std::string value = api->loadSofaIni(pathIni);
+        char* cstr = new char[value.length() + 1];
+#if defined(_MSC_VER)
+        std::strcpy(cstr, value.c_str());
+#endif
+        return cstr;
+    }
+    else
+        return "Error: API_NULL";
+}
+
 
 // API for animation loop
 void sofaPhysicsAPI_start(void* api_ptr)
