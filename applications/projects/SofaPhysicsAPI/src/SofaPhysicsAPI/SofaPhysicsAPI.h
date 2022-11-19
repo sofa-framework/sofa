@@ -35,6 +35,7 @@ typedef void* ID;           ///< Type used for IDs
 // Exit code
 #define API_SUCCESS EXIT_SUCCESS
 #define API_NULL -1
+#define API_SCENE_NULL -11
 #define API_SCENE_FAILED -10
 
 /// Internal implementation sub-class

@@ -350,7 +350,7 @@ int SofaPhysicsSimulation::unload()
     else
     {
         msg_error("SofaPhysicsSimulation") << "Error: can't get scene root node.";
-        return API_SCENE_FAILED;
+        return API_SCENE_NULL;
     }
 
     return API_SUCCESS;
@@ -469,11 +469,11 @@ int SofaPhysicsSimulation::getGravity(double* values) const
         values[0] = g.x();
         values[1] = g.y();
         values[2] = g.z();
-        return 1.0;
+        return API_SUCCESS;
     }
     else
     {
-        return -1;
+        return API_SCENE_NULL;
     }
 }
 
