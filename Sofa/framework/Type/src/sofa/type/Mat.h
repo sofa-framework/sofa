@@ -306,6 +306,12 @@ public:
     template<sofa::Size NbLine = L, typename = std::enable_if_t<NbLine >= 4> >
     constexpr const Line& w() const noexcept { return this->elems[3]; }
 
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
+    constexpr real toReal() const { return this->elems[0][0]; }
+
+    template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == 1 && NbColumn == 1>>
+    constexpr operator real() const { return toReal(); }
+
     /// Set matrix to identity.
     template<sofa::Size NbLine = L, sofa::Size NbColumn = C, typename = std::enable_if_t<NbLine == NbColumn> >
     constexpr void identity() noexcept

@@ -313,3 +313,14 @@ TEST(MatTypesTest, identity)
         }
     }
 }
+
+TEST(MatTypesTest, conversionToReal)
+{
+    const sofa::type::Mat<1, 1, SReal>& id = sofa::type::Mat<1, 1, SReal>::Identity();
+
+    const SReal r = id;
+    EXPECT_EQ(r, 1_sreal);
+
+    const SReal p = id.toReal();
+    EXPECT_EQ(p, 1_sreal);
+}
