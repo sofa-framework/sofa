@@ -227,7 +227,6 @@ void SofaPhysicsAPI::setGravity(double* gravity)
 
 int SofaPhysicsAPI::activateMessageHandler(bool value)
 {
-    return 99;
     return impl->activateMessageHandler(value);
 }
 
@@ -392,7 +391,7 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     {
         sceneFileName = filename;
         m_Simulation->init(m_RootNode.get());
-        updateOutputMeshes();
+        return updateOutputMeshes();
 
         if ( useGUI ) {
           sofa::gui::common::GUIManager::SetScene(m_RootNode.get(),cfilename);
@@ -736,10 +735,10 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
 
 int SofaPhysicsSimulation::activateMessageHandler(bool value)
 {
-    /*if (value)
+    if (value)
         m_msgHandler->activate();
     else
-        m_msgHandler->deactivate();*/
+        m_msgHandler->deactivate();
 
     m_msgIsActivated = value;
 
