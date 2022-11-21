@@ -189,9 +189,6 @@ SofaPhysicsOutputMesh::Impl::~Impl()
 
 void SofaPhysicsOutputMesh::Impl::setObject(SofaOutputMesh* o)
 {
-	if (!sObj)
-		return;
-
     sObj = o;
     sVA.clear();
     sofa::core::objectmodel::BaseContext* context = sObj->getContext();
@@ -217,7 +214,8 @@ const std::string& SofaPhysicsOutputMesh::Impl::getNameStr() const
 
 const char* SofaPhysicsOutputMesh::Impl::getName() ///< (non-unique) name of this object
 {
-    if (!sObj) return "";
+    if (!sObj) 
+        return "None";
     return sObj->getName().c_str();
 }
 
