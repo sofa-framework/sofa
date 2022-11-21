@@ -205,6 +205,50 @@ int sofaPhysicsAPI_setGravity(void* api_ptr, double* values)
 
 
 
+int sofaPhysicsAPI_activateMessageHandler(void* ptr, bool value)
+{
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+        return api->activateMessageHandler(value);
+    else
+        return API_NULL;
+}
+
+int sofaPhysicsAPI_getNbMessages(void* ptr)
+{
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+        return api->getNbMessages();
+    else
+        return API_NULL;
+}
+
+const char* sofaPhysicsAPI_getMessage(void* ptr, int messageId, int* msgType)
+{
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+    {
+        std::string value = api->getMessage(messageId, msgType[0]);
+
+        char* cstr = new char[value.length() + 1];
+#if defined(_MSC_VER)
+        std::strcpy(cstr, value.c_str());
+#endif
+        return cstr;
+    }
+    else
+        return "Error: API_NULL";
+}
+
+int sofaPhysicsAPI_clearMessages(void* ptr)
+{
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+        return api->clearMessages();
+    else
+        return API_NULL;
+}
+
 
 //////////////////////////////////////////////////////////
 //////////////    VisualModel Bindings    ////////////////

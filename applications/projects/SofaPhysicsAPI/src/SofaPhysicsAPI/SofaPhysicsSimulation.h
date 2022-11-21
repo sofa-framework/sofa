@@ -31,6 +31,7 @@
 #include <sofa/component/visual/InteractiveCamera.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 
 #include <map>
 
@@ -85,6 +86,12 @@ public:
 
     void setGravity(double* gravity);
 
+    // message API
+    int activateMessageHandler(bool value);
+    int getNbMessages();
+    std::string getMessage(int messageId, int& msgType);
+    int clearMessages();
+
     unsigned int getNbDataMonitors();
     SofaPhysicsDataMonitor** getDataMonitors();
 
@@ -103,6 +110,9 @@ protected:
     sofa::simulation::Simulation* m_Simulation;
     sofa::simulation::Node::SPtr m_RootNode;
     std::string sceneFileName;
+    sofa::helper::logging::LoggingMessageHandler* m_msgHandler;
+    bool m_msgIsActivated;
+
     sofa::component::visual::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;

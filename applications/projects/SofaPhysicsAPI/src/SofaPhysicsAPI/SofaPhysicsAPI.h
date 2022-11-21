@@ -135,6 +135,13 @@ public:
     /// Set the current scene gravity using the input @param gravity which is a double[3]
     void setGravity(double* gravity);
 
+    // message API
+    int activateMessageHandler(bool value);
+    int getNbMessages();
+    std::string getMessage(int messageId, int& msgType);
+    int clearMessages();
+
+
     /// Return the number of currently active data monitors
     unsigned int getNbDataMonitors();
 

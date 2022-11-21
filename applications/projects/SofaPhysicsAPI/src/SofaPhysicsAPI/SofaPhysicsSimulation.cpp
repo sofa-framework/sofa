@@ -225,6 +225,29 @@ void SofaPhysicsAPI::setGravity(double* gravity)
     impl->setGravity(gravity);
 }
 
+int SofaPhysicsAPI::activateMessageHandler(bool value)
+{
+    return 99;
+    return impl->activateMessageHandler(value);
+}
+
+int SofaPhysicsAPI::getNbMessages()
+{
+    return impl->getNbMessages();
+}
+
+std::string SofaPhysicsAPI::getMessage(int messageId, int& msgType)
+{
+    return impl->getMessage(messageId, msgType);
+}
+
+int SofaPhysicsAPI::clearMessages()
+{
+    return impl->clearMessages();
+}
+
+
+
 const char* SofaPhysicsAPI::getSceneFileName() const
 {
     return impl->getSceneFileName();
@@ -259,10 +282,13 @@ using namespace sofa::gl;
 using namespace sofa::core::objectmodel;
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::LoggingMessageHandler;
 
 SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     : useGUI(useGUI_)
     , GUIFramerate(GUIFramerate_)
+    , m_msgIsActivated(false)
 {
     sofa::helper::init();
     static bool first = true;
@@ -289,6 +315,11 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         }
         first = false;
     }    
+
+    // create message handler
+    m_msgHandler = new LoggingMessageHandler();
+    MessageDispatcher::clearHandlers();
+    MessageDispatcher::addHandler(m_msgHandler);
 
     m_RootNode = NULL;
     initGLDone = false;
@@ -331,6 +362,16 @@ SofaPhysicsSimulation::~SofaPhysicsSimulation()
 
 
       //sofa::gui::common::GUIManager::closeGUI();
+    }
+
+    MessageDispatcher::rmHandler(m_msgHandler);
+    if (m_msgIsActivated)
+        m_msgHandler->deactivate();
+
+    if (m_msgHandler != nullptr)
+    {
+        delete m_msgHandler;
+        m_msgHandler = nullptr;
     }
 }
 
@@ -691,6 +732,45 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
     else
         return &(outputMeshes[0]);
 }
+
+
+int SofaPhysicsSimulation::activateMessageHandler(bool value)
+{
+    /*if (value)
+        m_msgHandler->activate();
+    else
+        m_msgHandler->deactivate();*/
+
+    m_msgIsActivated = value;
+
+    return API_SUCCESS;
+}
+
+int SofaPhysicsSimulation::getNbMessages()
+{
+    return static_cast<int>(m_msgHandler->getMessages().size());
+}
+
+std::string SofaPhysicsSimulation::getMessage(int messageId, int& msgType)
+{
+    const std::vector<sofa::helper::logging::Message>& msgs = m_msgHandler->getMessages();
+
+    if (messageId >= msgs.size()) {
+        msgType = -1;
+        return "Error messageId out of bounds";
+    }
+
+    msgType = static_cast<int>(msgs[messageId].type());
+    return msgs[messageId].messageAsString();
+}
+
+int SofaPhysicsSimulation::clearMessages()
+{
+    m_msgHandler->reset();
+
+    return API_SUCCESS;
+}
+
 
 unsigned int SofaPhysicsSimulation::getNbDataMonitors()
 {

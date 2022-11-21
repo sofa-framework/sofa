@@ -66,6 +66,12 @@ EXPORT_API void sofaPhysicsAPI_setTimeStep(void* api_ptr, double value); ///< Se
 EXPORT_API int sofaPhysicsAPI_getGravity(void* api_ptr, double* values); ///< Getter of scene gravity using the ouptut @param values which is a double[3]. Return error code.
 EXPORT_API int sofaPhysicsAPI_setGravity(void* api_api_ptr, double* values); ///< Setter of current scene gravity using the input @param gravity which is a double[3]. Return error code.
 
+// API for message logging
+EXPORT_API int sofaPhysicsAPI_activateMessageHandler(void* ptr, bool value);
+EXPORT_API int sofaPhysicsAPI_getNbMessages(void* ptr);
+EXPORT_API const char* sofaPhysicsAPI_getMessage(void* ptr, int messageId, int* msgType);
+EXPORT_API int sofaPhysicsAPI_clearMessages(void* ptr);
+
 
 //////////////////////////////////////////////////////////
 //////////////    VisualModel Bindings    ////////////////
