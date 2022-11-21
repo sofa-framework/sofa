@@ -115,6 +115,11 @@ std::string SofaPhysicsAPI::loadSofaIni(const char* pathIni)
     return shareDir;
 }
 
+int SofaPhysicsAPI::loadPlugin(const char* pluginName)
+{
+    return impl->loadPlugin(pluginName);
+}
+
 void SofaPhysicsAPI::createScene()
 {
     return impl->createScene();
@@ -425,6 +430,21 @@ int SofaPhysicsSimulation::unload()
     }
 
     return API_SUCCESS;
+}
+
+int SofaPhysicsSimulation::loadPlugin(const char* pluginName)
+{
+    sofa::helper::system::PluginManager::PluginLoadStatus plugres = sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginName);
+    if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::SUCCESS || plugres == sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
+        return API_SUCCESS;
+    else if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::INVALID_LOADING)
+        return API_PLUGIN_INVALID_LOADING;
+    else if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::MISSING_SYMBOL)
+        return API_PLUGIN_MISSING_SYMBOL;
+    else if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::PLUGIN_FILE_NOT_FOUND)
+        return API_PLUGIN_FILE_NOT_FOUND;
+    else
+        return API_PLUGIN_LOADING_FAILED;
 }
 
 void SofaPhysicsSimulation::createScene()

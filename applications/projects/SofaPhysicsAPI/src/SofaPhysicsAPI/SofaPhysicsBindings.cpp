@@ -111,6 +111,16 @@ const char* sofaPhysicsAPI_loadSofaIni(void* ptr, const char* pathIni)
         return "Error: API_NULL";
 }
 
+int sofaPhysicsAPI_loadPlugin(void* ptr, const char* pluginName)
+{
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api) {
+        return api->loadPlugin(pluginName);
+    }
+    else
+        return API_NULL;
+}
+
 
 // API for animation loop
 void sofaPhysicsAPI_start(void* api_ptr)

@@ -53,6 +53,8 @@ public:
 
     /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
     int unload();
+
+    int loadPlugin(const char* pluginName);
     void createScene();
 
     void start();

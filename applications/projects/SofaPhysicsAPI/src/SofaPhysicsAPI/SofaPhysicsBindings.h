@@ -52,6 +52,7 @@ EXPORT_API int sofaPhysicsAPI_createScene(void* api_ptr); ///< Method to create 
 EXPORT_API int sofaPhysicsAPI_loadScene(void* api_ptr, const char* filename); ///< Method to load a SOFA (.scn) file given by @param filename inside the given instance @param api_ptr. Return error code.
 EXPORT_API int sofaPhysicsAPI_unloadScene(void* api_ptr); ///< Method to unload the current SOFA scene and create empty Root Node inside the given instance @param api_ptr. Return error code.
 EXPORT_API const char* sofaPhysicsAPI_loadSofaIni(void* ptr, const char* pluginName);
+EXPORT_API int sofaPhysicsAPI_loadPlugin(void* ptr, const char* pluginName);
 
 // API for animation loop
 EXPORT_API void sofaPhysicsAPI_start(void* api_ptr); ///< Method to start simulation

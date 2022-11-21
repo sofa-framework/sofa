@@ -38,6 +38,10 @@ typedef void* ID;           ///< Type used for IDs
 #define API_MESH_NULL -2         ///< If SofaPhysicsOutputMesh requested/accessed is null
 #define API_SCENE_NULL -10       ///< Scene creation failed. I.e Root node is null
 #define API_SCENE_FAILED -11     ///< Scene loading failed. I.e root node is null but scene is still empty
+#define API_PLUGIN_INVALID_LOADING -20
+#define API_PLUGIN_MISSING_SYMBOL -21
+#define API_PLUGIN_FILE_NOT_FOUND -22
+#define API_PLUGIN_LOADING_FAILED -23
 
 /// Internal implementation sub-class
 class SofaPhysicsSimulation;
@@ -55,6 +59,7 @@ public:
     /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
     int unload();
     std::string loadSofaIni(const char* pathIni);
+    int loadPlugin(const char* pluginName);
 
     /// Get the current api Name behind this interface.
     virtual const char* APIName();
