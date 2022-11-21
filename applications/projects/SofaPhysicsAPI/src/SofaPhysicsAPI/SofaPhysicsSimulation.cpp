@@ -318,7 +318,7 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     {
         sceneFileName = filename;
         m_Simulation->init(m_RootNode.get());
-        updateOutputMeshes();
+        return updateOutputMeshes();
 
         if ( useGUI ) {
           sofa::gui::common::GUIManager::SetScene(m_RootNode.get(),cfilename);
