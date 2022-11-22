@@ -29,7 +29,7 @@
 #include <QDesktopServices>
 #include <QTimer>
 #include <sofa/gui/qt/QTransformationWidget.h>
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
@@ -69,7 +69,7 @@ ModifyObject::ModifyObject(void *Id,
       messageTab(nullptr),
       messageEdit(nullptr),
       transformation(nullptr)
-    #if SOFA_GUI_QT_HAVE_QT5_CHARTS
+    #if SOFA_GUI_QT_HAVE_QT_CHARTS
     ,energy(nullptr)
     ,momentum(nullptr)
     #endif
@@ -267,7 +267,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             }
         }
 
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
         //Energy Widget
         if (simulation::Node* real_node = sofa::core::castTo<simulation::Node*>(basenode))
         {
@@ -570,7 +570,7 @@ void ModifyObject::updateTables()
 #ifdef DEBUG_GUI
     std::cout << "GUI<emit updateDataWidgets()" << std::endl;
 #endif
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
     if (energy)
     {
         if (dialogTab->currentWidget() == energy) energy->step();

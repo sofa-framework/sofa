@@ -39,8 +39,8 @@
         <UniformMass template="Rigid3d" name="mass"  totalMass="0.05" />
         <Node 	name="VisualModel" >
             <MeshOBJLoader name="meshLoader_0" filename="data/mesh/dental_instrument.obj" scale3d="1 1 1" translation="-0.212256 0.132361 3.55" rotation="180 0 150" handleSeams="1" />
-            <OglModel template="ExtVec3f"  name="InstrumentVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
-            <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
+            <OglModel  name="InstrumentVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+            <RigidMapping template="Rigid,Vec3d" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
         </Node>
         <Node 	name="CollisionModel"  >
 

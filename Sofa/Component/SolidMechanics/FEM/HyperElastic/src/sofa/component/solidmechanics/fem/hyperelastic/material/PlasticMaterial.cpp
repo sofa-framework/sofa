@@ -85,7 +85,9 @@ void PlasticMaterial::computeDStress(Vec3& dStress, Vec3& dStrain)
 
 SReal PlasticMaterial::computeVonMisesStrain(Vec3 &strain)
 {
-	Eigen::Matrix<SReal, 2, 2> e;
+	Eigen::Matrix<SReal, -1, -1> e;
+	e.resize(2, 2);
+
 	e(0,0) = strain[0];
 	e(0,1) = strain[2];
 	e(1,0) = strain[2];

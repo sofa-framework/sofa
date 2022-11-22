@@ -27,7 +27,7 @@
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass template="Vec3d,double" name="default5" massDensity="1.5" />
+        <DiagonalMass template="Vec3d,Vec3d" name="default5" massDensity="1.5" />
         <BoxROI template="Vec3d" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
         <FixedConstraint template="Vec3d" name="fixedConstraint1" indices="@box_roi1.indices"/>
         <BoxROI template="Vec3d" name="box_roi2" box="0 -0.5 -0.5 10 0.5 0.5"/>

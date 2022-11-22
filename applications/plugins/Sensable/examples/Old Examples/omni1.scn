@@ -24,8 +24,8 @@
 		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback7"  listening="1"  activate="1" />
 		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection2"  compliance="1e-005 1e-009 0 0 1e-009 0 1e-009" />
 		<Node 	name="Tool1VM"  >
-			<OglModel template="ExtVec3f" name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  />
-			<RigidMapping template="Rigid,ExtVec3f" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="0" />
+			<OglModel name="VM"  fileMesh="dt/aspi.trian"  rotation="0 0 0"  scale3d="1 1 1"  />
+			<RigidMapping template="Rigid,Vec3d" name="rigidMapping6"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@VM"  index="0" />
 		</Node>
 		<Node 	name="Tool1CM"  >
 			<RegularGridTopology name="regularGridTopology1"  fileTopology="dt/aspi.trian"  n="1 2 1"  min="0 -350 0"  max="0 0 0"  p0="0 -350 0" />
@@ -43,6 +43,6 @@
 		<LineCollisionModel name="lineModel1"  moving="0"  simulated="0" />
 		<PointCollisionModel name="pointModel1"  moving="0"  simulated="0" />
 		<MeshOBJLoader name="meshLoader_0" filename="mesh/box_outside.obj"  translation="0 0 250"  scale3d="50 50 100" handleSeams="1" />
-		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 0 0.4 0.6 0.2 Ambient 1 0 0.0784314 0.117647 0.2 Specular 0 0 0.4 0.6 0.2 Emissive 0 0 0.4 0.6 0.2 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+		<OglModel name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 0 0.4 0.6 0.2 Ambient 1 0 0.0784314 0.117647 0.2 Specular 0 0 0.4 0.6 0.2 Emissive 0 0 0.4 0.6 0.2 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
 	</Node>
 </Node>

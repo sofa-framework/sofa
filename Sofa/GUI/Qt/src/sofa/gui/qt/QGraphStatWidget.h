@@ -30,14 +30,14 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#include <QtCharts/QChartView>
+#include <QtCharts/QChart>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
 
-namespace QtCharts
-{
-    class QChartView;
-    class QChart;
-    class QLineSeries;
-    class QValueAxis;
-}
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using namespace QtCharts;
+#endif
 
 namespace sofa::gui::qt
 {
@@ -75,15 +75,15 @@ protected:
     int m_bufferSize;
 
     /// Pointer to the chart Data
-    QtCharts::QChart *m_chart;
+    QChart *m_chart;
 
     /// vector of series to be ploted
-    std::vector< QtCharts::QLineSeries *> m_curves;
+    std::vector< QLineSeries *> m_curves;
 
     /// x axis pointer
-    QtCharts::QValueAxis* m_axisX;
+    QValueAxis* m_axisX;
     /// y axis pointer
-    QtCharts::QValueAxis* m_axisY;
+    QValueAxis* m_axisY;
     
     /// min y axis value stored
     SReal m_yMin;

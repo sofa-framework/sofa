@@ -32,7 +32,7 @@
 #include <sofa/core/ConstraintParams.h>
 #include <algorithm> // for std::min
 
-namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+namespace sofa::component::constraint::lagrangian::model
 {
 
 using sofa::core::objectmodel::KeypressedEvent ;
@@ -433,4 +433,4 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
 }
 
 
-} //namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+} //namespace sofa::component::constraint::lagrangian::model

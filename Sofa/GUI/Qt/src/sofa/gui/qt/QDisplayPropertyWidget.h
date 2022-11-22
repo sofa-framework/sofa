@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/fixed_array.h>
 #include <sofa/gui/qt/QTransformationWidget.h>
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #endif
 #include <sofa/gui/qt/WDoubleLineEdit.h>

@@ -182,6 +182,9 @@ void SparseGridTopology::init()
             _nodeCubesAdjacency[ hexahedra[i][j] ].push_back( i );
         }
     }
+
+    m_upperElementType = core::topology::TopologyElementType::HEXAHEDRON;
+
 }
 
 

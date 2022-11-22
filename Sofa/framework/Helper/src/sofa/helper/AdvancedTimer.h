@@ -216,12 +216,8 @@ public:
             /// return the instance of the factory. Creates it if doesn't exist yet.
             static IdFactory& getInstance()
             {
-                SOFA_THREAD_SPECIFIC_PTR(IdFactory, instance);
-                if (instance == nullptr)
-                {
-                    instance = new IdFactory;
-                }
-                return *instance;
+                static thread_local IdFactory factory;
+                return factory;
             }
         };
 

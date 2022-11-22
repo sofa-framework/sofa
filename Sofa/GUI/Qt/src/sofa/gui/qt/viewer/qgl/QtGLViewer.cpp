@@ -65,7 +65,7 @@ helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 // ---------------------------------------------------------
 
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
-    : QGLViewer(parent, nullptr, Qt::WindowType::Widget)
+    : QGLViewer(parent, Qt::WindowType::Widget)
 {
     this->setObjectName(name);
 
