@@ -35,7 +35,7 @@
 
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
-namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
+namespace sofa::component::constraint::lagrangian::model
 {
 
 /// These 'using' are in a per-file namespace so they will not leak
@@ -199,13 +199,4 @@ extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralIn
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API BilateralInteractionConstraint< Rigid3Types >;
 #endif
 
-} // namespace sofa::component::constraint::lagrangian::model::bilateralinteractionconstraint
-
-namespace sofa::component::constraint::lagrangian::model
-{
-/// Import the following into the constraintset namespace to preserve
-/// compatibility with the existing sofa source code.
-using bilateralinteractionconstraint::BilateralInteractionConstraint;
-using bilateralinteractionconstraint::BilateralInteractionConstraintSpecialization;
-
-} //namespace sofa::component::constraint::lagrangian::model
+} // namespace sofa::component::constraint::lagrangian::model

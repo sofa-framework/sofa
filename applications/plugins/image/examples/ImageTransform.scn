@@ -18,7 +18,7 @@
 	<UniformMass template="Rigid3d" totalmass="10"/> 
 
 	<Node name="Visu">
-        <OglModel template="ExtVec3f" name="Visual" filename="mesh/cube.obj" translation="7 7 0"/>
+        <OglModel name="Visual" filename="mesh/cube.obj" translation="7 7 0"/>
         <RigidMapping input="@../meca" output="@Visual" />
     </Node>	
 	

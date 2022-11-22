@@ -15,7 +15,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 	<VisualStyle name="visualStyle1"  displayFlags="showVisual showBehavior" />
 	<MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
-	<OglModel template="ExtVec3f" name="Objective" src="@meshLoader_0"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+	<OglModel name="Objective" src="@meshLoader_0"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>

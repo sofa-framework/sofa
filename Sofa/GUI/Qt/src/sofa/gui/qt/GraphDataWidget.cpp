@@ -53,7 +53,7 @@ Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, std::d
 GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *graphConf):graph(graphConf)
 {
     QVBoxLayout *generalLayout = new QVBoxLayout(this);
-    generalLayout->setMargin(0);
+    generalLayout->setContentsMargins(0, 0, 0, 0);
     generalLayout->setSpacing(0);
     QWidget *gnuplotExport=new QWidget(this);
     QHBoxLayout* gnuplotLayout = new QHBoxLayout(gnuplotExport);

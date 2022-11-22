@@ -22,8 +22,8 @@
 		<RestShapeSpringsForceField template="Rigid3d" name="restShapeSpringsForceField4"  stiffness="200"  angularStiffness="200" />
 		<Node 	name="visual" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshOBJLoader name="meshLoader_2" filename="mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150"  scale3d="1 1 1" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="InstrumentVisualModel" src="@meshLoader_2"  material="Default Diffuse 1 0 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
-			<RigidMapping template="Rigid,ExtVec3f" name="RigidMapping"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@../instrumentState"  output="@InstrumentVisualModel" />
+			<OglModel name="InstrumentVisualModel" src="@meshLoader_2"  material="Default Diffuse 1 0 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<RigidMapping template="Rigid,Vec3d" name="RigidMapping"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@../instrumentState"  output="@InstrumentVisualModel" />
 		</Node>
 		<Node 	name="CollisionModel" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshLoader name="meshLoader9"  filename="mesh/dental_instrument.obj" />
@@ -43,7 +43,7 @@
 		<LineCollisionModel name="Lines"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<PointCollisionModel name="Points"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1" handleSeams="1" />
-		<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 0.494118 0.494118 0.494118 1 Ambient 1 0.0901961 0.0901961 0.0901961 1 Specular 0 0.494118 0.494118 0.494118 1 Emissive 0 0.494118 0.494118 0.494118 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+		<OglModel name="Visual" src="@meshLoader_0"  material="Default Diffuse 1 0.494118 0.494118 0.494118 1 Ambient 1 0.0901961 0.0901961 0.0901961 1 Specular 0 0.494118 0.494118 0.494118 1 Emissive 0 0.494118 0.494118 0.494118 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
 	</Node>
 	<Node 	name="Object" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<EulerImplicitSolver name="Implicit Euler Solver" />
@@ -55,8 +55,8 @@
 		<HexahedronFEMForceField template="Vec3d" name="FEM"  poissonRatio="0.45"  youngModulus="3" />
 		<Node 	name="VisualNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshOBJLoader name="meshLoader_1" filename="mesh/liver.obj" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="Objective" src="@meshLoader_1"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
-			<BarycentricMapping template="Vec3d,ExtVec3f" name="Visual Mapping"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Objective" />
+			<OglModel name="Objective" src="@meshLoader_1"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<BarycentricMapping template="Vec3d,Vec3d" name="Visual Mapping"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Objective" />
 		</Node>
 		<Node 	name="CollisionNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshOBJLoader name="meshLoader2" filename="mesh/liver.obj" />
@@ -76,8 +76,8 @@
 		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection1" />
 		<Node 	name="Visu" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshOBJLoader name="meshLoader_3" filename="mesh/torus.obj"  rotation="90 0 0"  scale3d="1 1 1" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_3"  material="Default Diffuse 1 1 0.498039 0.247059 1 Ambient 1 0.2 0.0980392 0.0470588 1 Specular 0 1 0.498039 0.247059 1 Emissive 0 1 0.498039 0.247059 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
-			<RigidMapping template="Rigid,ExtVec3f" name="rigidMapping1"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
+			<OglModel name="Visual" src="@meshLoader_3"  material="Default Diffuse 1 1 0.498039 0.247059 1 Ambient 1 0.2 0.0980392 0.0470588 1 Specular 0 1 0.498039 0.247059 1 Emissive 0 1 0.498039 0.247059 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
+			<RigidMapping template="Rigid,Vec3d" name="rigidMapping1"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
 		</Node>
 		<Node 	name="Surf2" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<MeshLoader name="meshLoader"  filename="mesh/torus_for_collision.obj"  triangulate="1" />

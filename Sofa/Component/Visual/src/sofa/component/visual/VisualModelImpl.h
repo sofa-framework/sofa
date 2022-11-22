@@ -70,7 +70,6 @@ public:
  *  At the moment, it is only implemented by OglModel for OpenGL systems.
  *
  */
-
 class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public Vec3State //, public RigidState
 {
 public:
