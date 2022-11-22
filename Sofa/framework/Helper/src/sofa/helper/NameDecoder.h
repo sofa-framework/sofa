@@ -83,6 +83,11 @@ public:
 
     /// Helper method to extract the template name (removing namespaces and class name)
     static std::string decodeTemplateName(const std::type_info& t);
+
+private:
+    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
+    template<class T>
+    struct DefaultTypeTemplateName{};
 };
 
 } /// namespace sofa::helper
