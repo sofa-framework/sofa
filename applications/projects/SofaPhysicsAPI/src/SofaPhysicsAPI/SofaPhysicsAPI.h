@@ -35,6 +35,7 @@ typedef void* ID;           ///< Type used for IDs
 /// List of error code to be used to translate methods return values without logging system
 #define API_SUCCESS EXIT_SUCCESS ///< success value
 #define API_NULL -1              ///< SofaPhysicsAPI created is null
+#define API_MESH_NULL -2         ///< If SofaPhysicsOutputMesh requested/accessed is null
 #define API_SCENE_NULL -10       ///< Scene creation failed. I.e Root node is null
 #define API_SCENE_FAILED -11     ///< Scene loading failed. I.e root node is null but scene is still empty
 
