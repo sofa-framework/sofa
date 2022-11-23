@@ -34,6 +34,7 @@ public:
     Impl();
     ~Impl();
 
+    const std::string& getNameStr();
     const char* getName(); ///< (non-unique) name of this object
     ID          getID();   ///< unique ID of this object
 

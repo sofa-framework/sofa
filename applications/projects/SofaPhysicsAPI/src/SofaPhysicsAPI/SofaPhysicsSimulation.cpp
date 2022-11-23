@@ -596,9 +596,9 @@ SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(unsigned int mesh
 
 SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(const char* name)
 {
-    for (auto mesh : outputMeshes)
+    for (SofaPhysicsOutputMesh* mesh : outputMeshes)
     {
-        if (mesh->getName() == name)
+        if (std::string(name).compare(mesh->getNameStr()) == 0)
             return mesh;
     }
 
