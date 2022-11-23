@@ -28,17 +28,10 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-//#include <sofa/gpu/cuda/CudaTypes.h>
-
-
-
-namespace sofa
+namespace sofa::core
 {
 
-	namespace core
-	{
-
-        SOFA_EVENT_CPP(DataExchangeEvent)
+SOFA_EVENT_CPP(DataExchangeEvent)
 
 // Register in the Factory
 int DataExchangeClass = core::RegisterObject("DataExchange")
@@ -60,8 +53,6 @@ int DataExchangeClass = core::RegisterObject("DataExchange")
 ;
 
 
-
-
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec3d> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<sofa::type::Vec2d> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<double> >;
@@ -77,8 +68,4 @@ template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< float >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<int> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::vector<unsigned int> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< bool >;
-
-
-	} // namespace core
-
 } // namespace sofa
