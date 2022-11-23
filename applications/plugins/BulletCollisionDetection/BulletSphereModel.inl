@@ -81,13 +81,11 @@ void TBulletSphereModel<DataTypes>::updateBullet(){
     const VecCoord & pos = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int npoints = pos.size();
 
-    btTransform trans;
-    trans.setIdentity();
     for(int i = 0 ; i < npoints ; ++i){
         btVector3 btP(pos[i][0],pos[i][1],pos[i][2]);
-        btTransform & trans = _bt_cshape->getChildTransform(i);
-        trans.setOrigin(btP);
-        _bt_cshape->updateChildTransform(i,trans,false);
+        btTransform & mytrans = _bt_cshape->getChildTransform(i);
+        mytrans.setOrigin(btP);
+        _bt_cshape->updateChildTransform(i,mytrans,false);
     }
 }
 
