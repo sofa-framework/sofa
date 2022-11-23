@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MARCHINGCUBEUTILITY_H
-#define MARCHINGCUBEUTILITY_H
+#pragma once
 
 #include <sofa/helper/config.h>
 
@@ -30,9 +29,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <map>
 
-namespace sofa
-{
-namespace helper
+namespace sofa::helper
 {
 using sofa::type::Vec;
 using sofa::type::Vec3;
@@ -77,13 +74,13 @@ public:
     void setBoundingBoxFromRealCoords ( const type::Vec3& min, const type::Vec3& max )
     {
         type::Vec3 gridSize = dataVoxelSize * cubeStep;
-		gridSize = type::Vec3 ( 1_sreal / gridSize[0], 1_sreal / gridSize[1], 1_sreal / gridSize[2] );
+        gridSize = type::Vec3 ( 1_sreal / gridSize[0], 1_sreal / gridSize[1], 1_sreal / gridSize[2] );
 
-//          Vec3i bbMin = ( min - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
-//          Vec3i bbMax = ( max - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        //          Vec3i bbMin = ( min - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        //          Vec3i bbMax = ( max - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
         setBoundingBox(
-            {static_cast<int>(min.x()), static_cast<int>(min.y()), static_cast<int>(min.z())},
-            {static_cast<int>(max.x()), static_cast<int>(max.y()), static_cast<int>(max.z())});
+                    {static_cast<int>(min.x()), static_cast<int>(min.y()), static_cast<int>(min.z())},
+                    {static_cast<int>(max.x()), static_cast<int>(max.y()), static_cast<int>(max.z())});
     }
 
     /// Set the bounding box (in the data space) to apply mCube localy.
@@ -125,28 +122,28 @@ public:
     /// mesh is a vector containing the triangles defined as a sequence of three indices
     /// map_indices gives the correspondance between an indice and a 3d position in space
     void run ( unsigned char *data, const float isolevel,
-            sofa::type::vector< PointID > &triangles,
-            sofa::type::vector< type::Vec3>  &vertices,
-            type::vector< type::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr ) const;
+               sofa::type::vector< PointID > &triangles,
+               sofa::type::vector< type::Vec3>  &vertices,
+               type::vector< type::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr ) const;
 
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
     void run ( unsigned char *_data, const sofa::type::vector< type::Vec3i > & seeds,
-            const float isolevel,
-            sofa::type::vector< PointID >& mesh,
-            sofa::type::vector< type::Vec3>& vertices,
-            std::map< type::Vec3, PointID>& map_vertices,
-            type::vector< type::vector<unsigned int> >*triangleIndexInRegularGrid,
-            bool propagate ) const;
+               const float isolevel,
+               sofa::type::vector< PointID >& mesh,
+               sofa::type::vector< type::Vec3>& vertices,
+               std::map< type::Vec3, PointID>& map_vertices,
+               type::vector< type::vector<unsigned int> >*triangleIndexInRegularGrid,
+               bool propagate ) const;
 
     /// Same as the previous function but the surfaces are constructed by propagating from seeds.
     /// Faster than previous but it need the precomputation of the seeds.
     void run ( unsigned char *data, const vector<type::Vec3i>& seeds,
-            const float isolevel,
-            sofa::type::vector< PointID > &triangles,
-            sofa::type::vector< type::Vec3>  &vertices,
-            type::vector< type::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr,
-            bool propagate = true ) const;
+               const float isolevel,
+               sofa::type::vector< PointID > &triangles,
+               sofa::type::vector< type::Vec3>  &vertices,
+               type::vector< type::vector<unsigned int> > *triangleIndexInRegularGrid = nullptr,
+               bool propagate = true ) const;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
     /// we construct a Sofa mesh.
@@ -187,9 +184,9 @@ private:
     inline void updateTriangleInRegularGridVector ( type::vector< type::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const type::Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const;
 
     int polygonise ( const GridCell &grid, int& cubeConf, const float isolevel,
-            sofa::type::vector< PointID > &triangles,
-            std::map< type::Vec3, PointID> &map_vertices,
-            sofa::type::vector< type::Vec3 > &map_indices ) const ;
+                     sofa::type::vector< PointID > &triangles,
+                     std::map< type::Vec3, PointID> &map_vertices,
+                     sofa::type::vector< type::Vec3 > &map_indices ) const ;
 
     bool getVoxel ( unsigned int index, const unsigned char *dataVoxels ) const
     {
@@ -202,21 +199,21 @@ private:
     void createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const;
 
     void applyConvolution ( const float* convolutionKernel,
-            unsigned int x, unsigned int y, unsigned int z,
-            const unsigned char *input_data,
-            unsigned char *output_data ) const;
+                            unsigned int x, unsigned int y, unsigned int z,
+                            const unsigned char *input_data,
+                            unsigned char *output_data ) const;
 
     void smoothData ( unsigned char *data ) const;
 
     /// Propagate the triangulation surface creation from a cell.
     void propagateFrom ( const sofa::type::vector<type::Vec3i>& coord,
-            unsigned char* data, const float isolevel,
-            sofa::type::vector< PointID >& triangles,
-            sofa::type::vector< type::Vec3 >& vertices,
-            std::set<type::Vec3i>& generatedCubes,
-            std::map< type::Vec3, PointID>& map_vertices,
-            type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid = nullptr,
-            bool propagate = true ) const;
+                         unsigned char* data, const float isolevel,
+                         sofa::type::vector< PointID >& triangles,
+                         sofa::type::vector< type::Vec3 >& vertices,
+                         std::set<type::Vec3i>& generatedCubes,
+                         std::map< type::Vec3, PointID>& map_vertices,
+                         type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid = nullptr,
+                         bool propagate = true ) const;
 
     unsigned int  cubeStep;
     unsigned int  convolutionSize;
@@ -231,7 +228,5 @@ private:
 extern SOFA_HELPER_API const int MarchingCubeEdgeTable[256];
 extern SOFA_HELPER_API const int MarchingCubeFaceTable[256];
 extern SOFA_HELPER_API const int MarchingCubeTriTable[256][16];
-} // namespace helper
-} // namespace sofa
+} // namespace sofa::helper
 
-#endif

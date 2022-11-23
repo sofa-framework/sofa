@@ -39,11 +39,8 @@
 
 MSG_REGISTER_CLASS(sofa::helper::MarchingCubeUtility, "MarchingCubeUtility")
 
-namespace sofa
+namespace sofa::helper
 {
-
-    namespace helper
-    {
     using std::stack;
 
     const int MarchingCubeEdgeTable[256] =
@@ -713,8 +710,8 @@ namespace sofa
         type::Vec3i gridSize = type::Vec3i ( dataResolution /cubeStep );
 
         type::Vec3 gridStep { 2_sreal / static_cast<SReal>(gridSize[0]),
-                              2_sreal / static_cast<SReal>(gridSize[1]),
-                              2_sreal / static_cast<SReal>(gridSize[2]) };
+                    2_sreal / static_cast<SReal>(gridSize[1]),
+                    2_sreal / static_cast<SReal>(gridSize[2]) };
 
         type::Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
 
@@ -823,8 +820,8 @@ namespace sofa
     {
         mCubeCoords.clear();
         type::Vec3 gridSize  ( 1_sreal / dataVoxelSize[0]*cubeStep,
-                               1_sreal / dataVoxelSize[1]*cubeStep,
-                               1_sreal / dataVoxelSize[2]*cubeStep );
+                1_sreal / dataVoxelSize[1]*cubeStep,
+                1_sreal / dataVoxelSize[2]*cubeStep );
 
         for ( vector<type::Vec3>::const_iterator it = realCoords.begin(); it != realCoords.end(); ++it )
         {
@@ -988,6 +985,4 @@ namespace sofa
             convolutionKernel[i] *= total;
     }
 
-    }
-
-}
+} // namespace sofa::helper
