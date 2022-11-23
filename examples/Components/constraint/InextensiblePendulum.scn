@@ -18,9 +18,10 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [PointsFromIndices] -->
 
     <DefaultVisualManagerLoop/>
-    <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels showMappings showForceFields" />
 
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" computeBoundingBox="false"/>
     <GenericConstraintSolver tolerance="1e-9" maxIterations="1000"/>
@@ -51,8 +52,13 @@
             <DistanceMapping  name="distanceMapping" />
             <UniformConstraint template="Vec1d" iterative="false" />
         </Node>
+
+        <Node name="visual">
+            <PointsFromIndices name="points" position="@../defoDOF.position" indices="19"/>
+            <TrailRenderer template="Vec3d" position="@points.indices_position" nbSteps="50"/>
+        </Node>
     </Node>
-    
+
     <Node  name="withoutImplicitConstraintForce" >
         <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 -2" />
         <EulerImplicitSolver />
@@ -70,6 +76,11 @@
             <MechanicalObject template="Vec1d"  name="extensionsDOF" />
             <DistanceMapping  name="distanceMapping" />
             <UniformConstraint template="Vec1d" iterative="false" />
+        </Node>
+
+        <Node name="visual">
+            <PointsFromIndices name="points" position="@../defoDOF.position" indices="19"/>
+            <TrailRenderer template="Vec3d" position="@points.indices_position" nbSteps="50"/>
         </Node>
     </Node>
     
