@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_EXCHANGE_DATA_H
-#define SOFA_EXCHANGE_DATA_H
+#pragma once
 
 #include <MultiThreading/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -30,111 +29,114 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/Event.h>
 
-namespace sofa
+namespace sofa::core
 {
-	namespace core
-	{
 
-		class DataExchangeEvent : public sofa::core::objectmodel::Event
-		{
-		public:
+class DataExchangeEvent : public sofa::core::objectmodel::Event
+{
+public:
 
-            SOFA_EVENT_H(DataExchangeEvent)
+    SOFA_EVENT_H(DataExchangeEvent)
 
-			DataExchangeEvent( double dt )
-				: sofa::core::objectmodel::Event()
-				, dt(dt)
-			{}
+    DataExchangeEvent( double dt )
+        : sofa::core::objectmodel::Event()
+          , dt(dt)
+    {}
 
-			~DataExchangeEvent() override {}
+    ~DataExchangeEvent() override {}
 
-			double getDt() const { return dt; }
-			static inline const char* GetClassName() { return "DataExchangeEvent"; }
-		protected:
-			double dt;
-		};
+    double getDt() const { return dt; }
+    static inline const char* GetClassName() { return "DataExchangeEvent"; }
+protected:
+    double dt;
+};
 
 
-		template <class DataTypes>
-		class DataExchange : public virtual objectmodel::BaseObject
-		{
-		public:
-			SOFA_CLASS(SOFA_TEMPLATE(DataExchange, DataTypes ), objectmodel::BaseObject);
+template <class DataTypes>
+class DataExchange : public virtual objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(DataExchange, DataTypes ), objectmodel::BaseObject);
 
-			//typedef typename DataTypes::Real        Real;
-			//typedef typename DataTypes::Coord       Coord;
-			//typedef typename DataTypes::VecCoord    VecCoord;
+    //typedef typename DataTypes::Real        Real;
+    //typedef typename DataTypes::Coord       Coord;
+    //typedef typename DataTypes::VecCoord    VecCoord;
 
-		protected:
+protected:
 
-			DataExchange( const char* from, const char* to );
+    DataExchange( const char* from, const char* to );
 
-			~DataExchange() override;
+    ~DataExchange() override;
 
-			void copyData();
+    void copyData();
 
-		public:
+public:
 
-			 /// Initialization method called at graph creation and modification, during top-down traversal.
-			void init() override;
-
-
-			void handleEvent( core::objectmodel::Event* event ) override;
-
-			template<class T>
-			static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-			{
-				std::string fromPath;
-				std::string toPath;
-
-				if(arg)
-				{
-
-					fromPath = arg->getAttribute(std::string("from"), NULL );
-					toPath = arg->getAttribute(std::string("to"), NULL );
-
-				}
-
-				//context->findLinkDest(stout, fromPath, NULL);
-				//context->findLinkDest(stout, toPath, NULL);
-
-				typename T::SPtr obj = sofa::core::objectmodel::New<T>(fromPath.c_str(), toPath.c_str() );
-				if (context)
-				{
-					context->addObject(obj);
-				}
-				if (arg)
-				{
-					obj->parse(arg);
-				}
-				return obj;
-			}
+    /// Initialization method called at graph creation and modification, during top-down traversal.
+    void init() override;
 
 
-			Data<DataTypes> mSource; ///< source object to copy
-			Data<DataTypes> mDestination; ///< destination object to copy
+    void handleEvent( core::objectmodel::Event* event ) override;
 
-		private:
+    static std::string GetCustomTemplateName()
+    {
+        return sofa::defaulttype::DataTypeName<DataTypes>::name();
+    }
+
+    template<class T>
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        std::string fromPath;
+        std::string toPath;
+
+        if(arg)
+        {
+
+            fromPath = arg->getAttribute(std::string("from"), NULL );
+            toPath = arg->getAttribute(std::string("to"), NULL );
+
+        }
+
+        //context->findLinkDest(stout, fromPath, NULL);
+        //context->findLinkDest(stout, toPath, NULL);
+
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(fromPath.c_str(), toPath.c_str() );
+        if (context)
+        {
+            context->addObject(obj);
+        }
+        if (arg)
+        {
+            obj->parse(arg);
+        }
+        return obj;
+    }
 
 
-			/// source
-			//SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mSourceObject;
-			/// dest
-			//SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mDestinationObject;
+    Data<DataTypes> mSource;      ///< source object to copy
+    Data<DataTypes> mDestination; ///< destination object to copy
+
+private:
+
+
+    /// source
+    //SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mSourceObject;
+    /// dest
+    //SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mDestinationObject;
 
 
 
-			DataTypes* mSourcePtr;
-			DataTypes* mDestinationPtr;
-			//VecCoord mDataCopy;
+    DataTypes* mSourcePtr;
+    DataTypes* mDestinationPtr;
+    //VecCoord mDataCopy;
 
-			std::string fromPath;
-			std::string toPath;
-			//core::objectmodel::BaseObjectDescription* desc;
+    std::string fromPath;
+    std::string toPath;
+    //core::objectmodel::BaseObjectDescription* desc;
 
-			std::size_t mSizeInBytes;
+    std::size_t mSizeInBytes;
 
-		};
+};
 
 
 
@@ -157,8 +159,5 @@ extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::type::v
 extern template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< bool >;
 #endif
 
-	}
-
 }
 
-#endif // SOFA_EXCHANGE_DATA_H
