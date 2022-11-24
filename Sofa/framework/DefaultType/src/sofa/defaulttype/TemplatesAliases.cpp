@@ -98,7 +98,7 @@ std::string TemplateAliases::resolveAlias(const std::string& name)
 	else
 		return name;
 }
-	
+
 RegisterTemplateAlias::RegisterTemplateAlias(const std::string& alias, const std::string& result, const bool doWarnUser)
 {
     TemplateAliases::addAlias(alias, result, doWarnUser);
@@ -137,5 +137,9 @@ static RegisterTemplateAlias vector_intAlias("vector<int>", sofa::defaulttype::D
 static RegisterTemplateAlias vector_uintAlias("vector<unsigned_int>", sofa::defaulttype::DataTypeName<sofa::type::vector<unsigned int> >::name(), true);
 static RegisterTemplateAlias vector_floatAlias("vector<float>", sofa::defaulttype::DataTypeName<sofa::type::vector<float> >::name(), true);
 static RegisterTemplateAlias vector_doubleAlias("vector<double>", sofa::defaulttype::DataTypeName<sofa::type::vector<double> >::name(), true);
+
+// Compatibility aliases used previously (see PR#3465)
+static RegisterTemplateAlias intAlias("int", sofa::defaulttype::DataTypeName<int>::name(), true);
+static RegisterTemplateAlias dataDoubleAlias("Data<double>", sofa::defaulttype::DataTypeName<std::vector<double>>::name(), true);
 
 } // namespace sofa::defaulttype
