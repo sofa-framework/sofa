@@ -126,8 +126,6 @@ struct DefaultDataTypeInfo
     {
     }
 
-    // mtournier: wtf is this supposed to do?
-    // mtournier: wtf is this not returning &type?
     static const void* getValuePtr(const DataType& /*type*/)
     {
         return nullptr;

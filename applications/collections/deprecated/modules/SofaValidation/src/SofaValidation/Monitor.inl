@@ -163,11 +163,11 @@ void Monitor<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->setLightingEnabled(false);
     if (d_showPositions.getValue())
     {
-        type::vector<type::Vector3> points;
+        type::vector<type::Vec3> points;
         for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
             Coord posvertex = (*m_X)[d_indices.getValue()[i]];
-            points.push_back(type::Vector3(posvertex[0],posvertex[1],posvertex[2]));
+            points.push_back(type::Vec3(posvertex[0],posvertex[1],posvertex[2]));
         }
         vparams->drawTool()->drawPoints(points, (float)(d_showSizeFactor.getValue())*2.0f, d_positionsColor.getValue());
 
@@ -178,9 +178,9 @@ void Monitor<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
             Coord posVertex = (*m_X)[d_indices.getValue()[i]];
-            type::Vector3 p1(posVertex[0],posVertex[1],posVertex[2]);
+            type::Vec3 p1(posVertex[0],posVertex[1],posVertex[2]);
             Deriv velVertex = (*m_V)[d_indices.getValue()[i]];
-            type::Vector3 p2(d_showSizeFactor.getValue()*velVertex[0],d_showSizeFactor.getValue()*velVertex[1],d_showSizeFactor.getValue()*velVertex[2]);
+            type::Vec3 p2(d_showSizeFactor.getValue()*velVertex[0],d_showSizeFactor.getValue()*velVertex[1],d_showSizeFactor.getValue()*velVertex[2]);
 
             if(p2.norm() > d_showMinThreshold.getValue())
                 vparams->drawTool()->drawArrow(p1, p1+p2, (float)(d_showSizeFactor.getValue()*p2.norm()/20.0), d_velocitiesColor.getValue());
@@ -192,9 +192,9 @@ void Monitor<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
             Coord posVertex = (*m_X)[d_indices.getValue()[i]];
-            type::Vector3 p1(posVertex[0],posVertex[1],posVertex[2]);
+            type::Vec3 p1(posVertex[0],posVertex[1],posVertex[2]);
             Deriv forceVertex = (*m_F)[d_indices.getValue()[i]];
-            type::Vector3 p2(d_showSizeFactor.getValue()*forceVertex[0],d_showSizeFactor.getValue()*forceVertex[1],d_showSizeFactor.getValue()*forceVertex[2]);
+            type::Vec3 p2(d_showSizeFactor.getValue()*forceVertex[0],d_showSizeFactor.getValue()*forceVertex[1],d_showSizeFactor.getValue()*forceVertex[2]);
 
             if(p2.norm() > d_showMinThreshold.getValue())
                 vparams->drawTool()->drawArrow(p1, p1+p2, (float)(d_showSizeFactor.getValue()*p2.norm()/20.0), d_forcesColor.getValue());
@@ -206,14 +206,14 @@ void Monitor<DataTypes>::draw(const core::visual::VisualParams* vparams)
         m_internalDt += this->getContext()->getDt();
         for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
-            type::vector<type::Vector3> points;
+            type::vector<type::Vec3> points;
             Coord point;
             for (unsigned int j=0 ; j<m_savedPos[i].size() ; ++j)
             {
                 point = m_savedPos[i][j];
-                points.push_back(type::Vector3(point[0], point[1], point[2]));
+                points.push_back(type::Vec3(point[0], point[1], point[2]));
                 if(j!=0)
-                    points.push_back(type::Vector3(point[0], point[1], point[2]));
+                    points.push_back(type::Vec3(point[0], point[1], point[2]));
             }
             vparams->drawTool()->drawLines(points, (float)(d_showSizeFactor.getValue()*0.2), d_trajectoriesColor.getValue());
         }

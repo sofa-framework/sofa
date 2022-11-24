@@ -593,13 +593,13 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->d_drawSize.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->disableLighting();
 
     const VecCoord* x0 = &d_X0.getValue();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     float drawSize = float((d_drawSize.getValue() > 1.0) ? d_drawSize.getValue() : 1.0);
 
@@ -614,7 +614,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
             for (unsigned int i=0; i<points_i.size() ; ++i)
             {
                 CPos p = DataTypes::getCPos(points_i[i]);
-                vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+                vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
             }
 
             vparams->drawTool()->drawPoints(vertices, drawSize, sofa::type::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
@@ -630,7 +630,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
                 for (unsigned int j=0 ; j<2 ; j++)
                 {
                     CPos p = DataTypes::getCPos((*x0_i)[e[j]]);
-                    vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+                    vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
                 }
             }
             vparams->drawTool()->drawLines(vertices, drawSize, sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
@@ -646,7 +646,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
                 for (unsigned int j=0 ; j<3 ; j++)
                 {
                     CPos p = (DataTypes::getCPos((*x0_i)[t[j]]));
-                    vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+                    vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
                 }
             }
             vparams->drawTool()->drawTriangles(vertices, sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
@@ -657,8 +657,8 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     {
         vertices.clear();
         const Vec6& b = d_box.getValue();
-        const sofa::type::Vector3 minBBox(b[0], b[1], b[2]);
-        const sofa::type::Vector3 maxBBox(b[3], b[4], b[5]);
+        const sofa::type::Vec3 minBBox(b[0], b[1], b[2]);
+        const sofa::type::Vec3 maxBBox(b[3], b[4], b[5]);
 
         vparams->drawTool()->setMaterial(sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
         vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, drawSize);
@@ -672,7 +672,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
         for (unsigned int i=0; i<pointsROI.size() ; ++i)
         {
             CPos p = (DataTypes::getCPos(pointsROI[i]));
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
         }
         vparams->drawTool()->drawPoints(vertices, drawSize, sofa::type::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
@@ -688,7 +688,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
             for (unsigned int j=0 ; j<2 ; j++)
             {
                 CPos p = (DataTypes::getCPos((*x0)[e[j]]));
-                vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+                vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
             }
         }
         
@@ -706,7 +706,7 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
             for (unsigned int j=0 ; j<3 ; j++)
             {
                 CPos p = (DataTypes::getCPos((*x0)[t[j]]));
-                vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+                vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
             }
         }
         vparams->drawTool()->drawTriangles(vertices, sofa::type::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
@@ -723,24 +723,24 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 CPos p = (DataTypes::getCPos((*x0)[t[j]]));
-                vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+                vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
                 p = (DataTypes::getCPos((*x0)[t[(j + 1) % 4]]));
-                vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+                vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
             }
             CPos p = (DataTypes::getCPos((*x0)[t[0]]));
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
             p = (DataTypes::getCPos((*x0)[t[2]]));
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
             p = (DataTypes::getCPos((*x0)[t[1]]));
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
             p = (DataTypes::getCPos((*x0)[t[3]]));
-            vertices.push_back(sofa::type::Vector3(p[0], p[1], p[2]));
+            vertices.push_back(sofa::type::Vec3(p[0], p[1], p[2]));
         }
        
         vparams->drawTool()->drawLines(vertices, drawSize, sofa::type::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::select

@@ -39,7 +39,6 @@ namespace sofa::component::mass
 {
 
 template <class DataTypes>
-
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
@@ -137,7 +136,7 @@ public:
 
     SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
-    type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
+    type::Vec6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addMDxToVector(linearalgebra::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
@@ -155,17 +154,7 @@ public:
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
         Inherited::parse(arg);
-
-        if (arg->getAttribute("template"))
-        {
-            auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
-            if (splitTemplates.size() > 1)
-            {
-                msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
-                    << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
-                msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
-            }
-        }
+        parseMassTemplate<MassType>(arg, this);
     }
 
 private:
@@ -187,11 +176,11 @@ private:
 
 
     template<class T>
-    type::Vector6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
+    type::Vec6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
                                                 const DataVecCoord& x,
                                                 const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
     template<class T>
-    type::Vector6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
+    type::Vec6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
                                               const DataVecCoord& x,
                                               const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
 

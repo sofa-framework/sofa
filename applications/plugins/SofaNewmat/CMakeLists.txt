@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaNewmat LANGUAGES CXX)
 
-find_package(SofaFramework REQUIRED)
-sofa_find_package(SofaBaseLinearSolver REQUIRED)
-sofa_find_package(SofaGeneralLinearSolver REQUIRED) # for CholeskySolver
+find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 
 # Newmat
 #sofa_find_package(Newmat QUIET) # useless IMO
@@ -34,7 +33,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver newmat)
+target_link_libraries(${PROJECT_NAME} PUBLIC newmat Sofa.Component.LinearSolver.Direct)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

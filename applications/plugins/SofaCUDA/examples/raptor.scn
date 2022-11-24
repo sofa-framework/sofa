@@ -1,6 +1,16 @@
 <Node name="root" dt="0.04" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [IndexValueMapper] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [ShewchukPCGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Preconditioner"/> <!-- Needed to use components [JacobiPreconditioner] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BarycentricMapping BoxROI CudaVisualModel FixedConstraint MechanicalObject PlaneForceField TetrahedronFEMForceField UniformMass] -->
   <Node name="M1">
     <MeshVTKLoader name="volume" filename="mesh/raptorTetra_12580.vtu" onlyAttachedPoints="true" />
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" />-->

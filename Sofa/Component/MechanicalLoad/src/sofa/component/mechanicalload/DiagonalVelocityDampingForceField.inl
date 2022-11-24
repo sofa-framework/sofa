@@ -39,19 +39,23 @@ DiagonalVelocityDampingForceField<DataTypes>::DiagonalVelocityDampingForceField(
 template<class DataTypes>
 void DiagonalVelocityDampingForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVecDeriv&_f, const DataVecCoord&, const DataVecDeriv&_v)
 {
-    unsigned nbDampingCoeff = dampingCoefficients.getValue().size();
+    const auto coefs = sofa::helper::getReadAccessor(dampingCoefficients);
 
-    if( nbDampingCoeff )
+    if( !coefs.empty() )
     {
+        const std::size_t nbDampingCoeff = coefs.size();
+
         sofa::helper::WriteAccessor<DataVecDeriv> f(_f);
         const VecDeriv& v = _v.getValue();
 
-        for(unsigned i=0; i<v.size();i++)
-            for(unsigned j=0; j<Deriv::total_size; j++)
-                if( i<nbDampingCoeff )
-                    f[i][j] -= v[i][j]*dampingCoefficients.getValue()[i][j];
-                else
-                    f[i][j] -= v[i][j]*dampingCoefficients.getValue().back()[j];
+        for(std::size_t i = 0; i < v.size(); ++i)
+        {
+            const auto coefId = std::min(i, nbDampingCoeff-1);
+            for(unsigned j = 0; j < Deriv::total_size; ++j)
+            {
+                f[i][j] -= v[i][j] * coefs[coefId][j];
+            }
+        }
     }
 }
 

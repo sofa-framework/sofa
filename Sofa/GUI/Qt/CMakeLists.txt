@@ -45,24 +45,23 @@ if (Qt5Core_FOUND)
         set(QT_TARGETS ${QT_TARGETS} Qt5::WebEngine Qt5::WebEngineWidgets)
     endif()
 elseif (Qt6Core_FOUND)
-    # https://doc-snapshots.qt.io/qt6-dev/whatsnew60.html
-    # Charts and WebEngine have been removed from Qt6 and may be reintroduced later
 
     # Profiling
-    # sofa_find_package(Qt6 COMPONENTS Charts QUIET BOTH_SCOPES)
-    # if(Qt6Charts_FOUND)
-    #     set(QT_TARGETS ${QT_TARGETS} Qt::Charts)
-    # else()
-    #     message(STATUS "${PROJECT_NAME}: Qt6 Charts not found. No chart nor Profile will be compiled")
-    # endif()
+    sofa_find_package(Qt6 COMPONENTS Charts QUIET BOTH_SCOPES)
+    if(Qt6Charts_FOUND)
+        set(QT_TARGETS ${QT_TARGETS} Qt::Charts)
+    else()
+        message(STATUS "${PROJECT_NAME}: Qt6 Charts not found. No chart nor Profile will be compiled")
+    endif()
 
     # # QDocBrowser
-    # find_package(Qt6 COMPONENTS WebEngine QUIET) # if found, then QDocBrowser will be ON by default
-    # option(SOFA_GUI_QT_ENABLE_QDOCBROWSER "Build the QDocBrowser. QtWebEngine is needed." ${Qt6WebEngine_FOUND})
-    # if(SOFA_GUI_QT_ENABLE_QDOCBROWSER)
-    #     sofa_find_package(Qt6 COMPONENTS WebEngine WebEngineWidgets REQUIRED BOTH_SCOPES)
-    #     set(QT_TARGETS ${QT_TARGETS} Qt::WebEngine Qt::WebEngineWidgets)
-    # endif()
+    find_package(Qt6 COMPONENTS WebEngineCore QUIET) # if found, then QDocBrowser will be ON by default
+    option(SOFA_GUI_QT_ENABLE_QDOCBROWSER "Build the QDocBrowser. QtWebEngine is needed." ${Qt6WebEngineCore_FOUND})
+    if(SOFA_GUI_QT_ENABLE_QDOCBROWSER)
+         # WebEngineCore needs Positioning WebChannel at cmake configure step (?)
+        sofa_find_package(Qt6 COMPONENTS Positioning WebChannel WebEngineCore WebEngineWidgets REQUIRED BOTH_SCOPES)
+        set(QT_TARGETS ${QT_TARGETS} Qt::WebEngineCore Qt::WebEngineWidgets)
+    endif()
 endif()
 
 find_package(Sofa.GL QUIET)
@@ -73,15 +72,11 @@ if(Sofa.GL_FOUND)
 
     # QGLViewer
     option(SOFA_GUI_QT_ENABLE_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
-    # Remove the discard once qglviewer is compatible with Qt6 (if ever)
-    if(Qt6Core_FOUND)
-        message(WARNING "QGLViewer is not (yet?) compatible with Qt6")
-        set(SOFA_GUI_QT_ENABLE_QGLVIEWER OFF)
-    endif()
+
     if(SOFA_GUI_QT_ENABLE_QGLVIEWER)
         find_package(QGLViewer QUIET)
         if(NOT QGLViewer_FOUND)
-            add_subdirectory(libQGLViewer-2.7.1/QGLViewer)
+            add_subdirectory(libQGLViewer/QGLViewer)
         endif()
     endif()
 else()
@@ -261,7 +256,7 @@ if(Sofa.GL_FOUND)
 endif()
 
 # QtCharts
-if(Qt5Charts_FOUND)
+if(Qt5Charts_FOUND OR Qt6Charts_FOUND)
     list(APPEND MOC_HEADER_FILES 
         ${SRC_ROOT}/SofaWindowProfiler.h
         ${SRC_ROOT}/QGraphStatWidget.h

@@ -784,7 +784,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord* x0 = &f_X0.getValue();
     constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
@@ -796,14 +796,14 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             const Vec6& b=vb[bi];
-            const sofa::type::Vector3 minBBox(b[0], b[1], b[2]);
-            const sofa::type::Vector3 maxBBox(b[3], b[4], b[5]);
+            const sofa::type::Vec3 minBBox(b[0], b[1], b[2]);
+            const sofa::type::Vec3 maxBBox(b[3], b[4], b[5]);
             vparams->drawTool()->setMaterial(color);
             vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, 1.0);
         }
     }
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     vparams->drawTool()->disableLighting();
 
     if( p_drawPoints.getValue())
@@ -868,7 +868,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawLines(vertices, 1.0, color);
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <class DataTypes>

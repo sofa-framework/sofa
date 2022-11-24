@@ -2,12 +2,14 @@
 
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
 
-<RequiredPlugin pluginName="image"/>
+    <Node name="plugins">
+        <RequiredPlugin name="image"/>
+    </Node>
 
-<ImageContainer template="ImageUC" name="container" filename="beam.raw"/>
+    <ImageContainer template="ImageUC" name="container" filename="beam.raw"/>
 
-<TestImageEngine template="Image<unsigned char> >" name="engine" src="@container" listening="true"/>
+    <TestImageEngine template="Image<unsigned char> >" name="engine" src="@container" listening="true"/>
 
-<ImageViewer template="ImageUC" name="viewer" image="@engine.outputImage"/>
+    <ImageViewer template="ImageUC" name="viewer" image="@engine.outputImage"/>
 
 </Node>

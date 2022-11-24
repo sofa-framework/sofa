@@ -27,7 +27,7 @@ namespace sofa::component::mapping::linear
 
 
 using sofa::type::Mat3x3d;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::defaulttype::Vec3Types;
 
 typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
@@ -51,8 +51,8 @@ public:
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
-    void computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
-    void computeDistance(SReal& d, const Vector3& v) override;
+    void computeCenter(Vec3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
+    void computeDistance(SReal& d, const Vec3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     Index addPointInCube(const Index index, const SReal* baryCoords) override;

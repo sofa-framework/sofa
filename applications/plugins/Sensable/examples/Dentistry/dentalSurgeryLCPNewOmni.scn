@@ -32,8 +32,8 @@
 		<UncoupledConstraintCorrection template="Rigid3d" name="default45" />
 		<Node 	name="VisualModel" gravity="0 -9.81 0" >
 			<MeshOBJLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="InstrumentVisualModel" src="@meshLoader_0"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
-			<RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
+			<OglModel name="InstrumentVisualModel" src="@meshLoader_0"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+			<RigidMapping template="Rigid,Vec3d" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
 		</Node>
 		<Node 	name="CollisionModel" gravity="0 -9.81 0" >
 			<MeshOBJLoader name="loader"  filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj" />
@@ -51,7 +51,7 @@
 	<Node 	name="Tooth" gravity="0 -9.81 0" >
 		<Node 	name="VisualModel" gravity="0 -9.81 0" >
 			<MeshOBJLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/tooth-closed.obj"  translation="2 0.5 0"  rotation="0 0 -90" handleSeams="1" />
-			<OglModel template="ExtVec3f" name="ToothVisualModel" src="@meshLoader_1"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+			<OglModel name="ToothVisualModel" src="@meshLoader_1"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
 		</Node>
 		<Node 	name="CollisionModel" gravity="0 -9.81 0" >
 			<MeshOBJLoader name="loader"  filename="Demos/Dentistry/data/mesh/tooth-closed.obj" />

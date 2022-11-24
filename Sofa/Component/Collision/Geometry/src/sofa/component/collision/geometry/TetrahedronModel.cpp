@@ -102,7 +102,7 @@ void TetrahedronCollisionModel::updateFromTopology()
 }
 
 
-void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::type::Vector3>& tetraVertices, std::vector<sofa::type::Vector3>& normalVertices)
+void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::type::Vec3>& tetraVertices, std::vector<sofa::type::Vec3>& normalVertices)
 {
     Coord p1 = t.p1();
     Coord p2 = t.p2();
@@ -145,10 +145,10 @@ void TetrahedronCollisionModel::addTetraToDraw(const Tetrahedron& t, std::vector
 
 void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    std::vector<sofa::type::Vector3> tetraVertices;
-    std::vector<sofa::type::Vector3> normalVertices;
+    std::vector<sofa::type::Vec3> tetraVertices;
+    std::vector<sofa::type::Vec3> normalVertices;
 
     Tetrahedron t(this, index);
     this->addTetraToDraw(t, tetraVertices, normalVertices);
@@ -156,12 +156,12 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams, 
     const auto c = getColor4f();
     vparams->drawTool()->drawTetrahedra(tetraVertices, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     if (mstate && m_topology && vparams->displayFlags().getShowCollisionModels())
     {
         if (vparams->displayFlags().getShowWireFrame())
@@ -173,8 +173,8 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
         const auto color = sofa::type::RGBAColor(c[0], c[1], c[2], c[3]);
         vparams->drawTool()->setMaterial(color);
 
-        std::vector<sofa::type::Vector3> tetraVertices;
-        std::vector<sofa::type::Vector3> normalVertices;
+        std::vector<sofa::type::Vec3> tetraVertices;
+        std::vector<sofa::type::Vec3> normalVertices;
         for (std::size_t i = 0; i<size; i++)
         {
             Tetrahedron t(this, i);
@@ -193,7 +193,7 @@ void TetrahedronCollisionModel::draw(const core::visual::VisualParams* vparams)
     if (getPrevious()!=nullptr && vparams->displayFlags().getShowBoundingCollisionModels())
         getPrevious()->draw(vparams);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
@@ -204,16 +204,16 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
 
     updateFromTopology();
 
-    Vector3 minElem, maxElem;
+    Vec3 minElem, maxElem;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     for (std::size_t i=0; i<size; i++)
     {
         Tetrahedron t(this,i);
-        const Vector3& pt1 = x[t.p1Index()];
-        const Vector3& pt2 = x[t.p2Index()];
-        const Vector3& pt3 = x[t.p3Index()];
-        const Vector3& pt4 = x[t.p4Index()];
+        const Vec3& pt1 = x[t.p1Index()];
+        const Vec3& pt2 = x[t.p2Index()];
+        const Vec3& pt3 = x[t.p3Index()];
+        const Vec3& pt4 = x[t.p4Index()];
         Matrix3 m, minv;
         m[0] = pt2-pt1;
         m[1] = pt3-pt1;
@@ -239,7 +239,7 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
             maxElem = x[0];
             for (unsigned i=1; i<x.size(); i++)
             {
-                const Vector3& pt1 = x[i];
+                const Vec3& pt1 = x[i];
                 if (pt1[0] > maxElem[0]) maxElem[0] = pt1[0];
                 else if (pt1[0] < minElem[0]) minElem[0] = pt1[0];
                 if (pt1[1] > maxElem[1]) maxElem[1] = pt1[1];
@@ -258,10 +258,10 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
             for (std::size_t i=0; i<size; i++)
             {
                 Tetrahedron t(this,i);
-                const Vector3& pt1 = x[t.p1Index()];
-                const Vector3& pt2 = x[t.p2Index()];
-                const Vector3& pt3 = x[t.p3Index()];
-                const Vector3& pt4 = x[t.p4Index()];
+                const Vec3& pt1 = x[t.p1Index()];
+                const Vec3& pt2 = x[t.p2Index()];
+                const Vec3& pt3 = x[t.p3Index()];
+                const Vec3& pt4 = x[t.p4Index()];
                 for (int c = 0; c < 3; c++)
                 {
                     minElem[c] = pt1[c];

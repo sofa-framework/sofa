@@ -19,28 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_PARALLEL_INL
-#define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_PARALLEL_INL
+#pragma once
 
-#include "BeamLinearMapping_mt.h"
+#include <MultiThreading/BeamLinearMapping_mt.h>
 
-#include "BeamLinearMapping_tasks.inl"
+#include <MultiThreading/BeamLinearMapping_tasks.inl>
 
 #include <sofa/simulation/TaskScheduler.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
     using namespace sofa::defaulttype;
-    
-    
-    
-    
+
     template <class TIn, class TOut>
     BeamLinearMapping_mt< TIn, TOut>::BeamLinearMapping_mt()
     : mGrainSize(initData(&mGrainSize, (unsigned int)32,"granularity", "minimum number of Beam points for task creation" ))
@@ -342,12 +332,5 @@ namespace mapping
         //task_pool.purge_memory();
         
     }
-    
+} // namespace sofa::component::mapping
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif  /* SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_PARALLEL_INL */

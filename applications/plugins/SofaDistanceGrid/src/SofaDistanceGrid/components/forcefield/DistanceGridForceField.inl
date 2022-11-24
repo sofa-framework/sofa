@@ -67,6 +67,13 @@ void DistanceGridForceField<DataTypes>::init()
                                     nx.getValue(),ny.getValue(),nz.getValue(),
                                     box.getValue()[0],box.getValue()[1]);
 
+    if (grid == nullptr)
+    {
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        msg_error() << "Failed to initialize: Invalid distance grid";
+        return;
+    }
+
     if (this->stiffnessArea.getValue() != 0 && this->mstate)
     {
         core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
@@ -125,6 +132,7 @@ void DistanceGridForceField<DataTypes>::init()
         }
     }
 
+    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>

@@ -113,7 +113,7 @@ public:
 
 protected:
     /// rotation
-    Data<type::Vector3> d_rotation;
+    Data<type::Vec3> d_rotation;
 
 };
 
@@ -135,7 +135,7 @@ public:
     void init() override;
 
 protected:
-    Data<type::Vector3> d_scale; ///< scale
+    Data<type::Vec3> d_scale; ///< scale
 };
 
 } //namespace sofa::component::engine::transform

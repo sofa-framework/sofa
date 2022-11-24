@@ -101,7 +101,7 @@ void Distances< DataTypes >::init()
         helper::WriteAccessor< Data< VecCoord > > xto = *target->write(core::VecCoordId::position());
         helper::WriteAccessor< Data< VecCoord > > xto0 = *target->write(core::VecCoordId::restPosition());
         const Coord& offSet = offset.getValue();
-        const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+        const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
         for ( unsigned int i = 0; i < size; i++)
         {
             Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
@@ -276,7 +276,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
     queue<Distance> hexasBeingParsed;
     std::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
     Distance hexaCoord;
-    type::Vector3 baryC;
+    type::Vec3 baryC;
     const Coord& offSet = offset.getValue();
 
     // Get the hexas corresponding to the position 'point'
@@ -381,7 +381,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
         }
     }
 
-    const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+    const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
     for ( unsigned int i = 0; i < dMIndex.size(); i++ )
     {
         Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
@@ -573,7 +573,7 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, typ
 {
     // Store the distance and compute gradient for each goal.
     sofa::type::Vec3i res = hexaContainer->resolution.getValue();
-    const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+    const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
     for ( unsigned int i = 0; i < hexaGoal.size(); i++ )
     {
         const core::topology::BaseMeshTopology::HexaID& hID = hexaGoal[i];
@@ -672,7 +672,7 @@ template<class DataTypes>
 void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& point )
 {
     const sofa::type::Vec3i& res = hexaContainer->resolution.getValue();
-    const type::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
+    const type::Vec3& voxelSize = hexaContainer->voxelSize.getValue();
 
     int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);
     int y = int ( ( point[1] - offset.getValue()[1]) / voxelSize[1]);
@@ -696,7 +696,7 @@ void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopolo
 template<class DataTypes>
 void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     // Display the distance on each hexa of the grid
     if ( showDistanceMap.getValue() )
     {
@@ -706,13 +706,13 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
         for ( unsigned int j = 0; j < distMap.size(); j++ )
         {
             Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
-            sofa::type::Vector3 tmpPt = sofa::type::Vector3 ( point[0], point[1], point[2] );
+            sofa::type::Vec3 tmpPt = sofa::type::Vec3 ( point[0], point[1], point[2] );
             std::ostringstream oss;
             oss << (distMap[j]);
             vparams->drawTool()->draw3DText(tmpPt, showTextScaleFactor.getValue(), color, oss.str().c_str());
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

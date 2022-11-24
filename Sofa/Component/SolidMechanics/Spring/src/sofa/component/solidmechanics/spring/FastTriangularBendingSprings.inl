@@ -441,7 +441,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -449,7 +449,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
 
     const type::vector<EdgeSpring>& edgeInf = d_edgeSprings.getValue();
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     for(i=0; i<edgeInf.size(); ++i)
     {

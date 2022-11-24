@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
-	<RequiredPlugin name="Sofa.Component.StateContainer" />
-	<RequiredPlugin name="Sofa.Component.Topology.Container.Constant" />
-	<RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic" />
-	
-	<MechanicalObject name="DOFs" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" position="0 0 0 1 0 0 0 1 0 1 1 0" />
-	<MeshTopology name="quad" quads="0 1 3 2"  drawQuads="1" position="@DOFs.position"/>
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [QuadSetGeometryAlgorithms QuadSetTopologyContainer QuadSetTopologyModifier] -->
+    <DefaultAnimationLoop />
 
-	<QuadSetTopologyContainer name="QuadContainer" quads="@quad.quads"/>
-	<QuadSetTopologyModifier />
-	<QuadSetGeometryAlgorithms template="Vec3d" />
-	<!--<QuadPressureForceField normal="0 0 1" dmin="-0.01" dmax="0.01" showForces="1" pressure="0 0 0.2"/>-->
+    <MechanicalObject name="DOFs" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" position="0 0 0 1 0 0 0 1 0 1 1 0" />
+    <MeshTopology name="quad" quads="0 1 3 2"  drawQuads="1" position="@DOFs.position"/>
+
+    <QuadSetTopologyContainer name="QuadContainer" quads="@quad.quads"/>
+    <QuadSetTopologyModifier />
+    <QuadSetGeometryAlgorithms template="Vec3d" />
+    <!--<QuadPressureForceField normal="0 0 1" dmin="-0.01" dmax="0.01" showForces="1" pressure="0 0 0.2"/>-->
 
 </Node>

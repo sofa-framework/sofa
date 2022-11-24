@@ -29,7 +29,7 @@
 namespace sofa::component::mapping::linear
 {
 
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 
 template <class In, class Out>
 BarycentricMapperRegularGridTopology<In,Out>::BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
@@ -81,9 +81,9 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
         for ( unsigned int i=0; i<out.size(); i++ )
         {
             sofa::type::Vec3 coefs;
-            Index cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
+            Index cube = m_fromTopology->findCube ( Vec3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
             if ( cube==sofa::InvalidID )
-                cube = m_fromTopology->findNearestCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
+                cube = m_fromTopology->findNearestCube ( Vec3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
 
             this->addPointInCube ( cube, coefs.ptr() );
         }
@@ -217,7 +217,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
                                                           const typename Out::VecCoord& out,
                                                           const typename In::VecCoord& in )
 {
-    std::vector< Vector3 > points;
+    std::vector< Vec3 > points;
 
     for ( unsigned int i=0; i<m_map.size(); i++ )
     {

@@ -1,7 +1,13 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-    <RequiredPlugin name="SofaOpenglVisual"/>
-  <RequiredPlugin pluginName="image"/>
+    <Node name="plugins">
+        <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+        <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageSampler MeshToImageEngine] -->
+    </Node>
   <VisualStyle displayFlags="showVisual showBehavior hideWireframe" />
 
   <MeshOBJLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
@@ -21,6 +27,6 @@
 	  <MechanicalObject  template="Rigid3d" name="DOFs" src="@sampler" />
 	  <UniformMass template="Rigid3d" name="mass"  mass="50 50 [1 0 0,0 1 0,0 0 1]" showAxisSizeFactor='0.5'/>
 	<MeshOBJLoader name="meshLoader_0" filename="mesh/Armadillo_simplified.obj" handleSeams="1" />
-	<OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" color="0.5 0.8 0.5 0.6"/>
+	<OglModel name="Visual" src="@meshLoader_0" color="0.5 0.8 0.5 0.6"/>
 </Node>
 

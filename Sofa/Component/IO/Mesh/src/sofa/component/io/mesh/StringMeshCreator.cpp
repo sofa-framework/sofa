@@ -66,7 +66,7 @@ bool StringMeshCreator::doLoad()
     // Warning: Vertex creation order must be consistent with method vert.
     for(unsigned x=0; x<numX; x++)
     {
-        my_positions.push_back( Vector3(x * 1./(numX-1), 0, 0) );
+        my_positions.push_back( Vec3(x * 1./(numX-1), 0, 0) );
     }
     type::vector<Edge >& my_edges = *(d_edges.beginEdit());
     for( unsigned e=1; e<numX; e++ )

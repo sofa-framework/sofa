@@ -68,9 +68,10 @@ public:
     void init() override;   // compute the inverse matrices
     void doUpdate() override; // compute the displacements wrt original positions
 
-    // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = nullptr) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
+    static std::string GetCustomTemplateName()
+    {
+        return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name();
+    }
 
 protected:
     type::vector<OutputType> inverses;  ///< inverse initial positions
@@ -118,13 +119,14 @@ public:
     void reinit() override; // compute S*inverse and store it once and for all.
     void doUpdate() override; // compute the displacements wrt original positions
 
-    // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const override { return templateName(this); }
-    static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = nullptr) { return DataTypes::Name(); }
-
     // inputs
     Data< type::vector< sofa::type::Vec<3,Real> > > d_scales; ///< scale matrices
     type::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
+
+    static std::string GetCustomTemplateName()
+    {
+        return DataTypes::Name();
+    }
 };
 
 } // namespace sofa::component::engine::transform

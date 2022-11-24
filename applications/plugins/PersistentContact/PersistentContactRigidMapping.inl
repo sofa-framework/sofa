@@ -68,7 +68,7 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
 
 
 template <class TIn, class TOut>
-int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::type::Vector3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
+int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(const sofa::type::Vec3& pos, std::vector< std::pair<int, double> > & /*baryCoords*/)
 {
 //	std::cout << "PersistentContactRigidMapping::addContactPointFromInputMapping()\n";
 

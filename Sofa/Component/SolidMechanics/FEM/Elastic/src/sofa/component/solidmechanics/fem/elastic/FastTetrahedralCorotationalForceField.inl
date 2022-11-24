@@ -602,7 +602,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -610,7 +610,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
         vparams->drawTool()->setPolygonMode(0, true);
 
 
-    std::vector< type::Vector3 > points[4];
+    std::vector< type::Vec3 > points[4];
     for (size_t i = 0; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t = m_topology->getTetrahedron(i);
@@ -654,7 +654,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

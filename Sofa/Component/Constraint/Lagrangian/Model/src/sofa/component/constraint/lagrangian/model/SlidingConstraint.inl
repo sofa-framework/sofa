@@ -196,7 +196,7 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (!vparams->displayFlags().getShowInteractionForceFields())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     vparams->drawTool()->disableLighting();
 
@@ -209,7 +209,7 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     else
         color = sofa::type::RGBAColor::magenta();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     vertices.push_back(DataTypes::getCPos((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[d_m1.getValue()]));
 
     vparams->drawTool()->drawPoints(vertices, 10, color);
@@ -220,7 +220,7 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[d_m2b.getValue()]));
     vparams->drawTool()->drawLines(vertices, 1, color);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::constraint::lagrangian::model

@@ -1,14 +1,15 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.02" showBoundingTree="0">		
-    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.HyperElastic"/>
-    <RequiredPlugin name="Sofa.Component.IO.Mesh"/>
-    <RequiredPlugin name="Sofa.Component.Collision"/>
-    <RequiredPlugin name="Sofa.Component.Mass"/>
-    <RequiredPlugin name="Sofa.Component.Topology"/>
-    <RequiredPlugin name="Sofa.Component.ODESolver"/>
-    <RequiredPlugin name="Sofa.Component.LinearSolver"/>
-    <RequiredPlugin name="Sofa.Component.Constraint"/>
-    <RequiredPlugin name="SofaEngine"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.HyperElastic"/> <!-- Needed to use components [TetrahedronHyperelasticityFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
     
         <Node name="MooneyRivlin-Model" activated="1">
             <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1"/>

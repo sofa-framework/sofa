@@ -49,6 +49,8 @@ public:
 
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology) override;
 
+    Index getLastElementIndex() const override;
+
 protected:
     void swapPostProcess(Index i1, Index i2) override;
 

@@ -353,15 +353,15 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = d_indices.getValue();
 
     if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
 
         if (d_fixAll.getValue())
         {
@@ -385,8 +385,8 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(true);
 
-        std::vector< sofa::type::Vector3 > points;
-        sofa::type::Vector3 point;
+        std::vector< sofa::type::Vec3 > points;
+        sofa::type::Vec3 point;
         if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
@@ -404,7 +404,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

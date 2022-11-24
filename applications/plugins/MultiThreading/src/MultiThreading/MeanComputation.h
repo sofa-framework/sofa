@@ -19,85 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MEAN_COMPUTATION_H
-#define SOFA_COMPONENT_ENGINE_MEAN_COMPUTATION_H
+#pragma once
 
 #include <MultiThreading/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
+namespace sofa::component::engine
 {
 
-    namespace component
-    {
+/**
+* This class merge 2 coordinate vectors.
+*/
+template <class DataTypes>
+class MeanComputation : public virtual core::objectmodel::BaseObject
+{
+    typedef typename DataTypes::Coord         Coord;
+    typedef typename DataTypes::VecCoord      VecCoord;
+    typedef typename DataTypes::Real          Real;
+    //typedef sofa::type::Vec<1, Real>                       Coord1D;
+    //typedef sofa::type::Vec<2, Real>                       Coord2D;
+    //typedef sofa::type::Vec<3, Real>                       Coord3D;
+    typedef sofa::type::vector<Coord>       VectorCoord;
+    typedef sofa::type::vector<VecCoord>    VectorVecCoord;
+    //typedef sofa::type::vector<Coord3D>    VecCoord3D;
 
-        namespace engine
-        {
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(MeanComputation, DataTypes), core::objectmodel::BaseObject);
+    //typedef typename DataTypes::VecCoord VecCoord;
 
-            /**
-            * This class merge 2 coordinate vectors.
-            */
-            template <class DataTypes>
-            class MeanComputation : public virtual core::objectmodel::BaseObject
-            {
-                typedef typename DataTypes::Coord         Coord;
-                typedef typename DataTypes::VecCoord      VecCoord;
-                typedef typename DataTypes::Real          Real;
-                //typedef sofa::type::Vec<1, Real>                       Coord1D;
-                //typedef sofa::type::Vec<2, Real>                       Coord2D;
-                //typedef sofa::type::Vec<3, Real>                       Coord3D;
-                typedef sofa::type::vector<Coord>       VectorCoord;
-                typedef sofa::type::vector<VecCoord>    VectorVecCoord;
-                //typedef sofa::type::vector<Coord3D>    VecCoord3D;
+protected:
 
-            public:
-                SOFA_CLASS(SOFA_TEMPLATE(MeanComputation, DataTypes), core::objectmodel::BaseObject);
-                //typedef typename DataTypes::VecCoord VecCoord;
+    MeanComputation();
 
-            protected:
+    ~MeanComputation() override {}
 
-                MeanComputation();
+    void compute();
 
-                ~MeanComputation() override {}
+public:
+    void init() override;
 
-                void compute();
+    void reinit() override;
 
-            public:
-                void init() override;
+    void handleEvent(core::objectmodel::Event* event) override;
 
-                void reinit() override;
+private:
 
-                void handleEvent(core::objectmodel::Event* event) override;
+    Data<VecCoord> d_result; ///< Result: mean computed from the input values
 
-                virtual std::string getTemplateName() const override
-                {
-                    return templateName(this);
-                }
+    //std::vector<component::container::MechanicalObject<DataTypes>*> _inputMechObjs;
 
-                static std::string templateName(const MeanComputation<DataTypes>* = NULL)
-                {
-                    return DataTypes::Name();
-                }
+    sofa::type::vector< Data< VecCoord >* > _inputs;
 
-            private:
+    size_t _resultSize;
 
-                Data<VecCoord> d_result; ///< Result: mean computed from the input values
+};
 
-                //std::vector<component::container::MechanicalObject<DataTypes>*> _inputMechObjs;
-                
-                sofa::type::vector< Data< VecCoord >* > _inputs;
-                
-                size_t _resultSize;
-          
-            };
+} // namespace sofa::component::engine
 
-
-        } // namespace engine
-
-    } // namespace component
-
-} // namespace sofa
-
-
-#endif  /* SOFA_COMPONENT_ENGINE_MEAN_COMPUTATION_H */

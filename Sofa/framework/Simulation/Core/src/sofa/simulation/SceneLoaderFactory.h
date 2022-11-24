@@ -27,6 +27,8 @@
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/fwd.h>
 
+#include <string>
+
 namespace sofa
 {
 

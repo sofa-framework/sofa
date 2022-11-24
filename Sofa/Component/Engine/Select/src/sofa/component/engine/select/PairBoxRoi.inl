@@ -184,15 +184,15 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     constexpr sofa::type::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     /// Draw inclusive box
     if( p_drawInclusiveBox.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
         const Vec6& vb=inclusiveBox.getValue();
-        const sofa::type::Vector3 minBBox(vb[0], vb[1], vb[2]);
-        const sofa::type::Vector3 maxBBox(vb[3], vb[4], vb[5]);
+        const sofa::type::Vec3 minBBox(vb[0], vb[1], vb[2]);
+        const sofa::type::Vec3 maxBBox(vb[3], vb[4], vb[5]);
         vparams->drawTool()->setMaterial(color);
         vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, linesWidth);
     }
@@ -203,8 +203,8 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
         const Vec6& vb=includedBox.getValue();
-        const sofa::type::Vector3 minBBox(vb[0], vb[1], vb[2]);
-        const sofa::type::Vector3 maxBBox(vb[3], vb[4], vb[5]);
+        const sofa::type::Vec3 minBBox(vb[0], vb[1], vb[2]);
+        const sofa::type::Vec3 maxBBox(vb[3], vb[4], vb[5]);
         vparams->drawTool()->setMaterial(color);
         vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, linesWidth);
     }
@@ -216,19 +216,19 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         float pointsWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector<sofa::type::Vector3> vertices;
+        std::vector<sofa::type::Vec3> vertices;
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
             CPos p = DataTypes::getCPos(pointsInROI[i]);
-            sofa::type::Vector3 pv;
+            sofa::type::Vec3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
         }
         vparams->drawTool()->drawPoints(vertices, pointsWidth, color);
     }
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

@@ -424,9 +424,9 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
 {
-    helper::ReadAccessor<Data<OutVecDeriv> > childForces (*mparams->readF(this->toModel));
+    helper::ReadAccessor<Data<OutVecDeriv> > childForces (*mparams->readF(this->toModel.get()));
     helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get()].write());
-    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
+    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel.get()));
     Real kfactor = (Real)mparams->kFactor();
 
     sofa::Index childrenPerParent;
@@ -716,7 +716,7 @@ void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
 	if (!getShow(this,vparams)) return;
 
     const typename Out::VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    const type::Vector3& sizes = type::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
+    const type::Vec3& sizes = type::Vec3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
     for (sofa::Index i=0; i<x.size(); i++)
     {
         vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), sizes);

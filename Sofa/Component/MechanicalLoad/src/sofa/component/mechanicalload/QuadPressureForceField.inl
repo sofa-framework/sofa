@@ -222,7 +222,7 @@ bool QuadPressureForceField<DataTypes>::isPointInPlane(Coord p)
 template<class DataTypes>
 void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (!p_showForces.getValue())
         return;
@@ -233,7 +233,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     vparams->drawTool()->disableLighting();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
 
     const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
@@ -249,7 +249,6 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->saveLastState();
 }
 
 } // namespace sofa::component::mechanicalload

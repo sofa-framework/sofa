@@ -232,12 +232,12 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
                     int nc = std::min(3,std::min(ncX,ncRefX));
                     int nbp = std::min(sizeX/ncX, sizeRefX/ncRefX);
 
-                    std::vector< Vector3 > points;
+                    std::vector< Vec3 > points;
                     points.resize(nbp*2);
                     for(int p=0; p<nbp; ++p)
                     {
-                        Vector3& pX = points[2*p+0];
-                        Vector3& pRefX = points[2*p+1];
+                        Vec3& pX = points[2*p+0];
+                        Vec3& pRefX = points[2*p+1];
                         for (int c=0; c<nc; ++c)
                             pX[c] = infoX->getScalarValue(valueX, p*ncX+c);
                         for (int c=0; c<nc; ++c)

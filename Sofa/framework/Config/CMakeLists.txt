@@ -23,19 +23,20 @@ define_property(TARGET
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-### Sofa using type double or float or both
-set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
+### Sofa using type double or float
+set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
     "Type used for floating point values in SOFA. It actually determines:
     - what template instanciations will be compiled (via the definition of the
     SOFA_FLOAT and SOFA_DOUBLE macros)
-    - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
-    is selected, SReal defaults to double.)")
-set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
+    - what is the type behind the 'SReal' typedef used throughout SOFA.")
+set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double)
 
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
+    set(SOFA_DOUBLE 1)
+    set(SOFA_FLOAT 0)
 elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
+    set(SOFA_DOUBLE 0)
+    set(SOFA_FLOAT 1)
 endif()
 
 # If you really don't understand the negated logics of SOFA_DOUBLE and
@@ -45,13 +46,11 @@ endif()
 # nedd to generate the double related code.
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
     set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 0)
 endif()
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
     set(SOFA_WITH_DOUBLE 1)
-endif()
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
-    set(SOFA_WITH_FLOAT 1)
-    set(SOFA_WITH_DOUBLE 1)
+    set(SOFA_WITH_FLOAT 0)
 endif()
 
 # Options
@@ -130,6 +129,20 @@ set(SOFACONFIG_LINK_OPTIONS "")
 set(SOFACONFIG_LINK_OPTIONS_DEBUG "")
 set(SOFACONFIG_LINK_OPTIONS_RELEASE "")
 
+include(CheckIPOSupported)
+check_ipo_supported(RESULT IS_IPO_SUPPORTED OUTPUT IPO_ERROR)
+
+## Link-time optimization
+if (IS_IPO_SUPPORTED)
+    # Focus on max speed with link-time optimization
+    option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable interprocedural optimization" OFF)
+    if (SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE PARENT_SCOPE)
+    endif()
+else()
+    message(STATUS "IPO / LTO not supported: <${IPO_ERROR}>")
+endif()
+
 ## GCC-specific
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     ## Find out the version of g++ (and save it in GCXX_VERSION)
@@ -167,12 +180,23 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "C
 endif()
 
 ## Windows-specific
-if(WIN32)    
+if(WIN32)
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_SECURE_NO_WARNINGS")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_NONSTDC_NO_DEPRECATE")
 
-    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4661")
+    set(SOFA_MSVC_NB_COMPILER_PROCESSES "0" CACHE STRING "The maximum number of processes that the compiler can create. 0 (default) for the number of effective processors on the computer")
+    if (SOFA_MSVC_NB_COMPILER_PROCESSES EQUAL "0")
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP")
+    else()
+        if (SOFA_MSVC_NB_COMPILER_PROCESSES MATCHES "^[0-9]+$")
+            list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP${SOFA_MSVC_NB_COMPILER_PROCESSES}")
+        else()
+            message(FATAL_ERROR "A number is expected for SOFA_MSVC_NB_COMPILER_PROCESSES")
+        endif()
+    endif()
+
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/wd4250;/wd4251;/wd4275;/wd4675;/wd4661")
     # 4661: no suitable definition provided for explicit template instantiation request
     # it happens because we put explicit instantiation in a separate translation unit
     # it is by design, so this warning is irrelevant in our project
@@ -180,15 +204,6 @@ if(WIN32)
     if(MSVC_TOOLSET_VERSION GREATER 140) # > VS 2015
         list(APPEND SOFACONFIG_COMPILE_OPTIONS "/Zc:__cplusplus")
     endif()
-
-    # Focus on max speed in Release Mode with link-time optimization
-    option(SOFA_ENABLE_LINK_TIME_OPTIMIZATION "Enable LTCG IN release mode (MSVC only for now) [Warning, use a lot of disk space!]" OFF)
-
-    if(SOFA_ENABLE_LINK_TIME_OPTIMIZATION)
-        list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "/GL")
-        list(APPEND SOFACONFIG_LINK_OPTIONS_RELEASE "/LTCG")
-    endif()
-
 
     # Experimental: compilation with MSVC/Clang-cl
     if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")

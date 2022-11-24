@@ -65,10 +65,13 @@ public:
     /// Constructor
     TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
+    /// Default Destructor
+    ~TopologyData();
+
 
     /// Function to create topology handler to manage this Data. @param Pointer to dynamic topology is needed.
     virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology);
-    
+   
     /// Link Data to topology arrays
     void linkToPointDataArray();
     void linkToEdgeDataArray();
@@ -139,6 +142,14 @@ protected:
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*);
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*);
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*);
+
+    /// Method to properly remove TopologyHandler @sa m_topologyHandler from dynamic Topology container lists
+    void unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Point*);
+    void unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*);
+    void unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*);
+    void unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*);
+    void unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*);
+    void unlinkFromElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*);
 };
 
 

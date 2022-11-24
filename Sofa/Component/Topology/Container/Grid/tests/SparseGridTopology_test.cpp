@@ -33,7 +33,7 @@ using sofa::helper::system::DataRepository;
 using sofa::component::io::mesh::MeshSTLLoader;
 
 using sofa::core::objectmodel::New ;
-using sofa::type::Vector3 ;
+using sofa::type::Vec3 ;
 using namespace sofa::component::topology::container::grid;
 using namespace sofa::testing;
 

@@ -49,107 +49,112 @@ int SimpleTesselatedTetraTopologicalMappingClass = core::RegisterObject ( "Speci
 
 // Implementation
 SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping ()
-    : tetrahedraMappedFromTetra( initData ( &tetrahedraMappedFromTetra, "tetrahedraMappedFromTetra", "Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided")),
-      tetraSource( initData ( &tetraSource, "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)")),
-      d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point")),
-      d_pointMappedFromEdge( initData ( &d_pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint")),
-      d_pointSource( initData ( &d_pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
+    : sofa::core::topology::TopologicalMapping()
+    , tetrahedraMappedFromTetra( initData ( &tetrahedraMappedFromTetra, "tetrahedraMappedFromTetra", "Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided"))
+    , tetraSource( initData ( &tetraSource, "tetraSource", "Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)"))
+    , d_pointMappedFromPoint( initData ( &d_pointMappedFromPoint, "pointMappedFromPoint", "Each point of the input topology is mapped to the same point"))
+    , d_pointMappedFromEdge( initData ( &d_pointMappedFromEdge, "pointMappedFromEdge", "Each edge of the input topology is mapped to his midpoint"))
+    , d_pointSource( initData ( &d_pointSource, "pointSource", "Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1"))
 {
+    m_inputType = TopologyElementType::TETRAHEDRON;
+    m_outputType = TopologyElementType::TETRAHEDRON;
 }
 
 void SimpleTesselatedTetraTopologicalMapping::init()
 {
-    if(fromModel)
+    // Check input/output topology
+    if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
-        TetrahedronSetTopologyContainer *from_tstc;
-        fromModel->getContext()->get(from_tstc);
-        if(toModel)
-        {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
-            helper::WriteAccessor< Data< sofa::type::vector<Index> > > pointSourceData = d_pointSource;
-            helper::WriteAccessor< Data< sofa::type::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
-            helper::WriteAccessor< Data< sofa::type::vector<Index> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
 
-            sofa::type::vector<type::fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
-            type::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
+    TetrahedronSetTopologyContainer *from_tstc;
+    fromModel->getContext()->get(from_tstc);
 
-            TetrahedronSetTopologyContainer *to_tstc;
-            toModel->getContext()->get(to_tstc);
-            to_tstc->clear();
-            if(!from_tstc->hasPos())
-            {
+    helper::WriteAccessor< Data< sofa::type::vector<Index> > > pointSourceData = d_pointSource;
+    helper::WriteAccessor< Data< sofa::type::vector<Index> > > pointMappedFromPointData = d_pointMappedFromPoint;
+    helper::WriteAccessor< Data< sofa::type::vector<Index> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
+
+    sofa::type::vector<type::fixed_array<Index, 8> >& tetrahedraMappedFromTetraData = *(tetrahedraMappedFromTetra.beginEdit());
+    type::vector<Index>& tetraSourceData = *(tetraSource.beginEdit());
+
+    TetrahedronSetTopologyContainer *to_tstc;
+    toModel->getContext()->get(to_tstc);
+    to_tstc->clear();
+    if(!from_tstc->hasPos())
+    {
 //				MeshLoader *mshLoader;
 //				fromModel->getContext()->get(mshLoader);
 //				from_tstc->loadFromMeshLoader(mshLoader);
-            }
-
-            pointSourceData.resize(from_tstc->getNbPoints()+from_tstc->getNbEdges());
-
-
-            for (std::size_t i=0; i<from_tstc->getNbPoints(); i++)
-            {
-                to_tstc->addPoint(from_tstc->getPX(i), from_tstc->getPY(i), from_tstc->getPZ(i));
-
-                pointMappedFromPointData.push_back(i);
-                pointSourceData[i] = i+1;
-            }
-
-            Index newPointIndex = to_tstc->getNbPoints();
-
-            for (unsigned int i=0; i<from_tstc->getNbEdges(); i++)
-            {
-                Edge e = from_tstc->getEdge(i);
-
-                to_tstc->addPoint(
-                    (from_tstc->getPX(e[0]) + from_tstc->getPX(e[1]))/2,
-                    (from_tstc->getPY(e[0]) + from_tstc->getPY(e[1]))/2,
-                    (from_tstc->getPZ(e[0]) + from_tstc->getPZ(e[1]))/2
-                );
-
-                pointMappedFromEdgeData.push_back(newPointIndex);
-                pointSourceData[newPointIndex] = -(i+1);
-                newPointIndex++;
-            }
-
-            fixed_array <Index, 8> newTetrahedraIndices;
-            unsigned int newTetraIndex = (unsigned int)to_tstc->getNbTetrahedra();
-
-            tetraSourceData.resize(8*from_tstc->getNbTetrahedra());
-
-            for (unsigned int i=0; i<from_tstc->getNbTetrahedra(); i++)
-            {
-                core::topology::BaseMeshTopology::Tetra t = from_tstc->getTetrahedron(i);
-                core::topology::BaseMeshTopology::EdgesInTetrahedron e = from_tstc->getEdgesInTetrahedron(i);
-                to_tstc->addTetra(t[0],	pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[2]]);
-                newTetrahedraIndices[0] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                to_tstc->addTetra(t[1],	pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[4]], pointMappedFromEdgeData[e[3]]);
-                newTetrahedraIndices[1] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                to_tstc->addTetra(t[2],	pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[3]], pointMappedFromEdgeData[e[5]]);
-                newTetrahedraIndices[2] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                to_tstc->addTetra(t[3],	pointMappedFromEdgeData[e[2]], pointMappedFromEdgeData[e[5]], pointMappedFromEdgeData[e[4]]);
-                newTetrahedraIndices[3] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                to_tstc->addTetra(pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[3]], pointMappedFromEdgeData[e[5]]);
-                newTetrahedraIndices[4] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                to_tstc->addTetra(pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[5]], pointMappedFromEdgeData[e[2]]);
-                newTetrahedraIndices[5] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                to_tstc->addTetra(pointMappedFromEdgeData[e[4]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[5]], pointMappedFromEdgeData[e[3]]);
-                newTetrahedraIndices[6] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                to_tstc->addTetra(pointMappedFromEdgeData[e[4]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[2]], pointMappedFromEdgeData[e[5]]);
-                newTetrahedraIndices[7] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
-
-                tetrahedraMappedFromTetraData.push_back(newTetrahedraIndices);
-            }
-            toModel->init();
-            tetrahedraMappedFromTetra.endEdit();
-        }
     }
+
+    pointSourceData.resize(from_tstc->getNbPoints()+from_tstc->getNbEdges());
+
+
+    for (std::size_t i=0; i<from_tstc->getNbPoints(); i++)
+    {
+        to_tstc->addPoint(from_tstc->getPX(i), from_tstc->getPY(i), from_tstc->getPZ(i));
+
+        pointMappedFromPointData.push_back(i);
+        pointSourceData[i] = i+1;
+    }
+
+    Index newPointIndex = to_tstc->getNbPoints();
+
+    for (unsigned int i=0; i<from_tstc->getNbEdges(); i++)
+    {
+        Edge e = from_tstc->getEdge(i);
+
+        to_tstc->addPoint(
+            (from_tstc->getPX(e[0]) + from_tstc->getPX(e[1]))/2,
+            (from_tstc->getPY(e[0]) + from_tstc->getPY(e[1]))/2,
+            (from_tstc->getPZ(e[0]) + from_tstc->getPZ(e[1]))/2
+        );
+
+        pointMappedFromEdgeData.push_back(newPointIndex);
+        pointSourceData[newPointIndex] = -(i+1);
+        newPointIndex++;
+    }
+
+    fixed_array <Index, 8> newTetrahedraIndices;
+    unsigned int newTetraIndex = (unsigned int)to_tstc->getNbTetrahedra();
+
+    tetraSourceData.resize(8*from_tstc->getNbTetrahedra());
+
+    for (unsigned int i=0; i<from_tstc->getNbTetrahedra(); i++)
+    {
+        core::topology::BaseMeshTopology::Tetra t = from_tstc->getTetrahedron(i);
+        core::topology::BaseMeshTopology::EdgesInTetrahedron e = from_tstc->getEdgesInTetrahedron(i);
+        to_tstc->addTetra(t[0],	pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[2]]);
+        newTetrahedraIndices[0] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        to_tstc->addTetra(t[1],	pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[4]], pointMappedFromEdgeData[e[3]]);
+        newTetrahedraIndices[1] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        to_tstc->addTetra(t[2],	pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[3]], pointMappedFromEdgeData[e[5]]);
+        newTetrahedraIndices[2] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        to_tstc->addTetra(t[3],	pointMappedFromEdgeData[e[2]], pointMappedFromEdgeData[e[5]], pointMappedFromEdgeData[e[4]]);
+        newTetrahedraIndices[3] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        to_tstc->addTetra(pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[3]], pointMappedFromEdgeData[e[5]]);
+        newTetrahedraIndices[4] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        to_tstc->addTetra(pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[5]], pointMappedFromEdgeData[e[2]]);
+        newTetrahedraIndices[5] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        to_tstc->addTetra(pointMappedFromEdgeData[e[4]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[5]], pointMappedFromEdgeData[e[3]]);
+        newTetrahedraIndices[6] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        to_tstc->addTetra(pointMappedFromEdgeData[e[4]], pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[2]], pointMappedFromEdgeData[e[5]]);
+        newTetrahedraIndices[7] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
+
+        tetrahedraMappedFromTetraData.push_back(newTetrahedraIndices);
+    }
+    toModel->init();
+    tetrahedraMappedFromTetra.endEdit();
 }
 
 void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
