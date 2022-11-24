@@ -62,7 +62,7 @@ public:
     typedef type::Vec<6, Real> Vec6;
 
     using Index = sofa::Index;
-    using Vector3 = type::Vector3;
+    using Vector3 = type::Vec3;
 
 protected:
     TopologyBoundingTrasher();

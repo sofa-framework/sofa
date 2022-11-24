@@ -55,8 +55,8 @@
         <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
         <Node name="Visu">
-            <OglModel template="ExtVec3f" name="Visual" src="@../qloader" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default5" input="@../DOFs" output="@Visual" />
+            <OglModel name="Visual" src="@../qloader" />
+            <IdentityMapping template="Vec3d,Vec3d" name="default5" input="@../DOFs" output="@Visual" />
         </Node>
         <Node name="Triangles">
             <TriangleSetTopologyContainer name="Container" />

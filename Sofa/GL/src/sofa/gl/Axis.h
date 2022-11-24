@@ -36,18 +36,18 @@ namespace sofa::gl
 class SOFA_GL_API Axis
 {
 public:
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
     typedef sofa::type::Vec4f   Vec4f;
     typedef sofa::type::Vec3d   Vec3d;
     typedef sofa::type::Quat<SReal> Quaternion;
-    Axis(SReal len=(SReal)1);
+    Axis(SReal len=1.0_sreal);
     Axis(const Vector3& len);
     Axis(const Vector3& center, const Quaternion &orient, const Vector3& length);
     Axis(const Vector3& center, const double orient[4][4], const Vector3& length);
     Axis(const double *mat, const Vector3& length);
-    Axis(const Vector3& center, const Quaternion &orient, SReal length=(SReal)1);
-    Axis(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
-    Axis(const double *mat, SReal length=(SReal)1.0);
+    Axis(const Vector3& center, const Quaternion &orient, SReal length=1.0_sreal);
+    Axis(const Vector3& center, const double orient[4][4], SReal length=1.0_sreal);
+    Axis(const double *mat, SReal length=1.0_sreal);
 
     ~Axis();
 
@@ -60,9 +60,9 @@ public:
     static void draw(const Vector3& center, const Quaternion& orient, const Vector3& length, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
     static void draw(const Vector3& center, const double orient[4][4], const Vector3& length, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
     static void draw(const double *mat, const Vector3& length, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
-    static void draw(const Vector3& center, const Quaternion& orient, SReal length=(SReal)1, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
-    static void draw(const Vector3& center, const double orient[4][4], SReal length=(SReal)1, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
-    static void draw(const double *mat, SReal length=(SReal)1.0, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const Vector3& center, const Quaternion& orient, SReal length=1.0_sreal, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const Vector3& center, const double orient[4][4], SReal length=1.0_sreal, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
+    static void draw(const double *mat, SReal length=1.0_sreal, const Vec4f& colorX=Vec4f(1,0,0,1), const Vec4f& colorY=Vec4f(0,1,0,1), const Vec4f& colorZ=Vec4f(0,0,1,1) );
 
     //Draw a nice vector (cylinder + cone) given 2 points and a radius (used to draw the cylinder)
     static void draw(const Vector3& center, const Vector3& ext, const double& radius );

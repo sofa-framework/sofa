@@ -63,6 +63,8 @@ void FillReducingOrdering<DataTypes>::init()
         msg_error_when(!l_mstate) << "No compatible MechanicalState found in the current context. "
             "This may be because there is no MechanicalState in the local context, "
             "or because the type is not compatible.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
     if (!l_topology)
@@ -70,10 +72,13 @@ void FillReducingOrdering<DataTypes>::init()
         l_topology.set(getContext()->getMeshTopology());
 
         msg_error_when(!l_topology) << "No mesh topology found in the current context.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
     setDirtyValue();
-    reinit();
 }
 
 template <class DataTypes>
@@ -127,6 +132,11 @@ void FillReducingOrdering<DataTypes>::reorderByEigen()
 template <class DataTypes>
 void FillReducingOrdering<DataTypes>::doUpdate()
 {
+    if(d_componentState.getValue() != core::objectmodel::ComponentState::Valid)
+    {
+        return;
+    }
+
     if (d_orderingMethod.getValue().getSelectedId() == 1)
     {
         reorderByEigen();

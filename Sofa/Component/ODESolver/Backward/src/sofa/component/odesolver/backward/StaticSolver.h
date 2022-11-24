@@ -75,7 +75,7 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt.
-    double getVelocityIntegrationFactor() const override
+    SReal getVelocityIntegrationFactor() const override
     {
         return 1.0; // getContext()->getDt();
     }
@@ -84,12 +84,12 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt².
-    double getPositionIntegrationFactor() const override
+    SReal getPositionIntegrationFactor() const override
     {
         return getPositionIntegrationFactor(getContext()->getDt());
     }
 
-    virtual double getPositionIntegrationFactor(double dt ) const
+    virtual SReal getPositionIntegrationFactor(SReal dt ) const
     {
         return dt;
     }
@@ -109,14 +109,14 @@ public:
     /// v_{t+dt}     0    1      0    1
     /// a_{t+dt}     0    0      0    1/dt
     /// The last column is returned by the getSolutionIntegrationFactor method.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         return getIntegrationFactor(inputDerivative, outputDerivative, getContext()->getDt());
     }
 
-    double getIntegrationFactor(int inputDerivative, int outputDerivative, double dt) const
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative, SReal dt) const
     {
-        double matrix[3][3] =
+        SReal matrix[3][3] =
             {
                 { 1, dt, 0},
                 { 0, 1, 0},
@@ -130,14 +130,14 @@ public:
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const override
+    SReal getSolutionIntegrationFactor(int outputDerivative) const override
     {
         return getSolutionIntegrationFactor(outputDerivative, getContext()->getDt());
     }
 
-    double getSolutionIntegrationFactor(int outputDerivative, double dt) const
+    SReal getSolutionIntegrationFactor(int outputDerivative, SReal dt) const
     {
-        double vect[3] = { dt, 1, 1/dt};
+        SReal vect[3] = { dt, 1, 1/dt};
         if (outputDerivative >= 3)
             return 0;
         else
@@ -149,10 +149,10 @@ public:
 protected:
 
     Data<unsigned> d_newton_iterations; ///< Number of newton iterations between each load increments (normally, one load increment per simulation time-step.
-    Data<double> d_absolute_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm |du| is smaller than this threshold.
-    Data<double> d_relative_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the ratio |du| / |U| is smaller than this threshold.
-    Data<double> d_absolute_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of the residual |R| is smaller than this threshold. Use a negative value to disable this criterion.
-    Data<double> d_relative_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. Use a negative value to disable this criterion.
+    Data<SReal> d_absolute_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm |du| is smaller than this threshold.
+    Data<SReal> d_relative_correction_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the ratio |du| / |U| is smaller than this threshold.
+    Data<SReal> d_absolute_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the norm of the residual |R| is smaller than this threshold. Use a negative value to disable this criterion.
+    Data<SReal> d_relative_residual_tolerance_threshold; ///< Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. Use a negative value to disable this criterion.
     Data<bool> d_should_diverge_when_residual_is_growing; ///< Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration.
 
 private:

@@ -632,10 +632,10 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -727,7 +727,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vertices.push_back(DataTypes::getCPos(p0));
     }
     vparams->drawTool()->drawQuads(vertices,colorVector);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic

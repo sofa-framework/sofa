@@ -50,7 +50,7 @@ public:
 
     Data< sofa::type::vector<BaseMeshTopology::HexaID> > idxInRegularGrid; ///< indices in the Regular Grid
     Data< std::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo; ///< map between id in the Regular Grid and index in the topology
-    Data< type::Vector3 > voxelSize; ///< Size of the Voxels
+    Data< type::Vec3 > voxelSize; ///< Size of the Voxels
 protected:
     DynamicSparseGridTopologyContainer();
     ~DynamicSparseGridTopologyContainer() override {}

@@ -21,16 +21,10 @@
 ******************************************************************************/
 
 #include <sofa/gui/qt/QGraphStatWidget.h>
-#include <QtCharts/QChartView>
-#include <QtCharts/QChart>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QValueAxis>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::gui::qt
 {
-
-using namespace QtCharts;
 
 QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves, int bufferSize)
     : QWidget( parent )
@@ -42,7 +36,7 @@ QGraphStatWidget::QGraphStatWidget( QWidget* parent, simulation::Node* node, con
     , m_cptStep(0) 
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(1);
     layout->setObjectName(QString( "tabStats" ) + title);
 

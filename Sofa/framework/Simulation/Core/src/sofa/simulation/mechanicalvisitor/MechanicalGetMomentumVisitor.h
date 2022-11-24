@@ -34,12 +34,12 @@ namespace sofa::simulation::mechanicalvisitor
 ///
 class SOFA_SIMULATION_CORE_API MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 {
-    type::Vector6 m_momenta;
+    type::Vec6 m_momenta;
 
 public:
     MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams);
 
-    const type::Vector6& getMomentum() const;
+    const type::Vec6& getMomentum() const;
 
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);

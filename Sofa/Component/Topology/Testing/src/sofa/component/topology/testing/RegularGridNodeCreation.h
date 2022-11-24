@@ -28,7 +28,7 @@
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/component/engine/select/PairBoxRoi.h>
 #include <sofa/component/engine/select/BoxROI.h>
-
+#include <sofa/simulation/DefaultAnimationLoop.h>
 
 namespace sofa
 {
@@ -73,6 +73,8 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     root->setGravity({ 0,0,0 });
     root->setAnimate(false);
     root->setDt(0.05);
+
+    sofa::modeling::addNew<sofa::simulation::DefaultAnimationLoop>(root, "animationLoop");
 
     // Node square
     simulation::Node::SPtr SquareNode = root->createChild("Square");

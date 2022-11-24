@@ -336,7 +336,7 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -344,7 +344,7 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
     const VecIndex& firstObjectIndices = d_firstObjectPoints.getValue();
     const VecIndex& secondObjectIndices = d_secondObjectPoints.getValue();
 
-    std::vector< type::Vector3 > points;
+    std::vector< type::Vec3 > points;
     for (unsigned int i = 0; i < firstObjectIndices.size(); i++)
     {
         const unsigned int index1 = firstObjectIndices[i];
@@ -377,19 +377,19 @@ void PolynomialSpringsForceField<DataTypes>::draw(const core::visual::VisualPara
 
     Real scale = (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * d_showIndicesScale.getValue();
 
-    type::vector<type::Vector3> positions;
+    type::vector<type::Vec3> positions;
     for (size_t i = 0; i < firstObjectIndices.size(); i++) {
         const unsigned int index = firstObjectIndices[i];
-        positions.push_back(type::Vector3(p1[index][0], p1[index][1], p1[index][2] ));
+        positions.push_back(type::Vec3(p1[index][0], p1[index][1], p1[index][2] ));
     }
     for (size_t i = 0; i < secondObjectIndices.size(); i++) {
         const unsigned int index = secondObjectIndices[i];
-        positions.push_back(type::Vector3(p2[index][0], p2[index][1], p2[index][2] ));
+        positions.push_back(type::Vec3(p2[index][0], p2[index][1], p2[index][2] ));
     }
 
     vparams->drawTool()->drawPoints(positions, scale, color);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

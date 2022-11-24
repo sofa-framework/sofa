@@ -31,7 +31,7 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API CubeTopology : public MeshT
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
 protected:
     CubeTopology(int nx, int ny, int nz);
     CubeTopology();

@@ -5,11 +5,11 @@
 	<Node 	name="obj1"  >
 		<SingleComponent template="int" name="comp1"  printLog="0"  positionsI="@../loader.position"  trianglesI="@../loader.triangles"  normalsI="@../loader.normals"  uvI="@../loader.uv"  indicesComponents="@../loader.indicesComponents"  numberShape="0" />
 		<MeshTopology position="@comp1.positionsO"  triangles="@comp1.trianglesO" />
-		<OglModel template="ExtVec3f" name="vis"  useNormals="@comp1.normalsO"  position="@comp1.positionsO"  triangles="@comp1.trianglesO"   />
+		<OglModel name="vis"  useNormals="@comp1.normalsO"  position="@comp1.positionsO"  triangles="@comp1.trianglesO"   />
 	</Node>
 	<Node 	name="obj2"  >
 		<SingleComponent template="int" name="comp2"  positionsI="@../loader.position"  trianglesI="@../loader.triangles"  normalsI="@../loader.normals"  uvI="@../loader.uv"  indicesComponents="@../loader.indicesComponents"  numberShape="1" />
 		<MeshTopology position="@comp2.positionsO"  triangles="@comp2.trianglesO" />
-		<OglModel template="ExtVec3f" name="vis"  useNormals="@comp2.normalsO"  position="@comp2.positionsO"  triangles="@comp2.trianglesO"/>
+		<OglModel name="vis"  useNormals="@comp2.normalsO"  position="@comp2.positionsO"  triangles="@comp2.trianglesO"/>
 	</Node>
 </Node>

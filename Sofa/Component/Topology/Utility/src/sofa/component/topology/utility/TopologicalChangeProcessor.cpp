@@ -436,7 +436,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                type::vector< Vector2 > baryCoords;
+                type::vector< Vec2 > baryCoords;
                 baryCoords.resize(nbElements);
                 type::vector< Index > triangles;
                 triangles.resize(nbElements);
@@ -444,7 +444,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 for(size_t i=0;i<nbElements;++i)
                 {
                     Sin >> triangles[i];
-                    Vector2& baryCoord = baryCoords[i];
+                    Vec2& baryCoord = baryCoords[i];
                     Sin >> baryCoord[0] >> baryCoord[1];
                 }
 
@@ -871,29 +871,29 @@ void TopologicalChangeProcessor::saveIndices()
 
         for (size_t i = 0 ; i < values.size() ; i+=increment)
         {
-            Vector3 coord;
+            Vec3 coord;
             Index triangleIndex;
             if (onlyCoordinates)
             {
-                coord = Vector3(values[i], values[i+1], values[i+2]);
+                coord = Vec3(values[i], values[i+1], values[i+2]);
                 findElementIndex(coord, triangleIndex, -1);
             }
             else
             {
-                coord = Vector3(values[i+1], values[i+2], values[i+3]);
+                coord = Vec3(values[i+1], values[i+2], values[i+3]);
                 triangleIndex = (Index)values[i];
             }
 
             incisionInfo.triangleIndices.push_back(triangleIndex);
 
-            const Vector3 constCoord = coord;
+            const Vec3 constCoord = coord;
             const unsigned int triInd = triangleIndex;
             sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
             const auto baryCoef = triangleGeo->computeTriangleBarycoefs( triInd, constCoord);
 
-            Vector3 barycentricCoordinates(baryCoef[0], baryCoef[1], baryCoef[2]);
+            Vec3 barycentricCoordinates(baryCoef[0], baryCoef[1], baryCoef[2]);
             Vec3Types::Coord aCoord[3];
             triangleGeo->getTriangleVertexCoordinates(triInd, aCoord);
 
@@ -937,16 +937,16 @@ void TopologicalChangeProcessor::saveIndices()
             {
                 msg_warning() << "Two consecutives values are equal" ;
 
-                Vector3 direction =  triangleIncisionInformation[i].coordinates[1] - triangleIncisionInformation[i].coordinates[0];
+                Vec3 direction =  triangleIncisionInformation[i].coordinates[1] - triangleIncisionInformation[i].coordinates[0];
                 direction *= epsilon;
 
-                const Vector3 newPosition = triangleIncisionInformation[i].coordinates[0] + direction;
+                const Vec3 newPosition = triangleIncisionInformation[i].coordinates[0] + direction;
 
                 sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
                 m_topology->getContext()->get(triangleGeo);
 
                 Index triIndex;
-                findElementIndex(Vector3(newPosition), triIndex, -1);
+                findElementIndex(Vec3(newPosition), triIndex, -1);
 
                 msg_error_when( (triIndex==sofa::InvalidID) ) << "Error while searching triangle index." ;
 
@@ -1040,7 +1040,7 @@ std::vector<SReal> TopologicalChangeProcessor::getValuesInLine(std::string line,
  * NOTE : the need of oldTriangleIndex comes to avoid some cases when the old triangle is overlapping another. It keeps the same
  * index instead of taking the new one.
  */
-void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangleIndex, Index oldTriangleIndex)
+void  TopologicalChangeProcessor::findElementIndex(Vec3 coord, Index& triangleIndex, Index oldTriangleIndex)
 {
     if (!m_topology)
         return;
@@ -1220,7 +1220,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     sofa::Index b_last = sofa::InvalidID;
     bool firstCut= true;
 
-    std::vector<Vector3> coordinates;
+    std::vector<Vec3> coordinates;
     for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( (int) i == indexOfTime)
@@ -1364,9 +1364,9 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
             triangleIncisionInformation[i].triangleIndices[j] = newTriangleIndexb;
 
             //update the triangle barycentric coordinates corresponding to the current coordinates
-            const Vector3 constCoord = triangleIncisionInformation[i].coordinates[j];
+            const Vec3 constCoord = triangleIncisionInformation[i].coordinates[j];
             const auto baryCoef = triangleGeo->computeTriangleBarycoefs( newTriangleIndexb, constCoord);
-            triangleIncisionInformation[i].barycentricCoordinates[j] = Vector3(baryCoef[0], baryCoef[1], baryCoef[2]);
+            triangleIncisionInformation[i].barycentricCoordinates[j] = Vec3(baryCoef[0], baryCoef[1], baryCoef[2]);
         }
     }
 }
@@ -1391,8 +1391,8 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
 
     size_t nbTriangles = m_topology->getNbTriangles();
 
-    std::vector< Vector3 > trianglesToDraw;
-    std::vector< Vector3 > pointsToDraw;
+    std::vector< Vec3 > trianglesToDraw;
+    std::vector< Vec3 > pointsToDraw;
 
     for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
@@ -1409,7 +1409,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
             for(unsigned int k = 0 ; k < 3 ; k++)
                 trianglesToDraw.push_back(coord[k]);
 
-            Vector3 a;
+            Vec3 a;
             a.clear();
             for (unsigned k = 0 ; k < 3 ; k++)
                 a += coord[k] * triangleIncisionInformation[i].barycentricCoordinates[j][k];

@@ -77,9 +77,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -104,9 +102,7 @@ void TestLight::checkPositionalLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -147,9 +143,7 @@ void TestLight::checkDirectionalLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -193,9 +187,7 @@ void TestLight::checkSpotLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                      scene.str().c_str(),
-                                                      scene.str().size()) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 

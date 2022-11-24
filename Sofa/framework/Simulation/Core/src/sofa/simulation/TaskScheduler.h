@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef TaskScheduler_std_h__
-#define TaskScheduler_std_h__
+#pragma once
 
 #include <sofa/config.h>
 
@@ -34,92 +33,81 @@
 #include <string> 
 #include <functional>
 
-namespace sofa
+namespace sofa::simulation
 {
 
-	namespace simulation
-	{
+class SOFA_SIMULATION_CORE_API TaskScheduler
+{
+            
+public:   
+    virtual ~TaskScheduler() = default;
 
-        
-        class SOFA_SIMULATION_CORE_API TaskScheduler
-        {
+    /**
+        * Check if a TaskScheduler already exists with this name.
+        * If not, it creates and registers a new TaskScheduler of type DefaultTaskScheduler with
+        * name as a key
+        *
+        * @param name key to find or create a TaskScheduler
+        * @return A TaskScheduler
+        */
+    static TaskScheduler* create(const char* name = "");
             
-        public:           
-            
-            
-            virtual ~TaskScheduler();
+    typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
 
-            /**
-             * Check if a TaskScheduler already exists with this name.
-             * If not, it creates and registers a new TaskScheduler of type DefaultTaskScheduler with
-             * name as a key
-             *
-             * @param name key to find or create a TaskScheduler
-             * @return A TaskScheduler
-             */
-            static TaskScheduler* create(const char* name = "");
-            
-            typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
+    /**
+        * Register a new scheduler in the factory
+        *
+        * @param name key in the factory
+        * @param creatorFunc function creating a new TaskScheduler or a derived class
+        * @return
+        */
+    static bool registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc);
 
-            /**
-             * Register a new scheduler in the factory
-             *
-             * @param name key in the factory
-             * @param creatorFunc function creating a new TaskScheduler or a derived class
-             * @return
-             */
-            static bool registerScheduler(const char* name, std::function<TaskScheduler* ()> creatorFunc);
+    /**
+        * Get the current TaskScheduler instance.
+        *
+        * If not instance has been created yet, a new one with empty name is created.
+        * @return The current TaskScheduler instance
+        */
+    static TaskScheduler* getInstance();
 
-            /**
-             * Get the current TaskScheduler instance.
-             *
-             * If not instance has been created yet, a new one with empty name is created.
-             * @return The current TaskScheduler instance
-             */
-            static TaskScheduler* getInstance();
-
-            /**
-             * Get the name of the current TaskScheduler instance
-             * @return The name of the current TaskScheduler instance
-             */
-            static const std::string& getCurrentName()  { return _currentSchedulerName; }
+    /**
+        * Get the name of the current TaskScheduler instance
+        * @return The name of the current TaskScheduler instance
+        */
+    static const std::string& getCurrentName()  { return _currentSchedulerName; }
             
-            // interface
-            virtual void init(const unsigned int nbThread = 0) = 0;
+    // interface
+    virtual void init(const unsigned int nbThread = 0) = 0;
             
-            virtual void stop(void) = 0;
+    virtual void stop(void) = 0;
             
-            virtual unsigned int getThreadCount(void) const = 0;
+    virtual unsigned int getThreadCount(void) const = 0;
             
-            virtual const char* getCurrentThreadName() = 0;
+    virtual const char* getCurrentThreadName() = 0;
             
-            virtual int getCurrentThreadType() = 0;
+    virtual int getCurrentThreadType() = 0;
             
-            // queue task if there is space, and run it otherwise
-            virtual bool addTask(Task* task) = 0;
+    // queue task if there is space, and run it otherwise
+    virtual bool addTask(Task* task) = 0;
             
-            virtual void workUntilDone(Task::Status* status) = 0;
+    virtual void workUntilDone(Task::Status* status) = 0;
             
-            virtual Task::Allocator* getTaskAllocator() = 0;
+    virtual Task::Allocator* getTaskAllocator() = 0;
             
             
-        protected:
+protected:
             
-            // factory map: registered schedulers: name, creation function
-            static std::map<std::string, std::function<TaskScheduler*()> > _schedulers;
+    // factory map: registered schedulers: name, creation function
+    static std::map<std::string, std::function<TaskScheduler*()> > _schedulers;
             
-            // current instantiated scheduler
-            static std::string _currentSchedulerName;
-            static TaskScheduler* _currentScheduler;
+    // current instantiated scheduler
+    static std::string _currentSchedulerName;
+    static TaskScheduler* _currentScheduler;
             
-            friend class Task;
-        };
+    friend class Task;
+};
         
 
 
-	} // namespace simulation
-
-} // namespace sofa
-
-
-#endif // TaskScheduler_std_h__
+} // namespace sofa::simulation

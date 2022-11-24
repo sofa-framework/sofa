@@ -42,9 +42,10 @@ ForceField<DataTypes>::~ForceField() = default;
 template<class DataTypes>
 void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
-    if (mparams && this->mstate)
+    auto mstate = this->mstate.get();
+    if (mparams && mstate)
     {
-        addForce(mparams, *fId[this->mstate.get()].write() , *mparams->readX(this->mstate), *mparams->readV(this->mstate));
+        addForce(mparams, *fId[mstate].write() , *mparams->readX(mstate), *mparams->readV(mstate));
     }
 }
 
@@ -89,7 +90,7 @@ template<class DataTypes>
 SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getPotentialEnergy(mparams, *mparams->readX(this->mstate));
+        return getPotentialEnergy(mparams, *mparams->readX(this->mstate.get()));
     return 0;
 }
 

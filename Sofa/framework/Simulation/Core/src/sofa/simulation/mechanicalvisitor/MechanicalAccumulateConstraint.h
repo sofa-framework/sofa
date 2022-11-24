@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <sofa/simulation/BaseMechanicalVisitor.h>
 
 #include <sofa/core/ConstraintParams.h>
@@ -30,6 +29,7 @@ namespace sofa::simulation::mechanicalvisitor
 
 /// Call each BaseConstraintSet to build the Jacobian matrices and accumulate it through the mappings up to the independant DOFs
 /// @deprecated use MechanicalBuildConstraintMatrix followed by MechanicalAccumulateMatrixDeriv
+SOFA_ATTRIBUTE_DEPRECATED_MECHANICALACCUMULATECONSTRAINT()
 class SOFA_SIMULATION_CORE_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
 {
 public:

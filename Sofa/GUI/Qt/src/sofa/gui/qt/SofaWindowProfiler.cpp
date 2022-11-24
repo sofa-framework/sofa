@@ -33,7 +33,6 @@
 namespace sofa::gui::qt
 {
 using namespace sofa::helper;
-using namespace QtCharts;
 
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;

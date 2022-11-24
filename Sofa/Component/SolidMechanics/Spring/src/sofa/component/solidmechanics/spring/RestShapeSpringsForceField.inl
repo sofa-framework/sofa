@@ -66,7 +66,7 @@ using core::behavior::ForceField;
 using linearalgebra::BaseMatrix;
 using core::VecCoordId;
 using core::MechanicalParams;
-using type::Vector3;
+using type::Vec3;
 using type::Vec4f;
 using type::vector;
 using core::visual::VisualParams;
@@ -424,7 +424,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
@@ -433,15 +433,15 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
 
-    std::vector<Vector3> vertices;
+    std::vector<Vec3> vertices;
 
     for (sofa::Index i=0; i<indices.size(); i++)
     {
         const sofa::Index index = indices[i];
         const sofa::Index ext_index = ext_indices[i];
 
-        Vector3 v0(0.0, 0.0, 0.0);
-        Vector3 v1(0.0, 0.0, 0.0);
+        Vec3 v0(0.0, 0.0, 0.0);
+        Vec3 v1(0.0, 0.0, 0.0);
         for(sofa::Index j=0 ; j< std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)) ; j++)
         {
             v0[j] = (DataTypes::getCPos(p[index]))[j];
@@ -454,7 +454,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
     vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>

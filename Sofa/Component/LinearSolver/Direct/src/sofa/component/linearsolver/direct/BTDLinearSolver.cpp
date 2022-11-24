@@ -24,7 +24,7 @@
 #include <sofa/component/linearsolver/direct/BTDLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/linearalgebra/BTDMatrix.inl>
-#include <sofa/linearalgebra/BlocFullMatrix.inl>
+#include <sofa/linearalgebra/BlockFullMatrix.inl>
 #include <sofa/linearalgebra/BlockVector.inl>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 

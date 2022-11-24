@@ -74,7 +74,7 @@ public:
      * Rebuild the system using a mass and force factor.
      * Experimental API used to investigate convergence issues.
      */
-    virtual void rebuildSystem(double /*massfactor*/, double /*forceFactor*/){}
+    virtual void rebuildSystem(SReal /*massfactor*/, SReal /*forceFactor*/){}
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
@@ -108,7 +108,7 @@ public:
     {
         return MultiVecDerivId(VecDerivId::dx());
     }
-    
+
     /// @}
 
     /// Remove reference to ConstraintCorrection
@@ -116,10 +116,13 @@ public:
     /// @param c is the ConstraintCorrection
     virtual void removeConstraintCorrection(BaseConstraintCorrection *s) = 0;
 
-public:
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
+
+protected:
+
+    virtual void postBuildSystem(const ConstraintParams* constraint_params) { SOFA_UNUSED(constraint_params); }
+    virtual void postSolveSystem(const ConstraintParams* constraint_params) { SOFA_UNUSED(constraint_params); }
 };
 
 } // namespace sofa::core::behavior

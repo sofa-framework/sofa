@@ -41,8 +41,8 @@
         </Node>
         <Node name="Visu" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/Teodule_Smoothed2.obj" translation="2 5 -20" rotation="90 0 0" handleSeams="1" />
-            <OglModel template="ExtVec3f" name="Visual" src="@meshLoader_0" texturename="textures/textureorange3569.bmp" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
-            <SkinningMapping template="Rigid,ExtVec3f" name="default67" input="@.." output="@Visual" />
+            <OglModel name="Visual" src="@meshLoader_0" texturename="textures/textureorange3569.bmp" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+            <SkinningMapping template="Rigid,Vec3d" name="default67" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Salad Bowl" gravity="0 -9.81 0">
@@ -53,6 +53,6 @@
         <LineCollisionModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
         <PointCollisionModel name="Floor" moving="0" simulated="0" contactStiffness="1000" />
         <MeshOBJLoader name="meshLoader_1" filename="mesh/SaladBowl.obj" translation="0 -50 -20" rotation="-90 0 0" scale="100" handleSeams="1" />
-        <OglModel template="ExtVec3f" name="FloorV" src="@meshLoader_1" texturename="textures/floor.bmp" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+        <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor.bmp" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
     </Node>
 </Node>

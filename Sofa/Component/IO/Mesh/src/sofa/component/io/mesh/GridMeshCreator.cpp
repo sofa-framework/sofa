@@ -45,7 +45,7 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
     // doLoad() is called only if d_filename is modified
     // but this loader in particular does not require a filename (refactoring would be needed)
     // we force d_filename to be dirty to trigger the callback, thus calling doLoad()
-    d_filename.setDirtyValue(); 
+    d_filename.setDirtyValue();
 
     d_filename.setReadOnly(true);
 }
@@ -94,7 +94,7 @@ bool GridMeshCreator::doLoad()
     {
         for(unsigned x=0; x<numX; x++)
         {
-            my_positions.push_back( Vector3(x * 1./(numX-1), y * 1./(numY-1), 0) );
+            my_positions.push_back( Vec3(x * 1._sreal/(numX-1), y * 1._sreal/(numY-1), 0_sreal) );
         }
     }
 

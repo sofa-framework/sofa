@@ -48,20 +48,20 @@ StaticSolver::StaticSolver()
             "newton_iterations",
             "Number of newton iterations between each load increments (normally, one load increment per simulation time-step."))
     , d_absolute_correction_tolerance_threshold(initData(&d_absolute_correction_tolerance_threshold,
-            (double) 1e-5,
+            1e-5_sreal,
             "absolute_correction_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the norm |du| is smaller than this threshold."))
     , d_relative_correction_tolerance_threshold(initData(&d_relative_correction_tolerance_threshold,
-            (double) 1e-5,
+            1e-5_sreal,
             "relative_correction_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the ratio |du| / |U| is smaller than this threshold."))
     , d_absolute_residual_tolerance_threshold( initData(&d_absolute_residual_tolerance_threshold,
-            (double) 1e-5,
+            1e-5_sreal,
             "absolute_residual_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the norm |R| is smaller than this threshold. "
             "Use a negative value to disable this criterion."))
     , d_relative_residual_tolerance_threshold( initData(&d_relative_residual_tolerance_threshold,
-            (double) 1e-5,
+            1e-5_sreal,
             "relative_residual_tolerance_threshold",
             "Convergence criterion: The newton iterations will stop when the ratio |R|/|R0| is smaller than this threshold. "
             "Use a negative value to disable this criterion."))

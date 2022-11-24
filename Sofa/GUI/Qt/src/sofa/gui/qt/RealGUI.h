@@ -79,7 +79,7 @@ class GraphVisitor;
 
 class SofaMouseManager;
 
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
 class SofaWindowProfiler;
 #endif
 
@@ -153,7 +153,7 @@ private:
     GraphVisitor* handleTraceVisitor;
 #endif
     SofaMouseManager* m_sofaMouseManager;
-#if SOFA_GUI_QT_HAVE_QT5_CHARTS
+#if SOFA_GUI_QT_HAVE_QT_CHARTS
     SofaWindowProfiler* m_windowTimerProfiler;
 #endif
 

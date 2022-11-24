@@ -31,7 +31,7 @@ TransformationVisitor::TransformationVisitor(const sofa::core::ExecParams* param
 {
     translation = Vector3();
     rotation = Vector3();
-    scale = Vector3(1.0,1.0,1.0);
+    scale = Vector3(1.0_sreal,1.0_sreal,1.0_sreal);
 }
 
 

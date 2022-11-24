@@ -288,6 +288,8 @@ public:
 
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 
+    bool unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
+
     friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
     friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 

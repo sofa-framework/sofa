@@ -32,8 +32,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/visual/VisualModelImpl.h>
 
-#define   NB_MAX_TEXTURES 16
-
 namespace sofa::gl::component::rendering3d
 {
 
@@ -44,7 +42,6 @@ namespace sofa::gl::component::rendering3d
  *  using OpenGL.
  *
  */
-
 class SOFA_GL_COMPONENT_RENDERING3D_API OglModel : public sofa::component::visual::VisualModelImpl
 {
 public:
@@ -148,7 +145,5 @@ public:
     void updateTrianglesIndicesBuffer();
     void updateQuadsIndicesBuffer();
 };
-
-typedef sofa::type::Vec<3,GLfloat> GLVec3f;
 
 } // namespace sofa::gl::component::rendering3d

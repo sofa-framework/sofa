@@ -41,7 +41,7 @@ namespace // anonymous
     }
 
     template<typename real>
-    real equalsZero(const real r, const real epsilon = std::numeric_limits<real>::epsilon())
+    bool equalsZero(const real r, const real epsilon = std::numeric_limits<real>::epsilon())
     {
         return rabs(r) <= epsilon;
     }

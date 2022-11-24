@@ -78,7 +78,7 @@ public:
 class DetectionOutput
 {
 public:
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
     /// Pair of colliding elements.
     std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem;
     typedef int64_t ContactId;

@@ -25,7 +25,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/logging/Messaging.h>
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 
 #include <cstdio>
 #include <iostream>
@@ -57,7 +57,7 @@ bool XspLoader::ReadXspContent(std::ifstream &file,
 
     /// Temporarily stores the masses while loading for the initpos calculs in the
     /// 'lspg' command.
-    std::vector<Vector3> masses;
+    std::vector<Vec3> masses;
     while (!file.eof())
     {
         std::string cmd {""};
@@ -111,7 +111,7 @@ bool XspLoader::ReadXspContent(std::ifstream &file,
             }
 
             /// The massses are needed because of springs.
-            masses.push_back(Vector3(px,py,pz));
+            masses.push_back(Vec3(px,py,pz));
             data.addMass(px,py,pz,vx,vy,vz,mass, elastic, isAFixedPoint, isASurfacePoint);
         }
         else if (cmd=="lspg")	// linear springs connector

@@ -28,7 +28,7 @@
         <TriangleSetTopologyContainer name="Triangle_topo" src="@loader"/>
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1"/>
-        <DiagonalMass template="Vec3d,double" name="mass" massDensity="1.0" />
+        <DiagonalMass template="Vec3d,Vec3d" name="mass" massDensity="1.0" />
         <FixedConstraint template="Vec3d" name="fix" indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30" />
         
         <TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess_constraint.txt" />

@@ -287,7 +287,7 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
 
     Mat3x3d R; R.identity();
 
-    std::vector<Vector3> vertices;
+    std::vector<Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
     constexpr sofa::type::RGBAColor colorSet[3]
@@ -323,7 +323,7 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
 
 template <class RigidTypes>
 template <class T>
-Vector6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
+Vec6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
                                                                   const DataVecCoord& d_x,
                                                                   const DataVecDeriv& d_v ) const
 {
@@ -350,7 +350,7 @@ Vector6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*
 
 template <class Vec3Types>
 template <class T>
-Vector6 UniformMass<Vec3Types>::getMomentumVec3DImpl ( const MechanicalParams*,
+Vec6 UniformMass<Vec3Types>::getMomentumVec3DImpl ( const MechanicalParams*,
                                                                  const DataVecCoord& d_x,
                                                                  const DataVecDeriv& d_v ) const
 {
@@ -484,7 +484,7 @@ void UniformMass<Vec3Types>::addMDxToVector(linearalgebra::BaseVector *resVect,
 }
 
 template <> SOFA_COMPONENT_MASS_API
-Vector6 UniformMass<Vec3Types>::getMomentum ( const MechanicalParams* params,
+Vec6 UniformMass<Vec3Types>::getMomentum ( const MechanicalParams* params,
                                                        const DataVecCoord& d_x,
                                                        const DataVecDeriv& d_v ) const
 {
@@ -492,7 +492,7 @@ Vector6 UniformMass<Vec3Types>::getMomentum ( const MechanicalParams* params,
 }
 
 template <> SOFA_COMPONENT_MASS_API
-Vector6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
+Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
                                                              const DataVecCoord& d_x,
                                                              const DataVecDeriv& d_v ) const
 {

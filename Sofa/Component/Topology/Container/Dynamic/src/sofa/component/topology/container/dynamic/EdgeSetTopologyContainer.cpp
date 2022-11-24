@@ -585,4 +585,17 @@ bool EdgeSetTopologyContainer::linkTopologyHandlerToData(core::topology::Topolog
     }
 }
 
+bool EdgeSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::EDGE)
+    {
+        d_edge.delOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return PointSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 } //namespace sofa::component::topology::container::dynamic

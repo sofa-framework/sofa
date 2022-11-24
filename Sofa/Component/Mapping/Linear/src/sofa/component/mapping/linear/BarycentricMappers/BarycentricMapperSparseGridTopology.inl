@@ -28,7 +28,7 @@
 namespace sofa::component::mapping::linear
 {
 
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::core::visual::VisualParams;
 using sofa::type::Vec;
 
@@ -107,7 +107,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const VisualParams* vpa
                                                          const typename Out::VecCoord& out,
                                                          const typename In::VecCoord& in )
 {
-    std::vector< Vector3 > points;
+    std::vector< Vec3 > points;
     for ( unsigned int i=0; i<m_map.size(); i++ )
     {
 
@@ -184,11 +184,14 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperSparseGridTopology<In,Ou
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    const auto& hexahedra = this->m_fromTopology->getHexahedra();
+
     for( size_t index=0 ; index<in.size() ; ++index)
     {
         const typename Out::DPos v = Out::getDPos(in[index]);
 
-        const topology::container::grid::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[index].in_index );
+        assert(this->m_map[index].in_index < hexahedra.size());
+        const topology::container::grid::SparseGridTopology::Hexa& cube = hexahedra[this->m_map[index].in_index];
 
         const OutReal fx = ( OutReal ) m_map[index].baryCoords[0];
         const OutReal fy = ( OutReal ) m_map[index].baryCoords[1];
@@ -213,6 +216,8 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::MatrixD
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
+    const auto& hexahedra = this->m_fromTopology->getHexahedra();
+
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
         typename Out::MatrixDeriv::ColConstIterator colItEnd = rowIt.end();
@@ -227,8 +232,8 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::MatrixD
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-
-                const topology::container::grid::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[indexIn].in_index );
+                assert(this->m_map[indexIn].in_index < hexahedra.size());
+                const topology::container::grid::SparseGridTopology::Hexa& cube = hexahedra[this->m_map[indexIn].in_index];
 
                 const OutReal fx = ( OutReal ) m_map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) m_map[indexIn].baryCoords[1];
@@ -274,9 +279,12 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeri
 {
     out.resize( m_map.size() );
 
+    const auto& hexahedra = this->m_fromTopology->getHexahedra();
+
     for( size_t index=0 ; index<out.size() ; ++index)
     {
-        const topology::container::grid::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron ( this->m_map[index].in_index );
+        assert(this->m_map[index].in_index < hexahedra.size());
+        const topology::container::grid::SparseGridTopology::Hexa& cube = hexahedra[this->m_map[index].in_index];
 
         const Real fx = m_map[index].baryCoords[0];
         const Real fy = m_map[index].baryCoords[1];
@@ -307,9 +315,12 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
 
     unsigned int i = 0;
 
+    const auto& hexahedra = this->m_fromTopology->getHexahedra();
+
     while (it != itEnd)
     {
-        const topology::container::grid::SparseGridTopology::Hexa cube = this->m_fromTopology->getHexahedron( it->in_index );
+        assert(it->in_index < hexahedra.size());
+        const topology::container::grid::SparseGridTopology::Hexa& cube = hexahedra[it->in_index];
 
         const Real fx = it->baryCoords[0];
         const Real fy = it->baryCoords[1];

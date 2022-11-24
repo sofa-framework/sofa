@@ -139,12 +139,12 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
 {
     if (!vparams->displayFlags().getShowMapping()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const typename Out::VecCoord &X = this->toModel->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< sofa::type::Vector3 > points;
-    sofa::type::Vector3 point1,point2;
+    std::vector< sofa::type::Vec3 > points;
+    sofa::type::Vec3 point1,point2;
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
         OutCoord v;
@@ -157,7 +157,7 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
 
     vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::yellow());
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::mapping::linear

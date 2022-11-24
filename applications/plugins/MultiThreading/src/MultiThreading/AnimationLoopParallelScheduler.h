@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_ANIMATION_LOOP_PARALLEL_SCHEDULER_H
-#define SOFA_SIMULATION_ANIMATION_LOOP_PARALLEL_SCHEDULER_H
+#pragma once
 
+#include <MultiThreading/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 
@@ -29,76 +29,59 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
-
-
-
-namespace sofa
+namespace sofa::simulation
 {
 
-namespace simulation
-{
+class TaskScheduler;
 
-
-	class TaskScheduler;
-
-
-class AnimationLoopParallelScheduler : public sofa::core::behavior::BaseAnimationLoop
+class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler : public sofa::core::behavior::BaseAnimationLoop
 {
 public:
 
-	typedef sofa::core::behavior::BaseAnimationLoop Inherit;
-	SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
+    typedef sofa::core::behavior::BaseAnimationLoop Inherit;
+    SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
     Data<std::string> schedulerName; ///< scheduler name type
 
-	Data<unsigned int> threadNumber; ///< number of thread
+    Data<unsigned int> threadNumber; ///< number of thread
 
 
 protected:
-	AnimationLoopParallelScheduler(simulation::Node* gnode = NULL);
+    AnimationLoopParallelScheduler(simulation::Node* gnode = NULL);
 
-	~AnimationLoopParallelScheduler() override;
+    ~AnimationLoopParallelScheduler() override;
 
 public:
     void init() override;
 
-	/// Initialization method called at graph creation and modification, during bottom-up traversal.
-	void bwdInit() override;
+    /// Initialization method called at graph creation and modification, during bottom-up traversal.
+    void bwdInit() override;
 
-	/// Update method called when variables used in precomputation are modified.
+    /// Update method called when variables used in precomputation are modified.
     void reinit() override;
 
-	void cleanup() override;
+    void cleanup() override;
 
-	void step(const core::ExecParams* params, SReal dt) override;
+    void step(const core::ExecParams* params, SReal dt) override;
 
-
-	/// Construction method called by ObjectFactory.
-	template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-	{
-		simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-		typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-		if (context) context->addObject(obj);
-		if (arg) obj->parse(arg);
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
         return obj;
-	}
+    }
 
 private :
 
-	unsigned int mNbThread;
+    unsigned int mNbThread;
 
-	simulation::Node* gnode;
-	
+    simulation::Node* gnode;
+
     TaskScheduler* _taskScheduler;
 
-	//boost::shared_ptr<TaskScheduler> mScheduler;
 };
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif  /* SOFA_SIMULATION_ANIMATION_LOOP_PARALLEL_SCHEDULER_H */
+} // namespace sofa::simulation

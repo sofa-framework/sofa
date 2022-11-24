@@ -91,9 +91,9 @@ public:
     virtual void setPrefix(const std::string& prefix, bool prependDirectory = true);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
 
-    virtual void getView(sofa::type::Vector3& pos, sofa::type::Quat<SReal>& ori) const;
-    virtual void setView(const sofa::type::Vector3& pos, const sofa::type::Quat<SReal> &ori);
-    virtual void moveView(const sofa::type::Vector3& pos, const sofa::type::Quat<SReal> &ori);
+    virtual void getView(sofa::type::Vec3& pos, sofa::type::Quat<SReal>& ori) const;
+    virtual void setView(const sofa::type::Vec3& pos, const sofa::type::Quat<SReal> &ori);
+    virtual void moveView(const sofa::type::Vec3& pos, const sofa::type::Quat<SReal> &ori);
     virtual void newView();
     virtual void resetView();
 
@@ -139,10 +139,10 @@ protected:
     int _background;
     bool initTexturesDone;
 
-    sofa::type::Vector3 backgroundColour;
+    sofa::type::Vec3 backgroundColour;
     std::string backgroundImageFile;
 
-    sofa::type::Vector3 ambientColour;
+    sofa::type::Vec3 ambientColour;
 
     PickHandler *pick;
 

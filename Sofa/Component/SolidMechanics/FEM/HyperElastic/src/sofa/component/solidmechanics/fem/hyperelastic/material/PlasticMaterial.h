@@ -39,7 +39,7 @@ class PlasticMaterial : public BaseMaterial
 public:
     SOFA_CLASS(PlasticMaterial, BaseMaterial);
 
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3 Vector3;
     typedef sofa::type::vector<double> VecDouble;
     typedef sofa::type::vector<Vector3> VecStress;
 

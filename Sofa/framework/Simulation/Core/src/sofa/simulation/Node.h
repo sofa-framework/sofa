@@ -481,11 +481,6 @@ public:
         return getRoot()->getContext();
     }
 
-    Node* getRoot() const
-    {
-        return static_cast<Node*>(BaseNode::getRoot());
-    }
-
     Node* setDebug(bool);
     bool getDebug() const;
     void printComponents();

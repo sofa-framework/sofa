@@ -119,15 +119,15 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt.
-    double getVelocityIntegrationFactor() const override { return 1.0; }
+    SReal getVelocityIntegrationFactor() const override { return 1.0; }
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the position
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt².
-    double getPositionIntegrationFactor() const override ;
+    SReal getPositionIntegrationFactor() const override ;
 
-    virtual double getPositionIntegrationFactor(double dt ) const { return dt; }
+    virtual SReal getPositionIntegrationFactor(SReal dt ) const { return dt; }
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
@@ -144,15 +144,15 @@ public:
     /// v_{t+dt}     0    1      0    1
     /// a_{t+dt}     0    0      0    1/dt
     /// The last column is returned by the getSolutionIntegrationFactor method.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
 
-    double getIntegrationFactor(int inputDerivative, int outputDerivative, double dt) const ;
+    SReal getIntegrationFactor(int inputDerivative, int outputDerivative, SReal dt) const ;
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const override ;
+    SReal getSolutionIntegrationFactor(int outputDerivative) const override ;
 
-    double getSolutionIntegrationFactor(int outputDerivative, double dt) const ;
+    SReal getSolutionIntegrationFactor(int outputDerivative, SReal dt) const ;
 
 protected:
 

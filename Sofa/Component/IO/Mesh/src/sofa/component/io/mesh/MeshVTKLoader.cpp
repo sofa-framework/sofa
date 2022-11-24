@@ -50,7 +50,7 @@ using namespace sofa::helper;
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::BaseObject ;
-using sofa::type::Vector3 ;
+using sofa::type::Vec3 ;
 using sofa::type::Vec ;
 using std::istringstream;
 using std::istream;
@@ -227,7 +227,7 @@ bool MeshVTKLoader::setInputsMesh()
             if (inNormals)
                 for (int i = 0; i < vtkpd->dataSize; i += 3)
                 {
-                    my_normals.push_back(Vector3 (double(inNormals[i + 0]), double(inNormals[i + 1]), double(inNormals[i + 2])));
+                    my_normals.push_back(Vec3 (double(inNormals[i + 0]), double(inNormals[i + 1]), double(inNormals[i + 2])));
                 }
             else
             {

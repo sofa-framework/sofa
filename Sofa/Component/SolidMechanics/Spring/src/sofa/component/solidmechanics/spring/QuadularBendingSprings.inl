@@ -692,7 +692,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
@@ -702,7 +702,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     vparams->drawTool()->disableLighting();
 
     const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
     constexpr sofa::type::RGBAColor green_color = sofa::type::RGBAColor::green();
     constexpr sofa::type::RGBAColor red_color   = sofa::type::RGBAColor::red();
@@ -767,7 +767,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     }
     vparams->drawTool()->drawQuads(vertices, sofa::type::RGBAColor::red());
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

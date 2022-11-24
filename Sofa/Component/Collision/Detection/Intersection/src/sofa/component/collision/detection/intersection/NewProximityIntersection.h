@@ -63,7 +63,7 @@ public:
     void init() override;
 
     static inline int
-    doIntersectionPointPoint(SReal dist2, const type::Vector3& p, const type::Vector3& q,
+    doIntersectionPointPoint(SReal dist2, const type::Vec3& p, const type::Vec3& q,
                              OutputVector* contacts, int id);
 
     bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;

@@ -15,3 +15,8 @@ ignore "imageAPI.py"
 ignore "loadHDR.py"
 ignore "loadHDR.scn"
 ignore "python/.*"
+
+# Requires image to be compiled with the full set
+ignore "imageTransformEngine.scn"
+ignore "loadtensor.scn"
+ignore "loadvector.scn"

@@ -1164,8 +1164,8 @@ void DistanceGrid::sampleSurface(double sampling)
                     SReal d = m_dists[index(x,y,z)];
                     if (rabs(d) > maxD) continue;
 
-                    Vector3 pos = coord(x,y,z);
-                    Vector3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
+                    type::Vec3 pos = coord(x,y,z);
+                    type::Vec3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
                     n.normalize();
                     pos -= n * (d * 0.99); // push pos back to the surface
                     d = interp(pos);
@@ -1208,7 +1208,7 @@ void DistanceGrid::sampleSurface(double sampling)
                     if (!inGrid(pos)) continue;
                     SReal d = interp(pos);
                     if (rabs(d) > maxD) continue;
-                    Vector3 n = grad(pos);
+                    type::Vec3 n = grad(pos);
                     n.normalize();
                     pos -= n * (d * 0.99); // push pos back to the surface
                     d = interp(pos);

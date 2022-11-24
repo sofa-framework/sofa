@@ -348,7 +348,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 {
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     // Draw Quads indices
     if (showQuadIndices.getValue() && this->m_topology->getNbQuads() != 0)
@@ -366,7 +366,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::type::vector<Quad>& quadArray = this->m_topology->getQuads();
 
-        std::vector<type::Vector3> positions;
+        std::vector<type::Vec3> positions;
         for (size_t i =0; i<quadArray.size(); i++)
         {
 
@@ -375,7 +375,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             Coord vertex2 = coords[ the_quad[1] ];
             Coord vertex3 = coords[ the_quad[2] ];
             Coord vertex4 = coords[ the_quad[3] ];
-            type::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            type::Vec3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
             positions.push_back(center);
 
@@ -395,19 +395,19 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         // Draw Quad surfaces
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         { // drawing quads
-            std::vector<type::Vector3> pos;
+            std::vector<type::Vec3> pos;
             pos.reserve(quadArray.size()*4u);
             for (size_t i=0u; i< quadArray.size(); i++)
             {
                 const Quad& q = quadArray[i];
 
-                type::Vector3 bary = type::Vector3(0.0, 0.0, 0.0);
-                std::vector<type::Vector3> tmpPos;
+                type::Vec3 bary = type::Vec3(0.0, 0.0, 0.0);
+                std::vector<type::Vec3> tmpPos;
                 tmpPos.resize(4);
 
                 for (unsigned int j = 0; j<4; j++)
                 {
-                    tmpPos[j] = type::Vector3(DataTypes::getCPos(coords[q[j]]));
+                    tmpPos[j] = type::Vec3(DataTypes::getCPos(coords[q[j]]));
                     bary += tmpPos[j];
                 }
                 bary /= 4;
@@ -426,7 +426,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             edge_color[1] -= 0.2f;
             edge_color[2] -= 0.2f;
 
-            std::vector<type::Vector3> pos;
+            std::vector<type::Vec3> pos;
             pos.reserve(edgeArray.size()*2u);
 
             if (!edgeArray.empty())
@@ -434,8 +434,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
                 for (size_t i = 0u; i<edgeArray.size(); i++)
                 {
                     const Edge& e = edgeArray[i];
-                    pos.push_back(type::Vector3(DataTypes::getCPos(coords[e[0]])));
-                    pos.push_back(type::Vector3(DataTypes::getCPos(coords[e[1]])));
+                    pos.push_back(type::Vec3(DataTypes::getCPos(coords[e[0]])));
+                    pos.push_back(type::Vec3(DataTypes::getCPos(coords[e[1]])));
                 }
             } else {
                 for (size_t i = 0u; i<quadArray.size(); i++)
@@ -443,8 +443,8 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
                     const Quad& q = quadArray[i];
                     for (unsigned int j = 0; j<4; j++)
                     {
-                        pos.push_back(type::Vector3(DataTypes::getCPos(coords[q[j]])));
-                        pos.push_back(type::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
+                        pos.push_back(type::Vec3(DataTypes::getCPos(coords[q[j]])));
+                        pos.push_back(type::Vec3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
                     }
                 }
             }
@@ -455,7 +455,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             vparams->drawTool()->setPolygonMode(0, false);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

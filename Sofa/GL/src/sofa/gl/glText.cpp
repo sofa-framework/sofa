@@ -51,13 +51,13 @@ GlText::GlText ( const string& text )
     this->text = text;
 }
 
-GlText::GlText ( const string& text, const type::Vector3& position )
+GlText::GlText ( const string& text, const type::Vec3& position )
 {
     this->text = text;
     this->position = position;
 }
 
-GlText::GlText ( const string& text, const type::Vector3& position, const double& scale )
+GlText::GlText ( const string& text, const type::Vec3& position, const double& scale )
 {
     this->text = text;
     this->position = position;
@@ -74,7 +74,7 @@ void GlText::setText ( const string& text )
     this->text = text;
 }
 
-void GlText::update ( const type::Vector3& position )
+void GlText::update ( const type::Vec3& position )
 {
     this->position = position;
 }
@@ -170,7 +170,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
 }
 
-void GlText::textureDraw_Indices(const type::vector<type::Vector3>& positions, const float& scale)
+void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, const float& scale)
 {
     if (!s_asciiTexture)
     {

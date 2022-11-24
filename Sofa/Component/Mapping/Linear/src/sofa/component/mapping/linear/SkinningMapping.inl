@@ -349,11 +349,11 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index ( f_index );
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     if ( vparams->displayFlags().getShowMappings() )
     {
@@ -367,8 +367,8 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             for ( unsigned int m=0 ; m<nbref && m_weights[i][m]>0.; m++ )
             {
                 colorVector.emplace_back( m_weights[i][m],m_weights[i][m], 0.f, 1.f );
-                vertices.push_back(sofa::type::Vector3( xfrom[index[i][m]].getCenter() ));
-                vertices.push_back(sofa::type::Vector3( xto[i] ));
+                vertices.push_back(sofa::type::Vec3( xfrom[index[i][m]].getCenter() ));
+                vertices.push_back(sofa::type::Vec3( xto[i] ));
             }
         }
         vparams->drawTool()->drawLines(vertices,1,colorVector);
@@ -384,8 +384,8 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
         if ( ! triangles.empty()) // Show on mesh
         {
-            std::vector< type::Vector3 > points;
-            std::vector< type::Vector3 > normals;
+            std::vector< type::Vec3 > points;
+            std::vector< type::Vec3 > normals;
             std::vector<sofa::type::RGBAColor> colors;
             for ( unsigned int i = 0; i < triangles.size(); i++)
             {
@@ -401,7 +401,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                         if(index[indexPoint][m]==showFromIndex.getValue())
                             color = (m_weights[indexPoint][m] - minValue) / (maxValue - minValue);
 
-                    points.push_back(type::Vector3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
+                    points.push_back(type::Vec3(xto[indexPoint][0],xto[indexPoint][1],xto[indexPoint][2]));
                     colors.push_back({ float(color), 0.0f, 0.0f, 1.0f });
                 }
             }
@@ -421,12 +421,12 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                         color = (m_weights[i][m] - minValue) / (maxValue - minValue);
 
                 colorVector.push_back(sofa::type::RGBAColor( color, 0.0, 0.0, 1.0 ));
-                vertices.push_back( sofa::type::Vector3(xto[i][0], xto[i][1], xto[i][2]));
+                vertices.push_back( sofa::type::Vec3(xto[i][0], xto[i][1], xto[i][2]));
             }
             vparams->drawTool()->drawPoints(vertices,10,colorVector);
         }
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

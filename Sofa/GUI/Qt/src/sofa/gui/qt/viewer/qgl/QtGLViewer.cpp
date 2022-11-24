@@ -65,7 +65,7 @@ helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 // ---------------------------------------------------------
 
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
-    : QGLViewer(parent, nullptr, Qt::WindowType::Widget)
+    : QGLViewer(parent, Qt::WindowType::Widget)
 {
     this->setObjectName(name);
 
@@ -327,7 +327,7 @@ void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
 void QtGLViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 {
     if (r==0.0)
-        r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
+        r = (Vec3(maxBBox) - Vec3(minBBox)).norm() / 500;
 #if 0
     {
         Enable<GL_DEPTH_TEST> depth;
@@ -614,7 +614,8 @@ void QtGLViewer::DisplayOBJs()
                     , this->camera()->orientation()[1]
                     , this->camera()->orientation()[2]
                     , this->camera()->orientation()[3]);
-            gl::Axis::draw(sofa::type::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+            gl::Axis::draw(sofa::type::Vec3(30.0_sreal,30.0_sreal,0.0_sreal),sofaQuat.inverse(), 25.0);
+
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -822,39 +823,34 @@ void QtGLViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
-
-    //Tracking Mode
-
-    if( isControlPressed() ) // pass event to the scene data structure
+    if (!isControlPressed() && !e->isAutoRepeat())
     {
-        if (groot)
+        if (groot )
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
             groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
         }
     }
-    else  // control the GUI
+
+    switch(e->key())
     {
-        switch(e->key())
-        {
-        case Qt::Key_A: // axis
-        case Qt::Key_H: // help page
-        case Qt::Key_G: // show grid
-        {
-            // these shortcuts are handled by qglviewer
-            QGLViewer::keyPressEvent(e);
-            break;
-        }
-        case Qt::Key_C:
-        {
-            viewAll();
-            break;
-        }
-        default:
-        {
-            SofaViewer::keyPressEvent(e);
-        }
-        }
+    case Qt::Key_A: // axis
+    case Qt::Key_H: // help page
+    case Qt::Key_G: // show grid
+    {
+        // these shortcuts are handled by qglviewer
+        QGLViewer::keyPressEvent(e);
+        break;
+    }
+    case Qt::Key_C:
+    {
+        viewAll();
+        break;
+    }
+    default:
+    {
+        SofaViewer::keyPressEvent(e);
+    }
     }
     update();
 }
@@ -1123,7 +1119,7 @@ QString QtGLViewer::helpString() const
                 <li><b>V</b>: TO SAVE A VIDEO<br>\
                 Each time the frame is updated a screenshot is saved<br></li>\
                 <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>"
-    );
+                );
 
     return text;
 }

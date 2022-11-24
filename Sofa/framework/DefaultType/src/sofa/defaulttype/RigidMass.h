@@ -71,7 +71,7 @@ public:
         recalc();
     }
     // operator to cast to const Real
-    operator const Real() const
+    constexpr operator const Real() const
     {
         return mass;
     }
@@ -100,13 +100,13 @@ public:
         in>>m.inertiaMatrix;
         return in;
     }
-    void operator *=(Real fact)
+    constexpr void operator *=(Real fact)
     {
         mass *= fact;
         inertiaMassMatrix *= fact;
         invInertiaMassMatrix /= fact;
     }
-    void operator /=(Real fact)
+    constexpr void operator /=(Real fact)
     {
         mass /= fact;
         inertiaMassMatrix /= fact;
@@ -115,7 +115,7 @@ public:
 };
 
 template<typename real>
-inline RigidDeriv<3,real> operator*(const RigidDeriv<3,real>& d, const RigidMass<3,real>& m)
+constexpr RigidDeriv<3,real> operator*(const RigidDeriv<3,real>& d, const RigidMass<3,real>& m)
 {
     RigidDeriv<3,real> res;
     getVCenter(res) = getVCenter(d) * m.mass;
@@ -124,7 +124,7 @@ inline RigidDeriv<3,real> operator*(const RigidDeriv<3,real>& d, const RigidMass
 }
 
 template<typename real>
-inline RigidDeriv<3,real> operator*(const RigidMass<3,real>& m, const RigidDeriv<3,real>& d)
+constexpr RigidDeriv<3,real> operator*(const RigidMass<3,real>& m, const RigidDeriv<3,real>& d)
 {
     RigidDeriv<3,real> res;
     getVCenter(res) = getVCenter(d) * m.mass;
@@ -133,7 +133,7 @@ inline RigidDeriv<3,real> operator*(const RigidMass<3,real>& m, const RigidDeriv
 }
 
 template<typename real>
-inline RigidDeriv<3,real> operator/(const RigidDeriv<3,real>& d, const RigidMass<3, real>& m)
+constexpr RigidDeriv<3,real> operator/(const RigidDeriv<3,real>& d, const RigidMass<3, real>& m)
 {
     RigidDeriv<3,real> res;
     getVCenter(res) = getVCenter(d) / m.mass;
@@ -179,7 +179,7 @@ public:
         recalc();
     }
     // operator to cast to const Real
-    operator const Real() const
+    constexpr operator const Real() const
     {
         return mass;
     }
@@ -228,13 +228,14 @@ public:
         in>>m.inertiaMatrix;
         return in;
     }
-    void operator *=(Real fact)
+    constexpr void operator *=(Real fact)
     {
         mass *= fact;
         inertiaMassMatrix *= fact;
         invInertiaMassMatrix /= fact;
     }
-    void operator /=(Real fact)
+
+    constexpr void operator /=(Real fact)
     {
         mass /= fact;
         inertiaMassMatrix /= fact;
@@ -243,7 +244,7 @@ public:
 };
 
 template<typename real>
-inline RigidDeriv<2,real> operator*(const RigidDeriv<2,real>& d, const RigidMass<2,real>& m)
+constexpr RigidDeriv<2,real> operator*(const RigidDeriv<2,real>& d, const RigidMass<2,real>& m)
 {
     RigidDeriv<2,real> res;
     getVCenter(res) = getVCenter(d) * m.mass;
@@ -252,7 +253,7 @@ inline RigidDeriv<2,real> operator*(const RigidDeriv<2,real>& d, const RigidMass
 }
 
 template<typename real>
-inline RigidDeriv<2,real> operator/(const RigidDeriv<2,real>& d, const RigidMass<2, real>& m)
+constexpr RigidDeriv<2,real> operator/(const RigidDeriv<2,real>& d, const RigidMass<2, real>& m)
 {
     RigidDeriv<2,real> res;
     getVCenter(res) = getVCenter(d) / m.mass;

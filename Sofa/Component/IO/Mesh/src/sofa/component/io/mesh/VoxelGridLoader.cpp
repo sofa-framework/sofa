@@ -41,7 +41,7 @@ int VoxelGridLoaderClass = RegisterObject("Voxel loader based on RAW files").add
 
 VoxelGridLoader::VoxelGridLoader()
     : VoxelLoader(),
-      voxelSize ( initData ( &voxelSize, Vector3 ( 1.0f,1.0f,1.0f ), "voxelSize", "Dimension of one voxel" ) ),
+      voxelSize ( initData ( &voxelSize, Vec3 ( 1.0f,1.0f,1.0f ), "voxelSize", "Dimension of one voxel" ) ),
       dataResolution ( initData ( &dataResolution, Vec3i ( 0,0,0 ), "resolution", "Resolution of the voxel file" ) ),
       roi ( initData ( &roi, Vec6i ( 0,0,0, 0xFFFF, 0xFFFF, 0xFFFF ), "ROI", "Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)" ) ),
       headerSize ( initData ( &headerSize, 0, "header", "Header size in bytes" ) ),
@@ -199,7 +199,7 @@ void VoxelGridLoader::reinit()
 
                     if ( isActive(idx) )
                     {
-                        Vector3 pnt;
+                        Vec3 pnt;
                         pnt[0] = i*voxelSize.getValue()[0];
                         pnt[1] = j*voxelSize.getValue()[1];
                         pnt[2] = k*voxelSize.getValue()[2];
@@ -310,13 +310,13 @@ void VoxelGridLoader::getResolution ( Vec3i& res ) const
     res = dataResolution.getValue();
 }
 
-void VoxelGridLoader::setVoxelSize ( const type::Vector3 vSize )
+void VoxelGridLoader::setVoxelSize ( const type::Vec3 vSize )
 {
     ( *voxelSize.beginEdit() ) = vSize;
     voxelSize.endEdit();
 }
 
-type::Vector3 VoxelGridLoader::getVoxelSize () const
+type::Vec3 VoxelGridLoader::getVoxelSize () const
 {
     return voxelSize.getValue();
 }

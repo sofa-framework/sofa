@@ -19,45 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef InitTasks_h__
-#define InitTasks_h__
+#pragma once
 
 #include <sofa/simulation/CpuTask.h>
 
-namespace sofa
+#include <atomic>
+#include <mutex>
+
+namespace sofa::simulation
+{            
+class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
 {
-    namespace simulation
-    {
-        
-        using namespace sofa;
-        
-        
-        
-        class SOFA_SIMULATION_CORE_API InitPerThreadDataTask : public CpuTask
-        {
             
-        public:
-            
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
-            
-            ~InitPerThreadDataTask() override;
-            
-            MemoryAlloc run() override;
-            
-        private:
-            
-            std::mutex*	 IdFactorygetIDMutex;
-            std::atomic<int>* _atomicCounter;
-        };
-        
-        
-        // thread storage initialization
-        SOFA_SIMULATION_CORE_API void initThreadLocalData();
-        
-        
-        
-    } // namespace simulation
+public:
 
-} // namespace sofa
+    InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, CpuTask::Status* status);
+            
+    ~InitPerThreadDataTask() override = default;
+            
+    MemoryAlloc run() override;
+            
+private:
+            
+    std::mutex*	 IdFactorygetIDMutex;
+    std::atomic<int>* _atomicCounter;
+};
 
-#endif // InitTasks_h__
+// thread storage initialization
+SOFA_SIMULATION_CORE_API void initThreadLocalData();
+ 
+} // namespace sofa::simulation
