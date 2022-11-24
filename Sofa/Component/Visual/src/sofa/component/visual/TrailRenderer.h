@@ -19,28 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/MeanComputation.inl>
+#pragma once
+#include <sofa/component/visual/config.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <queue>
 
-#include <sofa/core/ObjectFactory.h>
-
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-namespace sofa::component::engine
+namespace sofa::component::visual
 {
 
-int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
-    .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
-    .add< MeanComputation<defaulttype::Vec1Types> >()
-    .add< MeanComputation<defaulttype::Vec2Types> >()
-    .add< MeanComputation<defaulttype::Rigid2Types> >()
-    .add< MeanComputation<defaulttype::Rigid3Types> >()
-    ;
+/**
+ * Render a trail behind particles
+ *
+ * It can be used to draw the trajectory of a dof.
+ * This component does not support topological changes (point removal or point addition) and
+ * list reordering.
+ */
+template<class DataTypes>
+class TrailRenderer : public core::visual::VisualModel
+{
+public:
+    SOFA_CLASS(TrailRenderer, core::visual::VisualModel);
 
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec3Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec1Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid3Types >;
+    using Coord = typename DataTypes::Coord;
 
-} // namespace sofa::component::engine
+    Data< sofa::type::vector<Coord> > d_position; ///< Position of the particles behind which a trail is rendered
+    Data< sofa::Size > d_nbSteps; ///< Number of time steps to use to render the trail
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the trail
+    Data<float> d_thickness; ///< Thickness of the trail
+
+
+    void handleEvent(core::objectmodel::Event *) override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void reset() override;
+
+protected:
+
+    TrailRenderer();
+
+    void storeParticlePositions();
+    void removeFirstElements();
+
+    type::vector<std::vector<sofa::type::Vec3> > m_trail;
+};
+
+#if !defined(SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP)
+extern template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
+#endif
+
+}

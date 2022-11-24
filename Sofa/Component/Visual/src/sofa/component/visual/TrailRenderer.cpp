@@ -19,28 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/MeanComputation.inl>
-
+#define SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP
+#include <sofa/component/visual/TrailRenderer.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-namespace sofa::component::engine
+namespace sofa::component::visual
 {
 
-int MeanComputationEngineClass = core::RegisterObject("Compute the mean of the input elements")
-    .add< MeanComputation<defaulttype::Vec3Types> >(true) // default template
-    .add< MeanComputation<defaulttype::Vec1Types> >()
-    .add< MeanComputation<defaulttype::Vec2Types> >()
-    .add< MeanComputation<defaulttype::Rigid2Types> >()
-    .add< MeanComputation<defaulttype::Rigid3Types> >()
-    ;
+int TrailRendererClass = sofa::core::RegisterObject("Render a trail behind particles")
+    .add<TrailRenderer<defaulttype::Vec3Types>>()
+    .add<TrailRenderer<defaulttype::Rigid3Types>>()
+;
 
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec3Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec1Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Vec2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid2Types >;
-template class SOFA_MULTITHREADING_PLUGIN_API MeanComputation< defaulttype::Rigid3Types >;
+template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
 
-} // namespace sofa::component::engine
+}

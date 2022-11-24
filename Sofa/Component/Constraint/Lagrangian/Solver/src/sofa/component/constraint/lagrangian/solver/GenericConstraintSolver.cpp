@@ -27,7 +27,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h>
+#include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
