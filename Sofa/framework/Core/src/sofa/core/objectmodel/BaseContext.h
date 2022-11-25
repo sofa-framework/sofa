@@ -283,6 +283,7 @@ public:
         ptr = this->get<T>(path);
     }
 
+    /// Helper functor allowing to insert an object into a container
     template<class T, class Container>
     class GetObjectsCallBackT;
 
