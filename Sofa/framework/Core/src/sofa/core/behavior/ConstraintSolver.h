@@ -95,10 +95,8 @@ public:
         dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
     }
 
-
     /// @name Resolution DOFs vectors API
     /// @{
-
     virtual MultiVecDerivId getLambda() const
     {
         return MultiVecDerivId(VecDerivId::externalForce());
@@ -108,7 +106,6 @@ public:
     {
         return MultiVecDerivId(VecDerivId::dx());
     }
-    
     /// @}
 
     /// Remove reference to ConstraintCorrection
@@ -121,8 +118,8 @@ public:
 
 protected:
 
-    virtual void postBuildSystem(const ConstraintParams* constraint_params) {}
-    virtual void postSolveSystem(const ConstraintParams* constraint_params) {}
+    virtual void postBuildSystem(const ConstraintParams* constraint_params) { SOFA_UNUSED(constraint_params); }
+    virtual void postSolveSystem(const ConstraintParams* constraint_params) { SOFA_UNUSED(constraint_params); }
 };
 
 } // namespace sofa::core::behavior

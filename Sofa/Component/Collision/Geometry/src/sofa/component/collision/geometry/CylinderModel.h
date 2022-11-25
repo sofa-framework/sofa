@@ -105,37 +105,37 @@ public:
     void init() override;
 
     // -- CollisionModel interface
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams* vparams,Index index) override;
+    void draw(const core::visual::VisualParams* vparams,sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
 
-    Real radius(Index index) const;
+    Real radius(sofa::Index index) const;
 
-    const Coord & center(Index i)const;
+    const Coord & center(sofa::Index i)const;
 
     //Returns the direction of the cylinder at index index
-    Coord axis(Index index)const;
+    Coord axis(sofa::Index index)const;
     //Returns the direction of the cylinder at index in local coordinates
-    Coord local_axis(Index index) const;
+    Coord local_axis(sofa::Index index) const;
 
-    const sofa::type::Quat<SReal> orientation(Index index)const;
+    const sofa::type::Quat<SReal> orientation(sofa::Index index)const;
 
-    Real height(Index index)const;
+    Real height(sofa::Index index)const;
 
-    Coord point1(Index i) const;
+    Coord point1(sofa::Index i) const;
 
-    Coord point2(Index i) const;
+    Coord point2(sofa::Index i) const;
 
     Real defaultRadius()const;
 
-    const Coord & velocity(Index index)const;
+    const Coord & velocity(sofa::Index index)const;
 
     Data<VecReal>& writeRadii();
     Data<VecReal>& writeHeights();

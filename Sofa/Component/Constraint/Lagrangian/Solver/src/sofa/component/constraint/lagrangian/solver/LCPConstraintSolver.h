@@ -115,6 +115,19 @@ private:
     unsigned int _numConstraints;
     SReal _mu;
 
+    /// Call the method resetConstraint on all the mechanical states and BaseConstraintSet
+    void resetConstraints(core::ConstraintParams cparams);
+    /// Call the method buildConstraintMatrix on all the BaseConstraintSet
+    void buildConstraintMatrix(core::ConstraintParams cparams);
+    /// Call the method applyJT on all the mappings
+    void accumulateMatrixDeriv(core::ConstraintParams cparams);
+    /// Multigrid hierarchy is resized and cleared
+    void buildHierarchy();
+    /// Call the method getConstraintInfo on all the BaseConstraintSet
+    void getConstraintInfo(core::ConstraintParams cparams);
+    /// Call the method addComplianceInConstraintSpace on all the BaseConstraintCorrection
+    void addComplianceInConstraintSpace(core::ConstraintParams cparams);
+
     /// for built lcp ///
     void build_LCP();
     LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.

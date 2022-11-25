@@ -135,12 +135,6 @@ DistanceSegTri::
 {
 }
 
-//void DistanceSegTri::
-//NewComputation(Triangle *tri, const Vector3 &Q1, const Vector3 &Q2, Vector3 &Presult, Vector3 &Qresult)
-//{
-//	NewComputation( tri->p1(), tri->p2(), tri->p3(), Q1, Q2,Presult, Qresult );
-//}
-
 void DistanceSegTri::
 NewComputation(const Vec3 &P1, const Vec3 &P2, const Vec3 &P3, const Vec3 &Q1, const Vec3 &Q2, Vec3 &Presult, Vec3 &Qresult)
 {

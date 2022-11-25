@@ -29,6 +29,10 @@
 namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
+namespace
+{
+    using sofa::type::Vec3;
+}
 
 /**
  * Plastic material (proof of principle)
@@ -39,9 +43,10 @@ class PlasticMaterial : public BaseMaterial
 public:
     SOFA_CLASS(PlasticMaterial, BaseMaterial);
 
-    typedef sofa::type::Vec3 Vector3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+
     typedef sofa::type::vector<double> VecDouble;
-    typedef sofa::type::vector<Vector3> VecStress;
+    typedef sofa::type::vector<Vec3> VecStress;
 
 	// Material properties
     Data<SReal> _poissonRatio; ///< Poisson ratio in Hooke's law
@@ -56,11 +61,11 @@ public:
     VecDouble _previousVonMisesStrain;
 
     PlasticMaterial();
-    void computeStress (Vector3& stress, Vector3& strain, unsigned int& elementIndex) override;
-    void computeDStress (Vector3& dstress, Vector3& dstrain) override;
+    void computeStress (Vec3& stress, Vec3& strain, unsigned int& elementIndex) override;
+    void computeDStress (Vec3& dstress, Vec3& dstrain) override;
 
-    SReal computeVonMisesStrain(Vector3 &strain);
-    void computeStressOnSection(Vector3& Stress, Vector3 Strain, int section);	// computes the stress on a given section of the piecewise function
+    SReal computeVonMisesStrain(Vec3 &strain);
+    void computeStressOnSection(Vec3& Stress, Vec3 Strain, int section);	// computes the stress on a given section of the piecewise function
 
     void computeStress (unsigned int /*iElement*/) override {}
 

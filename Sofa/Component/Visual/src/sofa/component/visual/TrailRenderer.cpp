@@ -19,36 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
+#define SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP
+#include <sofa/component/visual/TrailRenderer.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace collisionobbcapsule::detection::intersection
+namespace sofa::component::visual
 {
 
-//template<>
-bool BaseIntTool::testIntersection(sofa::component::collision::geometry::Cube &cube1, sofa::component::collision::geometry::Cube &cube2,SReal alarmDist)
-{
-    if (cube1 == cube2)
-    {
-        if (cube1.getConeAngle() < M_PI / 2)
-            return false;
-        else
-            return true;
-    }
+int TrailRendererClass = sofa::core::RegisterObject("Render a trail behind particles")
+    .add<TrailRenderer<defaulttype::Vec3Types>>()
+    .add<TrailRenderer<defaulttype::Rigid3Types>>()
+;
 
-    const type::Vec3& minVect1 = cube1.minVect();
-    const type::Vec3& minVect2 = cube2.minVect();
-    const type::Vec3& maxVect1 = cube1.maxVect();
-    const type::Vec3& maxVect2 = cube2.maxVect();
+template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
 
-    for (int i = 0; i < 3; i++)
-    {
-        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
-            return false;
-    }
-
-    return true;
 }
-
-class COLLISIONOBBCAPSULE_API BaseIntTool;
-
-} // namespace collisionobbcapsule::detection::intersection

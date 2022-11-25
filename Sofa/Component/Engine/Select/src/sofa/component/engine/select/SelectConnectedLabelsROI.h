@@ -38,11 +38,12 @@ template <class _T>
 class SelectConnectedLabelsROI : public sofa::core::DataEngine
 {
 public:
-    typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(SelectConnectedLabelsROI,_T),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE(SelectConnectedLabelsROI,_T),DataEngine);
 
     typedef _T T;
-    typedef unsigned int Index;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Inherited, Inherit1);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
     //Input
     Data<unsigned int> d_nbLabels; ///< number of label lists
@@ -51,13 +52,13 @@ public:
     Data<type::vector<T> > d_connectLabels; ///< Pairs of label to be connected accross different label lists
 
     //Output
-    Data<type::vector<Index> > d_indices; ///< selected point/cell indices
+    Data<type::vector<sofa::Index> > d_indices; ///< selected point/cell indices
 
     /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName(){       return sofa::defaulttype::DataTypeName<T>::name();    }
 
-    SelectConnectedLabelsROI(): Inherited()
+    SelectConnectedLabelsROI(): Inherit1()
       , d_nbLabels ( initData ( &d_nbLabels,(unsigned int)0,"nbLabels","number of label lists" ) )
       , d_labels(this, "labels", "lists of labels associated to each point/cell", core::objectmodel::DataEngineDataType::DataEngineInput)
       , d_connectLabels ( initData ( &d_connectLabels,"connectLabels","Pairs of label to be connected accross different label lists" ) )
@@ -105,7 +106,7 @@ protected:
 
     void doUpdate() override
     {
-        helper::WriteOnlyAccessor< Data< type::vector<Index> > > indices = d_indices;
+        helper::WriteOnlyAccessor< Data< type::vector<sofa::Index> > > indices = d_indices;
         indices.clear();
 
         unsigned int nb = d_nbLabels.getValue();
@@ -141,7 +142,7 @@ protected:
                                 if(connectS.find(TPair((*labels[l1])[i][i1],(*labels[l2])[i][i2]))!=connectS.end())
                                     connected=true;
             if(connected)
-                indices.push_back((Index)i);
+                indices.push_back((sofa::Index)i);
         }
     }
 

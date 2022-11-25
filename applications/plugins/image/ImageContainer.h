@@ -496,20 +496,20 @@ protected:
     }
 
 
-    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vec3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        type::Vec<8,type::Vector3> p;
-        p[0]=type::Vector3(-0.5,-0.5,-0.5);
-        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vec3> p;
+        p[0]=type::Vec3(-0.5,-0.5,-0.5);
+        p[1]=type::Vec3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vec3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vec3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vec3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vec3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vec3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vec3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -521,7 +521,7 @@ protected:
 
         if( onlyVisible && !drawBB.getValue()) return;
 
-        type::Vec<8,type::Vector3> c;
+        type::Vec<8,type::Vec3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -545,8 +545,8 @@ protected:
         const sofa::type::RGBAColor color(1.,0.5,0.5,0.5);
         vparams->drawTool()->setMaterial(color);
 
-        std::vector<type::Vector3> corners;
-        type::Vec<8,type::Vector3> c;
+        std::vector<type::Vec3> corners;
+        type::Vec<8,type::Vec3> c;
         corners.resize(8);
         getCorners(c);
         for(unsigned int i=0;i<8;i++)

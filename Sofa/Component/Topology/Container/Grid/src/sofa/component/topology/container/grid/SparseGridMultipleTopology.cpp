@@ -122,14 +122,14 @@ void SparseGridMultipleTopology::buildAsFinest()
         }
     }
 
-    if( _min.getValue()== Vector3() && _max.getValue()== Vector3())
+    if( _min.getValue()== type::Vec3() && _max.getValue()== type::Vec3())
     {
         // increase the box a little
-        Vector3 diff ( xMaxg-xMing, yMaxg - yMing, zMaxg - zMing );
+        type::Vec3 diff ( xMaxg-xMing, yMaxg - yMing, zMaxg - zMing );
         diff /= 100.0;
 
-        _min.setValue(Vector3( xMing - diff[0], yMing - diff[1], zMing - diff[2] ));
-        _max.setValue(Vector3( xMaxg + diff[0], yMaxg + diff[1], zMaxg + diff[2] ));
+        _min.setValue(type::Vec3( xMing - diff[0], yMing - diff[1], zMing - diff[2] ));
+        _max.setValue(type::Vec3( xMaxg + diff[0], yMaxg + diff[1], zMaxg + diff[2] ));
     }
 
     for(unsigned i=0; i<_fileTopologies.getValue().size(); ++i)

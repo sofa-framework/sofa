@@ -36,20 +36,20 @@ int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed 
 
 SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
     : CubeTopology(nx, ny, nz),
-      center(initData(&center,Vector3(0.0_sreal,0.0_sreal,0.0_sreal),"center", "Center of the sphere")),
+      center(initData(&center,Vec3(0.0_sreal,0.0_sreal,0.0_sreal),"center", "Center of the sphere")),
       radius(initData(&radius,1.0_sreal,"radius", "Radius of the sphere"))
 {
 }
 
 SphereQuadTopology::SphereQuadTopology()
-    : center(initData(&center,Vector3(0.0_sreal,0.0_sreal,0.0_sreal),"center", "Center of the sphere")),
+    : center(initData(&center,Vec3(0.0_sreal,0.0_sreal,0.0_sreal),"center", "Center of the sphere")),
       radius(initData(&radius,0_sreal,"radius", "Radius of the sphere"))
 {
 }
 
 Vec3 SphereQuadTopology::getPoint(int x, int y, int z) const
 {
-    Vector3 p((2*x)/(SReal)(nx.getValue()-1) - 1, (2*y)/(SReal)(ny.getValue()-1) - 1, (2*z)/(SReal)(nz.getValue()-1) - 1);
+    Vec3 p((2*x)/(SReal)(nx.getValue()-1) - 1, (2*y)/(SReal)(ny.getValue()-1) - 1, (2*z)/(SReal)(nz.getValue()-1) - 1);
     p.normalize();
     return center.getValue()+p*radius.getValue();
 }

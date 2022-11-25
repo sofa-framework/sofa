@@ -32,55 +32,7 @@
 
 #include <sofa/defaulttype/TopologyTypes.h>
 
-// I need C++0x !!! 
-// a: we all do ;-)
-
-// TODO: the following should probably be moved outside this file (in
-// the build system) and only deal with TR1 includes/namespaces
-
-// also, no need to define a preprocessor macro for namespace aliasing:
-//    namespace foo = std::tr1
-
-#ifndef HASH_NAMESPACE
-#  ifdef _MSC_VER
-#    if _MSC_VER >= 1900
-#      include <unordered_map>
-#	   define HASH_NAMESPACE std
-#	 else
-#     if _MSC_VER >= 1300
-#       include <hash_map>
-//#       if _MSC_VER >= 1400
-#         define HASH_NAMESPACE stdext
-//#       else
-//#         define HASH_NAMESPACE std
-//#       endif
-#     else
-#       include <map>
-#       define HASH_NAMESPACE std
-#     endif
-#	 endif
-#  else
-#  // TODO this test should not be about the compiler, but which stdc++ library to use
-#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 )) || __llvm__ || __clang__ // I am not sure about clang version, but sofa compiles only from clang3.4 anyway
-#     ifdef _LIBCPP_VERSION
-#      // using libc++
-#      include <unordered_map>
-#      define HASH_NAMESPACE std
-#     else
-#      include <tr1/unordered_map>
-#      define HASH_NAMESPACE std::tr1
-#     endif
-#    else
-#		ifndef PS3
-#      include <ext/hash_map>
-#      define HASH_NAMESPACE __gnu_cxx
-#		else
-#		include <hash_map>
-#      define HASH_NAMESPACE std
-#		endif
-#    endif
-#  endif
-#endif
+#include <unordered_map>
 
 namespace sofa
 {
@@ -231,26 +183,8 @@ public:
     }
 
     class key_hash_fun
-#if defined(_MSC_VER)
-        : public HASH_NAMESPACE::hash_compare<Key>
     {
     public:
-        //enum
-        //{ // parameters for hash table
-        //	bucket_size = 4, // 0 < bucket_size
-        //	min_buckets = 8
-        //}; // min_buckets = 2 ^^ N, 0 < N
-        inline bool operator()(const Key& s1, const Key& s2) const
-        {
-            for (unsigned int i=0; i<s1.size(); ++i)
-                if (s1[i] < s2[i]) return true;
-                else if (s1[i] > s2[i]) return false;
-            return false; // s1 == s2
-        }
-#else
-    {
-    public:
-#endif
         inline std::size_t operator()(const Key &s) const
         {
             return hash(s);
@@ -258,19 +192,8 @@ public:
     };
 
 
-#ifndef _MSC_VER
-#    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 )) || __llvm__ || __clang__       //hash_map is deprecated since gcc-4.3
-    typedef HASH_NAMESPACE::unordered_map<Key, Grid*, key_hash_fun> Map;
-#    else
-    typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
-#    endif
-#else
-#	if _MSC_VER >= 1900
-		typedef HASH_NAMESPACE::unordered_map<Key, Grid*, key_hash_fun> Map;
-#	else
-		typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
-#   endif
-#endif
+    typedef std::unordered_map<Key, Grid*, key_hash_fun> Map;
+
 
     typedef typename Map::const_iterator const_iterator;
     typedef typename Map::iterator iterator;

@@ -197,7 +197,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         Out::setCPos(out[i] , rotatedPosition); // glPointPositions[i] );
     }
 
-    //sofa::type::vector<Vector3> vectors
     sofa::type::vector< sofa::type::Mat<12,3> > rotJ;
     rotJ.resize(map.size());
     //point running over each DoF (assoc. with frame) in the out vector; get it from the mapOrient[0]
@@ -473,17 +472,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
         int index = map[i].in_index;
         const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
-        //out[tetra[0]] += v * ( 1-fx-fy-fz );
-        //out[tetra[1]] += v * fx;
-        //out[tetra[2]] += v * fy;
-        //out[tetra[3]] += v * fz;
-
-        //compute the linear forces for each vertex from the torque, inspired by rigid mapping
-        //Vector3 torque = getVOrientation(in[i]);
-        //if (torque.norm() > 10e-6) {
-        //for (unsigned int ti = 0; ti<4; ti++)
-        //    out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
-        //}
         for (size_t i = 0; i < actualPos.size(); i++)
             points.push_back(sofa::type::Vec3(actualPos[i][0],actualPos[i][1],actualPos[i][2]));
 
@@ -501,7 +489,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
         vparams->drawTool()->drawPoints ( points, 10, sofa::type::RGBAColor::red());
         vparams->drawTool()->drawPoints ( tetraPoints, 10, sofa::type::RGBAColor::magenta() );
         vparams->drawTool()->drawLines ( tetraLines, 3.0, sofa::type::RGBAColor::magenta() );
-
     }
 }
 

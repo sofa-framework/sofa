@@ -19,36 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
+#pragma once
+#include <sofa/component/visual/config.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <queue>
 
-namespace collisionobbcapsule::detection::intersection
+namespace sofa::component::visual
 {
 
-//template<>
-bool BaseIntTool::testIntersection(sofa::component::collision::geometry::Cube &cube1, sofa::component::collision::geometry::Cube &cube2,SReal alarmDist)
+/**
+ * Render a trail behind particles
+ *
+ * It can be used to draw the trajectory of a dof.
+ * This component does not support topological changes (point removal or point addition) and
+ * list reordering.
+ */
+template<class DataTypes>
+class TrailRenderer : public core::visual::VisualModel
 {
-    if (cube1 == cube2)
-    {
-        if (cube1.getConeAngle() < M_PI / 2)
-            return false;
-        else
-            return true;
-    }
+public:
+    SOFA_CLASS(TrailRenderer, core::visual::VisualModel);
 
-    const type::Vec3& minVect1 = cube1.minVect();
-    const type::Vec3& minVect2 = cube2.minVect();
-    const type::Vec3& maxVect1 = cube1.maxVect();
-    const type::Vec3& maxVect2 = cube2.maxVect();
+    using Coord = typename DataTypes::Coord;
 
-    for (int i = 0; i < 3; i++)
-    {
-        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
-            return false;
-    }
+    Data< sofa::type::vector<Coord> > d_position; ///< Position of the particles behind which a trail is rendered
+    Data< sofa::Size > d_nbSteps; ///< Number of time steps to use to render the trail
+    Data<sofa::type::RGBAColor> d_color; ///< Color of the trail
+    Data<float> d_thickness; ///< Thickness of the trail
 
-    return true;
+
+    void handleEvent(core::objectmodel::Event *) override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void reset() override;
+
+protected:
+
+    TrailRenderer();
+
+    void storeParticlePositions();
+    void removeFirstElements();
+
+    type::vector<std::vector<sofa::type::Vec3> > m_trail;
+};
+
+#if !defined(SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP)
+extern template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
+#endif
+
 }
-
-class COLLISIONOBBCAPSULE_API BaseIntTool;
-
-} // namespace collisionobbcapsule::detection::intersection
