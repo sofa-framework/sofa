@@ -36,7 +36,7 @@ int OBBIntTool::computeIntersection(geometry::OBB & box0, geometry::OBB & box1,S
     IntrOBBOBB intr(box0,box1);
     //SReal max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
     if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find(alarmDist)){
-        type::Vector3 P0P1(intr.pointOnSecond() - intr.pointOnFirst());
+        type::Vec3 P0P1(intr.pointOnSecond() - intr.pointOnFirst());
         geometry::OBB::Real dist2 = P0P1.norm2();
         if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;        

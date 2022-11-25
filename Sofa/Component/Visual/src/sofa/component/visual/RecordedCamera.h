@@ -34,7 +34,8 @@ class SOFA_COMPONENT_VISUAL_API RecordedCamera : public BaseCamera
 public:
     SOFA_CLASS(RecordedCamera, BaseCamera);
 
-    typedef BaseCamera::Vec3 Vec3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
+
     typedef BaseCamera::Quat Quat;
 protected:
     RecordedCamera();
@@ -83,16 +84,16 @@ public:
     Data <bool> m_translationMode; ///< If true, translation will be performed
     Data <bool> m_navigationMode; ///< If true, navigation will be performed
     Data <SReal> m_rotationSpeed; ///< rotation Speed
-    Data <Vec3> m_rotationCenter; ///< Rotation center coordinates
-    Data <Vec3> m_rotationStartPoint; ///< Rotation start position coordinates
-    Data <Vec3> m_rotationLookAt; ///< Position to be focused during rotation
-    Data <Vec3> m_rotationAxis; ///< Rotation axis
-    Data <Vec3> m_cameraUp; ///< Camera Up axis
+    Data <type::Vec3> m_rotationCenter; ///< Rotation center coordinates
+    Data <type::Vec3> m_rotationStartPoint; ///< Rotation start position coordinates
+    Data <type::Vec3> m_rotationLookAt; ///< Position to be focused during rotation
+    Data <type::Vec3> m_rotationAxis; ///< Rotation axis
+    Data <type::Vec3> m_cameraUp; ///< Camera Up axis
 
     Data <bool> p_drawRotation; ///< If true, will draw the rotation path
     Data <bool> p_drawTranslation; ///< If true, will draw the translation path
 
-    Data <sofa::type::vector<Vec3> > m_translationPositions; ///< Intermediate camera's positions
+    Data <sofa::type::vector<type::Vec3> > m_translationPositions; ///< Intermediate camera's positions
     Data <sofa::type::vector<Quat> > m_translationOrientations; ///< Intermediate camera's orientations
 
 protected:
@@ -101,8 +102,8 @@ protected:
     bool firstIterationforRotation;
     bool firstIterationforTranslation;
     bool firstIterationforNavigation;
-  
-    sofa::type::vector<Vec3> m_rotationPoints;
+
+    sofa::type::vector<type::Vec3> m_rotationPoints;
 };
 
 } // namespace sofa::component::visual

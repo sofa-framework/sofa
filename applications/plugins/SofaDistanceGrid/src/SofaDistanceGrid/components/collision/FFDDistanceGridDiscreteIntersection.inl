@@ -60,7 +60,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
 
     c1.updateFaces();
     const SReal cubesize = c1.invDP.norm();
-    type::Vector3 p2 = e2.center();
+    type::Vec3 p2 = e2.center();
     DistanceGrid::Coord p1 = p2;
 
     // estimate the barycentric coordinates
@@ -100,12 +100,12 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
 
                     contacts->resize(contacts->size()+1);
                     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-                    detection->normal = type::Vector3(grad); // normal in global space from p1's surface
+                    detection->normal = type::Vec3(grad); // normal in global space from p1's surface
                     detection->value = d - d0;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = e2.getIndex();
-                    detection->point[0] = type::Vector3(pinit);
+                    detection->point[0] = type::Vec3(pinit);
                     detection->point[1] = e2.getContactPointWithSurfacePoint( pinit );
                     return 1;
                 }

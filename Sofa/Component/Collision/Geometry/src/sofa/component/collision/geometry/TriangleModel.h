@@ -174,17 +174,17 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
+    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
     const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return m_mstate; }
@@ -194,7 +194,7 @@ public:
     const VecDeriv& getNormals() const { return m_normals; }
     int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
 
-    Deriv velocity(Index index)const;
+    Deriv velocity(sofa::Index index)const;
 
 
     /// Pre-construction check method called by ObjectFactory.

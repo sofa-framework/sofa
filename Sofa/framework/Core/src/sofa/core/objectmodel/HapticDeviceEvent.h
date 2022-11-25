@@ -110,7 +110,7 @@ public:
 private:
 
     unsigned int	m_deviceId;
-    sofa::type::Vec3 m_position; ///< Haptic device coordinates in a Vector3 type.
+    sofa::type::Vec3 m_position; ///< Haptic device coordinates in 3D space.
     sofa::type::Quat<SReal> m_orientation; ///< Haptic device orientation.
     unsigned char m_buttonState;
 };

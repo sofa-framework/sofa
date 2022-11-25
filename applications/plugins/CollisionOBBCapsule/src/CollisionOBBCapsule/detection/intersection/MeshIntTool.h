@@ -53,22 +53,22 @@ public:
     static int computeIntersection(TCapsule<DataTypes>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
     ////!\ CAUTION : uninitialized fields detection->elem and detection->id
     template <class DataTypes>
-    static int doCapPointInt(TCapsule<DataTypes>& cap, const type::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+    static int doCapPointInt(TCapsule<DataTypes>& cap, const type::Vec3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     template <class DataTypes>
     static int computeIntersection(TCapsule<DataTypes>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     ////!\ CAUTION : uninitialized fields detection->elem and detection->id
     template <class DataTypes>
-    static int doCapLineInt(TCapsule<DataTypes>& cap,const type::Vector3 & q1,const type::Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1 = false,bool ignore_p2 = false);
+    static int doCapLineInt(TCapsule<DataTypes>& cap,const type::Vec3 & q1,const type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1 = false,bool ignore_p2 = false);
 
     ////!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value
-    static int doCapLineInt(const type::Vector3 & p1,const type::Vector3 & p2,SReal cap_rad,
-                         const type::Vector3 & q1, const type::Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1 = false,bool ignore_p2 = false);
+    static int doCapLineInt(const type::Vec3 & p1,const type::Vec3 & p2,SReal cap_rad,
+                         const type::Vec3 & q1, const type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1 = false,bool ignore_p2 = false);
 
     ////!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value, you have to substract contactDist, because
     ///this function can be used also as doIntersectionTriangleSphere where the contactDist = getContactDist() + sphere_radius
-    static int doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3,const type::Vector3& q, OutputVector* contacts,bool swapElems = false);
+    static int doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3,const type::Vec3& q, OutputVector* contacts,bool swapElems = false);
 
     template <class DataTypes>
     static int computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
@@ -103,10 +103,10 @@ public:
 
     //flags are the flags of the Triangle and p1 p2 p3 its vertices, to_be_projected is the point to be projected on the triangle, i.e.
     //after this method, it will probably be different
-    static int projectPointOnTriangle(int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3,type::Vector3& to_be_projected);
+    static int projectPointOnTriangle(int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3,type::Vec3& to_be_projected);
 
     //returns barycentric coords in alpha and beta so that to_be_projected = (1 - alpha - beta) * p1 + alpha * p2 + beta * p3
-    static void triangleBaryCoords(const type::Vector3& to_be_projected,const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3,SReal & alpha,SReal & beta);
+    static void triangleBaryCoords(const type::Vec3& to_be_projected,const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3,SReal & alpha,SReal & beta);
 };
 
 inline int MeshIntTool::computeIntersection(Triangle& tri,OBB & obb,SReal alarmDist,SReal contactDist,OutputVector* contacts){

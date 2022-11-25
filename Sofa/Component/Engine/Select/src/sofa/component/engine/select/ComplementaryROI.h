@@ -44,7 +44,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ComplementaryROI, DataTypes), core::DataEngine);
 
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef core::topology::BaseMeshTopology::Index Index;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
 
@@ -83,7 +84,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ComplementaryROI<defaulttype::Vec3Types>;
- 
+
 
 #endif
 

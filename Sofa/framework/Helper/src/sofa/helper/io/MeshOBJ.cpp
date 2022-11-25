@@ -196,11 +196,11 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
     if (m_vertices.size()>0)
     {
         // compute bbox
-        Vector3 minBB = m_vertices[0];
-        Vector3 maxBB = m_vertices[0];
+        type::Vec3 minBB = m_vertices[0];
+        type::Vec3 maxBB = m_vertices[0];
         for (unsigned int i=1; i<m_vertices.size(); ++i)
         {
-            Vector3 p = m_vertices[i];
+            type::Vec3 p = m_vertices[i];
             for (int c=0; c<3; ++c)
             {
                 if (minBB[c] > p[c])
@@ -389,7 +389,7 @@ void MeshOBJ::readMTL(const char* filename)
                 }
 
 				break;
-            }            
+            }
             case 'b':
             {
                 if( !mat )
@@ -417,7 +417,7 @@ void MeshOBJ::readMTL(const char* filename)
                 }
 
 				break;
-            }            
+            }
             default:
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == nullptr)

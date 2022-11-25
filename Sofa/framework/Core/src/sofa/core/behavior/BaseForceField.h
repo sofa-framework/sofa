@@ -53,12 +53,11 @@ public:
 protected:
     BaseForceField();
     ~BaseForceField() override = default;
-	
+
 private:
 	BaseForceField(const BaseForceField& n) = delete;
 	BaseForceField& operator=(const BaseForceField& n) = delete;
 
-	
 public:
     /// @name Vector operations
     /// @{

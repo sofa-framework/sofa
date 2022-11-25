@@ -27,6 +27,11 @@
 namespace sofa::component::topology::container::grid
 {
 
+namespace
+{
+    using sofa::type::Vec3;
+}
+
 /** \brief Define a cylinder grid topology
  * Paramenters are its @sa d_radius and @sa d_length .
  * Position and direction are set by @sa d_center and @sa d_axis
@@ -36,7 +41,8 @@ class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API CylinderGridTopology : public G
 {
 public:
     SOFA_CLASS(CylinderGridTopology,GridTopology);
-    using Vector3 = sofa::type::Vec3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+
 protected:
     /// Default constructor
     CylinderGridTopology();
@@ -45,9 +51,9 @@ protected:
 
 public:
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
-     * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
+     * Get Point in grid @return Vec3 given its position in grid @param i, @param j, @param k
      * */
-    Vector3 getPointInGrid(int i, int j, int k) const override;
+    Vec3 getPointInGrid(int i, int j, int k) const override;
 
     /// Set Cylinder grid center by @param 3 SReal
     void setCenter(SReal x, SReal y, SReal z);
@@ -60,9 +66,9 @@ public:
 
 public:
     /// Data storing the center position
-    Data< Vector3 > d_center;
+    Data< Vec3 > d_center;
     /// Data storing the axis direction
-    Data< Vector3 > d_axis;
+    Data< Vec3 > d_axis;
     /// Data storing the radius value
     Data< SReal > d_radius;
     /// Data storing the length value
