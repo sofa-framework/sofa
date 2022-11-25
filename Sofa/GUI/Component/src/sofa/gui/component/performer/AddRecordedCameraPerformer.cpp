@@ -47,8 +47,8 @@ void AddRecordedCameraPerformer::start()
         if(currentCamera)
         {
             // Set the current camera's position in recorded camera for navigation
-            sofa::component::visual::RecordedCamera::Vec3 _pos = currentCamera->p_position.getValue();
-            sofa::type::vector<sofa::component::visual::RecordedCamera::Vec3> posis = currentCamera->m_translationPositions.getValue();
+            type::Vec3 _pos = currentCamera->p_position.getValue();
+            sofa::type::vector<type::Vec3> posis = currentCamera->m_translationPositions.getValue();
             posis.push_back(_pos);
             currentCamera->m_translationPositions.setValue(posis);
 

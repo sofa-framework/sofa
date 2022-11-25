@@ -29,9 +29,9 @@ namespace sofa::simulation
 TransformationVisitor::TransformationVisitor(const sofa::core::ExecParams* params)
     : Visitor(params)
 {
-    translation = Vector3();
-    rotation = Vector3();
-    scale = Vector3(1.0_sreal,1.0_sreal,1.0_sreal);
+    translation = Vec3();
+    rotation = Vec3();
+    scale = Vec3(1.0_sreal,1.0_sreal,1.0_sreal);
 }
 
 

@@ -38,28 +38,28 @@ int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
 
 SphereGridTopology::SphereGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
-    , d_center(initData(&d_center,Vector3(0_sreal, 0_sreal, 0_sreal),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0_sreal , 0_sreal, 1_sreal),"axis", "Main direction of the cylinder"))
+    , d_center(initData(&d_center,type::Vec3(0_sreal, 0_sreal, 0_sreal),"center", "Center of the cylinder"))
+    , d_axis(initData(&d_axis,type::Vec3(0_sreal , 0_sreal, 1_sreal),"axis", "Main direction of the cylinder"))
     , d_radius(initData(&d_radius, 1_sreal,"radius", "Radius of the cylinder"))
 {
 }
 
 SphereGridTopology::SphereGridTopology()
     : GridTopology()
-    , d_center(initData(&d_center,Vector3(0_sreal, 0_sreal, 0_sreal),"center", "Center of the cylinder"))
-    , d_axis(initData(&d_axis,Vector3(0_sreal , 0_sreal, 1_sreal),"axis", "Main direction of the cylinder"))
+    , d_center(initData(&d_center,type::Vec3(0_sreal, 0_sreal, 0_sreal),"center", "Center of the cylinder"))
+    , d_axis(initData(&d_axis,type::Vec3(0_sreal , 0_sreal, 1_sreal),"axis", "Main direction of the cylinder"))
     , d_radius(initData(&d_radius, 1_sreal,"radius", "Radius of the cylinder"))
 {
 }
 
 void SphereGridTopology::setCenter(SReal x, SReal y, SReal z)
 {
-    d_center.setValue(Vector3(x,y,z));
+    d_center.setValue(type::Vec3(x,y,z));
 }
 
 void SphereGridTopology::setAxis(SReal x, SReal y, SReal z)
 {
-    d_axis.setValue(Vector3(x,y,z));
+    d_axis.setValue(type::Vec3(x,y,z));
 }
 
 void SphereGridTopology::setRadius(SReal radius)
@@ -81,10 +81,10 @@ sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
 {
     //return p0+dx*x+dy*y+dz*z;
     SReal r = d_radius.getValue();
-    Vector3 axisZ = d_axis.getValue();
+    type::Vec3 axisZ = d_axis.getValue();
     axisZ.normalize();
-    Vector3 axisX = ((axisZ-Vector3(1_sreal,0_sreal,0_sreal)).norm() < 0.000001 ? Vector3(0_sreal,1_sreal,0_sreal) : Vector3(1_sreal,0_sreal,0_sreal));
-    Vector3 axisY = cross(axisZ,axisX);
+    type::Vec3 axisX = ((axisZ-type::Vec3(1_sreal,0_sreal,0_sreal)).norm() < 0.000001 ? type::Vec3(0_sreal,1_sreal,0_sreal) : type::Vec3(1_sreal,0_sreal,0_sreal));
+    type::Vec3 axisY = cross(axisZ,axisX);
     axisX = cross(axisY,axisZ);
     axisX.normalize();
     axisY.normalize();
@@ -93,7 +93,7 @@ sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
     int ny = getNy();
     int nz = getNz();
     // coordonate on a square
-    Vector3 p(i*2*r/(nx-1) - r, j*2*r/(ny-1) - r, k*2*r/(nz-1) - r);
+    type::Vec3 p(i*2*r/(nx-1) - r, j*2*r/(ny-1) - r, k*2*r/(nz-1) - r);
     // scale it to be on a circle
     if (p.norm() > 0.0000001){
         SReal maxVal = helper::rmax(helper::rabs(p[0]),helper::rabs(p[1]));

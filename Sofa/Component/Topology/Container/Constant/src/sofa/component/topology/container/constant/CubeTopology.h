@@ -27,11 +27,18 @@
 namespace sofa::component::topology::container::constant
 {
 
+namespace
+{
+    using sofa::type::Vec3;
+}
+
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API CubeTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);
-    typedef sofa::type::Vec3 Vector3;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+
 protected:
     CubeTopology(int nx, int ny, int nz);
     CubeTopology();
@@ -62,23 +69,23 @@ public:
 
     int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const;
 
-    void setP0(const Vector3& val) { p0 = val; }
-    void setDx(const Vector3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
-    void setDy(const Vector3& val) { dy = val; inv_dy2 = 1/(dy*dy); }
-    void setDz(const Vector3& val) { dz = val; inv_dz2 = 1/(dz*dz); }
+    void setP0(const Vec3& val) { p0 = val; }
+    void setDx(const Vec3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
+    void setDy(const Vec3& val) { dy = val; inv_dy2 = 1/(dy*dy); }
+    void setDz(const Vec3& val) { dz = val; inv_dz2 = 1/(dz*dz); }
 
     void setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax);
 
-    const Vector3& getP0() const { return p0; }
-    const Vector3& getDx() const { return dx; }
-    const Vector3& getDy() const { return dy; }
-    const Vector3& getDz() const { return dz; }
+    const Vec3& getP0() const { return p0; }
+    const Vec3& getDx() const { return dx; }
+    const Vec3& getDy() const { return dy; }
+    const Vec3& getDz() const { return dz; }
 
-    Vector3   getMin() const { return min.getValue();}
-    Vector3   getMax() const { return max.getValue();}
+    Vec3   getMin() const { return min.getValue();}
+    Vec3   getMax() const { return max.getValue();}
 
-    Vector3 getPoint(int i) const;
-    virtual Vector3 getPoint(int x, int y, int z) const;
+    Vec3 getPoint(int i) const;
+    virtual Vec3 getPoint(int x, int y, int z) const;
     bool hasPos()  const override { return true; }
     SReal getPX(Index i)  const override { return getPoint(i)[0]; }
     SReal getPY(Index i) const override { return getPoint(i)[1]; }
@@ -93,12 +100,12 @@ protected:
     Data<bool> internalPoints; ///< include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)
     Data<bool> splitNormals; ///< split corner points to have planar normals
 
-    Data< Vector3 > min; ///< Min
-    Data< Vector3 > max; ///< Max
+    Data< Vec3 > min; ///< Min
+    Data< Vec3 > max; ///< Max
     /// Position of point 0
-    Vector3 p0;
+    Vec3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other
-    Vector3 dx,dy,dz;
+    Vec3 dx,dy,dz;
     SReal inv_dx2, inv_dy2, inv_dz2;
 
     virtual void setSize();

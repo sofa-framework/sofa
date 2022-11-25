@@ -74,7 +74,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef TPoint<DataTypes> Element;
     static_assert(std::is_same_v<typename Element::Coord, Coord>, "Data mismatch");
-    typedef type::vector<Index> VecIndex;
+    typedef type::vector<sofa::Index> VecIndex;
 
     friend class TPoint<DataTypes>;
 protected:
@@ -84,22 +84,22 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
-    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
+    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    Deriv getNormal(Index index){ return (normals.size()) ? normals[index] : Deriv();}
+    Deriv getNormal(sofa::Index index){ return (normals.size()) ? normals[index] : Deriv();}
 
-    const Deriv& velocity(Index index) const;
+    const Deriv& velocity(sofa::Index index) const;
 
     Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
 
@@ -171,7 +171,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(Index index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }

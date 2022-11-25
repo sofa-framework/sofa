@@ -29,17 +29,21 @@
 namespace sofa::simulation
 {
 
+namespace
+{
+    using sofa::type::Vec3;
+}
 
 class SOFA_SIMULATION_COMMON_API TransformationVisitor : public Visitor
 {
 public:
-    using Vector3 = sofa::type::Vec3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
     TransformationVisitor(const sofa::core::ExecParams* params);
 
-    void setTranslation(SReal dx, SReal dy, SReal dz) { translation = Vector3(dx,dy,dz);}
-    void setRotation(SReal rx, SReal ry, SReal rz) {    rotation=Vector3(rx,ry,rz);	}
-    void setScale(SReal sx, SReal sy, SReal sz) {scale=Vector3(sx,sy,sz);}
+    void setTranslation(SReal dx, SReal dy, SReal dz) { translation = Vec3(dx,dy,dz);}
+    void setRotation(SReal rx, SReal ry, SReal rz) {    rotation=Vec3(rx,ry,rz);	}
+    void setScale(SReal sx, SReal sy, SReal sz) {scale=Vec3(sx,sy,sz);}
 
     void processVisualModel(simulation::Node* node, core::visual::VisualModel* v);
     void processMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* m);
@@ -54,9 +58,9 @@ public:
     const char* getClassName() const override { return "TransformationVisitor"; }
 
 protected:
-    Vector3 translation;
-    Vector3 rotation;
-    Vector3 scale;
+    Vec3 translation;
+    Vec3 rotation;
+    Vec3 scale;
 };
 
 } // namespace sofa::simulation

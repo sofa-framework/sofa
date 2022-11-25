@@ -44,14 +44,14 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ValuesFromIndices,T),core::DataEngine);
     typedef T Value;
     typedef sofa::type::vector<T> VecValue;
-    typedef unsigned int Index;
-    typedef sofa::type::vector<Index> VecIndex;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
+    typedef sofa::type::vector<sofa::Index> VecIndex;
 
 protected:
-
     ValuesFromIndices();
-
     ~ValuesFromIndices() override;
+
 public:
     void init() override;
 

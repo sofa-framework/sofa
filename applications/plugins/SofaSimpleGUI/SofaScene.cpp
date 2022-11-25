@@ -21,7 +21,7 @@ namespace sofa {
 namespace simplegui {
 
 
-typedef sofa::type::Vector3 Vec3;
+typedef sofa::type::Vec3 Vec3;
 typedef sofa::component::statecontainer::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
 
 

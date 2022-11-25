@@ -40,18 +40,18 @@ template <class _T>
 class SelectLabelROI : public sofa::core::DataEngine
 {
 public:
-    typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(SelectLabelROI,_T),Inherited);
+    SOFA_CLASS(SOFA_TEMPLATE(SelectLabelROI,_T), DataEngine);
 
     typedef _T T;
-    typedef unsigned int Index;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Inherited, Inherit1);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
     //Input
     Data<type::vector<type::SVector<T> > > d_labels; ///< lists of labels associated to each point/cell
     Data<type::vector<T> > d_selectLabels; ///< list of selected labels
 
     //Output
-    Data<type::vector<Index> > d_indices; ///< selected point/cell indices
+    Data<type::vector<sofa::Index> > d_indices; ///< selected point/cell indices
 
     void init() override
     {
@@ -65,7 +65,7 @@ public:
 
 protected:
 
-    SelectLabelROI(): Inherited()
+    SelectLabelROI(): Inherit1()
       , d_labels ( initData ( &d_labels,"labels","lists of labels associated to each point/cell" ) )
       , d_selectLabels ( initData ( &d_selectLabels,"selectLabels","list of selected labels" ) )
       , d_indices ( initData ( &d_indices,"indices","selected point/cell indices" ) )
@@ -86,9 +86,9 @@ protected:
 
         helper::ReadAccessor< Data< type::vector<type::SVector<T> >  > > labels = d_labels;
         size_t nb = labels.size();
-        helper::WriteOnlyAccessor< Data< type::vector<Index> > > indices = d_indices;
+        helper::WriteOnlyAccessor< Data< type::vector<sofa::Index> > > indices = d_indices;
         indices.clear();
-        for(Index i=0; i<nb;i++)
+        for(sofa::Index i=0; i<nb;i++)
         {
             for(size_t j=0; j<labels[i].size();j++)
                 if(selectLabelsSet.find(labels[i][j])!=selectLabelsSet.end())

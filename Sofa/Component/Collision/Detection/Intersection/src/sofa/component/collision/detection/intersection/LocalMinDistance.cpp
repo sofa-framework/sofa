@@ -247,7 +247,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree, Qfree, ABfree, CDfree;
+        type::Vec3 Pfree, Qfree, ABfree, CDfree;
         ABfree = e1.p2Free()-e1.p1Free();
         CDfree = e2.p2Free()-e2.p1Free();
         Pfree = e1.p1Free() + ABfree * alpha;
@@ -399,7 +399,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree,ABfree,ACfree;
+        type::Vec3 Pfree,Qfree,ABfree,ACfree;
         ABfree = e2.p2Free()-e2.p1Free();
         ACfree = e2.p3Free()-e2.p1Free();
         Pfree = e1.pFree();
@@ -553,7 +553,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree,ABfree,ACfree;
+        type::Vec3 Pfree,Qfree,ABfree,ACfree;
         ABfree = e2.p2Free()-e2.p1Free();
         ACfree = e2.p3Free()-e2.p1Free();
         Pfree = e1.pFree();
@@ -675,9 +675,9 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 ABfree = e2.p2Free() - e2.p1Free();
-        Vector3 Pfree = e1.pFree();
-        Vector3 Qfree = e2.p1Free() + ABfree * alpha;
+        type::Vec3 ABfree = e2.p2Free() - e2.p1Free();
+        type::Vec3 Pfree = e1.pFree();
+        type::Vec3 Qfree = e2.p1Free() + ABfree * alpha;
 
         detection->freePoint[0] = Qfree;
         detection->freePoint[1] = Pfree;
@@ -790,9 +790,9 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 ABfree = e2.p2Free() - e2.p1Free();
-        Vector3 Pfree = e1.pFree();
-        Vector3 Qfree = e2.p1Free() + ABfree * alpha;
+        type::Vec3 ABfree = e2.p2Free() - e2.p1Free();
+        type::Vec3 Pfree = e1.pFree();
+        type::Vec3 Qfree = e2.p1Free() + ABfree * alpha;
 
         detection->freePoint[0] = Qfree;
         detection->freePoint[1] = Pfree;
@@ -880,7 +880,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree;
+        type::Vec3 Pfree,Qfree;
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 
@@ -965,7 +965,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree;
+        type::Vec3 Pfree,Qfree;
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 
@@ -1046,7 +1046,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree;
+        type::Vec3 Pfree,Qfree;
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 
@@ -1071,7 +1071,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 
 bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
 {
-    Vector3 P,Q;
+    type::Vec3 P,Q;
     static DistanceSegTri proximitySolver;
 
     const SReal alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();

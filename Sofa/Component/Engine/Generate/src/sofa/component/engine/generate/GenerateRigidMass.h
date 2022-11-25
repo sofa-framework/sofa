@@ -48,8 +48,7 @@ public:
     void doUpdate() override;
 
 protected:
-
-    typedef type::Vec3 Vector3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
     typedef type::fixed_array <unsigned int,3> MTriangle;
     typedef type::fixed_array <unsigned int,4> MQuad;
     typedef type::vector<unsigned int> MPolygon;
@@ -63,7 +62,7 @@ protected:
       */
     /// input
     Data< Real > m_density; ///< kg * m^-3
-    Data< type::vector< Vector3 > > m_positions; ///< input: positions of the vertices
+    Data< type::vector< type::Vec3 > > m_positions; ///< input: positions of the vertices
     Data< type::vector< MTriangle > > m_triangles; ///< input: triangles of the mesh
     Data< type::vector< MQuad > > m_quads; ///< input: quads of the mesh
     Data< type::vector< MPolygon > > m_polygons; ///< must be convex
@@ -74,7 +73,7 @@ protected:
     Data< Real > volume; ///< output: volume of the mesh
     Data < Mat3x3 > inertiaMatrix; ///< output: the inertia matrix of the mesh
     Data< Vec3 > massCenter; ///< output: the gravity center of the mesh
-    Data< Vector3 > centerToOrigin; ///< output: vector going from the mass center to the space origin
+    Data< type::Vec3 > centerToOrigin; ///< output: vector going from the mass center to the space origin
 
     /**
       * Protected methods
@@ -82,7 +81,7 @@ protected:
     /// integrates the whole mesh
     void integrateMesh();
 
-    void integrateTriangle(Vector3 kV0,Vector3 kV1,Vector3 kV2);
+    void integrateTriangle(type::Vec3 kV0,type::Vec3 kV1,type::Vec3 kV2);
 
     /// generates the RigidMass from the mesh integral
     void generateRigid();

@@ -32,13 +32,13 @@ int CapsuleIntTool::computeIntersection(geometry::TCapsule<DataTypes1> & e1,geom
 
     SReal contact_exists = e1.radius() + e2.radius() + alarmDist;
 
-    Vector3 A = e1.point1();
-    Vector3 B = e1.point2();
-    Vector3 C = e2.point1();
-    Vector3 D = e2.point2();
-    const Vector3 AB = B-A;//segment of the capsule e1
-    const Vector3 CD = D-C;//segment of the capsule e2
-    const Vector3 AC = C-A;
+    type::Vec3 A = e1.point1();
+    type::Vec3 B = e1.point2();
+    type::Vec3 C = e2.point1();
+    type::Vec3 D = e2.point2();
+    const type::Vec3 AB = B-A;//segment of the capsule e1
+    const type::Vec3 CD = D-C;//segment of the capsule e2
+    const type::Vec3 AC = C-A;
     Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two capsules
     Vector2 b;
 
@@ -53,7 +53,7 @@ int CapsuleIntTool::computeIntersection(geometry::TCapsule<DataTypes1> & e1,geom
     SReal CD_norm2 = CD.norm2();
     SReal alpha = 0.5;
     SReal beta = 0.5;
-    Vector3 P,Q,PQ;
+    type::Vec3 P,Q,PQ;
     //Check that the determinant is not null which would mean that the capsule segments are lying on a same plane.
     //in this case we can solve the little system which gives us
     //the two coefficients alpha and beta. We obtain the two nearest points P and Q lying on the segments of the two capsules.
@@ -86,8 +86,8 @@ int CapsuleIntTool::computeIntersection(geometry::TCapsule<DataTypes1> & e1,geom
         //            A--------c---p---B
         //                     C---q---b--------D
 
-        Vector3 AD = D - A;
-        Vector3 CB = B - C;
+        type::Vec3 AD = D - A;
+        type::Vec3 CB = B - C;
 
         SReal c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
         SReal d_proj = (AB * AD)/AB_norm2;
