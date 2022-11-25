@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/TaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 namespace sofa::simulation
 {
@@ -63,7 +63,7 @@ void SolveVisitor::processNodeBottomUp(simulation::Node*)
 
     if (!m_tasks.empty())
     {
-        auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
+        auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
         assert(taskScheduler != nullptr);
         sofa::helper::ScopedAdvancedTimer parallelSolveTimer("waitParallelTasks");
         taskScheduler->workUntilDone(&m_status);
@@ -122,7 +122,7 @@ void SolveVisitor::sequentialSolve(simulation::Node* node)
 
 void SolveVisitor::parallelSolve(simulation::Node* node)
 {
-    auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
 
     for (auto* solver : node->solver)
@@ -134,7 +134,7 @@ void SolveVisitor::parallelSolve(simulation::Node* node)
 
 void SolveVisitor::initializeTaskScheduler()
 {
-    auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
     if (taskScheduler->getThreadCount() < 1)
     {

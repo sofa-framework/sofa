@@ -62,7 +62,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/TaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 #include <cstdlib>
 #include <cmath>
@@ -98,20 +98,20 @@ void AnimationLoopParallelScheduler::init()
 
     if (schedulerName.isSet())
     {
-        _taskScheduler = TaskSchedulerFactory::create(schedulerName.getValue() );
+        _taskScheduler = MainTaskSchedulerFactory::createInRegistry(schedulerName.getValue() );
         if (!_taskScheduler)
         {
             msg_error() << "'" << schedulerName.getValue()
                 << "' is not a valid name for a task scheduler. Falling back to the default "
                 "task scheduler. The list of available schedulers is: ["
-                << sofa::helper::join(TaskSchedulerFactory::getAvailableSchedulers(), ',')
+                << sofa::helper::join(MainTaskSchedulerFactory::getAvailableSchedulers(), ',')
                 << "]";
         }
     }
 
     if (!_taskScheduler)
     {
-        _taskScheduler = TaskSchedulerFactory::create();
+        _taskScheduler = MainTaskSchedulerFactory::createInRegistry();
     }
 
     if (_taskScheduler)

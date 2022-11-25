@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,46 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
 #include <sofa/simulation/TaskSchedulerFactory.h>
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/helper/logging/Messaging.h>
+#include <mutex>
 
 namespace sofa::simulation
 {
 
-bool TaskSchedulerFactory::registerScheduler(const std::string& name,
-                                             const std::function<TaskScheduler*()>& creatorFunc)
+/**
+ * A set of static function with the same interface than @TaskSchedulerFactory, working on a single
+ * instance of @TaskSchedulerFactory.
+ *
+ * The static functions @createInRegistry use the factory to instantiate a task scheduler
+ * and store it in @MainTaskSchedulerRegistry
+ */
+class SOFA_SIMULATION_CORE_API MainTaskSchedulerFactory
 {
-    const bool isInserted = m_schedulerCreationFunctions.insert({name, creatorFunc}).second;
-    msg_error_when(!isInserted, "TaskSchedulerFactory") << "Cannot register task scheduler '" << name
-            << "' into the factory: a task scheduler with this name already exists";
-    return isInserted;
-}
+public:
 
-TaskScheduler* TaskSchedulerFactory::instantiate(const std::string& name)
-{
-    TaskScheduler* scheduler { nullptr };
-    const auto creationIt = m_schedulerCreationFunctions.find(name);
-    if (creationIt != m_schedulerCreationFunctions.end())
-    {
-        scheduler = creationIt->second();
-    }
-    else
-    {
-        msg_error("TaskSchedulerFactory") << "Cannot instantiate task scheduler '" << name
-            << "': it has not been registered into the factory";
-    }
-    return scheduler;
-}
+    static bool registerScheduler(const std::string& name,
+                                  const std::function<TaskScheduler* ()>& creatorFunc);
 
-std::set<std::string> TaskSchedulerFactory::getAvailableSchedulers()
-{
-    std::set<std::string> schedulers;
-    for (const auto& [name, _] : m_schedulerCreationFunctions)
-    {
-        schedulers.insert(name);
-    }
-    return schedulers;
-}
+    static TaskScheduler* instantiate(const std::string& name);
+
+    static std::set<std::string> getAvailableSchedulers();
+
+
+    static TaskScheduler* createInRegistry(const std::string& name);
+    static TaskScheduler* createInRegistry();
+
+private:
+    static std::mutex s_mutex;
+
+    static TaskSchedulerFactory& getFactory();
+};
 
 }

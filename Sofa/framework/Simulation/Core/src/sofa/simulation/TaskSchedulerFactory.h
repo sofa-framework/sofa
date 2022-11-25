@@ -23,17 +23,18 @@
 
 #include <sofa/simulation/config.h>
 #include <functional>
-#include <map>
-#include <optional>
-#include <memory>
-#include <string>
 #include <set>
+#include <map>
 
 namespace sofa::simulation
 {
 
 class TaskScheduler;
 
+/**
+ * Simple factory structure used to instantiate a @TaskScheduler based on a name. The name and a
+ * creation function must be registered before trying to instantiate.
+ */
 class SOFA_SIMULATION_CORE_API TaskSchedulerFactory
 {
 public:
@@ -45,29 +46,19 @@ public:
      * @param creatorFunc function creating a new TaskScheduler or a derived class
      * @return false if scheduler could not be registered
      */
-    static bool registerScheduler(const std::string& name, std::function<TaskScheduler* ()> creatorFunc);
+    bool registerScheduler(const std::string& name,
+                           const std::function<TaskScheduler* ()>& creatorFunc);
 
-
-    static TaskScheduler* create(const std::string& name);
-    static TaskScheduler* create();
-
-    static const std::optional<std::pair<std::string, TaskScheduler*> >& getLastCreated();
-
-    static std::set<std::string> getAvailableSchedulers();
+    TaskScheduler* instantiate(const std::string& name);
 
     /**
-     * Clear the factory. Everything that was registered is lost.
+     * @return a list of registered schedulers
      */
-    static void clear();
+    std::set<std::string> getAvailableSchedulers();
 
 private:
-    // factory map: registered schedulers: name, creation function
-    static std::map<std::string, std::function<TaskScheduler*()> > s_schedulerCreationFunctions;
-
-    static std::map<std::string, std::unique_ptr<TaskScheduler> > s_schedulers;
-
-    inline static std::optional<std::pair<std::string, TaskScheduler*> > s_lastCreated {};
+    /// factory map: registered schedulers: name, creation function
+    std::map<std::string, std::function<TaskScheduler*()> > m_schedulerCreationFunctions;
 };
-
 
 }

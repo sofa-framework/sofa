@@ -43,7 +43,7 @@
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/component/animationloop/FreeMotionTask.h>
 #include <sofa/simulation/CollisionVisitor.h>
-#include <sofa/simulation/TaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
@@ -139,7 +139,7 @@ void FreeMotionAnimationLoop::init()
         defaultSolver.reset();
     }
 
-    auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
     if (d_parallelCollisionDetectionAndFreeMotion.getValue() || d_parallelODESolving.getValue())
     {
@@ -335,7 +335,7 @@ void FreeMotionAnimationLoop::FreeMotionAndCollisionDetection(const sofa::core::
     {
         ScopedAdvancedTimer timer("FreeMotion+CollisionDetection");
 
-        auto* taskScheduler = sofa::simulation::TaskSchedulerFactory::create();
+        auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
         assert(taskScheduler != nullptr);
 
         preCollisionComputation(params);

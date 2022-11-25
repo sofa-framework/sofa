@@ -26,7 +26,7 @@
 #include <MultiThreading/BeamLinearMapping_tasks.inl>
 
 #include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/TaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 namespace sofa::component::mapping
 {
@@ -48,7 +48,7 @@ namespace sofa::component::mapping
     template <class TIn, class TOut>
     void BeamLinearMapping_mt< TIn, TOut>::init()
     {
-        simulation::TaskSchedulerFactory::create()->init();
+        simulation::MainTaskSchedulerFactory::createInRegistry()->init();
         
         linear::BeamLinearMapping< TIn, TOut>::init();
     }
@@ -84,7 +84,7 @@ namespace sofa::component::mapping
             
             // create tasks
             simulation::CpuTask::Status status;
-            simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create();
+            simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
             
             const int taskSize = 2*mGrainSize.getValue();
             
@@ -178,7 +178,7 @@ namespace sofa::component::mapping
             out.resize(this->points.size());
             
             simulation::CpuTask::Status status;
-            simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create();
+            simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
             
             const int taskSize = 2*mGrainSize.getValue();
             
@@ -265,7 +265,7 @@ namespace sofa::component::mapping
             
             
             simulation::CpuTask::Status status;
-            simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create();
+            simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
             
             const int taskSize = 2*mGrainSize.getValue();
             

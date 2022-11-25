@@ -1,7 +1,7 @@
 #include "TaskSchedulerTestTasks.h"
 
 #include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/TaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 using sofa::simulation::Task;
 
@@ -21,7 +21,7 @@ namespace sofa
         
         int64_t x, y;
         
-        simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create();
+        simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
         
         FibonacciTask task0(_N - 1, &x, &status);
         FibonacciTask task1(_N - 2, &y, &status);
@@ -53,7 +53,7 @@ namespace sofa
         
         int64_t x, y;
         
-        simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create();
+        simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
         
         IntSumTask task0(_first, mid, &x, &status);
         IntSumTask task1(mid+1, _last, &y, &status);

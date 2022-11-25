@@ -19,46 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskSchedulerFactory.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/TaskSchedulerRegistry.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/simulation/TaskScheduler.h>
 
 namespace sofa::simulation
 {
 
-bool TaskSchedulerFactory::registerScheduler(const std::string& name,
-                                             const std::function<TaskScheduler*()>& creatorFunc)
+bool TaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName)
 {
-    const bool isInserted = m_schedulerCreationFunctions.insert({name, creatorFunc}).second;
-    msg_error_when(!isInserted, "TaskSchedulerFactory") << "Cannot register task scheduler '" << name
-            << "' into the factory: a task scheduler with this name already exists";
-    return isInserted;
-}
+    const auto [fst, snd] = m_schedulers.insert({taskSchedulerName, taskScheduler});
+    msg_error_when(!snd, "TaskSchedulerRegistry") << "Cannot insert task scheduler '" << taskSchedulerName
+            << "' in the registry: a task scheduler with this name already exists";
 
-TaskScheduler* TaskSchedulerFactory::instantiate(const std::string& name)
-{
-    TaskScheduler* scheduler { nullptr };
-    const auto creationIt = m_schedulerCreationFunctions.find(name);
-    if (creationIt != m_schedulerCreationFunctions.end())
+    if (snd)
     {
-        scheduler = creationIt->second();
+        m_lastInserted = std::make_pair(taskSchedulerName, taskScheduler);
     }
     else
     {
-        msg_error("TaskSchedulerFactory") << "Cannot instantiate task scheduler '" << name
-            << "': it has not been registered into the factory";
+        m_lastInserted.reset();
     }
-    return scheduler;
+
+    return snd;
 }
 
-std::set<std::string> TaskSchedulerFactory::getAvailableSchedulers()
+TaskScheduler* TaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName) const
 {
-    std::set<std::string> schedulers;
-    for (const auto& [name, _] : m_schedulerCreationFunctions)
+    const auto it = m_schedulers.find(taskSchedulerName);
+    if (it != m_schedulers.end())
     {
-        schedulers.insert(name);
+        return it->second;
     }
-    return schedulers;
+    return nullptr;
+}
+
+bool TaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName) const
+{
+    return m_schedulers.find(taskSchedulerName) != m_schedulers.end();
+}
+
+const std::optional<std::pair<std::string, TaskScheduler*>>& TaskSchedulerRegistry::getLastInserted() const
+{
+    return m_lastInserted;
+}
+
+void TaskSchedulerRegistry::clear()
+{
+    for (const auto& p : m_schedulers)
+    {
+        delete p.second;
+    }
+    m_schedulers.clear();
+}
+
+TaskSchedulerRegistry::~TaskSchedulerRegistry()
+{
+    clear();
 }
 
 }

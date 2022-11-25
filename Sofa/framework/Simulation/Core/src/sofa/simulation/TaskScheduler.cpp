@@ -21,29 +21,30 @@
 ******************************************************************************/
 #include <sofa/simulation/TaskScheduler.h>
 
-#include <sofa/simulation/TaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerRegistry.h>
 
 namespace sofa::simulation
 {
 
 TaskScheduler* TaskScheduler::create(const char* name)
 {
-    return TaskSchedulerFactory::create(name);
+    return MainTaskSchedulerFactory::createInRegistry(name);
 }
 
 bool TaskScheduler::registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc)
 {
-    return TaskSchedulerFactory::registerScheduler(name, creatorFunc);
+    return MainTaskSchedulerFactory::registerScheduler(name, creatorFunc);
 }
-        
+
 TaskScheduler* TaskScheduler::getInstance()
 {
-    return TaskSchedulerFactory::create();
+    return MainTaskSchedulerFactory::createInRegistry();
 }
 
 std::string TaskScheduler::getCurrentName()
 {
-    if (const auto& lastCreated = TaskSchedulerFactory::getLastCreated())
+    if (const auto& lastCreated = MainTaskSchedulerRegistry::getLastInserted())
     {
         return lastCreated.value().first;
     }

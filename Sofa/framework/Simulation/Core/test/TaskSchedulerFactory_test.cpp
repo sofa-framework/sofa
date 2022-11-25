@@ -20,41 +20,52 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <gtest/gtest.h>
-#include <sofa/simulation/TaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
 
 namespace sofa
 {
 
-TEST(TaskSchedulerFactory, registerAlreadyInFactory)
+TEST(TaskSchedulerFactory, instantiateNotInFactory)
 {
-    const bool isRegistered = simulation::TaskSchedulerFactory::registerScheduler(
+    simulation::TaskSchedulerFactory factory;
+    const simulation::TaskScheduler* scheduler = factory.instantiate("notInFactory");
+    EXPECT_EQ(scheduler, nullptr);
+}
+
+
+
+TEST(MainTaskSchedulerFactory, createEmpty)
+{
+    const simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    EXPECT_NE(dynamic_cast<const simulation::DefaultTaskScheduler*>(scheduler), nullptr);
+}
+
+TEST(MainTaskSchedulerFactory, createDefault)
+{
+    const simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry(simulation::DefaultTaskScheduler::name());
+    EXPECT_NE(dynamic_cast<const simulation::DefaultTaskScheduler*>(scheduler), nullptr);
+}
+
+
+TEST(MainTaskSchedulerFactory, createNotInFactory)
+{
+    const simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry("notInFactory");
+    EXPECT_EQ(scheduler, nullptr);
+}
+
+TEST(MainTaskSchedulerFactory, registerAlreadyInFactory)
+{
+    simulation::TaskSchedulerFactory factory;
+    const bool isRegistered = simulation::MainTaskSchedulerFactory::registerScheduler(
         simulation::DefaultTaskScheduler::name(),
         &simulation::DefaultTaskScheduler::create);
     EXPECT_FALSE(isRegistered);
 }
 
-TEST(TaskSchedulerFactory, createEmpty)
+TEST(MainTaskSchedulerFactory, registerNew)
 {
-    const simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create();
-    EXPECT_NE(dynamic_cast<const simulation::DefaultTaskScheduler*>(scheduler), nullptr);
-}
-
-TEST(TaskSchedulerFactory, createDefault)
-{
-    const simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create(simulation::DefaultTaskScheduler::name());
-    EXPECT_NE(dynamic_cast<const simulation::DefaultTaskScheduler*>(scheduler), nullptr);
-}
-
-TEST(TaskSchedulerFactory, createNotInFactory)
-{
-    const simulation::TaskScheduler* scheduler = simulation::TaskSchedulerFactory::create("notInFactory");
-    EXPECT_EQ(scheduler, nullptr);
-}
-
-TEST(TaskSchedulerFactory, registerNew)
-{
-    const bool isRegistered = simulation::TaskSchedulerFactory::registerScheduler(
+    const bool isRegistered = simulation::MainTaskSchedulerFactory::registerScheduler(
         "notTheSameKey", &simulation::DefaultTaskScheduler::create);
     EXPECT_TRUE(isRegistered);
 }

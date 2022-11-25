@@ -19,46 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskSchedulerFactory.h>
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/helper/logging/Messaging.h>
+#pragma once
+
+#include <sofa/simulation/config.h>
+#include <map>
+#include <string>
+#include <optional>
 
 namespace sofa::simulation
 {
 
-bool TaskSchedulerFactory::registerScheduler(const std::string& name,
-                                             const std::function<TaskScheduler*()>& creatorFunc)
-{
-    const bool isInserted = m_schedulerCreationFunctions.insert({name, creatorFunc}).second;
-    msg_error_when(!isInserted, "TaskSchedulerFactory") << "Cannot register task scheduler '" << name
-            << "' into the factory: a task scheduler with this name already exists";
-    return isInserted;
-}
+class TaskScheduler;
 
-TaskScheduler* TaskSchedulerFactory::instantiate(const std::string& name)
+/**
+ * Container for task schedulers and its associated name
+ * The registry is also owner of the schedulers: it destroys them in its destructor
+ */
+class SOFA_SIMULATION_CORE_API TaskSchedulerRegistry
 {
-    TaskScheduler* scheduler { nullptr };
-    const auto creationIt = m_schedulerCreationFunctions.find(name);
-    if (creationIt != m_schedulerCreationFunctions.end())
-    {
-        scheduler = creationIt->second();
-    }
-    else
-    {
-        msg_error("TaskSchedulerFactory") << "Cannot instantiate task scheduler '" << name
-            << "': it has not been registered into the factory";
-    }
-    return scheduler;
-}
+public:
 
-std::set<std::string> TaskSchedulerFactory::getAvailableSchedulers()
-{
-    std::set<std::string> schedulers;
-    for (const auto& [name, _] : m_schedulerCreationFunctions)
-    {
-        schedulers.insert(name);
-    }
-    return schedulers;
-}
+    /**
+     * Add a task scheduler to the registry and transfer the ownership
+     */
+    bool addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName);
+
+    /**
+     * @return a @TaskScheduler if the scheduler name is found in the registry, nullptr otherwise
+     */
+    [[nodiscard]] TaskScheduler* getTaskScheduler(const std::string& taskSchedulerName) const;
+
+    /**
+     * @return true if the scheduler name is found in the registry, false otherwise
+     */
+    [[nodiscard]] bool hasScheduler(const std::string& taskSchedulerName) const;
+
+    [[nodiscard]] const std::optional<std::pair<std::string, TaskScheduler*> >& getLastInserted() const;
+
+    /**
+     * Clear the registry and destroy the task schedulers sstored in the registry
+     */
+    void clear();
+
+    ~TaskSchedulerRegistry();
+
+protected:
+
+    std::map<std::string, TaskScheduler*> m_schedulers;
+    std::optional<std::pair<std::string, TaskScheduler*> > m_lastInserted {};
+};
 
 }
