@@ -32,12 +32,15 @@ namespace sofa::component::collision::response::mapper
 {
 
 /// Base class for all mappers using BarycentricMapping
-template < class TCollisionModel, class DataTypes >
-class BarycentricContactMapper : public BaseContactMapper<DataTypes>
+template < class TCollisionModel, class TDataTypes >
+class BarycentricContactMapper : public BaseContactMapper<TDataTypes>
 {
 public:
+    typedef TDataTypes DataTypes;
+
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+
     typedef TCollisionModel MCollisionModel;
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef typename MCollisionModel::Topology InTopology;
@@ -50,8 +53,8 @@ public:
     typename MMapping::SPtr mapping;
     typename MMapper::SPtr mapper;
 
-    using Index = sofa::Index;
-    using Size = sofa::Index;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Size, sofa::Size);
 
     BarycentricContactMapper()
         : model(nullptr), mapping(nullptr), mapper(nullptr)
@@ -67,7 +70,7 @@ public:
 
     MMechanicalState* createMapping(const char* name="contactPoints") override;
 
-    void resize(Size size) override
+    void resize(sofa::Size size) override
     {
         if (mapping != nullptr)
         {
@@ -113,18 +116,17 @@ class ContactMapper<collision::geometry::LineCollisionModel<sofa::defaulttype::V
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using Index = sofa::Index;
 
-    Index addPoint(const Coord& P, Index index, Real&)
+    sofa::Index addPoint(const Coord& P, sofa::Index index, Real&)
     {
         return this->mapper->createPointInLine(P, this->model->getElemEdgeIndex(index), &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
     }
-    Index addPointB(const Coord& /*P*/, Index index, Real& /*r*/, const type::Vec3& baryP)
+    sofa::Index addPointB(const Coord& /*P*/, sofa::Index index, Real& /*r*/, const type::Vec3& baryP)
     {
         return this->mapper->addPointInLine(this->model->getElemEdgeIndex(index), baryP.ptr());
     }
 
-    inline Index addPointB(const Coord& P, Index index, Real& r ){return addPoint(P,index,r);}
+    inline sofa::Index addPointB(const Coord& P, sofa::Index index, Real& r ){return addPoint(P,index,r);}
 };
 
 /// Mapper for TriangleModel
@@ -134,16 +136,15 @@ class ContactMapper<collision::geometry::TriangleCollisionModel<sofa::defaulttyp
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    using Index = sofa::Index;
 
-    Index addPoint(const Coord& P, Index index, Real&)
+    sofa::Index addPoint(const Coord& P, sofa::Index index, Real&)
     {
         auto nbt = this->model->getCollisionTopology()->getNbTriangles();
         if (index < nbt)
             return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
         else
         {
-            Index qindex = (index - nbt)/2;
+            sofa::Index qindex = (index - nbt)/2;
             auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
@@ -155,7 +156,7 @@ public:
             }
         }
     }
-    Index addPointB(const Coord& P, Index index, Real& /*r*/, const type::Vec3& baryP)
+    sofa::Index addPointB(const Coord& P, sofa::Index index, Real& /*r*/, const type::Vec3& baryP)
     {
 
         auto nbt = this->model->getCollisionTopology()->getNbTriangles();
@@ -164,7 +165,7 @@ public:
         else
         {
             // TODO: barycentric coordinates usage for quads
-            Index qindex = (index - nbt)/2;
+            sofa::Index qindex = (index - nbt)/2;
             auto nbq = this->model->getCollisionTopology()->getNbQuads();
             if (qindex < nbq)
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
@@ -177,7 +178,7 @@ public:
         }
     }
 
-    inline Index addPointB(const Coord& P, Index index, Real& r ){return addPoint(P,index,r);}
+    inline sofa::Index addPointB(const Coord& P, sofa::Index index, Real& r ){return addPoint(P,index,r);}
 
 };
 

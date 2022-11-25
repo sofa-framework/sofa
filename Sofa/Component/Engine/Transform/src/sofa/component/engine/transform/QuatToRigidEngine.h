@@ -47,6 +47,7 @@ public:
     typedef sofa::type::Vec<3,Real> Vec3;
     typedef sofa::type::Quat<Real> Quat;
     typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
+
 protected:
     QuatToRigidEngine();
     ~QuatToRigidEngine() override;
@@ -62,7 +63,7 @@ public:
 };
 
 #if  !defined(QUATTORIGIDENGINE_CPP)
-extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API QuatToRigidEngine<defaulttype::Vec3Types>; 
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API QuatToRigidEngine<defaulttype::Vec3Types>;
 #endif
 
 } //namespace sofa::component::engine::transform

@@ -53,7 +53,7 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::Mechanical
 
 
 template<class DataTypes>
-void SphereCollisionModel<DataTypes>::resize(Size size)
+void SphereCollisionModel<DataTypes>::resize(sofa::Size size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -101,7 +101,7 @@ void SphereCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index)
+void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, sofa::Index index)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
@@ -133,7 +133,7 @@ void SphereCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         std::vector<Vec3> points;
         std::vector<float> radius;
-        for (Size i=0; i<npoints; i++)
+        for (sofa::Size i=0; i<npoints; i++)
         {
             TSphere<DataTypes> t(this,i);
             if (t.isActive())
@@ -183,7 +183,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
             const typename TSphere<DataTypes>::Real r = p.r() + distance;
@@ -225,7 +225,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
     if (!empty())
     {
         const typename TSphere<DataTypes>::Real distance = (typename TSphere<DataTypes>::Real)this->proximity.getValue();
-        for (Size i=0; i<size; i++)
+        for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
             const Vec3& pt = p.p();
@@ -247,7 +247,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
 }
 
 template <class DataTypes>
-typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::getRadius(const Index i) const
+typename SphereCollisionModel<DataTypes>::Real SphereCollisionModel<DataTypes>::getRadius(const sofa::Index i) const
 {
     if(i < this->radius.getValue().size())
         return radius.getValue()[i];
@@ -272,7 +272,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
 
     const auto npoints = mstate->getSize();
 
-    for(Size i = 0 ; i < npoints ; ++i )
+    for(sofa::Size i = 0 ; i < npoints ; ++i )
     {
         TSphere<DataTypes> t(this,i);
         const Coord& p = t.p();

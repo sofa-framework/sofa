@@ -78,20 +78,21 @@ public:
 class DetectionOutput
 {
 public:
-    typedef sofa::type::Vec3 Vector3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+
     /// Pair of colliding elements.
     std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem;
     typedef int64_t ContactId;
     /// Unique id of the contact for the given pair of collision models.
     ContactId id;
     /// Contact points on the surface of each model. They are expressed in the local coordinate system of the model if any is defined..
-    Vector3 point[2];
+    type::Vec3 point[2];
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
-    Vector3 freePoint[2]; ///< free Point in contact on each element
+    type::Vec3 freePoint[2]; ///< free Point in contact on each element
 #endif
 
     /// Normal of the contact, pointing outward from the first model
-    Vector3 normal;
+    type::Vec3 normal;
     /*
     /// Signed distance (negative if objects are interpenetrating). If using a proximity-based detection, this is the actual distance between the objets minus the specified contact distance.
     */

@@ -30,22 +30,22 @@ using namespace sofa::core::collision;
 
 
 template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(geometry::TCapsule<Vec3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(geometry::TCapsule<Vec3Types>& cap, const type::Vec3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(geometry::TCapsule<Vec3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(geometry::TCapsule<Vec3Types>& cap,const type::Vec3 & q1,const type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
 template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Vec3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
 template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Rigid3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(geometry::TCapsule<Rigid3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(geometry::TCapsule<Rigid3Types>& cap, const type::Vec3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Rigid3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(geometry::TCapsule<Rigid3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(geometry::TCapsule<Rigid3Types>& cap,const type::Vec3 & q1,const type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
 template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Rigid3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
-int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_rad,
-                         const Vector3 & q1, const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector *contacts, bool ignore_p1, bool ignore_p2){
-    const Vector3 AB = p2-p1;//capsule segment
-    const Vector3 CD = q2-q1;//line segment
-    const Vector3 AC = q1-p1;
+int MeshIntTool::doCapLineInt(const type::Vec3 & p1,const type::Vec3 & p2,SReal cap_rad,
+                         const type::Vec3 & q1, const type::Vec3 & q2,SReal alarmDist,SReal contactDist,OutputVector *contacts, bool ignore_p1, bool ignore_p2){
+    const type::Vec3 AB = p2-p1;//capsule segment
+    const type::Vec3 CD = q2-q1;//line segment
+    const type::Vec3 AC = q1-p1;
     Matrix2 A;
     Vector2 b;
     A[0][0] = AB*AB;
@@ -85,8 +85,8 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_ra
         //            A--------c---p---B
         //                     C---q---b--------D
 
-        Vector3 AD = q2 - p1;
-        Vector3 CB = p2 - q1;
+        type::Vec3 AD = q2 - p1;
+        type::Vec3 CB = p2 - q1;
 
         SReal AB_norm2 = AB.norm2();
         SReal CD_norm2 = CD.norm2();
@@ -166,7 +166,7 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_ra
         return 0;
 
     SReal enough_to_touch = alarmDist + cap_rad;
-    Vector3 p,q,pq;
+    type::Vec3 p,q,pq;
     p = p1 + AB * alpha;
     q = q1 + CD * beta;
     pq = q-p;
@@ -188,13 +188,13 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_ra
 }
 
 
-int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3,const Vector3& q, OutputVector* contacts,bool swapElems)
+int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3,const type::Vec3& q, OutputVector* contacts,bool swapElems)
 {
     using sofa::component::collision::geometry::TriangleCollisionModel;
 
-    const Vector3 AB = p2-p1;
-    const Vector3 AC = p3-p1;
-    const Vector3 AQ = q -p1;
+    const type::Vec3 AB = p2-p1;
+    const type::Vec3 AC = p3-p1;
+    const type::Vec3 AQ = q -p1;
     Matrix2 A;
     Vector2 b;
     A[0][0] = AB*AB;
@@ -266,7 +266,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vecto
         }
     }
 
-    Vector3 p, pq;
+    type::Vec3 p, pq;
     p = p1 + AB * alpha + AC * beta;
     pq = q-p;
     if (pq.norm2() >= dist2)
@@ -325,13 +325,13 @@ int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,SReal ala
     return 0;
 }
 
-int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, Vector3 & to_be_projected)
+int MeshIntTool::projectPointOnTriangle(int flags, const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3, type::Vec3 & to_be_projected)
 {
     using sofa::component::collision::geometry::TriangleCollisionModel;
 
-    const Vector3 AB = p2-p1;
-    const Vector3 AC = p3-p1;
-    const Vector3 AQ = to_be_projected -p1;
+    const type::Vec3 AB = p2-p1;
+    const type::Vec3 AC = p3-p1;
+    const type::Vec3 AQ = to_be_projected -p1;
     Matrix2 A;
     Vector2 b;
     A[0][0] = AB*AB;
@@ -408,10 +408,10 @@ int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vect
     return 1;
 }
 
-void MeshIntTool::triangleBaryCoords(const Vector3& to_be_projected,const Vector3& p1, const Vector3& p2, const Vector3& p3,SReal & alpha,SReal & beta){
-    const Vector3 AB = p2-p1;
-    const Vector3 AC = p3-p1;
-    const Vector3 AQ = to_be_projected -p1;
+void MeshIntTool::triangleBaryCoords(const type::Vec3& to_be_projected,const type::Vec3& p1, const type::Vec3& p2, const type::Vec3& p3,SReal & alpha,SReal & beta){
+    const type::Vec3 AB = p2-p1;
+    const type::Vec3 AC = p3-p1;
+    const type::Vec3 AQ = to_be_projected -p1;
     Matrix2 A;
     Vector2 b;
     A[0][0] = AB*AB;

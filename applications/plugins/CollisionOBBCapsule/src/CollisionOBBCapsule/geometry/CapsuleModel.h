@@ -108,7 +108,7 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
@@ -142,7 +142,7 @@ public:
 
     Real height(Index index)const;
 
-    inline Size nbCap()const;
+    inline sofa::Size nbCap()const;
 
     Real defaultRadius()const;
 

@@ -69,8 +69,8 @@ public:
     typedef type::vector<Index> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef sofa::core::topology::Point Point;
-    typedef sofa::type::Vec3 Vector3;
 
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
 protected:
     FixedConstraint();
 

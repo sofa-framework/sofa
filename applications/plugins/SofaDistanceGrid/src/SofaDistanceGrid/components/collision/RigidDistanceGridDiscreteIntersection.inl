@@ -51,13 +51,13 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
-    const type::Vector3& t1 = e1.getTranslation();
+    const type::Vec3& t1 = e1.getTranslation();
     const sofa::type::Matrix3& r1 = e1.getRotation();
 
     const double d0 = e1.getProximity() + e2.getProximity() + intersection->getContactDistance() + e2.r();
     const SReal margin = 0.001f + (SReal)d0;
 
-    type::Vector3 p2 = e2.center();
+    type::Vec3 p2 = e2.center();
     DistanceGrid::Coord p1;
 
     if (useXForm)
@@ -76,7 +76,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     SReal d = grid1->interp(p1);
     if (d >= margin) return 0;
 
-    type::Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+    type::Vec3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
     grad.normalize();
 
     //p1 -= grad * d; // push p1 back to the surface
@@ -88,7 +88,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     detection->elem.first = e1;
     detection->elem.second = e2;
     detection->id = e2.getIndex();
-    detection->point[0] = type::Vector3(p1) - grad * d;
+    detection->point[0] = type::Vec3(p1) - grad * d;
     detection->point[1] = e2.getContactPointByNormal( detection->normal );
     return 1;
 }

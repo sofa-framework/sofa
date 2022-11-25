@@ -41,12 +41,12 @@ namespace io
     using namespace sofa::topology;
 
 class SOFA_HELPER_API Mesh
-{    
+{
 public:
-    
+
     std::string loaderType;
 
-    using Vector3 = sofa::type::Vec3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
     typedef sofa::type::PrimitiveGroup PrimitiveGroup;
     typedef sofa::type::Material Material;
@@ -68,8 +68,8 @@ public:
     the 3 integers specifying the degree of the element in the x, y and z directions, the 3 integers specifying the position within this hexahedron (i.e. 121  ).. */
     typedef sofa::type::fixed_array<PointID, 8> HighOrderHexahedronPosition;
 
-    sofa::type::vector<Vector3> & getVertices() { return m_vertices; }
-    const sofa::type::vector<Vector3> & getVertices() const { return m_vertices; }
+    sofa::type::vector<type::Vec3> & getVertices() { return m_vertices; }
+    const sofa::type::vector<type::Vec3> & getVertices() const { return m_vertices; }
 
     sofa::type::vector< Edge > & getEdges() { return m_edges; }
     const sofa::type::vector< Edge > & getEdges() const { return m_edges; }
@@ -86,10 +86,10 @@ public:
     sofa::type::vector< Hexahedron > & getHexahedra() { return m_hexahedra; }
     const sofa::type::vector< Hexahedron > & getHexahedra() const { return m_hexahedra; }
 
-    sofa::type::vector<Vector3> & getTexCoords() { return texCoords; }
-    const sofa::type::vector<Vector3> & getTexCoords() const { return texCoords; }
-    sofa::type::vector<Vector3> & getNormals() { return normals; }
-    const sofa::type::vector<Vector3> & getNormals() const { return normals; }
+    sofa::type::vector<type::Vec3> & getTexCoords() { return texCoords; }
+    const sofa::type::vector<type::Vec3> & getTexCoords() const { return texCoords; }
+    sofa::type::vector<type::Vec3> & getNormals() { return normals; }
+    const sofa::type::vector<type::Vec3> & getNormals() const { return normals; }
     sofa::type::vector< type::vector < type::vector <PointID> > > & getFacets() { return facets; }
     const sofa::type::vector< type::vector < type::vector <PointID> > > & getFacets() const { return facets; }
 
@@ -102,11 +102,11 @@ public:
     const sofa::type::vector< PrimitiveGroup > & getHexahedraGroups() const { return m_hexahedraGroups; }
     const sofa::type::vector< PrimitiveGroup > & getPentahedraGroups() const { return m_pentahedraGroups; }
     const sofa::type::vector< PrimitiveGroup > & getPyramidsGroups() const { return m_pyramidsGroups; }
-    
+
     const sofa::type::vector< HighOrderEdgePosition >& getHighOrderEdgePositions() const { return m_highOrderEdgePositions; }
     const sofa::type::vector< HighOrderTrianglePosition >& getHighOrderTrianglePositions() const { return m_highOrderTrianglePositions; }
     const sofa::type::vector< HighOrderQuadPosition >& getHighOrderQuadPositions() const { return m_highOrderQuadPositions; }
-    
+
 
     const Material& getMaterial() const { return material; }
 
@@ -125,10 +125,10 @@ public:
     {
         return new Object(arg);
     }
-    
+
 protected:
     // Point coordinates in 3D.
-    sofa::type::vector<Vector3> m_vertices;
+    sofa::type::vector<type::Vec3> m_vertices;
 
     // Tab of 2D elements composition
     sofa::type::vector< Edge > m_edges; ///< Edges of the mesh loaded
@@ -142,7 +142,7 @@ protected:
     // Tab of 3D elements composition
     sofa::type::vector< Tetrahedron > m_tetrahedra; ///< Tetrahedra of the mesh loaded
     sofa::type::vector< Hexahedron > m_hexahedra; ///< Hexahedra of the mesh loaded
-    
+
     // Groups
     type::vector< PrimitiveGroup > m_edgesGroups; ///< Groups of Edges
     type::vector< PrimitiveGroup > m_trianglesGroups; ///< Groups of Triangles
@@ -154,8 +154,8 @@ protected:
     type::vector< PrimitiveGroup > m_pyramidsGroups; ///< Groups of Pyramids
 
 
-    sofa::type::vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
-    sofa::type::vector<Vector3> normals;
+    sofa::type::vector<type::Vec3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    sofa::type::vector<type::Vec3> normals;
     sofa::type::vector< sofa::type::vector< sofa::type::vector<PointID> > > facets;
     Material material;
 

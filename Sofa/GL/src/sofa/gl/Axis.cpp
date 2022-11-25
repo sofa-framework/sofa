@@ -41,7 +41,7 @@ void Axis::initDraw()
 {
     if (quadratic) return;
 
-    Vector3 L= length;
+    type::Vec3 L= length;
     SReal Lmin = L[0];
     if (L[1]<Lmin) Lmin = L[1];
     if (L[2]<Lmin) Lmin = L[2];
@@ -52,18 +52,18 @@ void Axis::initDraw()
         Lmax = Lmin*2;
     if (Lmax > Lmin*2)
         Lmin = Lmax/1.414_sreal;
-    Vector3 l(Lmin / 10_sreal, Lmin / 10_sreal, Lmin / 10_sreal);
-    Vector3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
-    Vector3 Lc = lc;
+    type::Vec3 l(Lmin / 10_sreal, Lmin / 10_sreal, Lmin / 10_sreal);
+    type::Vec3 lc(Lmax / 5_sreal, Lmax / 5_sreal, Lmax / 5_sreal); // = L / 5;
+    type::Vec3 Lc = lc;
 
 
 	if(quadratic==nullptr)
 
     quadratic=gluNewQuadric();
-    
+
 	gluQuadricNormals(quadratic, GLU_SMOOTH);
     gluQuadricTexture(quadratic, GL_TRUE);
-	
+
     displayLists=glGenLists(3);
 
     glNewList(displayLists, GL_COMPILE);
@@ -111,7 +111,7 @@ void Axis::initDraw()
         glRotatef(90,1,0,0);
         glTranslated(0,-L[1],0);
     }
-	
+
     glEndList();
 
     glNewList(displayLists+2, GL_COMPILE);
@@ -130,7 +130,7 @@ void Axis::initDraw()
     glEndList();
 }
 
-void Axis::draw( const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ )
+void Axis::draw( const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ )
 {
     initDraw();
 
@@ -145,11 +145,11 @@ void Axis::draw( const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ )
     // X Axis
 	glColor4f( colorX[0], colorX[1], colorX[2], colorX[3] );
     glCallList(displayLists);
-   
+
 	// Y Axis
 	glColor4f( colorY[0], colorY[1], colorY[2], colorY[3] );
 	glCallList(displayLists+1);
-   
+
 	// Z Axis
 	glColor4f( colorZ[0], colorZ[1], colorZ[2], colorZ[3] );
     glCallList(displayLists+2);
@@ -163,7 +163,7 @@ void Axis::update(const double *mat)
     std::copy(mat,mat+16, matTransOpenGL);
 }
 
-void Axis::update(const Vector3& center, const double orient[4][4])
+void Axis::update(const type::Vec3& center, const double orient[4][4])
 {
     matTransOpenGL[0] = orient[0][0];
     matTransOpenGL[1] = orient[0][1];
@@ -186,7 +186,7 @@ void Axis::update(const Vector3& center, const double orient[4][4])
     matTransOpenGL[15] = 1;
 }
 
-void Axis::update(const Vector3& center, const Quaternion& orient)
+void Axis::update(const type::Vec3& center, const Quaternion& orient)
 {
     orient.writeOpenGlMatrix(matTransOpenGL);
     matTransOpenGL[12] = center[0];
@@ -197,55 +197,55 @@ void Axis::update(const Vector3& center, const Quaternion& orient)
 Axis::Axis(SReal len)
 {
     quadratic = nullptr;
-    length = Vector3(len,len,len);
-    update(Vector3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
+    length = type::Vec3(len,len,len);
+    update(type::Vec3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
 }
 
-Axis::Axis(const Vector3& len)
+Axis::Axis(const type::Vec3& len)
 {
     quadratic = nullptr;
     length = len;
-    update(Vector3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
+    update(type::Vec3(0_sreal,0_sreal,0_sreal),  Quaternion(1_sreal,0_sreal,0_sreal,0_sreal));
 }
 
-Axis::Axis(const Vector3& center, const Quaternion& orient, const Vector3& len)
-{
-    quadratic = nullptr;
-    length = len;
-    update(center, orient);
-}
-
-Axis::Axis(const Vector3& center, const double orient[4][4], const Vector3& len)
+Axis::Axis(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len)
 {
     quadratic = nullptr;
     length = len;
     update(center, orient);
 }
 
-Axis::Axis(const double *mat, const Vector3& len)
+Axis::Axis(const type::Vec3& center, const double orient[4][4], const type::Vec3& len)
+{
+    quadratic = nullptr;
+    length = len;
+    update(center, orient);
+}
+
+Axis::Axis(const double *mat, const type::Vec3& len)
 {
     quadratic = nullptr;
     length = len;
     update(mat);
 }
 
-Axis::Axis(const Vector3& center, const Quaternion& orient, SReal len)
+Axis::Axis(const type::Vec3& center, const Quaternion& orient, SReal len)
 {
     quadratic = nullptr;
-    length = Vector3(len,len,len);
+    length = type::Vec3(len,len,len);
     update(center, orient);
 }
-Axis::Axis(const Vector3& center, const double orient[4][4], SReal len)
+Axis::Axis(const type::Vec3& center, const double orient[4][4], SReal len)
 {
     quadratic = nullptr;
-    length = Vector3(len,len,len);
+    length = type::Vec3(len,len,len);
     update(center, orient);
 }
 
 Axis::Axis(const double *mat, SReal len)
 {
     quadratic = nullptr;
-    length = Vector3(len,len,len);
+    length = type::Vec3(len,len,len);
     update(mat);
 }
 
@@ -255,7 +255,7 @@ Axis::~Axis()
         gluDeleteQuadric(quadratic);
 }
 
-Axis* Axis::get(const Vector3& len)
+Axis* Axis::get(const type::Vec3& len)
 {
     Axis*& a = axisMap[std::make_pair(std::make_pair((float)len[0],(float)len[1]),(float)len[2])];
     if (a==nullptr)
@@ -263,60 +263,60 @@ Axis* Axis::get(const Vector3& len)
     return a;
 }
 
-void Axis::draw(const Vector3& center, const Quaternion& orient, const Vector3& len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ )
+void Axis::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ )
 {
     Axis* a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& center, const double orient[4][4], const Vector3& len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
+void Axis::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
     Axis* a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const double *mat, const Vector3& len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
+void Axis::draw(const double *mat, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
     Axis* a = get(len);
     a->update(mat);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& center, const Quaternion& orient, SReal len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
+void Axis::draw(const type::Vec3& center, const Quaternion& orient, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(Vector3(len,len,len));
+    Axis* a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& center, const double orient[4][4], SReal len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
+void Axis::draw(const type::Vec3& center, const double orient[4][4], SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(Vector3(len,len,len));
+    Axis* a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const double *mat, SReal len, const Vec4f& colorX, const Vec4f& colorY, const Vec4f& colorZ)
+void Axis::draw(const double *mat, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(Vector3(len,len,len));
+    Axis* a = get(type::Vec3(len,len,len));
     a->update(mat);
     a->draw( colorX, colorY, colorZ );
 }
 
-void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r )
+void Axis::draw(const type::Vec3& p1, const type::Vec3& p2, const double& r )
 {
-    Vector3 v = p2-p1;
+    type::Vec3 v = p2-p1;
     Axis::draw(p1, p1+v*0.9, r,r );
     Axis::draw(p1+v*0.9,p2, 2.0*r,0.0 );
 }
 
-void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const double& r2 )
+void Axis::draw(const type::Vec3& p1, const type::Vec3& p2, const double& r1, const double& r2 )
 {
     int i;
     double theta;
-    Vec3d n,p,q,perp;
+    type::Vec3d n,p,q,perp;
 
     double theta2 = M_2_PI;
     double m = 16; //precision
@@ -329,8 +329,8 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
     on the plane of the disk:
     */
 
-    if      (n[1] != 0 || n[2] != 0)  perp = Vec3d(1,0,0);
-    else                              perp = Vec3d(0,1,0);
+    if      (n[1] != 0 || n[2] != 0)  perp = type::Vec3d(1,0,0);
+    else                              perp = type::Vec3d(0,1,0);
 
 
     q = perp.cross(n);

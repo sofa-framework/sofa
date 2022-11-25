@@ -46,9 +46,6 @@ namespace sofa::gl
 class SOFA_GL_API GlText
 {
 public:
-    typedef sofa::type::fixed_array<float, 3> Vector3;
-    typedef sofa::type::fixed_array<float, 2> Vector2;
-
     /// Constructor
     GlText ();
     /// Constructor with specified text

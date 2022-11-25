@@ -44,14 +44,14 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(ValuesFromIndices,T),core::DataEngine);
     typedef T Value;
     typedef sofa::type::vector<T> VecValue;
-    typedef unsigned int Index;
-    typedef sofa::type::vector<Index> VecIndex;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
+    typedef sofa::type::vector<sofa::Index> VecIndex;
 
 protected:
-
     ValuesFromIndices();
-
     ~ValuesFromIndices() override;
+
 public:
     void init() override;
 
@@ -90,7 +90,7 @@ extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<default
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid3Types::Deriv>;
- 
+
 #endif
 
 } //namespace sofa::component::engine::select
