@@ -245,7 +245,11 @@ const Real* SofaPhysicsOutputMesh::Impl::getVPositions()  ///< vertices position
 
 int SofaPhysicsOutputMesh::Impl::getVPositions(Real* values)
 {
-    const sofa::type::vector<Coord>& coords = (sObj->m_positions).getValue();
+    Data<sofa::type::vector<Coord> >* data =
+        (!sObj->m_vertPosIdx.getValue().empty()) ?
+        &(sObj->m_vertices2) : &(sObj->m_positions);
+
+    const sofa::type::vector<Coord>& coords = data->getValue();
     for (unsigned int i = 0; i < coords.size(); ++i)
     {
         values[i * 3] = coords[i].x();
