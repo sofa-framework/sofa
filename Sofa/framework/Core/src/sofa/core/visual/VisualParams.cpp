@@ -25,13 +25,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
+namespace sofa::core::visual
 {
 
 VisualParams::VisualParams()
@@ -61,9 +55,4 @@ VisualParams* VisualParams::defaultInstance()
     }
     return ptr;
 }
-
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::visual

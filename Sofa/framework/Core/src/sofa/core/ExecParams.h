@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_EXEC_PARAMS_H
-#define SOFA_CORE_EXEC_PARAMS_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <atomic>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 
@@ -133,9 +129,5 @@ public:
     }
 
 };
+} // namespace sofa::core
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

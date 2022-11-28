@@ -22,13 +22,7 @@
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/DetectionOutput.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 using namespace sofa::defaulttype;
@@ -149,10 +143,5 @@ bool Intersection::isSupported(core::CollisionElementIterator elem1, core::Colli
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel(), swap);
     return i != nullptr;
 }
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::collision
 

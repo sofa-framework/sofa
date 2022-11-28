@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_DETECTIONOUTPUT_H
-#define SOFA_CORE_COLLISION_DETECTIONOUTPUT_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/CollisionElement.h>
@@ -28,13 +27,7 @@
 #include <sofa/type/vector.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 /**
@@ -130,11 +123,4 @@ public:
         return (unsigned int)this->Vector::size();
     }
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

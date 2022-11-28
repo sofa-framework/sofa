@@ -49,13 +49,11 @@ public:
 protected:
     BaseMass();
 
-    ~BaseMass() override
-    {
-    }
+    ~BaseMass() override = default;
 
 private:
-	BaseMass(const BaseMass& n) = delete;
-	BaseMass& operator=(const BaseMass& n) = delete;
+    BaseMass(const BaseMass& n) = delete;
+    BaseMass& operator=(const BaseMass& n) = delete;
 
 public:
     /// @name Vector operations

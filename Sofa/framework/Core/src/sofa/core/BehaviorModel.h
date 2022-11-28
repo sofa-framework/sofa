@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIORMODEL_H
-#define SOFA_CORE_BEHAVIORMODEL_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
@@ -53,8 +49,8 @@ protected:
     ~BehaviorModel() override {}
 	
 private:
-	BehaviorModel(const BehaviorModel& n) ;
-	BehaviorModel& operator=(const BehaviorModel& n) ;
+    BehaviorModel(const BehaviorModel& n) = delete;
+    BehaviorModel& operator=(const BehaviorModel& n) = delete;
 	
 public:
     /// Computation of a new simulation step.
@@ -69,9 +65,5 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
+} // namespace sofa::core
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

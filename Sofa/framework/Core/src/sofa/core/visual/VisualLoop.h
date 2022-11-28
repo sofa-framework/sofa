@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VISUAL_VISUALLOOP_H
-#define SOFA_CORE_VISUAL_VISUALLOOP_H
+#pragma once
 
 #include <sofa/core/visual/VisualModel.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
+namespace sofa::core::visual
 {
 
 class VisualParams;
@@ -68,11 +61,4 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 };
-
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
-
-#endif /* SOFA_CORE_VISUAL_VISUALLOOP_H */
+} // namespace sofa::core::visual

@@ -30,8 +30,6 @@ namespace sofa::core::behavior
 
 class ConstraintSolver;
 
-/// @todo All methods in this class need to be commented
-
 /**
  *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
