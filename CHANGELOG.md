@@ -1,6 +1,25 @@
 # SOFA Changelog
 
 
+## [v22.06.01]( https://github.com/sofa-framework/sofa/tree/v22.06.01 )
+
+[Full log]( https://github.com/sofa-framework/sofa/compare/v22.06.00...v22.06.01 )
+
+### Bug Fixes
+**Architecture**
+- [CMake] FIX parent modules library consistency [#3225]( https://github.com/sofa-framework/sofa/pull/3225 )
+- [CMake] FIX out-of-tree SofaGui and runSofa locations [#3229]( https://github.com/sofa-framework/sofa/pull/3229 )
+
+**Modules**
+- [Sofa.Core, SofaSphFluid] Fix compilation with MSVC 2022, v17.4 #3466  [#3466]( https://github.com/sofa-framework/sofa/pull/3466 )
+
+**Plugins / Projects**
+- [Plugins] Fix Cmake configuration w/o compat [#3209]( https://github.com/sofa-framework/sofa/pull/3209 )
+- [SofaMatrix] Update plugin CMakeLists to avoid strong dependency on Qt [#3423]( https://github.com/sofa-framework/sofa/pull/3423 )
+
+
+____________________________________________________________
+
 
 ## [v22.06.00]( https://github.com/sofa-framework/sofa/tree/v22.06.00 )
 
