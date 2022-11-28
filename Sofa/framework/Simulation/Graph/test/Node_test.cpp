@@ -26,6 +26,7 @@ using sofa::testing::BaseSimulationTest ;
 using namespace sofa::simpleapi ;
 
 #include "Node_test.h"
+#include <unordered_set>
 
 namespace sofa
 {
@@ -122,6 +123,59 @@ TEST(Node_test, addObjectPreventingSharedContext)
 
 }
 
+TEST(Node_test, getObjectsStdVector)
+{
+    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    Dummy::SPtr A = core::objectmodel::New<Dummy>("A");
+    Dummy::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+    root->addObject(B);
+
+    std::vector<Dummy*> objects;
+    root->BaseContext::getObjects(objects, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+
+    EXPECT_EQ(objects.size(), 2);
+
+    EXPECT_NE(std::find(objects.begin(), objects.end(), A.get()), objects.end());
+    EXPECT_NE(std::find(objects.begin(), objects.end(), B.get()), objects.end());
+}
+
+TEST(Node_test, getObjectsStdSet)
+{
+    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    Dummy::SPtr A = core::objectmodel::New<Dummy>("A");
+    Dummy::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+    root->addObject(B);
+
+    std::set<Dummy*> objects;
+    root->BaseContext::getObjects(objects, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+
+    EXPECT_EQ(objects.size(), 2);
+
+    EXPECT_NE(objects.find(A.get()), objects.end());
+    EXPECT_NE(objects.find(B.get()), objects.end());
+}
+
+TEST(Node_test, getObjectsStdUnorderedSet)
+{
+    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    Dummy::SPtr A = core::objectmodel::New<Dummy>("A");
+    Dummy::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+    root->addObject(B);
+
+    std::unordered_set<Dummy*> objects;
+    root->BaseContext::getObjects(objects, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+
+    EXPECT_EQ(objects.size(), 2);
+
+    EXPECT_NE(objects.find(A.get()), objects.end());
+    EXPECT_NE(objects.find(B.get()), objects.end());
+}
 
 }// namespace sofa
 
