@@ -31,6 +31,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <string>
 
 #include <assert.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
@@ -87,7 +88,7 @@ public :
     typedef typename TMatrix::DBloc DBloc;
     typedef typename TMatrix::Real Real;
     typedef typename TMatrix::Policy Policy;
-
+    typedef typename TMatrix::Index IndexType;
     CRSTraceWriter();
 
     CRSTraceWriter(const std::string& baseFileName, int step)
@@ -102,13 +103,13 @@ public :
 
         m_baseFilename = baseFileName  + "_" + tbloc + "_" + ss.str();
 
-        SOFA_IF_CONSTEXPR(Policy::PrintTrace)
+        if constexpr(Policy::PrintTrace)
         {
             std::string printTraceFileName = m_baseFilename + ".log";
             m_printTraceFile = fopen(printTraceFileName.c_str(), "w");
         }
 
-        SOFA_IF_CONSTEXPR(Policy::LogTrace)
+        if constexpr(Policy::LogTrace)
         {
             std::string logTraceFileName = m_baseFilename + ".bin";
             m_logTraceFile = fopen(logTraceFileName.c_str(), "wb" );
@@ -146,7 +147,7 @@ public :
     {
         logT(fnId, m_logTraceFile);
 
-        SOFA_IF_CONSTEXPR (Policy::PrintTrace)
+        if constexpr (Policy::PrintTrace)
         {
             std::string msg("Function ID : ");
             msg.append(std::to_string(static_cast<int>(fnId)));
@@ -157,7 +158,7 @@ public :
         do_for([&](auto arg)
         {
             logT(arg, m_logTraceFile);
-            SOFA_IF_CONSTEXPR (Policy::PrintTrace)
+            if constexpr (Policy::PrintTrace)
             {
                 std::string msg = " arg[";
                 msg.append(std::to_string(count));
@@ -167,7 +168,7 @@ public :
             }
             count++;
         }, args...);
-        SOFA_IF_CONSTEXPR (Policy::PrintTrace)
+        if constexpr (Policy::PrintTrace)
         {
             std::string msg = "\n";
             fwrite(msg.c_str(), msg.length(), 1, m_printTraceFile);
@@ -187,7 +188,7 @@ public :
         {
             for (int j = 0; j < NC; j++)
             {
-                bstr.append(std::to_string(matrix_bloc_traits<DBloc>::v(b, i, j)));
+                bstr.append(std::to_string(matrix_bloc_traits<DBloc, IndexType>::v(b, i, j)));
                 if (i + j != NC + NL - 2)
                 {
                     if (j == NC - 1) bstr.append(",");
@@ -230,7 +231,7 @@ public :
     std::size_t logT (const TBloc b, FILE* file)
     {
 
-        using traits = matrix_bloc_traits<TBloc>;
+        using traits = matrix_bloc_traits<TBloc, IndexType>;
         typename traits::Real vals[traits::NL][traits::NC];
         for (int l = 0; l < traits::NL; ++l)
             for (int c = 0; c < traits::NC; ++c)
@@ -280,6 +281,7 @@ public :
     typedef typename TMatrix::DBloc DBloc;
     typedef typename TMatrix::Real Real;
     typedef typename TMatrix::Policy Policy;
+    typedef typename TMatrix::Index IndexType;
 
     CRSTraceReader() = default;
 
@@ -385,7 +387,7 @@ private:
     template< class TBloc>
     std::size_t readT(TBloc& b, int argId = -1)
     {
-        using traits = matrix_bloc_traits<TBloc>;
+        using traits = matrix_bloc_traits<TBloc, IndexType>;
         typename traits::Real vals[traits::NL][traits::NC] { { 0 } };
         std::size_t processed = fileRead(&(vals[0][0]),sizeof(vals),1);
         for (int l = 0; l < traits::NL; ++l)

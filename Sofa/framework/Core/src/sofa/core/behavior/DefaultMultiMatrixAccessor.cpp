@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 
 using sofa::core::behavior::BaseMechanicalState;
 
@@ -554,7 +555,7 @@ linearalgebra::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::
 
 linearalgebra::BaseMatrix* DefaultMultiMatrixAccessor::createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo)
 {
-    linearalgebra::CompressedRowSparseMatrix<SReal>* m = new linearalgebra::CompressedRowSparseMatrix<SReal>;
+    linearalgebra::FullMatrix<SReal>* m = new linearalgebra::FullMatrix<SReal>;
     if(mstate1 == mstate2)
     {
         m->resize( mstate1->getMatrixSize(),mstate1->getMatrixSize());

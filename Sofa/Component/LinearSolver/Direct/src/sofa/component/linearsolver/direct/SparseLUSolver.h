@@ -41,7 +41,7 @@ public :
     cs* permuted_A;
     type::vector<int> perm,iperm; ///< fill reducing permutation
     type::vector<int> Previous_colptr,Previous_rowind; ///< shape of the matrix at the previous step
-    type::vector<sofa::Index> A_i, A_p;
+    type::vector<linearalgebra::BaseMatrix::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
     bool notSameShape;
