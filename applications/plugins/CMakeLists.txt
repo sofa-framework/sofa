@@ -63,8 +63,8 @@ endif()
 
 sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
-    sofa_add_subdirectory(plugin VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
     sofa_add_subdirectory(plugin SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
+    sofa_add_subdirectory(plugin VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 else()
     message("Sofa.GL not found; disabling SofaSimpleGUI and VolumetricRendering plugins")
 endif()
