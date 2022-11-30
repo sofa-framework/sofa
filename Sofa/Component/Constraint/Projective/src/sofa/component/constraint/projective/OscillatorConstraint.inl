@@ -49,13 +49,15 @@ OscillatorConstraint<TDataTypes>*  OscillatorConstraint<TDataTypes>::addConstrai
 
 
 template <class TDataTypes> template <class DataDeriv>
-void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
+void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res,
+    std::function<void(DataDeriv&, const unsigned int)> clear)
 {
-    const type::vector<Oscillator> &oscillators = constraints.getValue();
+    const auto& oscillators = constraints.getValue();
+
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {
         const unsigned& index = oscillators[i].index;
-        res[index] = Deriv();
+        clear(res, index);
     }
 }
 
@@ -102,18 +104,10 @@ void OscillatorConstraint<TDataTypes>::projectPosition(const core::MechanicalPar
 }
 
 template <class TDataTypes>
-void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
+void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
-
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
-
-    while (rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBloc(index); });
 }
 
 template <class TDataTypes>

@@ -127,8 +127,9 @@ protected:
     bool isPointInPlane(Coord p) const ;
 
     /// These two are implemented depending on the templates
-    template<class T>
-    void projectResponseImpl(const MechanicalParams* mparams, T& dx) const ;
+    template <class DataDeriv>
+    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx,
+        std::function<void(DataDeriv&, const SetIndexArray&)> project);
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)

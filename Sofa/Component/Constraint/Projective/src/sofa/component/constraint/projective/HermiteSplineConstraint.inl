@@ -137,14 +137,15 @@ void HermiteSplineConstraint<DataTypes>::computeDerivateHermiteCoefs( const Real
 
 
 template <class DataTypes> template <class DataDeriv>
-void HermiteSplineConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
+void HermiteSplineConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx,
+    std::function<void(DataDeriv&, const unsigned int)> clear)
 {
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
     {
         const SetIndexArray & indices = m_indices.getValue();
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            dx[*it] = Deriv();
+            clear(dx, *it);
     }
 }
 
@@ -208,14 +209,7 @@ void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(const core::Mecha
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
-
-    while (rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBloc(index); });
 }
 
 template <class DataTypes>

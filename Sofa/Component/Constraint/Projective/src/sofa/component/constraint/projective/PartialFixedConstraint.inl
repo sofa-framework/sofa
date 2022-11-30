@@ -59,22 +59,17 @@ void PartialFixedConstraint<DataTypes>::reinit()
 
 template <class DataTypes>
 template <class DataDeriv>
-void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
+void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res,
+    std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear)
 {
     const VecBool& blockedDirection = d_fixedDirections.getValue();
 
     if (this->d_fixAll.getValue() == true)
     {
-        // fix everyting
+        // fix everything
         for( unsigned i=0; i<res.size(); i++ )
         {
-            for (unsigned j = 0; j < NumDimensions; j++)
-            {
-                if (blockedDirection[j])
-                {
-                    res[i][j] = (Real) 0.0;
-                }
-            }
+            clear(res, i, blockedDirection);
         }
     }
     else
@@ -82,13 +77,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
         const SetIndexArray & indices = this->d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            for (unsigned j = 0; j < NumDimensions; j++)
-            {
-                if (blockedDirection[j])
-                {
-                    res[*it][j] = (Real) 0.0;
-                }
-            }
+            clear(res, *it, blockedDirection);
         }
     }
 }
@@ -146,14 +135,26 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::Mechan
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
+    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(),
+        [](MatrixDeriv& res, const unsigned int index, const VecBool& btype)
+        {
+            auto itRow = res.begin();
+            auto itRowEnd = res.end();
 
-    while (rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+            while (itRow != itRowEnd)
+            {
+                for (auto colIt = itRow.begin(); colIt != itRow.end(); colIt++)
+                {
+                    if (index == (unsigned int)colIt.index())
+                    {
+                        Deriv b = colIt.val();
+                        for (unsigned int j = 0; j < btype.size(); j++) if (btype[j]) b[j] = 0.0;
+                        res.writeLine(itRow.index()).setCol(colIt.index(), b);
+                    }
+                }
+                ++itRow;
+            }
+        });
 }
 
 template <class DataTypes>

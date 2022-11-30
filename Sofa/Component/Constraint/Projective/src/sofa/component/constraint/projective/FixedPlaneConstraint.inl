@@ -137,11 +137,46 @@ void FixedPlaneConstraint<DataTypes>::removeConstraint(Index index)
     d_indices.endEdit();
 }
 
+
+/// This function are there to provide kind of type translation to the vector one so we can
+/// implement the algorithm as is the different objects where of similar type.
+/// this solution is not really satisfactory but for the moment it does the job.
+/// A better solution would that all the used types are following the same iterface which
+/// requires to touch core sofa classes.
+sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i) { return i.getVCenter(); }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i) { return i.getCenter(); }
+const sofa::type::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Deriv& i) { return i.getVCenter(); }
+const sofa::type::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i) { return i.getCenter(); }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i) { return i; }
+const sofa::type::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i) { return i; }
+sofa::type::Vec6d& getVec(sofa::defaulttype::Vec6dTypes::Deriv& i) { return i; }
+const sofa::type::Vec6d& getVec(const sofa::defaulttype::Vec6dTypes::Deriv& i) { return i; }
+
+sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i) { return i.getVCenter(); }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i) { return i.getCenter(); }
+const sofa::type::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Deriv& i) { return i.getVCenter(); }
+const sofa::type::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i) { return i.getCenter(); }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i) { return i; }
+const sofa::type::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i) { return i; }
+sofa::type::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i) { return i; }
+const sofa::type::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i) { return i; }
+
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseImpl(mparams, res.wref());
+    WriteAccessor<DataVecDeriv> res = resData;    
+    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref(),
+        [&](auto& dx, const SetIndexArray& indices)
+        {
+            const auto& dir = getVec(d_direction.getValue());
+            for (const auto& i : indices)
+            {
+                /// only constraint one projection of the displacement to be zero
+                auto val = getVec(dx[i]);
+                val = val - (dir * dot(val, dir));
+                DataTypes::setDPos(dx[i], val);
+            }
+        });
 }
 
 /// project dx to constrained space (dx models a velocity)
@@ -174,14 +209,27 @@ template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     WriteAccessor<DataMatrixDeriv> c = cData;
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
 
-    while (rowIt != rowItEnd)
-    {
-        projectResponseImpl(mparams, rowIt.row());
-        ++rowIt;
-    }
+    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(),
+        [&](auto& dx, const SetIndexArray& indices)
+        {
+            const auto& dir = getVec(d_direction.getValue());
+            auto itRow = dx.begin();
+            auto itRowEnd = dx.end();
+            while (itRow != itRowEnd)
+            {
+                for (auto colIt = itRow.begin(); colIt != itRow.end(); colIt++)
+                {
+                    if (std::find(indices.begin(), indices.end(), colIt.index()) != indices.end())
+                    {
+                        auto val = getVec(colIt.val());
+                        Deriv r(type::NOINIT);
+                        DataTypes::setDPos(r, -(dir * dot(val, dir)));
+                        dx.writeLine(itRow.index()).addCol(colIt.index(), r);
+                    }
+                }
+            }
+        });
 }
 
 template <class DataTypes>
@@ -259,50 +307,21 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
     vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor{1,1.0,0.5,1});
 }
 
-/// This function are there to provide kind of type translation to the vector one so we can
-/// implement the algorithm as is the different objects where of similar type.
-/// this solution is not really satisfactory but for the moment it does the job.
-/// A better solution would that all the used types are following the same iterface which
-/// requires to touch core sofa classes.
-sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i){ return i.getVCenter(); }
-sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
-const sofa::type::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
-sofa::type::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
-const sofa::type::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
-sofa::type::Vec6d& getVec(sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
-const sofa::type::Vec6d& getVec(const sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
-
-sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i){ return i.getVCenter(); }
-sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
-const sofa::type::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
-sofa::type::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
-const sofa::type::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
-sofa::type::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
-const sofa::type::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
-
 template<class DataTypes>
 bool FixedPlaneConstraint<DataTypes>::isPointInPlane(Coord p) const
 {
-    Vec<Coord::spatial_dimensions,Real> pos = getVec(p) ;
-    Real d=pos*getVec(d_direction.getValue());
-    if ((d>d_dmin.getValue())&& (d<d_dmax.getValue()))
+    Real d = getVec(p) * getVec(d_direction.getValue());
+    if ((d>d_dmin.getValue()) && (d<d_dmax.getValue()))
         return true;
     else
         return false;
 }
 
-template <class DataTypes>
-template <class T>
-void FixedPlaneConstraint<DataTypes>::projectResponseImpl(const MechanicalParams* mparams, T& res) const
+template <class DataTypes> template <class DataDeriv>
+void FixedPlaneConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& data,
+    std::function<void(DataDeriv&, const SetIndexArray&)> project)
 {
-    SOFA_UNUSED(mparams);
-
-    Coord dir=d_direction.getValue();
-    for (auto& index : d_indices.getValue())
-    {
-        /// only constraint one projection of the displacement to be zero
-        getVec(res[index]) -= getVec(dir) * dot( getVec(res[index]), getVec(dir));
-    }
+    project(data, d_indices.getValue());
 }
 
 } // namespace sofa::component::constraint::projective

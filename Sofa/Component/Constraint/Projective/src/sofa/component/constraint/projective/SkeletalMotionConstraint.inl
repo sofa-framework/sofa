@@ -108,27 +108,14 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real ct)
     }
 }
 
-template <class DataTypes>
-template <class DataDeriv>
-void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
+template <class TDataTypes> template <class DataDeriv>
+void SkeletalMotionConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res,
+    std::function<void(DataDeriv&, const unsigned int)> clear)
 {
     if( !active.getValue() ) return;
 
-    for(unsigned int i = 0; i < dx.size(); ++i)
-        dx[i] = Deriv();
-    /*Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
-
-    if(0.0 != cT)
-    {
-        findKeyTimes();
-
-        if(finished && nextT != prevT)
-        {
-            //set the motion to the Dofs
-            for(unsigned int i = 0; i < dx.size(); ++i)
-                dx[i] = Deriv();
-        }
-    }*/
+    for (unsigned int i = 0; i < res.size(); ++i)
+        clear(res, i);
 }
 
 template <class DataTypes>
@@ -254,14 +241,7 @@ void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
-
-    while(rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBloc(index); });
 }
 
 template <class DataTypes>

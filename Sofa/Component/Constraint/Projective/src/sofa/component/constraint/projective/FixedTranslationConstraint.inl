@@ -113,24 +113,20 @@ static inline void clearPos(type::Vec<6,T>& v)
 }
 
 template <class DataTypes> template <class DataDeriv>
-void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
+void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx,
+    std::function<void(DataDeriv&, const unsigned int)> clear)
 {
-    const SetIndexArray & indices = f_indices.getValue();
-
-    if (f_fixAll.getValue() == true)
+    if (f_fixAll.getValue())
     {
-        for (Size i = 0; i < l_topology.get()->getNbPoints(); ++i)
+        for (unsigned int i = 0; i < dx.size(); i++)
         {
-            clearPos(res[i]);
+            clear(dx, i);
         }
     }
     else
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it
-                != indices.end(); ++it)
-        {
-            clearPos(res[*it]);
-        }
+        for (unsigned int i = 0; i < dx.size(); i++)
+            clear(dx, i);
     }
 }
 
@@ -154,18 +150,10 @@ void FixedTranslationConstraint<DataTypes>::projectPosition(const core::Mechanic
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
+void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
-
-    MatrixDerivRowIterator rowIt = c->begin();
-    MatrixDerivRowIterator rowItEnd = c->end();
-
-    while (rowIt != rowItEnd)
-    {
-        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
-        ++rowIt;
-    }
+    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBloc(index); });
 }
 
 

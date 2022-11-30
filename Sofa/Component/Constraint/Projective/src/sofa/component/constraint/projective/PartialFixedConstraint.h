@@ -89,7 +89,10 @@ public:
 
 protected:
     template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
+    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx,
+        std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear =
+        [](VecDeriv& dx, const unsigned int index, const VecBool& b)
+        { for (unsigned j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; });
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP)
