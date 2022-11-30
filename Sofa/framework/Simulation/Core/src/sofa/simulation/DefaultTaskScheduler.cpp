@@ -48,13 +48,6 @@ public:
     }
 };
 
-// mac clang 3.5 doesn't support thread_local vars
-//static  WorkerThread* WorkerThread::_workerThreadIndex = nullptr;
-// SOFA_THREAD_SPECIFIC_PTR(WorkerThread, workerThreadIndex);
-        
-// std::map< std::thread::id, WorkerThread*> DefaultTaskScheduler::_threads;
-        
-        
 DefaultTaskScheduler* DefaultTaskScheduler::create()
 {
     return new DefaultTaskScheduler();
