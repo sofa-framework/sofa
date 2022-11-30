@@ -31,6 +31,8 @@
 #include <sofa/helper/rmath.h>
 #include <cmath>
 
+#include <sofa/defaulttype/DataTypeInfo.h>
+
 namespace sofa::defaulttype
 {
 
@@ -577,7 +579,7 @@ constexpr RigidDeriv<2,T> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const
 
 namespace sofa::linearalgebra
 {
-    template <int N, class T, typename IndexType>
+    template <Size N, class T, typename IndexType>
     class matrix_bloc_traits < defaulttype::RigidDeriv<N, T>, IndexType >
     {
     public:
@@ -604,7 +606,7 @@ namespace sofa::linearalgebra
 
         static void transpose(BlockTranspose& res, const Block& b) { res = b; }
 
-        static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real>::getElementType(); }
+        static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real,IndexType>::getElementType(); }
         static const char* Name() { return defaulttype::DataTypeName<defaulttype::RigidDeriv<N, T>>::name(); }
     };
 }
