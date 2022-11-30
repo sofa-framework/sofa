@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/RigidDeriv.h>
 #include <sofa/defaulttype/RigidMass.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/defaulttype/CompressedRowSparseMatrixConstraint.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
@@ -73,7 +74,8 @@ public:
     static constexpr const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
     static constexpr void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    //typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     typedef type::vector<Coord> VecCoord;
     typedef type::vector<Deriv> VecDeriv;
@@ -290,7 +292,8 @@ public:
     typedef type::vector<Deriv> VecDeriv;
     typedef type::vector<Real> VecReal;
 
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    //typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
     template<typename T>
     static constexpr void set(Coord& c, T x, T y, T)

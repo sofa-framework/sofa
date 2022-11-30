@@ -26,6 +26,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/helper/random.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
+#include <sofa/defaulttype/CompressedRowSparseMatrixConstraint.h>
 #include <istream>
 #include <ostream>
 #include <algorithm>
@@ -58,7 +59,8 @@ public:
     static constexpr const DPos& getDPos(const Deriv& d) { return d; }
     static constexpr void setDPos(Deriv& d, const DPos& v) { d = v; }
 
-    typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    //typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
+    typedef CompressedRowSparseMatrixConstraint<Deriv> MatrixDeriv;
 
 
 protected:

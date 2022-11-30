@@ -363,29 +363,29 @@ public:
     /// Get the iterator corresponding to the beginning of the rows of blocks
     RowConstIterator begin() const
     {
-        SOFA_IF_CONSTEXPR (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
+        if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
         return RowConstIterator(this, 0);
     }
 
     /// Get the iterator corresponding to the end of the rows of blocks
     RowConstIterator end() const
     {
-        SOFA_IF_CONSTEXPR (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        return RowConstIterator(this, this->rowIndex.size());
+        if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
+        return RowConstIterator(this, Index(this->rowIndex.size()));
     }
 
     /// Get the iterator corresponding to the beginning of the rows of blocks
     RowConstIterator cbegin() const
     {
-        SOFA_IF_CONSTEXPR(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
+        if constexpr(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
         return RowConstIterator(this, 0);
     }
 
     /// Get the iterator corresponding to the end of the rows of blocks
     RowConstIterator cend() const
     {
-        SOFA_IF_CONSTEXPR(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        return RowConstIterator(this, this->rowIndex.size());
+        if constexpr(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
+        return RowConstIterator(this, Index(this->rowIndex.size()));
     }
 
     class RowWriteAccessor
@@ -405,14 +405,14 @@ public:
 
         void addCol(Index id, const Block& value)
         {
-            SOFA_IF_CONSTEXPR (Policy::LogTrace) m_matrix->logCall(FnEnum::addCol, m_rowIndex, id, value);
+            if constexpr (Policy::LogTrace) m_matrix->logCall(linearalgebra::FnEnum::addCol, m_rowIndex, id, value);
             *m_matrix->wbloc(m_rowIndex, id, true) += value;
         }
 
         // TODO: this is wrong in case the returned bloc is within the uncompressed triplets
         void setCol(Index id, const Block& value)
         {
-            SOFA_IF_CONSTEXPR (Policy::LogTrace) m_matrix->logCall(FnEnum::setCol, m_rowIndex, id, value);
+            if constexpr (Policy::LogTrace) m_matrix->logCall(linearalgebra::FnEnum::setCol, m_rowIndex, id, value);
             *m_matrix->wbloc(m_rowIndex, id, true) = value;
         }
 
@@ -430,8 +430,6 @@ public:
         int m_rowIndex;
         CompressedRowSparseMatrixConstraint* m_matrix;
     };
-
-    typedef RowWriteAccessor RowIterator; /// Definition for MapMapSparseMatrix and CompressedRowSparseMatrixConstraint compatibility
 
     class RowType : public std::pair<ColConstIterator, ColConstIterator>
     {
@@ -465,7 +463,7 @@ public:
     /// Get the number of constraint
     size_t size() const
     {
-        SOFA_IF_CONSTEXPR(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
+        if constexpr(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
         return this->getRowIndex().size();
     }
 
@@ -474,7 +472,7 @@ public:
     /// If lIndex row doesn't exist, returns end iterator
     RowConstIterator readLine(Index lIndex) const
     {
-        SOFA_IF_CONSTEXPR (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
+        if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
         Index rowId = (this->nBlocRow == 0) ? 0 : lIndex * this->rowIndex.size() / this->nBlocRow;
         if (this->sortedFind(this->rowIndex, lIndex, rowId))
         {
@@ -577,7 +575,7 @@ public:
             in >> c_id;
             in >> c_number;
 
-            RowIterator c_it = sc.writeLine(c_id);
+            auto c_it = sc.writeLine(c_id);
 
             for (unsigned int i = 0; i < c_number; i++)
             {
@@ -596,6 +594,10 @@ public:
         static std::string name = std::string("CompressedRowSparseMatrixConstraint") + std::string(traits::Name());
         return name.c_str();
     }
+
+    /// Definition for MapMapSparseMatrix and CompressedRowSparseMatrixConstraint compatibility
+    using ColIterator = ColConstIterator;
+    using RowIterator = RowWriteAccessor;
 };
 
 /// As it is no longer thread-safe to write to different pre-created rows in CompressedRowSparseMatrixConstraint,

@@ -27,9 +27,9 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
 #include <sofa/type/vector.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/helper/rmath.h>
 #include <cmath>
-
 
 namespace sofa::defaulttype
 {
@@ -573,3 +573,38 @@ constexpr RigidDeriv<2,T> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const
 }
 
 } // namespace sofa::defaulttype
+
+
+namespace sofa::linearalgebra
+{
+    template <int N, class T, typename IndexType>
+    class matrix_bloc_traits < defaulttype::RigidDeriv<N, T>, IndexType >
+    {
+    public:
+        typedef defaulttype::RigidDeriv<N, T> Block;
+        typedef T Real;
+        typedef Block BlockTranspose;
+
+        enum { NL = 1 };
+        enum { NC = defaulttype::RigidDeriv<N, T>::total_size };
+
+        static const Real& v(const Block& b, int /*row*/, int col) { return b[col]; }
+        static Real& v(Block& b, int /*row*/, int col) { return b[col]; }
+        static void vset(Block& b, int /*row*/, int col, Real v) { b[col] = v; }
+        static void vadd(Block& b, int /*row*/, int col, Real v) { b[col] += v; }
+        static void clear(Block& b) { b.clear(); }
+        static bool empty(const Block& b)
+        {
+            for (int i = 0; i < NC; ++i)
+                if (b[i] != 0) return false;
+            return true;
+        }
+
+        static BlockTranspose transposed(const Block& b) { return b; }
+
+        static void transpose(BlockTranspose& res, const Block& b) { res = b; }
+
+        static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real>::getElementType(); }
+        static const char* Name() { return defaulttype::DataTypeName<defaulttype::RigidDeriv<N, T>>::name(); }
+    };
+}
