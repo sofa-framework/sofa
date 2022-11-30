@@ -100,9 +100,15 @@ public:
     class RowType;
     class RowConstIterator;
     /// Row Sparse Matrix columns constant Iterator to match with constraint matrix manipulation
-    class ColConstIterator : std::iterator<std::bidirectional_iterator_tag, Index>
+    class ColConstIterator
     {
     public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = Index;
+        using difference_type = Index;
+        using pointer = Index*;
+        using reference = Index&;
+
         friend class RowConstIterator;
         friend class RowType;
     protected:
@@ -211,9 +217,14 @@ public:
         const CompressedRowSparseMatrixConstraint* m_matrix;
     };
 
-    class RowConstIterator : public std::iterator<std::bidirectional_iterator_tag, Index>
+    class RowConstIterator
     {
     public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = Index;
+        using difference_type = Index;
+        using pointer = Index*;
+        using reference = Index&;
 
         friend class CompressedRowSparseMatrixConstraint;
 
