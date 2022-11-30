@@ -6,6 +6,7 @@ set(SRC_ROOT "src/sofa/defaulttype")
 set(HEADER_FILES
     ${SRC_ROOT}/AbstractTypeInfo.h
     ${SRC_ROOT}/CompressedRowSparseMatrixConstraint.h
+    ${SRC_ROOT}/CompressedRowSparseMatrixConstraintEigenUtils.h
     ${SRC_ROOT}/DataTypeInfo.h
     ${SRC_ROOT}/DataTypeOperations.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
