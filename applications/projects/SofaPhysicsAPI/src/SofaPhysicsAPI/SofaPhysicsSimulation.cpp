@@ -76,6 +76,11 @@ bool SofaPhysicsAPI::load(const char* filename)
     return impl->load(filename);
 }
 
+int SofaPhysicsAPI::unload()
+{
+    return impl->unload();
+}
+
 void SofaPhysicsAPI::createScene()
 {
     std::cout << "SofaPhysicsAPI::createScene" <<std::endl;
@@ -334,6 +339,21 @@ bool SofaPhysicsSimulation::load(const char* cfilename)
 //    if (isAnimated() != wasAnimated)
 //        animatedChanged();
     return success;
+}
+
+int SofaPhysicsSimulation::unload()
+{
+    if (m_RootNode.get())
+    {
+        m_Simulation->unload(m_RootNode);
+    }
+    else
+    {
+        msg_error("SofaPhysicsSimulation") << "Error: can't get scene root node.";
+        return API_SCENE_FAILED;
+    }
+
+    return API_SUCCESS;
 }
 
 void SofaPhysicsSimulation::createScene()

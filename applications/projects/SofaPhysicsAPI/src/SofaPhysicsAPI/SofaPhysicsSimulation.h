@@ -48,6 +48,7 @@ public:
     const char* APIName();
 
     bool load(const char* filename);
+    int unload();
     void createScene();
 
     void start();
