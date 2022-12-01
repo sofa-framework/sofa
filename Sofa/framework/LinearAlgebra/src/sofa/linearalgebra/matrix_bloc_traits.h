@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/linearalgebra/config.h>
 
+#include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 
@@ -151,6 +152,55 @@ public:
     }
 };
 
+template <Size N, class T, typename IndexType >
+class matrix_bloc_traits < sofa::type::Vec<N, T>, IndexType >
+{
+public:
+    typedef sofa::type::Vec<N, T> Block;
+    typedef T Real;
+    typedef Block BlockTranspose;
+
+    enum { NL = 1 };
+    enum { NC = N };
+
+    static Real& v(Block& b, int /*row*/, int col) { return b[col]; }
+    static const Real& v(const Block& b, int /*row*/, int col) { return b[col]; }
+    static void vset(Block& b, int /*row*/, int col, Real v) { b[col] = v; }
+    static void vadd(Block& b, int /*row*/, int col, Real v) { b[col] += v; }
+    static void clear(Block& b) { b.clear(); }
+    static bool empty(const Block& b)
+    {
+        for (int i = 0; i < NC; ++i)
+            if (b[i] != 0) return false;
+        return true;
+    }
+
+    static Block transposed(const Block& b) { return b; }
+
+    static void transpose(Block& res, const Block& b) { res = b; }
+
+    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
+    static const char* Name()
+    {
+        std::ostringstream o;
+        o << "V" << N;
+        if constexpr (std::is_same_v<float, Real>)
+        {
+            o << "f";
+        }
+        if constexpr (std::is_same_v<double, Real>)
+        {
+            o << "d";
+        }
+        if constexpr (std::is_same_v<int, Real>)
+        {
+            o << "i";
+        }
+
+        return o.str().c_str();
+    }
+};
+
 //template<> inline const char* matrix_bloc_traits<type::Mat<1,1,float >, sofa::SignedIndex >::Name() { return "1f"; }
 //template<> inline const char* matrix_bloc_traits<type::Mat<1,1,double>, sofa::SignedIndex  >::Name() { return "1d"; }
 //template<> inline const char* matrix_bloc_traits<type::Mat<2,2,float >, sofa::SignedIndex >::Name() { return "2f"; }
@@ -269,5 +319,6 @@ public:
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_INT; }
     static const std::string Name() { return "f"; }
 };
+
 
 } // namespace sofa::linearalgebra
