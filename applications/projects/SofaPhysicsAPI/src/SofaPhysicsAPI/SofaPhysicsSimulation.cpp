@@ -71,7 +71,7 @@ const char *SofaPhysicsAPI::APIName()
     return impl->APIName();
 }
 
-bool SofaPhysicsAPI::load(const char* filename)
+int SofaPhysicsAPI::load(const char* filename)
 {
     return impl->load(filename);
 }
@@ -306,7 +306,7 @@ const char *SofaPhysicsSimulation::APIName()
     return "SofaPhysicsSimulation API";
 }
 
-bool SofaPhysicsSimulation::load(const char* cfilename)
+int SofaPhysicsSimulation::load(const char* cfilename)
 {
     std::string filename = cfilename;
     std::cout << "FROM APP: SofaPhysicsSimulation::load(" << filename << ")" << std::endl;
@@ -329,7 +329,7 @@ bool SofaPhysicsSimulation::load(const char* cfilename)
     else
     {
         m_RootNode = m_Simulation->createNewGraph("");
-        success = false;
+        return API_SCENE_FAILED;
     }
     initTexturesDone = false;
     lastW = 0;
@@ -338,7 +338,7 @@ bool SofaPhysicsSimulation::load(const char* cfilename)
 
 //    if (isAnimated() != wasAnimated)
 //        animatedChanged();
-    return success;
+    return API_SUCCESS;
 }
 
 int SofaPhysicsSimulation::unload()
@@ -594,7 +594,7 @@ void SofaPhysicsSimulation::updateCurrentFPS()
     ++frameCounter;
 }
 
-void SofaPhysicsSimulation::updateOutputMeshes()
+int SofaPhysicsSimulation::updateOutputMeshes()
 {
     sofa::simulation::Node* groot = getScene();
     if (!groot)
@@ -602,10 +602,10 @@ void SofaPhysicsSimulation::updateOutputMeshes()
         sofaOutputMeshes.clear();
         outputMeshes.clear();
 
-        return;
+        return API_SCENE_NULL;
     }
     sofaOutputMeshes.clear();    
-    groot->get<SofaOutputMesh>(&sofaOutputMeshes, sofa::core::objectmodel::BaseContext::SearchDown);
+    groot->get<SofaOutputMesh>(&sofaOutputMeshes, sofa::core::objectmodel::BaseContext::SearchRoot);
 
     outputMeshes.resize(sofaOutputMeshes.size());
 
@@ -620,6 +620,8 @@ void SofaPhysicsSimulation::updateOutputMeshes()
         }
         outputMeshes[i] = oMesh;
     }
+
+    return sofaOutputMeshes.size();
 }
 
 unsigned int SofaPhysicsSimulation::getNbOutputMeshes() const

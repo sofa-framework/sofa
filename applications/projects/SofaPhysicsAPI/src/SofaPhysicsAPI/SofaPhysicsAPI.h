@@ -50,7 +50,7 @@ public:
     virtual ~SofaPhysicsAPI();
 
     /// Load an XML file containing the main scene description
-    bool load(const char* filename);
+    int load(const char* filename);
     int unload();
 
     virtual const char* APIName();
