@@ -18,7 +18,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
-    <FreeMotionAnimationLoop initial_guess="true" displayTime="1" maxIt="100" />
+    <FreeMotionAnimationLoop initial_guess="true" maxIt="100" />
     <DefaultPipeline depth="8" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

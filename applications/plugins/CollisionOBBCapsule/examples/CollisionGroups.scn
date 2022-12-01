@@ -7,7 +7,7 @@ Here, the collision models of the 3 cubes are defined in the group 1. Therefore,
 in the group 1, therefore cubes collide with it.
 -->
 
-<Node name="root" dt="0.01" gravity="0 -9.81 0">
+<Node name="root" dt="0.01" gravity="0 -9.81 0" bbox="-1 -1 -1 1 1 1">
 
     <RequiredPlugin name="CollisionOBBCapsule"/> <!-- Needed to use components [OBBCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
@@ -19,6 +19,7 @@ in the group 1, therefore cubes collide with it.
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
+    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] -->
 
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
     <OglSceneFrame/>
