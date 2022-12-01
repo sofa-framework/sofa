@@ -30,7 +30,7 @@ There is no DefaultCollisionGroupManager component in this scene.
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [InteractiveCamera VisualStyle] -->
 
     <VisualStyle displayFlags="showCollisionModels"/>
-
+    <DefaultAnimationLoop/>
     <DefaultPipeline/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

@@ -31,7 +31,8 @@ There is a DefaultCollisionGroupManager component in this scene.
     <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="showCollisionModels"/>
-
+    
+    <DefaultAnimationLoop/>
     <DefaultPipeline/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

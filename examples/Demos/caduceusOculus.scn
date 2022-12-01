@@ -1,3 +1,12 @@
+<!-- [ERROR]   [GLSLShader] ERROR: Compilation of Fragment shader failed:
+[ERROR]   [GLSLShader] From File: /home/arnaud/dev/sofa/build/install/share/sofa/shaders/phong.frag
+[ERROR]   [GLSLShader] 0:27(6): error: could not implicitly convert operands to relational operator
+0:27(6): error: LHS of `||' must be scalar boolean
+0:28(6): error: could not implicitly convert operands to relational operator
+0:28(6): error: LHS of `||' must be scalar boolean
+
+[ERROR]   [GLSLShader] SHADER compilation failed. -->
+
 <?xml version="1.0"?>
 <Node 	 name="root"  gravity="0 -1000 0"  dt="0.04"  >
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
