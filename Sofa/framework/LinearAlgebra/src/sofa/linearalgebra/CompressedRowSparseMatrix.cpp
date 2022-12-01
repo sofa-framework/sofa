@@ -30,8 +30,8 @@ template<class TMatrix, sofa::Size L, sofa::Size C, class real>
 void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L, C, real> >& M, typename TMatrix::filter_fn* filter, const typename TMatrix::Block& ref)
 {
     M.compress();
-    self.nBlocRow = 1;
-    self.nBlocCol = 1;
+    self.nBlockRow = 1;
+    self.nBlockCol = 1;
     self.rowIndex.clear();
     self.rowBegin.clear();
     self.colsIndex.clear();

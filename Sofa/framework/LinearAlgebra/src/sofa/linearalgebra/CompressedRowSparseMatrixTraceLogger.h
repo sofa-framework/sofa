@@ -45,18 +45,18 @@ namespace sofa::linearalgebra
 
 enum FnEnum: char
 {
-    resizeBloc      = 0,
+    resizeBlock      = 0,
     compress        = 1,
     fullRows        = 3,
-    setBloc         = 4,
-    setBlocId       = 5,
-    clearRowBloc    = 6,
-    clearColBloc    = 7,
-    clearRowColBloc = 8,
+    setBlock         = 4,
+    setBlockId       = 5,
+    clearRowBlock    = 6,
+    clearColBlock    = 7,
+    clearRowColBlock = 8,
     clear           = 9,
     add             = 10,
     addId           = 11,
-    addDBloc        = 12,
+    addDBlock        = 12,
     addDValue       = 13,
     addDValueId     = 14,
 
@@ -84,8 +84,8 @@ public :
     enum { NC = TMatrix::NC };
 
     typedef typename TMatrix::traits traits;
-    typedef typename TMatrix::Bloc Bloc;
-    typedef typename TMatrix::DBloc DBloc;
+    typedef typename TMatrix::Block Block;
+    typedef typename TMatrix::DBlock DBlock;
     typedef typename TMatrix::Real Real;
     typedef typename TMatrix::Policy Policy;
     typedef typename TMatrix::Index IndexType;
@@ -99,9 +99,9 @@ public :
         std::ostringstream ss;
         ss << std::setw(4) << std::setfill('0') << step;
 
-        std::string tbloc(traits::Name());
+        std::string tblock(traits::Name());
 
-        m_baseFilename = baseFileName  + "_" + tbloc + "_" + ss.str();
+        m_baseFilename = baseFileName  + "_" + tblock + "_" + ss.str();
 
         if constexpr(Policy::PrintTrace)
         {
@@ -181,14 +181,14 @@ public :
     std::string ToString (const double       d) { return std::to_string(d); }
     std::string ToString (const float        f) { return std::to_string(f); }
 
-    std::string ToString (const DBloc b)
+    std::string ToString (const DBlock b)
     {
         std::string bstr = "[";
         for (int i = 0; i < NL; i++)
         {
             for (int j = 0; j < NC; j++)
             {
-                bstr.append(std::to_string(matrix_bloc_traits<DBloc, IndexType>::v(b, i, j)));
+                bstr.append(std::to_string(matrix_bloc_traits<DBlock, IndexType>::v(b, i, j)));
                 if (i + j != NC + NL - 2)
                 {
                     if (j == NC - 1) bstr.append(",");
@@ -200,8 +200,8 @@ public :
         return bstr;
     }
 
-    template< class TBloc, typename std::enable_if< !std::is_same<DBloc, TBloc>::value, int >::type = 0 >
-    std::string ToString (const TBloc b)
+    template< class TBlock, typename std::enable_if< !std::is_same<DBlock, TBlock>::value, int >::type = 0 >
+    std::string ToString (const TBlock b)
     {
         std::string bstr = "[";
         for (int i = 0; i < NL; i++)
@@ -227,11 +227,11 @@ public :
     std::size_t logT (const float        f, FILE* file) { return fwrite( &f, sizeof(float),        1, file); }
 
     // non-templated functions will take precedence to this method
-    template< class TBloc>
-    std::size_t logT (const TBloc b, FILE* file)
+    template< class TBlock>
+    std::size_t logT (const TBlock b, FILE* file)
     {
 
-        using traits = matrix_bloc_traits<TBloc, IndexType>;
+        using traits = matrix_bloc_traits<TBlock, IndexType>;
         typename traits::Real vals[traits::NL][traits::NC];
         for (int l = 0; l < traits::NL; ++l)
             for (int c = 0; c < traits::NC; ++c)
@@ -259,14 +259,14 @@ protected :
     int         m_step;
 };
 
-template<typename Bloc, typename DBloc>
+template<typename Block, typename DBlock>
 struct FnArgs
 {
     int i = -1, j = -1, rowId = -1, colId = -1;
     unsigned int bi = 0, bj = 0, boffsetL = 0, boffsetC = 0;
     double v = 0;
-    Bloc b = Bloc();
-    DBloc bdiag = DBloc();
+    Block b = Block();
+    DBlock bdiag = DBlock();
 };
 
 template<typename TMatrix, int matrixType >
@@ -277,15 +277,15 @@ public :
     enum { NC = TMatrix::NC };
 
     typedef typename TMatrix::traits traits;
-    typedef typename TMatrix::Bloc Bloc;
-    typedef typename TMatrix::DBloc DBloc;
+    typedef typename TMatrix::Block Block;
+    typedef typename TMatrix::DBlock DBlock;
     typedef typename TMatrix::Real Real;
     typedef typename TMatrix::Policy Policy;
     typedef typename TMatrix::Index IndexType;
 
     CRSTraceReader() = default;
 
-    CRSTraceReader(const std::vector<int>& fnIds, const std::vector<FnArgs<typename TMatrix::Bloc, typename TMatrix::DBloc>>& fnArgs)
+    CRSTraceReader(const std::vector<int>& fnIds, const std::vector<FnArgs<typename TMatrix::Block, typename TMatrix::DBlock>>& fnArgs)
     :m_fnIds(fnIds)
     ,m_fnArgs(fnArgs)
     {
@@ -297,7 +297,7 @@ public :
         return m_fnIds;
     }
 
-    const std::vector<FnArgs<typename TMatrix::Bloc, typename TMatrix::DBloc>>& getFnArgs() const
+    const std::vector<FnArgs<typename TMatrix::Block, typename TMatrix::DBlock>>& getFnArgs() const
     {
         return m_fnArgs;
     }
@@ -384,10 +384,10 @@ private:
     }
 
     // non-templated functions will take precedence over this method
-    template< class TBloc>
-    std::size_t readT(TBloc& b, int argId = -1)
+    template< class TBlock>
+    std::size_t readT(TBlock& b, int argId = -1)
     {
-        using traits = matrix_bloc_traits<TBloc, IndexType>;
+        using traits = matrix_bloc_traits<TBlock, IndexType>;
         typename traits::Real vals[traits::NL][traits::NC] { { 0 } };
         std::size_t processed = fileRead(&(vals[0][0]),sizeof(vals),1);
         for (int l = 0; l < traits::NL; ++l)
@@ -412,22 +412,22 @@ private:
         return processed;
     }
 
-    FnArgs<Bloc, DBloc> readArgs(int fnId)
+    FnArgs<Block, DBlock> readArgs(int fnId)
     {
-        FnArgs<Bloc, DBloc> args;
+        FnArgs<Block, DBlock> args;
         switch (fnId)
         {
-            case FnEnum::resizeBloc      : readT(args.i, 0); readT(args.j, 1); break;
+            case FnEnum::resizeBlock      : readT(args.i, 0); readT(args.j, 1); break;
             case FnEnum::compress        : break;
-            case FnEnum::setBloc         : readT(args.i, 0); readT(args.j, 1); readT(args.b, 2); break;
-            case FnEnum::setBlocId       : readT(args.i, 0); readT(args.j, 1); readT(args.rowId, 2); readT(args.colId, 3); readT(args.b, 4); break;
-            case FnEnum::clearRowBloc    : readT(args.i, 0); break;
-            case FnEnum::clearColBloc    : readT(args.i, 0); break;
-            case FnEnum::clearRowColBloc : readT(args.i, 0); break;
+            case FnEnum::setBlock         : readT(args.i, 0); readT(args.j, 1); readT(args.b, 2); break;
+            case FnEnum::setBlockId       : readT(args.i, 0); readT(args.j, 1); readT(args.rowId, 2); readT(args.colId, 3); readT(args.b, 4); break;
+            case FnEnum::clearRowBlock    : readT(args.i, 0); break;
+            case FnEnum::clearColBlock    : readT(args.i, 0); break;
+            case FnEnum::clearRowColBlock : readT(args.i, 0); break;
             case FnEnum::clear           : break;
             case FnEnum::add             : readT(args.bi, 0); readT(args.bj, 1); readT(args.b, 2); break;
             case FnEnum::addId           : readT(args.bi, 0); readT(args.bj, 1); readT(args.rowId, 2); readT(args.colId, 3); readT(args.b, 4); break;
-            case FnEnum::addDBloc        : readT(args.bi, 0); readT(args.bj, 1); readT(args.bdiag, 2); break;
+            case FnEnum::addDBlock        : readT(args.bi, 0); readT(args.bj, 1); readT(args.bdiag, 2); break;
             case FnEnum::addDValue       : readT(args.bi, 0); readT(args.bj, 1); readT(args.v, 2);  break;
             case FnEnum::addDValueId     : readT(args.bi, 0); readT(args.bj, 1); readT(args.rowId, 2); readT(args.colId, 3); readT(args.v, 4); break;
             case FnEnum::fullRows        : break;
@@ -454,17 +454,17 @@ private:
     }
 
 
-    void defaultcallFn(TMatrix& m, int fnId, FnArgs<Bloc, DBloc>& args)
+    void defaultcallFn(TMatrix& m, int fnId, FnArgs<Block, DBlock>& args)
     {
         switch (fnId)
         {
-            case FnEnum::resizeBloc      : m.resizeBloc(args.i, args.j); break;
+            case FnEnum::resizeBlock      : m.resizeBloc(args.i, args.j); break;
             case FnEnum::compress        : m.compress(); break;
-            case FnEnum::setBloc         : m.setBloc(args.i, args.j, args.b); break;
-            case FnEnum::setBlocId       : m.setBloc(args.i, args.j, args.rowId, args.colId, args.b); break;
-            case FnEnum::clearRowBloc    : m.clearRowBloc(args.i); break;
-            case FnEnum::clearColBloc    : m.clearColBloc(args.i); break;
-            case FnEnum::clearRowColBloc : m.clearRowColBloc(args.i); break;
+            case FnEnum::setBlock         : m.setBloc(args.i, args.j, args.b); break;
+            case FnEnum::setBlockId       : m.setBloc(args.i, args.j, args.rowId, args.colId, args.b); break;
+            case FnEnum::clearRowBlock    : m.clearRowBloc(args.i); break;
+            case FnEnum::clearColBlock    : m.clearColBloc(args.i); break;
+            case FnEnum::clearRowColBlock : m.clearRowColBloc(args.i); break;
             case FnEnum::clear           : m.clear(); break;
             case FnEnum::fullRows        : m.fullRows(); break;
             default: 
@@ -478,20 +478,20 @@ private:
 
     template <int Type = matrixType>
     typename std::enable_if< Type == 0 >::type
-    callFn(TMatrix& m, int fnId, FnArgs<Bloc, DBloc>& args)
+    callFn(TMatrix& m, int fnId, FnArgs<Block, DBlock>& args)
     {
         return defaultcallFn(m, fnId, args);
     }
 
     template <int Type = matrixType>
     typename std::enable_if< Type == 1 >::type
-    callFn(TMatrix& m, int fnId, FnArgs<Bloc, DBloc>& args)
+    callFn(TMatrix& m, int fnId, FnArgs<Block, DBlock>& args)
     {
         switch (fnId)
         {
             case FnEnum::add             : m.add(args.bi, args.bj, args.b); break;
             case FnEnum::addId           : m.add(args.bi, args.bj, args.rowId, args.colId, args.b); break;
-            case FnEnum::addDBloc        : m.addDBloc(args.bi, args.bj, args.bdiag); break;
+            case FnEnum::addDBlock        : m.addDBlock(args.bi, args.bj, args.bdiag); break;
             case FnEnum::addDValue       : m.addDValue(args.bi, args.bj, args.v); break;
             case FnEnum::addDValueId     : m.addDValue(args.bi, args.bj, args.rowId, args.colId, args.v); break;
 
@@ -510,7 +510,7 @@ private:
 
     template <int Type = matrixType>
     typename std::enable_if< Type == 2 >::type
-    callFn(TMatrix& m, int fnId, FnArgs<Bloc, DBloc>& args)
+    callFn(TMatrix& m, int fnId, FnArgs<Block, DBlock>& args)
     {
         switch (fnId)
         {
@@ -588,7 +588,7 @@ private:
     TMatrix * m_CRSmatrix;
 
     std::vector<int> m_fnIds;
-    std::vector<FnArgs<typename TMatrix::Bloc, typename TMatrix::DBloc>> m_fnArgs;
+    std::vector<FnArgs<typename TMatrix::Block, typename TMatrix::DBlock>> m_fnArgs;
 };
 
 } // namespace sofa::linearalgebra
