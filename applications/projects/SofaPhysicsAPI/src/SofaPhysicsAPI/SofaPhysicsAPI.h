@@ -32,6 +32,11 @@ typedef unsigned int Index; ///< Type used for topology indices
 typedef float Real;         ///< Type used for coordinates
 typedef void* ID;           ///< Type used for IDs
 
+// Exit code
+#define API_SUCCESS EXIT_SUCCESS
+#define API_NULL -1
+
+
 /// Internal implementation sub-class
 class SofaPhysicsSimulation;
 
@@ -151,8 +156,11 @@ public:
 
     unsigned int getNbVertices(); ///< number of vertices
     const Real* getVPositions();  ///< vertices positions (Vec3)
+    int getVPositions(Real* values);
     const Real* getVNormals();    ///< vertices normals   (Vec3)
+    int getVNormals(Real* values);
     const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
+    int getVTexCoords(Real* values);
     int getTexCoordRevision();    ///< changes each time texture coord data are updated
     int getVerticesRevision();    ///< changes each time vertices data are updated
 
@@ -169,10 +177,12 @@ public:
 
     unsigned int getNbTriangles(); ///< number of triangles
     const Index* getTriangles();   ///< triangles topology (3 indices / triangle)
+    int getTriangles(int* values);
     int getTrianglesRevision();    ///< changes each time triangles data is updated
 
     unsigned int getNbQuads(); ///< number of quads
     const Index* getQuads();   ///< quads topology (4 indices / quad)
+    int getQuads(int* values);
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     /// Internal implementation sub-class
