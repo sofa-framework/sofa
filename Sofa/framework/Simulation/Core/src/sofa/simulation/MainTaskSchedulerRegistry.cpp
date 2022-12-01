@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,37 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskScheduler.h>
-
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/MainTaskSchedulerRegistry.h>
 
 namespace sofa::simulation
 {
+std::mutex MainTaskSchedulerRegistry::s_mutex;
 
-TaskScheduler* TaskScheduler::create(const char* name)
+bool MainTaskSchedulerRegistry::addTaskSchedulerToRegistry(TaskScheduler* taskScheduler,
+    const std::string& taskSchedulerName)
 {
-    return MainTaskSchedulerFactory::createInRegistry(name);
+    std::lock_guard lock(s_mutex);
+    return getInstance().addTaskSchedulerToRegistry(taskScheduler, taskSchedulerName);
 }
 
-bool TaskScheduler::registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc)
+TaskScheduler* MainTaskSchedulerRegistry::getTaskScheduler(const std::string& taskSchedulerName)
 {
-    return MainTaskSchedulerFactory::registerScheduler(name, creatorFunc);
+    std::lock_guard lock(s_mutex);
+    return getInstance().getTaskScheduler(taskSchedulerName);
 }
 
-TaskScheduler* TaskScheduler::getInstance()
+bool MainTaskSchedulerRegistry::hasScheduler(const std::string& taskSchedulerName)
 {
-    return MainTaskSchedulerFactory::createInRegistry();
+    std::lock_guard lock(s_mutex);
+    return getInstance().hasScheduler(taskSchedulerName);
 }
 
-std::string TaskScheduler::getCurrentName()
+const std::optional<std::pair<std::string, TaskScheduler*>>& MainTaskSchedulerRegistry::
+getLastInserted()
 {
-    if (const auto& lastCreated = MainTaskSchedulerRegistry::getLastInserted())
-    {
-        return lastCreated.value().first;
-    }
-
-    return {};
+    std::lock_guard lock(s_mutex);
+    return getInstance().getLastInserted();
 }
 
-} // namespace sofa::simulation
+void MainTaskSchedulerRegistry::clear()
+{
+    std::lock_guard lock(s_mutex);
+    getInstance().clear();
+}
+
+TaskSchedulerRegistry& MainTaskSchedulerRegistry::getInstance()
+{
+    static TaskSchedulerRegistry r;
+    return r;
+}
+
+
+}
+

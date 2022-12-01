@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,37 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskScheduler.h>
+#pragma once
 
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+#include <sofa/simulation/TaskSchedulerRegistry.h>
+#include <mutex>
 
 namespace sofa::simulation
 {
 
-TaskScheduler* TaskScheduler::create(const char* name)
+/**
+ * A set of static functions with the same interface than a @TaskSchedulerRegistry, working on a
+ * single instance of a @TaskSchedulerRegistry.
+ * All functions are thread-safe.
+ */
+class SOFA_SIMULATION_CORE_API MainTaskSchedulerRegistry
 {
-    return MainTaskSchedulerFactory::createInRegistry(name);
+public:
+
+    static bool addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName);
+
+    static TaskScheduler* getTaskScheduler(const std::string& taskSchedulerName);
+
+    static bool hasScheduler(const std::string& taskSchedulerName);
+
+    static const std::optional<std::pair<std::string, TaskScheduler*> >& getLastInserted();
+
+    static void clear();
+
+private:
+    static std::mutex s_mutex;
+
+    static TaskSchedulerRegistry& getInstance();
+};
+
 }
-
-bool TaskScheduler::registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc)
-{
-    return MainTaskSchedulerFactory::registerScheduler(name, creatorFunc);
-}
-
-TaskScheduler* TaskScheduler::getInstance()
-{
-    return MainTaskSchedulerFactory::createInRegistry();
-}
-
-std::string TaskScheduler::getCurrentName()
-{
-    if (const auto& lastCreated = MainTaskSchedulerRegistry::getLastInserted())
-    {
-        return lastCreated.value().first;
-    }
-
-    return {};
-}
-
-} // namespace sofa::simulation

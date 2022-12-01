@@ -19,37 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/TaskScheduler.h>
-
+#include <gtest/gtest.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+#include <sofa/simulation/DefaultTaskScheduler.h>
 
-namespace sofa::simulation
+namespace sofa
 {
 
-TaskScheduler* TaskScheduler::create(const char* name)
+TEST(TaskSchedulerFactory, instantiateNotInFactory)
 {
-    return MainTaskSchedulerFactory::createInRegistry(name);
+    simulation::TaskSchedulerFactory factory;
+    const simulation::TaskScheduler* scheduler = factory.instantiate("notInFactory");
+    EXPECT_EQ(scheduler, nullptr);
 }
 
-bool TaskScheduler::registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc)
+
+
+TEST(MainTaskSchedulerFactory, createEmpty)
 {
-    return MainTaskSchedulerFactory::registerScheduler(name, creatorFunc);
+    const simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    EXPECT_NE(dynamic_cast<const simulation::DefaultTaskScheduler*>(scheduler), nullptr);
 }
 
-TaskScheduler* TaskScheduler::getInstance()
+TEST(MainTaskSchedulerFactory, createDefault)
 {
-    return MainTaskSchedulerFactory::createInRegistry();
+    const simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry(simulation::DefaultTaskScheduler::name());
+    EXPECT_NE(dynamic_cast<const simulation::DefaultTaskScheduler*>(scheduler), nullptr);
 }
 
-std::string TaskScheduler::getCurrentName()
-{
-    if (const auto& lastCreated = MainTaskSchedulerRegistry::getLastInserted())
-    {
-        return lastCreated.value().first;
-    }
 
-    return {};
+TEST(MainTaskSchedulerFactory, createNotInFactory)
+{
+    const simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry("notInFactory");
+    EXPECT_EQ(scheduler, nullptr);
 }
 
-} // namespace sofa::simulation
+TEST(MainTaskSchedulerFactory, registerAlreadyInFactory)
+{
+    simulation::TaskSchedulerFactory factory;
+    const bool isRegistered = simulation::MainTaskSchedulerFactory::registerScheduler(
+        simulation::DefaultTaskScheduler::name(),
+        &simulation::DefaultTaskScheduler::create);
+    EXPECT_FALSE(isRegistered);
+}
+
+TEST(MainTaskSchedulerFactory, registerNew)
+{
+    const bool isRegistered = simulation::MainTaskSchedulerFactory::registerScheduler(
+        "notTheSameKey", &simulation::DefaultTaskScheduler::create);
+    EXPECT_TRUE(isRegistered);
+}
+
+}

@@ -21,78 +21,45 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-
-#include <sofa/simulation/Task.h>
-
-#include <string> 
+#include <sofa/simulation/config.h>
 #include <functional>
+#include <set>
+#include <map>
+#include <string>
 
 namespace sofa::simulation
 {
 
+class TaskScheduler;
+
 /**
- * Base class for a task scheduler
- *
- * The API allows to:
- * - initialize the scheduler with a number of dedicated threads
- * - add a task to the scheduler
- * - wait until all tasks are done etc.
+ * Simple factory structure used to instantiate a @TaskScheduler based on a name. The name and a
+ * creation function must be registered before trying to instantiate.
  */
-class SOFA_SIMULATION_CORE_API TaskScheduler
+class SOFA_SIMULATION_CORE_API TaskSchedulerFactory
 {
-public:
-    virtual ~TaskScheduler() = default;
-
-    // interface
-    virtual void init(const unsigned int nbThread = 0) = 0;
-            
-    virtual void stop(void) = 0;
-            
-    virtual unsigned int getThreadCount(void) const = 0;
-
-    virtual const char* getCurrentThreadName() = 0;
-
-    virtual int getCurrentThreadType() = 0;
-
-    // queue task if there is space, and run it otherwise
-    virtual bool addTask(Task* task) = 0;
-
-    virtual void workUntilDone(Task::Status* status) = 0;
-
-    virtual Task::Allocator* getTaskAllocator() = 0;
-
-protected:
-
-    friend class Task;
-
-
-
-
-
 public:
 
     /**
-     * Deprecated API. Use TaskSchedulerFactory instead.
+     * Register a new scheduler in the factory
+     *
+     * @param name key in the factory
+     * @param creatorFunc function creating a new TaskScheduler or a derived class
+     * @return false if scheduler could not be registered
      */
-    ///@{
+    bool registerScheduler(const std::string& name,
+                           const std::function<TaskScheduler* ()>& creatorFunc);
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static TaskScheduler* create(const char* name = "");
+    TaskScheduler* instantiate(const std::string& name);
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
+    /**
+     * @return a list of registered schedulers
+     */
+    std::set<std::string> getAvailableSchedulers();
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static bool registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc);
-
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static TaskScheduler* getInstance();
-
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static std::string getCurrentName();
-
-    ///@}
+private:
+    /// factory map: registered schedulers: name, creation function
+    std::map<std::string, std::function<TaskScheduler*()> > m_schedulerCreationFunctions;
 };
 
-} // namespace sofa::simulation
+}

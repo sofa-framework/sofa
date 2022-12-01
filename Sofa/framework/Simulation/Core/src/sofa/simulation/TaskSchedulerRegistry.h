@@ -21,78 +21,52 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-
-#include <sofa/simulation/Task.h>
-
-#include <string> 
-#include <functional>
+#include <sofa/simulation/config.h>
+#include <map>
+#include <string>
+#include <optional>
 
 namespace sofa::simulation
 {
 
+class TaskScheduler;
+
 /**
- * Base class for a task scheduler
- *
- * The API allows to:
- * - initialize the scheduler with a number of dedicated threads
- * - add a task to the scheduler
- * - wait until all tasks are done etc.
+ * Container for task schedulers and its associated name
+ * The registry is also owner of the schedulers: it destroys them in its destructor
  */
-class SOFA_SIMULATION_CORE_API TaskScheduler
+class SOFA_SIMULATION_CORE_API TaskSchedulerRegistry
 {
-public:
-    virtual ~TaskScheduler() = default;
-
-    // interface
-    virtual void init(const unsigned int nbThread = 0) = 0;
-            
-    virtual void stop(void) = 0;
-            
-    virtual unsigned int getThreadCount(void) const = 0;
-
-    virtual const char* getCurrentThreadName() = 0;
-
-    virtual int getCurrentThreadType() = 0;
-
-    // queue task if there is space, and run it otherwise
-    virtual bool addTask(Task* task) = 0;
-
-    virtual void workUntilDone(Task::Status* status) = 0;
-
-    virtual Task::Allocator* getTaskAllocator() = 0;
-
-protected:
-
-    friend class Task;
-
-
-
-
-
 public:
 
     /**
-     * Deprecated API. Use TaskSchedulerFactory instead.
+     * Add a task scheduler to the registry and transfer the ownership
      */
-    ///@{
+    bool addTaskSchedulerToRegistry(TaskScheduler* taskScheduler, const std::string& taskSchedulerName);
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static TaskScheduler* create(const char* name = "");
+    /**
+     * @return a @TaskScheduler if the scheduler name is found in the registry, nullptr otherwise
+     */
+    [[nodiscard]] TaskScheduler* getTaskScheduler(const std::string& taskSchedulerName) const;
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
+    /**
+     * @return true if the scheduler name is found in the registry, false otherwise
+     */
+    [[nodiscard]] bool hasScheduler(const std::string& taskSchedulerName) const;
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static bool registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc);
+    [[nodiscard]] const std::optional<std::pair<std::string, TaskScheduler*> >& getLastInserted() const;
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static TaskScheduler* getInstance();
+    /**
+     * Clear the registry and destroy the task schedulers sstored in the registry
+     */
+    void clear();
 
-        SOFA_ATTRIBUTE_DEPRECATED_STATIC_TASKSCHEDULER()
-        static std::string getCurrentName();
+    ~TaskSchedulerRegistry();
 
-    ///@}
+protected:
+
+    std::map<std::string, TaskScheduler*> m_schedulers;
+    std::optional<std::pair<std::string, TaskScheduler*> > m_lastInserted {};
 };
 
-} // namespace sofa::simulation
+}

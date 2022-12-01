@@ -19,37 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/TaskSchedulerFactory.h>
 #include <sofa/simulation/TaskScheduler.h>
-
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::simulation
 {
 
-TaskScheduler* TaskScheduler::create(const char* name)
+bool TaskSchedulerFactory::registerScheduler(const std::string& name,
+                                             const std::function<TaskScheduler*()>& creatorFunc)
 {
-    return MainTaskSchedulerFactory::createInRegistry(name);
+    const bool isInserted = m_schedulerCreationFunctions.insert({name, creatorFunc}).second;
+    msg_error_when(!isInserted, "TaskSchedulerFactory") << "Cannot register task scheduler '" << name
+            << "' into the factory: a task scheduler with this name already exists";
+    return isInserted;
 }
 
-bool TaskScheduler::registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc)
+TaskScheduler* TaskSchedulerFactory::instantiate(const std::string& name)
 {
-    return MainTaskSchedulerFactory::registerScheduler(name, creatorFunc);
-}
-
-TaskScheduler* TaskScheduler::getInstance()
-{
-    return MainTaskSchedulerFactory::createInRegistry();
-}
-
-std::string TaskScheduler::getCurrentName()
-{
-    if (const auto& lastCreated = MainTaskSchedulerRegistry::getLastInserted())
+    TaskScheduler* scheduler { nullptr };
+    const auto creationIt = m_schedulerCreationFunctions.find(name);
+    if (creationIt != m_schedulerCreationFunctions.end())
     {
-        return lastCreated.value().first;
+        scheduler = creationIt->second();
     }
-
-    return {};
+    else
+    {
+        msg_error("TaskSchedulerFactory") << "Cannot instantiate task scheduler '" << name
+            << "': it has not been registered into the factory";
+    }
+    return scheduler;
 }
 
-} // namespace sofa::simulation
+std::set<std::string> TaskSchedulerFactory::getAvailableSchedulers()
+{
+    std::set<std::string> schedulers;
+    for (const auto& [name, _] : m_schedulerCreationFunctions)
+    {
+        schedulers.insert(name);
+    }
+    return schedulers;
+}
+
+}

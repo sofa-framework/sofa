@@ -29,6 +29,7 @@
 #include <sofa/simulation/TaskScheduler.h>
 
 #include <thread>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 namespace sofa::simulation
 {
@@ -69,7 +70,7 @@ Task::MemoryAlloc InitPerThreadDataTask::run()
 // temp remove this function to use the global one
 void initThreadLocalData()
 {
-    TaskScheduler* scheduler = TaskScheduler::getInstance();
+    TaskScheduler* scheduler = MainTaskSchedulerFactory::createInRegistry();
     std::atomic<int> atomicCounter = scheduler->getThreadCount();
             
     std::mutex  InitThreadSpecificMutex;
