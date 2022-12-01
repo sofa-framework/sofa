@@ -254,7 +254,7 @@ public :
     VecIndex oldRowIndex;
     VecIndex oldRowBegin;
     VecIndex oldColsIndex;
-    VecBlock  oldColsValue;
+    VecBlock oldColsValue;
 
     CompressedRowSparseMatrix()
         : nBlockRow(0), nBlockCol(0), skipCompressZero(true)
@@ -287,7 +287,7 @@ public :
 
     void resizeBlock(Index nbBRow, Index nbBCol)
     {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::resizeBloc, nbBRow, nbBCol);
+        if constexpr (Policy::LogTrace) logCall(FnEnum::resizeBlock, nbBRow, nbBCol);
         if (nBlockRow == nbBRow && nBlockRow == nbBCol)
         {
             /// Just clear the matrix
@@ -575,8 +575,8 @@ protected:
         Index oldMaxRowID = oldRowIndex.back();
 
         Index rowBeginCount = 0;
-        Index maxRowID = std::numeric_limits<Index>::max();
-        Index maxColID = std::numeric_limits<Index>::max();
+        constexpr Index maxRowID = std::numeric_limits<Index>::max();
+        constexpr Index maxColID = std::numeric_limits<Index>::max();
 
         Index maxRegisteredColID = 0;
 
@@ -842,11 +842,11 @@ public:
     /// to call again with -1 as base to undo it.
     void shiftIndices(Index base)
     {
-        for (Index i=0; i<(Index)rowIndex.size(); ++i)
+        for (Index i=0; i< Index(rowIndex.size()); ++i)
             rowIndex[i] += base;
-        for (Index i=0; i<(Index)rowBegin.size(); ++i)
+        for (Index i=0; i< Index(rowBegin.size()); ++i)
             rowBegin[i] += base;
-        for (Index i=0; i<(Index)colsIndex.size(); ++i)
+        for (Index i=0; i< Index(colsIndex.size()); ++i)
             colsIndex[i] += base;
     }
 
@@ -1089,7 +1089,7 @@ public:
 
     void setBlock(Index i, Index j, const Block& v)
     {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::setBloc, i, j, v);
+        if constexpr (Policy::LogTrace) logCall(FnEnum::setBlock, i, j, v);
         if constexpr (!Policy::StoreLowerTriangularBlock) if (i > j) return;
         *wblock(i,j,true) = v;
     }
@@ -1126,7 +1126,7 @@ public:
     **/
     void clearRowBlock(Index i)
     {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::clearRowBloc, i);
+        if constexpr (Policy::LogTrace) logCall(FnEnum::clearRowBlock, i);
         if constexpr (Policy::Verbose)
         {
             if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): row(" << i << ") = 0";
@@ -1136,7 +1136,7 @@ public:
         {
             if (i >= rowBSize())
             {
-                msg_error("CompressedRowSparseMatrix") << << "ERROR: invalid write access to row "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")";
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to row "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")";
                 return;
             }
         }
@@ -1168,7 +1168,7 @@ public:
     **/
     void clearColBlock(Index j)
     {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::clearColBloc, j);
+        if constexpr (Policy::LogTrace) logCall(FnEnum::clearColBlock, j);
         if constexpr (Policy::Verbose)
         {
             if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): col(" << j << ") = 0";
@@ -1239,7 +1239,7 @@ public:
         if constexpr (Policy::AutoCompress && Policy::ClearByZeros) compress(); /// If AutoCompress policy is activated, need to compress zeros.
     }
 
-    std::size_t countEmptyBlocs() const
+    std::size_t countEmptyBlocks() const
     {
         return std::count_if(this->colsValue.cbegin(), this->colsValue.cend(), [] (const Block& b)
         {
