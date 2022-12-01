@@ -310,7 +310,7 @@ public :
             auto currentFile = fileOpenGZ(logTraceFileName.c_str(), "rb");
             if (currentFile == nullptr)
             {
-                std::cout << "ERROR: when reading trace instructions from file : " << logTraceFileName << std::endl;
+                msg_error("CRSTraceReader") << "when reading trace instructions from file : " << logTraceFileName;
             }
             setFileGZ(currentFile);
         }
@@ -320,7 +320,7 @@ public :
             auto currentFile = fileOpen(logTraceFileName.c_str(), "rb");
             if (currentFile == nullptr)
             {
-                std::cout << "ERROR: when reading trace instructions from file : " << logTraceFileName << std::endl;
+                msg_error("CRSTraceReader") << "when reading trace instructions from file : " << logTraceFileName;
             }
             setFile(currentFile);
         }
@@ -444,12 +444,12 @@ private:
             case FnEnum::setCol          : readT(args.i, 0); readT(args.j, 1); readT(args.b, 2); break;
             default                      : 
             {
-                std::cout << "Unrecognized function id " << fnId << std::endl;
+                msg_error("CRSTraceReader") << "readArgs: Unrecognized function id " << fnId;
                 assert(false);
                 break;
             }
         }
-        if (m_debugLogFile.is_open()) m_debugLogFile << std::endl;
+        if (m_debugLogFile.is_open()) m_debugLogFile << "\n";
         return args;
     }
 
@@ -458,18 +458,18 @@ private:
     {
         switch (fnId)
         {
-            case FnEnum::resizeBlock      : m.resizeBloc(args.i, args.j); break;
+            case FnEnum::resizeBlock      : m.resizeBlock(args.i, args.j); break;
             case FnEnum::compress        : m.compress(); break;
-            case FnEnum::setBlock         : m.setBloc(args.i, args.j, args.b); break;
-            case FnEnum::setBlockId       : m.setBloc(args.i, args.j, args.rowId, args.colId, args.b); break;
-            case FnEnum::clearRowBlock    : m.clearRowBloc(args.i); break;
-            case FnEnum::clearColBlock    : m.clearColBloc(args.i); break;
-            case FnEnum::clearRowColBlock : m.clearRowColBloc(args.i); break;
+            case FnEnum::setBlock         : m.setBlock(args.i, args.j, args.b); break;
+            case FnEnum::setBlockId       : m.setBlock(args.i, args.j, args.rowId, args.colId, args.b); break;
+            case FnEnum::clearRowBlock    : m.clearRowBlock(args.i); break;
+            case FnEnum::clearColBlock    : m.clearColBlock(args.i); break;
+            case FnEnum::clearRowColBlock : m.clearRowColBlock(args.i); break;
             case FnEnum::clear           : m.clear(); break;
             case FnEnum::fullRows        : m.fullRows(); break;
             default: 
             {
-                std::cout << "Unrecognized function id " << fnId << std::endl;
+                msg_error("CRSTraceReader") << "defaultcallFn: Unrecognized function id " << fnId ;
                 assert(false);
                 return;
             }

@@ -100,19 +100,19 @@ public:
     static constexpr bool IsAlwaysSquare = false;
     /// Set to true if this matrix is always symmetric (IsAlwaysSquare should be true)
     static constexpr bool IsAlwaysSymmetric = false;
-    /// Set to true if the size of the matrix should be automatically increased when new blocs are added
+    /// Set to true if the size of the matrix should be automatically increased when new blocks are added
     static constexpr bool AutoSize = false;
     /// Set to true if the matrix should be automatically compressed (easier to use, but might cause issues in multithreading)
     static constexpr bool AutoCompress = true;
-    /// Set to true if the blocs that are all zeros should be removed from the matrix when compressing (expensive)
+    /// Set to true if the blocks that are all zeros should be removed from the matrix when compressing (expensive)
     static constexpr bool CompressZeros = true;
     /// Set to true if clear methods will put all concerned value to zero instead of clearing vectors (CompressZeros should be true)
     static constexpr bool ClearByZeros = true;
     /// Set to true if insertion in matrix are in most case at last line index or last col index
     static constexpr bool OrderedInsertion = false;
-    /// Set to true if touch flags should be stored (to remove untouched blocs during compression)
+    /// Set to true if touch flags should be stored (to remove untouched blocks during compression)
     static constexpr bool StoreTouchFlags = false;
-    /// Set to false to disable storage of blocs on the lower triangular part (IsAlwaysSymmetric must be true)
+    /// Set to false to disable storage of blocks on the lower triangular part (IsAlwaysSymmetric must be true)
     static constexpr bool StoreLowerTriangularBlock = true;
 
     static constexpr bool Check   = SOFA_CRS_POLICY_CHECK_FLAG;    
@@ -267,13 +267,13 @@ public :
     {
     }
 
-    /// \returns the number of row blocs
+    /// \returns the number of row blocks
     Index rowBSize() const
     {
         return nBlockRow;
     }
 
-    /// \returns the number of col blocs
+    /// \returns the number of col blocks
     Index colBSize() const
     {
         return nBlockCol;
@@ -307,7 +307,7 @@ public :
             skipCompressZero = true;
             btemp.clear();
             if constexpr (Policy::StoreTouchFlags) touchedBlock.clear();
-            if constexpr (Policy::Verbose) std::cout << this->Name()  << ": resizeBlock("<<nbBRow<<","<<nbBCol<<")"<<std::endl;
+            if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << ": resizeBlock(" << nbBRow << "," << nbBCol << ")";
         }
     }
 
@@ -531,11 +531,11 @@ protected:
     **/
     void compressBtemp()
     {
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): sort "<<btemp.size()<<" temp blocs."<<std::endl;
+        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): sort " << btemp.size() << " temp blocks.";
 
         std::sort(btemp.begin(), btemp.end());
 
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): blocs sorted."<<std::endl;
+        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): blocks sorted.";
 
         /// In This case, matrix is empty, as btemp is sorted just need to fill triplet arrays with btemp
         if (rowIndex.empty())
@@ -582,7 +582,7 @@ protected:
 
         while (itbtemp != endbtemp || curentOldRowID <= oldMaxRowID)
         {
-            if constexpr (Policy::Verbose) std::cout << this->Name() << "("<<rowBSize()<<","<<colBSize()<<"): oldMaxRowID = "<<oldMaxRowID<<" , curentBtempRowID = "<<curentBtempRowID<<""<<std::endl;
+            if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): oldMaxRowID = " << oldMaxRowID << " , curentBtempRowID = " << curentBtempRowID;
 
             if (curentOldRowID < curentBtempRowID) /// In this case, we only add old line
             {
@@ -654,7 +654,7 @@ protected:
                 curentOldRowID = (oldRowIndexCount < oldNbRow ) ? oldRowIndex[oldRowIndexCount] : maxRowID;
             }
         }
-        if constexpr (Policy::Verbose) std::cout << this->Name() << "("<<rowBSize()<<","<<colBSize()<<"): compressed " << oldColsIndex.size()<<" old blocs and " << btemp.size() << " temp blocs into " << rowIndex.size() << " lines and " << colsIndex.size() << " blocs."<<std::endl;
+        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "("<<rowBSize()<<","<<colBSize()<<"): compressed " << oldColsIndex.size()<<" old blocks and " << btemp.size() << " temp blocks into " << rowIndex.size() << " lines and " << colsIndex.size() << " blocks.";
 
         rowBegin.push_back(rowBeginCount);
         btemp.clear();
@@ -864,7 +864,7 @@ protected:
         {
             if (i >= rowBSize() || j >= colBSize())
             {
-                std::cerr << "ERROR: invalid read access to block ("<<i<<","<<j<<") in "<< this->Name() <<" of block size ("<<rowBSize()<<","<<colBSize()<<")"<<std::endl;
+                msg_error("CompressedRowSparseMatrix") << "invalid read access to block(" << i << ", " << j << ") in " << this->Name() << " of block size(" << rowBSize() << ", " << colBSize() << ")";
                 return empty;
             }
         }
@@ -911,7 +911,7 @@ public:
         {
             if (!create && (i >= rowBSize() || j >= colBSize()))
             {
-                std::cerr << "ERROR: invalid write access to block ("<<i<<","<<j<<") in "<< this->Name() <<" of block size ("<<rowBSize()<<","<<colBSize()<<")"<<std::endl;
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to block(" << i << ", " << j << ") in " << this->Name() << " of block size(" << rowBSize() << ", " << colBSize() << ")";
                 return nullptr;
             }
         }
@@ -1037,7 +1037,7 @@ public:
         {
             if (!create && (i >= rowBSize() || j >= colBSize()))
             {
-                std::cerr << "ERROR: invalid write access to block ("<<i<<","<<j<<") in "<< this->Name() <<" of block size ("<<rowBSize()<<","<<colBSize()<<")"<<std::endl;
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to block(" << i << ", " << j << ") in " << this->Name() << " of block size(" << rowBSize() << ", " << colBSize() << ")";
                 return nullptr;
             }
         }
@@ -1129,14 +1129,14 @@ public:
         if constexpr (Policy::LogTrace) logCall(FnEnum::clearRowBloc, i);
         if constexpr (Policy::Verbose)
         {
-            if constexpr (Policy::ClearByZeros) std::cout << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): row("<<i<<") = 0"<<std::endl;
-            else std::cout << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): row("<<i<<") cleared"<<std::endl;
+            if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): row(" << i << ") = 0";
+            else dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): row(" << i << ") cleared";
         }
         if constexpr (Policy::Check)
         {
             if (i >= rowBSize())
             {
-                std::cerr << "ERROR: invalid write access to row "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")"<<std::endl;
+                msg_error("CompressedRowSparseMatrix") << << "ERROR: invalid write access to row "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")";
                 return;
             }
         }
@@ -1171,14 +1171,14 @@ public:
         if constexpr (Policy::LogTrace) logCall(FnEnum::clearColBloc, j);
         if constexpr (Policy::Verbose)
         {
-            if constexpr (Policy::ClearByZeros) std::cout << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): col("<<j<<") = 0"<<std::endl;
-            else std::cout << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): col("<<j<<") cleared"<<std::endl;
+            if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): col(" << j << ") = 0";
+            else dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): col(" << j << ") cleared";
         }
         if constexpr (Policy::Check)
         {
             if (j >= colBSize())
             {
-                std::cerr << "ERROR: invalid write access to col "<<j<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")"<<std::endl;
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to col " << j << " in " << this->Name() << " of size(" << rowBSize() << ", " << colBSize() << ")";
                 return;
             }
         }
@@ -1255,13 +1255,13 @@ public:
     template< typename = typename std::enable_if< Policy::IsAlwaysSquare> >
     void clearRowColBlock(Index i)
     {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::clearRowColBloc, i);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
+        if constexpr (Policy::LogTrace) logCall(FnEnum::clearRowColBlock, i);
+        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0";
         if constexpr (Policy::Check)
         {
             if (i >= rowBSize() || i >= colBSize())
             {
-                std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")"<<std::endl;
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to row and column " << i << " in " << this->Name() << " of size (" << rowBSize() << "," << colBSize() << ")";
                 return;
             }
         }
@@ -1291,7 +1291,7 @@ public:
 
         if (!foundRowId && !foundColId)
         {
-            std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")"<<std::endl;
+            msg_error("CompressedRowSparseMatrix") << "invalid write access to row and column " << i << " in " << this->Name() << " of size (" << rowBSize() << "," << colBSize() << ")";
             return;
         }
 
@@ -1708,7 +1708,7 @@ public:
         // check ap, size m beecause ther is at least the diagonal value wich is different of 0
         if (a_p[0]!=0)
         {
-            std::cerr << "CompressedRowSparseMatrix: First value of row indices (a_p) should be 0" << std::endl;
+            msg_error("CompressedRowSparseMatrix") << "First value of row indices (a_p) should be 0";
             return false;
         }
 
@@ -1716,7 +1716,7 @@ public:
         {
             if (a_p[i]<=a_p[i-1])
             {
-                std::cerr << "CompressedRowSparseMatrix: Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                msg_error("CompressedRowSparseMatrix") << "Row (a_p) indices are not sorted index " << i - 1 << " : " << a_p[i - 1] << " , " << i << " : " << a_p[i];
                 return false;
             }
         }
@@ -1726,7 +1726,7 @@ public:
         }
         else if (a_p[m]!=nzmax)
         {
-            std::cerr << "CompressedRowSparseMatrix: Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] << std::endl;
+            msg_error("CompressedRowSparseMatrix") << "Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m];
             return false;
         }
 
@@ -1739,12 +1739,12 @@ public:
             {
                 if (a_i[i] <= a_i[i-1])
                 {
-                    std::cerr << "CompressedRowSparseMatrix: Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not sorted index " << i - 1 << " : " << a_i[i - 1] << " , " << i << " : " << a_p[i];
                     return false;
                 }
                 if (a_i[i]<0 || a_i[i]>=n)
                 {
-                    std::cerr << "CompressedRowSparseMatrix: Column (a_i) indices are not correct " << i << " : " << a_i[i] << std::endl;
+                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not correct " << i << " : " << a_i[i];
                     return false;
                 }
             }
@@ -1755,24 +1755,24 @@ public:
         {
             if (traits::empty(a_x[i]))
             {
-                std::cerr << "CompressedRowSparseMatrix: Warning, matrix contains empty block at index " << i << std::endl;
+                msg_warning("CompressedRowSparseMatrix") << "Warning, matrix contains empty block at index " << i;
                 return false;
             }
         }
 
         if (n!=m)
         {
-            std::cerr << "CompressedRowSparseMatrix: the matrix is not square" << std::endl;
+            msg_error("CompressedRowSparseMatrix") << "the matrix is not square";
             return false;
         }
 
-        std::cerr << "Check_matrix passed successfully" << std::endl;
+        msg_info("CompressedRowSparseMatrix") << "Check_matrix passed successfully";
         return true;
     }
 
     void setTraceWriter(CRSTraceWriter<Matrix>* matrixTraceWriter)
     {
-        if constexpr (!Policy::LogTrace) std::cout<<"ERROR : You need to activate LogTrace Policy to be able to trace matrix."<<std::endl;
+        if constexpr (!Policy::LogTrace) msg_error("CompressedRowSparseMatrix") << "You need to activate LogTrace Policy to be able to trace matrix.";
         else
         {
             m_traceWriter = matrixTraceWriter;
@@ -1786,10 +1786,10 @@ public:
 
     std::ostream& write(std::ostream& os) const
     {
-        os << rowIndex << std::endl;
-        os << rowBegin << std::endl;
-        os << colsIndex << std::endl;
-        os << colsValue << std::endl;
+        os << rowIndex << "\n";
+        os << rowBegin << "\n";
+        os << colsIndex << "\n";
+        os << colsValue << "\n";
 
         return os;
     }
@@ -1836,7 +1836,7 @@ protected:
     {
         for (auto& v : vec)
             os <<v<<";";
-        os<<std::endl;
+        os<<"\n";
     }
 
     template<typename TVec>
