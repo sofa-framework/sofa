@@ -8,6 +8,8 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RegularGridTopology name="GridTopology" nx="10" ny="10" nz="10" min="-10 -10 -10" max="10 10 10" drawEdges="1"/>
+
+    <DefaultAnimationLoop/>
     <Node name="Tetra-Topo">
         <TetrahedronSetTopologyContainer name="Container" checkTopology="1"/>
         <TetrahedronSetTopologyModifier name="Modifier" />

@@ -19,6 +19,7 @@
     
     <VisualStyle displayFlags="showBehavior showVisual" />
     <BackgroundSetting color="1 1 1"/>
+    <DefaultAnimationLoop/>
     
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
     <MeshTopology name="mesh" src="@loader" />
@@ -28,7 +29,7 @@
 
         <Node name="rigid">
             <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
-            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
+            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" printLog="0" />
             
             <MechanicalObject name="rigidframe" template="Rigid3d" position="1 0 1 0 0 0 1" />
             <UniformMass  />

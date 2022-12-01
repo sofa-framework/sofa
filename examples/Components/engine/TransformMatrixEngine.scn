@@ -5,6 +5,8 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showVisual" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Transformation">
         <TranslateTransformMatrixEngine name="T1" translation="10 11 12"/>
         <ScaleTransformMatrixEngine name="T2" inT="@T1.outT" scale="1.2 1.5 0.8"/>

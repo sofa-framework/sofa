@@ -10,6 +10,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showVisual showBehaviorModels showWireframe" />
+    <DefaultAnimationLoop/>
     <Node name="Livers">
         <Node name="Green Liver">
             <MeshOBJLoader name="loader" filename="mesh/liver-smooth.obj" trianglesGroups="Mesh1  -1 0 4384" />

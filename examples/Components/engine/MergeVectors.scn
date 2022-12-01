@@ -6,6 +6,7 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <DefaultAnimationLoop/>
     
     <Node name="mesh">
         

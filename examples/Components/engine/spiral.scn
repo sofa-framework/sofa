@@ -4,6 +4,8 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showCollisionModels" />
     <Node name="Spiral">
         <RegularGridTopology name="topo" n="201 5 2" min="-5 -0.1 -0.1" max="5 0.1 0.1" />

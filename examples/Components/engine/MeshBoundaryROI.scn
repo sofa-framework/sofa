@@ -11,6 +11,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <BackgroundSetting color="1 1 1" />
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <DefaultAnimationLoop/>
 
     <MeshOBJLoader name="mesh1" filename="mesh/c_open.obj" triangulate="0"/>
     <!-- computeTriangleList or computeQuadList must be set to false. Otherwise both are consider, and boundary detection cannot rely on a unique element -->
