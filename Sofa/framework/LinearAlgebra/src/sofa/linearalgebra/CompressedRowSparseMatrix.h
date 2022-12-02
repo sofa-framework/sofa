@@ -1342,39 +1342,6 @@ public:
 /// @name BlocMatrixWriter operators
 /// @{
 
-    // The SFINAE stuff disables some warnings about hiding overloads from BaseMatrix::add
-    template <typename T = Block, typename std::enable_if_t<
-                  !std::is_same_v<T, double>, int > = 0 >
-    void add(unsigned int bi, unsigned int bj, const Block& b)
-    {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::add, bi, bj, b);
-        addBlock(bi, bj, b);
-    }
-
-    template <typename T = Block, typename std::enable_if_t<
-                  std::is_same_v<T, double>, int > = 0 >
-    void add(unsigned int bi, unsigned int bj, const Block& b)
-    {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::add, bi, bj, b);
-        addBlock(bi, bj, b);
-    }
-
-    template <typename T = Block, typename std::enable_if_t<
-                  !std::is_same_v<T, double>, int > = 0 >
-    void add(unsigned int bi, unsigned int bj, int& rowId, int& colId, const Block& b)
-    {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::addId, bi, bj, rowId, colId, b);
-        addBlock(bi, bj, rowId, colId, b);
-    }
-
-    template <typename T = Block, typename std::enable_if_t<
-                  std::is_same_v<T, double>, int > = 0 >
-    void add(unsigned int bi, unsigned int bj, int& rowId, int& colId, const Block& b)
-    {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::addId, bi, bj, rowId, colId, b);
-        addBlock(bi, bj, rowId, colId, b);
-    }
-
     void addDBlock(unsigned int bi, unsigned int bj, const DBlock& b)
     {
         if constexpr (Policy::LogTrace) logCall(FnEnum::addDBlock, bi, bj, b);
@@ -1891,26 +1858,72 @@ public:
         nBlockCol = nbCol;
     }
 
+    // this SFINAE is needed to avoid implementing this version with a const double&
+    // which will conflict with the (mandatory to implement) version with double,
+    // coming from BaseMatrix
+    template <typename T = Block, typename std::enable_if_t<
+        !std::is_same_v<T, double>, int > = 0 >
+    void add(BaseMatrix::Index bi, BaseMatrix::Index bj, const Block& b)
+    {
+        if constexpr (Policy::LogTrace) logCall(FnEnum::add, bi, bj, b);
+        addBlock(bi, bj, b);
+    }
+
+    void add(BaseMatrix::Index bi, BaseMatrix::Index bj, int& rowId, int& colId, const Block& b)
+    {
+        if constexpr (Policy::LogTrace) logCall(FnEnum::addId, bi, bj, rowId, colId, b);
+        addBlock(bi, bj, rowId, colId, b);
+    }
+
+    // Mandatory implementations from BaseMatrix API
     void set(BaseMatrix::Index i, BaseMatrix::Index j, double v) override
     {
-        BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
-        traits::v(*wblock(i, j, true), bi, bj) = (Real)v;
+        if constexpr (std::is_same_v<Block, double>)
+        {
+            setBlock(i, j, v);
+        }
+        else
+        {
+            BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
+            traits::v(*wblock(i, j, true), bi, bj) = (Real)v;
+        }
     }
 
     void add(BaseMatrix::Index i, BaseMatrix::Index j, double v) override
     {
-        BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
-        traits::v(*wblock(i, j, true), bi, bj) += (Real)v;
+        if constexpr (std::is_same_v<Block,double>)
+        {
+            addBlock(i, j, v);
+        }
+        else
+        {
+            BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
+            traits::v(*wblock(i, j, true), bi, bj) += (Real)v;
+        }
     }
 
     void add(BaseMatrix::Index row, BaseMatrix::Index col, const type::Mat3x3d& _M) override
     {
-        BaseMatrix::add(row, col, _M);
+        if constexpr (std::is_same_v<Block, type::Mat3x3d>)
+        {
+            addBlock(row, col, _M);
+        }
+        else
+        {
+            BaseMatrix::add(row, col, _M);
+        }
     }
 
     void add(BaseMatrix::Index row, BaseMatrix::Index col, const type::Mat3x3f& _M) override
     {
-        BaseMatrix::add(row, col, _M);
+        if constexpr (std::is_same_v<Block, type::Mat3x3f>)
+        {
+            addBlock(row, col, _M);
+        }
+        else
+        {
+            BaseMatrix::add(row, col, _M);
+        }
     }
 
     /// @name setter/getter & product methods on template vector types
