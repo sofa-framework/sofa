@@ -241,7 +241,7 @@ void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBloc(index); });
+    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
 }
 
 template <class DataTypes>

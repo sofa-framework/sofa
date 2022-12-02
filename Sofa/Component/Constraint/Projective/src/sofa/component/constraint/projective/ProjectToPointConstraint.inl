@@ -187,7 +187,7 @@ void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
                     it != indices.end();
                     ++it)
         {
-            c->clearColBloc(*it);
+            c->clearColBlock(*it);
         }
     }
 }

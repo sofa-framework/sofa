@@ -224,7 +224,7 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
         const SetIndexArray& indices = d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            c->clearColBloc(*it);
+            c->clearColBlock(*it);
         }
     }
 }

@@ -30,7 +30,7 @@
 namespace sofa::defaulttype
 {
 
-template< class TBloc >
+template< class TBlock >
 struct CompressedRowSparseMatrixToEigenSparse
 {
 
@@ -89,7 +89,7 @@ class CompressedRowSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, R
 };
 
 
-template< class TBloc >
+template< class TBlock >
 struct EigenSparseToCompressedRowSparseMatrix
 {
 
@@ -131,9 +131,9 @@ struct EigenSparseToCompressedRowSparseMatrixVec
                 while (i != rowNonZeros)
                 {
                     TVec val;
-                    int currentBlockIndex = blockIndex;
+                    int currenTBlockkIndex = blockIndex;
                     //int currentCol   = *colPtr;
-                    while (currentBlockIndex == blockIndex && i != rowNonZeros)
+                    while (currenTBlockkIndex == blockIndex && i != rowNonZeros)
                     {
                         val[blockOffset] = *valuePtr; // TODO: valPtr ?
                         ++i;
@@ -143,7 +143,7 @@ struct EigenSparseToCompressedRowSparseMatrixVec
                         blockOffset = *colPtr - (blockIndex * TVec::size());
                     }
 
-                    rowIterator.addCol(currentBlockIndex, val);
+                    rowIterator.addCol(currenTBlockkIndex, val);
                 }
             }
         }

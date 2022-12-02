@@ -60,18 +60,18 @@ public:
     static constexpr int  matrixType = 2;
 };
 
-template<typename TBloc, typename TPolicy = CRSConstraintPolicy >
-class CompressedRowSparseMatrixConstraint : public sofa::linearalgebra::CompressedRowSparseMatrix<TBloc, TPolicy>
+template<typename TBlock, typename TPolicy = CRSConstraintPolicy >
+class CompressedRowSparseMatrixConstraint : public sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TPolicy>
 {
 public:
-    typedef CompressedRowSparseMatrixConstraint<TBloc, TPolicy> Matrix;
-    typedef linearalgebra::CompressedRowSparseMatrix<TBloc, TPolicy> CRSMatrix;
+    typedef CompressedRowSparseMatrixConstraint<TBlock, TPolicy> Matrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<TBlock, TPolicy> CRSMatrix;
     typedef typename CRSMatrix::Policy Policy;
 
-    using Block     = TBloc;
-    using VecBloc  = typename linearalgebra::CRSBlocTraits<Block>::VecBloc;
-    using VecIndex = typename linearalgebra::CRSBlocTraits<Block>::VecIndex;
-    using VecFlag  = typename linearalgebra::CRSBlocTraits<Block>::VecFlag;
+    using Block     = TBlock;
+    using VecBlock  = typename linearalgebra::CRSBlockTraits<Block>::VecBlock;
+    using VecIndex = typename linearalgebra::CRSBlockTraits<Block>::VecIndex;
+    using VecFlag  = typename linearalgebra::CRSBlockTraits<Block>::VecFlag;
     using Index    = typename VecIndex::value_type;
 
     typedef typename CRSMatrix::Block Data;
@@ -144,7 +144,7 @@ public:
         }
 
         /// @return the constraint value
-        const TBloc &val() const
+        const TBlock &val() const
         {
             return m_matrix->colsValue[m_internal];
         }
@@ -417,14 +417,14 @@ public:
         void addCol(Index id, const Block& value)
         {
             if constexpr (Policy::LogTrace) m_matrix->logCall(linearalgebra::FnEnum::addCol, m_rowIndex, id, value);
-            *m_matrix->wbloc(m_rowIndex, id, true) += value;
+            *m_matrix->wblock(m_rowIndex, id, true) += value;
         }
 
-        // TODO: this is wrong in case the returned bloc is within the uncompressed triplets
+        // TODO: this is wrong in case the returned block is within the uncompressed triplets
         void setCol(Index id, const Block& value)
         {
             if constexpr (Policy::LogTrace) m_matrix->logCall(linearalgebra::FnEnum::setCol, m_rowIndex, id, value);
-            *m_matrix->wbloc(m_rowIndex, id, true) = value;
+            *m_matrix->wblock(m_rowIndex, id, true) = value;
         }
 
         bool operator==(const RowWriteAccessor& it2) const
@@ -484,7 +484,7 @@ public:
     RowConstIterator readLine(Index lIndex) const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        Index rowId = (this->nBlocRow == 0) ? 0 : lIndex * this->rowIndex.size() / this->nBlocRow;
+        Index rowId = (this->nBlockRow == 0) ? 0 : lIndex * this->rowIndex.size() / this->nBlockRow;
         if (this->sortedFind(this->rowIndex, lIndex, rowId))
         {
             return RowConstIterator(this, rowId);
@@ -507,7 +507,7 @@ public:
     /// If lindex already exists, overwrite existing constraint
     void setLine(Index lIndex, RowType row)
     {
-        if (readLine(lIndex) != this->end()) this->clearRowBloc(lIndex);
+        if (readLine(lIndex) != this->end()) this->clearRowBlock(lIndex);
 
         RowWriteAccessor it(this, lIndex);
         ColConstIterator colIt = row.first;
@@ -542,7 +542,7 @@ public:
     {
         typedef typename VecDeriv::value_type Deriv;
 
-        static_assert(std::is_same<Deriv, TBloc>::value, "res must be contain same type as CompressedRowSparseMatrix type");
+        static_assert(std::is_same<Deriv, TBlock>::value, "res must be contain same type as CompressedRowSparseMatrix type");
 
         for (auto rowIt = begin(), rowItEnd = end(); rowIt != rowItEnd; ++rowIt)
         {
@@ -555,7 +555,7 @@ public:
     }
 
     /// write to an output stream
-    inline friend std::ostream& operator << ( std::ostream& out, const CompressedRowSparseMatrixConstraint<TBloc, Policy>& sc)
+    inline friend std::ostream& operator << ( std::ostream& out, const CompressedRowSparseMatrixConstraint<TBlock, Policy>& sc)
     {
         for (RowConstIterator rowIt = sc.begin(); rowIt !=  sc.end(); ++rowIt)
         {
@@ -572,14 +572,14 @@ public:
     }
 
     /// read from an input stream
-    inline friend std::istream& operator >> ( std::istream& in, CompressedRowSparseMatrixConstraint<TBloc, Policy>& sc)
+    inline friend std::istream& operator >> ( std::istream& in, CompressedRowSparseMatrixConstraint<TBlock, Policy>& sc)
     {
         sc.clear();
 
         unsigned int c_id;
         unsigned int c_number;
         unsigned int c_dofIndex;
-        TBloc c_value;
+        TBlock c_value;
 
         while (!(in.rdstate() & std::istream::eofbit))
         {
@@ -620,13 +620,13 @@ public:
 ///    outRows.initRows(inMatrix.begin(),inMatrix.end());
 ///    for_each(inMatrix.begin(), inMatrix.end(), [auto rowIt] { my_compute_fn(rowIt, outRows.writeLine(rowIt))}); // parallelized loop
 ///    outRows.addToMatrix(outMatrix); // sequential copy to output matrix
-template <class TBloc>
+template <class TBlock>
 class SparseMatrixRowsBuffer
 {
     using Index = int;
-    using Block = TBloc;
-    using VecBloc  = typename linearalgebra::CRSBlocTraits<Block>::VecBloc;
-    using VecIndex = typename linearalgebra::CRSBlocTraits<Block>::VecIndex;
+    using Block = TBlock;
+    using VecBlock  = typename linearalgebra::CRSBlockTraits<Block>::VecBlock;
+    using VecIndex = typename linearalgebra::CRSBlockTraits<Block>::VecIndex;
 public:
     class RowBuffer
     {
@@ -637,7 +637,7 @@ public:
             m_cols.clear();
             m_values.clear();
         }
-        void addCol(Index col, const TBloc& val)
+        void addCol(Index col, const TBlock& val)
         {
             m_cols.push_back(col);
             m_values.push_back(val);
@@ -657,7 +657,7 @@ public:
     protected:
         Index m_row;
         VecIndex m_cols;
-        VecBloc m_values;
+        VecBlock m_values;
     };
     template<class RowConstIterator>
     void initRows(const RowConstIterator& rowBegin, const RowConstIterator& rowEnd)

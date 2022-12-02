@@ -32,7 +32,7 @@ namespace sofa::defaulttype
 {
 
 
-template< class TBloc >
+template< class TBlock >
 class MapMapSparseMatrixToEigenSparse
 {
 
@@ -91,7 +91,7 @@ class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
 };
 
 
-template< class TBloc >
+template< class TBlock >
 class EigenSparseToMapMapSparseMatrix
 {
 
@@ -131,8 +131,8 @@ struct EigenSparseToMapMapSparseMatrixVec
                 while (i != rowNonZeros)
                 {
                     TVec val;
-                    int currentBlockIndex = blockIndex;
-                    while (currentBlockIndex == blockIndex && i != rowNonZeros)
+                    int currenTBlockkIndex = blockIndex;
+                    while (currenTBlockkIndex == blockIndex && i != rowNonZeros)
                     {
                         val[blockOffset] = *valuePtr;
                         ++i;
@@ -142,7 +142,7 @@ struct EigenSparseToMapMapSparseMatrixVec
                         blockOffset = *colPtr - (blockIndex * TVec::size());
                     }
 
-                    rowIterator.addCol(currentBlockIndex, val);
+                    rowIterator.addCol(currenTBlockkIndex, val);
                 }
             }
         }
