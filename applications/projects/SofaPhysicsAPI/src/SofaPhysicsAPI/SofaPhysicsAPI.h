@@ -22,6 +22,7 @@
 #pragma once
 
 #include <SofaPhysicsAPI/config.h>
+#include <string>
 
 class SofaPhysicsOutputMesh;
 class SofaPhysicsDataMonitor;
@@ -74,11 +75,13 @@ public:
     void drawGL();
 
     /// Return the number of currently active output meshes
-    unsigned int            getNbOutputMeshes();
+    unsigned int           getNbOutputMeshes() const;
 
-    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID);
-    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name);
-
+    /// return pointer to the @param meshID 'th SofaPhysicsOutputMesh 
+    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID) const;
+    /// return pointer to the @param meshID 'th SofaPhysicsOutputMesh. Return nullptr if out of bounds.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name) const;
+    /// returns pointer to the SofaPhysicsOutputMesh with the name equal to @param name. Return nullptr if not found.
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
 
     /// Return the number of currently active output Tetrahedron meshes
@@ -141,7 +144,7 @@ public:
     SofaPhysicsOutputMesh();
     ~SofaPhysicsOutputMesh();
 
-    const std::string& getNameStr();
+    const std::string& getNameStr() const;
     const char* getName(); ///< (non-unique) name of this object
     ID          getID();   ///< unique ID of this object
 

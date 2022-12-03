@@ -58,9 +58,13 @@ public:
     void sendValue(const char* name, double value);
     void drawGL();
 
-    unsigned int getNbOutputMeshes();
-    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID);
-    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name);
+    /// return the number of SofaPhysicsOutputMesh (i.e @sa outputMeshes size)
+    unsigned int getNbOutputMeshes() const;
+
+    /// return pointer to the SofaPhysicsOutputMesh at the @param meshID position in @sa outputMeshes. Return nullptr if out of bounds.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID) const; 
+    /// return pointer to the SofaPhysicsOutputMesh with the name equal to @param name in @sa outputMeshes. Return nullptr if not found.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name) const;
 
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
     SofaPhysicsOutputMesh** getOutputMeshes();
