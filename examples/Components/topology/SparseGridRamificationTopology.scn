@@ -18,6 +18,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

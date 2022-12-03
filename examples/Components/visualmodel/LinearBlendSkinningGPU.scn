@@ -8,6 +8,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglFloat4Attribute OglInt4Attribute OglMatrix4VectorVariable OglShader] -->
+    <DefaultAnimationLoop/>
 
     <EulerExplicitSolver name="odesolver"  />
     <Node 	 name="DeformableObject"   >

@@ -5,6 +5,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager SpotLight] -->
     
     <BackgroundSetting color="0.5 0.6 0.7"/>
+    <DefaultAnimationLoop/>
     <LightManager ambient="1 1 1"/>
 
     <SpotLight name="light01" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="0 3.5 10"/>

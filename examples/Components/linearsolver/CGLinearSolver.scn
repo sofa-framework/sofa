@@ -9,6 +9,8 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
+    
     <Node>
         <EulerImplicitSolver name="eulerimplicit_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-20" threshold="1e-20" warmStart="1" />

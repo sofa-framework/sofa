@@ -19,6 +19,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglFloatVariable OglShader] -->
 
+    <DefaultAnimationLoop/>
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

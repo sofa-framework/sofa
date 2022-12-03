@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Node name="Root" gravity="0 0 0" time="0" animate="0">
+<Node name="Root" gravity="0 0 0" time="0" animate="0" bbox="-1 -1 -1 1 1 1">
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [PartialFixedConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
@@ -9,10 +9,12 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <VisualStyle displayFlags="showBehaviorModels showMapping" />
+    <DefaultAnimationLoop/>
+
     <Node name="parent node with independent DOFs">
         <!-- 		<EulerImplicitSolver name="ODE solver" printLog="0"  verbose="0" rayleighStiffness="0.0" rayleighMass="0"/> -->
         <StaticSolver name="ODE solver" printLog="0" />
-        <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="0" verbose="0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid2d" />
         <PartialFixedConstraint fixedDirections="1 1 0" />
         <UniformMass template="Rigid2d" name="mass" />

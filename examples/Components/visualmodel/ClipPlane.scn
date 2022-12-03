@@ -13,6 +13,7 @@
 	<RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
 	<RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [ClipPlane OglModel] -->
 
+	<DefaultAnimationLoop/>
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

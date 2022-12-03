@@ -13,6 +13,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
+    <DefaultAnimationLoop/>
 
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />

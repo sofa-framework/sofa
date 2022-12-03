@@ -22,6 +22,8 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
+    <DefaultAnimationLoop/>
+    
     <Node name="FullTopology">
         <MeshOBJLoader name="loader" filename="mesh/sphere_05.obj" />
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

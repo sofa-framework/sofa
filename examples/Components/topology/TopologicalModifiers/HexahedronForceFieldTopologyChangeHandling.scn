@@ -20,6 +20,7 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
 
     <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
     <Node name="HexahedralFEMForceField">

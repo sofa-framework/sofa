@@ -12,6 +12,8 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Reference">
         <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1-bent.obj" scale="0.95" handleSeams="1" />
         <OglModel src="@meshLoader_0" dx="20" dy="17" dz="0" color="green" />

@@ -22,6 +22,7 @@
     <DiscreteIntersection/>
     <DefaultContactManager response="PenalityContactForceField" name="collision response"/>
 -->
+    <DefaultAnimationLoop/>    
     <VisualStyle displayFlags="showForceFields" />
     <Node name="input">
         <MeshTopology name="surface" filename="mesh/liver-smooth.obj" />

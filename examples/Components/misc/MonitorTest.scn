@@ -1,4 +1,5 @@
 <Node name="root" gravity="0 -9.81 0">
+<DefaultAnimationLoop/>    
     <Node name="node">
       <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
       <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->

@@ -25,6 +25,7 @@
     <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
 
     <Node name="TriangularBendingSprings">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

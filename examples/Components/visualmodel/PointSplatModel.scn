@@ -13,7 +13,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [PointSetTopologyContainer PointSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel PointSplatModel] -->
 
-
+    <DefaultAnimationLoop/>
     <DefaultPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
     <BruteForceBroadPhase/>

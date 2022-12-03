@@ -15,6 +15,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
     <VisualStyle displayFlags="showBehaviorModels showCollisionModels showForceFields" />
+    <DefaultAnimationLoop/>
     
     <DefaultPipeline/>
     <BruteForceBroadPhase/>

@@ -24,6 +24,8 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
+    <DefaultAnimationLoop/>
+    
 <!--    <SplitAndAttachBodyButtonSetting button="Middle" stiffness="5000" arrowSize="0.2" snapDistance="2" />-->
     <Node name="FullTopology">
         <MeshOBJLoader name="loader" filename="mesh/sphere_05.obj" />

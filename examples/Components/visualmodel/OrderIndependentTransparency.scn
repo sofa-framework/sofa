@@ -4,9 +4,10 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OrderIndependentTransparencyManager] -->
 
+    <DefaultAnimationLoop/>
     <OrderIndependentTransparencyManager />
 
-    <Node>
+    <Node name="1">
         <MeshOBJLoader name="loader" filename="mesh/raptor_8kp.obj"/>
 
         <OglModel name="Red"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="0 0 0" scale="1 1 1" />
@@ -25,7 +26,7 @@
         <OglModel name="Yellow"  src="@loader" material="Default Diffuse 1 1 1 0 1 Ambient 0 1 1 1 1 Specular 1 1 1 1 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="-12 0 0" scale="0.1 0.1 0.1" />
     </Node>
 
-    <Node>
+    <Node name="2">
         <MeshOBJLoader name="loader" filename="mesh/cylinder.obj"/>
 
         <OglModel name="Red"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="1 1 1" />
@@ -37,7 +38,7 @@
         <OglModel name="Yellow"  src="@loader" material="Default Diffuse 1 1 0 0 1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="0.1 0.1 0.1" />
     </Node>
 
-    <Node>
+    <Node name="3">
         <MeshOBJLoader name="loader" filename="mesh/cylinder.obj"/>
 
         <OglModel name="Yellow"  src="@loader" material="Default Diffuse 1 1 0 0 1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale="0.1 0.1 0.1" />

@@ -10,6 +10,8 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <DefaultAnimationLoop/>
+    
     <Node name="DeformableObject">
         <RungeKutta4Solver name="odeExplicitSolver" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>

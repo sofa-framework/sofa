@@ -20,7 +20,7 @@ trivially, it does not require a linear solver.
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 
     <Node name="DeformableObject">

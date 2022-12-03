@@ -7,6 +7,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [RecordedCamera VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showVisual" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceBroadPhase/>

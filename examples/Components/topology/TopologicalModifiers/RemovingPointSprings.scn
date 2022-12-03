@@ -12,6 +12,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
 
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showForceFields showCollisionModels showInteractionForceFields" />
+    <DefaultAnimationLoop/>
 
     <VisualGrid size="5" nbSubdiv="20"/>
     <LineAxis size="1"/>

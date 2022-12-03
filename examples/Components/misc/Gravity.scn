@@ -20,6 +20,7 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <DefaultAnimationLoop/>
     <Node name="Torus1">
         <Gravity gravity="0 -10 0" />
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

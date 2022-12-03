@@ -17,6 +17,9 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->  
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] --> 
+
 
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe" />
     <DefaultPipeline depth="6" verbose="0" draw="0"/>
@@ -24,6 +27,8 @@
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity"  alarmDistance="0.006" contactDistance="0.001" coneFactor="0.3" angleCone="0.01" filterIntersection="true"/>
 	<DefaultContactManager name="Response" response="NeedleContact"/>
+	<LCPConstraintSolver maxIt="1000" tolerance="0.001" />
+	<FreeMotionAnimationLoop/>
 
 	<Node name="sutureSoftCubes">
 		<EulerImplicitSolver name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
