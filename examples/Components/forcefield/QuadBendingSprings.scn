@@ -17,6 +17,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="Response" />
+    <DefaultAnimationLoop/>
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="SquareCloth1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

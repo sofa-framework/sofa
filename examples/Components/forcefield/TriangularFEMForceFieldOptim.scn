@@ -13,6 +13,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
+    <DefaultAnimationLoop/>
     <!-- Activate this loader to use a square mesh with only two triangles (useful to debug base equations) -->
     <!--<MeshGmshLoader name="loaderSquare" triangles="0 1 3  1 2 3" position="0 0 0  1 0 0  1 1 0  0 1 0" />-->
     <!-- Activate this loader to load a square mesh with many triangles -->

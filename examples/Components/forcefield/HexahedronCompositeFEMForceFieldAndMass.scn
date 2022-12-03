@@ -16,10 +16,12 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridMultipleTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
 
     <!-- A soft gelatin object contains 2 bead, one stiff and one soft. Even using large embedding mesh, the
 	  HexahedronCompositeFEM permits to well simulate the global behavior, and the HexahedronCompositeFEMMapping
 	  permits to have a good interpolation of the inside bead behaviors.-->
+      <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showVisual showForceFields" />
     <Node name="plane">
         <MeshOBJLoader name="meshLoader_0" filename="mesh/plane_loop_2.obj" scale=".2" handleSeams="1" />
@@ -34,7 +36,8 @@
         <SparseGridMultipleTopology n="6 3 3" fileTopology="mesh/bubille_out.obj" fileTopologies="mesh/bubille_out.obj mesh/bubille_in1.obj mesh/bubille_in2.obj" nbVirtualFinerLevels="3" finestConnectivity="false" stiffnessCoefs="1 0.0001 50" massCoefs="1 1 1" />
         <EulerImplicitSolver vdamping="0" rayleighMass="0" rayleighStiffness="0" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject />
+<!--         <SparseLDLSolver printLog="false"/>
+ -->        <MechanicalObject />
         <HexahedronCompositeFEMForceFieldAndMass drawType="0" lumpedMass="false" nbVirtualFinerLevels="2" youngModulus="600" poissonRatio="0.3" method="polar" density=".1" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="-5 -2.1 -10    10 -1.9 10" />
         <Node name="Collinonunif">

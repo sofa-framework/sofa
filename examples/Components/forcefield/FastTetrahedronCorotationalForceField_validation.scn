@@ -22,6 +22,8 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
+    <DefaultAnimationLoop/>
+    
     <Node name="MeshTopology">
         <MeshGmshLoader name="meshLoader0" filename="mesh/cylinder.msh" />
         <TetrahedronSetTopologyContainer name="Container1" src="@meshLoader0" />

@@ -16,6 +16,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping Quad2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
@@ -32,14 +33,14 @@
         <DiagonalMass massDensity="0.2" />
         <FixedConstraint indices="12 15 28 31" />
         <Node name="Q">
-            <include href="Objects/QuadSetTopology.xml" src="@" />
+            <include href="Objects/QuadSetTopology.xml" src="@../loader" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Hexa" output="@Visual" />
             </Node>
             <Node name="T">
-                <include href="Objects/TriangleSetTopology.xml" src="@" />
+                <include href="Objects/TriangleSetTopology.xml" src="@../Container" />
                 <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
                 <TriangleCollisionModel />
             </Node>

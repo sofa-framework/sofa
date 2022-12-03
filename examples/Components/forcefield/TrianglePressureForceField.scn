@@ -23,6 +23,8 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
+
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -34,7 +36,7 @@
         <FixedConstraint indices="0" />
         <TetrahedronFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="T">
-            <include href="Objects/TriangleSetTopology.xml" />
+            <include href="Objects/TriangleSetTopology.xml" src="@../Container"/>
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TrianglePressureForceField name="PFF" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="1 0 0" />
             <TriangleCollisionModel />

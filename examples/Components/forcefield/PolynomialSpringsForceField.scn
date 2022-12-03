@@ -14,6 +14,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showInteractionForceFields"/>
+    <DefaultAnimationLoop/>
     <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
     <Node name="Liver" >
