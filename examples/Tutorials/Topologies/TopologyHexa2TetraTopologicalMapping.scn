@@ -25,6 +25,8 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Hexa Mesh">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="40" tolerance="1e-09" threshold="1e-09" />
