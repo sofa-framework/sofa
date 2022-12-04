@@ -6,6 +6,8 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showBehavior" />
+    <DefaultAnimationLoop/>
+    
     <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
     <OglModel name="Objective" src="@meshLoader_0" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
