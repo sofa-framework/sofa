@@ -84,6 +84,11 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 
     int n = M.colSize();
 
+    if (n == 0)
+    {
+        return true;
+    }
+
     int * M_colptr = (int *)Mfiltered.getRowBegin().data();
     int * M_rowind = (int *)Mfiltered.getColsIndex().data();
     Real * M_values = (Real *)Mfiltered.getColsValue().data();
