@@ -18,7 +18,6 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaNewmat"/> <!-- Needed to use components [LULinearSolver] -->
-    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] --> 
 
     <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />

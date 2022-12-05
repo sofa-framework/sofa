@@ -1,6 +1,3 @@
-<!-- TODO: we cannot observe what is written in examples/Benchmark/Analysis/constantMomentum.html
-Is it due to the abscence of the plot or the the imposed velocities are wrong? It seems a bit extreme to me.  -->
-
 <Node name="root" dt="0.01" gravity="0 0 0">
 <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->  
 <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  

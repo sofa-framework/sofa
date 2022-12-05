@@ -1,5 +1,4 @@
 <!-- Requires php install. On 30/11/22, installed with Ubuntu 22.04.01, using php 8.1 https://tecadmin.net/how-to-install-php-on-ubuntu-22-04/  -->
-<!-- Error: $size=$_ENV["s"], $_ENV["s"] is not defined (on my computer at last) -->
 
 <Node name="root" dt="0.04">
 <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings showForceFields" />

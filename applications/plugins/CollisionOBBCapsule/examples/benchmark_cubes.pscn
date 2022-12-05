@@ -1,5 +1,4 @@
 <!-- Requires php install. On 30/11/22, installed with Ubuntu 22.04.01, using php 8.1 https://tecadmin.net/how-to-install-php-on-ubuntu-22-04/  -->
-<!-- Error: Object type OBBCollisionModel<> was not created -> has to be moved to plugin CollisionOBBCapsule or replaced-->
 
 <?xml version="1.0" ?>
 <?php echo '<!-- Generated from benchmark_cubes.pscn -->';?>
