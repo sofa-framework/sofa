@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_SPTR_H
-#define SOFA_CORE_OBJECTMODEL_SPTR_H
+#pragma once
 
 #include <sofa/type/vector.h>
 #include <sofa/core/config.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -82,14 +75,6 @@ public:
     template<class UPtr>
     SPtr_const_cast(UPtr p) : T::SPtr(const_cast<T*>(p.get())) {}
 };
+} // namespace sofa::core::objectmodel
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-
-
-#endif
 

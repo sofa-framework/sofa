@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_INTERSECTORFACTORY_H
-#define SOFA_CORE_COLLISION_INTERSECTORFACTORY_H
+#pragma once
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <typeindex>
 #include <typeinfo>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 template<class TIntersectionClass>
@@ -107,11 +100,4 @@ public:
 protected:
     std::string m_name;
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

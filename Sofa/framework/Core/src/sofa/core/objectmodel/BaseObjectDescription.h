@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_H
-#define SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_H
+#pragma once
 
 #include <sofa/type/vector.h>
 #include <map>
 
 #include <sofa/core/config.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 class Base;
@@ -134,11 +127,4 @@ protected:
     AttributeMap attributes;
     std::vector< std::string > errors;
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
 } // namespace sofa
-
-#endif

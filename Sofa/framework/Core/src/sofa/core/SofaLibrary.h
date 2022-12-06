@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
+#pragma once
 
 #include <sofa/core/CategoryLibrary.h>
 
-
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 
@@ -45,7 +40,7 @@ public:
     typedef std::vector< CategoryLibrary* > VecCategory;
     typedef VecCategory::const_iterator VecCategoryIterator;
 
-    virtual ~SofaLibrary() {};
+    virtual ~SofaLibrary() {}
 
     virtual void build(const std::vector< std::string >& examples=std::vector< std::string >());
     virtual void clear();
@@ -73,6 +68,3 @@ protected:
 };
 
 }
-}
-
-#endif

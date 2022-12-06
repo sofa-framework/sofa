@@ -27,13 +27,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/Locale.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
@@ -198,9 +192,4 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
         return nullptr;
     }
 }
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

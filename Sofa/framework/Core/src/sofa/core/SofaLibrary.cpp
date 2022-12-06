@@ -24,9 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-namespace core
+namespace sofa::core
 {
 
 //Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
@@ -151,7 +149,5 @@ void SofaLibrary::clear()
         delete categories[i];
     }
     categories.clear();
-}
-
 }
 }

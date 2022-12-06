@@ -147,7 +147,7 @@ public:
     class GetObjectsCallBack
     {
     public:
-      virtual ~GetObjectsCallBack() {}
+        virtual ~GetObjectsCallBack() = default;
         virtual void operator()(void* ptr) = 0;
     };
 
@@ -283,18 +283,9 @@ public:
         ptr = this->get<T>(path);
     }
 
+    /// Helper functor allowing to insert an object into a container
     template<class T, class Container>
-    class GetObjectsCallBackT : public GetObjectsCallBack
-    {
-    public:
-        Container* dest;
-        GetObjectsCallBackT(Container* d) : dest(d) {}
-        virtual ~GetObjectsCallBackT() override {}
-        void operator()(void* ptr) override
-	{
-	    dest->push_back(reinterpret_cast<T*>(ptr));
-	}
-    };
+    class GetObjectsCallBackT;
 
     /// Generic list of objects access template wrapper, possibly searching up or down from the current context
     template<class T, class Container>
@@ -412,6 +403,25 @@ public:
 
 protected:
     ComponentNameHelper m_nameHelper;
+};
+
+template<class T, class Container>
+class BaseContext::GetObjectsCallBackT : public BaseContext::GetObjectsCallBack
+{
+public:
+    Container* dest;
+    GetObjectsCallBackT(Container* d) : dest(d) {}
+    void operator()(void* ptr) override
+    {
+        if constexpr (sofa::type::trait::is_vector<Container>::value)
+        {
+            dest->push_back(reinterpret_cast<T*>(ptr));
+        }
+        else //for sets
+        {
+            dest->insert(reinterpret_cast<T*>(ptr));
+        }
+    }
 };
 
 } // namespace sofa::core::objectmodel

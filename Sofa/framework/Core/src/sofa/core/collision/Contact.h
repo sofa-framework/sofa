@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_CONTACT_H
-#define SOFA_CORE_COLLISION_CONTACT_H
+#pragma once
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/collision/Intersection.h>
@@ -29,13 +28,7 @@
 
 #include <vector>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 /**
  * @brief contact response component handling the response between a pair of models
@@ -62,8 +55,8 @@ protected:
     ~Contact() override { }
 	
 private:
-    Contact(const Contact& n);
-    Contact& operator=(const Contact& n);
+    Contact(const Contact& n) = delete;
+    Contact& operator=(const Contact& n) = delete;
 	
 public:
     /// Get the pair of collision models which are in contact
@@ -97,13 +90,13 @@ public:
         {
             return getInstance()->createAnyObject(arg);
         }
-	};
+    };
 
     /// Create a new contact given 2 collision elements and an intersection method
     static Contact::SPtr Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod, bool verbose=true);
 
     template<class RealContact>
-        static typename RealContact::SPtr create(RealContact*, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
+    static typename RealContact::SPtr create(RealContact*, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
     {
         typedef typename RealContact::CollisionModel1 RealCollisionModel1;
         typedef typename RealContact::CollisionModel2 RealCollisionModel2;
@@ -116,11 +109,4 @@ public:
     }
 
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

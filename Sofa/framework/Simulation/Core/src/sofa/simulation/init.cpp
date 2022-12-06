@@ -24,6 +24,8 @@
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
 
+#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+
 namespace sofa
 {
 
@@ -54,6 +56,7 @@ SOFA_SIMULATION_CORE_API void cleanup()
 {
     if (!s_cleanedUp)
     {
+        sofa::simulation::MainTaskSchedulerRegistry::clear();
         sofa::core::cleanup();
         s_cleanedUp = true;
     }

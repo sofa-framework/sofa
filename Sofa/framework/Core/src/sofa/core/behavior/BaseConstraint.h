@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 /**
  *  \brief Component computing constraints within a simulated body.
  *
- *  This class define the abstract API common to all constraints.
+ *  This class defines the abstract API common to all constraints.
  *  A BaseConstraint computes constraints applied to one or more simulated body
  *  given its current position and velocity.
  *

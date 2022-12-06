@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENTLIBRARY_H
-#define SOFA_COMPONENTLIBRARY_H
+#pragma once
 
 #include <sofa/core/ObjectFactory.h>
 
-
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
@@ -66,6 +61,3 @@ protected:
     ClassEntry::SPtr entry;
 };
 }
-}
-
-#endif

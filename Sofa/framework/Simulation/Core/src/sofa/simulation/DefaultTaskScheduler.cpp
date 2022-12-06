@@ -23,11 +23,15 @@
 
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/simulation/WorkerThread.h>
-
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 namespace sofa::simulation
-{       
-        
+{
+
+const bool DefaultTaskSchedulerRegistered = MainTaskSchedulerFactory::registerScheduler(
+    DefaultTaskScheduler::name(),
+    &DefaultTaskScheduler::create);
+
 class StdTaskAllocator : public Task::Allocator
 {
 public:

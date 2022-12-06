@@ -22,20 +22,11 @@
 
 #include <sofa/core/objectmodel/IdleEvent.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( IdleEvent )
 
 IdleEvent::IdleEvent() {}
 IdleEvent::~IdleEvent() {}
-
-}  // objectmodel
-}  // core
-}  // sofa
+} // sofa::core::objectmodel

@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_EVENT_H
-#define SOFA_CORE_OBJECTMODEL_EVENT_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <cstdlib>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /// this has to be added in the Event class definition (as public)
@@ -94,11 +87,4 @@ protected:
 
     static size_t s_lastEventTypeIndex; ///< storing the last given id
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::objectmodel

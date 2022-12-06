@@ -43,8 +43,8 @@ protected:
     ~BaseState() override {}
 	
 private:
-	BaseState(const BaseState& n) ;
-	BaseState& operator=(const BaseState& n) ;
+    BaseState(const BaseState& n) = delete;
+    BaseState& operator=(const BaseState& n) = delete;
 public:
     /// Current size of all stored vectors
     virtual Size getSize() const = 0;

@@ -22,10 +22,8 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/BaseState.h>
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 BaseMapping::BaseMapping()
@@ -164,7 +162,4 @@ bool BaseMapping::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core

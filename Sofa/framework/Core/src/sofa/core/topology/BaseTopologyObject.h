@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGYOBJECT_H
-#define SOFA_CORE_TOPOLOGY_BASETOPOLOGYOBJECT_H
+#pragma once
+
 #include <sofa/core/objectmodel/BaseObject.h>
-namespace sofa
-{
 
-namespace core
+namespace sofa::core::topology
 {
-
-namespace topology
-{
-
 
 class SOFA_CORE_API BaseTopologyObject : public virtual core::objectmodel::BaseObject
 {
@@ -48,11 +42,5 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
+} // namespace sofa::core::topology
 
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
