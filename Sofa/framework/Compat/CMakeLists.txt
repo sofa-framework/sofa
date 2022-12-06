@@ -20,7 +20,6 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/helper/DualQuat.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/DualQuat.inl
     ${SOFACOMPATSRC_ROOT}/sofa/helper/LCPSolver.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/StateMask.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/template.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Texture.h
