@@ -36,7 +36,7 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__REBIND()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__REBIND() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+    SOFA_ATTRIBUTE_DISABLED( \
         "v22.06", "v22.12", \
         "As an alternative, use sofa::type::Rebind or sofa::type::rebind_to.")
 #endif
