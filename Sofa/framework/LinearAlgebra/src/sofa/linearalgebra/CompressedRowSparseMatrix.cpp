@@ -26,12 +26,50 @@
 namespace sofa::linearalgebra
 {
 
+
+template <class TMatrix, class TBlockMatrix>
+void addBlocMat(TMatrix& self, Index row, Index col, const TBlockMatrix& _M)
+{
+    if (row % TBlockMatrix::nbLines == 0 && col % TBlockMatrix::nbCols == 0)
+    {
+        *self.wbloc(row / TBlockMatrix::nbLines, col / TBlockMatrix::nbCols, true) += _M;
+    }
+    else
+    {
+        self.linearalgebra::BaseMatrix::add(row, col, _M);
+    }
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3d& _M)
+{
+    addBlocMat(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3f& _M)
+{
+    addBlocMat(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3d& _M)
+{
+    addBlocMat(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrix<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3f& _M)
+{
+    addBlocMat(*this, row, col, _M);
+}
+
 template<class TMatrix, sofa::Size L, sofa::Size C, class real>
 void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L, C, real> >& M, typename TMatrix::filter_fn* filter, const typename TMatrix::Block& ref)
 {
     M.compress();
-    self.nBlockRow = 1;
-    self.nBlockCol = 1;
+    self.nBlockRow = M.getBlockRows() * M.nBlockRow;
+    self.nBlockCol = M.getBlockCols() * M.nBlockCol;
     self.rowIndex.clear();
     self.rowBegin.clear();
     self.colsIndex.clear();

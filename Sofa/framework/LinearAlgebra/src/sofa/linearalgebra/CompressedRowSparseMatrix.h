@@ -317,6 +317,7 @@ public :
             colsValue.clear();
             skipCompressZero = true;
             btemp.clear();
+            this->compress();
             if constexpr (Policy::StoreTouchFlags) touchedBlock.clear();
             if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << ": resizeBlock(" << nbBRow << "," << nbBCol << ")";
         }
@@ -1850,8 +1851,8 @@ protected:
     static void split_row_index(BaseMatrix::Index& index, BaseMatrix::Index& modulo) { bloc_index_func<NL, BaseMatrix::Index>::split(index, modulo); }
     static void split_col_index(BaseMatrix::Index& index, BaseMatrix::Index& modulo) { bloc_index_func<NC, BaseMatrix::Index>::split(index, modulo); }
 public:
-    BaseMatrix::Index rowSize(void) const override { return rowBSize(); }
-    BaseMatrix::Index colSize(void) const override { return colBSize(); }
+    BaseMatrix::Index rowSize(void) const override { return nBlockRow * NL; }
+    BaseMatrix::Index colSize(void) const override { return nBlockCol * NC; }
     SReal element(BaseMatrix::Index i, BaseMatrix::Index j) const override
     {
         BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
@@ -1861,76 +1862,54 @@ public:
     void resize(BaseMatrix::Index nbRow, BaseMatrix::Index nbCol) override
     {
         resizeBlock((nbRow + NL - 1) / NL, (nbCol + NC - 1) / NC);
-        nBlockRow = nbRow;
-        nBlockCol = nbCol;
+        //nBlockRow = nbRow;
+        //nBlockCol = nbCol;
     }
 
-    // this SFINAE is needed to avoid implementing this version with a const double&
-    // which will conflict with the (mandatory to implement) version with double,
-    // coming from BaseMatrix
-    template <typename T = Block, typename std::enable_if_t<
-        !std::is_same_v<T, double>, int > = 0 >
-    void add(BaseMatrix::Index bi, BaseMatrix::Index bj, const Block& b)
-    {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::add, bi, bj, b);
-        addBlock(bi, bj, b);
-    }
+    /*resizeBlock((nbRow + NL - 1) / NL, (nbCol + NC - 1) / NC);
+    nBlockRow = nbRow;
+    nBlockCol = nbCol;*/
 
-    void add(BaseMatrix::Index bi, BaseMatrix::Index bj, int& rowId, int& colId, const Block& b)
-    {
-        if constexpr (Policy::LogTrace) logCall(FnEnum::addId, bi, bj, rowId, colId, b);
-        addBlock(bi, bj, rowId, colId, b);
-    }
+    // Theses functions were called add() in the original version from ISSOFA
+    // but to avoid confusions with indices (block indices), 
+    // they are disabled; use addBlock() insead
+    //template <typename T = Block, typename std::enable_if_t<
+    //    !std::is_same_v<T, double>, int > = 0 >
+    //void add(BaseMatrix::Index bi, BaseMatrix::Index bj, const Block& b)
+    //{
+    //    if constexpr (Policy::LogTrace) logCall(FnEnum::add, bi, bj, b);
+    //    addBlock(bi, bj, b);
+    //}
+
+    //void add(BaseMatrix::Index bi, BaseMatrix::Index bj, int& rowId, int& colId, const Block& b)
+    //{
+    //    if constexpr (Policy::LogTrace) logCall(FnEnum::addId, bi, bj, rowId, colId, b);
+    //    addBlock(bi, bj, rowId, colId, b);
+    //}
 
     // Mandatory implementations from BaseMatrix API
+    // Warning, contrary to all the other functions
+    // Indices indexes on the singular values, not on blocks
     void set(BaseMatrix::Index i, BaseMatrix::Index j, double v) override
     {
-        if constexpr (std::is_same_v<Block, double>)
-        {
-            setBlock(i, j, v);
-        }
-        else
-        {
-            BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
-            traits::v(*wblock(i, j, true), bi, bj) = (Real)v;
-        }
+        BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
+        traits::v(*wblock(i, j, true), bi, bj) = (Real)v;
     }
 
     void add(BaseMatrix::Index i, BaseMatrix::Index j, double v) override
     {
-        if constexpr (std::is_same_v<Block,double>)
-        {
-            addBlock(i, j, v);
-        }
-        else
-        {
-            BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
-            traits::v(*wblock(i, j, true), bi, bj) += (Real)v;
-        }
+        BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
+        traits::v(*wblock(i, j, true), bi, bj) += (Real)v;
     }
 
-    void add(BaseMatrix::Index row, BaseMatrix::Index col, const type::Mat3x3d& _M) override
+    void add(BaseMatrix::Index i, BaseMatrix::Index j, const type::Mat3x3d& _M) override
     {
-        if constexpr (std::is_same_v<Block, type::Mat3x3d>)
-        {
-            addBlock(row, col, _M);
-        }
-        else
-        {
-            BaseMatrix::add(row, col, _M);
-        }
+        BaseMatrix::add(i, j, _M);
     }
 
-    void add(BaseMatrix::Index row, BaseMatrix::Index col, const type::Mat3x3f& _M) override
+    void add(BaseMatrix::Index i, BaseMatrix::Index j, const type::Mat3x3f& _M) override
     {
-        if constexpr (std::is_same_v<Block, type::Mat3x3f>)
-        {
-            addBlock(row, col, _M);
-        }
-        else
-        {
-            BaseMatrix::add(row, col, _M);
-        }
+        BaseMatrix::add(i, j, _M);
     }
 
     /// @name setter/getter & product methods on template vector types
@@ -2354,6 +2333,12 @@ public:
 //#ifdef SPARSEMATRIX_VERBOSE
 //#undef SPARSEMATRIX_VERBOSE
 //#endif
+
+
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3d& _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3f& _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3d& _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3f& _M);
 
 template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3, 3, double> > >(CompressedRowSparseMatrix<type::Mat<3, 3, double> >& M, filter_fn* filter, const Block& ref);
 template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3, 3, float> > >(CompressedRowSparseMatrix<type::Mat<3, 3, float> >& M, filter_fn* filter, const Block& ref);
