@@ -1336,6 +1336,7 @@ public:
         }
 
         btemp.clear();
+        compress();
     }
 
 
