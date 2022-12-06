@@ -28,7 +28,7 @@
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
     <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
-    <DefaultAnimationLoop/>
+    <FreeMotionAnimationLoop/>
 
     <Node name="ChainRigid">
         <Node name="TorusFixed">
