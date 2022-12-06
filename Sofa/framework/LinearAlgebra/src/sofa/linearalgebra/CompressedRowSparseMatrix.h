@@ -1558,9 +1558,12 @@ public:
     template<typename RB, typename RP, typename MB, typename MP >
     void mul( CompressedRowSparseMatrix<RB,RP>& res, const CompressedRowSparseMatrix<MB,MP>& m ) const
     {
-        assert( Block::nbCols == MB::nbLines );
-        assert( RB::nbLines == Block::nbLines );
-        assert( MB::nbCols == RB::nbCols );
+        if constexpr (!std::is_arithmetic_v<Block> && !std::is_arithmetic_v<RB> && !std::is_arithmetic_v<MB>)
+        {
+            assert(Block::nbCols == MB::nbLines);
+            assert(RB::nbLines == Block::nbLines);
+            assert(MB::nbCols == RB::nbCols);
+        }
 
         assert( colBSize() == m.rowBSize() );
 
@@ -1622,9 +1625,12 @@ public:
     template<typename RB, typename RP, typename MB, typename MP >
     void mulTranspose( CompressedRowSparseMatrix<RB,RP>& res, const CompressedRowSparseMatrix<MB,MP>& m ) const
     {
-        assert( Block::nbLines == MB::nbLines );
-        assert( RB::nbLines == Block::nbCols );
-        assert( MB::nbCols == RB::nbCols );
+        if constexpr (!std::is_arithmetic_v<Block> && !std::is_arithmetic_v<RB> && !std::is_arithmetic_v<MB>)
+        {
+            assert(Block::nbLines == MB::nbLines);
+            assert(RB::nbLines == Block::nbCols);
+            assert(MB::nbCols == RB::nbCols);
+        }
 
         assert( rowBSize() == m.rowBSize() );
 
