@@ -32,11 +32,11 @@ typedef unsigned int Index; ///< Type used for topology indices
 typedef float Real;         ///< Type used for coordinates
 typedef void* ID;           ///< Type used for IDs
 
-// Exit code
-#define API_SUCCESS EXIT_SUCCESS
-#define API_NULL -1
-#define API_SCENE_NULL -11
-#define API_SCENE_FAILED -10
+/// List of error code to be used to translate methods return values without logging system
+#define API_SUCCESS EXIT_SUCCESS ///< success value
+#define API_NULL -1              ///< SofaPhysicsAPI created is null
+#define API_SCENE_NULL -10       ///< Scene creation failed. I.e Root node is null
+#define API_SCENE_FAILED -11     ///< Scene loading failed. I.e root node is null but scene is still empty
 
 /// Internal implementation sub-class
 class SofaPhysicsSimulation;
@@ -51,10 +51,13 @@ public:
 
     /// Load an XML file containing the main scene description
     int load(const char* filename);
+    /// Call unload of the current scene graph.
     int unload();
 
+    /// Get the current api Name behind this interface.
     virtual const char* APIName();
 
+    /// Create an empty scene with only a SOFA root Node.
     virtual void createScene();
 
     /// Start the simulation
@@ -125,7 +128,9 @@ public:
     double getCurrentFPS() const;
 
     double* getGravity() const;
+    /// Get the current scene gravity using the ouptut @param values which is a double[3]. Return error code.
     int getGravity(double* values) const;
+    /// Set the current scene gravity using the input @param gravity which is a double[3]
     void setGravity(double* gravity);
 
     /// Return the number of currently active data monitors
@@ -158,11 +163,11 @@ public:
 
     unsigned int getNbVertices(); ///< number of vertices
     const Real* getVPositions();  ///< vertices positions (Vec3)
-    int getVPositions(Real* values);
+    int getVPositions(Real* values); ///< get the positions/vertices of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]
     const Real* getVNormals();    ///< vertices normals   (Vec3)
-    int getVNormals(Real* values);
+    int getVNormals(Real* values); ///< get the normals per vertex of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]
     const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
-    int getVTexCoords(Real* values);
+    int getVTexCoords(Real* values); ///< get the texture coordinates (UV) per vertex of this mesh inside ouput @param values, of type Real[ 2*nbVertices ]
     int getTexCoordRevision();    ///< changes each time texture coord data are updated
     int getVerticesRevision();    ///< changes each time vertices data are updated
 
@@ -179,12 +184,12 @@ public:
 
     unsigned int getNbTriangles(); ///< number of triangles
     const Index* getTriangles();   ///< triangles topology (3 indices / triangle)
-    int getTriangles(int* values);
+    int getTriangles(int* values); ///< get the triangle topology inside ouput @param values, of type int[ 3*nbTriangles ]
     int getTrianglesRevision();    ///< changes each time triangles data is updated
 
     unsigned int getNbQuads(); ///< number of quads
     const Index* getQuads();   ///< quads topology (4 indices / quad)
-    int getQuads(int* values);
+    int getQuads(int* values); ///< get the quad topology inside ouput @param values, of type int[ 4*nbQuads ]
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     /// Internal implementation sub-class
