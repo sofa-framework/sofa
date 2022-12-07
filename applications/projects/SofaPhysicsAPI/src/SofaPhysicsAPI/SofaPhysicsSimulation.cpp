@@ -309,11 +309,9 @@ const char *SofaPhysicsSimulation::APIName()
 int SofaPhysicsSimulation::load(const char* cfilename)
 {
     std::string filename = cfilename;
-    std::cout << "FROM APP: SofaPhysicsSimulation::load(" << filename << ")" << std::endl;
     sofa::helper::BackTrace::autodump();
 
     //bool wasAnimated = isAnimated();
-    bool success = true;
     sofa::helper::system::DataRepository.findFile(filename);
     m_RootNode = m_Simulation->load(filename.c_str());
     if (m_RootNode.get())

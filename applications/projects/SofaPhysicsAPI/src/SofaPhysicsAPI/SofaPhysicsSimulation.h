@@ -47,7 +47,10 @@ public:
 
     const char* APIName();
 
+    /// Load an XML file containing the main scene description. Will return API_SUCCESS or API_SCENE_FAILED if loading failed
     int load(const char* filename);
+
+    /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
     int unload();
     void createScene();
 
