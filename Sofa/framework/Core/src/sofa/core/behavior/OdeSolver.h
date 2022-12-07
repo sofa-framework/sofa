@@ -52,11 +52,11 @@ protected:
     OdeSolver();
 
     ~OdeSolver() override;
-	
+
 private:
-	OdeSolver(const OdeSolver& n) ;
-	OdeSolver& operator=(const OdeSolver& n) ;
-	
+    OdeSolver(const OdeSolver& n) = delete;
+    OdeSolver& operator=(const OdeSolver& n) = delete;
+
 public:
     /// Main computation method.
     ///

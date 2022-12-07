@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VISUAL_DISPLAYFLAGS_H
-#define SOFA_CORE_VISUAL_DISPLAYFLAGS_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/type/vector.h>
 #include <map>
 
 
-namespace sofa
-{
-namespace core
-{
-namespace visual
+namespace sofa::core::visual
 {
 
 struct SOFA_CORE_API tristate
@@ -104,7 +99,7 @@ protected:
         {
             bool operator() (const unsigned char& c1, const unsigned char& c2) const
             {
-              return tolower (c1) < tolower (c2);
+                return tolower (c1) < tolower (c2);
             }
         };
         bool operator() (const std::string & s1, const std::string & s2) const
@@ -258,9 +253,3 @@ SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, cons
 SOFA_CORE_API DisplayFlags difference_displayFlags(const DisplayFlags& parent, const DisplayFlags& child);
 
 }
-
-}
-
-}
-
-#endif // SOFA_CORE_VISUAL_DISPLAYFLAGS_H

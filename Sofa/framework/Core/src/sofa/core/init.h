@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_INIT_H
-#define SOFA_CORE_INIT_H
+#pragma once
 
 #include <sofa/core/config.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /// @brief Initialize the SofaCore library, as well as its dependencies:
@@ -44,9 +40,5 @@ SOFA_CORE_API void cleanup();
 /// @brief Return true if and only if the SofaCore library has been cleaned
 /// up.
 SOFA_CORE_API bool isCleanedUp();
+} // namespace sofa::core
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

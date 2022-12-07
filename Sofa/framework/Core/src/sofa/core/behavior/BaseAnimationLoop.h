@@ -54,11 +54,11 @@ protected:
 
     /// Save the initial state for later uses in reset()
     void storeResetState() override;
-	
-	
+
+
 private:
-	BaseAnimationLoop(const BaseAnimationLoop& n) = delete ;
-	BaseAnimationLoop& operator=(const BaseAnimationLoop& n) = delete ;
+    BaseAnimationLoop(const BaseAnimationLoop& n) = delete ;
+    BaseAnimationLoop& operator=(const BaseAnimationLoop& n) = delete ;
 
 public:
     /// Main computation method.

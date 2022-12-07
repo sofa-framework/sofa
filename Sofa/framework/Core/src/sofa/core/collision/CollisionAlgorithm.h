@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_COLLISIONALGORITHM_H
-#define SOFA_CORE_COLLISION_COLLISIONALGORITHM_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 class CollisionAlgorithm : public virtual objectmodel::BaseObject
@@ -61,11 +54,4 @@ public:
 protected:
     virtual void changeInstance(Instance)=0;
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

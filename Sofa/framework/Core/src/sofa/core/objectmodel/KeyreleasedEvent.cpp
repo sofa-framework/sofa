@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 SOFA_EVENT_CPP( KeyreleasedEvent )
@@ -47,9 +41,4 @@ char KeyreleasedEvent::getKey() const
 {
     return m_char;
 }
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

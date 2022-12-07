@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_CLASSINFO_H
-#define SOFA_CORE_OBJECTMODEL_CLASSINFO_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/helper/TypeInfo.h>
 #include <string>
 #include <map>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 class Base;
@@ -99,11 +92,4 @@ template<class T>
 const ClassInfo& classidT() { return TClassInfo<T>::get(); }
 
 #define classid(T) sofa::core::objectmodel::classidT<T>()
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::objectmodel

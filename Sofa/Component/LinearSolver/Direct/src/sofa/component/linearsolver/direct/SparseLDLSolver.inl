@@ -72,7 +72,7 @@ template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
 {
     sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-    Inherit::solve_cpu(&z[0],&r[0],(InvertData *) this->getMatrixInvertData(&M));
+    Inherit::solve_cpu(z.ptr(), r.ptr(), (InvertData *) this->getMatrixInvertData(&M));
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
@@ -84,9 +84,9 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 
     int n = M.colSize();
 
-    int * M_colptr = (int *) &Mfiltered.getRowBegin()[0];
-    int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
-    Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
+    int * M_colptr = (int *)Mfiltered.getRowBegin().data();
+    int * M_rowind = (int *)Mfiltered.getColsIndex().data();
+    Real * M_values = (Real *)Mfiltered.getColsValue().data();
 
     if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || Mfiltered.getRowBegin().size() < (size_t)n )
     {

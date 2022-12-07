@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_CONTEXTOBJECT_H
-#define SOFA_CORE_OBJECTMODEL_CONTEXTOBJECT_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -57,13 +50,4 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
-
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
-
+} // namespace sofa::core::objectmodel

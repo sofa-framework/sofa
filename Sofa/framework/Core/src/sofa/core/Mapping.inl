@@ -19,18 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MAPPING_INL
-#define SOFA_CORE_MAPPING_INL
+#pragma once
 
 #include <sofa/core/State.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 template <class In, class Out>
@@ -271,9 +267,4 @@ bool Mapping<In,Out>::setTo(BaseState* to)
 
     return true;
 }
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

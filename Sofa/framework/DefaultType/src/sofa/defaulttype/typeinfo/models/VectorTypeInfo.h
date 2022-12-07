@@ -193,12 +193,12 @@ struct VectorTypeInfo
 
     static const void* getValuePtr(const DataType& data)
     {
-        return &data[0];
+        return data.data();
     }
 
     static void* getValuePtr(DataType& data)
     {
-        return &data[0];
+        return data.data();
     }
 };
 
