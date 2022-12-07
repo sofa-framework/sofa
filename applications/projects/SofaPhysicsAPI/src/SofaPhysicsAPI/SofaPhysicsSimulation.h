@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSSIMULATION_IMPL_H
-#define SOFAPHYSICSSIMULATION_IMPL_H
+#pragma once
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
@@ -59,7 +58,14 @@ public:
     void sendValue(const char* name, double value);
     void drawGL();
 
-    unsigned int getNbOutputMeshes();
+    /// return the number of SofaPhysicsOutputMesh (i.e @sa outputMeshes size)
+    unsigned int getNbOutputMeshes() const;
+
+    /// return pointer to the SofaPhysicsOutputMesh at the @param meshID position in @sa outputMeshes. Return nullptr if out of bounds.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID) const; 
+    /// return pointer to the SofaPhysicsOutputMesh with the name equal to @param name in @sa outputMeshes. Return nullptr if not found.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name) const;
+
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
     SofaPhysicsOutputMesh** getOutputMeshes();
 
@@ -155,5 +161,3 @@ public:
     }
 
 };
-
-#endif // SOFAPHYSICSSIMULATION_IMPL_H

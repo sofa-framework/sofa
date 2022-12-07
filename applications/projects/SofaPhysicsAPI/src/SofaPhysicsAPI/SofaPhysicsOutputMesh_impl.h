@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSOUTPUTMESH_IMPL_H
-#define SOFAPHYSICSOUTPUTMESH_IMPL_H
+#pragma once
 
 #include "SofaPhysicsAPI.h"
 
@@ -35,6 +34,7 @@ public:
     Impl();
     ~Impl();
 
+    const std::string& getNameStr() const; ///< return SOFA output mesh component name
     const char* getName(); ///< (non-unique) name of this object
     ID          getID();   ///< unique ID of this object
 
@@ -78,9 +78,10 @@ protected:
     SofaOutputMesh::SPtr sObj;
     sofa::type::vector<SofaVAttribute::SPtr> sVA;
 
+    /// Default static name in case component creation failed
+    std::string defaultName = "None";
+
 public:
     SofaOutputMesh* getObject() { return sObj.get(); }
     void setObject(SofaOutputMesh* o);
 };
-
-#endif // SOFAPHYSICSOUTPUTMESH_IMPL_H
