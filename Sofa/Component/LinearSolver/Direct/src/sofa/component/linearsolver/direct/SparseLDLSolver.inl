@@ -86,6 +86,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 
     if (n == 0)
     {
+        msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
         return true;
     }
 
