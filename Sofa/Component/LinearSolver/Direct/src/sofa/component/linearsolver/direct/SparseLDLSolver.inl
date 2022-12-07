@@ -84,6 +84,12 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 
     int n = M.colSize();
 
+    if (n == 0)
+    {
+        msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
+        return true;
+    }
+
     int * M_colptr = (int *)Mfiltered.getRowBegin().data();
     int * M_rowind = (int *)Mfiltered.getColsIndex().data();
     Real * M_values = (Real *)Mfiltered.getColsValue().data();

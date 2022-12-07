@@ -19,54 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/CpuTaskStatus.h>
 
-#pragma once
-
-#include <sofa/component/animationloop/config.h>
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.12", "v23.06")
-
-#include <sofa/simulation/CpuTask.h>
-
-#include <sofa/simulation/fwd.h>
-#include <sofa/core/fwd.h>
-#include <sofa/core/MultiVecId.h>
-
-namespace sofa::component::animationloop
+namespace sofa::simulation
 {
+CpuTaskStatus::CpuTaskStatus(): m_busy(0)
+{}
 
-class SOFA_ATTRIBUTE_DEPRECATED_FREEMOTIONTASK() FreeMotionTask : public sofa::simulation::CpuTask
+bool CpuTaskStatus::isBusy() const
 {
-public:
-    FreeMotionTask(
-            sofa::simulation::Node* node,
-            const sofa::core::ExecParams* params,
-            const core::ConstraintParams* cparams,
-            SReal dt,
-            sofa::core::MultiVecId pos,
-            sofa::core::MultiVecId freePos,
-            sofa::core::MultiVecDerivId freeVel,
-            simulation::common::MechanicalOperations* mop,
-            sofa::core::objectmodel::BaseContext* context,
-            sofa::simulation::CpuTask::Status* status,
-            bool parallelSolve = false);
-    ~FreeMotionTask() override = default;
-    sofa::simulation::Task::MemoryAlloc run() final;
+    return (m_busy.load(std::memory_order_relaxed) > 0);
+}
 
-private:
-    sofa::simulation::Node* m_node;
-    const sofa::core::ExecParams* m_params;
-    const core::ConstraintParams* m_cparams;
-    SReal m_dt;
-
-    sofa::core::MultiVecId m_pos;
-    sofa::core::MultiVecId m_freePos;
-    sofa::core::MultiVecDerivId m_freeVel;
-
-    simulation::common::MechanicalOperations* m_mop;
-
-    sofa::core::objectmodel::BaseContext* m_context;
-
-    bool m_parallelSolve {false };
-};
-
-} // namespace sofa::component::animationloop
+int CpuTaskStatus::setBusy(bool busy)
+{
+    if (busy)
+    {
+        return m_busy.fetch_add(1, std::memory_order_relaxed);
+    }
+    else
+    {
+        return m_busy.fetch_sub(1, std::memory_order_relaxed);
+    }
+}
+}

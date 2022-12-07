@@ -19,6 +19,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
     ${SRC_ROOT}/CpuTask.h
+    ${SRC_ROOT}/CpuTaskStatus.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
@@ -150,6 +151,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
     ${SRC_ROOT}/CpuTask.cpp
+    ${SRC_ROOT}/CpuTaskStatus.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp

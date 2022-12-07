@@ -117,9 +117,19 @@ void SofaPhysicsAPI::drawGL()
     impl->drawGL();
 }
 
-unsigned int SofaPhysicsAPI::getNbOutputMeshes()
+unsigned int SofaPhysicsAPI::getNbOutputMeshes() const
 {
     return impl->getNbOutputMeshes();
+}
+
+SofaPhysicsOutputMesh* SofaPhysicsAPI::getOutputMeshPtr(unsigned int meshID) const
+{
+    return impl->getOutputMeshPtr(meshID);
+}
+
+SofaPhysicsOutputMesh* SofaPhysicsAPI::getOutputMeshPtr(const char* name) const
+{
+    return impl->getOutputMeshPtr(name);
 }
 
 SofaPhysicsOutputMesh** SofaPhysicsAPI::getOutputMesh(unsigned int meshID)
@@ -571,9 +581,28 @@ void SofaPhysicsSimulation::updateOutputMeshes()
     }
 }
 
-unsigned int SofaPhysicsSimulation::getNbOutputMeshes()
+unsigned int SofaPhysicsSimulation::getNbOutputMeshes() const
 {
     return outputMeshes.size();
+}
+
+SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(unsigned int meshID) const
+{
+    if (meshID >= outputMeshes.size())
+        return nullptr;
+    else
+        return outputMeshes[meshID];
+}
+
+SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(const char* name) const
+{
+    for (SofaPhysicsOutputMesh* mesh : outputMeshes)
+    {
+        if (std::string(name).compare(mesh->getNameStr()) == 0)
+            return mesh;
+    }
+
+    return nullptr;
 }
 
 SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMesh(unsigned int meshID)

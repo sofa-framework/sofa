@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSAPI_H
-#define SOFAPHYSICSAPI_H
+#pragma once
 
 #include <SofaPhysicsAPI/config.h>
+#include <string>
 
 class SofaPhysicsOutputMesh;
 class SofaPhysicsDataMonitor;
@@ -75,8 +75,13 @@ public:
     void drawGL();
 
     /// Return the number of currently active output meshes
-    unsigned int            getNbOutputMeshes();
+    unsigned int           getNbOutputMeshes() const;
 
+    /// return pointer to the @param meshID 'th SofaPhysicsOutputMesh 
+    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID) const;
+    /// return pointer to the @param meshID 'th SofaPhysicsOutputMesh. Return nullptr if out of bounds.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name) const;
+    /// returns pointer to the SofaPhysicsOutputMesh with the name equal to @param name. Return nullptr if not found.
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
 
     /// Return the number of currently active output Tetrahedron meshes
@@ -139,6 +144,7 @@ public:
     SofaPhysicsOutputMesh();
     ~SofaPhysicsOutputMesh();
 
+    const std::string& getNameStr() const;
     const char* getName(); ///< (non-unique) name of this object
     ID          getID();   ///< unique ID of this object
 
@@ -213,5 +219,3 @@ public:
     /// Internal implementation sub-class
     Impl* impl;
 };
-
-#endif // SOFAPHYSICSAPI_H

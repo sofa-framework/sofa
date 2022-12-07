@@ -32,6 +32,11 @@ SofaPhysicsOutputMesh::~SofaPhysicsOutputMesh()
     delete impl;
 }
 
+const std::string& SofaPhysicsOutputMesh::getNameStr() const
+{
+    return impl->getNameStr();
+}
+
 const char* SofaPhysicsOutputMesh::getName() ///< (non-unique) name of this object
 {
     return impl->getName();
@@ -169,6 +174,14 @@ void SofaPhysicsOutputMesh::Impl::setObject(SofaOutputMesh* o)
             sVA.push_back(se);
         }
     }
+}
+
+const std::string& SofaPhysicsOutputMesh::Impl::getNameStr() const
+{
+    if (!sObj)
+        return defaultName;
+    else
+        return sObj->getName();
 }
 
 const char* SofaPhysicsOutputMesh::Impl::getName() ///< (non-unique) name of this object

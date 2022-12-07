@@ -97,6 +97,49 @@ namespace sofa
         EXPECT_EQ(res, (N)*(N + 1) / 2);
         return;
     }
-    
+
+    TEST(TaskSchedulerTests, Lambda)
+    {
+        const auto scheduler = std::unique_ptr<simulation::TaskScheduler>(
+            simulation::MainTaskSchedulerFactory::instantiate(simulation::DefaultTaskScheduler::name()));
+        scheduler->init(1);
+
+        unsigned int one = 0u;
+
+        simulation::CpuTaskStatus status;
+        scheduler->addTask(status, [&one]{ one = 1u; });
+
+        scheduler->workUntilDone(&status);
+        scheduler->stop();
+
+        EXPECT_EQ(one, 1u);
+    }
+
+    TEST(TaskSchedulerTests, Functor)
+    {
+        struct Functor
+        {
+            Functor(unsigned int& num) : m_num(num) {}
+            void operator()() const
+            {
+                m_num = 1u ;
+            }
+            unsigned int& m_num;
+        };
+
+        const auto scheduler = std::unique_ptr<simulation::TaskScheduler>(
+            simulation::MainTaskSchedulerFactory::instantiate(simulation::DefaultTaskScheduler::name()));
+        scheduler->init(1);
+
+        unsigned int one = 0u;
+
+        simulation::CpuTaskStatus status;
+        scheduler->addTask(status, Functor(one));
+
+        scheduler->workUntilDone(&status);
+        scheduler->stop();
+
+        EXPECT_EQ(one, 1u);
+    }
 
 } // namespace sofa
