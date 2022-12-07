@@ -22,12 +22,6 @@
 #include "SofaPhysicsBindings.h"
 #include "SofaPhysicsAPI.h"
 
-// Exit code
-#define API_SUCCESS EXIT_SUCCESS
-
-#define API_NULL -1
-
-
 /// Test API
 int test_getAPI_ID()
 {
@@ -246,7 +240,12 @@ int sofaVisualModel_getNbVertices(void* ptr, const char* name)
 
 int sofaVisualModel_getVertices(void* ptr, const char* name, float* buffer)
 {
-    //TODO
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+    {
+        SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
+        return mesh->getVPositions(buffer);
+    }
 
     return API_NULL;
 }
@@ -254,7 +253,12 @@ int sofaVisualModel_getVertices(void* ptr, const char* name, float* buffer)
 
 int sofaVisualModel_getNormals(void* ptr, const char* name, float* buffer)
 {
-    //TODO
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+    {
+        SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
+        return mesh->getVNormals(buffer);
+    }
 
     return API_NULL;
 }
@@ -262,7 +266,12 @@ int sofaVisualModel_getNormals(void* ptr, const char* name, float* buffer)
 
 int sofaVisualModel_getTexCoords(void* ptr, const char* name, float* buffer)
 {
-    //TODO
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+    {
+        SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
+        return mesh->getVTexCoords(buffer);
+    }
 
     return API_NULL;
 }
@@ -306,7 +315,12 @@ int sofaVisualModel_getNbTriangles(void* ptr, const char* name)
 
 int sofaVisualModel_getTriangles(void* ptr, const char* name, int* buffer)
 {
-    //TODO
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+    {
+        SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
+        return mesh->getTriangles(buffer);
+    }
 
     return API_NULL;
 }
@@ -328,7 +342,12 @@ int sofaVisualModel_getNbQuads(void* ptr, const char* name)
 
 int sofaVisualModel_getQuads(void* ptr, const char* name, int* buffer)
 {
-    //TODO
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    if (api)
+    {
+        SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
+        return mesh->getQuads(buffer);
+    }
 
     return API_NULL;
 }
