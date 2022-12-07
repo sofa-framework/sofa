@@ -119,7 +119,7 @@ public:
         return Quat(0,0,0,1);
     }
 
-    void set(Real x, Real y, Real z, Real w)
+    constexpr void set(Real x, Real y, Real z, Real w)
     {
         _q[0] = x;
         _q[1] = y;
@@ -128,7 +128,7 @@ public:
     }
 
     /// Cast into a standard C array of elements.
-    const Real* ptr() const
+    constexpr const Real* ptr() const
     {
         return this->_q.data();
     }
@@ -145,7 +145,7 @@ public:
     /// Normalize a quaternion
     void normalize();
 
-    void clear()
+    constexpr void clear()
     {
         set(0.0,0.0,0.0,1);
     }

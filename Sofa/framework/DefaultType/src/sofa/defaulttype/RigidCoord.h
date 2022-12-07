@@ -30,6 +30,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/random.h>
 #include <cmath>
+#include <sofa/defaulttype/RigidIterator.h>
 
 #if !defined(NDEBUG)
 #include <sofa/helper/logging/Messaging.h>
@@ -52,6 +53,9 @@ public:
     typedef RigidDeriv<3,Real> Deriv;
     typedef type::Mat<4,4,Real> HomogeneousMat;
     typedef type::Vec<4,Real> HomogeneousVec;
+
+    using iterator = RigidIterator<RigidCoord>;
+    using const_iterator = RigidConstIterator<RigidCoord>;
 
 protected:
     Vec3 center;
@@ -387,10 +391,10 @@ public:
     /// Access to i-th element.
     constexpr real& operator[](Size i)
     {
-        if (i < 3)
+        if (i < Vec3::total_size)
             return this->center(i);
         else
-            return this->orientation[i - 3];
+            return this->orientation[i - Vec3::total_size];
     }
 
     /// Const access to i-th element.
@@ -417,6 +421,11 @@ public:
 
     /// @}
 
+    constexpr iterator begin() { return iterator(center, orientation); }
+    constexpr iterator end()   { return iterator(center, orientation, total_size); }
+
+    constexpr const_iterator begin() const { return const_iterator(center, orientation); }
+    constexpr const_iterator end()   const { return const_iterator(center, orientation, total_size); }
 };
 
 template<typename real>
@@ -431,9 +440,13 @@ public:
     typedef type::Vec<2,Real> Vec2;
     typedef type::Mat<3,3,Real> HomogeneousMat;
     typedef type::Vec<3,Real> HomogeneousVec;
+
+    using iterator = RigidIterator<RigidCoord>;
+    using const_iterator = RigidConstIterator<RigidCoord>;
+
 private:
     Vec2 center;
-    Real orientation;
+    Real orientation {};
 public:
     constexpr RigidCoord(const Vec2& posCenter, const Real& orient)
         : center(posCenter), orientation(orient)
@@ -756,6 +769,12 @@ public:
     }
 
     /// @}
+
+    constexpr iterator begin() { return iterator(center, orientation); }
+    constexpr iterator end()   { return iterator(center, orientation, total_size); }
+
+    constexpr const_iterator begin() const { return const_iterator(center, orientation); }
+    constexpr const_iterator end()   const { return const_iterator(center, orientation, total_size); }
 };
 
 } // namespace sofa::defaulttype

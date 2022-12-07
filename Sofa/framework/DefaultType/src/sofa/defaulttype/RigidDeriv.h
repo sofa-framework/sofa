@@ -30,6 +30,8 @@
 #include <sofa/helper/rmath.h>
 #include <cmath>
 
+#include <sofa/defaulttype/RigidIterator.h>
+
 
 namespace sofa::defaulttype
 {
@@ -46,6 +48,9 @@ public:
     typedef type::Vec<3,Real> Vec3;
     typedef type::Vec<6,Real> VecAll;
     typedef type::Quat<Real> Quat;
+
+    using iterator = RigidIterator<RigidDeriv>;
+    using const_iterator = RigidConstIterator<RigidDeriv>;
 
 protected:
     Vec3 vCenter;
@@ -253,6 +258,11 @@ public:
 
     /// @}
 
+    constexpr iterator begin() { return iterator(vCenter, vOrientation); }
+    constexpr iterator end()   { return iterator(vCenter, vOrientation, total_size); }
+
+    constexpr const_iterator begin() const { return const_iterator(vCenter, vOrientation); }
+    constexpr const_iterator end()   const { return const_iterator(vCenter, vOrientation, total_size); }
 };
 
 template<typename real, typename real2>
@@ -336,9 +346,12 @@ public:
     typedef type::Vec<2,Real> Vec2;
     typedef type::Vec<3,Real> VecAll;
 
+    using iterator = RigidIterator<RigidDeriv>;
+    using const_iterator = RigidConstIterator<RigidDeriv>;
+
 private:
     Vec2 vCenter;
-    Real vOrientation;
+    Real vOrientation {};
 
 public:
     friend class RigidCoord<2, real>;
@@ -531,6 +544,12 @@ public:
     }
 
     /// @}
+
+    constexpr iterator begin() { return iterator(vCenter, vOrientation); }
+    constexpr iterator end()   { return iterator(vCenter, vOrientation, total_size); }
+
+    constexpr const_iterator begin() const { return const_iterator(vCenter, vOrientation); }
+    constexpr const_iterator end()   const { return const_iterator(vCenter, vOrientation, total_size); }
 };
 
 template<typename real, typename real2>

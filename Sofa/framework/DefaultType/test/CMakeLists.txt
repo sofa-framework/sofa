@@ -14,6 +14,8 @@ set(SOURCE_FILES
     TypeInfoRepository_tu1_test.cpp
     TypeInfoRepository_tu2_test.cpp
     QuaternionIntegration_test.cpp
+    RigidCoord_test.cpp
+    RigidDeriv_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})

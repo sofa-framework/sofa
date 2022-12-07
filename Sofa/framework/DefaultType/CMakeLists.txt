@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
     ${SRC_ROOT}/MatrixExporter.h
+    ${SRC_ROOT}/RigidIterator.h
     ${SRC_ROOT}/RigidCoord.h
     ${SRC_ROOT}/RigidDeriv.h
     ${SRC_ROOT}/RigidMass.h
