@@ -58,6 +58,8 @@ public:
     // queue task if there is space, and run it otherwise
     virtual bool addTask(Task* task) = 0;
 
+    virtual bool addTask(Task::Status& status, const std::function<void()>& task);
+
     virtual void workUntilDone(Task::Status* status) = 0;
 
     virtual Task::Allocator* getTaskAllocator() = 0;

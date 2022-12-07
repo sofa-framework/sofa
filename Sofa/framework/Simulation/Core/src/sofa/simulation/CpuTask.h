@@ -23,9 +23,8 @@
 
 #include <sofa/simulation/config.h>
 
-#include <sofa/simulation/Task.h>
+#include <sofa/simulation/CpuTaskStatus.h>
 
-#include <atomic>
 
 namespace sofa::simulation
 {
@@ -36,21 +35,7 @@ class SOFA_SIMULATION_CORE_API CpuTask : public Task
 {
 public:
 
-    /** CPU Task Status class definition:
-        *  used to synchronize CPU tasks  */
-    class SOFA_SIMULATION_CORE_API Status : public Task::Status
-    {
-    public:
-        Status() : m_busy(0) {}
-
-        bool isBusy() const override final;
-
-        int setBusy(bool busy) override final;
-
-    private:
-        std::atomic<int> m_busy;
-    };
-
+    using Status = CpuTaskStatus;
 
     CpuTask::Status* getStatus(void) const override final;
 

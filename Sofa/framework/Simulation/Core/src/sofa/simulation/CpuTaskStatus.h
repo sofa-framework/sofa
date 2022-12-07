@@ -19,54 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
-#include <sofa/component/animationloop/config.h>
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.12", "v23.06")
+#include <sofa/simulation/config.h>
+#include <sofa/simulation/Task.h>
+#include <atomic>
 
-#include <sofa/simulation/CpuTask.h>
-
-#include <sofa/simulation/fwd.h>
-#include <sofa/core/fwd.h>
-#include <sofa/core/MultiVecId.h>
-
-namespace sofa::component::animationloop
+namespace sofa::simulation
 {
 
-class SOFA_ATTRIBUTE_DEPRECATED_FREEMOTIONTASK() FreeMotionTask : public sofa::simulation::CpuTask
+class SOFA_SIMULATION_CORE_API CpuTaskStatus : public Task::Status
 {
 public:
-    FreeMotionTask(
-            sofa::simulation::Node* node,
-            const sofa::core::ExecParams* params,
-            const core::ConstraintParams* cparams,
-            SReal dt,
-            sofa::core::MultiVecId pos,
-            sofa::core::MultiVecId freePos,
-            sofa::core::MultiVecDerivId freeVel,
-            simulation::common::MechanicalOperations* mop,
-            sofa::core::objectmodel::BaseContext* context,
-            sofa::simulation::CpuTask::Status* status,
-            bool parallelSolve = false);
-    ~FreeMotionTask() override = default;
-    sofa::simulation::Task::MemoryAlloc run() final;
+    CpuTaskStatus();
+
+    bool isBusy() const override final;
+
+    int setBusy(bool busy) override final;
 
 private:
-    sofa::simulation::Node* m_node;
-    const sofa::core::ExecParams* m_params;
-    const core::ConstraintParams* m_cparams;
-    SReal m_dt;
-
-    sofa::core::MultiVecId m_pos;
-    sofa::core::MultiVecId m_freePos;
-    sofa::core::MultiVecDerivId m_freeVel;
-
-    simulation::common::MechanicalOperations* m_mop;
-
-    sofa::core::objectmodel::BaseContext* m_context;
-
-    bool m_parallelSolve {false };
+    std::atomic<int> m_busy;
 };
 
-} // namespace sofa::component::animationloop
+}
