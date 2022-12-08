@@ -30,44 +30,44 @@ using defaulttype::RigidCoord;
 
 TEST(RigidCoord3Iterator, begin)
 {
-    constexpr RigidCoord<3, SReal> r;
+    static constexpr RigidCoord<3, SReal> r;
     constexpr auto it = r.begin();
     EXPECT_FLOATINGPOINT_EQ(*it, 0_sreal);
 }
 
 TEST(RigidCoord3Iterator, begin_begin)
 {
-    constexpr RigidCoord<3, SReal> r;
-    constexpr auto it1 = r.begin();
-    constexpr auto it2 = r.begin();
+    static constexpr RigidCoord<3, SReal> r;
+    static constexpr auto it1 = r.begin();
+    static constexpr auto it2 = r.begin();
     EXPECT_EQ(it1, it2);
 }
 
 TEST(RigidCoord3Iterator, begin_end)
 {
-    constexpr RigidCoord<3, SReal> r;
-    constexpr auto begin = r.begin();
-    constexpr auto end = r.end();
+    static constexpr RigidCoord<3, SReal> r;
+    static constexpr auto begin = r.begin();
+    static constexpr auto end = r.end();
     EXPECT_NE(begin, end);
 }
 
 TEST(RigidCoord3Iterator, pre_increment)
 {
-    constexpr RigidCoord<3, SReal> r(type::Vec<3,SReal>{0, 1, 2}, type::Quat<SReal>{3, 4, 5, 6});
-    constexpr auto it = ++r.begin();
+    static constexpr RigidCoord<3, SReal> r(type::Vec<3,SReal>{0, 1, 2}, type::Quat<SReal>{3, 4, 5, 6});
+    static constexpr auto it = ++r.begin();
     EXPECT_FLOATINGPOINT_EQ(*it, 1_sreal);
 }
 
 TEST(RigidCoord3Iterator, post_increment)
 {
-    constexpr RigidCoord<3, SReal> r(type::Vec<3,SReal>{0, 1, 2}, type::Quat<SReal>{3, 4, 5, 6});
-    constexpr auto it = r.begin()++;
+    static constexpr RigidCoord<3, SReal> r(type::Vec<3,SReal>{0, 1, 2}, type::Quat<SReal>{3, 4, 5, 6});
+    static constexpr auto it = r.begin()++;
     EXPECT_FLOATINGPOINT_EQ(*it, 0_sreal);
 }
 
 TEST(RigidCoord3Iterator, for_loop)
 {
-    constexpr RigidCoord<3, SReal> coord(type::Vec<3,SReal>{0, 1, 2}, type::Quat<SReal>{3, 4, 5, 6});
+    static constexpr RigidCoord<3, SReal> coord(type::Vec<3,SReal>{0, 1, 2}, type::Quat<SReal>{3, 4, 5, 6});
 
     sofa::Size i {};
     for (const auto& r : coord)
@@ -81,44 +81,44 @@ TEST(RigidCoord3Iterator, for_loop)
 
 TEST(RigidCoord2Iterator, begin)
 {
-    constexpr RigidCoord<2, SReal> r;
-    constexpr auto it = r.begin();
+    static constexpr RigidCoord<2, SReal> r;
+    static constexpr auto it = r.begin();
     EXPECT_FLOATINGPOINT_EQ(*it, 0_sreal);
 }
 
 TEST(RigidCoord2Iterator, begin_begin)
 {
-    constexpr RigidCoord<2, SReal> r;
-    constexpr auto it1 = r.begin();
-    constexpr auto it2 = r.begin();
+    static constexpr RigidCoord<2, SReal> r;
+    static constexpr auto it1 = r.begin();
+    static constexpr auto it2 = r.begin();
     EXPECT_EQ(it1, it2);
 }
 
 TEST(RigidCoord2Iterator, begin_end)
 {
-    constexpr RigidCoord<2, SReal> r;
-    constexpr auto begin = r.begin();
-    constexpr auto end = r.end();
+    static constexpr RigidCoord<2, SReal> r;
+    static constexpr auto begin = r.begin();
+    static constexpr auto end = r.end();
     EXPECT_NE(begin, end);
 }
 
 TEST(RigidCoord2Iterator, pre_increment)
 {
-    constexpr RigidCoord<2, SReal> r(type::Vec<2,SReal>{0, 1}, 3_sreal);
-    constexpr auto it = ++r.begin();
+    static constexpr RigidCoord<2, SReal> r(type::Vec<2,SReal>{0, 1}, 3_sreal);
+    static constexpr auto it = ++r.begin();
     EXPECT_FLOATINGPOINT_EQ(*it, 1_sreal);
 }
 
 TEST(RigidCoord2Iterator, post_increment)
 {
-    constexpr RigidCoord<2, SReal> r(type::Vec<2,SReal>{0, 1}, 3_sreal);
-    constexpr auto it = r.begin()++;
+    static constexpr RigidCoord<2, SReal> r(type::Vec<2,SReal>{0, 1}, 3_sreal);
+    static constexpr auto it = r.begin()++;
     EXPECT_FLOATINGPOINT_EQ(*it, 0_sreal);
 }
 
 TEST(RigidCoord2Iterator, for_loop)
 {
-    constexpr RigidCoord<2, SReal> coord(type::Vec<2,SReal>{0, 1}, 2_sreal);
+    static constexpr RigidCoord<2, SReal> coord(type::Vec<2,SReal>{0, 1}, 2_sreal);
 
     sofa::Size i {};
     for (const auto& r : coord)
