@@ -413,7 +413,7 @@ public:
         if constexpr (Policy::AutoCompress) this->compress(); /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
 
         Index bi=0; split_row_index(i, bi);
-        Index rowId = i * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
         if (this->sortedFind(this->rowIndex, i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
@@ -489,7 +489,7 @@ public:
             if constexpr (Policy::LogTrace) this->logCall(FnEnum::clearRowCol, i);
 
             Index bi=0; split_row_index(i, bi);
-            Index rowId = i * this->rowIndex.size() / this->nBlockRow;
+            Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
             if (this->sortedFind(this->rowIndex, i, rowId))
             {
                 Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
@@ -802,7 +802,7 @@ public:
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
 
-        Index rowId = i * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
         if (this->sortedFind(this->rowIndex, i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
@@ -820,7 +820,7 @@ public:
     {
         if constexpr (Policy::AutoCompress) compress();
 
-        Index rowId = i * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
         if (this->sortedFind(this->rowIndex, i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
@@ -836,7 +836,7 @@ public:
     /// Get write access to a block, possibly creating it
     virtual BlockAccessor blockCreate(Index i, Index j)
     {
-        Index rowId = i * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
         if (this->sortedFind(this->rowIndex, i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
@@ -897,7 +897,7 @@ public:
     virtual ColBlockConstIterator bRowBegin(Index ib) const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = ib * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
         Index index = 0;
         if (this->sortedFind(this->rowIndex, ib, rowId))
         {
@@ -910,7 +910,7 @@ public:
     virtual ColBlockConstIterator bRowEnd(Index ib) const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = ib * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
         Index index2 = 0;
         if (this->sortedFind(this->rowIndex, ib, rowId))
         {
@@ -923,7 +923,7 @@ public:
     virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = ib * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
         Index index = 0, index2 = 0;
         if (this->sortedFind(this->rowIndex, ib, rowId))
         {
@@ -1004,7 +1004,7 @@ public:
     virtual RowBlockConstIterator bRowsEnd() const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        return createRowBlockConstIterator(this->rowIndex.size(), 0);
+        return createRowBlockConstIterator(Index(this->rowIndex.size()), 0);
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
@@ -1012,7 +1012,7 @@ public:
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         return std::make_pair(createRowBlockConstIterator(0, 0),
-                createRowBlockConstIterator(this->rowIndex.size(), 0));
+                createRowBlockConstIterator(Index(this->rowIndex.size()), 0));
     }
 
 /// @}
@@ -1025,7 +1025,7 @@ protected:
     template<class Vec> static Real vget(const Vec& vec, Index i, Index j, Index k) { return vget( vec, i*j+k ); }
     template<class Vec> static Real vget(const type::vector<Vec>&vec, Index i, Index /*j*/, Index k) { return vec[i][k]; }
 
-                          static Real  vget(const BaseVector& vec, Index i) { return vec.element(i); }
+                          static Real  vget(const BaseVector& vec, Index i) { return static_cast<Real>(vec.element(i)); }
     template<class Real2> static Real2 vget(const FullVector<Real2>& vec, Index i) { return vec[i]; }
 
 
