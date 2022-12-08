@@ -47,7 +47,11 @@ public:
 
     const char* APIName();
 
-    bool load(const char* filename);
+    /// Load an XML file containing the main scene description. Will return API_SUCCESS or API_SCENE_FAILED if loading failed
+    int load(const char* filename);
+
+    /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
+    int unload();
     void createScene();
 
     void start();
@@ -77,6 +81,8 @@ public:
     double getTime() const;
     double getCurrentFPS() const;
     double* getGravity() const;
+    int getGravity(double* values) const;
+
     void setGravity(double* gravity);
 
     unsigned int getNbDataMonitors();
@@ -132,7 +138,7 @@ protected:
     double currentFPS;
 
     void update();
-    void updateOutputMeshes();
+    int updateOutputMeshes();
     void updateCurrentFPS();
     void beginStep();
     void endStep();
