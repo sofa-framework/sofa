@@ -25,6 +25,45 @@
 namespace sofa::linearalgebra
 {
 
+
+template <class TMatrix, class TBlockMatrix>
+void addBlockMat(TMatrix& self, Index row, Index col, const TBlockMatrix& _M)
+{
+    if (row % TBlockMatrix::nbLines == 0 && col % TBlockMatrix::nbCols == 0)
+    {
+        *self.wbloc(row / TBlockMatrix::nbLines, col / TBlockMatrix::nbCols, true) += _M;
+    }
+    else
+    {
+        self.linearalgebra::BaseMatrix::add(row, col, _M);
+    }
+}
+
+template <>
+void CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3d& _M)
+{
+    addBlockMat(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3f& _M)
+{
+    addBlockMat(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3d& _M)
+{
+    addBlockMat(*this, row, col, _M);
+}
+
+template <>
+void CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3f& _M)
+{
+    addBlockMat(*this, row, col, _M);
+}
+
+
 template <> template <>
 inline void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {

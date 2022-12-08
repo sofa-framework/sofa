@@ -383,6 +383,16 @@ public:
         if (b) traits::vset(*b, bi, bj, 0);
     }
 
+    void add(Index i, Index j, const type::Mat3x3d& _M) override
+    {
+        BaseMatrix::add(i, j, _M);
+    }
+
+    void add(Index i, Index j, const type::Mat3x3f& _M) override
+    {
+        BaseMatrix::add(i, j, _M);
+    }
+
     /**
     * \brief Clear row scalar method. Clear all col of this line.
     * @param i : Line index considering size of matrix in scalar.
@@ -527,14 +537,11 @@ public:
 /// @name BlockMatrixWriter operators
 /// @{
     /// Override CRSMatrix add method to avoid mis-understanding by compilator with other add method overriding BaseMatrix.
-    //void add(unsigned int bi, unsigned int bj, const Block& b)
-    //{
-    //    CRSMatrix::add(bi, bj, b);
-    //}
-    //void add(unsigned int bi, unsigned int bj, int& rowId, int& colId, const Block& b)
-    //{
-    //    CRSMatrix::add(bi, bj, rowId, colId, b);
-    //}
+    template <typename T = Block, typename std::enable_if_t<!std::is_same_v<T, double> && !std::is_same_v<T, float>, int > = 0 >
+    void add(unsigned int bi, unsigned int bj, const Block& b)
+    {
+        CRSMatrix::add(bi, bj, b);
+    }
 /// @}
 
 /// @name Get information about the content and structure of this matrix (diagonal, band, sparse, full, block size, ...)
@@ -1217,7 +1224,7 @@ public:
         return res;
     }
 
-    using CompressedRowSparseMatrixGeneric::mul; // CRS x CRS mul version
+    using CompressedRowSparseMatrixGeneric<TBlock, TPolicy>::mul; // CRS x CRS mul version
 
     /// equal result = this * v
     /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
@@ -1422,6 +1429,16 @@ public:
     }
 };
 
+
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3d >::add(Index row, Index col, const type::Mat3x3d& _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3d >::add(Index row, Index col, const type::Mat3x3f& _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3f >::add(Index row, Index col, const type::Mat3x3d& _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3f >::add(Index row, Index col, const type::Mat3x3f& _M);
+
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXMECHANICAL_CPP) 
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>;
