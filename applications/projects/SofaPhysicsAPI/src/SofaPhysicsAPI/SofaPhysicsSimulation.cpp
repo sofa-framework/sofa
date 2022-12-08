@@ -83,9 +83,9 @@ int SofaPhysicsAPI::unload()
     return impl->unload();
 }
 
-std::string SofaPhysicsAPI::loadSofaIni(const char* pathIni)
+std::string SofaPhysicsAPI::loadSofaIni(const char* pathIniFile)
 {
-    const std::string sofaIniFilePath = std::string(pathIni);
+    auto sofaIniFilePath = std::string(pathIniFile);
 
     std::map<std::string, std::string> iniFileValues = sofa::helper::Utils::readBasicIniFile(sofaIniFilePath);
     std::string shareDir = "SHARE_DIR Path Not found";
@@ -115,9 +115,9 @@ std::string SofaPhysicsAPI::loadSofaIni(const char* pathIni)
     return shareDir;
 }
 
-int SofaPhysicsAPI::loadPlugin(const char* pluginName)
+int SofaPhysicsAPI::loadPlugin(const char* pluginPath)
 {
-    return impl->loadPlugin(pluginName);
+    return impl->loadPlugin(pluginPath);
 }
 
 void SofaPhysicsAPI::createScene()
@@ -432,9 +432,9 @@ int SofaPhysicsSimulation::unload()
     return API_SUCCESS;
 }
 
-int SofaPhysicsSimulation::loadPlugin(const char* pluginName)
+int SofaPhysicsSimulation::loadPlugin(const char* pluginPath)
 {
-    sofa::helper::system::PluginManager::PluginLoadStatus plugres = sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginName);
+    sofa::helper::system::PluginManager::PluginLoadStatus plugres = sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath);
     if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::SUCCESS || plugres == sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
         return API_SUCCESS;
     else if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::INVALID_LOADING)

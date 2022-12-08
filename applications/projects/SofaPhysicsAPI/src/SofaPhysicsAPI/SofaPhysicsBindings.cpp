@@ -96,11 +96,11 @@ int sofaPhysicsAPI_unloadScene(void* api_ptr)
         return API_NULL;
 }
 
-const char* sofaPhysicsAPI_loadSofaIni(void* ptr, const char* pathIni)
+const char* sofaPhysicsAPI_loadSofaIni(void* api_ptr, const char* filePath)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
-        std::string value = api->loadSofaIni(pathIni);
+        std::string value = api->loadSofaIni(filePath);
         char* cstr = new char[value.length() + 1];
 #if defined(_MSC_VER)
         std::strcpy(cstr, value.c_str());
@@ -111,11 +111,11 @@ const char* sofaPhysicsAPI_loadSofaIni(void* ptr, const char* pathIni)
         return "Error: API_NULL";
 }
 
-int sofaPhysicsAPI_loadPlugin(void* ptr, const char* pluginName)
+int sofaPhysicsAPI_loadPlugin(void* api_ptr, const char* pluginPath)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
-        return api->loadPlugin(pluginName);
+        return api->loadPlugin(pluginPath);
     }
     else
         return API_NULL;
@@ -215,27 +215,27 @@ int sofaPhysicsAPI_setGravity(void* api_ptr, double* values)
 
 
 
-int sofaPhysicsAPI_activateMessageHandler(void* ptr, bool value)
+int sofaPhysicsAPI_activateMessageHandler(void* api_ptr, bool value)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
         return api->activateMessageHandler(value);
     else
         return API_NULL;
 }
 
-int sofaPhysicsAPI_getNbMessages(void* ptr)
+int sofaPhysicsAPI_getNbMessages(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
         return api->getNbMessages();
     else
         return API_NULL;
 }
 
-const char* sofaPhysicsAPI_getMessage(void* ptr, int messageId, int* msgType)
+const char* sofaPhysicsAPI_getMessage(void* api_ptr, int messageId, int* msgType)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         std::string value = api->getMessage(messageId, msgType[0]);
@@ -250,9 +250,9 @@ const char* sofaPhysicsAPI_getMessage(void* ptr, int messageId, int* msgType)
         return "Error: API_NULL";
 }
 
-int sofaPhysicsAPI_clearMessages(void* ptr)
+int sofaPhysicsAPI_clearMessages(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
         return api->clearMessages();
     else
