@@ -46,6 +46,8 @@ public:
     typedef real value_type;
     typedef sofa::Size Size;
     typedef real Real;
+    typedef real& reference;
+    typedef const real& const_reference;
     typedef type::Vec<3,Real> Pos;
     typedef type::Quat<Real> Rot;
     typedef type::Vec<3,Real> Vec3;
