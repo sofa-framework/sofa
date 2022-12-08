@@ -34,21 +34,21 @@ void* sofaPhysicsAPI_create()
     return new SofaPhysicsAPI();
 }
 
-int sofaPhysicsAPI_delete(void* ptr)
+int sofaPhysicsAPI_delete(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
         delete api;
     else
         return API_NULL;
-    ptr = NULL;
+    api_ptr = NULL;
 
     return API_SUCCESS;
 }
 
-const char* sofaPhysicsAPI_APIName(void* ptr)
+const char* sofaPhysicsAPI_APIName(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         std::string apiName = api->APIName();
@@ -64,9 +64,9 @@ const char* sofaPhysicsAPI_APIName(void* ptr)
 
 
 // API for scene creation/loading
-int sofaPhysicsAPI_createScene(void* ptr)
+int sofaPhysicsAPI_createScene(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         api->createScene();
         return API_SUCCESS;
@@ -75,9 +75,9 @@ int sofaPhysicsAPI_createScene(void* ptr)
         return API_NULL;
 }
 
-int sofaPhysicsAPI_loadScene(void* ptr, const char* filename)
+int sofaPhysicsAPI_loadScene(void* api_ptr, const char* filename)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->load(filename);
     }
@@ -85,9 +85,9 @@ int sofaPhysicsAPI_loadScene(void* ptr, const char* filename)
         return API_NULL;
 }
 
-int sofaPhysicsAPI_unloadScene(void* ptr)
+int sofaPhysicsAPI_unloadScene(void* api_ptr)
 {
-    //SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    //SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     //if (api) {
     //    return api->unloa
     //}
@@ -97,35 +97,35 @@ int sofaPhysicsAPI_unloadScene(void* ptr)
 
 
 // API for animation loop
-void sofaPhysicsAPI_start(void* ptr)
+void sofaPhysicsAPI_start(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->start();
     }
 }
 
-void sofaPhysicsAPI_stop(void* ptr)
+void sofaPhysicsAPI_stop(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->stop();
     }
 }
 
 
-void sofaPhysicsAPI_step(void* ptr)
+void sofaPhysicsAPI_step(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->step();
     }
 }
 
 
-void sofaPhysicsAPI_reset(void* ptr)
+void sofaPhysicsAPI_reset(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->reset();
     }
@@ -133,9 +133,9 @@ void sofaPhysicsAPI_reset(void* ptr)
 
 
 
-float sofaPhysicsAPI_time(void* ptr)
+float sofaPhysicsAPI_time(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->getTime();
     }
@@ -144,9 +144,9 @@ float sofaPhysicsAPI_time(void* ptr)
 }
 
 
-float sofaPhysicsAPI_timeStep(void* ptr)
+float sofaPhysicsAPI_timeStep(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->getTime();
     }
@@ -155,9 +155,9 @@ float sofaPhysicsAPI_timeStep(void* ptr)
 }
 
 
-void sofaPhysicsAPI_setTimeStep(void* ptr, double value)
+void sofaPhysicsAPI_setTimeStep(void* api_ptr, double value)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->setTimeStep(value);
     }
@@ -165,9 +165,9 @@ void sofaPhysicsAPI_setTimeStep(void* ptr, double value)
 
 
 
-int sofaPhysicsAPI_getGravity(void* ptr, double* values)
+int sofaPhysicsAPI_getGravity(void* api_ptr, double* values)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->getGravity(values);
     }
@@ -176,9 +176,9 @@ int sofaPhysicsAPI_getGravity(void* ptr, double* values)
 }
 
 
-int sofaPhysicsAPI_setGravity(void* ptr, double* values)
+int sofaPhysicsAPI_setGravity(void* api_ptr, double* values)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         api->setGravity(values);
         return API_SUCCESS;
@@ -194,9 +194,9 @@ int sofaPhysicsAPI_setGravity(void* ptr, double* values)
 //////////////    VisualModel Bindings    ////////////////
 //////////////////////////////////////////////////////////
 
-int sofaPhysicsAPI_getNbrVisualModel(void* ptr)
+int sofaPhysicsAPI_getNbrVisualModel(void* api_ptr)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
         return api->getNbOutputMeshes();
     }
@@ -205,9 +205,9 @@ int sofaPhysicsAPI_getNbrVisualModel(void* ptr)
 }
 
 
-const char* sofaVisualModel_getName(void* ptr, int VModelID)
+const char* sofaVisualModel_getName(void* api_ptr, int VModelID)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(VModelID);
@@ -225,9 +225,9 @@ const char* sofaVisualModel_getName(void* ptr, int VModelID)
 
 
 
-int sofaVisualModel_getNbVertices(void* ptr, const char* name)
+int sofaVisualModel_getNbVertices(void* api_ptr, const char* name)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -241,9 +241,9 @@ int sofaVisualModel_getNbVertices(void* ptr, const char* name)
 }
 
 
-int sofaVisualModel_getVertices(void* ptr, const char* name, float* buffer)
+int sofaVisualModel_getVertices(void* api_ptr, const char* name, float* buffer)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -257,9 +257,9 @@ int sofaVisualModel_getVertices(void* ptr, const char* name, float* buffer)
 }
 
 
-int sofaVisualModel_getNormals(void* ptr, const char* name, float* buffer)
+int sofaVisualModel_getNormals(void* api_ptr, const char* name, float* buffer)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -273,9 +273,9 @@ int sofaVisualModel_getNormals(void* ptr, const char* name, float* buffer)
 }
 
 
-int sofaVisualModel_getTexCoords(void* ptr, const char* name, float* buffer)
+int sofaVisualModel_getTexCoords(void* api_ptr, const char* name, float* buffer)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -290,9 +290,9 @@ int sofaVisualModel_getTexCoords(void* ptr, const char* name, float* buffer)
 
 
 
-int sofaVisualModel_getNbEdges(void* ptr, const char* name)
+int sofaVisualModel_getNbEdges(void* api_ptr, const char* name)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -306,7 +306,7 @@ int sofaVisualModel_getNbEdges(void* ptr, const char* name)
 }
 
 
-int sofaVisualModel_getEdges(void* ptr, const char* name, int* buffer)
+int sofaVisualModel_getEdges(void* api_ptr, const char* name, int* buffer)
 {
     //TODO
 
@@ -315,9 +315,9 @@ int sofaVisualModel_getEdges(void* ptr, const char* name, int* buffer)
 
 
 
-int sofaVisualModel_getNbTriangles(void* ptr, const char* name)
+int sofaVisualModel_getNbTriangles(void* api_ptr, const char* name)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -331,9 +331,9 @@ int sofaVisualModel_getNbTriangles(void* ptr, const char* name)
 }
 
 
-int sofaVisualModel_getTriangles(void* ptr, const char* name, int* buffer)
+int sofaVisualModel_getTriangles(void* api_ptr, const char* name, int* buffer)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -348,9 +348,9 @@ int sofaVisualModel_getTriangles(void* ptr, const char* name, int* buffer)
 
 
 
-int sofaVisualModel_getNbQuads(void* ptr, const char* name)
+int sofaVisualModel_getNbQuads(void* api_ptr, const char* name)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
@@ -364,9 +364,9 @@ int sofaVisualModel_getNbQuads(void* ptr, const char* name)
 }
 
 
-int sofaVisualModel_getQuads(void* ptr, const char* name, int* buffer)
+int sofaVisualModel_getQuads(void* api_ptr, const char* name, int* buffer)
 {
-    SofaPhysicsAPI* api = (SofaPhysicsAPI*)ptr;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(name);
