@@ -87,12 +87,12 @@ int sofaPhysicsAPI_loadScene(void* api_ptr, const char* filename)
 
 int sofaPhysicsAPI_unloadScene(void* api_ptr)
 {
-    //SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
-    //if (api) {
-    //    return api->unloa
-    //}
-    //else
-    return API_NULL;
+    SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
+    if (api) {
+        return api->unload();
+    }
+    else
+        return API_NULL;
 }
 
 

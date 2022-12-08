@@ -83,7 +83,6 @@ int SofaPhysicsAPI::unload()
 
 void SofaPhysicsAPI::createScene()
 {
-    std::cout << "SofaPhysicsAPI::createScene" <<std::endl;
     return impl->createScene();
 }
 
