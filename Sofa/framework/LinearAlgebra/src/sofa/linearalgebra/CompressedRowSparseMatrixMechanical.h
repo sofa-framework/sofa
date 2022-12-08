@@ -1435,10 +1435,10 @@ template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type:
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3f >::add(Index row, Index col, const type::Mat3x3d& _M);
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3f >::add(Index row, Index col, const type::Mat3x3f& _M);
 
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3d > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3f > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3f > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>::filterValues<CompressedRowSparseMatrixMechanical<type::Mat3x3d > >(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows);
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXMECHANICAL_CPP) 
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float>;

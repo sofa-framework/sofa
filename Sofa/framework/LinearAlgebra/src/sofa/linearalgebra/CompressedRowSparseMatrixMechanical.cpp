@@ -65,7 +65,7 @@ void CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >::add(Index row
 
 
 template <> template <>
-inline void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
+void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {
     M.compress();
     nRow = M.rowSize();
@@ -135,7 +135,7 @@ inline void CompressedRowSparseMatrixMechanical<double>::filterValues(Compressed
 }
 
 template <> template <>
-inline void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
+void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {
     M.compress();
     nRow = M.rowSize();
@@ -205,7 +205,7 @@ inline void CompressedRowSparseMatrixMechanical<double>::filterValues(Compressed
 }
 
 template <> template <>
-inline void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
+void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, float> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {
     M.compress();
     nRow = M.rowSize();
@@ -275,7 +275,7 @@ inline void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedR
 }
 
 template <> template <>
-inline void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
+void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSparseMatrixMechanical<type::Mat<3, 3, double> >& M, filter_fn* filter, const Real ref, bool keepEmptyRows)
 {
     M.compress();
     nRow = M.rowSize();
