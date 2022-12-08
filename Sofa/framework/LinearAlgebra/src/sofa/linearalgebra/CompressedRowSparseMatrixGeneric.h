@@ -828,7 +828,7 @@ public:
             colsIndex[i] += base;
     }
 
-protected:
+// protected:
 
     /**
     * \brief Get block method
@@ -1562,6 +1562,17 @@ public:
         res.compress();
     }
 
+    static auto blockMultTranspose(const TBlock& blockA, const TBlock& blockB)
+    {
+        if constexpr (std::is_scalar_v<TBlock>)
+        {
+            return blockA * blockB;
+        }
+        else
+        {
+            return blockA.multTranspose(blockB);
+        }
+    }
 
     /** Compute res = this.transpose * m
       @warning The block sizes must be compatible, i.e. this::NR==m::NR and res::NR==this::NC and res::NC==m::NC
@@ -1609,7 +1620,8 @@ public:
                 for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
                 {
                     Index mcol = m.colsIndex[mj];     // column index of the non-null block
-                    *res.wblock(row,mcol,true) += b.multTranspose( m.colsValue[mj] );  // find the matching block in res, and accumulate the block product
+                    //*res.wblock(row,mcol,true) += b.multTranspose( m.colsValue[mj] );  // find the matching block in res, and accumulate the block product
+                    *res.wblock(row, mcol, true) += blockMultTranspose(b, m.colsValue[mj]);  // find the matching block in res, and accumulate the block product
                 }
             }
         }

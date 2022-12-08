@@ -527,14 +527,14 @@ public:
 /// @name BlockMatrixWriter operators
 /// @{
     /// Override CRSMatrix add method to avoid mis-understanding by compilator with other add method overriding BaseMatrix.
-    void add(unsigned int bi, unsigned int bj, const Block& b)
-    {
-        CRSMatrix::add(bi, bj, b);
-    }
-    void add(unsigned int bi, unsigned int bj, int& rowId, int& colId, const Block& b)
-    {
-        CRSMatrix::add(bi, bj, rowId, colId, b);
-    }
+    //void add(unsigned int bi, unsigned int bj, const Block& b)
+    //{
+    //    CRSMatrix::add(bi, bj, b);
+    //}
+    //void add(unsigned int bi, unsigned int bj, int& rowId, int& colId, const Block& b)
+    //{
+    //    CRSMatrix::add(bi, bj, rowId, colId, b);
+    //}
 /// @}
 
 /// @name Get information about the content and structure of this matrix (diagonal, band, sparse, full, block size, ...)
@@ -1197,14 +1197,26 @@ protected:
             }
         }
     }
-
-/// @}
+    /// @}
 
 
 public:
 
-/// @name Matrix operators
-/// @{
+    /// @name Matrix operators
+    /// @{
+    
+    /** @returns this + m
+      @warning The block must be the same (same type and same size)
+      @warning The matrices must have the same mathematical size
+      @warning matrices this and m must be compressed
+    */
+    CompressedRowSparseMatrixMechanical<TBlock, TPolicy> operator+(const CompressedRowSparseMatrixMechanical<TBlock, TPolicy>& m) const
+    {
+        CompressedRowSparseMatrixMechanical<TBlock, TPolicy> res = *this;
+        res += m;
+        return res;
+    }
+
     using CompressedRowSparseMatrixGeneric::mul; // CRS x CRS mul version
 
     /// equal result = this * v
@@ -1261,7 +1273,7 @@ public:
     template<class M2>
     bool hasRef(const M2* m) const
     {
-        return const_cast<void*>(this) == const_cast<void*>(m);
+        return (const void*)this == (const void*)m;
     }
 
     std::string expr() const
