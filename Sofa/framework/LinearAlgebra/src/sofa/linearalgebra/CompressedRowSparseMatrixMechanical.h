@@ -28,6 +28,8 @@
 #include <sofa/linearalgebra/config.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixGeneric.h>
 
+#include <sofa/type/trait/is_vector.h>
+
 namespace sofa::linearalgebra
 {
 
@@ -1203,10 +1205,11 @@ public:
 
 /// @name Matrix operators
 /// @{
+    using CompressedRowSparseMatrixGeneric::mul; // CRS x CRS mul version
 
     /// equal result = this * v
     /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template< typename V1, typename V2 >
+    template< typename V1, typename V2, std::enable_if_t<sofa::type::trait::is_vector<V1>::value && sofa::type::trait::is_vector<V2>::value, int> = 0 >
     void mul( V2& result, const V1& v ) const
     {
         this-> template tmul< Real, V2, V1 >(result, v);
