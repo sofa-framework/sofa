@@ -49,7 +49,6 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/BlockFullMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/BlockVector.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/BTDMatrix.cpp
-    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixGeneric.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixMechanical.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.cpp
