@@ -220,7 +220,7 @@ public:
     }
 
     /// This override classic resizeBlock to fill nRow and nCol values.
-    void resizeBlock(Index nbBRow, Index nbBCol)
+    void resizeBlock(Index nbBRow, Index nbBCol) override
     {
         CRSMatrix::resizeBlock(nbBRow, nbBCol);
         nRow = NL * nbBRow;
@@ -1047,41 +1047,77 @@ protected:
 
 
     /** Product of the matrix with a templated vector res = this * vec*/
+    //template<class Real2, class V1, class V2>
+    //void tmul(V1& res, const V2& vec) const
+    //{
+    //    assert( vec.size() % bColSize() == 0 ); // vec.size() must be a multiple of block size.
+
+    //    if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
+
+    //    vresize( res, this->rowBSize(), rowSize() );
+
+    //    for (Index xi = 0; xi < static_cast<Index>(this->rowIndex.size()); ++xi)  // for each non-empty block row
+    //    {
+    //        Range rowRange(this->rowBegin[xi], this->rowBegin[xi+1]);
+    //        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+    //        {
+    //            sofa::type::Vec<NL,Real2> vi;
+    //            const Block& b = this->colsValue[xj];
+    //            Index rowIndex = this->rowIndex[xi] * NL;
+    //            Index colIndex = this->colsIndex[xj] * NC;
+    //            std::copy(vec.begin() + colIndex, vec.begin() + colIndex + NC, vi.begin());
+    //            for (Index bi = 0; bi < NL; ++bi)
+    //                for (Index bj = 0; bj < NC; ++bj)
+    //                    res[rowIndex + bi] += traits::v(b, bi, bj) * vi[bj];
+
+    //            if constexpr (!Policy::StoreLowerTriangularBlock)
+    //            {
+    //                if (colIndex != rowIndex)
+    //                {
+    //                    sofa::type::Vec<NL,Real2> vj;
+    //                    std::copy(vec.begin() + rowIndex, vec.begin() + rowIndex + NL, vj.begin());
+    //                    for (Index bi = 0; bi < NL; ++bi)
+    //                        for (Index bj = 0; bj < NC; ++bj)
+    //                            res[colIndex + bi] += traits::v(b, bj, bi) * vj[bj];
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
+
+    /** Product of the matrix with a templated vector res = this * vec*/
     template<class Real2, class V1, class V2>
     void tmul(V1& res, const V2& vec) const
     {
-        assert( vec.size() % bColSize() == 0 ); // vec.size() must be a multiple of block size.
+        assert(vec.size() % bColSize() == 0); // vec.size() must be a multiple of block size.
 
-        if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-
-        vresize( res, this->rowBSize(), rowSize() );
-
-        for (Index xi = 0; xi < static_cast<Index>(this->rowIndex.size()); ++xi)  // for each non-empty block row
+        ((Matrix*)this)->compress();
+        vresize(res, this->rowBSize(), this->rowSize());
+        for (Index xi = 0; xi < (Index)this->rowIndex.size(); ++xi)  // for each non-empty block row
         {
-            Range rowRange(this->rowBegin[xi], this->rowBegin[xi+1]);
+            type::Vec<NL, Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+
+            // multiply the non-null blocks with the corresponding chunks of the large vector
+            Range rowRange(this->rowBegin[xi], this->rowBegin[xi + 1]);
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                sofa::type::Vec<NL,Real2> vi;
-                const Block& b = this->colsValue[xj];
-                Index rowIndex = this->rowIndex[xi] * NL;
-                Index colIndex = this->colsIndex[xj] * NC;
-                std::copy(vec.begin() + colIndex, vec.begin() + colIndex + NC, vi.begin());
+                // transfer a chunk of large vector to a local block-sized vector
+                type::Vec<NC, Real2> v;
+                //Index jN = colsIndex[xj] * NC;    // scalar column index
+                for (Index bj = 0; bj < NC; ++bj)
+                    v[bj] = vget(vec, this->colsIndex[xj], NC, bj);
+
+                // multiply the block with the local vector
+                const Block& b = this->colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
                 for (Index bi = 0; bi < NL; ++bi)
                     for (Index bj = 0; bj < NC; ++bj)
-                        res[rowIndex + bi] += traits::v(b, bi, bj) * vi[bj];
-
-                if constexpr (!Policy::StoreLowerTriangularBlock)
-                {
-                    if (colIndex != rowIndex)
-                    {
-                        sofa::type::Vec<NL,Real2> vj;
-                        std::copy(vec.begin() + rowIndex, vec.begin() + rowIndex + NL, vj.begin());
-                        for (Index bi = 0; bi < NL; ++bi)
-                            for (Index bj = 0; bj < NC; ++bj)
-                                res[colIndex + bi] += traits::v(b, bj, bi) * vj[bj];
-                    }
-                }
+                        r[bi] += traits::v(b, bi, bj) * v[bj];
             }
+
+            // transfer the local result  to the large result vector
+            //Index iN = rowIndex[xi] * NL;                      // scalar row index
+            for (Index bi = 0; bi < NL; ++bi)
+                vset(res, this->rowIndex[xi], NL, bi, r[bi]);
         }
     }
 
