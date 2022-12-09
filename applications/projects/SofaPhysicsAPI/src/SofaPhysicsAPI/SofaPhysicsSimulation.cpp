@@ -71,9 +71,14 @@ const char *SofaPhysicsAPI::APIName()
     return impl->APIName();
 }
 
-bool SofaPhysicsAPI::load(const char* filename)
+int SofaPhysicsAPI::load(const char* filename)
 {
     return impl->load(filename);
+}
+
+int SofaPhysicsAPI::unload()
+{
+    return impl->unload();
 }
 
 void SofaPhysicsAPI::createScene()
@@ -175,6 +180,11 @@ double SofaPhysicsAPI::getCurrentFPS() const
 double* SofaPhysicsAPI::getGravity() const
 {
     return impl->getGravity();
+}
+
+int SofaPhysicsAPI::getGravity(double* values) const
+{
+    return impl->getGravity(values);
 }
 
 void SofaPhysicsAPI::setGravity(double* gravity)
@@ -296,14 +306,12 @@ const char *SofaPhysicsSimulation::APIName()
     return "SofaPhysicsSimulation API";
 }
 
-bool SofaPhysicsSimulation::load(const char* cfilename)
+int SofaPhysicsSimulation::load(const char* cfilename)
 {
     std::string filename = cfilename;
-    std::cout << "FROM APP: SofaPhysicsSimulation::load(" << filename << ")" << std::endl;
     sofa::helper::BackTrace::autodump();
 
     //bool wasAnimated = isAnimated();
-    bool success = true;
     sofa::helper::system::DataRepository.findFile(filename);
     m_RootNode = m_Simulation->load(filename.c_str());
     if (m_RootNode.get())
@@ -319,7 +327,7 @@ bool SofaPhysicsSimulation::load(const char* cfilename)
     else
     {
         m_RootNode = m_Simulation->createNewGraph("");
-        success = false;
+        return API_SCENE_FAILED;
     }
     initTexturesDone = false;
     lastW = 0;
@@ -328,7 +336,22 @@ bool SofaPhysicsSimulation::load(const char* cfilename)
 
 //    if (isAnimated() != wasAnimated)
 //        animatedChanged();
-    return success;
+    return API_SUCCESS;
+}
+
+int SofaPhysicsSimulation::unload()
+{
+    if (m_RootNode.get())
+    {
+        m_Simulation->unload(m_RootNode);
+    }
+    else
+    {
+        msg_error("SofaPhysicsSimulation") << "Error: can't get scene root node.";
+        return API_SCENE_NULL;
+    }
+
+    return API_SUCCESS;
 }
 
 void SofaPhysicsSimulation::createScene()
@@ -434,6 +457,22 @@ double *SofaPhysicsSimulation::getGravity() const
     }
 
     return gravityVec;
+}
+
+int SofaPhysicsSimulation::getGravity(double* values) const
+{
+    if (getScene())
+    {
+        const auto& g = getScene()->getContext()->getGravity();
+        values[0] = g.x();
+        values[1] = g.y();
+        values[2] = g.z();
+        return API_SUCCESS;
+    }
+    else
+    {
+        return API_SCENE_NULL;
+    }
 }
 
 void SofaPhysicsSimulation::setGravity(double* gravity)
@@ -553,7 +592,7 @@ void SofaPhysicsSimulation::updateCurrentFPS()
     ++frameCounter;
 }
 
-void SofaPhysicsSimulation::updateOutputMeshes()
+int SofaPhysicsSimulation::updateOutputMeshes()
 {
     sofa::simulation::Node* groot = getScene();
     if (!groot)
@@ -561,10 +600,10 @@ void SofaPhysicsSimulation::updateOutputMeshes()
         sofaOutputMeshes.clear();
         outputMeshes.clear();
 
-        return;
+        return API_SCENE_NULL;
     }
     sofaOutputMeshes.clear();    
-    groot->get<SofaOutputMesh>(&sofaOutputMeshes, sofa::core::objectmodel::BaseContext::SearchDown);
+    groot->get<SofaOutputMesh>(&sofaOutputMeshes, sofa::core::objectmodel::BaseContext::SearchRoot);
 
     outputMeshes.resize(sofaOutputMeshes.size());
 
@@ -579,6 +618,8 @@ void SofaPhysicsSimulation::updateOutputMeshes()
         }
         outputMeshes[i] = oMesh;
     }
+
+    return sofaOutputMeshes.size();
 }
 
 unsigned int SofaPhysicsSimulation::getNbOutputMeshes() const

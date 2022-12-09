@@ -40,8 +40,11 @@ public:
 
     unsigned int getNbVertices(); ///< number of vertices
     const Real* getVPositions();  ///< vertices positions (Vec3)
+    int getVPositions(Real* values); ///< get the positions/vertices of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]
     const Real* getVNormals();    ///< vertices normals   (Vec3)
+    int getVNormals(Real* values); ///< get the normals per vertex of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]
     const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
+    int getVTexCoords(Real* values); ///< get the texture coordinates (UV) per vertex of this mesh inside ouput @param values, of type Real[ 2*nbVertices ]
     int getTexCoordRevision();    ///< changes each time texture coord data are updated
     int getVerticesRevision();    ///< changes each time vertices data are updated
     
@@ -58,10 +61,12 @@ public:
 
     unsigned int getNbTriangles(); ///< number of triangles
     const Index* getTriangles();   ///< triangles topology (3 indices / triangle)
+    int getTriangles(int* values); ///< get the triangle topology inside ouput @param values, of type int[ 3*nbTriangles ]
     int getTrianglesRevision();    ///< changes each time triangles data is updated
 
     unsigned int getNbQuads(); ///< number of quads
     const Index* getQuads();   ///< quads topology (4 indices / quad)
+    int getQuads(int* values); ///< get the quad topology inside ouput @param values, of type int[ 4*nbQuads ]
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     typedef sofa::core::visual::VisualModel SofaVisualOutputMesh;
