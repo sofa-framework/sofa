@@ -29,23 +29,23 @@
 namespace sofa::simulation
 {
 /**  Base class to implement a CPU task
-    *   all the tasks running on the CPU should inherits from this class
-    */
+ *   all the tasks running on the CPU should inherits from this class
+ */
 class SOFA_SIMULATION_CORE_API CpuTask : public Task
 {
 public:
 
     using Status = CpuTaskStatus;
 
-    CpuTask::Status* getStatus(void) const override final;
+    Status* getStatus(void) const override final;
 
 
-    CpuTask(CpuTask::Status* status, int scheduledThread = -1);
+    CpuTask(Status* status, int scheduledThread = -1);
 
     virtual ~CpuTask() = default;
 
 private:
-    CpuTask::Status* m_status;
+    Status* m_status { nullptr };
 };
 
 } // namespace sofa::simulation
