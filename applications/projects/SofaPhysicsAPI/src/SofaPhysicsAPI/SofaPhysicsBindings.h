@@ -34,7 +34,6 @@
 #pragma warning Unknown dynamic link import/export semantics.
 #endif
 
-#include <string>
 
 ////////////////////////////////////////////////////////////
 ///////////////   Global API C Bindings   //////////////////
