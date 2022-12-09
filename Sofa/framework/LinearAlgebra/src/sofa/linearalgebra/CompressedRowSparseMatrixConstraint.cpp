@@ -22,22 +22,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_DEFAULTTYPE_COMPRESSEDROWSPARSEMATRIXCONSTRAINT_CPP
-#include <sofa/defaulttype/CompressedRowSparseMatrixConstraint.h>
+#define SOFA_LINEARALGEBRA_COMPRESSEDROWSPARSEMATRIXCONSTRAINT_CPP
+
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::defaulttype
+namespace sofa::linearalgebra
 {
 
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec1f>;
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec2f>;
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec3f>;
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec6f>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec1f>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec2f>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec3f>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec6f>;
 
 
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec1d>;
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec2d>;
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec3d>;
-template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec6d>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec1d>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec2d>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec3d>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec6d>;
 
-} // namespace sofa::defaulttype
+} // namespace sofa::linearalgebra

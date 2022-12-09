@@ -19,15 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/CompressedRowSparseMatrixConstraint.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <Eigen/Sparse>
 #include <sofa/type/Vec.h>
-#include <sofa/defaulttype/RigidTypes.h>
+//#include <sofa/defaulttype/RigidTypes.h>
 #include <cassert>
 #include <type_traits>
 #include <cstdlib>
 
-namespace sofa::defaulttype
+namespace sofa::linearalgebra
 {
 
 template< class TBlock >
@@ -81,12 +81,12 @@ class CompressedRowSparseMatrixToEigenSparse< sofa::type::Vec<N,Real> >
 
 };
 
-template< int N, typename Real >
-class CompressedRowSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
-    : public CompressedRowSparseMatrixToEigenSparseVec<sofa::defaulttype::RigidDeriv<N, Real>>
-{
-
-};
+//template< int N, typename Real >
+//class CompressedRowSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
+//    : public CompressedRowSparseMatrixToEigenSparseVec<sofa::defaulttype::RigidDeriv<N, Real>>
+//{
+//
+//};
 
 
 template< class TBlock >

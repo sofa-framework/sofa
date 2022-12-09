@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/config.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/config.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixGeneric.h>
 
 
-namespace sofa::defaulttype
+namespace sofa::linearalgebra
 {
 
 template<class RowType, class VecDeriv, typename Real = typename VecDeriv::value_type::Real>
@@ -61,11 +61,11 @@ public:
 };
 
 template<typename TBlock, typename TPolicy = CRSConstraintPolicy >
-class CompressedRowSparseMatrixConstraint : public sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TPolicy>
+class CompressedRowSparseMatrixConstraint : public sofa::linearalgebra::CompressedRowSparseMatrixGeneric<TBlock, TPolicy>
 {
 public:
     typedef CompressedRowSparseMatrixConstraint<TBlock, TPolicy> Matrix;
-    typedef linearalgebra::CompressedRowSparseMatrix<TBlock, TPolicy> CRSMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrixGeneric<TBlock, TPolicy> CRSMatrix;
     typedef typename CRSMatrix::Policy Policy;
 
     using Block     = TBlock;
@@ -685,19 +685,19 @@ protected:
     type::vector<RowBuffer> m_rows;
 };
 
-#if !defined(SOFA_DEFAULTTYPE_COMPRESSEDROWSPARSEMATRIXCONSTRAINT_CPP) 
+#if !defined(SOFA_LINEARALGEBRA_COMPRESSEDROWSPARSEMATRIXCONSTRAINT_CPP) 
 
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec1f>;
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec2f>;
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec3f>;
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec6f>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec1f>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec2f>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec3f>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec6f>;
 
 
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec1d>;
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec2d>;
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec3d>;
-extern template class SOFA_DEFAULTTYPE_API CompressedRowSparseMatrixConstraint<type::Vec6d>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec1d>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec2d>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec3d>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixConstraint<type::Vec6d>;
 
 #endif
 
-} // namespace sofa::defaulttype
+} // namespace sofa::linearalgebra
