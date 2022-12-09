@@ -475,15 +475,15 @@ template<class DataTypes> struct StateType<DataTypes, core::V_DERIV>
 /// Maps a VecType to a DataTypes member static variable representing the size of the state variables
 /// Example: StateTypeSize_v<DataTypes, core::V_COORD> is the value of DataTypes::coord_total_size
 template<class DataTypes, core::VecType vtype> struct StateTypeSize {};
-template<class DataTypes, core::VecType vtype> inline constexpr sofa::Size StateTypeSize_v = typename StateTypeSize<DataTypes, vtype>::total_size;
+template<class DataTypes, core::VecType vtype> inline constexpr sofa::Size StateTypeSize_v = StateTypeSize<DataTypes, vtype>::total_size;
 
 template<class DataTypes> struct StateTypeSize<DataTypes, core::V_COORD>
 {
-    static constexpr sofa::Size total_size = typename DataTypes::coord_total_size;
+    static constexpr sofa::Size total_size = DataTypes::coord_total_size;
 };
 template<class DataTypes> struct StateTypeSize<DataTypes, core::V_DERIV>
 {
-    static constexpr sofa::Size total_size = typename DataTypes::deriv_total_size;
+    static constexpr sofa::Size total_size = DataTypes::deriv_total_size;
 };
 
 /// Maps a VecType to a DataTypes member typedef representing a vector of state variables
