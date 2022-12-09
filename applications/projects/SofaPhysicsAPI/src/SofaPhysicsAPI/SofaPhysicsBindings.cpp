@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "SofaPhysicsBindings.h"
 #include "SofaPhysicsAPI.h"
+#include <string.h>
 
 /// Test API
 int test_getAPI_ID()
