@@ -30,6 +30,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/testing/NumericTest.h>
 using sofa::simulation::Node;
 
 #include <sofa/testing/BaseTest.h>
@@ -204,7 +205,7 @@ public:
 
     void checkCreation(int FEMType)
     {
-        createSingleTriangleFEMScene(FEMType, 100, 0.4, "large");
+        createSingleTriangleFEMScene(FEMType, 100.f, 0.4f, "large");
 
         typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
@@ -214,24 +215,24 @@ public:
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.4);
-            ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else if (FEMType == 1)
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.4);
-            ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else
         {
             typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.4);
-            ASSERT_FLOAT_EQ(triFEM->getYoung(), 100);
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(100));
         }
     }
 
@@ -327,24 +328,24 @@ public:
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
-            ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3));
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else if (FEMType == 1)
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
-            ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3)); // Not the same default values
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
             ASSERT_EQ(triFEM->getMethod(), 0);
         }
         else
         {
             typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
             ASSERT_TRUE(triFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
-            ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getPoisson(), static_cast<Real>(0.3)); // Not the same default values
+            ASSERT_FLOATINGPOINT_EQ(triFEM->getYoung(), static_cast<Real>(1000));
         }
     }
 
@@ -352,13 +353,13 @@ public:
     void checkWrongAttributes(int FEMType)
     {
         EXPECT_MSG_EMIT(Warning);
-        createSingleTriangleFEMScene(FEMType, -100, -0.3, "toto");
+        createSingleTriangleFEMScene(FEMType, -100.f, -0.3f, "toto");
     }
 
 
     void checkInit(int FEMType)
     {
-        createSingleTriangleFEMScene(FEMType, 100, 0.3, "large");
+        createSingleTriangleFEMScene(FEMType, 100.f, 0.3f, "large");
         
         type::Vec<2, Mat33> exp_rotatedInitPos;
         type::Vec<2, Mat33> exp_rotMat;

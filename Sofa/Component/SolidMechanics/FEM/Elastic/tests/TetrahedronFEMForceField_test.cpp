@@ -282,7 +282,7 @@ public:
 
     void checkCreation(int FEMType)
     {
-        createSingleTetrahedronFEMScene(FEMType, 10000, 0.4, "large");
+        createSingleTetrahedronFEMScene(FEMType, 10000.f, 0.4f, "large");
 
         typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
@@ -292,24 +292,24 @@ public:
         {
             typename TetrahedronFEM::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(tetraFEM->_poissonRatio.getValue(), 0.4);
-            ASSERT_FLOAT_EQ(tetraFEM->_youngModulus.getValue()[0], 10000);
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue()[0], static_cast<Real>(10000));
             ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
         }
         else if (FEMType == 1)
         {
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(tetraFEM->_poissonRatio.getValue(), 0.4);
-            ASSERT_FLOAT_EQ(tetraFEM->_youngModulus.getValue(), 10000);
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue(), static_cast<Real>(10000));
             ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
         }
         else
         {
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(tetraFEM->f_poissonRatio.getValue(), 0.4);
-            ASSERT_FLOAT_EQ(tetraFEM->f_youngModulus.getValue(), 10000);
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_poissonRatio.getValue(), static_cast<Real>(0.4));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_youngModulus.getValue(), static_cast<Real>(10000));
             ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
         }
     }
@@ -396,24 +396,24 @@ public:
             typename TetrahedronFEM::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
             
-            ASSERT_FLOAT_EQ(tetraFEM->_poissonRatio.getValue(), 0.45);           
-            ASSERT_FLOAT_EQ(tetraFEM->_youngModulus.getValue()[0], 5000);
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue()[0], static_cast<Real>(5000));
             ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
         }
         else if (FEMType == 1)
         {
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(tetraFEM->_poissonRatio.getValue(), 0.45);
-            ASSERT_FLOAT_EQ(tetraFEM->_youngModulus.getValue(), 5000);
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_poissonRatio.getValue(), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->_youngModulus.getValue(), static_cast<Real>(5000));
             ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
         }
         else
         {
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(tetraFEM->f_poissonRatio.getValue(), 0.3); // TODO need to unify this value with other tetrahedronFEM
-            ASSERT_FLOAT_EQ(tetraFEM->f_youngModulus.getValue(), 1000); // TODO need to unify this value with other tetrahedronFEM
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_poissonRatio.getValue(), static_cast<Real>(0.3)); // TODO need to unify this value with other tetrahedronFEM
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_youngModulus.getValue(), static_cast<Real>(1000)); // TODO need to unify this value with other tetrahedronFEM
             ASSERT_EQ(tetraFEM->f_method.getValue(), "qr");
         }
     }
@@ -428,7 +428,7 @@ public:
 
     void checkInit(int FEMType)
     {
-        createSingleTetrahedronFEMScene(FEMType, 1000, 0.3, "large");
+        createSingleTetrahedronFEMScene(FEMType, 1000.f, 0.3f, "large");
 
         // Expected values
         Transformation exp_initRot = { Vec3(0, 0.816497, 0.57735), Vec3(-0.707107, -0.408248, 0.57735), Vec3(0.707107, -0.408248, 0.57735) };

@@ -29,6 +29,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/testing/NumericTest.h>
 using sofa::simulation::Node;
 
 #include <sofa/testing/BaseTest.h>
@@ -75,7 +76,7 @@ public:
             simulation::getSimulation()->unload(m_root);
     }
 
-    void createSimpleBeam(Real radius, Real youngModulus, Real poissonRatio)
+    void createSimpleBeam(SReal radius, SReal youngModulus, SReal poissonRatio)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
         m_root->setGravity(type::Vec3(0.0, -1.0, 0.0));
@@ -110,9 +111,9 @@ public:
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         ASSERT_TRUE(bFEM.get() != nullptr);
-        ASSERT_FLOAT_EQ(bFEM->d_radius.getValue(), 0.05);
-        ASSERT_FLOAT_EQ(bFEM->d_youngModulus.getValue(), 20000000);
-        ASSERT_FLOAT_EQ(bFEM->d_poissonRatio.getValue(), 0.49);
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_radius.getValue(), static_cast<Real>(0.05));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_youngModulus.getValue(), static_cast<Real>(20000000));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_poissonRatio.getValue(), static_cast<Real>(0.49));
     }
 
 
@@ -163,17 +164,17 @@ public:
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         ASSERT_TRUE(bFEM.get() != nullptr);
-        ASSERT_FLOAT_EQ(bFEM->d_radius.getValue(), 0.1);
-        ASSERT_FLOAT_EQ(bFEM->d_youngModulus.getValue(), 5000);
-        ASSERT_FLOAT_EQ(bFEM->d_poissonRatio.getValue(), 0.49);
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_radius.getValue(), static_cast<Real>(0.1));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_youngModulus.getValue(), static_cast<Real>(5000));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_poissonRatio.getValue(), static_cast<Real>(0.49));
     }
 
 
     void checkInit()
     {
-        Real radius = 0.05;
-        Real young = 20000000;
-        Real poisson = 0.49;
+        static constexpr SReal radius = 0.05_sreal;
+        static constexpr SReal young = 20000000_sreal;
+        static constexpr SReal poisson = 0.49_sreal;
         createSimpleBeam(radius, young, poisson);
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
@@ -188,7 +189,7 @@ public:
         ASSERT_EQ(bI._nu, poisson);
         ASSERT_EQ(bI._r, radius);
         ASSERT_EQ(bI._L, 1.0);
-        ASSERT_FLOAT_EQ(bI._G, young/(2.0*(1.0+poisson)));
+        ASSERT_FLOATINGPOINT_EQ(bI._G, young / (2.0_sreal * (1.0_sreal + poisson)));
     }
 
 
