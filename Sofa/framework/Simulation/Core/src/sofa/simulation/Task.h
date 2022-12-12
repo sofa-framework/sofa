@@ -32,8 +32,8 @@ class SOFA_SIMULATION_CORE_API Task
 {
 public:
             
-    // Task Status class interface used to synchronize tasks
-    class Status
+    /// Task Status class interface used to synchronize tasks
+    class SOFA_SIMULATION_CORE_API Status
     {
     public:
         virtual ~Status() = default;
@@ -41,8 +41,8 @@ public:
         virtual int setBusy(bool busy) = 0;
     };
             
-    // Task Allocator class interface used to allocate tasks
-    class Allocator
+    /// Task Allocator class interface used to allocate tasks
+    class SOFA_SIMULATION_CORE_API Allocator
     {
     public:
         virtual void* allocate(std::size_t sz) = 0;
