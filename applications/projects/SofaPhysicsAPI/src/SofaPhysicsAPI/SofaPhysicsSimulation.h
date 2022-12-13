@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <SofaPhysicsAPI/config.h>
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
 

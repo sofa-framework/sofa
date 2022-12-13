@@ -52,12 +52,7 @@ const char* sofaPhysicsAPI_APIName(void* api_ptr)
     SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
-        std::string apiName = api->APIName();
-        char* cstr = new char[apiName.length() + 1];
-#if defined(_MSC_VER)
-        std::strcpy(cstr, apiName.c_str());
-#endif
-        return cstr;
+        return api->APIName();
     }
     else
         return "none";
@@ -100,12 +95,7 @@ const char* sofaPhysicsAPI_loadSofaIni(void* api_ptr, const char* filePath)
 {
     SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api) {
-        std::string value = api->loadSofaIni(filePath);
-        char* cstr = new char[value.length() + 1];
-#if defined(_MSC_VER)
-        std::strcpy(cstr, value.c_str());
-#endif
-        return cstr;
+        return api->loadSofaIni(filePath);
     }
     else
         return "Error: API_NULL";
@@ -238,13 +228,7 @@ const char* sofaPhysicsAPI_getMessage(void* api_ptr, int messageId, int* msgType
     SofaPhysicsAPI* api = (SofaPhysicsAPI*)api_ptr;
     if (api)
     {
-        std::string value = api->getMessage(messageId, msgType[0]);
-
-        char* cstr = new char[value.length() + 1];
-#if defined(_MSC_VER)
-        std::strcpy(cstr, value.c_str());
-#endif
-        return cstr;
+        return api->getMessage(messageId, msgType[0]);
     }
     else
         return "Error: API_NULL";
@@ -281,13 +265,7 @@ const char* sofaVisualModel_getName(void* api_ptr, int VModelID)
     if (api)
     {
         SofaPhysicsOutputMesh* mesh = api->getOutputMeshPtr(VModelID);
-        std::string value = mesh->getName();
-
-        char* cstr = new char[value.length() + 1];
-#if defined(_MSC_VER)
-        std::strcpy(cstr, value.c_str());
-#endif
-        return cstr;
+        return mesh->getName();
     }
     else
         return "Error: SAPAPI_NULL_API";

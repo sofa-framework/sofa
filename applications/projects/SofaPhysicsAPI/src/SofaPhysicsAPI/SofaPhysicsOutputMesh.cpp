@@ -32,11 +32,6 @@ SofaPhysicsOutputMesh::~SofaPhysicsOutputMesh()
     delete impl;
 }
 
-const std::string& SofaPhysicsOutputMesh::getNameStr() const
-{
-    return impl->getNameStr();
-}
-
 const char* SofaPhysicsOutputMesh::getName() ///< (non-unique) name of this object
 {
     return impl->getName();
@@ -216,7 +211,11 @@ const char* SofaPhysicsOutputMesh::Impl::getName() ///< (non-unique) name of thi
 {
     if (!sObj) 
         return "None";
-    return sObj->getName().c_str();
+
+    std::string value = sObj->getName();
+    char* cstr = new char[value.length() + 1];
+    std::strcpy(cstr, value.c_str()); // force copy to avoid possible segfault if object is destroyed
+    return cstr;
 }
 
 ID SofaPhysicsOutputMesh::Impl::getID() ///< unique ID of this object

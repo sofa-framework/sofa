@@ -83,7 +83,7 @@ int SofaPhysicsAPI::unload()
     return impl->unload();
 }
 
-std::string SofaPhysicsAPI::loadSofaIni(const char* pathIniFile)
+const char* SofaPhysicsAPI::loadSofaIni(const char* pathIniFile)
 {
     auto sofaIniFilePath = std::string(pathIniFile);
 
@@ -112,7 +112,10 @@ std::string SofaPhysicsAPI::loadSofaIni(const char* pathIniFile)
         sofa::helper::system::DataRepository.addFirstPath(pythonDir);
     }
 
-    return shareDir;
+    char* cstr = new char[shareDir.length() + 1];
+    std::strcpy(cstr, shareDir.c_str());
+
+    return cstr;
 }
 
 int SofaPhysicsAPI::loadPlugin(const char* pluginPath)
@@ -240,9 +243,12 @@ int SofaPhysicsAPI::getNbMessages()
     return impl->getNbMessages();
 }
 
-std::string SofaPhysicsAPI::getMessage(int messageId, int& msgType)
+const char* SofaPhysicsAPI::getMessage(int messageId, int& msgType)
 {
-    return impl->getMessage(messageId, msgType);
+    std::string value = impl->getMessage(messageId, msgType);
+    char* cstr = new char[value.length() + 1];
+    std::strcpy(cstr, value.c_str());
+    return cstr;
 }
 
 int SofaPhysicsAPI::clearMessages()
@@ -727,9 +733,10 @@ SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(unsigned int mesh
 
 SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(const char* name) const
 {
+    const auto nameStr = std::string(name);
     for (SofaPhysicsOutputMesh* mesh : outputMeshes)
     {
-        if (std::string(name).compare(mesh->getNameStr()) == 0)
+        if (nameStr.compare(std::string(mesh->getName())) == 0)
             return mesh;
     }
 
