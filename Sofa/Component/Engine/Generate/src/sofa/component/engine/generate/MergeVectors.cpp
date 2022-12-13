@@ -38,13 +38,11 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
     .add< MergeVectors< defaulttype::Rigid2Types::VecCoord > >()
     .add< MergeVectors< defaulttype::Rigid2Types::VecDeriv > >()
     .add< MergeVectors< defaulttype::Rigid3Types::VecCoord > >()
-    .add< MergeVectors< defaulttype::Rigid3Types::VecDeriv > >()
- 
-        ;
+    .add< MergeVectors< defaulttype::Rigid3Types::VecDeriv > >();
+
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<int> >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<bool> >;
-//template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<std::string> >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2u> >;
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<double> >;
@@ -55,7 +53,7 @@ template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rig
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
- 
+
 
 
 } //namespace sofa::component::engine::generate

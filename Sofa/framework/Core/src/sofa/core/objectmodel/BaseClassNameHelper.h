@@ -27,7 +27,7 @@
 
 namespace sofa::defaulttype
 {
-    template<class T> class DataTypeInfo;
+    template<class T> struct DataTypeInfo;
 }
 
 namespace sofa::core::objectmodel

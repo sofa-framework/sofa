@@ -46,8 +46,8 @@ public:
 
 protected:
     MergeVectors();
-
     ~MergeVectors() override;
+
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
@@ -56,22 +56,17 @@ public:
     void parseFields( const std::map<std::string,std::string*>& str ) override;
 
     void init() override;
-
     void reinit() override;
-
     void doUpdate() override;
 
     Data<unsigned int> f_nbInputs; ///< Number of input vectors
     core::objectmodel::vectorData<VecValue> vf_inputs;
     Data<VecValue> f_output; ///< Output vector
-
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP)
-
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<int> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<bool> >;
-//extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<std::string> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2u> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<double> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2d> >;
@@ -81,7 +76,6 @@ extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaultty
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
-
 #endif
 
 } //namespace sofa::component::engine::generate

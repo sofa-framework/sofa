@@ -140,6 +140,16 @@ static RegisterTemplateAlias vector_doubleAlias("vector<double>", sofa::defaultt
 
 // Compatibility aliases used previously (see PR#3465)
 static RegisterTemplateAlias intAlias("int", sofa::defaulttype::DataTypeName<int>::name(), true);
-static RegisterTemplateAlias dataDoubleAlias("Data<double>", sofa::defaulttype::DataTypeName<std::vector<double>>::name(), true);
+static RegisterTemplateAlias dataIntAlias("Data<int>", sofa::defaulttype::DataTypeName<sofa::type::vector<int>>::name(), true);
+static RegisterTemplateAlias dataDoubleAlias("Data<double>", sofa::defaulttype::DataTypeName<sofa::type::vector<double>>::name(), true);
+static RegisterTemplateAlias dataBoolAlias("Data<bool>", sofa::defaulttype::DataTypeName<sofa::type::vector<bool>>::name(), true);
+static RegisterTemplateAlias dataVec2uAlias("Data<Vec<2u,unsigned int>>", sofa::defaulttype::DataTypeName<type::vector<type::Vec2u>>::name(), true);
+static RegisterTemplateAlias dataVec2dAlias("Data<Vec<2u,double>>", sofa::defaulttype::DataTypeName<sofa::type::vector<type::Vec2d>>::name(), true);
+static RegisterTemplateAlias dataVec3dAlias("Data<Vec<3u,double>>", sofa::defaulttype::DataTypeName<sofa::type::vector<type::Vec3d>>::name(), true);
+static RegisterTemplateAlias dataVec4dAlias("Data<Vec<4u,double>>", sofa::defaulttype::DataTypeName<sofa::type::vector<type::Vec4d>>::name(), true);
+static RegisterTemplateAlias dataRigidCoord2dAlias("Data<RigidCoord<2u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid2Types::VecCoord>::name(), true);
+static RegisterTemplateAlias dataRigidDeriv2dAlias("Data<RigidDeriv<2u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid2Types::VecDeriv>::name(), true);
+static RegisterTemplateAlias dataRigidCoord3dAlias("Data<RigidCoord<3u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid3Types::VecCoord>::name(), true);
+static RegisterTemplateAlias dataRigidDeriv3dAlias("Data<RigidDeriv<3u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid3Types::VecDeriv>::name(), true);
 
 } // namespace sofa::defaulttype
