@@ -21,10 +21,22 @@
 ******************************************************************************/
 #pragma once
 
-#ifdef SOFA_BUILD_SOFAPHYSICSAPI
-#  define SOFA_SOFAPHYSICSAPI_API __declspec(dllexport)
+#ifndef WIN32
+    #ifdef SOFA_BUILD_SOFAPHYSICSAPI
+    #	define SOFA_SOFAPHYSICSAPI_API __attribute__ ((visibility ("default")))
+    #else
+    #   define SOFA_SOFAPHYSICSAPI_API
+    #endif
 #else
-#  define SOFA_SOFAPHYSICSAPI_API __declspec( dllimport )
+#ifdef SOFA_BUILD_SOFAPHYSICSAPI
+    #	define SOFA_SOFAPHYSICSAPI_API __declspec( dllexport )
+    #else
+    #   define SOFA_SOFAPHYSICSAPI_API __declspec( dllimport )
+    #endif
+    #   ifdef _MSC_VER
+    #       pragma warning(disable : 4231)
+    #       pragma warning(disable : 4910)
+    #   endif
 #endif
 
 class SofaPhysicsOutputMesh;
