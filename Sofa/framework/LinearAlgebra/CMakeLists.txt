@@ -22,7 +22,6 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixGeneric.h
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixMechanical.h
-    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixTraceLogger.h
     ${SOFALINEARALGEBRASRC_ROOT}/DiagonalMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenSparseMatrix.h
