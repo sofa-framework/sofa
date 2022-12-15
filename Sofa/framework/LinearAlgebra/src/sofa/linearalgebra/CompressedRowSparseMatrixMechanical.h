@@ -128,7 +128,6 @@ public:
     template< typename = typename std::enable_if< Policy::IsAlwaysSquare> >
     void fullDiagonal()
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::fullDiagonal);
         compress();
         Index ndiag = 0;
         for (Index r = 0; r < static_cast<Index>(this->rowIndex.size()); ++r)
@@ -229,10 +228,6 @@ public:
 
     void resize(Index nbRow, Index nbCol)
     {
-        if constexpr (Policy::Verbose)
-        {
-            if (nbRow != rowSize() || nbCol != colSize()) std::cout << this->Name()  << ": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
-        }
         this->resizeBlock((nbRow + NL-1) / NL, (nbCol + NC-1) / NC);
         nRow = nbRow;
         nCol = nbCol;
@@ -240,13 +235,6 @@ public:
 
     void extend(Index nbRow, Index nbCol)
     {
-        if constexpr(Policy::Check)
-        {
-            if (nbRow < rowSize() || nbCol < colSize() )
-            {
-                std::cerr << "ERROR: extend("<<nbRow<<","<<nbCol<<") reduces the size of the matrix " << this->Name() << " : size ("<<rowSize()<<","<<colSize()<<")" << std::endl;
-            }
-        }
         nRow = nbRow;
         nCol = nbCol;
         this->nBlockRow = (nbRow + NL-1) / NL;
@@ -258,16 +246,15 @@ public:
     **/
     SReal element(Index i, Index j) const override
     {
-        if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        if constexpr (Policy::Check)
+        if constexpr (Policy::AutoCompress)
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-                return 0.0;
-            }
+            const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         }
-        if constexpr (!Policy::StoreLowerTriangularBlock) if ((i / NL) > (j / NC)) std::swap(i,j);
+        
+        if constexpr (!Policy::StoreLowerTriangularBlock) if ((i / NL) > (j / NC))
+        {
+            std::swap(i, j);
+        }
 
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         return traits::v(this->block(i, j), bi, bj);
@@ -278,21 +265,14 @@ public:
     **/
     void set(Index i, Index j, double v) override
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::setVal, i, j, v);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-        if constexpr (Policy::Check)
+        if constexpr (!Policy::StoreLowerTriangularBlock)
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            if ((i / NL) > (j / NC)) 
                 return;
-            }
         }
-        if constexpr (!Policy::StoreLowerTriangularBlock) if ((i / NL) > (j / NC)) return;
-
+        
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         traits::vset(*this->wblock(i, j, true), bi, bj, static_cast<Real>(v) );
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<this->rowBSize()<<"*"<<NL<<","<<this->colBSize()<<"*"<<NC<<"): block("<<i<<","<<j<<")["<<bi<<","<<bj<<"] = "<<v<<std::endl;
     }
 
     /**
@@ -300,20 +280,13 @@ public:
     **/
     void add(Index i, Index j, double v) override
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::addVal, i, j, v);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-        if constexpr (Policy::Check)
+        if constexpr (!Policy::StoreLowerTriangularBlock)
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            if ((i / NL) > (j / NC)) 
                 return;
-            }
         }
-        if constexpr (!Policy::StoreLowerTriangularBlock) if ((i / NL) > (j / NC)) return;
 
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<this->rowBSize()<<"*"<<NL<<","<<this->colBSize()<<"*"<<NC<<"): block("<<i<<","<<j<<")["<<bi<<","<<bj<<"] += "<<v<<std::endl;
         traits::vadd(*this->wblock(i,j,true), bi, bj, static_cast<Real>(v) );
     }
 
@@ -322,21 +295,10 @@ public:
     **/
     void set(Index i, Index j, int& rowId, int& colId, double v)
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::setValId, i, j, rowId, colId, v);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-        if constexpr (Policy::Check)
-        {
-            if (i >= rowSize() || j >= colSize())
-            {
-                std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-                return;
-            }
-        }
         if constexpr (!Policy::StoreLowerTriangularBlock) if ((i / NL) > (j / NC)) return;
 
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         traits::vset(*this->wblock(i,j,rowId,colId,true), bi, bj, static_cast<Real>(v) );
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<this->rowBSize()<<"*"<<NL<<","<<this->colBSize()<<"*"<<NC<<"): block("<<i<<","<<j<<")["<<bi<<","<<bj<<"] = "<<v<<std::endl;
     }
 
     /**
@@ -344,20 +306,13 @@ public:
     **/
     void add(Index i, Index j, int& rowId, int& colId, double v)
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::addValId, i, j, rowId, colId, v);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-        if constexpr (Policy::Check)
+        if constexpr (!Policy::StoreLowerTriangularBlock)
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            if ((i / NL) > (j / NC)) 
                 return;
-            }
         }
-        if constexpr (!Policy::StoreLowerTriangularBlock) if ((i / NL) > (j / NC)) return;
 
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<this->rowBSize()<<"*"<<NL<<","<<this->colBSize()<<"*"<<NC<<"): block("<<i<<","<<j<<")["<<bi<<","<<bj<<"] += "<<v<<std::endl;
         traits::vadd(*this->wblock(i,j,rowId,colId,true), bi, bj, static_cast<Real>(v) );
     }
 
@@ -366,21 +321,13 @@ public:
     **/
     void clear(Index i, Index j)
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::clearIndex, i, j);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-        if constexpr (Policy::Check)
-        {
-            if (i >= rowSize() || j >= colSize())
-            {
-                std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-                return;
-            }
-        }
         if constexpr (Policy::AutoCompress) this->compress();
 
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         Block* b = this->wblock(i,j,false);
-        if (b) traits::vset(*b, bi, bj, 0);
+
+        if (b) 
+            traits::vset(*b, bi, bj, 0);
     }
 
     void add(Index i, Index j, const type::Mat3x3d& _M) override
@@ -400,16 +347,6 @@ public:
     **/
     void clearRow(Index i)
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::clearRow, i);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
-        if constexpr (Policy::Check)
-        {
-            if (i >= rowSize())
-            {
-                std::cerr << "ERROR: invalid write access to row "<<i<<" in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-                return;
-            }
-        }
         if constexpr (Policy::AutoCompress) this->compress(); /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
 
         Index bi=0; split_row_index(i, bi);
@@ -434,16 +371,6 @@ public:
     **/
     void clearCol(Index j)
     {
-        if constexpr (Policy::LogTrace) this->logCall(FnEnum::clearCol, j);
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
-        if constexpr (Policy::Check)
-        {
-            if (j >= colSize())
-            {
-                std::cerr << "ERROR: invalid write access to col "<<j<<" in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-                return;
-            }
-        }
         /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
         if constexpr (Policy::AutoCompress) this->compress();
 
@@ -465,8 +392,6 @@ public:
     **/
     void clearRowCol(Index i)
     {
-        if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
-
         if constexpr (!Policy::IsAlwaysSquare || !Policy::StoreLowerTriangularBlock)
         {
             clearRow(i);
@@ -474,19 +399,8 @@ public:
         }
         else
         {
-            if constexpr (Policy::Check)
-            {
-                if (i >= rowSize() || i >= colSize())
-                {
-                    std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<< this->Name() << " of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
-                    return;
-                }
-            }
-
             /// If AutoCompress policy is activated, we need to be sure that we are not missing btemp registered value.
             if constexpr (Policy::AutoCompress) this->compress();
-
-            if constexpr (Policy::LogTrace) this->logCall(FnEnum::clearRowCol, i);
 
             Index bi=0; split_row_index(i, bi);
             Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
@@ -843,13 +757,11 @@ public:
             Index colId = rowRange.begin() + j * rowRange.size() / this->nBlockCol;
             if (this->sortedFind(this->colsIndex, rowRange, j, colId))
             {
-                if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<this->rowBSize()<<"*"<<NL<<","<<this->colBSize()<<"*"<<NC<<"): block("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")."<<std::endl;
                 return createBlockAccessor(i, j, colId);
             }
         }
         if (this->btemp.empty() || this->btemp.back().l != i || this->btemp.back().c != j)
         {
-            if constexpr (Policy::Verbose) std::cout << this->Name()  << "("<<rowSize()<<","<<colSize()<<"): new temp block ("<<i<<","<<j<<")"<<std::endl;
             this->btemp.push_back(IndexedBlock(i,j));
             traits::clear(this->btemp.back().value);
         }
