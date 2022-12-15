@@ -24,6 +24,7 @@
 #include <MultiThreading/ParallelHexahedronFEMForceField.h>
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/ParallelForEach.h>
 
 namespace sofa::component::forcefield
 {
@@ -78,32 +79,8 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
 
     auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
-    if (taskScheduler->getThreadCount() == 0)
-    {
-        dmsg_error() << "Task scheduler not correctly initialized";
-        return;
-    }
-
-    //status that will be used to check if all tasks are over
-    sofa::simulation::CpuTask::Status status;
-
-    //total number of unit tasks to perform
-    const unsigned int nbElements = this->getIndexedElements()->size();
-
-    //number of threads is based on the number of threads in the thread pools
-    const auto nbThreads = std::min(taskScheduler->getThreadCount(), nbElements);
-
-    //how many unit tasks are performed per thread
-    const auto nbElementsPerThread = nbElements / nbThreads;
-
-    //iterators used in each thread to access elements
-    auto first = this->getIndexedElements()->begin();
-    auto last = first + nbElementsPerThread;
 
     this->m_potentialEnergy = 0;
-
-    //the number of tasks given to the task scheduler will be nbThreads
-    m_accumulateForceLargeTasks.reserve(nbThreads);
 
     const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
     updateStiffnessMatrices = this->f_updateStiffnessMatrix.getValue();
@@ -116,40 +93,41 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
         first = false;
     }
 
-    // Create and add the tasks to the task scheduler
-    for (unsigned int i = 0; i < nbThreads; ++i)
-    {
-        if (i == nbThreads - 1)
-        {
-            last = this->getIndexedElements()->end();
-        }
-        m_accumulateForceLargeTasks.emplace_back(&status, this, elementStiffnesses, first, last, _p, i * nbElementsPerThread);
-        taskScheduler->addTask(&m_accumulateForceLargeTasks.back());
-        first += nbElementsPerThread;
-        last += nbElementsPerThread;
-    }
+    std::mutex mutex;
 
-    // Wait that all tasks are over
-    taskScheduler->workUntilDone(&status);
-
-    // Gather the result of each task
-    for (const auto& task : m_accumulateForceLargeTasks)
-    {
-        this->m_potentialEnergy += task.getPotentialEnergyOutput();
-        auto elementIt = task.m_first; //first element processed by this task
-        for (const auto& outF : task.getFOutput())
+    simulation::parallelForEachRange(*taskScheduler,
+        this->getIndexedElements()->begin(), this->getIndexedElements()->end(),
+        [this, &_p, &elementStiffnesses, &mutex, &_f](const auto& range)
         {
-            for (int w = 0; w < 8; ++w)
+            auto elementId = std::distance(this->getIndexedElements()->begin(), range.start);
+
+            std::vector<type::Vec<8, Deriv>> fElements;
+            fElements.reserve(std::distance(range.start, range.end));
+
+            SReal potentialEnergy { 0_sreal };
+            for (auto it = range.start; it != range.end; ++it, ++elementId)
             {
-                _f[(*elementIt)[w]] += outF[w];
+                type::Vec<8, Deriv> forceInElement;
+                this->computeTaskForceLarge(_p, elementId, *it, elementStiffnesses, potentialEnergy, forceInElement);
+                fElements.emplace_back(forceInElement);
             }
-            ++elementIt;
-        }
-    }
+
+            std::lock_guard guard(mutex);
+
+            this->m_potentialEnergy += potentialEnergy;
+
+            auto it = range.start;
+            for (const auto& forceInElement : fElements)
+            {
+                for (int w = 0; w < 8; ++w)
+                {
+                    _f[(*it)[w]] += forceInElement[w];
+                }
+                ++it;
+            }
+        });
 
     this->m_potentialEnergy/=-2.0;
-    m_accumulateForceLargeTasks.clear();
-
 }
 
 template<class DataTypes>
@@ -222,154 +200,61 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForce (const core::Mechanic
 
     auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
-    if (taskScheduler->getThreadCount() == 0)
-    {
-        msg_error() << "Task scheduler not correctly initialized";
-        return;
-    }
-
-    //total number of unit tasks to perform
-    const unsigned int nbElements = this->getIndexedElements()->size();
-
-    //number of threads is based on the number of threads in the thread pools
-    const auto nbThreads = std::min(taskScheduler->getThreadCount(), nbElements);
-
-    //the number of tasks given to the task scheduler will be nbThreads
-    m_addDForceTasks.reserve(nbThreads);
-
-    //how many unit tasks are performed per thread
-    const auto nbElementsPerThread = nbElements / nbThreads;
-
-    //iterators used in each thread to access elements
-    auto first = this->getIndexedElements()->begin();
-    auto last = first + nbElementsPerThread;
-
-    //status that will be used to check if all tasks are over
-    sofa::simulation::CpuTask::Status status;
 
     const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
 
-    // Create and add the tasks to the task scheduler
-    for (unsigned int i = 0; i < nbThreads; ++i)
-    {
-        if (i == nbThreads - 1)
-        {
-            last = this->getIndexedElements()->end();
-        }
-        m_addDForceTasks.emplace_back(&status, this, elementStiffnesses, first, last, kFactor, _dx, i * nbElementsPerThread);
-        taskScheduler->addTask(&m_addDForceTasks.back());
-        first += nbElementsPerThread;
-        last += nbElementsPerThread;
-    }
+    std::mutex mutex;
 
-    // Wait that all tasks are over
-    taskScheduler->workUntilDone(&status);
-
-    // Gather the result of each task
-    for (const auto& task : m_addDForceTasks)
-    {
-        auto it = task.m_first;
-        for (const auto& outDf : task.getDfOutput())
+    simulation::parallelForEachRange(*taskScheduler,
+        this->getIndexedElements()->begin(), this->getIndexedElements()->end(),
+        [this, &_dx, &_df, &elementStiffnesses, kFactor, &mutex](const auto& range)
         {
-            for (int w = 0 ; w < 8; ++w)
+            auto elementId = std::distance(this->getIndexedElements()->begin(), range.start);
+
+            std::vector<type::Vec<8, Deriv>> dfElements;
+            dfElements.reserve(std::distance(range.start, range.end));
+
+            type::Vec<24, Real> X; //displacement
+            type::Vec<24, Real> F; //force
+
+            for (auto it = range.start; it != range.end; ++it)
             {
-                _df[(*it)[w]] += outDf[w];
+                const auto& element = *it;
+                for (int w = 0; w < 8; ++w)
+                {
+                    Coord x_2 = this->_rotations[elementId] * _dx[element[w]];
+
+                    X[w * 3] = x_2[0];
+                    X[w * 3 + 1] = x_2[1];
+                    X[w * 3 + 2] = x_2[2];
+                }
+
+                // F = K * X
+                this->computeForce(F, X, elementStiffnesses[elementId]);
+
+                type::Vec<8, Deriv> df;
+                for (int w = 0; w < 8; ++w)
+                {
+                    df[w] -= this->_rotations[elementId].multTranspose(Deriv(F[w * 3], F[w * 3 + 1], F[w * 3 + 2])) * kFactor;
+                }
+
+                dfElements.emplace_back(df);
+
+                ++elementId;
             }
-            ++it;
-        }
-    }
-    m_addDForceTasks.clear();
-}
 
-template<class DataTypes>
-sofa::simulation::Task::MemoryAlloc AccumulateForceLargeTasks<DataTypes>::run()
-{
-    auto elementId = m_startingElementId;
-    auto it = m_first;
-    auto outFIt = m_outF.begin();
+            std::lock_guard guard(mutex);
 
-    while (it != m_last)
-    {
-        m_ff->computeTaskForceLarge(m_p, elementId++, *it++, m_elementStiffnesses, m_potentialEnergy, *outFIt++);
-    }
-    return simulation::Task::Stack;
-}
-
-template<class DataTypes>
-AccumulateForceLargeTasks<DataTypes>::AccumulateForceLargeTasks(sofa::simulation::CpuTask::Status* status,
-                                                                ParallelHexahedronFEMForceField<DataTypes>* ff,
-                                                                const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& elementStiffnesses,
-                                                                VecElement::const_iterator first, VecElement::const_iterator last,
-                                                                RDataRefVecCoord& p,
-                                                                sofa::Index startingElementId)
-    : sofa::simulation::CpuTask(status)
-    , m_first(first)
-    , m_last(last)
-    , m_outF()
-    , m_ff(ff)
-    , m_elementStiffnesses(elementStiffnesses)
-    , m_p(p)
-    , m_startingElementId(startingElementId)
-{
-    m_outF.resize(std::distance(first, last));
-}
-
-template<class DataTypes>
-sofa::simulation::Task::MemoryAlloc AddDForceTask<DataTypes>::run()
-{
-    auto elementId = m_startingElementId;
-    auto it = m_first;
-
-    type::Vec<24, Real> X; //displacement
-    type::Vec<24, Real> F; //force
-
-    auto outDfIt = m_outDf.begin();
-
-    while (it != m_last)
-    {
-        const auto& element = *it;
-        for (int w = 0; w < 8; ++w)
-        {
-            Coord x_2 = m_ff->_rotations[elementId] * m_dx[element[w]];
-
-            X[w * 3] = x_2[0];
-            X[w * 3 + 1] = x_2[1];
-            X[w * 3 + 2] = x_2[2];
-        }
-
-        // F = K * X
-        m_ff->computeForce(F, X, m_elementStiffnesses[elementId]);
-
-        for (int w = 0; w < 8; ++w)
-        {
-            (*outDfIt)[w] -= m_ff->_rotations[elementId].multTranspose(Deriv(F[w * 3], F[w * 3 + 1], F[w * 3 + 2])) * m_kFactor;
-        }
-
-        ++elementId;
-        ++it;
-        ++outDfIt;
-    }
-
-    return simulation::Task::Stack;
-}
-
-template<class DataTypes>
-AddDForceTask<DataTypes>::AddDForceTask(sofa::simulation::CpuTask::Status* status,
-                                        ParallelHexahedronFEMForceField<DataTypes>* ff,
-                                        const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& elementStiffnesses,
-                                        VecElement::const_iterator first, VecElement::const_iterator last, Real kFactor,
-                                        RDataRefVecCoord& dx, sofa::Index startingElementId)
-        : CpuTask(status)
-        , m_first(first)
-        , m_last(last)
-        , m_outDf()
-        , m_ff(ff)
-        , m_elementStiffnesses(elementStiffnesses)
-        , m_startingElementId(startingElementId)
-        , m_dx(dx)
-        , m_kFactor(kFactor)
-{
-    m_outDf.resize(std::distance(first, last));
+            auto it = range.start;
+            for (const auto& df : dfElements)
+            {
+                for (int w = 0 ; w < 8; ++w)
+                {
+                    _df[(*it)[w]] += df[w];
+                }
+                ++it;
+            }
+        });
 }
 
 } //namespace sofa::component::forcefield
