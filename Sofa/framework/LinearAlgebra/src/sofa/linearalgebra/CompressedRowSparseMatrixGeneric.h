@@ -73,9 +73,8 @@ struct CRSBlockTraits
     using VecFlag  = sofa::type::vector<bool>;
 };
 
-class CRSDefaultPolicy
+struct CRSDefaultPolicy
 {
-public:
     /// Set to true if this matrix is always square (must be true for symmetric)
     static constexpr bool IsAlwaysSquare = false;
     /// Set to true if this matrix is always symmetric (IsAlwaysSquare should be true)
