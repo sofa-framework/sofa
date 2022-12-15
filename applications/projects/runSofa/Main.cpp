@@ -319,8 +319,6 @@ int main(int argc, char** argv)
         exit( EXIT_SUCCESS );
     }
 
-    files = argParser->getInputFileList();
-
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
@@ -414,11 +412,13 @@ int main(int argc, char** argv)
         msg_info("runSofa") << "Automatic plugin loading disabled.";
     }
 
-    // first parsing did not take into account the potential new options
-    // so is needs to be parsed again
-    auto argParserCopy = new sofa::gui::common::ArgumentParser(*argParser);
-    addGUIParameters(argParserCopy);
-    argParserCopy->parse();
+    // Parse again to take into account the potential new options
+    // Side effect of the first parse: argv have been modified and need to be restored
+    // TODO: upgrade cxxopts to v3
+    addGUIParameters(argParser);
+    argParser->parse();
+
+    files = argParser->getInputFileList();
 
     PluginManager::getInstance().init();
 
