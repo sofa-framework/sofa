@@ -416,14 +416,12 @@ public:
 
         void addCol(Index id, const Block& value)
         {
-            if constexpr (Policy::LogTrace) m_matrix->logCall(linearalgebra::FnEnum::addCol, m_rowIndex, id, value);
             *m_matrix->wblock(m_rowIndex, id, true) += value;
         }
 
         // TODO: this is wrong in case the returned block is within the uncompressed triplets
         void setCol(Index id, const Block& value)
         {
-            if constexpr (Policy::LogTrace) m_matrix->logCall(linearalgebra::FnEnum::setCol, m_rowIndex, id, value);
             *m_matrix->wblock(m_rowIndex, id, true) = value;
         }
 
