@@ -65,8 +65,9 @@ void ArgumentParser::parse()
     // cxxopts::parse() actually clears value in argv and argc (before v3)
     // so if we want to be able to call it multiple times, we need to save
     // the original argv and argc
+    // TODO: upgrade cxxopts to v3 and remove this copy
 
-    // copy argv into a member
+    // copy argv into a temporary
     char** copyArgv = new char* [m_argc + 1];
     for (int i = 0; i < m_argc; i++) {
         int len = strlen(m_argv[i]) + 1;

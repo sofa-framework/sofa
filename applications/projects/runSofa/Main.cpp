@@ -66,6 +66,8 @@ using sofa::core::objectmodel::BaseNode ;
 #include <sofa/gui/common/BaseGUI.h>
 using sofa::gui::common::BaseGUI;
 
+#include <sofa/gui/batch/init.h>
+
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
 
@@ -384,6 +386,9 @@ int main(int argc, char** argv)
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
+    // Add Batch GUI (runSofa without any GUIs wont be useful)
+    sofa::gui::batch::init();
+
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
@@ -413,11 +418,12 @@ int main(int argc, char** argv)
     }
 
     // Parse again to take into account the potential new options
-    // Side effect of the first parse: argv have been modified and need to be restored
-    // TODO: upgrade cxxopts to v3
     addGUIParameters(argParser);
     argParser->parse();
 
+    // Fetching file name must be done after the additionnal potential options have been added
+    // otherwise the first parsing will take the unknown options as the file name
+    // (because of its positional parameter)
     files = argParser->getInputFileList();
 
     PluginManager::getInstance().init();
