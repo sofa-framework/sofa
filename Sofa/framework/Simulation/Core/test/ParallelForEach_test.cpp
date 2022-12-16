@@ -146,6 +146,31 @@ TEST(ParallelForEach, emptyContainer) //just making sure it does not crash
     }
 }
 
+TEST(ParallelForEach, integers)
+{
+    std::vector<int> integers = makeTestData();
+    std::vector<int> integers2 = makeTestData();
+
+    simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    scheduler->init(0);
+
+    simulation::parallelForEach(*scheduler, static_cast<std::size_t>(0), integers.size(),
+        [&integers, &integers2](const std::size_t& i)
+        {
+            integers[i]++;
+            integers2[i]--;
+        });
+
+    for (std::size_t i = 0; i < integers.size(); ++i)
+    {
+        EXPECT_EQ(integers[i], i + 1);
+    }
+    for (std::size_t i = 0; i < integers.size(); ++i)
+    {
+        EXPECT_EQ(integers2[i], static_cast<int>(i) - 1);
+    }
+}
+
 TEST(ParallelForEachRange, nonInitializedTaskScheduler)
 {
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
@@ -192,6 +217,34 @@ TEST(ParallelForEachRange, incrementVectorLambda)
     for (std::size_t i = 0; i < integers.size(); ++i)
     {
         EXPECT_EQ(integers[i], i + 1);
+    }
+}
+
+TEST(ParallelForEachRange, integers)
+{
+    std::vector<int> integers = makeTestData();
+    std::vector<int> integers2 = makeTestData();
+
+    simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    scheduler->init(0);
+
+    simulation::parallelForEachRange(*scheduler, static_cast<std::size_t>(0), integers.size(),
+        [&integers, &integers2](const auto& range)
+        {
+            for (auto it = range.start; it != range.end; ++it)
+            {
+                ++integers[it];
+                --integers2[it];
+            }
+        });
+
+    for (std::size_t i = 0; i < integers.size(); ++i)
+    {
+        EXPECT_EQ(integers[i], i + 1);
+    }
+    for (std::size_t i = 0; i < integers.size(); ++i)
+    {
+        EXPECT_EQ(integers2[i], static_cast<int>(i) - 1);
     }
 }
 

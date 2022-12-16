@@ -41,6 +41,19 @@ struct Range
     Range(InputIt s, InputIt e) : start(s), end(e) {}
 };
 
+template<class InputIt, class Distance>
+void advance(InputIt& it, Distance n)
+{
+    if constexpr (std::is_integral_v<InputIt>)
+    {
+        it += n;
+    }
+    else
+    {
+        std::advance(it, n);
+    }
+}
+
 /**
  * Function returning a list of ranges from an iterable container.
  * The number of ranges depends on:
@@ -60,7 +73,15 @@ makeRangesForLoop(const InputIt first, const InputIt last, const unsigned int nb
         return ranges;
     }
 
-    const auto nbElements = static_cast<unsigned int>(std::distance(first, last));
+    unsigned int nbElements = 0;
+    if constexpr (std::is_integral_v<InputIt>)
+    {
+        nbElements = static_cast<unsigned int>(last - first);
+    }
+    else
+    {
+        nbElements = static_cast<unsigned int>(std::distance(first, last));
+    }
 
     const unsigned int nbRanges = std::min(nbRangesHint, nbElements);
     ranges.reserve(nbRanges);
@@ -68,14 +89,14 @@ makeRangesForLoop(const InputIt first, const InputIt last, const unsigned int nb
     const auto nbElementsPerRange = nbElements / nbRanges;
 
     Range<InputIt> r { first, first};
-    std::advance(r.end, nbElementsPerRange);
+    sofa::simulation::advance(r.end, nbElementsPerRange);
 
     for (unsigned int i = 0; i < nbRanges - 1; ++i)
     {
         ranges.emplace_back(r);
 
-        std::advance(r.start, nbElementsPerRange);
-        std::advance(r.end, nbElementsPerRange);
+        sofa::simulation::advance(r.start, nbElementsPerRange);
+        sofa::simulation::advance(r.end, nbElementsPerRange);
     }
 
     ranges.emplace_back(r.start, last);
@@ -90,7 +111,18 @@ makeRangesForLoop(const InputIt first, const InputIt last, const unsigned int nb
 template<class InputIt, class UnaryFunction>
 UnaryFunction forEach(InputIt first, InputIt last, UnaryFunction f)
 {
-    return std::for_each(first, last, f);
+    if constexpr (std::is_integral_v<InputIt>)
+    {
+        for (; first != last; ++first)
+        {
+            f(first);
+        }
+        return f;
+    }
+    else
+    {
+        return std::for_each(first, last, f);
+    }
 }
 
 /**
