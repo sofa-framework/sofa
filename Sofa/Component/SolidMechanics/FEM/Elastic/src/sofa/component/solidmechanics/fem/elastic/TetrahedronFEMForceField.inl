@@ -1707,11 +1707,14 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    VecDeriv& df = *d_df.beginEdit();
-    const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    auto dfAccessor = sofa::helper::getWriteAccessor(d_df);
+    VecDeriv& df = dfAccessor.wref();
 
+    const VecDeriv& dx = d_dx.getValue();
     df.resize(dx.size());
+
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+
     unsigned int i;
     typename VecElement::const_iterator it;
 
@@ -1739,8 +1742,6 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
             applyStiffnessCorotational( df,dx, i, a,b,c,d, kFactor );
         }
     }
-
-    d_df.endEdit();
 }
 
 //////////////////////////////////////////////////////////////////////
