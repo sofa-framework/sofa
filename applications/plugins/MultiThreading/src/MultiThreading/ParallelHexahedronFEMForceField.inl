@@ -80,6 +80,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
     auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
 
+    const auto* indexedElements = this->getIndexedElements();
     this->m_potentialEnergy = 0;
 
     const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
@@ -96,7 +97,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
     std::mutex mutex;
 
     simulation::parallelForEachRange(*taskScheduler,
-        this->getIndexedElements()->begin(), this->getIndexedElements()->end(),
+        indexedElements->begin(), indexedElements->end(),
         [this, &_p, &elementStiffnesses, &mutex, &_f](const auto& range)
         {
             auto elementId = std::distance(this->getIndexedElements()->begin(), range.start);
