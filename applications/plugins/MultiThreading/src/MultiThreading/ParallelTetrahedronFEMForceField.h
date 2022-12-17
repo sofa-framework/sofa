@@ -43,16 +43,10 @@ class AddDForceTask;
  *
  * This implementation is the most efficient when:
  * 1) the number of tetrahedron is large (> 1000)
- * 2) the global system matrix is not assembled. It is usually the case with a CGLinearSolver templated with GraphScattered types.
- * 3) the method is 'large'. If the method is 'polar' or 'small', addForce is executed sequentially, but addDForce in parallel.
  *
  * The following methods are executed in parallel:
- * - addForce for method 'large'.
  * - addDForce
- *
- * The method addKToMatrix is not executed in parallel. This method is called with an assembled system, usually with
- * a direct solver or a CGLinearSolver templated with types different from GraphScattered. In this case, the most
- * time-consumming step is to invert the matrix. This is where efforts should be put to accelerate the simulation.
+ * - addKToMatrix
  */
 template<class DataTypes>
 class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField : virtual public sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes>
@@ -70,8 +64,11 @@ public:
     using DataVecDeriv = core::objectmodel::Data<VecDeriv>;
     using DataVecCoord = core::objectmodel::Data<VecCoord>;
 
+    using Element = core::topology::BaseMeshTopology::Tetra;
     using VecElement = core::topology::BaseMeshTopology::SeqTetrahedra;
 
+    using StiffnessMatrix = type::Mat<12, 12, Real>;
+    using Transformation = type::MatNoInit<3, 3, Real>;
 
 
     void init() override;
@@ -79,11 +76,10 @@ public:
     void addForce (const core::MechanicalParams* mparams, DataVecDeriv& d_f,
                    const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
 
-
-
-
     void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& d_df,
                     const DataVecDeriv& d_dx) override;
+
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal kFactor, unsigned int &offset) override;
 
 protected:
 

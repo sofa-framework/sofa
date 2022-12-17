@@ -137,5 +137,74 @@ void ParallelTetrahedronFEMForceField<DataTypes>::addDForce (const core::Mechani
     }
 }
 
+template <class DataTypes>
+void ParallelTetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix* mat,
+    SReal kFactor, unsigned& offset)
+{
+    Transformation Rot;
+    Rot.identity(); //set the transformation to identity
+
+    const auto& indexedElements = *this->_indexedElements;
+
+    const auto m = this->method;
+
+    std::mutex mutex;
+
+    sofa::simulation::parallelForEachRange(*m_taskScheduler, indexedElements.begin(), indexedElements.end(),
+        [&indexedElements, m, &Rot, this, &offset, mat, &mutex, kFactor](const auto& range)
+        {
+            constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+            constexpr auto N = Element::size();
+
+            StiffnessMatrix JKJt,tmp;
+
+            auto elementId = std::distance(indexedElements.begin(), range.start);
+
+            using Block = sofa::type::fixed_array<sofa::type::fixed_array<type::Mat<S, S, double>, 4>, 4>;
+            sofa::type::vector<Block> blocks;
+            blocks.reserve(std::distance(range.start, range.end));
+
+            for (auto it = range.start; it != range.end; ++it, ++elementId)
+            {
+                if (m == Inherit1::SMALL)
+                    this->computeStiffnessMatrix(JKJt,tmp, this->materialsStiffnesses[elementId], this->strainDisplacements[elementId],Rot);
+                else
+                    this->computeStiffnessMatrix(JKJt,tmp, this->materialsStiffnesses[elementId], this->strainDisplacements[elementId], this->rotations[elementId]);
+
+                Block tmpBlock;
+                for (sofa::Index n1=0; n1 < N; n1++)
+                {
+                    for(sofa::Index i=0; i < S; i++)
+                    {
+                        for (sofa::Index n2=0; n2 < N; n2++)
+                        {
+                            for (sofa::Index j=0; j < S; j++)
+                            {
+                                tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j]* kFactor;
+                            }
+                        }
+                    }
+                }
+
+                blocks.emplace_back(tmpBlock);
+            }
+
+            std::lock_guard guard(mutex);
+
+            auto blockIt = blocks.begin();
+            for (auto it = range.start; it != range.end; ++it, ++blockIt)
+            {
+                const auto& block = *blockIt;
+                for (sofa::Index n1=0; n1 < N; n1++)
+                {
+                    for (sofa::Index n2=0; n2 < N; n2++)
+                    {
+                        mat->add(offset + (*it)[n1] * S, offset + (*it)[n2] * S, block[n1][n2]);
+                    }
+                }
+            }
+        });
+
+}
 
 } //namespace sofa::component::forcefield
