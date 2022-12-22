@@ -83,7 +83,6 @@ int SofaPhysicsAPI::unload()
 
 void SofaPhysicsAPI::createScene()
 {
-    std::cout << "SofaPhysicsAPI::createScene" <<std::endl;
     return impl->createScene();
 }
 
@@ -484,7 +483,6 @@ void SofaPhysicsSimulation::setGravity(double* gravity)
 
 void SofaPhysicsSimulation::start()
 {
-    std::cout << "FROM APP: start()" << std::endl;
     if (isAnimated()) return;
     if (getScene())
     {
@@ -495,7 +493,6 @@ void SofaPhysicsSimulation::start()
 
 void SofaPhysicsSimulation::stop()
 {
-    std::cout << "FROM APP: stop()" << std::endl;
     if (!isAnimated()) return;
     if (getScene())
     {
@@ -507,7 +504,6 @@ void SofaPhysicsSimulation::stop()
 
 void SofaPhysicsSimulation::reset()
 {
-    std::cout << "FROM APP: reset()" << std::endl;
     if (getScene())
     {
         getSimulation()->reset(getScene());
