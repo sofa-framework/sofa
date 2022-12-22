@@ -97,10 +97,17 @@ public:
         Block i() const;
     };
     typedef Block SubMatrixType;
-    // return the dimension of submatrices when requesting a given size
+
+    // return the dimension of submatrices
     constexpr static Index getSubMatrixDim()
     {
         return BSIZE;
+    }
+
+    SOFA_ATTRIBUTE_DEPRECATED__GETSUBMATRIXSIZE("Use directly getSubMatrixDim(), without any parameter")
+    constexpr static Index getSubMatrixDim(Index)
+    {
+        return getSubMatrixDim();
     }
 
 protected:

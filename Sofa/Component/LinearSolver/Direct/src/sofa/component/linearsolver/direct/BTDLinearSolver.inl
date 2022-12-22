@@ -337,7 +337,6 @@ template<class Matrix, class Vector>
 bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
 {
     using namespace sofa::linearalgebra;
-    constexpr Index bsize = Matrix::getSubMatrixDim();
 
     if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
     {
