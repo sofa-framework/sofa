@@ -49,7 +49,6 @@ public:
     Data<bool> d_problem; ///< display debug informations about subpartSolve computation
     Data<bool> d_subpartSolve; ///< Allows for the computation of a subpart of the system
     Data<bool> d_verification; ///< verification of the subpartSolve
-    Data<int> d_blockSize; ///< dimension of the blocks in the matrix
 
     SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("To fix your code, use d_verbose")
     DeprecatedAndRemoved f_verbose;
@@ -63,6 +62,8 @@ public:
     DeprecatedAndRemoved f_blockSize;
     SOFA_ATTRIBUTE_DISABLED__BTDLINEARSOLVER_DATANAME("test_perf has been removed and not replaced.")
     DeprecatedAndRemoved test_perf;
+
+    //DeprecatedAndRemoved d_blockSize;
 
     typedef typename Vector::SubVectorType SubVector;
     typedef typename Matrix::SubMatrixType SubMatrix;
@@ -102,15 +103,8 @@ protected:
         , d_problem(initData(&d_problem, false,"showProblem", "display debug informations about subpartSolve computation") )
         , d_subpartSolve(initData(&d_subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
         , d_verification(initData(&d_verification, false,"verification", "verification of the subpartSolve"))
-        , d_blockSize( initData(&d_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
     {
-        Index bsize = Matrix::getSubMatrixDim(0);
-        if (bsize > 0)
-        {
-            // the template uses fixed bloc size
-            d_blockSize.setValue((int)bsize);
-            d_blockSize.setReadOnly(true);
-        }
+
     }
 public:
     void my_identity(SubMatrix& Id, const Index size_id);

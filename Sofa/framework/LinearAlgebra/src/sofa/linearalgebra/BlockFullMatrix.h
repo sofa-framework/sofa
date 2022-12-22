@@ -98,7 +98,10 @@ public:
     };
     typedef Block SubMatrixType;
     // return the dimension of submatrices when requesting a given size
-    static Index getSubMatrixDim(Index);
+    constexpr static Index getSubMatrixDim()
+    {
+        return BSIZE;
+    }
 
 protected:
     Block* data;
