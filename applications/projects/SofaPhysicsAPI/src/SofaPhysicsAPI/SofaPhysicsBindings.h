@@ -51,6 +51,8 @@ EXPORT_API const char* sofaPhysicsAPI_APIName(void* api_ptr); ///< Method to get
 EXPORT_API int sofaPhysicsAPI_createScene(void* api_ptr); ///< Method to create a SOFA scene (scene will be empty with valid Root Node). Return error code.
 EXPORT_API int sofaPhysicsAPI_loadScene(void* api_ptr, const char* filename); ///< Method to load a SOFA (.scn) file given by @param filename inside the given instance @param api_ptr. Return error code.
 EXPORT_API int sofaPhysicsAPI_unloadScene(void* api_ptr); ///< Method to unload the current SOFA scene and create empty Root Node inside the given instance @param api_ptr. Return error code.
+EXPORT_API const char* sofaPhysicsAPI_loadSofaIni(void* api_ptr, const char* filePath); ///< Method to load a SOFA .ini config file at given path @filePath to define resource/example paths. Return share path.
+EXPORT_API int sofaPhysicsAPI_loadPlugin(void* api_ptr, const char* pluginPath); ///< Method to load a specific SOFA plugin using it's full path @param pluginPath. Return error code. 
 
 // API for animation loop
 EXPORT_API void sofaPhysicsAPI_start(void* api_ptr); ///< Method to start simulation
@@ -63,7 +65,13 @@ EXPORT_API float sofaPhysicsAPI_timeStep(void* api_ptr); ///< Getter to the curr
 EXPORT_API void sofaPhysicsAPI_setTimeStep(void* api_ptr, double value); ///< Setter to the current simulation time stepping
 
 EXPORT_API int sofaPhysicsAPI_getGravity(void* api_ptr, double* values); ///< Getter of scene gravity using the ouptut @param values which is a double[3]. Return error code.
-EXPORT_API int sofaPhysicsAPI_setGravity(void* api_api_ptr, double* values); ///< Setter of current scene gravity using the input @param gravity which is a double[3]. Return error code.
+EXPORT_API int sofaPhysicsAPI_setGravity(void* api_ptr, double* values); ///< Setter of current scene gravity using the input @param gravity which is a double[3]. Return error code.
+
+// API for message logging
+EXPORT_API int sofaPhysicsAPI_activateMessageHandler(void* api_ptr, bool value); ///< Method to activate/deactivate SOFA MessageHandler according to @param value. Return Error code.
+EXPORT_API int sofaPhysicsAPI_getNbMessages(void* api_ptr); ///< Method to get the number of messages in queue
+EXPORT_API const char* sofaPhysicsAPI_getMessage(void* api_ptr, int messageId, int* msgType); ///< Method to return the queued message of index @param messageId and its type level inside @param msgType
+EXPORT_API int sofaPhysicsAPI_clearMessages(void* api_ptr); ///< Method clear the list of queued messages. Return Error code.
 
 
 //////////////////////////////////////////////////////////

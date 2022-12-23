@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <SofaPhysicsAPI/config.h>
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
 
@@ -31,6 +32,7 @@
 #include <sofa/component/visual/InteractiveCamera.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 
 #include <map>
 
@@ -52,6 +54,9 @@ public:
 
     /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
     int unload();
+
+    /// Method to load a specific SOFA plugin using it's full path @param pluginPath. Return error code.
+    int loadPlugin(const char* pluginPath);
     void createScene();
 
     void start();
@@ -85,6 +90,16 @@ public:
 
     void setGravity(double* gravity);
 
+    /// message API
+    /// Method to activate/deactivate SOFA MessageHandler according to @param value. Will store status in @sa m_msgIsActivated. Return Error code.
+    int activateMessageHandler(bool value);
+    /// Method to get the number of messages in queue
+    int getNbMessages();
+    /// Method to return the queued message of index @param messageId and its type level inside @param msgType
+    std::string getMessage(int messageId, int& msgType);
+    /// Method clear the list of queued messages. Return Error code.
+    int clearMessages();
+
     unsigned int getNbDataMonitors();
     SofaPhysicsDataMonitor** getDataMonitors();
 
@@ -103,6 +118,11 @@ protected:
     sofa::simulation::Simulation* m_Simulation;
     sofa::simulation::Node::SPtr m_RootNode;
     std::string sceneFileName;
+    /// Pointer to the LoggingMessageHandler
+    sofa::helper::logging::LoggingMessageHandler* m_msgHandler;
+    /// Status of the LoggingMessageHandler
+    bool m_msgIsActivated;
+
     sofa::component::visual::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
