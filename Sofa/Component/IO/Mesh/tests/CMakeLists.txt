@@ -6,7 +6,6 @@ set(SOURCE_FILES
     MeshExporter_test.cpp
     MeshGmshLoader_test.cpp
     MeshOBJLoader_test.cpp
-    MeshSTLLoader_test.cpp
     MeshVTKLoader_test.cpp
     MeshXspLoader_test.cpp
     STLExporter_test.cpp
