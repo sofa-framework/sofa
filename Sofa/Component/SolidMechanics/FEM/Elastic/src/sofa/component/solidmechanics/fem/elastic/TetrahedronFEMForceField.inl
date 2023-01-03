@@ -1771,6 +1771,21 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, b
     this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
+template <class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::computeMinMaxFromYoungsModulus()
+{
+    const auto& youngModulus = _youngModulus.getValue();
+
+    minYoung = youngModulus[0];
+    maxYoung = youngModulus[0];
+
+    for (auto y : youngModulus)
+    {
+        minYoung = std::min(minYoung, y);
+        maxYoung = std::max(maxYoung, y);
+    }
+}
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -1786,7 +1801,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         needUpdateTopology = false;
     }
 
-    bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue()) && isComputeVonMisesStressMethodSet();
+    const bool showVonMisesStressPerElement = _showVonMisesStressPerElement.getValue();
+
+    const bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || showVonMisesStressPerElement) && isComputeVonMisesStressMethodSet();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
@@ -1800,18 +1817,15 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecReal& youngModulus = _youngModulus.getValue();
 
-    bool heterogeneous = false;
-    if (drawHeterogeneousTetra.getValue() && drawVonMisesStress)
+    const bool heterogeneous = [this, drawVonMisesStress]()
     {
-        minYoung=youngModulus[0];
-        maxYoung=youngModulus[0];
-        for (unsigned i=0; i<youngModulus.size(); i++)
+        if (drawHeterogeneousTetra.getValue() && drawVonMisesStress)
         {
-            if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
-            if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
+            computeMinMaxFromYoungsModulus();
+            return fabs(minYoung - maxYoung) > 1e-8;
         }
-        heterogeneous = (fabs(minYoung-maxYoung) > 1e-8);
-    }
+        return false;
+    }();
 
 
     Real minVM = (Real)1e20, maxVM = (Real)-1e20;
@@ -1858,14 +1872,17 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     // Draw elements (if not "node only")
     std::vector< type::Vec3 > points;
     std::vector< sofa::type::RGBAColor > colorVector;
-    typename VecElement::const_iterator it;
-    int i;
-    for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+
+    points.reserve(_indexedElements->size() * 3 * 4);
+    colorVector.reserve(_indexedElements->size() * 3 * 4);
+
+    int i {};
+    for (const auto& element : *_indexedElements)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
-        Index c = (*it)[2];
-        Index d = (*it)[3];
+        Index a = element[0];
+        Index b = element[1];
+        Index c = element[2];
+        Index d = element[3];
         Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
 
         Coord pa = x[a];
@@ -1883,7 +1900,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
         // create corresponding colors
         sofa::type::RGBAColor color[4];
-        if (drawVonMisesStress && _showVonMisesStressPerElement.getValue())
+        if (drawVonMisesStress && showVonMisesStressPerElement)
         {
             if(heterogeneous)
             {
@@ -1925,6 +1942,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
         points.insert(points.end(), { pd, pa, pb });
         colorVector.insert(colorVector.end(), { color[3], color[3], color[3] });
+
+        ++i;
     }
     vparams->drawTool()->drawTriangles(points, colorVector);
 
