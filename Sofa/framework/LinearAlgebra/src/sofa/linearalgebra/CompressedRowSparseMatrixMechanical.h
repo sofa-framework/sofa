@@ -450,7 +450,7 @@ public:
 
 /// @name BlockMatrixWriter operators
 /// @{
-    /// Override CRSMatrix add method to avoid mis-understanding by compilator with other add method overriding BaseMatrix.
+    /// Override CRSMatrix add method to avoid mis-understanding by compiler with other add method overriding BaseMatrix.
     template <typename T = Block, typename std::enable_if_t<!std::is_same_v<T, double> && !std::is_same_v<T, float>, int > = 0 >
     void add(unsigned int bi, unsigned int bj, const Block& b)
     {
@@ -618,23 +618,23 @@ public:
 /// @{
 
 protected:
-    virtual void bAccessorDelete(const InternalBlockAccessor* /*b*/) const {}
-    virtual void bAccessorCopy(InternalBlockAccessor* /*b*/) const {}
-    virtual SReal bAccessorElement(const InternalBlockAccessor* b, Index i, Index j) const
+    virtual void bAccessorDelete(const InternalBlockAccessor* /*b*/) const override {}
+    virtual void bAccessorCopy(InternalBlockAccessor* /*b*/) const override {}
+    virtual SReal bAccessorElement(const InternalBlockAccessor* b, Index i, Index j) const override
     {
         //return element(b->row * getBlockRows() + i, b->col * getBlockCols() + j);
         Index index = b->data;
         const Block& data = (index >= 0) ? this->colsValue[index] : this->btemp[-index-1].value;
         return static_cast<SReal>(traits::v(data, i, j));
     }
-    virtual void bAccessorSet(InternalBlockAccessor* b, Index i, Index j, double v)
+    virtual void bAccessorSet(InternalBlockAccessor* b, Index i, Index j, double v) override
     {
         //set(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
         Index index = b->data;
         Block& data = (index >= 0) ? this->colsValue[index] : this->btemp[-index-1].value;
         traits::vset(data, i, j, static_cast<Real>(v) );
     }
-    virtual void bAccessorAdd(InternalBlockAccessor* b, Index i, Index j, double v)
+    virtual void bAccessorAdd(InternalBlockAccessor* b, Index i, Index j, double v) override
     {
         //add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
         Index index = b->data;
@@ -652,15 +652,15 @@ protected:
                 buffer[l*NC+c] = static_cast<T>(traits::v(data, l, c));
         return buffer;
     }
-    virtual const float* bAccessorElements(const InternalBlockAccessor* b, float* buffer) const
+    virtual const float* bAccessorElements(const InternalBlockAccessor* b, float* buffer) const override
     {
         return bAccessorElementsCSRImpl<float>(b, buffer);
     }
-    virtual const double* bAccessorElements(const InternalBlockAccessor* b, double* buffer) const
+    virtual const double* bAccessorElements(const InternalBlockAccessor* b, double* buffer) const override
     {
         return bAccessorElementsCSRImpl<double>(b, buffer);
     }
-    virtual const int* bAccessorElements(const InternalBlockAccessor* b, int* buffer) const
+    virtual const int* bAccessorElements(const InternalBlockAccessor* b, int* buffer) const override
     {
         return bAccessorElementsCSRImpl<int>(b, buffer);
     }
@@ -674,15 +674,15 @@ protected:
             for (Index c=0; c<NC; ++c)
                 traits::vset(data, l, c, static_cast<Real>(buffer[l*NC+c]) );
     }
-    virtual void bAccessorSet(InternalBlockAccessor* b, const float* buffer)
+    virtual void bAccessorSet(InternalBlockAccessor* b, const float* buffer) override
     {
         bAccessorSetCSRImpl<float>(b, buffer);
     }
-    virtual void bAccessorSet(InternalBlockAccessor* b, const double* buffer)
+    virtual void bAccessorSet(InternalBlockAccessor* b, const double* buffer) override
     {
         bAccessorSetCSRImpl<double>(b, buffer);
     }
-    virtual void bAccessorSet(InternalBlockAccessor* b, const int* buffer)
+    virtual void bAccessorSet(InternalBlockAccessor* b, const int* buffer) override
     {
         bAccessorSetCSRImpl<int>(b, buffer);
     }
@@ -696,15 +696,15 @@ protected:
             for (Index c=0; c<NC; ++c)
                 traits::vadd(data, l, c,static_cast<Real>(buffer[l*NC+c]) );
     }
-    virtual void bAccessorAdd(InternalBlockAccessor* b, const float* buffer)
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const float* buffer) override
     {
         bAccessorAddCSRImpl<float>(b, buffer);
     }
-    virtual void bAccessorAdd(InternalBlockAccessor* b, const double* buffer)
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const double* buffer) override
     {
         bAccessorAddCSRImpl<double>(b, buffer);
     }
-    virtual void bAccessorAdd(InternalBlockAccessor* b, const int* buffer)
+    virtual void bAccessorAdd(InternalBlockAccessor* b, const int* buffer) override
     {
         bAccessorAddCSRImpl<int>(b, buffer);
     }
@@ -769,9 +769,9 @@ public:
     }
 
 protected:
-    virtual void itCopyColBlock(InternalColBlockIterator* /*it*/) const {}
-    virtual void itDeleteColBlock(const InternalColBlockIterator* /*it*/) const {}
-    virtual void itAccessColBlock(InternalColBlockIterator* it, BlockConstAccessor* b) const
+    virtual void itCopyColBlock(InternalColBlockIterator* /*it*/) const override {}
+    virtual void itDeleteColBlock(const InternalColBlockIterator* /*it*/) const override {}
+    virtual void itAccessColBlock(InternalColBlockIterator* it, BlockConstAccessor* b) const override
     {
         Index index = it->data;
         setMatrix(b);
@@ -779,25 +779,25 @@ protected:
         getInternal(b)->data = index;
         getInternal(b)->col = this->colsIndex[index];
     }
-    virtual void itIncColBlock(InternalColBlockIterator* it) const
+    virtual void itIncColBlock(InternalColBlockIterator* it) const override
     {
         Index index = it->data;
         ++index;
         it->data = index;
     }
-    virtual void itDecColBlock(InternalColBlockIterator* it) const
+    virtual void itDecColBlock(InternalColBlockIterator* it) const override
     {
         Index index = it->data;
         --index;
         it->data = index;
     }
-    virtual bool itEqColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
+    virtual bool itEqColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const override
     {
         Index index = it->data;
         Index index2 = it2->data;
         return index == index2;
     }
-    virtual bool itLessColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const
+    virtual bool itLessColBlock(const InternalColBlockIterator* it, const InternalColBlockIterator* it2) const override
     {
         Index index = it->data;
         Index index2 = it2->data;
@@ -806,7 +806,7 @@ protected:
 
 public:
     /// Get the iterator corresponding to the beginning of the given row of blocks
-    virtual ColBlockConstIterator bRowBegin(Index ib) const
+    virtual ColBlockConstIterator bRowBegin(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
@@ -819,7 +819,7 @@ public:
     }
 
     /// Get the iterator corresponding to the end of the given row of blocks
-    virtual ColBlockConstIterator bRowEnd(Index ib) const
+    virtual ColBlockConstIterator bRowEnd(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
@@ -832,7 +832,7 @@ public:
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
@@ -848,28 +848,28 @@ public:
 
 
 protected:
-    virtual void itCopyRowBlock(InternalRowBlockIterator* /*it*/) const {}
-    virtual void itDeleteRowBlock(const InternalRowBlockIterator* /*it*/) const {}
-    virtual Index itAccessRowBlock(InternalRowBlockIterator* it) const
+    virtual void itCopyRowBlock(InternalRowBlockIterator* /*it*/) const override {}
+    virtual void itDeleteRowBlock(const InternalRowBlockIterator* /*it*/) const override {}
+    virtual Index itAccessRowBlock(InternalRowBlockIterator* it) const override
     {
         Index rowId = it->data[0];
         return this->rowIndex[rowId];
     }
-    virtual ColBlockConstIterator itBeginRowBlock(InternalRowBlockIterator* it) const
+    virtual ColBlockConstIterator itBeginRowBlock(InternalRowBlockIterator* it) const override
     {
         Index rowId = it->data[0];
         Index row = this->rowIndex[rowId];
         Index index = this->rowBegin[rowId];
         return createColBlockConstIterator(row, index);
     }
-    virtual ColBlockConstIterator itEndRowBlock(InternalRowBlockIterator* it) const
+    virtual ColBlockConstIterator itEndRowBlock(InternalRowBlockIterator* it) const override
     {
         Index rowId = it->data[0];
         Index row = this->rowIndex[rowId];
         Index index2 = this->rowBegin[rowId+1];
         return createColBlockConstIterator(row, index2);
     }
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
+    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const override
     {
         Index rowId = it->data[0];
         Index row = this->rowIndex[rowId];
@@ -879,25 +879,25 @@ protected:
                 createColBlockConstIterator(row, index2));
     }
 
-    virtual void itIncRowBlock(InternalRowBlockIterator* it) const
+    virtual void itIncRowBlock(InternalRowBlockIterator* it) const override
     {
         Index rowId = it->data[0];
         ++rowId;
         it->data[0] = rowId;
     }
-    virtual void itDecRowBlock(InternalRowBlockIterator* it) const
+    virtual void itDecRowBlock(InternalRowBlockIterator* it) const override
     {
         Index rowId = it->data[0];
         --rowId;
         it->data[0] = rowId;
     }
-    virtual bool itEqRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
+    virtual bool itEqRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const override
     {
         Index rowId = it->data[0];
         Index rowId2 = it2->data[0];
         return rowId == rowId2;
     }
-    virtual bool itLessRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const
+    virtual bool itLessRowBlock(const InternalRowBlockIterator* it, const InternalRowBlockIterator* it2) const override
     {
         Index rowId = it->data[0];
         Index rowId2 = it2->data[0];
@@ -906,21 +906,21 @@ protected:
 
 public:
     /// Get the iterator corresponding to the beginning of the rows of blocks
-    virtual RowBlockConstIterator bRowsBegin() const
+    virtual RowBlockConstIterator bRowsBegin() const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         return createRowBlockConstIterator(0, 0);
     }
 
     /// Get the iterator corresponding to the end of the rows of blocks
-    virtual RowBlockConstIterator bRowsEnd() const
+    virtual RowBlockConstIterator bRowsEnd() const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         return createRowBlockConstIterator(Index(this->rowIndex.size()), 0);
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const
+    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         return std::make_pair(createRowBlockConstIterator(0, 0),
