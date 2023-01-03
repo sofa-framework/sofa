@@ -180,7 +180,7 @@ public:
     static void transpose(Block& res, const Block& b) { res = b; }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
-    static const char* Name()
+    static const std::string Name()
     {
         std::ostringstream o;
         o << "V" << N;
@@ -197,7 +197,7 @@ public:
             o << "i";
         }
 
-        return o.str().c_str();
+        return o.str();
     }
 };
 

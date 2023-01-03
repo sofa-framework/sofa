@@ -207,13 +207,13 @@ public:
     }
 
     ///< Mathematical size of the matrix
-    Index rowSize() const
+    Index rowSize() const override
     {
         return nRow;
     }
 
     ///< Mathematical size of the matrix
-    Index colSize() const
+    Index colSize() const override
     {
         return nCol;
     }
@@ -226,7 +226,7 @@ public:
         nCol = NC * nbBCol;
     }
 
-    void resize(Index nbRow, Index nbCol)
+    void resize(Index nbRow, Index nbCol) override
     {
         this->resizeBlock((nbRow + NL-1) / NL, (nbCol + NC-1) / NC);
         nRow = nbRow;
@@ -304,6 +304,7 @@ public:
     /**
     * \brief add scalar v at element i, j when rowId and colId are known
     **/
+    template <typename T = Block, typename std::enable_if_t<!std::is_same_v<T, double> && !std::is_same_v<T, float>, int > = 0 >
     void add(Index i, Index j, int& rowId, int& colId, double v)
     {
         if constexpr (!Policy::StoreLowerTriangularBlock)
@@ -319,7 +320,7 @@ public:
     /**
     * \brief clear scalar at element i, j of matrix
     **/
-    void clear(Index i, Index j)
+    void clear(Index i, Index j) override
     {
         if constexpr (Policy::AutoCompress) this->compress();
 
@@ -345,7 +346,7 @@ public:
     * @param i : Line index considering size of matrix in scalar.
     * \warning If you want to clear all value of a block, it is better to call clearRowBlock
     **/
-    void clearRow(Index i)
+    void clearRow(Index i) override
     {
         if constexpr (Policy::AutoCompress) this->compress(); /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
 
@@ -369,7 +370,7 @@ public:
     * @param j : Col index considering size of matrix in scalar.
     * \warning If you want to clear all value of a block, it is better to call clearColBlock
     **/
-    void clearCol(Index j)
+    void clearCol(Index j) override
     {
         /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
         if constexpr (Policy::AutoCompress) this->compress();
@@ -390,7 +391,7 @@ public:
     * \brief Clear both row i and column i in a square matrix
     * @param i : Row and Col index considering size of matrix in scalar.
     **/
-    void clearRowCol(Index i)
+    void clearRowCol(Index i) override
     {
         if constexpr (!Policy::IsAlwaysSquare || !Policy::StoreLowerTriangularBlock)
         {

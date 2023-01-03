@@ -84,17 +84,16 @@ public:
     typedef typename traits::Real Real;
 
     typedef Matrix Expr;
-    typedef CompressedRowSparseMatrix<Real> matrix_type;
     enum { category = MATRIX_SPARSE };
     enum { operand = 1 };
 
-    static constexpr Index NL = traits::NL;  ///< Number of rows of a block
-    static constexpr Index NC = traits::NC;  ///< Number of columns of a block
+    static constexpr sofa::Index NL = traits::NL;  ///< Number of rows of a block
+    static constexpr sofa::Index NC = traits::NC;  ///< Number of columns of a block
 
     using VecBlock  = typename CRSBlockTraits<Block>::VecBlock;
     using VecIndex = typename CRSBlockTraits<Block>::VecIndex;
     using VecFlag  = typename CRSBlockTraits<Block>::VecFlag;
-    typedef typename VecIndex::value_type Index;
+    using Index = typename VecIndex::value_type;
 
     typedef sofa::type::Vec<NC,Real> DBlock;
 
