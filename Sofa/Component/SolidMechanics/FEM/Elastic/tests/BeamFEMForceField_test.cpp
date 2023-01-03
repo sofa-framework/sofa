@@ -58,6 +58,8 @@ public:
     typedef typename BeamFEM::BeamInfo BeamInfo;
     typedef typename type::vector<BeamInfo> VecBeamInfo;
 
+    static constexpr const char* rigidTypeName = StdRigidTypes<3, Real>::Name();
+
 protected:
     simulation::Simulation* m_simulation = nullptr;
     simulation::Node::SPtr m_root;
@@ -76,7 +78,7 @@ public:
             simulation::getSimulation()->unload(m_root);
     }
 
-    void createSimpleBeam(SReal radius, SReal youngModulus, SReal poissonRatio)
+    void createSimpleBeam(Real radius, Real youngModulus, Real poissonRatio)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
         m_root->setGravity(type::Vec3(0.0, -1.0, 0.0));
@@ -87,12 +89,12 @@ public:
 
         createObject(m_root, "EulerImplicitSolver");
         createObject(m_root, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" }, {"tolerance", "1e-5"} });
-        createObject(m_root, "MechanicalObject", {{"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "MechanicalObject", {{"template", rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer", { {"edges","0 1  1 2  2 3"} });
         createObject(m_root, "EdgeSetTopologyModifier");
-        createObject(m_root, "EdgeSetGeometryAlgorithms", { {"template","Rigid3d"} });
+        createObject(m_root, "EdgeSetGeometryAlgorithms", { {"template", rigidTypeName} });
 
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"}, {"radius", str(radius)}, {"youngModulus", str(youngModulus)}, {"poissonRatio", str(poissonRatio)} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName}, {"radius", str(radius)}, {"youngModulus", str(youngModulus)}, {"poissonRatio", str(poissonRatio)} });
         createObject(m_root, "UniformMass", { {"name","mass"}, {"totalMass","1.0"} });
         createObject(m_root, "FixedConstraint", { {"name","fix"}, {"indices","0"} });
 
@@ -103,7 +105,7 @@ public:
 
     void checkCreation()
     {
-        createSimpleBeam(0.05, 20000000, 0.49);
+        createSimpleBeam(static_cast<Real>(0.05), static_cast<Real>(20000000), static_cast<Real>(0.49));
 
         typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
@@ -122,7 +124,7 @@ public:
         EXPECT_MSG_EMIT(Error);
         
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"}, {"radius", "0.05"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName}, {"radius", "0.05"} });
         
         sofa::simulation::getSimulation()->init(m_root.get());
     }
@@ -133,8 +135,8 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-        createObject(m_root, "MechanicalObject", { {"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"} });
+        createObject(m_root, "MechanicalObject", { {"template", rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
         sofa::simulation::getSimulation()->init(m_root.get());
     }
@@ -143,9 +145,9 @@ public:
     void checkEmptyTopology()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-        createObject(m_root, "MechanicalObject", { {"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "MechanicalObject", { {"template",rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer");
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
         EXPECT_MSG_EMIT(Error);
 
@@ -158,9 +160,9 @@ public:
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
 
-        createObject(m_root, "MechanicalObject", { {"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "MechanicalObject", { {"template",rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer", { {"edges","0 1  1 2  2 3"} });
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         ASSERT_TRUE(bFEM.get() != nullptr);

@@ -69,6 +69,8 @@ public:
     using Mat33 = type::Mat<3, 3, Real>;
     using Mat63 = type::Mat<6, 3, Real>;
 
+    static constexpr const char* dataTypeName = DataTypes::Name();
+
 protected:
     simulation::Simulation* m_simulation = nullptr;
     simulation::Node::SPtr m_root;
@@ -88,17 +90,22 @@ public:
             simulation::getSimulation()->unload(m_root);
     }
 
-    void createSingleTriangleFEMScene(int FEMType, float young, float poisson, std::string method)
+    void createSingleTriangleFEMScene(int FEMType, Real young, Real poisson, std::string method)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
 
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        createObject(m_root, "MechanicalObject", {{"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+
+        createObject(m_root, "MechanicalObject", {{"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2  1 3 2"} });
         createObject(m_root, "TriangleSetTopologyModifier");
-        createObject(m_root, "TriangleSetGeometryAlgorithms", { {"template","Vec3d"} });
+        createObject(m_root, "TriangleSetGeometryAlgorithms", { {"template",dataTypeName} });
 
         if (FEMType == 0) // TriangleModel
         {
@@ -130,6 +137,8 @@ public:
 
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
+
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
 
         createObject(m_root, "RegularGridTopology", { {"name", "grid"}, 
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
@@ -165,18 +174,26 @@ public:
     void addTriangleFEMNode(int FEMType, unsigned int fixP, std::string nodeName)
     {
         Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
+
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver.Backward");
+        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
+
         createObject(FEMNode, "EulerImplicitSolver");
         createObject(FEMNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-6"}});
 
         createObject(FEMNode, "MechanicalObject", {
-            {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });
+            {"name","dof"}, {"template",dataTypeName}, {"position", "@../grid.position"} });
 
         createObject(FEMNode, "TriangleSetTopologyContainer", {
             {"name","topo"}, {"src","@../grid"} });
         createObject(FEMNode, "TriangleSetTopologyModifier", {
             {"name","Modifier"} });
         createObject(FEMNode, "TriangleSetGeometryAlgorithms", {
-            {"name","GeomAlgo"}, {"template","Vec3d"} });
+            {"name","GeomAlgo"}, {"template",dataTypeName} });
 
         if (FEMType == 0) // TriangleModel
         {
@@ -205,7 +222,7 @@ public:
 
     void checkCreation(int FEMType)
     {
-        createSingleTriangleFEMScene(FEMType, 100.f, 0.4f, "large");
+        createSingleTriangleFEMScene(FEMType, static_cast<Real>(100), static_cast<Real>(0.4), "large");
 
         typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
@@ -242,7 +259,10 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+
+        createObject(m_root, "MechanicalObject", { {"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0"} });
         if (FEMType == 0) // TriangleModel
         {
             createObject(m_root, "TriangleFEMForceField", {
@@ -271,7 +291,11 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        createObject(m_root, "MechanicalObject", { {"template","Vec3d"} });
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+
+        createObject(m_root, "MechanicalObject", { {"template",dataTypeName} });
         createObject(m_root, "TriangleSetTopologyContainer");
         if (FEMType == 0) // TriangleModel
         {
@@ -302,10 +326,14 @@ public:
         createObject(m_root, "DefaultAnimationLoop");
         createObject(m_root, "DefaultVisualManagerLoop");
 
-        createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+
+        createObject(m_root, "MechanicalObject", { {"template",dataTypeName}, {"position", "0 0 0  1 0 0  0 1 0"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2"} });
         createObject(m_root, "TriangleSetTopologyModifier");
-        createObject(m_root, "TriangleSetGeometryAlgorithms", { {"template","Vec3d"} });
+        createObject(m_root, "TriangleSetGeometryAlgorithms", { {"template",dataTypeName} });
 
         if (FEMType == 0) // TriangleModel
         {
@@ -353,13 +381,13 @@ public:
     void checkWrongAttributes(int FEMType)
     {
         EXPECT_MSG_EMIT(Warning);
-        createSingleTriangleFEMScene(FEMType, -100.f, -0.3f, "toto");
+        createSingleTriangleFEMScene(FEMType, -static_cast<Real>(100), -static_cast<Real>(0.3), "toto");
     }
 
 
     void checkInit(int FEMType)
     {
-        createSingleTriangleFEMScene(FEMType, 100.f, 0.3f, "large");
+        createSingleTriangleFEMScene(FEMType, static_cast<Real>(100), static_cast<Real>(0.3), "large");
         
         type::Vec<2, Mat33> exp_rotatedInitPos;
         type::Vec<2, Mat33> exp_rotMat;
