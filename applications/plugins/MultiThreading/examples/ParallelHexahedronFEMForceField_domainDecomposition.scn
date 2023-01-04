@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelHexahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <Node name="M1">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject />
+        <UniformMass vertexMass="1" />
+        <RegularGridTopology nx="16" ny="16" nz="80" xmin="-1.5" xmax="1.5" ymin="-1.5" ymax="1.5" zmin="0" zmax="19" />
+        <BoxROI box="-1.5 -1.5 0 1.5 1.5 0.0001" name="box"/>
+        <FixedConstraint indices="@box.indices" />
+        <ParallelHexahedronFEMForceField name="FEM" youngModulus="400000" poissonRatio="0.4" method="large" updateStiffnessMatrix="false"
+                                         domainDecomposition="true"/>
+    </Node>
+</Node>

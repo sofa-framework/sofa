@@ -25,6 +25,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
 #include <sofa/simulation/CpuTask.h>
+#include <sofa/simulation/TaskScheduler.h>
 
 namespace sofa::component::forcefield
 {
@@ -78,14 +79,43 @@ public:
     void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& df,
                     const DataVecDeriv& dx) override;
 
+    Data<bool> d_domainDecomposition;
+
 protected:
+
+    ParallelHexahedronFEMForceField();
 
     // code duplicated from HexahedronFEMForceField::accumulateForceLarge but adapted to be thread-safe
     void computeTaskForceLarge(RDataRefVecCoord& p, sofa::Index elementId, const Element& elem,
                                const VecElementStiffness& elementStiffnesses, SReal& OutPotentialEnery,
                                type::Vec<8, Deriv>& OutF);
 
+
+    void addDForceDomainDecomposition(WDataRefVecDeriv& _df, RDataRefVecCoord& _dx, Real kFactor,
+                                      simulation::TaskScheduler* taskScheduler,
+                                      const VecElementStiffness& elementStiffnesses);
+
+    void addDForceLockBasedMethod(WDataRefVecDeriv& _df, RDataRefVecCoord& _dx, Real kFactor,
+                                  simulation::TaskScheduler* taskScheduler,
+                                  const VecElementStiffness& elementStiffnesses);
+
     void initTaskScheduler();
+
+    /**
+     * Divide the model into smaller subdomains which can be solved independently.
+     *
+     * The partitioning is based on the topology: none of the elements of a subdomain have a common
+     * vertex. Therefore, for all element in a subdomain, it is possible to write safely in parallel
+     * into a vector corresponding to vertices.
+     */
+    void decomposeDomain();
+
+    using Domain = sofa::type::vector<VecElement::const_iterator> ;
+    sofa::type::vector<Domain> m_domains;
+
+    type::Vec<8, Deriv> computeDf(
+        std::size_t elementId, Element element, Real kFactor,
+        RDataRefVecCoord dx, const VecElementStiffness& elementStiffnesses);
 
 private:
     bool updateStiffnessMatrices; /// cache to avoid calling 'getValue' on f_updateStiffnessMatrix
