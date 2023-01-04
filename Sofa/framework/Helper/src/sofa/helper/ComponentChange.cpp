@@ -688,7 +688,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "ExtrudeSurface", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GenerateCylinder", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GenerateGrid", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
-    { "GenerateRigidMass", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "GenerateRigidMass", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GenerateSphere", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GroupFilterYoungModulus", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "HausdorffDistance", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Analyze") },
