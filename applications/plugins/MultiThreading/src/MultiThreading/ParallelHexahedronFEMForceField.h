@@ -91,6 +91,16 @@ protected:
                                type::Vec<8, Deriv>& OutF);
 
 
+    void addForceDomainDecomposition(WDataRefVecDeriv& _f, RDataRefVecCoord& _p,
+                         simulation::TaskScheduler* taskScheduler,
+                         const VecElementStiffness& elementStiffnesses);
+
+    void addForceLockBasedMethod(WDataRefVecDeriv& _f, RDataRefVecCoord& _p,
+                             simulation::TaskScheduler* taskScheduler,
+                             const VecElementStiffness& elementStiffnesses);
+
+
+
     void addDForceDomainDecomposition(WDataRefVecDeriv& _df, RDataRefVecCoord& _dx, Real kFactor,
                                       simulation::TaskScheduler* taskScheduler,
                                       const VecElementStiffness& elementStiffnesses);

@@ -33,7 +33,7 @@ template <class DataTypes>
 ParallelHexahedronFEMForceField<DataTypes>::ParallelHexahedronFEMForceField()
     : Inherit1()
     , d_domainDecomposition(initData(&d_domainDecomposition, false, "domainDecomposition",
-    "Domain decomposition method is used to parallelize computations. Otherwise, a naive method is used.\n"
+    "Domain decomposition method is used to parallelize computations. If false, a naive method is used.\n"
     "Domain decomposition consists in dividing the model into smaller subdomains which can be solved independently.\n"
     "The naive approach consists in allocating a thread-specific result and combine it into the main result.\n"
     "The naive approach is based on a mutex, while the domain decomposition method is lock-free."))
@@ -140,6 +140,82 @@ auto ParallelHexahedronFEMForceField<DataTypes>::computeDf(
     return df;
 }
 
+template <class DataTypes>
+void ParallelHexahedronFEMForceField<DataTypes>::addForceDomainDecomposition(
+    WDataRefVecDeriv& _f,
+    RDataRefVecCoord& _p, simulation::TaskScheduler* taskScheduler,
+    const VecElementStiffness& elementStiffnesses)
+{
+    std::mutex mutex;
+
+    for (const auto& domain : m_domains)
+    {
+        simulation::parallelForEachRange(*taskScheduler,
+             domain.begin(), domain.end(),
+             [this, &elementStiffnesses, &_p, &_f, &mutex](const auto& range)
+             {
+                 auto elementId = std::distance(this->getIndexedElements()->begin(), *range.start);
+
+                 SReal potentialEnergy{0_sreal};
+                 for (auto it = range.start; it!=range.end; ++it,++elementId)
+                 {
+                     type::Vec<8, Deriv> forceInElement;
+                     this->computeTaskForceLarge(_p, elementId, **it, elementStiffnesses,
+                                                 potentialEnergy, forceInElement);
+
+                     for (int w = 0; w<8; ++w)
+                     {
+                         _f[(**it)[w]] += forceInElement[w];
+                     }
+                 }
+
+                 std::lock_guard guard(mutex);
+                 this->m_potentialEnergy += potentialEnergy;
+             });
+    }
+}
+
+template <class DataTypes>
+void ParallelHexahedronFEMForceField<DataTypes>::addForceLockBasedMethod(
+    WDataRefVecDeriv& _f,
+    RDataRefVecCoord& _p, simulation::TaskScheduler* taskScheduler,
+    const VecElementStiffness& elementStiffnesses)
+{
+    std::mutex mutex;
+
+    simulation::parallelForEachRange(*taskScheduler,
+         this->getIndexedElements()->begin(), this->getIndexedElements()->end(),
+         [this, &_p, &elementStiffnesses, &mutex, &_f](const auto& range)
+         {
+             auto elementId = std::distance(this->getIndexedElements()->begin(), range.start);
+
+             std::vector<type::Vec<8, Deriv>> fElements;
+             fElements.reserve(std::distance(range.start, range.end));
+
+             SReal potentialEnergy { 0_sreal };
+             for (auto it = range.start; it != range.end; ++it, ++elementId)
+             {
+                 type::Vec<8, Deriv> forceInElement;
+                 this->computeTaskForceLarge(_p, elementId, *it, elementStiffnesses, potentialEnergy, forceInElement);
+                 fElements.emplace_back(forceInElement);
+             }
+
+             std::lock_guard guard(mutex);
+
+             this->m_potentialEnergy += potentialEnergy;
+
+             auto it = range.start;
+             for (const auto& forceInElement : fElements)
+             {
+                 for (int w = 0; w < 8; ++w)
+                 {
+                     _f[(*it)[w]] += forceInElement[w];
+                 }
+                 ++it;
+             }
+         });
+}
+
 template<class DataTypes>
 void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f,
               const DataVecCoord& p, const DataVecDeriv& v)
@@ -168,7 +244,6 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
     auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
 
-    const auto* indexedElements = this->getIndexedElements();
     this->m_potentialEnergy = 0;
 
     const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
@@ -182,39 +257,14 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
         first = false;
     }
 
-    std::mutex mutex;
-
-    simulation::parallelForEachRange(*taskScheduler,
-        indexedElements->begin(), indexedElements->end(),
-        [this, &_p, &elementStiffnesses, &mutex, &_f](const auto& range)
-        {
-            auto elementId = std::distance(this->getIndexedElements()->begin(), range.start);
-
-            std::vector<type::Vec<8, Deriv>> fElements;
-            fElements.reserve(std::distance(range.start, range.end));
-
-            SReal potentialEnergy { 0_sreal };
-            for (auto it = range.start; it != range.end; ++it, ++elementId)
-            {
-                type::Vec<8, Deriv> forceInElement;
-                this->computeTaskForceLarge(_p, elementId, *it, elementStiffnesses, potentialEnergy, forceInElement);
-                fElements.emplace_back(forceInElement);
-            }
-
-            std::lock_guard guard(mutex);
-
-            this->m_potentialEnergy += potentialEnergy;
-
-            auto it = range.start;
-            for (const auto& forceInElement : fElements)
-            {
-                for (int w = 0; w < 8; ++w)
-                {
-                    _f[(*it)[w]] += forceInElement[w];
-                }
-                ++it;
-            }
-        });
+    if (d_domainDecomposition.getValue())
+    {
+        addForceDomainDecomposition(_f, _p, taskScheduler, elementStiffnesses);
+    }
+    else
+    {
+        addForceLockBasedMethod(_f, _p, taskScheduler, elementStiffnesses);
+    }
 
     this->m_potentialEnergy/=-2.0;
 }
@@ -291,7 +341,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForceDomainDecomposition(
              {
                  auto elementId = std::distance(this->getIndexedElements()->begin(), *range.start);
 
-                 for (auto it = range.start; it != range.end; ++it)
+                 for (auto it = range.start; it != range.end; ++it, ++elementId)
                  {
                      type::Vec<8, Deriv> df = computeDf(elementId, **it, kFactor, _dx, elementStiffnesses);
 
@@ -299,8 +349,6 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForceDomainDecomposition(
                      {
                          _df[(**it)[w]] += df[w];
                      }
-
-                     ++elementId;
                  }
              });
     }
