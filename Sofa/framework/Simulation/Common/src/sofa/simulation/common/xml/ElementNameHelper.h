@@ -27,17 +27,7 @@
 namespace sofa::simulation::xml
 {
 
-class SOFA_ATTRIBUTE_DEPRECATED__ELEMENTNAMEHELPER() ElementNameHelper
-{
-protected:
-    std::map<std::string, int> instanceCounter;
-    void registerName(const std::string& name);
-
-public:
-    ElementNameHelper();
-    ~ElementNameHelper(); //terminal class.
-
-    std::string resolveName(const std::string& type, const std::string& name);
-};
+SOFA_ATTRIBUTE_DISABLED__ELEMENTNAMEHELPER()
+DeprecatedAndRemoved ElementNameHelper;
 
 } // namespace sofa::simulation::xml

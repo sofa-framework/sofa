@@ -237,9 +237,9 @@ public:
     template<class T2>
     using rebind_to = vector_id< T2, TIndex, CheckIndices, type::rebind_to<MemoryManager, T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        using other = rebind_to<T2>;
+        DeprecatedAndRemoved other;
     };
 
 
