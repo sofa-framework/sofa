@@ -479,7 +479,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 
         // translation
         const auto vt = -kFact * k[(index < k.size()) * index];
-        for (int i = 0; i < space_size; i++)
+        for (sofa::Size i = 0; i < space_size; i++)
         {
             mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
         }
@@ -488,7 +488,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         if constexpr (isRigidType<DataTypes>())
         {
             const auto vr = -kFact * k_a[(index < k_a.size()) * index];
-            for (int i = space_size; i < total_size; i++)
+            for (sofa::Size i = space_size; i < total_size; i++)
             {
                 mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
             }
