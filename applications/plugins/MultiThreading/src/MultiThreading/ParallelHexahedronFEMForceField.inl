@@ -53,6 +53,16 @@ void ParallelHexahedronFEMForceField<DataTypes>::init()
     }
 }
 
+template <class DataTypes>
+void ParallelHexahedronFEMForceField<DataTypes>::computeCachedData(const VecElement& elements)
+{
+    Inherit1::computeCachedData(elements);
+    if (d_domainDecomposition.getValue())
+    {
+        decomposeDomain();
+    }
+}
+
 template<class DataTypes>
 void ParallelHexahedronFEMForceField<DataTypes>::initTaskScheduler()
 {
@@ -72,24 +82,28 @@ void ParallelHexahedronFEMForceField<DataTypes>::initTaskScheduler()
 template <class DataTypes>
 void ParallelHexahedronFEMForceField<DataTypes>::decomposeDomain()
 {
-    std::list<VecElement::const_iterator> elements;
-    for (auto it = this->getIndexedElements()->begin(); it !=this->getIndexedElements()->end(); ++it)
-    {
-        elements.emplace_back(it);
-    }
+    const auto& indexedElements = *this->getIndexedElements();
+    std::list<ElementId> elementsIds(indexedElements.size());
+    std::iota(elementsIds.begin(), elementsIds.end(), 0);
 
-    while(!elements.empty())
+    m_reorderedElements.clear();
+    m_reorderedElements.reserve(indexedElements.size());
+
+    m_domains.clear();
+
+    while(!elementsIds.empty())
     {
         std::set<sofa::Index> visitedVertices;
         Domain domain;
 
-        for (auto it = elements.begin(); it != elements.end();)
+        for (auto it = elementsIds.begin(); it != elementsIds.end();)
         {
-            const auto& element = **it;
+            const auto& elementId = *it;
+            const auto& element = indexedElements[elementId];
 
             const bool isVisited = visitedVertices.empty() ? false :
                 std::any_of(element.begin(), element.end(),
-            [&visitedVertices](const sofa::Index v)
+                [&visitedVertices](const sofa::Index v)
                 {
                     return visitedVertices.find(v) != visitedVertices.end();
                 });
@@ -97,8 +111,9 @@ void ParallelHexahedronFEMForceField<DataTypes>::decomposeDomain()
             if (!isVisited)
             {
                 visitedVertices.insert(element.begin(), element.end());
-                domain.push_back(*it);
-                it = elements.erase(it);
+                domain.push_back(elementId);
+                m_reorderedElements.push_back(element);
+                it = elementsIds.erase(it);
             }
             else
             {
@@ -108,11 +123,31 @@ void ParallelHexahedronFEMForceField<DataTypes>::decomposeDomain()
 
         m_domains.push_back(domain);
     }
+
+    const auto reorder = [this](auto& vectorToReorder)
+    {
+        auto reordered = vectorToReorder;
+        std::size_t i{};
+        for (const Domain& d : m_domains)
+        {
+            for (const ElementId elementId : d)
+            {
+                reordered[i++] = vectorToReorder[elementId];
+            }
+        }
+        vectorToReorder = reordered;
+    };
+
+    reorder(this->_materialsStiffnesses);
+    reorder(this->_rotations);
+    reorder(this->_rotatedInitialElements);
+    reorder(this->_initialrotations);
+    reorder(sofa::helper::getWriteAccessor(this->_elementStiffnesses).wref());
 }
 
 template <class DataTypes>
 auto ParallelHexahedronFEMForceField<DataTypes>::computeDf(
-    std::size_t elementId, Element element, Real kFactor,
+    std::size_t elementId, const Element& element, Real kFactor,
     RDataRefVecCoord dx, const VecElementStiffness& elementStiffnesses) -> type::Vec<8, Deriv>
 {
     type::Vec<24, Real> X(type::NOINIT); //displacement
@@ -149,30 +184,35 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForceDomainDecomposition(
 {
     std::mutex mutex;
 
+    ElementId domainElementsCount {};
     for (const auto& domain : m_domains)
     {
         simulation::parallelForEachRange(*taskScheduler,
              domain.begin(), domain.end(),
-             [this, &elementStiffnesses, &_p, &_f, &mutex](const auto& range)
+             [this, &elementStiffnesses, &_p, &_f, &mutex, &domain, domainElementsCount](const auto& range)
              {
-                 auto elementId = std::distance(this->getIndexedElements()->begin(), *range.start);
+                 auto elementId = domainElementsCount + std::distance(domain.begin(), range.start);
 
                  SReal potentialEnergy{0_sreal};
-                 for (auto it = range.start; it!=range.end; ++it,++elementId)
+                 for (auto it = range.start; it != range.end; ++it, ++elementId)
                  {
+                     const auto& element = m_reorderedElements[elementId];
+
                      type::Vec<8, Deriv> forceInElement;
-                     this->computeTaskForceLarge(_p, elementId, **it, elementStiffnesses,
+                     this->computeTaskForceLarge(_p, elementId, element, elementStiffnesses,
                                                  potentialEnergy, forceInElement);
 
                      for (int w = 0; w<8; ++w)
                      {
-                         _f[(**it)[w]] += forceInElement[w];
+                         _f[element[w]] += forceInElement[w];
                      }
                  }
 
                  std::lock_guard guard(mutex);
                  this->m_potentialEnergy += potentialEnergy;
              });
+
+        domainElementsCount += domain.size();
     }
 }
 
@@ -260,6 +300,11 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
 
     if (d_domainDecomposition.getValue())
     {
+        if (m_domains.empty())
+        {
+            decomposeDomain();
+        }
+
         addForceDomainDecomposition(_f, _p, taskScheduler, elementStiffnesses);
     }
     else
@@ -294,7 +339,6 @@ void ParallelHexahedronFEMForceField<DataTypes>::computeTaskForceLarge(RDataRefV
     type::Vec<8,Coord> deformed;
     for(int w=0; w<8; ++w)
         deformed[w] = this->_rotations[elementId] * nodes[w];
-
 
     // displacement
     type::Vec<24, Real> D;
@@ -334,18 +378,20 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForceDomainDecomposition(
     const Real kFactor, simulation::TaskScheduler* taskScheduler,
     const VecElementStiffness& elementStiffnesses)
 {
+    ElementId domainElementsCount {};
     for (const auto& domain : m_domains)
     {
         simulation::parallelForEachRange(*taskScheduler,
              domain.begin(), domain.end(),
-             [this, &_dx, &_df, &elementStiffnesses, kFactor](const auto& range)
+             [this, &_dx, &_df, &elementStiffnesses, kFactor, &domain, domainElementsCount](const auto& range)
              {
-                 auto elementId = std::distance(this->getIndexedElements()->begin(), *range.start);
+                 auto elementId = domainElementsCount + std::distance(domain.begin(), range.start);
 
                  for (auto it = range.start; it != range.end; ++it, ++elementId)
                  {
-                     const auto& element = **it;
-                     type::Vec<8, Deriv> df = computeDf(elementId, element, kFactor, _dx, elementStiffnesses);
+                     const auto& element = m_reorderedElements[elementId];
+
+                     const auto df = computeDf(elementId, element, kFactor, _dx, elementStiffnesses);
 
                      for (int w = 0 ; w < 8; ++w)
                      {
@@ -353,6 +399,8 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForceDomainDecomposition(
                      }
                  }
              });
+
+        domainElementsCount += domain.size();
     }
 }
 
@@ -365,11 +413,13 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForceLockBasedMethod(
 {
     std::mutex mutex;
 
+    const auto& indexedElements = *this->getIndexedElements();
+
     simulation::parallelForEachRange(*taskScheduler,
         this->getIndexedElements()->begin(), this->getIndexedElements()->end(),
-        [this, &_dx, &_df, &elementStiffnesses, kFactor, &mutex](const auto& range)
+        [this, &_dx, &_df, &elementStiffnesses, kFactor, &mutex, &indexedElements](const auto& range)
         {
-            auto elementId = std::distance(this->getIndexedElements()->begin(), range.start);
+            auto elementId = std::distance(indexedElements.begin(), range.start);
 
             std::vector<type::Vec<8, Deriv>> dfElements;
             dfElements.reserve(std::distance(range.start, range.end));

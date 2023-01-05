@@ -111,6 +111,8 @@ protected:
 
     void initTaskScheduler();
 
+    void computeCachedData(const VecElement& elements) override;
+
     /**
      * Divide the model into smaller subdomains which can be solved independently.
      *
@@ -120,11 +122,14 @@ protected:
      */
     void decomposeDomain();
 
-    using Domain = sofa::type::vector<VecElement::const_iterator> ;
+    using ElementId = sofa::Index;
+    using Domain = sofa::type::vector<ElementId>;
     sofa::type::vector<Domain> m_domains;
 
+    VecElement m_reorderedElements;
+
     type::Vec<8, Deriv> computeDf(
-        std::size_t elementId, Element element, Real kFactor,
+        std::size_t elementId, const Element& element, Real kFactor,
         RDataRefVecCoord dx, const VecElementStiffness& elementStiffnesses);
 
 private:

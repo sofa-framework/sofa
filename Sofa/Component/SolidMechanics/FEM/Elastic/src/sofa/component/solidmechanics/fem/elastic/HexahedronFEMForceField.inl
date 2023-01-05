@@ -147,13 +147,19 @@ void HexahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
+    computeCachedData(*this->getIndexedElements());
+}
+
+template <class DataTypes>
+void HexahedronFEMForceField<DataTypes>::computeCachedData(const VecElement& elements)
+{
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     _initialPoints.setValue(p);
 
-    _materialsStiffnesses.resize(this->getIndexedElements()->size() );
-    _rotations.resize( this->getIndexedElements()->size() );
-    _rotatedInitialElements.resize(this->getIndexedElements()->size());
-    _initialrotations.resize( this->getIndexedElements()->size() );
+    _materialsStiffnesses.resize(elements.size() );
+    _rotations.resize( elements.size() );
+    _rotatedInitialElements.resize(elements.size());
+    _initialrotations.resize( elements.size() );
 
     if (f_method.getValue() == "large")
         this->setMethod(LARGE);
@@ -168,7 +174,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     {
         sofa::Index i=0;
         typename VecElement::const_iterator it;
-        for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
+        for(it = elements.begin() ; it != elements.end() ; ++it, ++i)
         {
             computeMaterialStiffness(i);
             initLarge(i,*it);
@@ -179,7 +185,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     {
         sofa::Index i=0;
         typename VecElement::const_iterator it;
-        for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
+        for(it = elements.begin() ; it != elements.end() ; ++it, ++i)
         {
             computeMaterialStiffness(i);
             initPolar(i,*it);
@@ -190,7 +196,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
     {
         sofa::Index i=0;
         typename VecElement::const_iterator it;
-        for(it = this->getIndexedElements()->begin() ; it != this->getIndexedElements()->end() ; ++it, ++i)
+        for(it = elements.begin() ; it != elements.end() ; ++it, ++i)
         {
             computeMaterialStiffness(i);
             initSmall(i,*it);

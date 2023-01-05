@@ -191,6 +191,12 @@ protected:
     HexahedronFEMForceFieldInternalData<DataTypes> *data;
     friend class HexahedronFEMForceFieldInternalData<DataTypes>;
 
+    /**
+     * Computation of constant data that will be then reused during time steps:
+     * material stiffness matrices, rotations...
+     */
+    virtual void computeCachedData(const VecElement& elements);
+
 protected:
     HexahedronFEMForceField();
 
