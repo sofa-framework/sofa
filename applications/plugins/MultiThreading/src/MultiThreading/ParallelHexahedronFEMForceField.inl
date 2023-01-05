@@ -115,14 +115,14 @@ auto ParallelHexahedronFEMForceField<DataTypes>::computeDf(
     std::size_t elementId, Element element, Real kFactor,
     RDataRefVecCoord dx, const VecElementStiffness& elementStiffnesses) -> type::Vec<8, Deriv>
 {
-    type::Vec<24, Real> X; //displacement
-    type::Vec<24, Real> F; //force
+    type::Vec<24, Real> X(type::NOINIT); //displacement
+    type::Vec<24, Real> F(type::NOINIT); //force
 
-    type::Vec<8, Deriv> df;
+    const auto& r = this->_rotations[elementId];
 
     for (int w = 0; w < 8; ++w)
     {
-        Coord x_2 = this->_rotations[elementId] * dx[element[w]];
+        const Coord x_2 = r * dx[element[w]];
 
         X[w * 3] = x_2[0];
         X[w * 3 + 1] = x_2[1];
@@ -132,9 +132,10 @@ auto ParallelHexahedronFEMForceField<DataTypes>::computeDf(
     // F = K * X
     this->computeForce(F, X, elementStiffnesses[elementId]);
 
+    type::Vec<8, Deriv> df(type::NOINIT);
     for (int w = 0; w < 8; ++w)
     {
-        df[w] -= this->_rotations[elementId].multTranspose(Deriv(F[w * 3], F[w * 3 + 1], F[w * 3 + 2])) * kFactor;
+        df[w] = -r.multTranspose(Deriv(F[w * 3], F[w * 3 + 1], F[w * 3 + 2])) * kFactor;
     }
 
     return df;
@@ -337,17 +338,18 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForceDomainDecomposition(
     {
         simulation::parallelForEachRange(*taskScheduler,
              domain.begin(), domain.end(),
-             [this, &_dx, &_df, &elementStiffnesses, kFactor, &domain](const auto& range)
+             [this, &_dx, &_df, &elementStiffnesses, kFactor](const auto& range)
              {
                  auto elementId = std::distance(this->getIndexedElements()->begin(), *range.start);
 
                  for (auto it = range.start; it != range.end; ++it, ++elementId)
                  {
-                     type::Vec<8, Deriv> df = computeDf(elementId, **it, kFactor, _dx, elementStiffnesses);
+                     const auto& element = **it;
+                     type::Vec<8, Deriv> df = computeDf(elementId, element, kFactor, _dx, elementStiffnesses);
 
                      for (int w = 0 ; w < 8; ++w)
                      {
-                         _df[(**it)[w]] += df[w];
+                         _df[element[w]] += df[w];
                      }
                  }
              });
