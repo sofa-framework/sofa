@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_LINK_H
-#define SOFA_CORE_OBJECTMODEL_LINK_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/type/stable_vector.h>
@@ -30,12 +29,7 @@
 
 namespace sofa
 {
-
-namespace core
-{
-
-
-namespace objectmodel
+namespace core::objectmodel
 {
 
 class DDGNode;
@@ -779,10 +773,7 @@ protected:
         }
     }
 };
-
-} // namespace objectmodel
-
-} // namespace core
+} // namespace core::objectmodel
 
 // the SingleLink class is used everywhere
 using core::objectmodel::SingleLink;
@@ -791,5 +782,3 @@ using core::objectmodel::SingleLink;
 using core::objectmodel::MultiLink;
 
 } // namespace sofa
-
-#endif

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VECID_H
-#define SOFA_CORE_VECID_H
+#pragma once
 
 #include <sofa/core/config.h>
 
@@ -457,6 +456,4 @@ typedef TVecId<V_MATDERIV, V_READ> ConstMatrixDerivId;
 typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
 
 static_assert(sizeof(VecId) == sizeof(VecCoordId), "");
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

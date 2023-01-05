@@ -1,6 +1,6 @@
 #include "TaskSchedulerTestTasks.h"
 
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/CpuTask.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
 #include <sofa/testing/BaseTest.h>
@@ -10,7 +10,7 @@ namespace sofa
     // compute the Fibonacci number for input N
     static int64_t Fibonacci(int64_t N, int nbThread = 0)
     {
-        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
+        simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
         
         simulation::CpuTask::Status status;
@@ -28,7 +28,7 @@ namespace sofa
     // compute the sum of integers from 1 to N
     static int64_t IntSum1ToN(const int64_t N, int nbThread = 0)
     {
-        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::DefaultTaskScheduler::name());
+        simulation::TaskScheduler* scheduler = simulation::MainTaskSchedulerFactory::createInRegistry(simulation::DefaultTaskScheduler::name());
         scheduler->init(nbThread);
         
         simulation::CpuTask::Status status;
@@ -97,6 +97,49 @@ namespace sofa
         EXPECT_EQ(res, (N)*(N + 1) / 2);
         return;
     }
-    
+
+    TEST(TaskSchedulerTests, Lambda)
+    {
+        const auto scheduler = std::unique_ptr<simulation::TaskScheduler>(
+            simulation::MainTaskSchedulerFactory::instantiate(simulation::DefaultTaskScheduler::name()));
+        scheduler->init(1);
+
+        unsigned int one = 0u;
+
+        simulation::CpuTaskStatus status;
+        scheduler->addTask(status, [&one]{ one = 1u; });
+
+        scheduler->workUntilDone(&status);
+        scheduler->stop();
+
+        EXPECT_EQ(one, 1u);
+    }
+
+    TEST(TaskSchedulerTests, Functor)
+    {
+        struct Functor
+        {
+            Functor(unsigned int& num) : m_num(num) {}
+            void operator()() const
+            {
+                m_num = 1u ;
+            }
+            unsigned int& m_num;
+        };
+
+        const auto scheduler = std::unique_ptr<simulation::TaskScheduler>(
+            simulation::MainTaskSchedulerFactory::instantiate(simulation::DefaultTaskScheduler::name()));
+        scheduler->init(1);
+
+        unsigned int one = 0u;
+
+        simulation::CpuTaskStatus status;
+        scheduler->addTask(status, Functor(one));
+
+        scheduler->workUntilDone(&status);
+        scheduler->stop();
+
+        EXPECT_EQ(one, 1u);
+    }
 
 } // namespace sofa

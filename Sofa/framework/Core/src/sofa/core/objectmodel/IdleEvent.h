@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_IDLEEVENT_H
-#define SOFA_CORE_OBJECTMODEL_IDLEEVENT_H
+#pragma once
 
 #include <sofa/core/objectmodel/Event.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -47,11 +40,4 @@ public:
     inline static const char* GetClassName() { return "IdleEvent"; }
 protected:
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::objectmodel

@@ -23,19 +23,12 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#define RICHCONSOLESTYLEMESSAGEFORMATTER_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/helper/logging/MessageFormatter.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 class Message;
@@ -69,9 +62,4 @@ private:
 
     bool m_showFileInfo ;
 };
-
-} // logging
-} // helper
-} // sofa
-
-#endif // DEFAULTSTYLEMESSAGEFORMATTER_H
+} // sofa::helper::logging

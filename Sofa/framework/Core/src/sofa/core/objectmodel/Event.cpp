@@ -23,13 +23,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 
@@ -54,9 +48,4 @@ bool Event::isHandled() const
 {
     return m_handled;
 }
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::objectmodel

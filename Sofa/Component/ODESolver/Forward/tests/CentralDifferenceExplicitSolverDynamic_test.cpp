@@ -47,7 +47,6 @@ In this test: x(t=0)= 1 and v(t=0)=0 and K = spring stiffness and phi = 0 of mat
 This tests generates the discrete mass position obtained with central difference solver with different parameter values (K,M,h).
 Then it compares the effective mass position to the computed mass position every time step.
 */
-
 template <typename _DataTypes>
 struct CentralDifferenceExplicitSolverDynamic_test : public component::odesolver::testing::ODESolverSpringTest
 {

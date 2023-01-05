@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASENODE_H
-#define SOFA_CORE_OBJECTMODEL_BASENODE_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -188,11 +181,5 @@ public:
     /// @}
 
 };
+} // namespace sofa::core::objectmodel
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif

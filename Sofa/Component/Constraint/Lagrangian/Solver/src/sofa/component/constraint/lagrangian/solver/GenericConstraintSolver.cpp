@@ -31,6 +31,7 @@
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
@@ -126,7 +127,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 GenericConstraintSolver::~GenericConstraintSolver()
 {
     if(d_multithreading.getValue())
-        simulation::TaskScheduler::getInstance()->stop();
+        simulation::MainTaskSchedulerFactory::createInRegistry()->stop();
 }
 
 void GenericConstraintSolver::init()
@@ -160,7 +161,7 @@ void GenericConstraintSolver::init()
 
     if(d_multithreading.getValue())
     {
-        simulation::TaskScheduler::getInstance()->init();
+        simulation::MainTaskSchedulerFactory::createInRegistry()->init();
     }
 
     if(d_newtonIterations.isSet())
@@ -336,7 +337,7 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
 
 void GenericConstraintSolver::parallelBuildSystem_matrixAssembly(const core::ConstraintParams* cParams)
 {
-    simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
+    simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
     simulation::CpuTask::Status status;
 
     type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;

@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_MOUSEEVENT_H
-#define SOFA_CORE_OBJECTMODEL_MOUSEEVENT_H
+#pragma once
 
 #include <sofa/core/objectmodel/Event.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -51,28 +44,28 @@ public:
     {
         Move=0,
         // The standard mouse button (on a three mouse button)
-		LeftPressed,
+        LeftPressed,
         LeftReleased,
         RightPressed,
         RightReleased,
         MiddlePressed,
         MiddleReleased,
 
-		// In case the mouse has more than three button
-		// the extra button will send this event. Unless the 
-		// ExtraButton0Pressed lines is properly implemented throughou Sofa. 
-		AnyExtraButtonPressed,   
-		AnyExtraButtonReleased,
+        // In case the mouse has more than three button
+        // the extra button will send this event. Unless the
+        // ExtraButton0Pressed lines is properly implemented throughou Sofa.
+        AnyExtraButtonPressed,
+        AnyExtraButtonReleased,
 
-		// Some mice has extra mouse buttons, 
-		// TODO: replace the AnyExtraButton events by Button0, Button1 events.
-		// and implement the correct processing throughouh Sofa.
-		// ExtraButton0Pressed,
-		// ExtraButton0Released,
+        // Some mice has extra mouse buttons,
+        // TODO: replace the AnyExtraButton events by Button0, Button1 events.
+        // and implement the correct processing throughouh Sofa.
+        // ExtraButton0Pressed,
+        // ExtraButton0Released,
         // ExtraButton1Pressed,
-		// ExtraButton1Released,
-		
-		Wheel,
+        // ExtraButton1Released,
+
+        Wheel,
         Reset
     } State;
 
@@ -104,15 +97,8 @@ public:
     inline static const char* GetClassName() { return "MouseEvent"; }
 private:
 
-    State m_state; ///< Mouse State on the event propagation.
-    int m_wheelDelta; ///< Mouse wheel delta.
+    State m_state;      ///< Mouse State on the event propagation.
+    int m_wheelDelta;   ///< Mouse wheel delta.
     int m_posX, m_posY; ///< Mouse coordinates.
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_OBJECTMODEL_MOUSEEVENT_H
+} // namespace sofa::core::objectmodel

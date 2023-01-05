@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_STATE_INL
-#define SOFA_CORE_STATE_INL
+#pragma once
 
 #include <sofa/core/State.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 template<class DataTypes>
@@ -91,9 +87,4 @@ void State<DataTypes>::computeBBox(const core::ExecParams*, bool)
 {
     this->f_bbox.setValue(computeBBox());
 }
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

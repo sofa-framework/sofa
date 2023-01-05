@@ -23,6 +23,7 @@
 
 #include <MultiThreading/ParallelHexahedronFEMForceField.h>
 #include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 namespace sofa::component::forcefield
 {
@@ -37,7 +38,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::init()
 template<class DataTypes>
 void ParallelHexahedronFEMForceField<DataTypes>::initTaskScheduler()
 {
-    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
     if (taskScheduler->getThreadCount() < 1)
     {
@@ -75,7 +76,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const core::Mechanical
         this->needUpdateTopology = false;
     }
 
-    auto *taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
     if (taskScheduler->getThreadCount() == 0)
     {
@@ -219,7 +220,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForce (const core::Mechanic
     if (_df.size() != _dx.size())
         _df.resize(_dx.size());
 
-    auto *taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
     if (taskScheduler->getThreadCount() == 0)
     {

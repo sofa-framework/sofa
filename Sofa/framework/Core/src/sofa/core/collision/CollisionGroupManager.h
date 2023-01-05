@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_COLLISIONGROUPMANAGER_H
-#define SOFA_CORE_COLLISION_COLLISIONGROUPMANAGER_H
+#pragma once
 
 #include <sofa/core/collision/CollisionAlgorithm.h>
 #include <sofa/core/collision/Contact.h>
 
 #include <vector>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 //class Scene;
@@ -87,11 +80,4 @@ protected:
         groups.swap(storedGroups[inst]);
     }
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

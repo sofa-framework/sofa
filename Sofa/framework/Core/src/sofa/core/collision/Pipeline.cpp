@@ -22,13 +22,7 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 //using namespace core::objectmodel;
 //using namespace core::behavior;
@@ -71,13 +65,5 @@ bool Pipeline::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
-
-
-
-
-} // namespace collision
-
-} // namespace core
-
 } // namespace sofa
 

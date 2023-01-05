@@ -50,8 +50,8 @@ protected:
     ~ConstraintSolver() override;
 
 private:
-    ConstraintSolver(const ConstraintSolver& n) ;
-    ConstraintSolver& operator=(const ConstraintSolver& n) ;
+    ConstraintSolver(const ConstraintSolver& n) = delete;
+    ConstraintSolver& operator=(const ConstraintSolver& n) = delete;
 
 
 public:

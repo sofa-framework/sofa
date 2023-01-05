@@ -21,68 +21,65 @@
 ******************************************************************************/
 #include <sofa/simulation/TaskScheduler.h>
 
-#include <sofa/simulation/DefaultTaskScheduler.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/MainTaskSchedulerRegistry.h>
 
 namespace sofa::simulation
 {
 
-// the order of initialization of these static vars is important
-// the TaskScheduler::_schedulers must be initialized before any call to TaskScheduler::registerScheduler
-std::map<std::string, TaskScheduler::TaskSchedulerCreatorFunction> TaskScheduler::_schedulers;
-std::string TaskScheduler::_currentSchedulerName;
-TaskScheduler* TaskScheduler::_currentScheduler = nullptr;
-        
-// register default task scheduler
-const bool DefaultTaskScheduler::isRegistered = TaskScheduler::registerScheduler(DefaultTaskScheduler::name(), &DefaultTaskScheduler::create);
-        
-        
+bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
+{
+    class CallableTask final : public Task
+    {
+    public:
+        CallableTask(int scheduledThread, Task::Status& status, std::function<void()> task)
+            : Task(scheduledThread)
+            , m_status(status)
+            , m_task(std::move(task))
+        {}
+        ~CallableTask() override = default;
+        sofa::simulation::Task::MemoryAlloc run() final
+        {
+            m_task();
+            return MemoryAlloc::Dynamic;
+        }
+
+        Task::Status* getStatus() const override
+        {
+            return &m_status;
+        }
+
+    private:
+        Task::Status& m_status;
+        std::function<void()> m_task;
+    };
+
+    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
+}
+
 TaskScheduler* TaskScheduler::create(const char* name)
 {
-    // is already the current scheduler
-    std::string nameStr(name);
-    if (!nameStr.empty() && _currentSchedulerName == name)
-        return _currentScheduler;
-            
-    auto iter = _schedulers.find(name);
-    if (iter == _schedulers.end())
-    {
-        // error scheduler not registered
-        // create the default task scheduler
-        iter = _schedulers.end();
-        --iter;
-    }
-            
-    if (_currentScheduler != nullptr)
-    {
-        delete _currentScheduler;
-    }
-            
-    TaskSchedulerCreatorFunction& creatorFunc = iter->second;
-    _currentScheduler = creatorFunc();
-            
-    _currentSchedulerName = iter->first;
-            
-    Task::setAllocator(_currentScheduler->getTaskAllocator());
-            
-    return _currentScheduler;
+    return MainTaskSchedulerFactory::createInRegistry(name);
 }
-        
-        
+
 bool TaskScheduler::registerScheduler(const char* name, TaskSchedulerCreatorFunction creatorFunc)
 {
-    _schedulers[name] = creatorFunc;
-    return true;
+    return MainTaskSchedulerFactory::registerScheduler(name, creatorFunc);
 }
-        
+
 TaskScheduler* TaskScheduler::getInstance()
 {
-    if (_currentScheduler == nullptr)
+    return MainTaskSchedulerFactory::createInRegistry();
+}
+
+std::string TaskScheduler::getCurrentName()
+{
+    if (const auto& lastCreated = MainTaskSchedulerRegistry::getLastInserted())
     {
-        TaskScheduler::create();
-        _currentScheduler->init();
+        return lastCreated.value().first;
     }
-            
-    return _currentScheduler;
+
+    return {};
 }
 
 } // namespace sofa::simulation

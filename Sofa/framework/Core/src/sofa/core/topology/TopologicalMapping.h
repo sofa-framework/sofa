@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
-#define SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
+#pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 /**
@@ -220,11 +213,5 @@ protected:
     TopologyElementType m_inputType = TopologyElementType::UNKNOWN;
     TopologyElementType m_outputType = TopologyElementType::UNKNOWN;
 };
+} // namespace sofa::core::topology
 
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
-#endif

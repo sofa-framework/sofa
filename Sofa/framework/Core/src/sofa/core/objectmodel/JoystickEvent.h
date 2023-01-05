@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
-#define SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
+#pragma once
 
 #include <sofa/core/objectmodel/Event.h>
 #include <vector>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -262,11 +255,4 @@ protected:
 private:
 
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
+} // namespace sofa::core::objectmodel

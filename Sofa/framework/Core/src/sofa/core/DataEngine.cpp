@@ -22,10 +22,7 @@
 
 #include <sofa/core/DataEngine.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 DataEngine::DataEngine()
@@ -72,9 +69,4 @@ void DataEngine::update()
     doUpdate();
     m_dataTracker.clean();
 }
-
-
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core
