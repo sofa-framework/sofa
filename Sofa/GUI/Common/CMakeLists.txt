@@ -18,12 +18,6 @@ if(NOT cxxopts_POPULATED)
     add_subdirectory(${cxxopts_SOURCE_DIR} ${cxxopts_BINARY_DIR})
 endif()
 
-if(Sofa.GL_FOUND)
-    message("-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
-else()
-    message("-- ${PROJECT_NAME}: Sofa.GL dependent features disabled.")
-endif()
-
 set(SOFAGUICOMMON_ROOT src/sofa/gui/common)
 
 set(HEADER_FILES
@@ -79,6 +73,12 @@ sofa_find_package(Sofa.Component.Setting REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
 sofa_find_package(Sofa.GUI.Component REQUIRED)
 sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
+
+if(Sofa.GL_FOUND)
+    message(STATUS "-- ${PROJECT_NAME}: Sofa.GL dependent features enabled.")
+else()
+    message(WARNING "-- ${PROJECT_NAME}: Sofa.GL dependent features disabled.")
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common)

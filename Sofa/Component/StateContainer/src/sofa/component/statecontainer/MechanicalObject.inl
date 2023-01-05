@@ -88,11 +88,11 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectorsScale(initData(&showVectorsScale, 0.0001f, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
     , d_color(initData(&d_color, type::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
-    , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
-    , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
-    , scale(initData(&scale, Vector3(1_sreal, 1_sreal, 1_sreal), "scale3d", "Scale of the DOFs in 3 dimensions"))
-    , translation2(initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
-    , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
+    , translation(initData(&translation, type::Vec3(), "translation", "Translation of the DOFs"))
+    , rotation(initData(&rotation, type::Vec3(), "rotation", "Rotation of the DOFs"))
+    , scale(initData(&scale, type::Vec3(1_sreal, 1_sreal, 1_sreal), "scale3d", "Scale of the DOFs in 3 dimensions"))
+    , translation2(initData(&translation2, type::Vec3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
+    , rotation2(initData(&rotation2, type::Vec3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
     , d_size(initData(&d_size, 0, "size", "Size of the vectors"))
     , l_topology(initLink("topology","Link to the topology relevant for this object"))
     , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors. (default=0)"))
@@ -250,40 +250,40 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
     if (arg->getAttribute("scale") != nullptr)
     {
         SReal s = (SReal)arg->getAttributeAsFloat("scale", 1.0);
-        scale.setValue(Vector3(s, s, s));
+        scale.setValue(type::Vec3(s, s, s));
     }
 
     if (arg->getAttribute("sx") != nullptr || arg->getAttribute("sy") != nullptr || arg->getAttribute("sz") != nullptr)
     {
-        scale.setValue(Vector3((SReal)arg->getAttributeAsFloat("sx",1.0),
+        scale.setValue(type::Vec3((SReal)arg->getAttributeAsFloat("sx",1.0),
                                (SReal)arg->getAttributeAsFloat("sy",1.0),
                                (SReal)arg->getAttributeAsFloat("sz",1.0)));
     }
 
     if (arg->getAttribute("rx") != nullptr || arg->getAttribute("ry") != nullptr || arg->getAttribute("rz") != nullptr)
     {
-        rotation.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx",0.0),
+        rotation.setValue(type::Vec3((SReal)arg->getAttributeAsFloat("rx",0.0),
                                   (SReal)arg->getAttributeAsFloat("ry",0.0),
                                   (SReal)arg->getAttributeAsFloat("rz",0.0)));
     }
 
     if (arg->getAttribute("dx") != nullptr || arg->getAttribute("dy") != nullptr || arg->getAttribute("dz") != nullptr)
     {
-        translation.setValue(Vector3((Real)arg->getAttributeAsFloat("dx",0.0),
+        translation.setValue(type::Vec3((Real)arg->getAttributeAsFloat("dx",0.0),
                                      (Real)arg->getAttributeAsFloat("dy",0.0),
                                      (Real)arg->getAttributeAsFloat("dz",0.0)));
     }
 
     if (arg->getAttribute("rx2") != nullptr || arg->getAttribute("ry2") != nullptr || arg->getAttribute("rz2") != nullptr)
     {
-        rotation2.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx2",0.0),
+        rotation2.setValue(type::Vec3((SReal)arg->getAttributeAsFloat("rx2",0.0),
                                    (SReal)arg->getAttributeAsFloat("ry2",0.0),
                                    (SReal)arg->getAttributeAsFloat("rz2",0.0)));
     }
 
     if (arg->getAttribute("dx2") != nullptr || arg->getAttribute("dy2") != nullptr || arg->getAttribute("dz2") != nullptr)
     {
-        translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
+        translation2.setValue(type::Vec3((Real)arg->getAttributeAsFloat("dx2",0.0),
                                       (Real)arg->getAttributeAsFloat("dy2",0.0),
                                       (Real)arg->getAttributeAsFloat("dz2",0.0)));
     }
@@ -336,8 +336,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
             }
             for (unsigned int i=0; i<pointsAdded.pointIndexArray.size(); ++i)
             {
-                Index p1 = prevSizeMechObj + i;
-                Index p2 = pointsAdded.pointIndexArray[i];
+                sofa::Index p1 = prevSizeMechObj + i;
+                sofa::Index p2 = pointsAdded.pointIndexArray[i];
                 if (p1 != p2)
                 {
                     dmsg_error(this) << "TOPO STATE EVENT POINTSADDED INDEX " << i << " MISMATCH: "
@@ -482,10 +482,10 @@ void MechanicalObject<DataTypes>::handleStateChange()
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::replaceValue (const Index inputIndex, const Index outputIndex)
+void MechanicalObject<DataTypes>::replaceValue (const sofa::Index inputIndex, const sofa::Index outputIndex)
 {
     //const unsigned int maxIndex = std::max(inputIndex, outputIndex);
-    const Index maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
+    const sofa::Index maxIndex = inputIndex<outputIndex ? outputIndex : inputIndex;
     const Size vecCoordSize = Size(vectorsCoord.size());
     for (unsigned int i = 0; i < vecCoordSize; i++)
     {
@@ -501,7 +501,7 @@ void MechanicalObject<DataTypes>::replaceValue (const Index inputIndex, const In
     }
 
     const Size vecDerivSize = Size(vectorsDeriv.size());
-    for (Index i = 0; i < vecDerivSize; i++)
+    for (sofa::Index i = 0; i < vecDerivSize; i++)
     {
         if (vectorsDeriv[i] != nullptr)
         {
@@ -516,7 +516,7 @@ void MechanicalObject<DataTypes>::replaceValue (const Index inputIndex, const In
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::swapValues (const Index idx1, const Index idx2)
+void MechanicalObject<DataTypes>::swapValues (const sofa::Index idx1, const sofa::Index idx2)
 {
     //const unsigned int maxIndex = std::max(idx1, idx2);
     const unsigned int maxIndex = idx1<idx2 ? idx2 : idx1;
@@ -555,7 +555,7 @@ void MechanicalObject<DataTypes>::swapValues (const Index idx1, const Index idx2
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberValues( const sofa::type::vector< Index > &index )
+void MechanicalObject<DataTypes>::renumberValues( const sofa::type::vector< sofa::Index > &index )
 {
     VecDeriv dtmp;
     VecCoord ctmp;
@@ -706,7 +706,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::type::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
+void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::type::vector<sofa::Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
     helper::ReadAccessor< Data<VecCoord> > x_rA = this->readPositions();
 
@@ -722,11 +722,11 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::type::vector<Index>& i
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sofa::type::vector< Index >& ancestors, const sofa::type::vector< double >& coefs)
+void MechanicalObject<DataTypes>::computeWeightedValue( const sofa::Index i, const sofa::type::vector< sofa::Index >& ancestors, const sofa::type::vector< double >& coefs)
 {
     // HD interpolate position, speed,force,...
     // assume all coef sum to 1.0
-    Index j;
+    sofa::Index j;
 
     const Size ancestorsSize = Size(ancestors.size());
 
@@ -734,7 +734,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sof
     type::vector< Deriv > ancestorsDeriv(ancestorsSize);
     type::vector< Real > ancestorsCoefs(ancestorsSize);
 
-    for (Index k = 0; k < vectorsCoord.size(); k++)
+    for (sofa::Index k = 0; k < vectorsCoord.size(); k++)
     {
         if (vectorsCoord[k] != nullptr)
         {
@@ -755,7 +755,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sof
         }
     }
 
-    for (Index k = 0; k < vectorsDeriv.size(); k++)
+    for (sofa::Index k = 0; k < vectorsDeriv.size(); k++)
     {
         if (vectorsDeriv[k] != nullptr)
         {
@@ -779,7 +779,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const Index i, const sof
 
 // Force the position of a point (and force its velocity to zero value)
 template <class DataTypes>
-void MechanicalObject<DataTypes>::forcePointPosition(const Index i, const sofa::type::vector< double >& m_x)
+void MechanicalObject<DataTypes>::forcePointPosition(const sofa::Index i, const sofa::type::vector< double >& m_x)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
     helper::WriteAccessor< Data<VecDeriv> > v_wA = this->writeVelocities();
@@ -1126,8 +1126,8 @@ void MechanicalObject<DataTypes>::init()
     }
 
 
-    const Vector3& _rotation2 = rotation2.getValue();
-    const Vector3& _translation2 = translation2.getValue();
+    const type::Vec3& _rotation2 = rotation2.getValue();
+    const type::Vec3& _translation2 = translation2.getValue();
     this->applyRotation(_rotation2[0],_rotation2[1],_rotation2[2]);
     this->applyTranslation(_translation2[0],_translation2[1],_translation2[2]);
 
@@ -1141,9 +1141,9 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
-    const Vector3& _scale = scale.getValue();
-    const Vector3& _rotation = rotation.getValue();
-    const Vector3& _translation = translation.getValue();
+    const type::Vec3& _scale = scale.getValue();
+    const type::Vec3& _rotation = rotation.getValue();
+    const type::Vec3& _translation = translation.getValue();
 
     this->applyScale(_scale[0],_scale[1],_scale[2]);
     this->applyRotation(_rotation[0],_rotation[1],_rotation[2]);
@@ -2685,14 +2685,14 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
 {
     float scale = showVectorsScale.getValue();
     sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
-    type::vector<Vector3> points;
+    type::vector<type::Vec3> points;
     points.resize(2);
     for(Size i=0; i<v_rA.size(); ++i )
     {
         Real vx=0.0,vy=0.0,vz=0.0;
         DataTypes::get(vx,vy,vz,v_rA[i]);
-        Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
-        Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
+        type::Vec3 p1 = type::Vec3(getPX(i), getPY(i), getPZ(i));
+        type::Vec3 p2 = type::Vec3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
         float rad = (float)( (p1-p2).norm()/20.0 );
         switch (drawMode.getValue())
@@ -2734,9 +2734,9 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        type::vector<Vector3> positions(d_size.getValue());
-        for (Index i = 0; i < Size(d_size.getValue()); ++i)
-            positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
+        type::vector<type::Vec3> positions(d_size.getValue());
+        for (sofa::Index i = 0; i < Size(d_size.getValue()); ++i)
+            positions[i] = type::Vec3(getPX(i), getPY(i), getPZ(i));
 
         switch (drawMode.getValue())
         {

@@ -62,6 +62,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 #include <cstdlib>
 #include <cmath>
@@ -95,13 +96,32 @@ void AnimationLoopParallelScheduler::init()
         mNbThread = threadNumber.getValue();
     }
 
-    _taskScheduler = TaskScheduler::getInstance();
-
-    if (TaskScheduler::getCurrentName() != schedulerName.getValue())
+    if (schedulerName.isSet())
     {
-        _taskScheduler = TaskScheduler::create(schedulerName.getValue().c_str());
+        _taskScheduler = MainTaskSchedulerFactory::createInRegistry(schedulerName.getValue() );
+        if (!_taskScheduler)
+        {
+            msg_error() << "'" << schedulerName.getValue()
+                << "' is not a valid name for a task scheduler. Falling back to the default "
+                "task scheduler. The list of available schedulers is: ["
+                << sofa::helper::join(MainTaskSchedulerFactory::getAvailableSchedulers(), ',')
+                << "]";
+        }
     }
-    _taskScheduler->init( mNbThread );
+
+    if (!_taskScheduler)
+    {
+        _taskScheduler = MainTaskSchedulerFactory::createInRegistry();
+    }
+
+    if (_taskScheduler)
+    {
+        _taskScheduler->init( mNbThread );
+    }
+    else
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 void AnimationLoopParallelScheduler::bwdInit()

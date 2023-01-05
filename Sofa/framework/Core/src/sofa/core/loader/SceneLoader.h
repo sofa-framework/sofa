@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_SceneLoader_H
-#define SOFA_CORE_LOADER_SceneLoader_H
+#pragma once
 
 #include <sofa/core/loader/BaseLoader.h>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace loader
+namespace sofa::core::loader
 {
 
 class SOFA_CORE_API SceneLoader : public virtual BaseLoader
@@ -54,18 +47,5 @@ public:
 
     void reinit() override;
 
-
-protected:
-
-
-
 };
-
-
-} // namespace loader
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::loader

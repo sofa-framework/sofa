@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
-#define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
+#pragma once
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
@@ -323,11 +316,4 @@ public:
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::topology

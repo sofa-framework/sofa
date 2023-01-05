@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISIONELEMENT_H
-#define SOFA_CORE_COLLISIONELEMENT_H
+#pragma once
+
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>
 
 #include <vector>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
@@ -362,9 +359,4 @@ std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIt
 {
     return model->getExternalChildren(index);
 }
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

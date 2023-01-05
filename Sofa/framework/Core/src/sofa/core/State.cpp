@@ -24,10 +24,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 using namespace sofa::defaulttype;
@@ -40,8 +37,4 @@ template class SOFA_CORE_API State<Rigid3Types>;
 template class SOFA_CORE_API State<Rigid2Types>;
 
 template class SOFA_CORE_API State<Vec3fTypes>;
-
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core

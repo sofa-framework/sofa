@@ -460,15 +460,12 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualP
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
+
     std::vector<type::Vec3> pos;
-    pos.resize(x.size());
-    auto posIT = pos.begin();
-    typename VecCoord::const_iterator xIT = x.begin();
-    for(; posIT != pos.end() ; ++posIT, ++xIT)
-    {
-        *posIT = *xIT;
-    }
+    pos.reserve(x.size());
+
+    std::transform(x.begin(), x.end(), std::back_inserter(pos),
+        [](const auto& e){ return DataTypes::getCPos(e); });
 
     vparams->drawTool()->drawPoints(pos,2.0f, sofa::type::RGBAColor::white());
 }

@@ -328,14 +328,14 @@ protected:
 
         const imCoord dim= rimage->getDimensions();
         type::Vec<8,Coord> p;
-        p[0]=type::Vector3(0,0,0);
-        p[1]=type::Vector3(dim[0]-1,0,0);
-        p[2]=type::Vector3(0,dim[1]-1,0);
-        p[3]=type::Vector3(dim[0]-1,dim[1]-1,0);
-        p[4]=type::Vector3(0,0,dim[2]-1);
-        p[5]=type::Vector3(dim[0]-1,0,dim[2]-1);
-        p[6]=type::Vector3(0,dim[1]-1,dim[2]-1);
-        p[7]=type::Vector3(dim[0]-1,dim[1]-1,dim[2]-1);
+        p[0]=type::Vec3(0,0,0);
+        p[1]=type::Vec3(dim[0]-1,0,0);
+        p[2]=type::Vec3(0,dim[1]-1,0);
+        p[3]=type::Vec3(dim[0]-1,dim[1]-1,0);
+        p[4]=type::Vec3(0,0,dim[2]-1);
+        p[5]=type::Vec3(dim[0]-1,0,dim[2]-1);
+        p[6]=type::Vec3(0,dim[1]-1,dim[2]-1);
+        p[7]=type::Vec3(dim[0]-1,dim[1]-1,dim[2]-1);
 
         Coord tp=rtransform->fromImage(p[0]);
         BB[0]=tp;

@@ -32,8 +32,8 @@ struct DataTypeInfo<std::string> : public TextTypeInfo<std::string>
     static const std::string name() { return "string"; }
     static const std::string GetTypeName(){ return "string"; }
 
-    static const void* getValuePtr(const std::string& data) { return &data[0]; }
-    static void* getValuePtr(std::string& data) { return &data[0]; }
+    static const void* getValuePtr(const std::string& data) { return data.data(); }
+    static void* getValuePtr(std::string& data) { return data.data(); }
 };
 
 } /// namespace sofa::defaulttype

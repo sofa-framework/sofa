@@ -50,8 +50,8 @@ RecordedCamera::RecordedCamera()
     , m_rotationCenter(initData(&m_rotationCenter, "rotationCenter", "Rotation center coordinates"))
     , m_rotationStartPoint(initData(&m_rotationStartPoint, "rotationStartPoint", "Rotation start position coordinates"))
     , m_rotationLookAt(initData(&m_rotationLookAt, "rotationLookAt", "Position to be focused during rotation"))
-    , m_rotationAxis(initData(&m_rotationAxis, Vec3(0,1,0), "rotationAxis", "Rotation axis"))
-    , m_cameraUp(initData(&m_cameraUp, Vec3(0,0,0), "cameraUp", "Camera Up axis"))
+    , m_rotationAxis(initData(&m_rotationAxis, type::Vec3(0,1,0), "rotationAxis", "Rotation axis"))
+    , m_cameraUp(initData(&m_cameraUp, type::Vec3(0,0,0), "cameraUp", "Camera Up axis"))
     , p_drawRotation(initData(&p_drawRotation, (bool)false , "drawRotation", "If true, will draw the rotation path"))
     , p_drawTranslation(initData(&p_drawTranslation, (bool)false , "drawTranslation", "If true, will draw the translation path"))
     , m_translationPositions(initData(&m_translationPositions, "cameraPositions", "Intermediate camera's positions"))
@@ -70,10 +70,10 @@ void RecordedCamera::init()
     BaseCamera::init();
 
     if (!m_rotationCenter.isSet())
-        m_rotationCenter = Vec3(0.0, 10.0, 0.0);
+        m_rotationCenter = type::Vec3(0.0, 10.0, 0.0);
 
     if (!m_rotationStartPoint.isSet())
-        m_rotationStartPoint = Vec3(0.0, 10.0, 50.0);
+        m_rotationStartPoint = type::Vec3(0.0, 10.0, 50.0);
 
     m_nextStep = m_startTime.getValue();
 
@@ -129,8 +129,8 @@ void RecordedCamera::moveCamera_navigation()
 
         if(currentIndexPoint < nbrPoints - 1)
         {
-            Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
-            Vec3 cameraFocal = m_translationPositions.getValue()[currentIndexPoint + 1] - _pos;
+            type::Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
+            type::Vec3 cameraFocal = m_translationPositions.getValue()[currentIndexPoint + 1] - _pos;
 
             // Set camera's position: linear interpolation
             p_position.setValue( m_translationPositions.getValue()[currentIndexPoint] + cameraFocal * ratio);
@@ -170,22 +170,22 @@ void RecordedCamera::moveCamera_rotation()
     m_angleStep = 2*M_PI * ratio;
 
     // Compute cartesian coordinates from cylindrical ones
-    Vec3 _pos = m_rotationCenter.getValue();
+    type::Vec3 _pos = m_rotationCenter.getValue();
     type::Quat<double> q(m_rotationAxis.getValue(), m_angleStep);
     _pos += q.rotate(m_rotationStartPoint.getValue() - m_rotationCenter.getValue());
     p_position.setValue(_pos);
 
     // dV to compute circle tangente
-    Vec3 _poskk;
+    type::Vec3 _poskk;
     if (m_cameraUp.isSet() && m_cameraUp.getValue().norm() > 0.000001)
         _poskk = -cross(_pos-p_lookAt.getValue(),m_cameraUp.getValue());
     else
         _poskk = -cross(_pos-m_rotationCenter.getValue(),m_rotationAxis.getValue());
 
     // Compute orientation
-    Vec3 zAxis = -(p_lookAt.getValue() - _pos);
-    Vec3 yAxis = zAxis.cross(_poskk);
-    Vec3 xAxis = yAxis.cross(zAxis);
+    type::Vec3 zAxis = -(p_lookAt.getValue() - _pos);
+    type::Vec3 yAxis = zAxis.cross(_poskk);
+    type::Vec3 xAxis = yAxis.cross(zAxis);
     xAxis.normalize();
     yAxis.normalize();
     zAxis.normalize();
@@ -223,17 +223,17 @@ void RecordedCamera::moveCamera_translation()
 
         if(currentIndexPoint < nbrPoints - 1)
         {
-            Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
+            type::Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
             p_lookAt.setValue(m_translationPositions.getValue()[currentIndexPoint + 1]);
-            Vec3 cameraFocal = p_lookAt.getValue() - _pos;
+            type::Vec3 cameraFocal = p_lookAt.getValue() - _pos;
 
             // Set camera's position: linear interpolation
             p_position.setValue( m_translationPositions.getValue()[currentIndexPoint] + cameraFocal * ratio);
 
             // Set camera's orientation
-            Vec3 zAxis = - (p_lookAt.getValue() - _pos);
-            Vec3 xAxis = m_cameraUp.getValue().cross(zAxis);
-            Vec3 yAxis = zAxis.cross(xAxis);
+            type::Vec3 zAxis = - (p_lookAt.getValue() - _pos);
+            type::Vec3 xAxis = m_cameraUp.getValue().cross(zAxis);
+            type::Vec3 yAxis = zAxis.cross(xAxis);
             xAxis.normalize();
             yAxis.normalize();
             zAxis.normalize();
@@ -298,22 +298,22 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
 void RecordedCamera::configureRotation()
 {
     // HACK: need to init again, as component init seems to be overwritten by viewer settings
-    Vec3 _pos = m_rotationStartPoint.getValue();
+    type::Vec3 _pos = m_rotationStartPoint.getValue();
     p_position.setValue(_pos);
     p_lookAt.setValue(m_rotationLookAt.getValue());
     p_distance.setValue((p_lookAt.getValue() - p_position.getValue()).norm());
 
     // dV to compute circle tangente
-    Vec3 _poskk;
+    type::Vec3 _poskk;
     if (m_cameraUp.isSet() && m_cameraUp.getValue().norm() > 0.000001)
         _poskk = -cross(_pos-p_lookAt.getValue(),m_cameraUp.getValue());
     else
         _poskk = -cross(_pos-m_rotationCenter.getValue(),m_rotationAxis.getValue());
 
     // Compute orientation
-    Vec3 zAxis = -(p_lookAt.getValue() - _pos);
-    Vec3 yAxis = zAxis.cross(_poskk);
-    Vec3 xAxis = yAxis.cross(zAxis);
+    type::Vec3 zAxis = -(p_lookAt.getValue() - _pos);
+    type::Vec3 yAxis = zAxis.cross(_poskk);
+    type::Vec3 xAxis = yAxis.cross(zAxis);
     xAxis.normalize();
     yAxis.normalize();
     zAxis.normalize();
@@ -337,9 +337,9 @@ void RecordedCamera::configureTranslation()
 
         // Set camera's orientation
         this->initializeViewUp();
-        Vec3 zAxis = - m_translationPositions.getValue()[1] +  m_translationPositions.getValue()[0];
-        Vec3 yAxis = m_cameraUp.getValue();
-        Vec3 xAxis = yAxis.cross(zAxis);
+        type::Vec3 zAxis = - m_translationPositions.getValue()[1] +  m_translationPositions.getValue()[0];
+        type::Vec3 yAxis = m_cameraUp.getValue();
+        type::Vec3 xAxis = yAxis.cross(zAxis);
         xAxis.normalize();
         yAxis.normalize();
         zAxis.normalize();
@@ -371,15 +371,15 @@ void RecordedCamera::initializeViewUp()
 {
     if(m_translationPositions.isSet() && m_translationPositions.getValue().size() > 1)
     {
-        Vec3 zAxis = m_translationPositions.getValue()[1] -  m_translationPositions.getValue()[0];
+        type::Vec3 zAxis = m_translationPositions.getValue()[1] -  m_translationPositions.getValue()[0];
         zAxis.normalize();
-        Vec3 xRef(1,0,0);
+        type::Vec3 xRef(1,0,0);
         // Initialize the view-up vector with the reference vector the "most perpendicular" to zAxis.
          m_cameraUp.setValue(xRef);
         double normCrossProduct = cross(zAxis,xRef).norm();
         for(int i = 1; i<3; ++ i)
         {
-            Vec3 vecRef(0,0,0);
+            type::Vec3 vecRef(0,0,0);
             vecRef[i] = 1;
             if(cross(zAxis,vecRef).norm() >= normCrossProduct )
             {
@@ -494,11 +494,11 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
 
             //fetch rotation
             newQuat = currentTrackball.GetQuaternion();
-            Vec3 pivot;
+            type::Vec3 pivot;
             switch (p_pivot.getValue())
             {
             case WORLD_CENTER_PIVOT:
-                pivot = Vec3(0.0, 0.0, 0.0);
+                pivot = type::Vec3(0.0, 0.0, 0.0);
                 break;
             case SCENE_CENTER_PIVOT :
             default:
@@ -510,14 +510,14 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
         }
         else if (currentMode == ZOOM_MODE)
         {
-            Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y - lastMousePosY) / heightViewport);
+            type::Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y - lastMousePosY) / heightViewport);
             trans = cameraToWorldTransform(trans);
             translate(trans);
             translateLookAt(trans);
         }
         else if (currentMode == PAN_MODE)
         {
-            Vec3 trans(lastMousePosX - x,  y-lastMousePosY, 0.0);
+            type::Vec3 trans(lastMousePosX - x,  y-lastMousePosY, 0.0);
             trans = cameraToWorldTransform(trans)*p_panSpeed.getValue();
             translate(trans);
             translateLookAt(trans);
@@ -529,7 +529,7 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
     }
     else if (currentMode == WHEEL_ZOOM_MODE)
     {
-        Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y*0.5) / heightViewport);
+        type::Vec3 trans(0.0, 0.0, -p_zoomSpeed.getValue() * (y*0.5) / heightViewport);
         trans = cameraToWorldTransform(trans);
         translate((trans));
         translateLookAt(trans);
@@ -542,7 +542,7 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
 
 void RecordedCamera::drawRotation()
 {
-    Vec3 _pos = m_rotationStartPoint.getValue();
+    type::Vec3 _pos = m_rotationStartPoint.getValue();
 
     m_rotationPoints.resize(100);
     double _angleStep = 2*M_PI/100;
@@ -584,7 +584,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawLines(vertices,1,color);
         vertices.clear();
 
-        const Vec3& _lookAt = m_rotationLookAt.getValue();
+        const type::Vec3& _lookAt = m_rotationLookAt.getValue();
         static constexpr unsigned int dx = 4;
         const std::size_t ratio = m_rotationPoints.size()/dx;
 
@@ -607,7 +607,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
         std::vector<sofa::type::Vec3> vertices;
 
         // Camera positions
-        type::vector<Vec3> _positions = m_translationPositions.getValue();
+        type::vector<type::Vec3> _positions = m_translationPositions.getValue();
         for (unsigned int i=0; i < _positions.size()-1; ++i)
         {
             vertices.push_back(sofa::type::Vec3((float)_positions[i  ][0], (float)_positions[i  ][1], (float)_positions[i  ][2]));

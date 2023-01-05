@@ -19,6 +19,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
     ${SRC_ROOT}/CpuTask.h
+    ${SRC_ROOT}/CpuTaskStatus.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
@@ -66,10 +67,14 @@ set(HEADER_FILES
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/BaseSimulationExporter.h
     ${SRC_ROOT}/TaskScheduler.h
+    ${SRC_ROOT}/TaskSchedulerFactory.h
+    ${SRC_ROOT}/TaskSchedulerRegistry.h
     ${SRC_ROOT}/DefaultTaskScheduler.h
     ${SRC_ROOT}/Task.h
     ${SRC_ROOT}/InitTasks.h
     ${SRC_ROOT}/Locks.h
+    ${SRC_ROOT}/MainTaskSchedulerFactory.h
+    ${SRC_ROOT}/MainTaskSchedulerRegistry.h
     ${SRC_ROOT}/WorkerThread.h
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
@@ -146,6 +151,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
     ${SRC_ROOT}/CpuTask.cpp
+    ${SRC_ROOT}/CpuTaskStatus.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
@@ -156,6 +162,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
+    ${SRC_ROOT}/MainTaskSchedulerRegistry.cpp
+    ${SRC_ROOT}/MainTaskSchedulerFactory.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalVPrintVisitor.cpp
     ${SRC_ROOT}/MechanicalVisitor.cpp
@@ -191,6 +199,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp
+    ${SRC_ROOT}/TaskSchedulerFactory.cpp
+    ${SRC_ROOT}/TaskSchedulerRegistry.cpp
     ${SRC_ROOT}/DefaultTaskScheduler.cpp
     ${SRC_ROOT}/Task.cpp
     ${SRC_ROOT}/InitTasks.cpp

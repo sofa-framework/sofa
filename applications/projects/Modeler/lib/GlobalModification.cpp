@@ -64,9 +64,9 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
         }
 
         const core::objectmodel::Base::MapData& aliases=c->getDataAliases();
-        for (core::objectmodel::Base::MapData::const_iterator it=aliases.begin(); it!=aliases.end(); ++it)
+        for (core::objectmodel::Base::MapData::const_iterator myit=aliases.begin(); myit!=aliases.end(); ++myit)
         {
-            allAliases.insert(it->first);
+            allAliases.insert(myit->first);
         }
 
     }

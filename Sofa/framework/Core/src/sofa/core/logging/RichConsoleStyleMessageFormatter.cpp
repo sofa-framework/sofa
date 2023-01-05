@@ -46,13 +46,7 @@ using sofa::helper::logging::SofaComponentInfo;
 
 #include <algorithm>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace logging
+namespace sofa::helper::logging
 {
 
 /////////////////////////////// STATIC ELEMENT SPECIFIC TO RichConsoleStyleMessage /////////////////
@@ -250,8 +244,5 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
     out << console::Style::Reset;
     out << std::endl ;
 }
-
-} // logging
-} // helper
-} // sofa
+} // sofa::helper::logging
 

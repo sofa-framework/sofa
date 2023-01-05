@@ -47,8 +47,8 @@ protected:
     ~BaseMapping() override;
 	
 private:
-    BaseMapping(const BaseMapping& n);
-    BaseMapping& operator=(const BaseMapping& n);
+    BaseMapping(const BaseMapping& n) = delete;
+    BaseMapping& operator=(const BaseMapping& n) = delete;
 	
 public:
     Data<bool> f_mapForces; ///< Are forces mapped ?

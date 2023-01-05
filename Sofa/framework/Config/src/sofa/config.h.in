@@ -243,6 +243,18 @@ class DeprecatedAndRemoved {};
         "v21.06 (PR#1808)", "v21.12", \
         "replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
 
+#define SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(type) \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.12 (PR#3357)", "v23.12", \
+        "Class's member type alias " sofa_tostring(type) " was not needed.") \
+        DeprecatedAndRemoved type
+
+#define SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(type, newtype) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12 (PR#3357)", "v23.12", \
+        "This type member " sofa_tostring(type) " is now deprecated. To update your code please replace it with " sofa_tostring(newtype)) \
+        typedef newtype type
+
 #define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v21.12 (PR#2292)", "v22.06", \

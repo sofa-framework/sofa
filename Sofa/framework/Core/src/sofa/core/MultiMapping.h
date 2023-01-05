@@ -19,25 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MULTIMAPPING_H
-#define SOFA_CORE_MULTIMAPPING_H
+#pragma once
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/config.h>
 #include <sofa/helper/fwd.h>
 #include <sofa/core/State.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
  *  \brief Specialized interface to describe many to many mapping.
  *   All the input must have the same type, and all the output must have the same type. See also class Multi2Mapping.
  */
-
 template <class TIn, class TOut>
 class MultiMapping : public BaseMapping
 {
@@ -301,11 +296,5 @@ extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types
 extern template class SOFA_CORE_API MultiMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 
 #endif
-
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core
 

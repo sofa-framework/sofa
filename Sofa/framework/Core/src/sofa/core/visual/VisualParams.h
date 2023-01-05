@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_CORE_VISUAL_VISUALPARAMS_H
-#define SOFA_CORE_VISUAL_VISUALPARAMS_H
+#pragma once
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
@@ -45,7 +43,7 @@ enum
 class SOFA_CORE_API VisualParams : public ExecParams
 {
 public:
-	typedef sofa::type::fixed_array<int, 4> Viewport;
+    typedef sofa::type::fixed_array<int, 4> Viewport;
 
     /// The enumeration used to describe each step of the rendering.
     enum Pass
@@ -187,6 +185,3 @@ protected:
 };
 
 } // namespace sofa::core::visual
-
-
-#endif // SOFA_CORE_VISUAL_VISUALPARAMS_H

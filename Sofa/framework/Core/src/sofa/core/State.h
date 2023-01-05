@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_STATE_H
-#define SOFA_CORE_STATE_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-namespace sofa
-{
 
-namespace core
+namespace sofa::core
 {
 
 /**
@@ -118,9 +115,9 @@ protected:
     ~State() override { }
 	
 private:
-	State(const State& n) ;
-	State& operator=(const State& n) ;
-	
+    State(const State& n) = delete;
+    State& operator=(const State& n) = delete;
+
 public:
     /// @name New vectors access API based on VecId
     /// @{
@@ -159,9 +156,4 @@ extern template class SOFA_CORE_API State<defaulttype::Rigid3Types>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid2Types>;
 extern template class SOFA_CORE_API State<defaulttype::Vec3fTypes>;
 #endif
-} // namespace core
-
-} // namespace sofa
-
-
-#endif
+} // namespace sofa::core

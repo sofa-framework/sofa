@@ -413,7 +413,7 @@ protected:
         vparams->drawTool()->drawPoints(this->position.getValue(),5,sofa::type::RGBAColor(0.2,1.,0.2,1.));
 
         raPositions pos(this->position);
-        std::vector<type::Vector3> points;
+        std::vector<type::Vec3> points;
         raEdges Edges(this->edges);
         points.resize(2*Edges.size());
         for (std::size_t i=0; i<Edges.size(); ++i)

@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_GUIEVENT_H
-#define SOFA_CORE_OBJECTMODEL_GUIEVENT_H
+#pragma once
 
 #include <sofa/core/objectmodel/Event.h>
 #include <string>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace objectmodel
+namespace sofa::core::objectmodel
 {
 
 /**
@@ -78,11 +71,4 @@ private:
     std::string     m_value;
 
 };
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_OBJECTMODEL_GUIEVENT_H
+} // namespace sofa::core::objectmodel

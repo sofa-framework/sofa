@@ -22,11 +22,7 @@
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-namespace core
-{
-namespace visual
+namespace sofa::core::visual
 {
 
 FlagTreeItem::FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent):
@@ -109,8 +105,7 @@ std::istream& FlagTreeItem::read(std::istream &in)
     {
         if( parse_map.find(token) != parse_map.end() )
         {
-            std::map<std::string,bool>::const_iterator iter;
-            iter = parse_map.find(token);
+            std::map<std::string, bool>::const_iterator iter = parse_map.find(token);
             std::string string1 = iter->first;
 
             if(string1 != token)
@@ -216,16 +211,16 @@ void FlagTreeItem::write_recursive(const FlagTreeItem* root, std::string& str )
     {
         switch( (*iter)->m_state.state )
         {
-        case tristate::true_value:
-            str.append((*iter)->m_showName[0]);
-            str.append(" ");
-            break;
-        case tristate::false_value:
-            str.append((*iter)->m_hideName[0]);
-            str.append(" ");
-            break;
-        case tristate::neutral_value:
-            write_recursive(*iter,str);
+            case tristate::true_value:
+                str.append((*iter)->m_showName[0]);
+                str.append(" ");
+                break;
+            case tristate::false_value:
+                str.append((*iter)->m_hideName[0]);
+                str.append(" ");
+                break;
+            case tristate::neutral_value:
+                write_recursive(*iter,str);
         }
     }
 }
@@ -334,17 +329,17 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
 bool DisplayFlags::isNeutral() const
 {
     return m_showVisualModels.state().state == tristate::neutral_value
-            && m_showBehaviorModels.state().state == tristate::neutral_value
-            && m_showForceFields.state().state  == tristate::neutral_value
-            && m_showInteractionForceFields.state().state == tristate::neutral_value
-            && m_showBoundingCollisionModels.state().state == tristate::neutral_value
-            && m_showCollisionModels.state().state == tristate::neutral_value
-            && m_showVisualMappings.state().state == tristate::neutral_value
-            && m_showMechanicalMappings.state().state == tristate::neutral_value
-            && m_showAdvancedRendering.state().state == tristate::neutral_value
-            && m_showWireframe.state().state == tristate::neutral_value
-            && m_showNormals.state().state == tristate::neutral_value
-            ;
+           && m_showBehaviorModels.state().state == tristate::neutral_value
+           && m_showForceFields.state().state  == tristate::neutral_value
+           && m_showInteractionForceFields.state().state == tristate::neutral_value
+           && m_showBoundingCollisionModels.state().state == tristate::neutral_value
+           && m_showCollisionModels.state().state == tristate::neutral_value
+           && m_showVisualMappings.state().state == tristate::neutral_value
+           && m_showMechanicalMappings.state().state == tristate::neutral_value
+           && m_showAdvancedRendering.state().state == tristate::neutral_value
+           && m_showWireframe.state().state == tristate::neutral_value
+           && m_showNormals.state().state == tristate::neutral_value
+        ;
 }
 
 DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags &current)
@@ -389,10 +384,6 @@ std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags )
 std::istream& operator>> ( std::istream& in, DisplayFlags& flags )
 {
     return flags.m_root.read(in);
-}
-
-}
-
 }
 
 }

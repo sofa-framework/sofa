@@ -73,8 +73,8 @@ public:
 
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
-    typedef sofa::type::Vec3 Vector3;
-    using Index = sofa::Index;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
 protected:
     MechanicalObject();
@@ -150,40 +150,40 @@ public:
 
     Size getSize() const override { return d_size.getValue(); }
 
-    SReal getPX(Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
-    SReal getPY(Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
-    SReal getPZ(Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
+    SReal getPX(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
+    SReal getPY(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
+    SReal getPZ(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
 
-    SReal getVX(Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
-    SReal getVY(Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
-    SReal getVZ(Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
+    SReal getVX(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
+    SReal getVY(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
+    SReal getVZ(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
 
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *
      */
-    void replaceValue (const Index inputIndex, const Index outputIndex);
+    void replaceValue (const sofa::Index inputIndex, const sofa::Index outputIndex);
 
     /** \brief Exchange values at indices idx1 and idx2.
      *
      */
-    void swapValues (const Index idx1, const Index idx2);
+    void swapValues (const sofa::Index idx1, const sofa::Index idx2);
 
     /** \brief Reorder values according to parameter.
      *
      * Result of this method is :
      * newValue[ i ] = oldValue[ index[i] ];
      */
-    void renumberValues( const sofa::type::vector<Index> &index );
+    void renumberValues( const sofa::type::vector<sofa::Index> &index );
 
     /** \brief Replace the value at index by the sum of the ancestors values weithed by the coefs.
      *
      * Sum of the coefs should usually equal to 1.0
      */
-    void computeWeightedValue( const Index i, const sofa::type::vector< sofa::Index >& ancestors, const sofa::type::vector< double >& coefs);
+    void computeWeightedValue( const sofa::Index i, const sofa::type::vector< sofa::Index >& ancestors, const sofa::type::vector< double >& coefs);
 
     /// Force the position of a point (and force its velocity to zero value)
-    void forcePointPosition( const Index i, const sofa::type::vector< double >& m_x);
+    void forcePointPosition( const sofa::Index i, const sofa::type::vector< double >& m_x);
 
     /// @name Initial transformations application methods.
     /// @{
@@ -201,7 +201,7 @@ public:
     /// @}
 
     /// Get the indices of the particles located in the given bounding box
-    void getIndicesInSpace(sofa::type::vector<Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const override;
+    void getIndicesInSpace(sofa::type::vector<sofa::Index>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const override;
 
     /// update the given bounding box, to include this
     bool addBBox(SReal* minBBox, SReal* maxBBox) override;
@@ -243,13 +243,13 @@ public:
     /// @name Initial transformations accessors.
     /// @{
 
-    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(Vector3(dx,dy,dz));}
-    void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(Vector3(rx,ry,rz));}
-    void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(Vector3(sx,sy,sz));}
+    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(type::Vec3(dx,dy,dz));}
+    void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(type::Vec3(rx,ry,rz));}
+    void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(type::Vec3(sx,sy,sz));}
 
-    virtual Vector3 getTranslation() const {return translation.getValue();}
-    virtual Vector3 getRotation() const {return rotation.getValue();}
-    Vector3 getScale() const override {return scale.getValue();}
+    virtual type::Vec3 getTranslation() const {return translation.getValue();}
+    virtual type::Vec3 getRotation() const {return rotation.getValue();}
+    type::Vec3 getScale() const override {return scale.getValue();}
 
     /// @}
 
@@ -351,11 +351,11 @@ protected :
     /// @name Initial geometric transformations
     /// @{
 
-    Data< Vector3 > translation; ///< Translation of the DOFs
-    Data< Vector3 > rotation; ///< Rotation of the DOFs
-    Data< Vector3 > scale; ///< Scale of the DOFs in 3 dimensions
-    Data< Vector3 > translation2; ///< Translation of the DOFs, applied after the rest position has been computed
-    Data< Vector3 > rotation2; ///< Rotation of the DOFs, applied the after the rest position has been computed
+    Data< type::Vec3 > translation; ///< Translation of the DOFs
+    Data< type::Vec3 > rotation; ///< Rotation of the DOFs
+    Data< type::Vec3 > scale; ///< Scale of the DOFs in 3 dimensions
+    Data< type::Vec3 > translation2; ///< Translation of the DOFs, applied after the rest position has been computed
+    Data< type::Vec3 > rotation2; ///< Rotation of the DOFs, applied the after the rest position has been computed
 
     /// @}
 

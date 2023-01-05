@@ -70,8 +70,8 @@ protected:
 
     ~BaseMechanicalState() override;
 private:
-	BaseMechanicalState(const BaseMechanicalState& n);
-	BaseMechanicalState& operator=(const BaseMechanicalState& n);
+    BaseMechanicalState(const BaseMechanicalState& n) = delete;
+    BaseMechanicalState& operator=(const BaseMechanicalState& n) = delete;
 
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
@@ -282,7 +282,7 @@ public:
     /// Scale the current state
     virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)=0;
 
-    virtual type::Vec3 getScale() const { return type::Vector3(1.0_sreal,1.0_sreal,1.0_sreal); }
+    virtual type::Vec3 getScale() const { return type::Vec3(1.0_sreal,1.0_sreal,1.0_sreal); }
 
     virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {

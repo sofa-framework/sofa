@@ -25,6 +25,7 @@
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 
 namespace sofa::component::collision
 {
@@ -45,7 +46,7 @@ void ParallelBruteForceBroadPhase::init()
 
     // initialize the thread pool
 
-    auto* taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
     if (taskScheduler->getThreadCount() < 1)
     {
@@ -97,7 +98,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<c
         return;
     }
 
-    auto *taskScheduler = sofa::simulation::TaskScheduler::getInstance();
+    auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
 
     if (taskScheduler->getThreadCount() == 0)

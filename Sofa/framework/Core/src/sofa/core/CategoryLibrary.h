@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CATEGORYLIBRARY_H
-#define SOFA_CATEGORYLIBRARY_H
+#pragma once
 
 #include <sofa/core/ComponentLibrary.h>
 
@@ -82,5 +81,3 @@ protected:
 };
 
 } // namespace sofa::core
-
-#endif

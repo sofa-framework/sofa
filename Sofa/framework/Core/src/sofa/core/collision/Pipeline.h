@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_PIPELINE_H
-#define SOFA_CORE_COLLISION_PIPELINE_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
@@ -28,10 +27,7 @@
 #include <sofa/type/vector.h>
 
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 class CollisionModel;
@@ -80,11 +76,11 @@ protected:
     ~Pipeline() override;
 	
 private:
-	Pipeline(const Pipeline& n) ;
-	Pipeline& operator=(const Pipeline& n) ;
-	
-	
-	
+    Pipeline(const Pipeline& n) = delete;
+    Pipeline& operator=(const Pipeline& n) = delete;
+
+
+
 public:
     void reset() override = 0;
 
@@ -127,9 +123,5 @@ public:
 };
 
 } // namespace collision
+} // namespace sofa::core
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

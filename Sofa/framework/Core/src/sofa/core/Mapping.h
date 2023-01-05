@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_MAPPING_H
-#define SOFA_CORE_MAPPING_H
+#pragma once
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/State.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
@@ -37,7 +33,6 @@ namespace core
 *
 *
 */
-
 template <class TIn, class TOut>
 class Mapping : public BaseMapping
 {
@@ -311,9 +306,4 @@ extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3Types, sofa:
 
 // cross templates
 #endif
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_MAPPING_H
+} // namespace sofa::core

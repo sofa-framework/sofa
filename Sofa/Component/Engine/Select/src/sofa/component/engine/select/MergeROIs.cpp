@@ -62,12 +62,12 @@ void MergeROIs::doUpdate()
     f_indices.resize(nb);
     if(!nb) return;
 
-    helper::WriteOnlyAccessor< Data< type::vector<type::SVector<Index> > > > outputIndices = d_outputIndices;
+    helper::WriteOnlyAccessor< Data< type::vector<type::SVector<sofa::Index> > > > outputIndices = d_outputIndices;
     outputIndices.resize(nb);
 
     for(size_t j=0; j<nb;j++)
     {
-        helper::ReadAccessor< Data< type::vector<Index> > > indices = f_indices[j];
+        helper::ReadAccessor< Data< type::vector<sofa::Index> > > indices = f_indices[j];
         outputIndices[j].resize(indices.size());
         for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
     }
