@@ -327,6 +327,7 @@ protected:
 
     void computeVonMisesStress();
     bool isComputeVonMisesStressMethodSet();
+    void computeMinMaxFromYoungsModulus();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 
