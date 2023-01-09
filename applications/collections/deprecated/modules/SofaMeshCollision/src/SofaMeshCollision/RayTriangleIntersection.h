@@ -32,6 +32,6 @@ namespace sofa::component::collision
 
 /// this class computes if a Triangle P intersects a ray
 SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "Use sofa::geometry::Triangle::rayIntersection instead.")
-DeprecatedAndRemoved RayTriangleIntersection;
+typedef DeprecatedAndRemoved RayTriangleIntersection;
 
 } //namespace sofa::component::collision

@@ -28,6 +28,6 @@ namespace sofa::simulation::xml
 {
 
 SOFA_ATTRIBUTE_DISABLED__ELEMENTNAMEHELPER()
-DeprecatedAndRemoved ElementNameHelper;
+typedef DeprecatedAndRemoved ElementNameHelper;
 
 } // namespace sofa::simulation::xml

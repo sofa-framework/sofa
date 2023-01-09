@@ -239,7 +239,7 @@ public:
 
     template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        DeprecatedAndRemoved other;
+        typedef DeprecatedAndRemoved other;
     };
 
 

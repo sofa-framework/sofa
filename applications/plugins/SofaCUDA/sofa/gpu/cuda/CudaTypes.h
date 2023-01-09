@@ -59,7 +59,7 @@ struct DataTypeInfoManager
 {
     template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        DeprecatedAndRemoved other;
+        typedef DeprecatedAndRemoved other;
     };
 
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;

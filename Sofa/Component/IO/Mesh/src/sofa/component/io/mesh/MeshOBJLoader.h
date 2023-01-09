@@ -80,7 +80,7 @@ public:
 };
 
 SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2428)", "v22.12", "MeshObjLoader has been renamed to MeshOBJLoader")
-DeprecatedAndRemoved MeshObjLoader;
+typedef DeprecatedAndRemoved MeshObjLoader;
 
 } // namespace sofa::component::io::mesh
 

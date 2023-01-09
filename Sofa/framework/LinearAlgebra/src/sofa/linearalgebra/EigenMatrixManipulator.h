@@ -43,10 +43,10 @@ typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
 
 SOFA_LINEARALGEBRA_API
 SOFA_MATRIXMANIPULATOR_DISABLED()
-DeprecatedAndRemoved LLineManipulator;
+typedef DeprecatedAndRemoved LLineManipulator;
 
 SOFA_LINEARALGEBRA_API
 SOFA_MATRIXMANIPULATOR_DISABLED()
-DeprecatedAndRemoved LMatrixManipulator;
+typedef DeprecatedAndRemoved LMatrixManipulator;
 
 } // namespace sofa::linearalgebra
