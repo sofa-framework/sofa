@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/helper/DiffLib.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::core::visual
@@ -96,6 +97,25 @@ std::ostream& FlagTreeItem::write(std::ostream &os) const
     return os;
 }
 
+void FlagTreeItem::showUnknownTokenMessage(const std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap, std::string token) const
+{
+    sofa::type::vector<std::string> allFlagNames;
+    allFlagNames.reserve(parseMap.size());
+    for (const auto& [flagName, _] : parseMap)
+    {
+        allFlagNames.emplace_back(flagName);
+    }
+
+    std::stringstream tmp;
+    tmp << "Unknown token '" << token << "'" << ". The closest existing flags are:" << msgendl;
+    for(auto& [name, score] : sofa::helper::getClosestMatch(token, allFlagNames, 2, 0.6))
+    {
+        tmp << "\t" << "- " << name << " ("+ std::to_string((int)(100*score))+"% match)" << msgendl;
+    }
+    tmp << "Complete list is: " << allFlagNames;
+    msg_warning("DisplayFlags") << tmp.str() ;
+}
+
 std::istream& FlagTreeItem::read(std::istream &in)
 {
     std::map<std::string, bool,  ci_comparison> parse_map;
@@ -116,7 +136,9 @@ std::istream& FlagTreeItem::read(std::istream &in)
             parse_map[token] = true;
         }
         else
-            msg_error("DisplayFlags") << "FlagTreeItem: unknown token " << token;
+        {
+            showUnknownTokenMessage(parse_map, token);
+        }
     }
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
 

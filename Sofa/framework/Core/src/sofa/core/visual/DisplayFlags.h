@@ -143,7 +143,8 @@ protected:
     static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool,ci_comparison>& map);
     static void write_recursive(const FlagTreeItem* root,  std::string& str);
 
-
+    void showUnknownTokenMessage(const std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap,
+                                 std::string token) const;
 };
 
 /** \brief Class which describes the display of components in a hierarchical fashion
