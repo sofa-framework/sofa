@@ -33,7 +33,6 @@ set(SOURCE_FILES
     ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseMultiMappingElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/DataElement.cpp
-    ${SOFA_SIMULATION_COMMON_SRC}/xml/ElementNameHelper.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/NodeElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/ObjectElement.cpp
     ${SOFA_SIMULATION_COMMON_SRC}/xml/XML.cpp
