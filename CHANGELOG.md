@@ -150,7 +150,8 @@
 - [GUI.Qt] Restore Stats (Charts) and DocBrowser for Qt6 [#3456](https://github.com/sofa-framework/sofa/pull/3456) 
 - [Modeler] rename shadow variable [#3546](https://github.com/sofa-framework/sofa/pull/3546) 
 - [GUI.Common] Cmake: Fix message when searching for Sofa.GL [#3549](https://github.com/sofa-framework/sofa/pull/3549) 
-- [SofaEulerianFluid] Fix: rename shadow variable in Fluid3D [#3557](https://github.com/sofa-framework/sofa/pull/3557) 
+- [SofaEulerianFluid] Fix: rename shadow variable in Fluid3D [#3557](https://github.com/sofa-framework/sofa/pull/3557)
+- [CollisionOBBCapsule] Fix generation of configuration file for installation [#3576](https://github.com/sofa-framework/sofa/pull/3576)
 
 **Examples / Scenes**
 - [Examples] Fix & Clean ProjectToPlaneConstraint and RegularGridTopology_dimension scenes [#3453](https://github.com/sofa-framework/sofa/pull/3453) 
@@ -209,6 +210,7 @@
 - [Lagrangian.Solver] Merge duplicated code into small but expressive functions [#3474](https://github.com/sofa-framework/sofa/pull/3474) 
 - [all] Remove compilation warnings [#3494](https://github.com/sofa-framework/sofa/pull/3494) 
 - [FEM.Elastic] Clean draw method [#3508](https://github.com/sofa-framework/sofa/pull/3508) 
+- [all] Lifecycle v22.12 [#3534](https://github.com/sofa-framework/sofa/pull/3534) 
 
 **Plugins / Projects**
 - [tutorials] Fix CMakeLists targets [#3200](https://github.com/sofa-framework/sofa/pull/3200) 
