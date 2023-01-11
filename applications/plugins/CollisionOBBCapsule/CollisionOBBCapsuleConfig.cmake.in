@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Config REQUIRED)
+find_package(Sofa.Config QUIET REQUIRED)
 find_package(Sofa.Component.Collision QUIET REQUIRED)
 find_package(Sofa.GUI.Component QUIET REQUIRED)
 
