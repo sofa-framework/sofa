@@ -217,31 +217,6 @@ class DeprecatedAndRemoved {};
         "v21.06 (PR#1753)", "v22.12 (PR#3279)", \
         "Data API has changed. " msg)
 
-#define SOFA_ATTRIBUTE_DISABLED__ASPECT(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v20.06 (PR#1269)", "v21.12", \
-        "Aspects have been removed. " msg)
-
-#define SOFA_ATTRIBUTE_DISABLED__ASPECT_EXECPARAMS() \
-    SOFA_ATTRIBUTE_DISABLED__ASPECT( \
-        "ExecParams are not needed anymore. " \
-        "Remove the ExecParams argument from your call. ")
-
-
-#define SOFA_ATTRIBUTE_DISABLED__QUAT_API(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#1878)", "v21.12", \
-        "Quat was refactored. " msg)
-
-#define SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.06 (PR#1808)", "v21.12", \
-        "Replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
-
-#define SOFA_ATTRIBUTE_DISABLED__CUSTOM_OPERATOR() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#1808)", "v21.12", \
-        "replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
 
 #define SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(type) \
     SOFA_ATTRIBUTE_DISABLED( \

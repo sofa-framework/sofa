@@ -42,6 +42,6 @@ namespace sofa::component::topology::container::dynamic
 #define SOFA_ATTRIBUTE_DISABLED__POINTSETCONTAINER_POINTSDATAREMOVAL()
 #else
 #define SOFA_ATTRIBUTE_DISABLED__POINTSETCONTAINER_POINTSDATAREMOVAL() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
+    SOFA_ATTRIBUTE_DISABLED( \
     "v22.06", "v22.12", "Data points has been removed from PointSetTopologyContainer. Only the nbPoints should be used.")
 #endif // SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY_CONTAINER_DYNAMIC

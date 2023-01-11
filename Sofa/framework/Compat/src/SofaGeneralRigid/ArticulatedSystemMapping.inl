@@ -23,4 +23,4 @@
 
 #include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v22.12", "ArticulatedSystemPlugin/ArticulatedSystemMapping.inl")
+SOFA_DISABLED_HEADER("v22.06", "v22.12", "ArticulatedSystemPlugin/ArticulatedSystemMapping.inl")
