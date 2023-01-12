@@ -71,6 +71,8 @@ template < class T = void* >
 class Data : public BaseData
 {
 public:
+    using value_type = T;
+
     using BaseData::m_counter;
     using BaseData::m_isSet;
     using BaseData::setDirtyOutputs;
