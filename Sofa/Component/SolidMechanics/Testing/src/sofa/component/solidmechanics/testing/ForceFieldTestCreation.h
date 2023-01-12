@@ -169,7 +169,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         std::size_t n = x.size();
 
         // copy the position and velocities to the scene graph
-        this->dof->resize(n);
+        this->dof->resize(static_cast<sofa::Size>(n));
         typename DOF::WriteVecCoord xdof = this->dof->writePositions();
         sofa::testing::copyToData( xdof, x );
         typename DOF::WriteVecDeriv vdof = this->dof->writeVelocities();
@@ -267,7 +267,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
 
         // check stiffness matrix: compare its product with dx to actual force change
         typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
-        Sqmat K( n*DataTypes::deriv_total_size, n*DataTypes::deriv_total_size );
+        const sofa::SignedIndex matrixSize = static_cast<sofa::SignedIndex>(n * DataTypes::deriv_total_size);
+        Sqmat K( matrixSize, matrixSize);
         sofa::core::behavior::SingleMatrixAccessor accessor( &K );
         mparams.setKFactor(1.0);
         force->addKToMatrix( &mparams, &accessor);

@@ -25,6 +25,10 @@
 #include <cassert>
 #include <mutex>
 
+#ifdef WIN32
+#include <processthreadsapi.h>
+#endif
+
 namespace sofa::simulation
 {
 
@@ -69,6 +73,13 @@ std::thread *WorkerThread::create_and_attach(DefaultTaskScheduler *const &taskSc
 
 void WorkerThread::run(void)
 {
+#ifdef WIN32
+    const std::wstring widestr = std::wstring(m_name.begin(), m_name.end());
+    HRESULT r = SetThreadDescription(
+        GetCurrentThread(),
+        widestr.c_str()
+        );
+#endif
 
     //workerThreadIndex = this;
     //TaskSchedulerDefault::_threads[std::this_thread::get_id()] = this;

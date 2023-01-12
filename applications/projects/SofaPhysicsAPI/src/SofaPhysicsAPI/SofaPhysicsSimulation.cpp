@@ -27,6 +27,8 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/gl/RAII.h>
 
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -81,9 +83,48 @@ int SofaPhysicsAPI::unload()
     return impl->unload();
 }
 
+const char* SofaPhysicsAPI::loadSofaIni(const char* pathIniFile)
+{
+    auto sofaIniFilePath = std::string(pathIniFile);
+
+    std::map<std::string, std::string> iniFileValues = sofa::helper::Utils::readBasicIniFile(sofaIniFilePath);
+    std::string shareDir = "SHARE_DIR Path Not found";
+    // and add them to DataRepository
+    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
+    {
+        shareDir = iniFileValues["SHARE_DIR"];
+        if (!sofa::helper::system::FileSystem::isAbsolute(shareDir))
+            shareDir = "./" + shareDir;
+        sofa::helper::system::DataRepository.addFirstPath(shareDir);
+    }
+    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
+    {
+        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
+        if (!sofa::helper::system::FileSystem::isAbsolute(examplesDir))
+            examplesDir = "./" + examplesDir;
+        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
+    }
+    if (iniFileValues.find("PYTHON_DIR") != iniFileValues.end())
+    {
+        std::string pythonDir = iniFileValues["PYTHON_DIR"];
+        if (!sofa::helper::system::FileSystem::isAbsolute(pythonDir))
+            pythonDir = "./" + pythonDir;
+        sofa::helper::system::DataRepository.addFirstPath(pythonDir);
+    }
+
+    char* cstr = new char[shareDir.length() + 1];
+    std::strcpy(cstr, shareDir.c_str());
+
+    return cstr;
+}
+
+int SofaPhysicsAPI::loadPlugin(const char* pluginPath)
+{
+    return impl->loadPlugin(pluginPath);
+}
+
 void SofaPhysicsAPI::createScene()
 {
-    std::cout << "SofaPhysicsAPI::createScene" <<std::endl;
     return impl->createScene();
 }
 
@@ -192,6 +233,31 @@ void SofaPhysicsAPI::setGravity(double* gravity)
     impl->setGravity(gravity);
 }
 
+int SofaPhysicsAPI::activateMessageHandler(bool value)
+{
+    return impl->activateMessageHandler(value);
+}
+
+int SofaPhysicsAPI::getNbMessages()
+{
+    return impl->getNbMessages();
+}
+
+const char* SofaPhysicsAPI::getMessage(int messageId, int& msgType)
+{
+    std::string value = impl->getMessage(messageId, msgType);
+    char* cstr = new char[value.length() + 1];
+    std::strcpy(cstr, value.c_str());
+    return cstr;
+}
+
+int SofaPhysicsAPI::clearMessages()
+{
+    return impl->clearMessages();
+}
+
+
+
 const char* SofaPhysicsAPI::getSceneFileName() const
 {
     return impl->getSceneFileName();
@@ -226,10 +292,13 @@ using namespace sofa::gl;
 using namespace sofa::core::objectmodel;
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::LoggingMessageHandler;
 
 SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     : useGUI(useGUI_)
     , GUIFramerate(GUIFramerate_)
+    , m_msgIsActivated(false)
 {
     sofa::helper::init();
     static bool first = true;
@@ -256,6 +325,11 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         }
         first = false;
     }    
+
+    // create message handler
+    m_msgHandler = new LoggingMessageHandler();
+    MessageDispatcher::clearHandlers();
+    MessageDispatcher::addHandler(m_msgHandler);
 
     m_RootNode = NULL;
     initGLDone = false;
@@ -299,6 +373,16 @@ SofaPhysicsSimulation::~SofaPhysicsSimulation()
 
       //sofa::gui::common::GUIManager::closeGUI();
     }
+
+    MessageDispatcher::rmHandler(m_msgHandler);
+    if (m_msgIsActivated)
+        m_msgHandler->deactivate();
+
+    if (m_msgHandler != nullptr)
+    {
+        delete m_msgHandler;
+        m_msgHandler = nullptr;
+    }
 }
 
 const char *SofaPhysicsSimulation::APIName()
@@ -318,7 +402,7 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     {
         sceneFileName = filename;
         m_Simulation->init(m_RootNode.get());
-        updateOutputMeshes();
+        return updateOutputMeshes();
 
         if ( useGUI ) {
           sofa::gui::common::GUIManager::SetScene(m_RootNode.get(),cfilename);
@@ -352,6 +436,21 @@ int SofaPhysicsSimulation::unload()
     }
 
     return API_SUCCESS;
+}
+
+int SofaPhysicsSimulation::loadPlugin(const char* pluginPath)
+{
+    sofa::helper::system::PluginManager::PluginLoadStatus plugres = sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath);
+    if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::SUCCESS || plugres == sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
+        return API_SUCCESS;
+    else if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::INVALID_LOADING)
+        return API_PLUGIN_INVALID_LOADING;
+    else if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::MISSING_SYMBOL)
+        return API_PLUGIN_MISSING_SYMBOL;
+    else if (plugres == sofa::helper::system::PluginManager::PluginLoadStatus::PLUGIN_FILE_NOT_FOUND)
+        return API_PLUGIN_FILE_NOT_FOUND;
+    else
+        return API_PLUGIN_LOADING_FAILED;
 }
 
 void SofaPhysicsSimulation::createScene()
@@ -484,7 +583,6 @@ void SofaPhysicsSimulation::setGravity(double* gravity)
 
 void SofaPhysicsSimulation::start()
 {
-    std::cout << "FROM APP: start()" << std::endl;
     if (isAnimated()) return;
     if (getScene())
     {
@@ -495,7 +593,6 @@ void SofaPhysicsSimulation::start()
 
 void SofaPhysicsSimulation::stop()
 {
-    std::cout << "FROM APP: stop()" << std::endl;
     if (!isAnimated()) return;
     if (getScene())
     {
@@ -507,7 +604,6 @@ void SofaPhysicsSimulation::stop()
 
 void SofaPhysicsSimulation::reset()
 {
-    std::cout << "FROM APP: reset()" << std::endl;
     if (getScene())
     {
         getSimulation()->reset(getScene());
@@ -637,9 +733,10 @@ SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(unsigned int mesh
 
 SofaPhysicsOutputMesh* SofaPhysicsSimulation::getOutputMeshPtr(const char* name) const
 {
+    const auto nameStr = std::string(name);
     for (SofaPhysicsOutputMesh* mesh : outputMeshes)
     {
-        if (std::string(name).compare(mesh->getNameStr()) == 0)
+        if (nameStr.compare(std::string(mesh->getName())) == 0)
             return mesh;
     }
 
@@ -661,6 +758,45 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
     else
         return &(outputMeshes[0]);
 }
+
+
+int SofaPhysicsSimulation::activateMessageHandler(bool value)
+{
+    if (value)
+        m_msgHandler->activate();
+    else
+        m_msgHandler->deactivate();
+
+    m_msgIsActivated = value;
+
+    return API_SUCCESS;
+}
+
+int SofaPhysicsSimulation::getNbMessages()
+{
+    return static_cast<int>(m_msgHandler->getMessages().size());
+}
+
+std::string SofaPhysicsSimulation::getMessage(int messageId, int& msgType)
+{
+    const std::vector<sofa::helper::logging::Message>& msgs = m_msgHandler->getMessages();
+
+    if (messageId >= msgs.size()) {
+        msgType = -1;
+        return "Error messageId out of bounds";
+    }
+
+    msgType = static_cast<int>(msgs[messageId].type());
+    return msgs[messageId].messageAsString();
+}
+
+int SofaPhysicsSimulation::clearMessages()
+{
+    m_msgHandler->reset();
+
+    return API_SUCCESS;
+}
+
 
 unsigned int SofaPhysicsSimulation::getNbDataMonitors()
 {

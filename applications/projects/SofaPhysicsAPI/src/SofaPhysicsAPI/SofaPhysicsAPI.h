@@ -21,8 +21,23 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaPhysicsAPI/config.h>
-#include <string>
+#ifndef WIN32
+    #ifdef SOFA_BUILD_SOFAPHYSICSAPI
+    #	define SOFA_SOFAPHYSICSAPI_API __attribute__ ((visibility ("default")))
+    #else
+    #   define SOFA_SOFAPHYSICSAPI_API
+    #endif
+#else
+#ifdef SOFA_BUILD_SOFAPHYSICSAPI
+    #	define SOFA_SOFAPHYSICSAPI_API __declspec( dllexport )
+    #else
+    #   define SOFA_SOFAPHYSICSAPI_API __declspec( dllimport )
+    #endif
+    #   ifdef _MSC_VER
+    #       pragma warning(disable : 4231)
+    #       pragma warning(disable : 4910)
+    #   endif
+#endif
 
 class SofaPhysicsOutputMesh;
 class SofaPhysicsDataMonitor;
@@ -33,10 +48,15 @@ typedef float Real;         ///< Type used for coordinates
 typedef void* ID;           ///< Type used for IDs
 
 /// List of error code to be used to translate methods return values without logging system
-#define API_SUCCESS EXIT_SUCCESS ///< success value
-#define API_NULL -1              ///< SofaPhysicsAPI created is null
-#define API_SCENE_NULL -10       ///< Scene creation failed. I.e Root node is null
-#define API_SCENE_FAILED -11     ///< Scene loading failed. I.e root node is null but scene is still empty
+#define API_SUCCESS 0                   ///< success value
+#define API_NULL -1                     ///< SofaPhysicsAPI created is null
+#define API_MESH_NULL -2                ///< If SofaPhysicsOutputMesh requested/accessed is null
+#define API_SCENE_NULL -10              ///< Scene creation failed. I.e Root node is null
+#define API_SCENE_FAILED -11            ///< Scene loading failed. I.e root node is null but scene is still empty
+#define API_PLUGIN_INVALID_LOADING -20  ///< Error while loading SOFA plugin. Plugin library file is invalid.
+#define API_PLUGIN_MISSING_SYMBOL -21   ///< Error while loading SOFA plugin. Plugin library has missing symbol such as: initExternalModule
+#define API_PLUGIN_FILE_NOT_FOUND -22   ///< Error while loading SOFA plugin. Plugin library file not found
+#define API_PLUGIN_LOADING_FAILED -23   ///< Error while loading SOFA plugin. Plugin library loading fail for another unknown reason.
 
 /// Internal implementation sub-class
 class SofaPhysicsSimulation;
@@ -53,6 +73,10 @@ public:
     int load(const char* filename);
     /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
     int unload();
+    /// Method to load a SOFA .ini config file at given path @param pathIniFile to define resource/example paths. Return share path.
+    const char* loadSofaIni(const char* pathIniFile);
+    /// Method to load a specific SOFA plugin using it's full path @param pluginPath. Return error code.
+    int loadPlugin(const char* pluginPath);
 
     /// Get the current api Name behind this interface.
     virtual const char* APIName();
@@ -133,6 +157,17 @@ public:
     /// Set the current scene gravity using the input @param gravity which is a double[3]
     void setGravity(double* gravity);
 
+    /// message API
+    /// Method to activate/deactivate SOFA MessageHandler according to @param value. Return Error code.
+    int activateMessageHandler(bool value);
+    /// Method to get the number of messages in queue
+    int getNbMessages();
+    /// Method to return the queued message of index @param messageId and its type level inside @param msgType
+    const char* getMessage(int messageId, int& msgType);
+    /// Method clear the list of queued messages. Return Error code.
+    int clearMessages();
+
+
     /// Return the number of currently active data monitors
     unsigned int getNbDataMonitors();
 
@@ -157,17 +192,16 @@ public:
     SofaPhysicsOutputMesh();
     ~SofaPhysicsOutputMesh();
 
-    const std::string& getNameStr() const;
     const char* getName(); ///< (non-unique) name of this object
     ID          getID();   ///< unique ID of this object
 
     unsigned int getNbVertices(); ///< number of vertices
     const Real* getVPositions();  ///< vertices positions (Vec3)
-    int getVPositions(Real* values); ///< get the positions/vertices of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]
+    int getVPositions(Real* values); ///< get the positions/vertices of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]. Return error code.
     const Real* getVNormals();    ///< vertices normals   (Vec3)
-    int getVNormals(Real* values); ///< get the normals per vertex of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]
+    int getVNormals(Real* values); ///< get the normals per vertex of this mesh inside ouput @param values, of type Real[ 3*nbVertices ]. Return error code.
     const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
-    int getVTexCoords(Real* values); ///< get the texture coordinates (UV) per vertex of this mesh inside ouput @param values, of type Real[ 2*nbVertices ]
+    int getVTexCoords(Real* values); ///< get the texture coordinates (UV) per vertex of this mesh inside ouput @param values, of type Real[ 2*nbVertices ]. Return error code.
     int getTexCoordRevision();    ///< changes each time texture coord data are updated
     int getVerticesRevision();    ///< changes each time vertices data are updated
 
@@ -184,12 +218,12 @@ public:
 
     unsigned int getNbTriangles(); ///< number of triangles
     const Index* getTriangles();   ///< triangles topology (3 indices / triangle)
-    int getTriangles(int* values); ///< get the triangle topology inside ouput @param values, of type int[ 3*nbTriangles ]
+    int getTriangles(int* values); ///< get the triangle topology inside ouput @param values, of type int[ 3*nbTriangles ]. Return error code.
     int getTrianglesRevision();    ///< changes each time triangles data is updated
 
     unsigned int getNbQuads(); ///< number of quads
     const Index* getQuads();   ///< quads topology (4 indices / quad)
-    int getQuads(int* values); ///< get the quad topology inside ouput @param values, of type int[ 4*nbQuads ]
+    int getQuads(int* values); ///< get the quad topology inside ouput @param values, of type int[ 4*nbQuads ]. Return error code.
     int getQuadsRevision();    ///< changes each time quads data is updated
 
     /// Internal implementation sub-class
