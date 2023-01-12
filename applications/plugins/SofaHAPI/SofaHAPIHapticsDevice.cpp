@@ -335,7 +335,7 @@ namespace sofa
 			Transform baseDevice_H_endDevice(pos*data.scale, quat);
 			Transform world_H_virtualTool = data.world_H_baseDevice * baseDevice_H_endDevice * data.endDevice_H_virtualTool;
 			lastToolPosition = world_H_virtualTool;
-			/*
+			/*  unused code
 				Transform baseDevice_H_endDevice2 = data.world_H_baseDevice.inversed() * world_H_virtualTool * data.endDevice_H_virtualTool.inversed();
 				sout << "bHe = " << baseDevice_H_endDevice << sendl;
 				sout << "wHb = " << data.world_H_baseDevice << sendl;
@@ -366,8 +366,8 @@ namespace sofa
 						sout << "Enabling tool transition spring" << sendl;
 
 						sofa::helper::ReadAccessor<Data<sofa::type::vector<sofa::defaulttype::RigidCoord<3,double> > > > x = *this->mState->read(sofa::core::VecCoordId::position());
-						Transform world_H_virtualTool(x[newToolIndex].getCenter(), x[newToolIndex].getOrientation());
-						Transform baseDevice_H_endDevice2 = data.world_H_baseDevice.inversed() * world_H_virtualTool * data.endDevice_H_virtualTool.inversed();
+						Transform world_H_virtualTool2(x[newToolIndex].getCenter(), x[newToolIndex].getOrientation());
+						Transform baseDevice_H_endDevice2 = data.world_H_baseDevice.inversed() * world_H_virtualTool2 * data.endDevice_H_virtualTool.inversed();
 						transitionEffect.reset(
 							new HAPI::HapticSpring( conv(baseDevice_H_endDevice2.getOrigin()*(1/data.scale)),
 									toolTransitionSpringStiffness.getValue()));
