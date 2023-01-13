@@ -27,8 +27,24 @@
 namespace sofa::linearalgebra
 {
 
+template<typename TReal>
+class SparseMatrix;
+
+template<typename TReal>
+class RotationMatrix;
+
+template<class Real>
+std::ostream& operator << (std::ostream& out, const RotationMatrix<Real> & v );
+
+/**
+ * \brief 3x3 block-diagonal matrix where each block is considered as a rotation.
+ * \tparam TReal Type of scalar
+ *
+ * One of the feature of this class is to rotate another matrix: if M is a matrix and R is a
+ * rotation matrix, it can compute M * R.
+ */
 template<class TReal>
-class SOFA_LINEARALGEBRA_API RotationMatrix : public linearalgebra::BaseMatrix
+class RotationMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef TReal Real;
@@ -69,19 +85,23 @@ public:
 
     static const char* Name();
 
+    friend std::ostream& operator << <Real> (std::ostream& out, const RotationMatrix<Real> & v );
+
 protected :
     type::vector<Real> data;
-};
 
-template<class Real>
-std::ostream& operator << (std::ostream& out, const RotationMatrix<Real> & v );
+    template<typename real2>
+    void rotateSparseMatrix(
+        linearalgebra::BaseMatrix * result,
+        const SparseMatrix<real2>* Jmat);
+};
 
 template<> const char* RotationMatrix<float>::Name();
 template<> const char* RotationMatrix<double>::Name();
 
 #if !defined(SOFA_SOFABASELINEARSOLVER_ROTATIONMATRIX_DEFINITION)
-extern template class RotationMatrix<float>;
-extern template class RotationMatrix<double>;
-#endif ///
+extern template class SOFA_LINEARALGEBRA_API RotationMatrix<float>;
+extern template class SOFA_LINEARALGEBRA_API RotationMatrix<double>;
+#endif
 
 } // namespace sofa::component::solver

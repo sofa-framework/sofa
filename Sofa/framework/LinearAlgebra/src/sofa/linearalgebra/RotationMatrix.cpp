@@ -204,46 +204,51 @@ void RotationMatrix<Real>::opMulTM(linearalgebra::BaseMatrix * bresult,linearalg
 }
 
 template<class Real>
+template<typename real2>
+void RotationMatrix<Real>::rotateSparseMatrix(
+    linearalgebra::BaseMatrix * result,
+    const SparseMatrix<real2>* Jmat)
+{
+    for (const auto& [rowId, row] : *Jmat)
+    {
+        for (auto it = row.begin(); it != row.end();)
+        {
+            const auto colId = it->first;
+
+            const auto v0 = it->second;
+            ++it;
+            if (it == row.end())
+                break;
+            const auto v1 = it->second;
+            ++it;
+            if (it == row.end())
+                break;
+            const auto v2 = it->second;
+            ++it;
+
+            result->set(rowId,colId+0,v0 * data[(colId+0)*3+0] + v1 * data[(colId+1)*3+0] + v2 * data[(colId+2)*3+0] );
+            result->set(rowId,colId+1,v0 * data[(colId+0)*3+1] + v1 * data[(colId+1)*3+1] + v2 * data[(colId+2)*3+1] );
+            result->set(rowId,colId+2,v0 * data[(colId+0)*3+2] + v1 * data[(colId+1)*3+2] + v2 * data[(colId+2)*3+2] );
+        }
+    }
+}
+
+template<class Real>
 void RotationMatrix<Real>::rotateMatrix(linearalgebra::BaseMatrix * mat,const linearalgebra::BaseMatrix * Jmat)
 {
-    if (mat!=Jmat) {
+    if (mat != Jmat)
+    {
         mat->clear();
         mat->resize(Jmat->rowSize(),Jmat->colSize());
     }
 
     if (const auto* Jf = dynamic_cast<const SparseMatrix<float> * >(Jmat))
     {
-        for (typename sofa::linearalgebra::SparseMatrix<float>::LineConstIterator jit1 = Jf->begin(), jend = Jf->end() ; jit1 != jend; jit1++)
-        {
-            sofa::SignedIndex l = jit1->first;
-            for (typename sofa::linearalgebra::SparseMatrix<float>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
-            {
-                sofa::SignedIndex c = i1->first;
-                Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
-                Real v1 = (Real)i1->second; i1++; if (i1==jitend) break;
-                Real v2 = (Real)i1->second; i1++;
-                mat->set(l,c+0,v0 * data[(c+0)*3+0] + v1 * data[(c+1)*3+0] + v2 * data[(c+2)*3+0] );
-                mat->set(l,c+1,v0 * data[(c+0)*3+1] + v1 * data[(c+1)*3+1] + v2 * data[(c+2)*3+1] );
-                mat->set(l,c+2,v0 * data[(c+0)*3+2] + v1 * data[(c+1)*3+2] + v2 * data[(c+2)*3+2] );
-            }
-        }
+        rotateSparseMatrix(mat, Jf);
     }
     else if (const auto* Jd = dynamic_cast<const SparseMatrix<double> * >(Jmat))
     {
-        for (typename sofa::linearalgebra::SparseMatrix<double>::LineConstIterator jit1 = Jd->begin(), jend = Jd->end() ; jit1 != jend; jit1++)
-        {
-            sofa::SignedIndex l = jit1->first;
-            for (typename sofa::linearalgebra::SparseMatrix<double>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
-            {
-                sofa::SignedIndex c = i1->first;
-                Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
-                Real v1 = (Real)i1->second; i1++; if (i1==jitend) break;
-                Real v2 = (Real)i1->second; i1++;
-                mat->set(l,c+0,v0 * data[(c+0)*3+0] + v1 * data[(c+1)*3+0] + v2 * data[(c+2)*3+0] );
-                mat->set(l,c+1,v0 * data[(c+0)*3+1] + v1 * data[(c+1)*3+1] + v2 * data[(c+2)*3+1] );
-                mat->set(l,c+2,v0 * data[(c+0)*3+2] + v1 * data[(c+1)*3+2] + v2 * data[(c+2)*3+2] );
-            }
-        }
+        rotateSparseMatrix(mat, Jd);
     }
     else
     {
@@ -278,8 +283,11 @@ const char* RotationMatrix<double>::Name() {
 }
 
 
-template class RotationMatrix<float>;
-template class RotationMatrix<double>;
+template class SOFA_LINEARALGEBRA_API RotationMatrix<float>;
+template class SOFA_LINEARALGEBRA_API RotationMatrix<double>;
+
+template SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const RotationMatrix<float>& v);
+template SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const RotationMatrix<double>& v);
 
 
 } // namespace sofa::component::solver
