@@ -71,7 +71,7 @@ TEST(MatTypesTest, initializerListConstructors)
 
     static constexpr sofa::type::Mat<1, 1, int> F {{1}};
     EXPECT_EQ(F(0, 0), 1);
-    EXPECT_EQ(F, 1);
+    EXPECT_EQ(1, F);
 }
 
 TEST(MatTypesTest, lineAccess)
