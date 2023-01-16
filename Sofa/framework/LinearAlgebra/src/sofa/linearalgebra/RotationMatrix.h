@@ -96,12 +96,18 @@ protected :
         const SparseMatrix<real2>* Jmat);
 };
 
-template<> const char* RotationMatrix<float>::Name();
-template<> const char* RotationMatrix<double>::Name();
+template<> SOFA_LINEARALGEBRA_API const char* RotationMatrix<float>::Name();
+template<> SOFA_LINEARALGEBRA_API const char* RotationMatrix<double>::Name();
 
 #if !defined(SOFA_SOFABASELINEARSOLVER_ROTATIONMATRIX_DEFINITION)
 extern template class SOFA_LINEARALGEBRA_API RotationMatrix<float>;
 extern template class SOFA_LINEARALGEBRA_API RotationMatrix<double>;
+
+extern template SOFA_LINEARALGEBRA_API const char* RotationMatrix<float>::Name();
+extern template SOFA_LINEARALGEBRA_API const char* RotationMatrix<double>::Name();
+
+extern template SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const RotationMatrix<float>& v);
+extern template SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const RotationMatrix<double>& v);
 #endif
 
 } // namespace sofa::component::solver
