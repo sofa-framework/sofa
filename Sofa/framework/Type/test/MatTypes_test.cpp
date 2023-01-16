@@ -67,7 +67,9 @@ TEST(MatTypesTest, initializerListConstructors)
 
     static constexpr sofa::type::Mat<1, 1, int> E {1};
     EXPECT_EQ(E(0, 0), 1);
-    EXPECT_EQ(E, 1);
+
+    const int Evalue = E;
+    EXPECT_EQ(Evalue, 1);
 
     static constexpr sofa::type::Mat<1, 1, int> F {{1}};
     EXPECT_EQ(F(0, 0), 1);
