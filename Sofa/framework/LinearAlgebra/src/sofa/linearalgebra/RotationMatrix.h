@@ -27,7 +27,6 @@
 namespace sofa::linearalgebra
 {
 
-/// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 template<class TReal>
 class SOFA_LINEARALGEBRA_API RotationMatrix : public linearalgebra::BaseMatrix
 {
