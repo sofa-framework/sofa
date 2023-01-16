@@ -107,7 +107,7 @@ void FlagTreeItem::showUnknownTokenMessage(const std::map<std::string, bool, Fla
     }
 
     std::stringstream tmp;
-    tmp << "Unknown token '" << token << "'" << ". The closest existing flags are:" << msgendl;
+    tmp << "Unknown flag '" << token << "'" << ". The closest existing ones:" << msgendl;
     for(auto& [name, score] : sofa::helper::getClosestMatch(token, allFlagNames, 2, 0.6))
     {
         tmp << "\t" << "- " << name << " ("+ std::to_string((int)(100*score))+"% match)" << msgendl;
