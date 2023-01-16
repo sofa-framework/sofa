@@ -23,7 +23,6 @@
 
 #include <sofa/config/sharedlibrary_defines.h>
 #include <sofa/config/build_option_dump_visitor.h>
-#include <sofa/config/build_option_threading.h>
 #include <sofa/config/build_option_bbox.h>
 
 #include <cstddef> // For nullptr
