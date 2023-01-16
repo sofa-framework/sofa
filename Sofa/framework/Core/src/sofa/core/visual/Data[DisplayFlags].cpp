@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/visual/Data[DisplayFlags].h>
 #include <sofa/helper/logging/Messaging.h>
-#include <Sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/DiffLib.h>
 
 void showErrorUnkownFlag(sofa::core::visual::DisplayFlags& value, sofa::core::objectmodel::Data<sofa::core::visual::DisplayFlags>& data, std::string unknownFlag)
