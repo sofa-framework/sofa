@@ -117,6 +117,15 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
     return *this;
 }
 
+std::istream& DisplayFlags::read(std::istream& in,
+    const std::function<void(std::string)>& unknownFlagFunction,
+    const std::function<void(std::string, std::string)>& incorrectLetterCaseFunction)
+{
+    return m_root.read(in,
+        unknownFlagFunction,
+        incorrectLetterCaseFunction);
+}
+
 bool DisplayFlags::isNeutral() const
 {
     return m_showVisualModels.state().state == tristate::neutral_value
@@ -131,6 +140,13 @@ bool DisplayFlags::isNeutral() const
            && m_showWireframe.state().state == tristate::neutral_value
            && m_showNormals.state().state == tristate::neutral_value
         ;
+}
+
+sofa::type::vector<std::string> DisplayFlags::getAllFlagsLabels() const
+{
+    sofa::type::vector<std::string> labels;
+    m_root.getLabels(labels);
+    return labels;
 }
 
 DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags &current)

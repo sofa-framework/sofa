@@ -54,6 +54,25 @@ void FlagTreeItem::addAlias(sofa::type::vector<std::string>& name, const std::st
     return;
 }
 
+void FlagTreeItem::getLabels(sofa::type::vector<std::string>& labels) const
+{
+    for (const auto& names : {m_showName, m_hideName})
+    {
+        for (const auto& label : names)
+        {
+            labels.push_back(label);
+        }
+    }
+
+    for (const auto* child : m_child)
+    {
+        if (child)
+        {
+            child->getLabels(labels);
+        }
+    }
+}
+
 
 void FlagTreeItem::setValue(const tristate &state)
 {
@@ -97,60 +116,58 @@ std::ostream& FlagTreeItem::write(std::ostream &os) const
     return os;
 }
 
-void FlagTreeItem::showUnknownTokenMessage(const std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap, std::string token) const
+FlagTreeItem::READ_FLAG FlagTreeItem::readFlag(std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap, std::string flag)
 {
-    sofa::type::vector<std::string> allFlagNames;
-    allFlagNames.reserve(parseMap.size());
-    for (const auto& [flagName, _] : parseMap)
-    {
-        allFlagNames.emplace_back(flagName);
-    }
-
-    std::stringstream tmp;
-    tmp << "Unknown flag '" << token << "'" << ". The closest existing ones:" << msgendl;
-    for(auto& [name, score] : sofa::helper::getClosestMatch(token, allFlagNames, 2, 0.6))
-    {
-        tmp << "\t" << "- " << name << " ("+ std::to_string((int)(100*score))+"% match)" << msgendl;
-    }
-    tmp << "Complete list is: " << allFlagNames;
-    msg_warning("DisplayFlags") << tmp.str() ;
-}
-
-void FlagTreeItem::readFlag(std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap, std::string flag) const
-{
-    std::map<std::string, bool>::const_iterator iter = parseMap.find(flag);
+    const auto iter = parseMap.find(flag);
     if(iter != parseMap.end() )
     {
-        const std::string string1 = iter->first;
-
-        if(string1 != flag)
+        if(iter->first != flag)
         {
-            msg_warning("DisplayFlags") << "Case of FlagTreeItem '" << flag << "' is not correct, please use '"<< string1 <<"' instead";
+            return READ_FLAG::INCORRECT_LETTER_CASE;
         }
 
-        parseMap[flag] = true;
+        return READ_FLAG::KNOWN_FLAG;
     }
-    else
-    {
-        showUnknownTokenMessage(parseMap, flag);
-    }
+
+    return READ_FLAG::UNKNOWN_FLAG;
 }
 
 std::istream& FlagTreeItem::read(std::istream &in)
+{
+    return read(in, [](std::string){}, [](std::string, std::string){});
+}
+
+std::istream& FlagTreeItem::read(std::istream& in,
+                                 const std::function<void(std::string)>& unknownFlagFunction,
+                                 const std::function<void(std::string, std::string)>& incorrectLetterCaseFunction)
 {
     std::map<std::string, bool,  ci_comparison> parse_map;
     create_parse_map(this,parse_map);
     std::string token;
     while(in >> token)
     {
-        readFlag(parse_map, token);
+        switch (readFlag(parse_map, token))
+        {
+            case READ_FLAG::KNOWN_FLAG:
+                parse_map[token] = true;
+                break;
+            case READ_FLAG::INCORRECT_LETTER_CASE:
+            {
+                const auto iter = parse_map.find(token);
+                iter->second = true;
+                incorrectLetterCaseFunction(token, iter->first);
+                break;
+            }
+            case READ_FLAG::UNKNOWN_FLAG:
+                unknownFlagFunction(token);
+                break;
+        }
     }
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
 
     read_recursive(this,parse_map);
     return in;
 }
-
 
 
 /*static*/

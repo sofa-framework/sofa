@@ -28,6 +28,7 @@ set(SOURCE_FILES
     PathResolver_test.cpp
     TrackedData_test.cpp
     VecId_test.cpp
+    visual/DisplayFlags_test.cpp
 )
 
 set(HEADER_FILES

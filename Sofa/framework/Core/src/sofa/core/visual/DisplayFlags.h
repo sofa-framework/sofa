@@ -100,10 +100,17 @@ public:
     SOFA_CORE_API friend std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags );
     SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, DisplayFlags& flags );
 
+    std::istream& read(std::istream& in,
+                   const std::function<void(std::string)>& unknownFlagFunction,
+                   const std::function<void(std::string, std::string)>& incorrectLetterCaseFunction);
+
     bool isNeutral() const;
 
     friend SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
     friend SOFA_CORE_API DisplayFlags difference_displayFlags(const DisplayFlags& parent, const DisplayFlags& child);
+
+    sofa::type::vector<std::string> getAllFlagsLabels() const;
+
 protected:
     FlagTreeItem m_root;
 

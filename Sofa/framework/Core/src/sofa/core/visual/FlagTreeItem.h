@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <functional>
 #include <map>
 #include <string>
 
@@ -51,6 +52,13 @@ protected:
         }
     };
 
+    enum class READ_FLAG : char
+    {
+        KNOWN_FLAG,
+        INCORRECT_LETTER_CASE,
+        UNKNOWN_FLAG
+    };
+
     type::vector<std::string> m_showName;
     sofa::type::vector<std::string> m_hideName;
     tristate m_state;
@@ -71,12 +79,17 @@ public:
     SOFA_CORE_API friend std::istream& operator>> ( std::istream& in, FlagTreeItem& root );
     std::ostream& write(std::ostream& os) const;
     std::istream& read(std::istream& in);
+    std::istream& read(std::istream& in,
+                       const std::function<void(std::string)>& unknownFlagFunction,
+                       const std::function<void(std::string, std::string)>& incorrectLetterCaseFunction);
 
     void setValue(const tristate& state);
 
     void addAliasShow(const std::string& newAlias);
     void addAliasHide(const std::string& newAlias);
     void addAlias(sofa::type::vector<std::string> &name, const std::string &newAlias);
+
+    void getLabels(sofa::type::vector<std::string>& labels) const;
 
 protected:
     void propagateStateDown(FlagTreeItem* origin);
@@ -86,10 +99,8 @@ protected:
     static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool,ci_comparison>& map);
     static void write_recursive(const FlagTreeItem* root,  std::string& str);
 
-    void showUnknownTokenMessage(const std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap,
-                                 std::string token) const;
-    void readFlag(std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap,
-                  std::string flag) const;
+    static READ_FLAG readFlag(std::map<std::string, bool, FlagTreeItem::ci_comparison>& parseMap,
+                              std::string flag);
 };
 
 }
