@@ -46,9 +46,9 @@ class CudaMemoryManager : public sofa::helper::MemoryManager<T>
 
 public :
 
-    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        using other = CudaMemoryManager<T2>;
+        typedef DeprecatedAndRemoved other;
     };
 
 

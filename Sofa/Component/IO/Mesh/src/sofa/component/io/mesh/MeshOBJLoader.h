@@ -79,10 +79,8 @@ public:
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 };
 
-// deprecate usage of the lowcase version, but skip the warning when building SofaLoader
-#ifndef SOFA_BUILD_SOFALOADER
-using MeshObjLoader SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2428)", "v22.12", "MeshObjLoader has been renamed to MeshOBJLoader") = MeshOBJLoader;
-#endif // SOFA_BUILD_SOFALOADER
+SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2428)", "v22.12", "MeshObjLoader has been renamed to MeshOBJLoader")
+typedef DeprecatedAndRemoved MeshObjLoader;
 
 } // namespace sofa::component::io::mesh
 

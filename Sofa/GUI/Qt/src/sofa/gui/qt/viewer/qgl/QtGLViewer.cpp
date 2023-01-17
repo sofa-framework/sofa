@@ -818,7 +818,7 @@ void QtGLViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
-    if (!isControlPressed() && !e->isAutoRepeat())
+    if (isControlPressed())
     {
         if (groot )
         {
