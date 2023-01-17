@@ -9,7 +9,7 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-    <include href="FEMBAR-common.xml"/>
+    <include href="../FEMBAR-common.xml"/>
 
     <SVDLinearSolver template="CompressedRowSparseMatrixMat3x3d"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
