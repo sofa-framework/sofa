@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/FlagTreeItem.h>
-#include <sofa/helper/DiffLib.h>
 #include <sofa/helper/logging/Messaging.h>
 
 
