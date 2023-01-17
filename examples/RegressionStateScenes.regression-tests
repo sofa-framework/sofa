@@ -43,7 +43,7 @@ Component/Mass/MeshMatrixMass.scn 100 1e-4 0 1
 Component/MechanicalLoad/InteractionEllipsoidForceField.scn 100 1e-4 0 1
 Component/ODESolver/Forward/EulerExplicitSolver.scn 3000 1e-4 0 1
 Component/ODESolver/Forward/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
-Component/ODESolver/Forward/EulerImplicitSolver.scn 3000 1e-4 0 1
+Component/ODESolver/Backward/EulerImplicitSolver.scn 3000 1e-4 0 1
 Component/SolidMechanics/FEM/BeamFEMForceField.scn 100 1e-4 0 1
 Component/SolidMechanics/FEM/HexahedronFEMForceField.scn 300 1e-4 0 1
 Component/SolidMechanics/FEM/HexahedronFEMForceFieldAndMass.scn 100 1e-4 0 1
