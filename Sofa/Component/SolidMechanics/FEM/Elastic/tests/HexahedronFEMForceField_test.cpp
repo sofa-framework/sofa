@@ -110,7 +110,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
     {
         std::size_t n = x.size();
         // copy the position and velocities to the scene graph
-        this->dof->resize(n);
+        this->dof->resize(static_cast<sofa::Size>(n));
         typename DOF::WriteVecCoord xdof = this->dof->writePositions();
         sofa::testing::copyToData( xdof, x );
         // init scene and compute force

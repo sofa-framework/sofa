@@ -1087,7 +1087,7 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 
 void QtViewer::keyPressEvent(QKeyEvent * e)
 {
-    if (!isControlPressed() && !e->isAutoRepeat())
+    if (isControlPressed())
     {
         if (groot)
         {

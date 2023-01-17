@@ -32,6 +32,7 @@
 #include <sofa/simulation/DefaultTaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/ParallelForEach.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
@@ -335,54 +336,32 @@ void GenericConstraintSolver::buildSystem_matrixFree(unsigned int numConstraints
         current_cp->change_sequence=true;
 }
 
-void GenericConstraintSolver::parallelBuildSystem_matrixAssembly(const core::ConstraintParams* cParams)
+GenericConstraintSolver::ComplianceWrapper::ComplianceMatrixType& GenericConstraintSolver::
+ComplianceWrapper::matrix()
 {
-    simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
-    simulation::CpuTask::Status status;
-
-    type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
-    sofa::Index nbTasks = constraintCorrections.size();
-    tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
-    sofa::Index dim = current_cp->W.rowSize();
-
-    for (sofa::Index i=0; i<nbTasks; i++)
+    if (m_isMultiThreaded)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        if (!cc->isActive())
-            continue;
-
-        tasks[i].set(cc, *cParams, dim);
-        taskScheduler->addTask(&tasks[i]);
+        if (!m_threadMatrix)
+        {
+            m_threadMatrix = std::make_unique<ComplianceMatrixType>();
+            m_threadMatrix->resize(m_complianceMatrix.rowSize(), m_complianceMatrix.colSize());
+        }
+        return *m_threadMatrix;
     }
-    taskScheduler->workUntilDone(&status);
-
-    auto & W = current_cp->W;
-
-    // Accumulate the contribution of each constraints
-    // into the system's compliant matrix W
-    for (sofa::Index i = 0; i < nbTasks; i++)
-    {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        if (!cc->isActive())
-            continue;
-
-        const auto & Wi = tasks[i].W;
-
-        for (sofa::Index j = 0; j < dim; ++j)
-            for (sofa::Index l = 0; l < dim; ++l)
-                W.add(j, l, Wi.element(j,l));
-    }
+    return m_complianceMatrix;
 }
 
-void GenericConstraintSolver::sequentialBuildSystem_matrixAssembly(const core::ConstraintParams* cParams)
+void GenericConstraintSolver::ComplianceWrapper::assembleMatrix() const
 {
-    for (auto* cc : constraintCorrections)
+    if (m_threadMatrix)
     {
-        if (!cc->isActive())
-            continue;
-
-        sofa::helper::ScopedAdvancedTimer addComplianceInConstraintSpaceTimer("Object name: "+cc->getName());
-        cc->addComplianceInConstraintSpace(cParams, &current_cp->W);
+        for (linearalgebra::BaseMatrix::Index j = 0; j < m_threadMatrix->rowSize(); ++j)
+        {
+            for (linearalgebra::BaseMatrix::Index l = 0; l < m_threadMatrix->colSize(); ++l)
+            {
+                m_complianceMatrix.add(j, l, m_threadMatrix->element(j,l));
+            }
+        }
     }
 }
 
@@ -391,14 +370,34 @@ void GenericConstraintSolver::buildSystem_matrixAssembly(const core::ConstraintP
     sofa::helper::ScopedAdvancedTimer getComplianceTimer("Get Compliance");
     dmsg_info() <<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" ;
 
-    if(d_multithreading.getValue())
-    {
-        parallelBuildSystem_matrixAssembly(cParams);
-    }
-    else
-    {
-        sequentialBuildSystem_matrixAssembly(cParams);
-    }
+    const bool multithreading = d_multithreading.getValue();
+
+    const simulation::ForEachExecutionPolicy execution = multithreading ?
+        simulation::ForEachExecutionPolicy::PARALLEL :
+        simulation::ForEachExecutionPolicy::SEQUENTIAL;
+
+    simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(taskScheduler);
+
+    std::mutex mutex;
+
+    simulation::forEachRange(execution, *taskScheduler, constraintCorrections.begin(), constraintCorrections.end(),
+        [&cParams, this, &multithreading, &mutex](const auto& range)
+        {
+            ComplianceWrapper compliance(current_cp->W, multithreading);
+
+            for (auto it = range.start; it != range.end; ++it)
+            {
+                core::behavior::BaseConstraintCorrection* cc = *it;
+                if (cc->isActive())
+                {
+                    cc->addComplianceInConstraintSpace(cParams, &compliance.matrix());
+                }
+            }
+
+            std::lock_guard guard(mutex);
+            compliance.assembleMatrix();
+        });
 
     dmsg_info() << " computeCompliance_done "  ;
 }

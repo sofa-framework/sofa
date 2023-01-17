@@ -136,7 +136,7 @@ SOFA_CORE_API extern const unsigned int trianglesOrientationInTetrahedronArray[4
 SOFA_CORE_API extern const unsigned int edgesInHexahedronArray[12][2];
 
 /// Old static array with not relevant orientation. @sa quadsOrientationInHexahedronArray is the right orientation convention
-SOFA_ATTRIBUTE_DEPRECATED("v22.06", "v22.12", "quadsInHexahedronArray structure has been deprecated, please use the right array instead: quadsOrientationInHexahedronArray")
+SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "quadsInHexahedronArray structure has been deprecated, please use the right array instead: quadsOrientationInHexahedronArray")
 const DeprecatedAndRemoved quadsInHexahedronArray;
 
 /// List of 4 vertex indices (quad) in a hexahedron

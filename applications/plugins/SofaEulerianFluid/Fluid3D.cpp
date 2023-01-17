@@ -440,22 +440,22 @@ void Fluid3D::updateVisual()
         }
     }
 
-    for (unsigned int i=0; i<points.size(); i++)
+    for (unsigned int ii=0; ii<points.size(); ii++)
     {
-        points[i].n.clear();
+        points[ii].n.clear();
     }
 
-    for (unsigned int i=0; i<facets.size(); i++)
+    for (unsigned int ii=0; ii<facets.size(); ii++)
     {
-        Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
+        Vec3f n = cross(points[facets[ii].p[1]].p-points[facets[ii].p[0]].p,points[facets[ii].p[2]].p-points[facets[ii].p[0]].p);
         n.normalize();
-        points[facets[i].p[0]].n += n;
-        points[facets[i].p[1]].n += n;
-        points[facets[i].p[2]].n += n;
+        points[facets[ii].p[0]].n += n;
+        points[facets[ii].p[1]].n += n;
+        points[facets[ii].p[2]].n += n;
     }
 
-    for (unsigned int i=0; i<points.size(); i++)
-        points[i].n.normalize();
+    for (unsigned int ii=0; ii<points.size(); ii++)
+        points[ii].n.normalize();
 }
 
 void Fluid3D::computeBBox(const core::ExecParams*  params , bool onlyVisible)

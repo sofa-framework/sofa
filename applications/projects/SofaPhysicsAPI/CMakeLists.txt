@@ -7,12 +7,14 @@ set(HEADER_FILES
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsAPI.h
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsOutputMesh_impl.h
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsSimulation.h
+    ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsBindings.h
     ${SOFAPHYSICSAPI_SRC_DIR}/fakegui.h
 )
 
 set(SOURCE_FILES
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsOutputMesh.cpp
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsSimulation.cpp
+    ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsBindings.cpp
     ${SOFAPHYSICSAPI_SRC_DIR}/fakegui.cpp
 )
 

@@ -19,6 +19,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
     ${SRC_ROOT}/CpuTask.h
+    ${SRC_ROOT}/CpuTaskStatus.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
@@ -36,6 +37,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MutationListener.h
     ${SRC_ROOT}/Node.h
     ${SRC_ROOT}/Node.inl
+    ${SRC_ROOT}/ParallelForEach.h
     ${SRC_ROOT}/ParallelVisitorScheduler.h
     ${SRC_ROOT}/PauseEvent.h
     ${SRC_ROOT}/PipelineImpl.h
@@ -150,6 +152,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
     ${SRC_ROOT}/CpuTask.cpp
+    ${SRC_ROOT}/CpuTaskStatus.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp

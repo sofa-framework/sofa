@@ -19,52 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/xml/ElementNameHelper.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/CpuTaskStatus.h>
 
-namespace sofa::simulation::xml
+namespace sofa::simulation
 {
+CpuTaskStatus::CpuTaskStatus(): m_busy(0)
+{}
 
-
-ElementNameHelper::ElementNameHelper()
+bool CpuTaskStatus::isBusy() const
 {
-
+    return (m_busy.load(std::memory_order_relaxed) > 0);
 }
 
-ElementNameHelper::~ElementNameHelper()
+int CpuTaskStatus::setBusy(bool busy)
 {
-
-}
-
-std::string ElementNameHelper::resolveName(const std::string& type, const std::string& name)
-{
-    std::string resolvedName;
-    if(name.empty())
+    if (busy)
     {
-        std::string radix = core::ObjectFactory::ShortName(type);
-        registerName(radix);
-        std::ostringstream oss;
-        oss << radix << instanceCounter[radix];
-        resolvedName = oss.str();
+        return m_busy.fetch_add(1, std::memory_order_relaxed);
     }
     else
     {
-        resolvedName = name;
-    }
-    return resolvedName;
-
-}
-
-void ElementNameHelper::registerName(const std::string& name)
-{
-    if( instanceCounter.find(name) != instanceCounter.end())
-    {
-        instanceCounter[name]++;
-    }
-    else
-    {
-        instanceCounter[name] = 1;
+        return m_busy.fetch_sub(1, std::memory_order_relaxed);
     }
 }
-
-} // namespace sofa::simulation::xml
+}

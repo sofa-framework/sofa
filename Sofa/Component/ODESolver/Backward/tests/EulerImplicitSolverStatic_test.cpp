@@ -104,10 +104,11 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
         //*******
         // begin create scene under the root node
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
-        sofa::simpleapi::importPlugin("SofaBaseLinearSolver");
-        sofa::simpleapi::importPlugin("SofaBaseMechanics");
-        sofa::simpleapi::importPlugin("SofaDeformable");
-        sofa::simpleapi::importPlugin("SofaBoundaryCondition");
+        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
 
         // remove warnings
         simpleapi::createObject(root, "DefaultAnimationLoop", {});
@@ -201,10 +202,11 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         root->setGravity(Vec3(0,0,0));
 
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
-        sofa::simpleapi::importPlugin("SofaBaseLinearSolver");
-        sofa::simpleapi::importPlugin("SofaBaseMechanics");
-        sofa::simpleapi::importPlugin("SofaDeformable");
-        sofa::simpleapi::importPlugin("SofaBoundaryCondition");
+        sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Iterative");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Mass");
+        sofa::simpleapi::importPlugin("Sofa.Component.Constraint.Projective");
+        sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
         // remove warnings
         simpleapi::createObject(root, "DefaultAnimationLoop", {});
         simpleapi::createObject(root, "DefaultVisualManagerLoop", {});

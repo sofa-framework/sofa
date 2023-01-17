@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPHYSICSSIMULATION_IMPL_H
-#define SOFAPHYSICSSIMULATION_IMPL_H
+#pragma once
 
+#include <SofaPhysicsAPI/config.h>
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
 
@@ -32,6 +32,7 @@
 #include <sofa/component/visual/InteractiveCamera.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 
 #include <map>
 
@@ -48,7 +49,14 @@ public:
 
     const char* APIName();
 
-    bool load(const char* filename);
+    /// Load an XML file containing the main scene description. Will return API_SUCCESS or API_SCENE_FAILED if loading failed
+    int load(const char* filename);
+
+    /// Call unload of the current scene graph. Will return API_SUCCESS or API_SCENE_NULL if scene is null
+    int unload();
+
+    /// Method to load a specific SOFA plugin using it's full path @param pluginPath. Return error code.
+    int loadPlugin(const char* pluginPath);
     void createScene();
 
     void start();
@@ -59,7 +67,14 @@ public:
     void sendValue(const char* name, double value);
     void drawGL();
 
-    unsigned int getNbOutputMeshes();
+    /// return the number of SofaPhysicsOutputMesh (i.e @sa outputMeshes size)
+    unsigned int getNbOutputMeshes() const;
+
+    /// return pointer to the SofaPhysicsOutputMesh at the @param meshID position in @sa outputMeshes. Return nullptr if out of bounds.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(unsigned int meshID) const; 
+    /// return pointer to the SofaPhysicsOutputMesh with the name equal to @param name in @sa outputMeshes. Return nullptr if not found.
+    SofaPhysicsOutputMesh* getOutputMeshPtr(const char* name) const;
+
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
     SofaPhysicsOutputMesh** getOutputMeshes();
 
@@ -71,7 +86,19 @@ public:
     double getTime() const;
     double getCurrentFPS() const;
     double* getGravity() const;
+    int getGravity(double* values) const;
+
     void setGravity(double* gravity);
+
+    /// message API
+    /// Method to activate/deactivate SOFA MessageHandler according to @param value. Will store status in @sa m_msgIsActivated. Return Error code.
+    int activateMessageHandler(bool value);
+    /// Method to get the number of messages in queue
+    int getNbMessages();
+    /// Method to return the queued message of index @param messageId and its type level inside @param msgType
+    std::string getMessage(int messageId, int& msgType);
+    /// Method clear the list of queued messages. Return Error code.
+    int clearMessages();
 
     unsigned int getNbDataMonitors();
     SofaPhysicsDataMonitor** getDataMonitors();
@@ -91,6 +118,11 @@ protected:
     sofa::simulation::Simulation* m_Simulation;
     sofa::simulation::Node::SPtr m_RootNode;
     std::string sceneFileName;
+    /// Pointer to the LoggingMessageHandler
+    sofa::helper::logging::LoggingMessageHandler* m_msgHandler;
+    /// Status of the LoggingMessageHandler
+    bool m_msgIsActivated;
+
     sofa::component::visual::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
@@ -126,7 +158,7 @@ protected:
     double currentFPS;
 
     void update();
-    void updateOutputMeshes();
+    int updateOutputMeshes();
     void updateCurrentFPS();
     void beginStep();
     void endStep();
@@ -155,5 +187,3 @@ public:
     }
 
 };
-
-#endif // SOFAPHYSICSSIMULATION_IMPL_H
