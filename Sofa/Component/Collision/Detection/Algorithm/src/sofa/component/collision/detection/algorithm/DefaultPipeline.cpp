@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/detection/algorithm/DefaultPipeline.h>
+#include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
@@ -48,14 +48,14 @@ using namespace core::objectmodel;
 using namespace core::collision;
 using namespace sofa::defaulttype;
 
-int DefaultPipelineClass = core::RegisterObject("The default collision detection and modeling pipeline")
-        .add< DefaultPipeline >()
-        .addAlias("CollisionPipeline")
+int CollisionPipelineClass = core::RegisterObject("The default collision detection and modeling pipeline")
+        .add< CollisionPipeline >()
+        .addAlias("DefaultPipeline")
         ;
 
-const int DefaultPipeline::defaultDepthValue = 6;
+const int CollisionPipeline::defaultDepthValue = 6;
 
-DefaultPipeline::DefaultPipeline()
+CollisionPipeline::CollisionPipeline()
     : d_doPrintInfoMessage(initData(&d_doPrintInfoMessage, false, "verbose",
                                     "Display extra informations at each computation step. (default=false)"))
     , d_doDebugDraw(initData(&d_doDebugDraw, false, "draw",
@@ -71,7 +71,7 @@ DefaultPipeline::DefaultPipeline()
 typedef simulation::Visitor::ctime_t ctime_t;
 #endif
 
-void DefaultPipeline::init()
+void CollisionPipeline::init()
 {
     Inherit1::init();
 
@@ -94,7 +94,7 @@ void DefaultPipeline::init()
     checkDataValues() ;
 }
 
-void DefaultPipeline::checkDataValues()
+void CollisionPipeline::checkDataValues()
 {
     if(d_depth.getValue() < 0)
     {
@@ -104,10 +104,10 @@ void DefaultPipeline::checkDataValues()
     }
 }
 
-void DefaultPipeline::doCollisionReset()
+void CollisionPipeline::doCollisionReset()
 {
     msg_info_when(d_doPrintInfoMessage.getValue())
-            << "DefaultPipeline::doCollisionReset" ;
+            << "CollisionPipeline::doCollisionReset" ;
 
     // clear all contacts
     if (contactManager != nullptr)
@@ -130,7 +130,7 @@ void DefaultPipeline::doCollisionReset()
     }
 }
 
-void DefaultPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
+void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
     ScopedAdvancedTimer docollisiontimer("doCollisionDetection");
 
@@ -245,7 +245,7 @@ void DefaultPipeline::doCollisionDetection(const type::vector<core::CollisionMod
 
 }
 
-void DefaultPipeline::doCollisionResponse()
+void CollisionPipeline::doCollisionResponse()
 {
     core::objectmodel::BaseContext* scene = getContext();
     // then we start the creation of contacts
@@ -308,7 +308,7 @@ void DefaultPipeline::doCollisionResponse()
     }
 }
 
-std::set< std::string > DefaultPipeline::getResponseList() const
+std::set< std::string > CollisionPipeline::getResponseList() const
 {
     std::set< std::string > listResponse;
     core::collision::Contact::Factory::iterator it;

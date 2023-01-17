@@ -31,8 +31,8 @@ using sofa::core::execparams::defaultInstance;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/component/collision/detection/algorithm/DefaultPipeline.h>
-using sofa::component::collision::detection::algorithm::DefaultPipeline ;
+#include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
+using sofa::component::collision::detection::algorithm::CollisionPipeline ;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
@@ -53,7 +53,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/simulation/graph/SimpleApi.h>
 
-namespace defaultpipeline_test
+namespace CollisionPipeline_test
 {
 
 int initMessage(){
@@ -64,16 +64,16 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestDefaultPipeLine : public BaseSimulationTest {
+class TestCollisionPipeline : public BaseSimulationTest {
 public:
     Node::SPtr root;
 
-    void checkDefaultPipelineWithNoAttributes();
-    void checkDefaultPipelineWithMissingIntersection();
-    void checkDefaultPipelineWithMissingBroadPhase();
-    void checkDefaultPipelineWithMissingNarrowPhase();
-    void checkDefaultPipelineWithMissingContactManager();
-    int checkDefaultPipelineWithMonkeyValueForDepth(int value);
+    void checkCollisionPipelineWithNoAttributes();
+    void checkCollisionPipelineWithMissingIntersection();
+    void checkCollisionPipelineWithMissingBroadPhase();
+    void checkCollisionPipelineWithMissingNarrowPhase();
+    void checkCollisionPipelineWithMissingContactManager();
+    int checkCollisionPipelineWithMonkeyValueForDepth(int value);
 
     void SetUp() override
     {
@@ -88,7 +88,7 @@ public:
     }
 };
 
-void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
+void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
 {
     EXPECT_MSG_NOEMIT(Warning) ;
     EXPECT_MSG_NOEMIT(Error) ;
@@ -96,7 +96,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                           \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
              "  <DefaultContactManager/>                                                     \n"
@@ -112,7 +112,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
     ASSERT_NE(clp, nullptr) ;
 }
 
-void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
+void TestCollisionPipeline::checkCollisionPipelineWithMissingIntersection()
 {
     EXPECT_MSG_EMIT(Warning) ;
     EXPECT_MSG_NOEMIT(Error) ;
@@ -120,7 +120,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                           \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
              "  <DefaultContactManager/>                                                     \n"
@@ -134,7 +134,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
     ASSERT_NE(clp, nullptr) ;
 }
 
-void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
+void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
 {
     EXPECT_MSG_EMIT(Warning) ;
     EXPECT_MSG_NOEMIT(Error) ;
@@ -142,7 +142,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                           \n"
              "  <BVHNarrowPhase/>                                                            \n"
              "  <DefaultContactManager/>                                                     \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
@@ -155,7 +155,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingBroadPhase()
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
-void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
+void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
 {
     EXPECT_MSG_EMIT(Warning) ;
     EXPECT_MSG_NOEMIT(Error) ;
@@ -163,7 +163,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                           \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <DefaultContactManager/>                                                     \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
@@ -176,7 +176,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingNarrowPhase()
     BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
-void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
+void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
 {
     EXPECT_MSG_EMIT(Warning) ;
     EXPECT_MSG_NOEMIT(Error) ;
@@ -184,7 +184,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline'/>                                           \n"
+             "  <CollisionPipeline name='pipeline'/>                                           \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
@@ -199,12 +199,12 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingContactManager()
 
 }
 
-int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
+int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dvalue)
 {
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline' depth='"<< dvalue <<"'/>                    \n"
+             "  <CollisionPipeline name='pipeline' depth='"<< dvalue <<"'/>                    \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
              "  <DefaultContactManager/>                                                     \n"
@@ -215,7 +215,7 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
     //EXPECT_NE( (root.get()), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    DefaultPipeline* clp = dynamic_cast<DefaultPipeline*>(root->getObject("pipeline")) ;
+    CollisionPipeline* clp = dynamic_cast<CollisionPipeline*>(root->getObject("pipeline")) ;
     //ASSERT_NE( (clp), nullptr) ;
 
     int rv = clp->d_depth.getValue() ;
@@ -224,32 +224,32 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
 }
 
 
-TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithNoAttributes)
+TEST_F(TestCollisionPipeline, checkCollisionPipelineWithNoAttributes)
 {
-    this->checkDefaultPipelineWithNoAttributes();
+    this->checkCollisionPipelineWithNoAttributes();
 }
 
-TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingIntersection)
+TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMissingIntersection)
 {
-    this->checkDefaultPipelineWithMissingIntersection();
+    this->checkCollisionPipelineWithMissingIntersection();
 }
 
-TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingBroadPhase)
+TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMissingBroadPhase)
 {
-    this->checkDefaultPipelineWithMissingBroadPhase();
+    this->checkCollisionPipelineWithMissingBroadPhase();
 }
 
-TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingNarrowPhase)
+TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMissingNarrowPhase)
 {
-    this->checkDefaultPipelineWithMissingNarrowPhase();
+    this->checkCollisionPipelineWithMissingNarrowPhase();
 }
 
-TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingContactManager)
+TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMissingContactManager)
 {
-    this->checkDefaultPipelineWithMissingContactManager();
+    this->checkCollisionPipelineWithMissingContactManager();
 }
 
-TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssue)
+TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMonkeyValueForDepth_OpenIssue)
 {
     const std::vector<std::pair<int, bool>> testvalues = {
         {-1, false},
@@ -268,7 +268,7 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssu
             EXPECT_MSG_NOEMIT(Warning) ;
 
             // Check the returned value.
-            if(this->checkDefaultPipelineWithMonkeyValueForDepth(depthValue) != depthValue)
+            if(this->checkCollisionPipelineWithMonkeyValueForDepth(depthValue) != depthValue)
             {
                 ADD_FAILURE() << "User provided depth parameter value '" << depthValue << "' has been un-expectedly overriden." ;
             }
@@ -278,12 +278,12 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssu
             EXPECT_MSG_EMIT(Warning) ;
 
             // Check the default value.
-            if(this->checkDefaultPipelineWithMonkeyValueForDepth(depthValue) != DefaultPipeline::defaultDepthValue)
+            if(this->checkCollisionPipelineWithMonkeyValueForDepth(depthValue) != CollisionPipeline::defaultDepthValue)
             {
-                ADD_FAILURE() << "User provided invalid depth parameter value '" << depthValue << "' and has not been replaced with the default value = " << DefaultPipeline::defaultDepthValue;
+                ADD_FAILURE() << "User provided invalid depth parameter value '" << depthValue << "' and has not been replaced with the default value = " << CollisionPipeline::defaultDepthValue;
             }
         }
     }
 }
 
-} // defaultpipeline_test
+} // CollisionPipeline_test

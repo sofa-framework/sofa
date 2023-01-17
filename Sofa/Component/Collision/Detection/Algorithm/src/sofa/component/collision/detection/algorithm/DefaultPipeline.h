@@ -27,16 +27,16 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DefaultPipeline : public sofa::simulation::PipelineImpl
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CollisionPipeline : public sofa::simulation::PipelineImpl
 {
 public:
-    SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
+    SOFA_CLASS(CollisionPipeline,sofa::simulation::PipelineImpl);
 
     Data<bool> d_doPrintInfoMessage;
     Data<bool> d_doDebugDraw;
     Data<int>  d_depth;
 protected:
-    DefaultPipeline();
+    CollisionPipeline();
 public:
     void init() override;
 
