@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Component.Collision.Detection.Algorithm_test)
 
 set(SOURCE_FILES
-    DefaultPipeline_test.cpp
+    CollisionPipeline_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
