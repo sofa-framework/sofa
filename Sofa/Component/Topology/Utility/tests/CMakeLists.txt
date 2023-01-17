@@ -7,7 +7,7 @@ set(SOURCE_FILES
     TopologyChecker_test.cpp
 )
 
-add_definitions("-DSOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR=\"${CMAKE_SOURCE_DIR}/examples/Components/topology\"")
+add_definitions("-DSOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR=\"${CMAKE_SOURCE_DIR}/examples/Component/Topology/Container/Dynamic\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.Topology.Utility)
 
