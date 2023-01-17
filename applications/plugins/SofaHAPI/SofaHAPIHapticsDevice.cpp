@@ -335,7 +335,7 @@ namespace sofa
 			Transform baseDevice_H_endDevice(pos*data.scale, quat);
 			Transform world_H_virtualTool = data.world_H_baseDevice * baseDevice_H_endDevice * data.endDevice_H_virtualTool;
 			lastToolPosition = world_H_virtualTool;
-			/*  unused code
+			/* 
 				Transform baseDevice_H_endDevice2 = data.world_H_baseDevice.inversed() * world_H_virtualTool * data.endDevice_H_virtualTool.inversed();
 				sout << "bHe = " << baseDevice_H_endDevice << sendl;
 				sout << "wHb = " << data.world_H_baseDevice << sendl;
