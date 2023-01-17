@@ -82,6 +82,57 @@ public:
     {
     }
 
+    /// Constructs a 1xC matrix (single-row, multiple columns) or a Lx1 matrix (multiple row, single
+    /// column) and initializes it from a scalar initializer-list.
+    /// Allows to build a matrix with the following syntax:
+    /// sofa::type::Mat<1, 3, int> M {1, 2, 3}
+    /// or
+    /// sofa::type::Mat<3, 1, int> M {1, 2, 3}
+    /// Initializer-list must match matrix column size, otherwise an assert is triggered.
+    template<sofa::Size TL = L, sofa::Size TC = C, typename = std::enable_if_t<TL == 1 && TC != 1 || TC == 1 && TL != 1> >
+    constexpr Mat(std::initializer_list<Real>&& scalars) noexcept
+    {
+        if constexpr (L == 1 && C != 1)
+        {
+            assert(scalars.size() == C);
+            sofa::Size colId {};
+            for (auto scalar : scalars)
+            {
+                this->elems[0][colId++] = scalar;
+            }
+        }
+        else
+        {
+            assert(scalars.size() == L);
+            sofa::Size rowId {};
+            for (auto scalar : scalars)
+            {
+                this->elems[rowId++][0] = scalar;
+            }
+        }
+    }
+
+    /// Constructs a matrix and initializes it from scalar initializer-lists grouped by row.
+    /// Allows to build a matrix with the following syntax:
+    /// sofa::type::Mat<3, 3, int> M {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+    /// Initializer-lists must match matrix size, otherwise an assert is triggered.
+    constexpr Mat(std::initializer_list<std::initializer_list<Real>>&& rows) noexcept
+    {
+        assert(rows.size() == L);
+
+        sofa::Size rowId {};
+        for (const auto& row : rows)
+        {
+            assert(row.size() == C);
+            sofa::Size colId {};
+            for (auto scalar : row)
+            {
+                this->elems[rowId][colId++] = scalar;
+            }
+            ++rowId;
+        }
+    }
+
     template<typename... ArgsT,
         typename = std::enable_if_t< (std::is_convertible_v<ArgsT, Line> && ...) >,
         typename = std::enable_if_t< (sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1) >
