@@ -56,8 +56,6 @@ class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField : virtual p
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelHexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField, DataTypes));
-    friend class AccumulateForceLargeTasks<DataTypes>;
-    friend class AddDForceTask<DataTypes>;
 
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
@@ -81,8 +79,6 @@ public:
                     const DataVecDeriv& dx) override;
 
 protected:
-    std::vector<AccumulateForceLargeTasks<DataTypes> > m_accumulateForceLargeTasks;
-    std::vector<AddDForceTask<DataTypes> > m_addDForceTasks;
 
     // code duplicated from HexahedronFEMForceField::accumulateForceLarge but adapted to be thread-safe
     void computeTaskForceLarge(RDataRefVecCoord& p, sofa::Index elementId, const Element& elem,
@@ -98,97 +94,5 @@ private:
 #if  !defined(SOFA_MULTITHREADING_PARALLELHEXAHEDRONFEMFORCEFIELD_CPP)
 extern template class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField<defaulttype::Vec3Types>;
 #endif
-
-/**
- * Task executed in ParallelHexahedronFEMForceField::addForce
- * When running, the task loops over the provided list of elements and computes a force for
- * the 8 element nodes, and a potential energy.
- */
-template<class DataTypes>
-class SOFA_MULTITHREADING_PLUGIN_API AccumulateForceLargeTasks : public sofa::simulation::CpuTask
-{
-public:
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
-    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
-    typedef typename Coord::value_type Real;
-    typedef helper::ReadAccessor< Data< VecCoord > > RDataRefVecCoord;
-    typedef core::topology::BaseMeshTopology::Hexa Element;
-    typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
-
-    AccumulateForceLargeTasks(sofa::simulation::CpuTask::Status* status,
-                              ParallelHexahedronFEMForceField<DataTypes>* ff,
-                              const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& elementStiffnesses,
-                              VecElement::const_iterator first, VecElement::const_iterator last,
-                              RDataRefVecCoord& p,
-                              sofa::Index startingElementId);
-    sofa::simulation::Task::MemoryAlloc run() final;
-
-    VecElement::const_iterator m_first;
-    VecElement::const_iterator m_last;
-
-    SReal getPotentialEnergyOutput() const { return m_potentialEnergy; }
-    const std::vector<type::Vec<8, Deriv> >& getFOutput() const { return m_outF; }
-
-private:
-
-    //task output
-    SReal m_potentialEnergy { 0 };
-    std::vector<type::Vec<8, Deriv> > m_outF;
-
-
-    ParallelHexahedronFEMForceField<DataTypes>* m_ff;
-    const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& m_elementStiffnesses;
-    RDataRefVecCoord& m_p;
-    sofa::Index m_startingElementId;
-};
-
-/**
- * Task executed in ParallelHexahedronFEMForceField::addDForce
- * When running, the task loops over the provided list of elements and computes the
- * product df = K * dx for each element.
- */
-template<class DataTypes>
-class SOFA_MULTITHREADING_PLUGIN_API AddDForceTask : public sofa::simulation::CpuTask
-{
-public:
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef helper::ReadAccessor< Data< VecCoord > > RDataRefVecCoord;
-    typedef core::topology::BaseMeshTopology::Hexa Element;
-    typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
-
-    AddDForceTask(sofa::simulation::CpuTask::Status* status,
-                  ParallelHexahedronFEMForceField<DataTypes>* ff,
-                  const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& elementStiffnesses,
-                  VecElement::const_iterator first, VecElement::const_iterator last,
-                  Real kFactor,
-                  RDataRefVecCoord& dx,
-                  sofa::Index startingElementId);
-
-    sofa::simulation::Task::MemoryAlloc run() final;
-
-    VecElement::const_iterator m_first;
-    VecElement::const_iterator m_last;
-
-    const std::vector<type::Vec<8, Deriv>>& getDfOutput() const { return m_outDf; }
-
-private:
-
-    std::vector<type::Vec<8, Deriv>> m_outDf;
-
-    ParallelHexahedronFEMForceField<DataTypes>* m_ff;
-    const typename ParallelHexahedronFEMForceField<DataTypes>::VecElementStiffness& m_elementStiffnesses;
-    sofa::Index m_startingElementId;
-    RDataRefVecCoord& m_dx;
-    Real m_kFactor;
-};
-
-
 
 } //namespace sofa::component::forcefield

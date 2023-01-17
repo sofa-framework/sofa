@@ -19,10 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CONFIG_BUILD_OPTION_THREADING_H
-#define SOFA_CONFIG_BUILD_OPTION_THREADING_H
+#define SOFA_MULTITHREADING_PARALLELTETRAHEDRONFEMFORCEFIELD_CPP
+#include <MultiThreading/ParallelTetrahedronFEMForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-/// This can be either true or false
-#define SOFA_WITH_THREADING ${SOFA_WITH_THREADING_}
+namespace sofa::component::forcefield
+{
 
-#endif
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int ParallelTetrahedronFEMForceFieldClass = core::RegisterObject("Parallel tetrahedral finite elements")
+                                           .add < ParallelTetrahedronFEMForceField < Vec3Types > > ();
+
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField<Vec3Types>;
+
+}

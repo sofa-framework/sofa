@@ -441,8 +441,8 @@ public:
         {
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_poissonRatio.getValue(), static_cast<Real>(0.3)); // TODO need to unify this value with other tetrahedronFEM
-            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_youngModulus.getValue(), static_cast<Real>(1000)); // TODO need to unify this value with other tetrahedronFEM
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_poissonRatio.getValue(), static_cast<Real>(0.45));
+            ASSERT_FLOATINGPOINT_EQ(tetraFEM->f_youngModulus.getValue(), static_cast<Real>(5000));
             ASSERT_EQ(tetraFEM->f_method.getValue(), "qr");
         }
     }

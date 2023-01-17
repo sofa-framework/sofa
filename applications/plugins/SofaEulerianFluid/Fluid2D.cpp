@@ -394,22 +394,24 @@ void Fluid2D::updateVisual()
         }
     }
 
-    for (unsigned int i=0; i<points.size(); i++)
+    for (auto& p : points)
     {
-        points[i].n.clear();
+        p.n.clear();
     }
 
-    for (unsigned int i=0; i<facets.size(); i++)
+    for (const auto& f : facets)
     {
-        sofa::type::Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
+        sofa::type::Vec3f n = cross(points[f.p[1]].p-points[f.p[0]].p,points[f.p[2]].p-points[f.p[0]].p);
         n.normalize();
-        points[facets[i].p[0]].n += n;
-        points[facets[i].p[1]].n += n;
-        points[facets[i].p[2]].n += n;
+        points[f.p[0]].n += n;
+        points[f.p[1]].n += n;
+        points[f.p[2]].n += n;
     }
 
-    for (unsigned int i=0; i<points.size(); i++)
-        points[i].n.normalize();
+    for (auto& p : points)
+    {
+        p.n.normalize();
+    }
 }
 
 void Fluid2D::computeBBox(const core::ExecParams*  params , bool onlyVisible)

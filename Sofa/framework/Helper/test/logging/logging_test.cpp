@@ -165,12 +165,6 @@ void f3()
 
 TEST(LoggingTest, threadingTests)
 {
-    if(!SOFA_WITH_THREADING){
-        /// This cout shouldn't be using the msg_* API.
-        std::cout << "Test canceled because sofa is not compiled with SOFA_WITH_THREADING option." << std::endl ;
-        return ;
-    }
-
     MessageDispatcher::clearHandlers() ;
 
     CountingMessageHandler& mh = MainCountingMessageHandler::getInstance();
