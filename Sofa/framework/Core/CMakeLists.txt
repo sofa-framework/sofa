@@ -165,8 +165,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.h
+    ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
+    ${SRC_ROOT}/visual/FlagTreeItem.h
     ${SRC_ROOT}/visual/Shader.h
+    ${SRC_ROOT}/visual/Tristate.h
     ${SRC_ROOT}/visual/VisualLoop.h
     ${SRC_ROOT}/visual/VisualManager.h
     ${SRC_ROOT}/visual/VisualModel.h
@@ -281,7 +284,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
+    ${SRC_ROOT}/visual/Data[DisplayFlags].cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
+    ${SRC_ROOT}/visual/FlagTreeItem.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
     ${SRC_ROOT}/visual/VisualManager.cpp
