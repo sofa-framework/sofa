@@ -23,6 +23,7 @@
 
 #include <MultiThreading/config.h>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
+#include <Multithreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h>
 
 namespace multithreading::component::solidmechanics::spring
 {
@@ -31,11 +32,14 @@ template <class DataTypes>
 using MeshSpringForceField = sofa::component::solidmechanics::spring::MeshSpringForceField<DataTypes>;
 
 template <class DataTypes>
-class ParallelMeshSpringForceField : public MeshSpringForceField<DataTypes>
+class ParallelMeshSpringForceField :
+    public MeshSpringForceField<DataTypes>,
+    public ParallelStiffSpringForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ParallelMeshSpringForceField, DataTypes),
-               SOFA_TEMPLATE(MeshSpringForceField, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(ParallelMeshSpringForceField, DataTypes),
+               SOFA_TEMPLATE(MeshSpringForceField, DataTypes),
+               SOFA_TEMPLATE(ParallelStiffSpringForceField, DataTypes));
 
     using VecCoord = typename DataTypes::VecCoord;
     using VecDeriv = typename DataTypes::VecDeriv;

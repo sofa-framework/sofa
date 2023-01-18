@@ -31,7 +31,7 @@ template <class DataTypes>
 using StiffSpringForceField = sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes>;
 
 template <class DataTypes>
-class ParallelStiffSpringForceField : public StiffSpringForceField<DataTypes>
+class ParallelStiffSpringForceField : public virtual StiffSpringForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelStiffSpringForceField, DataTypes),
