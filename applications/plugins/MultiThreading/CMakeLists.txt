@@ -18,6 +18,10 @@ set(HEADER_FILES
     src/MultiThreading/ParallelHexahedronFEMForceField.inl
     src/MultiThreading/ParallelTetrahedronFEMForceField.h
     src/MultiThreading/ParallelTetrahedronFEMForceField.inl
+    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h
+    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.inl
+    src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.h
+    src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl
     )
 
 set(SOURCE_FILES
@@ -31,6 +35,8 @@ set(SOURCE_FILES
     src/MultiThreading/ParallelBVHNarrowPhase.cpp
     src/MultiThreading/ParallelHexahedronFEMForceField.cpp
     src/MultiThreading/ParallelTetrahedronFEMForceField.cpp
+    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.cpp
+    src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.cpp
     )
 
 find_package(Sofa.Simulation.Common REQUIRED)
@@ -38,6 +44,7 @@ sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Common)
@@ -45,6 +52,7 @@ target_link_libraries(${PROJECT_NAME} Sofa.Component.Collision.Detection.Algorit
 target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.FEM.Elastic)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.Mapping.Linear)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.StateContainer)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.Spring)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
 
