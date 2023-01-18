@@ -129,8 +129,12 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<c
             }
             m_tasks.emplace_back(&status, first, last, intersectionMethod);
             taskScheduler->addTask(&m_tasks.back());
-            first += nbElements;
-            last += nbElements;
+
+            if (i < nbThreads - 1)
+            {
+                first += nbElements;
+                last += nbElements;
+            }
         }
     }
 
