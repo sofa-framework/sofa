@@ -23,7 +23,7 @@
 
 #include <MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.h>
 
-namespace multithreading::component::mass
+namespace multithreading::component::solidmechanics::spring
 {
 
 
