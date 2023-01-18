@@ -465,7 +465,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
 {
     QuadTopologyChecker_test() : TopologyChecker_test()
     {
-        m_fileName = "TopologicalModifiers/RemovingQuad2TriangleProcess.scn";
+        m_fileName = "/RemovingQuad2TriangleProcess.scn";
     }
 
 
