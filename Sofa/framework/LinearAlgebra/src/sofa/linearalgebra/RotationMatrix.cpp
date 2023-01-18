@@ -209,26 +209,28 @@ void RotationMatrix<Real>::rotateSparseMatrix(
     linearalgebra::BaseMatrix * result,
     const SparseMatrix<real2>* Jmat)
 {
+    using LElementIterator = typename std::map<sofa::SignedIndex,real2>::const_iterator; //equivalent to SparseMatrix<real2>::LElementIterator
+
     for (const auto& [rowId, row] : *Jmat)
     {
-        for (auto it = row.begin(); it != row.end();)
+        //in each iteration, 3 consecutive elements of the map are visited. A check is performed for out of bounds.
+        for (LElementIterator it = row.begin(); it != row.end();)
         {
-            const auto colId = it->first;
-
-            const auto v0 = it->second;
-            ++it;
+            const auto& [colId0, scalar0] = *it++;
             if (it == row.end())
                 break;
-            const auto v1 = it->second;
-            ++it;
+
+            const auto& [colId1, scalar1] = *it++;
+            assert(colId1 == colId0 + 1);
             if (it == row.end())
                 break;
-            const auto v2 = it->second;
-            ++it;
 
-            result->set(rowId,colId+0,v0 * data[(colId+0)*3+0] + v1 * data[(colId+1)*3+0] + v2 * data[(colId+2)*3+0] );
-            result->set(rowId,colId+1,v0 * data[(colId+0)*3+1] + v1 * data[(colId+1)*3+1] + v2 * data[(colId+2)*3+1] );
-            result->set(rowId,colId+2,v0 * data[(colId+0)*3+2] + v1 * data[(colId+1)*3+2] + v2 * data[(colId+2)*3+2] );
+            const auto& [colId2, scalar2] = *it++;
+            assert(colId2 == colId0 + 2);
+
+            result->set(rowId,colId0,scalar0 * data[colId0*3+0] + scalar1 * data[colId1*3+0] + scalar2 * data[colId2*3+0] );
+            result->set(rowId,colId1,scalar0 * data[colId0*3+1] + scalar1 * data[colId1*3+1] + scalar2 * data[colId2*3+1] );
+            result->set(rowId,colId2,scalar0 * data[colId0*3+2] + scalar1 * data[colId1*3+2] + scalar2 * data[colId2*3+2] );
         }
     }
 }
