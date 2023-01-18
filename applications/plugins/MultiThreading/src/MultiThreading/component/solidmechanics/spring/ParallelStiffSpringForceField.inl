@@ -22,6 +22,8 @@
 #pragma once
 
 #include <MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/ParallelForEach.h>
 
 namespace multithreading::component::solidmechanics::spring
 {
@@ -31,7 +33,52 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
     DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1,
     const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
-    Inherit1::addForce(mparams, data_f1, data_f2, data_x1, data_x2, data_v1, data_v2);
+    VecDeriv&       f1 = *data_f1.beginEdit();
+    const VecCoord& x1 =  data_x1.getValue();
+    const VecDeriv& v1 =  data_v1.getValue();
+    VecDeriv&       f2 = *data_f2.beginEdit();
+    const VecCoord& x2 =  data_x2.getValue();
+    const VecDeriv& v2 =  data_v2.getValue();
+
+    const sofa::type::vector<Spring>& springs= this->springs.getValue();
+    this->dfdx.resize(springs.size());
+    f1.resize(x1.size());
+    f2.resize(x2.size());
+    this->m_potentialEnergy = 0;
+
+    for (sofa::Index i=0; i<springs.size(); i++)
+    {
+        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
+    }
+
+    sofa::simulation::parallelForEachRange(*m_taskScheduler, static_cast<std::size_t>(0), springs.size(),
+        [this, &springs, &x1, &v1, &x2, &v2](const auto& range)
+        {
+            for (auto i = range.start; i < range.end; ++i)
+            {
+                this->addSpringForce(this->m_potentialEnergy,f1,x1, v1,f2,x2, v2, i, springs[i]);
+            }
+        });
+
+
+
+    data_f1.endEdit();
+    data_f2.endEdit();
 }
 
+template <class DataTypes>
+void ParallelStiffSpringForceField<DataTypes>::initTaskScheduler()
+{
+    m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(m_taskScheduler != nullptr);
+    if (m_taskScheduler->getThreadCount() < 1)
+    {
+        m_taskScheduler->init(0);
+        msg_info() << "Task scheduler initialized on " << m_taskScheduler->getThreadCount() << " threads";
+    }
+    else
+    {
+        msg_info() << "Task scheduler already initialized on " << m_taskScheduler->getThreadCount() << " threads";
+    }
+}
 }
