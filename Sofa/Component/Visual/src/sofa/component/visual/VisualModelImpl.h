@@ -400,16 +400,16 @@ public:
     /// More details on the name customization infrastructure is in NameDecoder.h
     static std::string GetCustomTemplateName()
     {
-        return sofa::helper::NameDecoder::getTemplateName<Vec3State>();
+        return sofa::defaulttype::Vec3Types::Name();
     }
 
     /// Utility method to compute tangent from vertices and texture coordinates.
     static Coord computeTangent(const Coord &v1, const Coord &v2, const Coord &v3,
-            const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
+                                const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
     /// Utility method to compute bitangent from vertices and texture coordinates.
     static Coord computeBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
-            const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
+                                  const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
     /// Temporary added here from RigidState deprecated inheritance
     sofa::defaulttype::Rigid3fTypes::VecCoord xforms;

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/NameDecoder.h>
+#include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <numeric>
 
 namespace sofa::core
@@ -321,8 +321,8 @@ public:
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
-        std::string classname = sofa::helper::NameDecoder::getClassName<RealObject>();
-        std::string templatename = sofa::helper::NameDecoder::getTemplateName<RealObject>();
+        std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
+        std::string templatename = sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<RealObject>();
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
