@@ -127,7 +127,36 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         sofa::Index i,
         const Spring& spring)
 {
-    //    this->cpt_addForce++;
+    const std::unique_ptr<SpringForce> springForce = this->computeSpringForce(p1, v1, p2, v2, spring);
+
+    if (springForce)
+    {
+        const StiffSpringForce* stiffSpringForce = static_cast<const StiffSpringForce*>(springForce.get());
+
+        sofa::Index a = spring.m1;
+        sofa::Index b = spring.m2;
+
+        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + std::get<0>(stiffSpringForce->force)) ;
+        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) + std::get<1>(stiffSpringForce->force)) ;
+
+        potentialEnergy += stiffSpringForce->energy;
+
+        this->dfdx[i] += stiffSpringForce->dForce_dX;
+    }
+    else
+    {
+        // set derivative to 0
+        this->dfdx[i].clear();
+    }
+}
+
+template <class DataTypes>
+auto StiffSpringForceField<DataTypes>::computeSpringForce(
+    const VecCoord& p1, const VecDeriv& v1,
+    const VecCoord& p2, const VecDeriv& v2,
+    const Spring& spring)
+-> std::unique_ptr<SpringForce>
+{
     sofa::Index a = spring.m1;
     sofa::Index b = spring.m2;
 
@@ -136,18 +165,17 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     Real d = u.norm();
     if( spring.enabled && d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
+        std::unique_ptr<StiffSpringForce> springForce = std::make_unique<StiffSpringForce>();
+
         // F =   k_s.(l-l_0 ).U + k_d((V_b - V_a).U).U = f.U   where f is the intensity and U the direction
         Real inverseLength = 1.0f/d;
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
-        potentialEnergy += elongation * elongation * spring.ks / 2;
+        springForce->energy = elongation * elongation * spring.ks / 2;
         typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
         typename DataTypes::DPos force = u*forceIntensity;
-
-        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
-        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
 
         // Compute stiffness dF/dX
         // The force change dF comes from length change dl and unit vector change dU:
@@ -155,7 +183,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         // dU = 1/l.(I-U.U^T).dX   where dX = dX_1 - dX_0  and I is the identity matrix
         // dl = U^T.dX
         // dF = k_s.U.U^T.dX + f/l.(I-U.U^T).dX = ((k_s-f/l).U.U^T + f/l.I).dX
-        Mat& m = this->dfdx[i];
+        auto& m = springForce->dForce_dX;
         Real tgt = forceIntensity * inverseLength;
         for(sofa::Index j=0; j<N; ++j )
         {
@@ -165,18 +193,12 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
             }
             m[j][j] += tgt;
         }
+
+        springForce->force = std::make_pair(force, -force);
+        return springForce;
     }
-    else // null length, no force and no stiffness
-    {
-        Mat& m = this->dfdx[i];
-        for(sofa::Index j=0; j<N; ++j )
-        {
-            for(sofa::Index k=0; k<N; ++k )
-            {
-                m[j][k] = 0;
-            }
-        }
-    }
+
+    return {};
 }
 
 template<class DataTypes>
