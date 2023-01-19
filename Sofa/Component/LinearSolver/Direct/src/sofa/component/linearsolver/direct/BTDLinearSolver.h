@@ -121,15 +121,12 @@ public:
     /// Solve Mx=b
     void solve (Matrix& /*M*/, Vector& x, Vector& b) override;
 
-
-
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
     ///
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
-
 
     /// Init the partial solve
     void init_partial_solve() override;
@@ -143,16 +140,22 @@ public:
     //void partial_solve_old(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
     void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn) override;
 
-
-
     void init_partial_inverse(const Index &nb, const Index &bsize);
-
-
 
     template<class RMatrix, class JMatrix>
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);
 
 
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        Inherit1::parse(arg);
+
+        if (arg->getAttribute("blockSize"))
+        {
+            msg_deprecated() << "The attribute 'blockSize' is deprecated since SOFA 23.06." << msgendl
+                << "This data was not take into account to get the block size, as it can be deduced automatically from the Matrix template parameter.";
+        }
+    }
 
 private:
 
@@ -177,7 +180,6 @@ private:
     /// step4=> compute solution for the indices in the bloc
     /// (and accumulate the potential local dRH (set in Vec_dRH) [set in step1] that have not been yet taken into account by the global bwd and fwd
     void fwdComputeLHinBloc(Index indMaxBloc);
-
 
 };
 
