@@ -23,7 +23,7 @@
 
 #include <MultiThreading/config.h>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
-#include <Multithreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h>
+#include <MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h>
 
 namespace multithreading::component::solidmechanics::spring
 {
