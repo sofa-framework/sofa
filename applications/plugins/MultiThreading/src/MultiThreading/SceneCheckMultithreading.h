@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BeamLinearMapping_mt.inl"
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#pragma once
 
-namespace sofa
+#include <MultiThreading/config.h>
+#include <sofa/simulation/SceneCheck.h>
+
+#include <set>
+
+namespace multithreading::_scenechecking_
 {
 
-namespace component
+class SOFA_MULTITHREADING_PLUGIN_API SceneCheckMultithreading : public sofa::simulation::SceneCheck
 {
+public:
+    virtual ~SceneCheckMultithreading() {}
 
-namespace mapping
-{
+    typedef std::shared_ptr<SceneCheckMultithreading> SPtr;
+    static std::shared_ptr<SceneCheckMultithreading> newSPtr();
 
-const bool isBeamLinearMapping_mtImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
+    const std::string getName() override;
+    const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+private:
 
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+    std::set<std::pair<std::string, std::string> > m_summary;
+};
 
-
-
-        ;
-
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} //namespace sofa::_scenechecking_

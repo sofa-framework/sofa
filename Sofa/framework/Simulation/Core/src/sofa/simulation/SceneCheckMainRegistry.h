@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BeamLinearMapping_mt.inl"
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#pragma once
 
-namespace sofa
+#include <sofa/simulation/SceneCheckRegistry.h>
+#include <mutex>
+
+namespace sofa::simulation
 {
 
-namespace component
+class SOFA_SIMULATION_CORE_API SceneCheckMainRegistry
 {
+public:
+    static bool addToRegistry(const SceneCheck::SPtr& sceneCheck);
+    static void removeFromRegistry(const SceneCheck::SPtr& sceneCheck);
+    static void clearRegistry();
+    static const type::vector<SceneCheck::SPtr>& getRegisteredSceneChecks();
 
-namespace mapping
-{
+private:
+    static std::mutex s_mutex;
+    static SceneCheckRegistry& getInstance();
+};
 
-const bool isBeamLinearMapping_mtImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
-
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
-
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
-
-
-
-        ;
-
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+}

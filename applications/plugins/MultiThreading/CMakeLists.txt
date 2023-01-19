@@ -18,6 +18,8 @@ set(HEADER_FILES
     src/MultiThreading/ParallelHexahedronFEMForceField.inl
     src/MultiThreading/ParallelTetrahedronFEMForceField.h
     src/MultiThreading/ParallelTetrahedronFEMForceField.inl
+    src/MultiThreading/SceneCheckMultithreading.h
+    src/MultiThreading/ParallelImplementationsRegistry.h
     )
 
 set(SOURCE_FILES
@@ -31,6 +33,8 @@ set(SOURCE_FILES
     src/MultiThreading/ParallelBVHNarrowPhase.cpp
     src/MultiThreading/ParallelHexahedronFEMForceField.cpp
     src/MultiThreading/ParallelTetrahedronFEMForceField.cpp
+    src/MultiThreading/SceneCheckMultithreading.cpp
+    src/MultiThreading/ParallelImplementationsRegistry.cpp
     )
 
 find_package(Sofa.Simulation.Common REQUIRED)

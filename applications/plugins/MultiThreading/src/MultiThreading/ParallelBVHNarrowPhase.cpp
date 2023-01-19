@@ -28,9 +28,14 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <MultiThreading/ParallelImplementationsRegistry.h>
 
 namespace sofa::component::collision
 {
+
+const bool isParallelBVHNarrowPhaseImplementationRegistered =
+    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BVHNarrowPhase", "ParallelBVHNarrowPhase");
+
 
 using sofa::helper::ScopedAdvancedTimer;
 

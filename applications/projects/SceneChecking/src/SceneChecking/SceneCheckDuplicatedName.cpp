@@ -22,9 +22,12 @@
 #include "SceneCheckDuplicatedName.h"
 
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
 namespace sofa::_scenechecking_
 {
+
+const bool SceneCheckDuplicatedNameRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckDuplicatedName::newSPtr());
 
 using sofa::simulation::Node;
 
