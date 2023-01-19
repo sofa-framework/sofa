@@ -45,6 +45,8 @@ public:
     using VecDeriv = typename DataTypes::VecDeriv;
     using DataVecCoord = sofa::core::objectmodel::Data<VecCoord>;
     using DataVecDeriv = sofa::core::objectmodel::Data<VecDeriv>;
+
+    void init() override;
 };
 
 }

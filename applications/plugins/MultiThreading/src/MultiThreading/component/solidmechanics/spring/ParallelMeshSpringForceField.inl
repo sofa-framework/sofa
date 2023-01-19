@@ -26,5 +26,11 @@
 namespace multithreading::component::solidmechanics::spring
 {
 
+template <class DataTypes>
+void ParallelMeshSpringForceField<DataTypes>::init()
+{
+    MeshSpringForceField<DataTypes>::init();
+    this->initTaskScheduler();
+}
 
 }

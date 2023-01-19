@@ -141,7 +141,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
 
         potentialEnergy += stiffSpringForce->energy;
 
-        this->dfdx[i] += stiffSpringForce->dForce_dX;
+        this->dfdx[i] = stiffSpringForce->dForce_dX;
     }
     else
     {

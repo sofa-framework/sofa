@@ -27,6 +27,12 @@
 
 namespace multithreading::component::solidmechanics::spring
 {
+template <class DataTypes>
+void ParallelStiffSpringForceField<DataTypes>::init()
+{
+    Inherit1::init();
+    initTaskScheduler();
+}
 
 template <class DataTypes>
 void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* mparams,
@@ -46,21 +52,46 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
 
-    for (sofa::Index i=0; i<springs.size(); i++)
-    {
-        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
-    }
+    std::mutex mutex;
 
     sofa::simulation::parallelForEachRange(*m_taskScheduler, static_cast<std::size_t>(0), springs.size(),
-        [this, &springs, &x1, &v1, &x2, &v2](const auto& range)
+        [this, &springs, &x1, &v1, &x2, &v2, &mutex, &f1, &f2](const auto& range)
         {
+            sofa::type::vector<std::unique_ptr<SpringForce> > springForces;
+            springForces.reserve(range.end - range.start);
             for (auto i = range.start; i < range.end; ++i)
             {
-                this->addSpringForce(this->m_potentialEnergy,f1,x1, v1,f2,x2, v2, i, springs[i]);
+                std::unique_ptr<SpringForce> springForce = this->computeSpringForce(x1, v1, x2, v2, springs[i]);
+                springForces.push_back(std::move(springForce));
+            }
+
+            std::lock_guard lock(mutex);
+
+            std::size_t i = range.start;
+            for (auto& springForce : springForces)
+            {
+                if (springForce)
+                {
+                    const StiffSpringForce* stiffSpringForce = static_cast<const StiffSpringForce*>(springForce.get());
+
+                    sofa::Index a = springs[i].m1;
+                    sofa::Index b = springs[i].m2;
+
+                    DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + std::get<0>(stiffSpringForce->force)) ;
+                    DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) + std::get<1>(stiffSpringForce->force)) ;
+
+                    this->m_potentialEnergy += stiffSpringForce->energy;
+
+                    this->dfdx[i] = stiffSpringForce->dForce_dX;
+                }
+                else
+                {
+                    // set derivative to 0
+                    this->dfdx[i].clear();
+                }
+                ++i;
             }
         });
-
-
 
     data_f1.endEdit();
     data_f2.endEdit();

@@ -32,8 +32,6 @@
 
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
-#include <optional>
-
 namespace sofa::component::solidmechanics::spring
 {
 
