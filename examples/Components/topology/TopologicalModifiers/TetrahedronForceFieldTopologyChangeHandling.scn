@@ -19,10 +19,11 @@
     <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
 
     <Node name="TetrahedralCorotationalFEMForceField1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-20" />
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="TetrahedralCorotationalFEM" />
         <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
@@ -39,7 +40,7 @@
 
     <Node name="TetrahedralCorotationalFEMForceField2">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-20" />
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" translation="0.5 0 0"/>
         <MechanicalObject src="@loader" name="TetrahedralCorotationalFEM" />
         <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />

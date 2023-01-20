@@ -19,13 +19,13 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualModelImpl VisualStyle] -->
     <!-- Basic Components to perform the collision detection -->
-    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <VisualStyle displayFlags="showVisual showBehavior" />
     <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
-	
+	  <DefaultAnimationLoop/>
 
 	  <Node name="Cloth Dynamic Mesh (blue)">
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />

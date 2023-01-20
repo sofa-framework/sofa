@@ -26,7 +26,7 @@
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <UniformMass totalMass="1"/>
         <TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="20" />
-        <BoxConstraint box="-0.05 -0.05 -0.05    0.05 0.05 0.05" drawBoxes="1"  />
+        <BoxConstraint box="-0.05 -0.05 -0.05    0.05 1.05 0.05" drawBoxes="1"  />
         <BoxROI box="-0.05 -0.05 -0.05    0.05 1.05 0.05" drawBoxes="1" name="ProjectDirection"/>
         <ProjectDirectionConstraint direction="0.5 0.5 0" indices="@[-1].indices" drawSize="0.03" />
         <Node 	name="Boundary Edges"  >

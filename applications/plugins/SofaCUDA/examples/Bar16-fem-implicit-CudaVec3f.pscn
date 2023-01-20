@@ -1,0 +1,33 @@
+<!-- Requires php install. On 30/11/22, installed with Ubuntu 22.04.01, using php 8.1 https://tecadmin.net/how-to-install-php-on-ubuntu-22-04/  -->
+
+<Node name="root" dt="0.04">
+<VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings showForceFields" />
+<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->  
+<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
+<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
+<RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->  
+<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+<RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->  
+<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] --> 
+<DefaultAnimationLoop/>
+<?php $size=$_ENV["s"]; if (!$size) $size=10; ?>
+	<Node name="M1">
+		<!--<CGImplicitSolver iterations="10" tolerance="1e-15" threshold="1e-15" />-->
+		<EulerImplicitSolver/>
+		<CGLinearSolver iterations="10" tolerance="1e-15" threshold="1e-15"/>
+		<MechanicalObject template="CudaVec3f" />
+<!--		<UniformMass totalMass="20" /> -->
+<?php echo '<UniformMass totalMass="'.(20*$size).'" />'."\n"; ?>
+<!--		<RegularGridTopology
+			nx="16" ny="16" nz="6"
+			xmin="0" xmax="3"
+			ymin="0" ymax="3"
+			zmin="0" zmax="1"
+		/> -->
+<?php echo '<RegularGridTopology
+			nx="16" ny="16" nz="'.(5*$size+1).'" xmin="0" xmax="3" ymin="0" ymax="3" zmin="0" zmax="'.$size.'" />'."\n"; ?>
+		<FixedConstraint indices="0-255" />
+		<TetrahedronFEMForceField name="FEM" youngModulus="24000" poissonRatio="0.3" method="large" />
+	</Node>
+</Node>

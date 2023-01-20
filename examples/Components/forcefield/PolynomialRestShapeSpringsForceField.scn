@@ -6,6 +6,7 @@
 	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <VisualStyle displayFlags="showForceFields"/>
+    <DefaultAnimationLoop/>
 
     <Node name="Particle" bbox="-10 -10 -10 20 20 20" >
         <EulerImplicitSolver />

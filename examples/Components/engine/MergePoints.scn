@@ -20,6 +20,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager SpotLight] -->
     
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
@@ -63,7 +64,7 @@
 
        <Node>
 			<OglModel name="Visual" position="@../merge_subsets.points" 
-				src="@../meshLoader" useVBO="0" texturename="textures/snakeskin.png" scaleTex="20 20"/>
+				src="@../meshLoader" texturename="textures/snakeskin.png" scaleTex="20 20"/>
 		</Node>
     </Node>
 </Node>

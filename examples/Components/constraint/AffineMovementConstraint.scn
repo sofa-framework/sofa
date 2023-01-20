@@ -11,9 +11,10 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
     <VisualStyle displayFlags="hideVisualModels showBehavior" />
+    <DefaultAnimationLoop/>
     <Node 	name="Square"  >
-        <EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.5"  rayleighMass="0.5"  vdamping="0" />
-        <CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="40"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
+        <EulerImplicitSolver name="Euler Implicit" rayleighStiffness="0.5"  rayleighMass="0.5"  vdamping="0" />
+        <CGLinearSolver template="GraphScattered" name="CG Solver" iterations="40"  tolerance="1e-06"  threshold="1e-10"/>
         <MechanicalObject template="Vec3d" name="mObject1" showObject="true" showObjectScale="3"/>
         <RegularGridTopology name ="loader" nx="5" ny="5" nz="1" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" position="@mObject1.position" drawHexahedra="true"/>
         <UniformMass totalMass="1"/>

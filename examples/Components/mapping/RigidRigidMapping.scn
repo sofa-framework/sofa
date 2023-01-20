@@ -8,6 +8,8 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollisionModels showMechanicalMappings" />
+    <DefaultAnimationLoop/>
+    
     <Node animate="0" dt="0.01" gravity="0 -9.81 0" multiThreadSimulation="0" name="pendulum" time="0">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />

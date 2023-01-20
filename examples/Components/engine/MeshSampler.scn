@@ -7,6 +7,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showWireframe" />
+    <DefaultAnimationLoop/>
 
     <Node name="using Geodesic Distances (red)" >
         <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />

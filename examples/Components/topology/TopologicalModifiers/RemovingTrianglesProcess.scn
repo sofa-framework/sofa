@@ -17,10 +17,11 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <DefaultAnimationLoop/>
     
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-10"/>
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject name="dofs" src="@loader" template="Vec3d" />
         <TriangleSetTopologyContainer name="Triangle_topo" src="@loader"/>

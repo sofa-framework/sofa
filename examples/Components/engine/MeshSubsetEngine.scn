@@ -8,6 +8,7 @@
     
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <BackgroundSetting color="1 1 1"/>
+    <DefaultAnimationLoop/>
     
     <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
     <BoxROI name="boxroi" template="Vec3d" position="@loader.position" box="-15 0 -5 0 10 5" drawBoxes="1"/>

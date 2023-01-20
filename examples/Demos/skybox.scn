@@ -1,3 +1,5 @@
+<!-- TODO: error on shaders -->
+
 <Node name="root" gravity="0 0 -9.81">
     <Node name="plugins">
         <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
@@ -16,7 +18,7 @@
         <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglShader OglShaderVisualModel OglTexture] -->
     </Node>
 
-
+    <DefaultAnimationLoop/>
     <Node bbox="-100 -100 -100 100 100 100">
         <OglShader fileVertexShaders='["shaders/skybox.vert"]' fileFragmentShaders='["shaders/skybox.frag"]' printLog="true"/>
     
@@ -27,7 +29,7 @@
         <OglTexture textureFilename="textures/skybox_top.jpg"    indexShader="0" id="skybox_top"    repeat="false" textureUnit="4"/>
         <OglTexture textureFilename="textures/skybox_bottom.jpg" indexShader="0" id="skybox_bottom" repeat="false" textureUnit="5"/>
         
-        <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" cullFace="2"/>
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1"/>
         <OglShaderVisualModel src="@meshLoader_0" material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 1 1 1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "/>
     </Node>
     
@@ -35,7 +37,7 @@
 
         <MeshOBJLoader name="loader" filename="mesh/Teodule_LowRes.obj" translation="20 16 3" rotation="90 0 0"/>
         <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver template="GraphScattered"/>
+        <CGLinearSolver template="GraphScattered" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         
         <TriangleSetTopologyContainer src="@loader"/>
         <MechanicalObject name="dof"/>

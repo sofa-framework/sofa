@@ -1,4 +1,7 @@
 <Node name="root">
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <OglModel name="dragon" filename="mesh/dragon.obj" />
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->  
+    <DefaultAnimationLoop/>
+    <MeshOBJLoader name="loader" filename="mesh/dragon.obj"/>
+    <OglModel name="dragon" src="@loader" />
 </Node>

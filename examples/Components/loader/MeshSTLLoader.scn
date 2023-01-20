@@ -5,6 +5,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showVisual" />
 
+    <DefaultAnimationLoop/>
     <MeshSTLLoader name="STLLoader" filename="mesh/circle_knot_ascii.stl" printLog="true" flipNormals="0" />
     <OglModel src="@STLLoader" name="VisualModel" color="red" />
 </Node>

@@ -3,6 +3,7 @@
 	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 	<RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
 	<RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer] -->
+	<DefaultAnimationLoop/>
 
     <MeshTopology name="mesh" filename="mesh/dragon.obj" />
     <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />

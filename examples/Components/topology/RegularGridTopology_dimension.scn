@@ -21,6 +21,7 @@
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     </Node>
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
+    <DefaultAnimationLoop/>
 
     <DefaultPipeline name="default21" verbose="0" />
     <DefaultAnimationLoop/>

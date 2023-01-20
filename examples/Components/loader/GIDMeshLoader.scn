@@ -12,6 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     
     <VisualStyle displayFlags="showBehavior" />
+    <DefaultAnimationLoop/>
     <Node name="Tripod">
         <EulerImplicitSolver/>
         <SparseLDLSolver/>

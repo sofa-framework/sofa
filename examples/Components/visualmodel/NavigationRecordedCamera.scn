@@ -6,6 +6,7 @@
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [RecordedCamera VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <DefaultAnimationLoop/>
         
     <VisualStyle name="visualStyle1"  displayFlags="showBehavior" />
     <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
@@ -15,12 +16,5 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
     <DefaultContactManager name="Response"  response="PenalityContactForceField" />
-    <RecordedCamera projectionType="0" name="recordedCamera0"  listening="1" navigationMode="1" cameraPositions="-35.5 12.1 37.8
-                                                                                            -13.9 9.3 42.1 
-                                                                                            4.9 13.1 43.6
-                                                                                            28.1 20.2 44.7"
-                                                                         cameraOrientations="0.17 0.06 -0.06 -0.98
-                                                                                             0.17 0.06 -0.06 -0.98
-                                                                                             0.17 0.06 -0.06 -0.98 
-                                                                                             0.17 0.06 -0.06 -0.98" />
-</Node>
+    <RecordedCamera projectionType="0" name="recordedCamera0"  listening="1" navigationMode="1" cameraPositions="-35.5 12.1 37.8" cameraOrientations="0.17 0.06 -0.06 -0.98" position="0 50 0" rotationLookAt="0 5 0" rotationStartPoint="0 30 80" rotationCenter="0 0 0" startTime="20" endTime="100" drawRotation="0" rotationMode="1" />
+    </Node>

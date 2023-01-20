@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <Node name="root" gravity="0 -9.81 0" dt="0.01">
+    <DefaultAnimationLoop/>
     <Node name="plugins">
         <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
         <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->

@@ -19,6 +19,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
@@ -27,7 +28,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-10"/>
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject name="dofs" src="@loader" template="Vec3d" />
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />

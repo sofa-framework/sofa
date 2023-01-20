@@ -19,6 +19,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaNewmat"/> <!-- Needed to use components [LULinearSolver] -->
 
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline name="default21" verbose="0" />
     <BruteForceBroadPhase/>

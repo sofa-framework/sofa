@@ -12,6 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualGrid VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
+    <DefaultAnimationLoop/>
     
 	<VisualStyle displayFlags="showForceFields"/>
 	<BackgroundSetting color="0.8 0.4 0.6"/>
@@ -29,13 +30,13 @@
 	<UniformMass name="Mass" totalMass="1" />
 	<MeshSpringForceField name="Springs" stiffness="100" damping="1" />
 
-	<PlaneForceField name="Floor" normal="-0.2 0 1" stiffness="100" damping="1" draw="1" />
+	<PlaneForceField name="Floor" normal="-0.2 0 1" stiffness="100" damping="1"/>
 	<!-- <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="0.4 0.4 0.4" /> -->
 
 	<AverageCoord name="center" template="Vec3d" listening="true"/>
 
 	<OglLabel label="Sofa framework" fontsize="30"/>
 	<OglLabel label="Falling cube on an inclined plane" fontsize="20" y="50"/>
-	<OglLabel label="@center.average" fontsize="20" color="contrast" prefix="Cube position: " updateLabelEveryNbSteps="30" y="75"/>
+	<OglLabel label="@center.average" fontsize="20" selectContrastingColor='true' prefix="Cube position: " updateLabelEveryNbSteps="30" y="75"/>
 
 </Node>

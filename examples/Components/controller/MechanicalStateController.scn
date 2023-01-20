@@ -13,6 +13,8 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer EdgeSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>

@@ -32,7 +32,8 @@ into a single bigger system.
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [InteractiveCamera VisualStyle] -->
 
     <VisualStyle displayFlags="showCollisionModels"/>
-
+    
+    <DefaultAnimationLoop/>
     <DefaultPipeline/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

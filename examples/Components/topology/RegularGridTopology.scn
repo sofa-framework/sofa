@@ -22,6 +22,8 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <DiscreteIntersection/>
+    <DefaultAnimationLoop/>
+    
     <Node name="LiverFFD-lowres">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>

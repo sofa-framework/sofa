@@ -23,6 +23,8 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Triangles Mesh">
         <CGImplicitSolver name="Solver" iterations="40" tolerance="1e-06" threshold="1e-10" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />

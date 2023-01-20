@@ -23,6 +23,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
 	<SleepController immobileThreshold="0.2" minTimeSinceWakeUp="0.1" printLog="0" />
+    <DefaultAnimationLoop/>
 	
     <Node name="Cube1" canChangeSleepingState="true">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -37,7 +38,7 @@
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <MeshOBJLoader name="meshLoader_2" filename="mesh/smCube125.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="red" />
-            <SubsetMapping object1="../.." object2="Visual" />
+            <SubsetMapping/>
         </Node>
         <Node name="Surf">
             <MeshOBJLoader name="loader" filename="mesh/smCube125.obj" />
@@ -60,7 +61,7 @@
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <MeshOBJLoader name="meshLoader_1" filename="mesh/smCube125.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="red" dx="50" dy="20"/>
-            <SubsetMapping object1="../.." object2="Visual" />
+            <SubsetMapping />
         </Node>
         <Node name="Surf">
             <MeshOBJLoader name="loader" filename="mesh/smCube125.obj" />
@@ -83,7 +84,7 @@
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <MeshOBJLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red" dx="-30" dy="10"/>
-            <SubsetMapping object1="../.." object2="Visual" />
+            <SubsetMapping />
         </Node>
         <Node name="Surf">
             <MeshOBJLoader name="loader" filename="mesh/smCube125.obj" />
@@ -98,8 +99,8 @@
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
-        <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
-        <PointCollisionModel name="FloorLine" simulated="0" moving="0" />
+        <LineCollisionModel name="FloorLine_line" simulated="0" moving="0" />
+        <PointCollisionModel name="FloorLine_point" simulated="0" moving="0" />
         <MeshOBJLoader name="meshLoader_3" filename="mesh/floor3.obj" scaleTex="0.2 0.2" scale="1.75" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_3" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>

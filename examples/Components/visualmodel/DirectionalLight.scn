@@ -13,6 +13,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [DirectionalLight LightManager] -->
 
+    <DefaultAnimationLoop/>
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

@@ -56,7 +56,7 @@
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <MeshOBJLoader name="meshLoader_2" filename="mesh/cube.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping/>
         </Node>
         <Node name="Colli">
             <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
@@ -81,7 +81,7 @@
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <MeshOBJLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping />
         </Node>
         <Node name="Colli">
             <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
@@ -106,7 +106,7 @@
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping />
         </Node>
         <Node name="Colli">
             <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />

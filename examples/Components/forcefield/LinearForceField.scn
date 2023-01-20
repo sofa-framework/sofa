@@ -9,6 +9,8 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
+    
     <Node name="TorusRigidX">
         <EulerExplicitSolver />
         <CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5"/>

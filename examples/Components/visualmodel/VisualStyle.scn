@@ -15,6 +15,7 @@
     <!-- ACTIVATE: showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame -->
     <!-- DE-ACTIVATE: hideVisual hideBehavior hideForceFields hideInteractionForceFields hideCollision hideCollisionModels hideWireFrame -->
     <VisualStyle displayFlags="showVisual showCollisionModels" />
+    <DefaultAnimationLoop/>
     
     <Node name="Liver" >
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />

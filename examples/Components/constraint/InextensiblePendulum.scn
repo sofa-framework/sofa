@@ -40,7 +40,7 @@
         <SparseCholeskySolver />
         <GenericConstraintCorrection />
 
-        <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
+        <EdgeSetTopologyContainer name="topology" position="@translate.output_position" edges="@../loader.edges" />
         <MechanicalObject name="defoDOF" template="Vec3d" />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
@@ -49,7 +49,7 @@
         <MappingGeometricStiffnessForceField mapping="@./extensionsNode/distanceMapping" />
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1d"  name="extensionsDOF" />
-            <DistanceMapping  name="distanceMapping" />
+            <DistanceMapping  name="distanceMapping" topology="@../topology"/>
             <UniformConstraint template="Vec1d" iterative="false" />
         </Node>
 
@@ -66,7 +66,7 @@
         <GenericConstraintCorrection />
         <!-- resolution = number of particles (including the fixed one) -->
         <!-- scale = total length of the pendulum -->
-        <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
+        <EdgeSetTopologyContainer name="topology" position="@translate.output_position" edges="@../loader.edges" />
         <MechanicalObject name="defoDOF" template="Vec3d" />
         <EdgeSetGeometryAlgorithms drawEdges="true" />
         <FixedConstraint indices="0" />
@@ -74,7 +74,7 @@
         <DiagonalMass  name="mass" totalMass="1e-3"/>
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1d"  name="extensionsDOF" />
-            <DistanceMapping  name="distanceMapping" />
+            <DistanceMapping  name="distanceMapping" topology="@../topology"/>
             <UniformConstraint template="Vec1d" iterative="false" />
         </Node>
 

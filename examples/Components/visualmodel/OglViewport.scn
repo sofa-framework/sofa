@@ -15,6 +15,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglViewport] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
+    <DefaultAnimationLoop/>
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

@@ -13,6 +13,7 @@
 	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
     <VisualStyle displayFlags="showCollisionModels hideBehaviorModels hideForceFields" />
+    <DefaultAnimationLoop/>
 
     <Node activated="true" name="ArticulatedSoftBeam">
 	    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

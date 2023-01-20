@@ -24,6 +24,7 @@
     <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="mechanics"/>
     <BoxROI name="box-hot" box="-3 4 4 3 8 8" drawBoxes="1" position="@raptorDOFs.position"/>
     <BoxROI name="box-cold" box="-3 4 -4 3 8 -10" drawBoxes="1" position="@raptorDOFs.position"/>
+    <DefaultAnimationLoop/>
 
 
     <Node name="Temperature" gravity="0 0 0"  >

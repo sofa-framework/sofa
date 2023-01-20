@@ -9,6 +9,7 @@
 	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
+    <DefaultAnimationLoop/>
 	<VisualStyle name="visualStyle1"  displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
 	<Node 	 name="Poutre1"  >
 		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />

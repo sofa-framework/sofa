@@ -18,6 +18,8 @@
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Chain">
         <Node name="TorusFixed">
             <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />

@@ -22,6 +22,7 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
 	
 	<Node name="SquareGravity">
 		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10" />

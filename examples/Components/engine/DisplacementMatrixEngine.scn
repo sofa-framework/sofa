@@ -8,6 +8,8 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglFloat4Attribute OglInt4Attribute OglMatrix4VectorVariable OglShader] -->
+
+    <DefaultAnimationLoop/>
     <EulerExplicitSolver name="odesolver"  />
     <Node 	 name="DeformableObject"   >
         <MechanicalObject template="Rigid3d" name="Bones"  position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1" rest_position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1"  showObject="1"  showObjectScale="0.5" />

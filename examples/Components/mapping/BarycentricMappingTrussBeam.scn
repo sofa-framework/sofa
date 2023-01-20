@@ -24,6 +24,8 @@
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.5" contactDistance="0.05" />
     <DefaultContactManager response="PenalityContactForceField" />
+    <DefaultAnimationLoop/>
+    
     <!-- A deformable square mesh -->
     <Node name="Truss" activated="true" gravity="0 0 0">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -15,6 +15,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe showForceFields" />
+    <DefaultAnimationLoop/>
 
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />

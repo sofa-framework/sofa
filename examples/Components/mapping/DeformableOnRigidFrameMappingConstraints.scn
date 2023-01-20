@@ -28,6 +28,8 @@
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
     <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+    <FreeMotionAnimationLoop/>
+
     <Node name="ChainRigid">
         <Node name="TorusFixed">
             <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -41,14 +43,14 @@
         </Node>
         <Node name="TorusRigid">
             <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
-            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
+            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" />
             <MechanicalObject name="rigidframe" template="Rigid3d" position="1 2 0 0 0 0.7 0.7" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
             <UncoupledConstraintCorrection />
         </Node>
         <Node name="TorusDeformLocal">
             <EulerImplicitSolver />
-            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
+            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" />
             <SparseGridTopology filename="mesh/torus_for_collision.obj" n="7 2 4" />
             <MechanicalObject />
             <TetrahedronFEMForceField youngModulus="1e4" poissonRatio="0.45"/>

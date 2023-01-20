@@ -18,6 +18,8 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Tetra2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
@@ -35,7 +37,7 @@
         <FixedConstraint indices="@FixedROI.indices" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="20" poissonRatio="0.4" method="large" />
         <Node name="T">
-            <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
+            <include href="Objects/TriangleSetTopology.xml" src="@../loader" tags=" " />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="50" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />

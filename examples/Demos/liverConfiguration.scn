@@ -19,6 +19,7 @@
     <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [AttachBodyButtonSetting FixPickedParticleButtonSetting] -->
     
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <DefaultAnimationLoop/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />

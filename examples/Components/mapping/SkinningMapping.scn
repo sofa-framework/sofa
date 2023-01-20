@@ -20,6 +20,8 @@
     <DefaultContactManager name="default1" />
     <DefaultPipeline name="default2" />
     <MinProximityIntersection name="default3" alarmDistance="1" contactDistance="0.5"/>
+    <DefaultAnimationLoop/>
+    
     <Node name="default4" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />

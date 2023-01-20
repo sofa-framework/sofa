@@ -13,6 +13,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
     
     <Node name="BeamFEM_SMALL">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

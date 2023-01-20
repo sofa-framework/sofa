@@ -20,6 +20,7 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
+    <DefaultAnimationLoop/>
 
     <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
     <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />

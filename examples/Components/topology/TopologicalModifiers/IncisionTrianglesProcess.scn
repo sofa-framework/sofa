@@ -18,6 +18,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <VisualStyle displayFlags="showVisual showWireframe" />
+    <DefaultAnimationLoop/>
 
     <Node name="SquareGravity" gravity="0 0 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

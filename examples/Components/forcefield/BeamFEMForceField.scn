@@ -18,6 +18,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [CubeTopology MeshTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehaviorModels hideForceFields showCollisionModels hideVisual showInteractionForceFields" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>

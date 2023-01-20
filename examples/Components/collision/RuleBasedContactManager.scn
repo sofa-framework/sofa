@@ -25,7 +25,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1.0" angleCone="0.0" />
-    <RuleBasedContactManager name="Response" response="FrictionContactConstraint" rules="4 * default" />
+    <RuleBasedContactManager name="Response" response="FrictionContactConstraint" rules="default"/>
     
     <Node name="Torus1">
         <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader" />
