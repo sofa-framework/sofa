@@ -26,12 +26,13 @@ namespace sofa::simulation
 
 bool SceneCheckRegistry::addToRegistry(const SceneCheck::SPtr& sceneCheck)
 {
-    if( std::find(m_registeredSceneChecks.begin(), m_registeredSceneChecks.end(), sceneCheck) == m_registeredSceneChecks.end() )
+    const auto it = std::find(m_registeredSceneChecks.begin(), m_registeredSceneChecks.end(), sceneCheck);
+    const auto found = it != m_registeredSceneChecks.end();
+    if(!found)
     {
-        m_registeredSceneChecks.push_back(sceneCheck) ;
-        return true;
+        m_registeredSceneChecks.push_back(sceneCheck);
     }
-    return false;
+    return !found;
 }
 
 void SceneCheckRegistry::removeFromRegistry(const SceneCheck::SPtr& sceneCheck)
