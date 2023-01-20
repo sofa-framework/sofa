@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,13 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_MULTITHREADING_PARALLELHEXAHEDRONFEMFORCEFIELD_CPP
+#include <MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <MultiThreading/config.h>
+#include <MultiThreading/ParallelImplementationsRegistry.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h")
-#include <MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h>
-namespace sofa::component::collision
+namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 {
-    using ParallelBruteForceBroadPhase = multithreading::component::collision::detection::algorithm::ParallelBruteForceBroadPhase;
+
+const bool isParallelHexahedronFEMForceFieldImplementationRegistered =
+    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("HexahedronFEMForceField", "ParallelHexahedronFEMForceField");
+
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int ParallelHexahedronFEMForceFieldClass = sofa::core::RegisterObject("Parallel hexahedral finite elements")
+                                           .add < ParallelHexahedronFEMForceField < Vec3Types > > ();
+
+template class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField<Vec3Types>;
+
 }

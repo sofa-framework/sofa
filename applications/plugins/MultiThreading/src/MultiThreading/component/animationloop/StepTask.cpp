@@ -19,25 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_MULTITHREADING_PARALLELTETRAHEDRONFEMFORCEFIELD_CPP
-#include <MultiThreading/ParallelTetrahedronFEMForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include <MultiThreading/component/animationloop/StepTask.h>
 
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/ExecParams.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa::component::forcefield
+#include <thread>
+
+namespace multithreading::component::animationloop
 {
 
-using namespace sofa::defaulttype;
+StepTask::StepTask(sofa::core::behavior::BaseAnimationLoop* aloop, const double t, CpuTask::Status* status)
+    : CpuTask(status)
+    , animationloop(aloop)
+    , dt(t)
+{}
 
-const bool isParallelTetrahedronFEMForceFieldImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("TetrahedronFEMForceField", "ParallelTetrahedronFEMForceField");
+StepTask::~StepTask() = default;
 
-// Register in the Factory
-int ParallelTetrahedronFEMForceFieldClass = core::RegisterObject("Parallel tetrahedral finite elements")
-                                           .add < ParallelTetrahedronFEMForceField < Vec3Types > > ();
 
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField<Vec3Types>;
-
+sofa::simulation::Task::MemoryAlloc StepTask::run()
+{
+    animationloop->step( sofa::core::ExecParams::defaultInstance(), dt);
+    return Task::MemoryAlloc::Dynamic;
 }
+
+} // namespace sofa
+
+
+
+

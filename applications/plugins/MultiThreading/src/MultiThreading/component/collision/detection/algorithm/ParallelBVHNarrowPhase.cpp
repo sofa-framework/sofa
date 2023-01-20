@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/ParallelBVHNarrowPhase.h>
+#include <MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/TaskScheduler.h>
@@ -30,7 +30,7 @@
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 
-namespace sofa::component::collision
+namespace multithreading::component::collision::detection::algorithm
 {
 
 const bool isParallelBVHNarrowPhaseImplementationRegistered =
@@ -39,7 +39,7 @@ const bool isParallelBVHNarrowPhaseImplementationRegistered =
 
 using sofa::helper::ScopedAdvancedTimer;
 
-int ParallelBVHNarrowPhaseClass = core::RegisterObject("Narrow phase collision detection based on boundary volume hierarchy")
+int ParallelBVHNarrowPhaseClass = sofa::core::RegisterObject("Narrow phase collision detection based on boundary volume hierarchy")
         .add< ParallelBVHNarrowPhase >()
 ;
 
@@ -65,7 +65,7 @@ void ParallelBVHNarrowPhase::init()
     }
 }
 
-void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
+void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> >& v)
 {
     ScopedAdvancedTimer addCollisionPairsTimer("addCollisionPairs");
 
@@ -111,23 +111,23 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
 }
 
 void ParallelBVHNarrowPhase::createOutput(
-        const type::vector<std::pair<core::CollisionModel *, core::CollisionModel *>> &v)
+        const sofa::type::vector<std::pair<sofa::core::CollisionModel *, sofa::core::CollisionModel *>> &v)
 {
     ScopedAdvancedTimer createTasksTimer("OutputCreation");
 
     for (const auto &pair : v)
     {
-        core::CollisionModel *cm1 = pair.first;
-        core::CollisionModel *cm2 = pair.second;
+        sofa::core::CollisionModel *cm1 = pair.first;
+        sofa::core::CollisionModel *cm2 = pair.second;
 
-        core::CollisionModel *finestCollisionModel1 = cm1->getLast();//get the finest CollisionModel which is not a CubeModel
-        core::CollisionModel *finestCollisionModel2 = cm2->getLast();
+        sofa::core::CollisionModel *finestCollisionModel1 = cm1->getLast();//get the finest CollisionModel which is not a CubeModel
+        sofa::core::CollisionModel *finestCollisionModel2 = cm2->getLast();
 
         initializeTopology(finestCollisionModel1->getCollisionTopology());
         initializeTopology(finestCollisionModel2->getCollisionTopology());
 
         bool swapModels = false;
-        core::collision::ElementIntersector *finestIntersector = intersectionMethod->findIntersector(
+        sofa::core::collision::ElementIntersector *finestIntersector = intersectionMethod->findIntersector(
                 finestCollisionModel1, finestCollisionModel2,
                 swapModels);//find the method for the finest CollisionModels
         if (finestIntersector == nullptr)
@@ -173,7 +173,7 @@ void ParallelBVHNarrowPhase::initializeTopology(sofa::core::topology::BaseMeshTo
 ParallelBVHNarrowPhasePairTask::ParallelBVHNarrowPhasePairTask(
         sofa::simulation::CpuTask::Status* status,
         ParallelBVHNarrowPhase* bvhNarrowPhase,
-        std::pair<core::CollisionModel*, core::CollisionModel*> pair)
+        std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> pair)
     : sofa::simulation::CpuTask(status)
     , m_bvhNarrowPhase(bvhNarrowPhase)
     , m_pair(pair)
@@ -185,7 +185,7 @@ sofa::simulation::Task::MemoryAlloc ParallelBVHNarrowPhasePairTask::run()
 
     m_bvhNarrowPhase->addCollisionPair(m_pair);
 
-    return simulation::Task::Stack;
+    return sofa::simulation::Task::Stack;
 }
 
 }

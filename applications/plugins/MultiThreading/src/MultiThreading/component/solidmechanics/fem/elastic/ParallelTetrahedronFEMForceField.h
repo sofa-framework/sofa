@@ -29,14 +29,8 @@
 
 #include <thread>
 
-namespace sofa::component::forcefield
+namespace multithreading::component::solidmechanics::fem::elastic
 {
-
-template<class DataTypes>
-class AccumulateForceLargeTasks;
-
-template<class DataTypes>
-class AddDForceTask;
 
 /**
  * Parallel implementation of TetrahedronFEMForceField
@@ -61,22 +55,22 @@ public:
     using Deriv = typename DataTypes::Deriv;
     using Real = typename Coord::value_type;
 
-    using DataVecDeriv = core::objectmodel::Data<VecDeriv>;
-    using DataVecCoord = core::objectmodel::Data<VecCoord>;
+    using DataVecDeriv = sofa::core::objectmodel::Data<VecDeriv>;
+    using DataVecCoord = sofa::core::objectmodel::Data<VecCoord>;
 
-    using Element = core::topology::BaseMeshTopology::Tetra;
-    using VecElement = core::topology::BaseMeshTopology::SeqTetrahedra;
+    using Element = sofa::core::topology::BaseMeshTopology::Tetra;
+    using VecElement = sofa::core::topology::BaseMeshTopology::SeqTetrahedra;
 
-    using StiffnessMatrix = type::Mat<12, 12, Real>;
-    using Transformation = type::MatNoInit<3, 3, Real>;
+    using StiffnessMatrix = sofa::type::Mat<12, 12, Real>;
+    using Transformation = sofa::type::MatNoInit<3, 3, Real>;
 
 
     void init() override;
 
-    void addForce (const core::MechanicalParams* mparams, DataVecDeriv& d_f,
+    void addForce (const sofa::core::MechanicalParams* mparams, DataVecDeriv& d_f,
                    const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
 
-    void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& d_df,
+    void addDForce (const sofa::core::MechanicalParams* mparams, DataVecDeriv& d_df,
                     const DataVecDeriv& d_dx) override;
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal kFactor, unsigned int &offset) override;
