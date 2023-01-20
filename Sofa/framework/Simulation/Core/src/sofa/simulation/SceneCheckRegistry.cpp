@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/SceneCheckRegistry.h>
+#include <algorithm>
 
 namespace sofa::simulation
 {
