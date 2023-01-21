@@ -19,75 +19,69 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/qt/init.h>
+#pragma once
 
-#include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/qt/RealGUI.h>
+#include <sofa/core/config.h>
 
-void redirectQtMessages(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+namespace sofa::core::visual
 {
-    SOFA_UNUSED(context);
-    const QByteArray localMsg = msg.toLocal8Bit();
-    switch (type)
+
+struct SOFA_CORE_API tristate
+{
+    enum state_t { false_value, true_value, neutral_value } state;
+    tristate(bool b):state(b==true ? true_value : false_value )
     {
-    case QtDebugMsg:
-        msg_info("Qt") << localMsg.constData();
-        break;
-    case QtInfoMsg:
-        msg_info("Qt") << localMsg.constData();
-        break;
-    case QtWarningMsg:
-        msg_warning("Qt") << localMsg.constData();
-        break;
-    case QtCriticalMsg:
-        msg_error("Qt") << localMsg.constData();
-        break;
-    case QtFatalMsg:
-        msg_fatal("Qt") << localMsg.constData();
-        break;
     }
+    tristate():state(true_value)
+    {
+    }
+    tristate(state_t state):state(state) {}
+
+    operator bool() const
+    {
+        return state == true_value ? true : false;
+    }
+
+    bool operator==(const tristate& t) const
+    {
+        return state == t.state;
+    }
+
+    bool operator!=(const tristate& t) const
+    {
+        return state != t.state;
+    }
+
+    bool operator==(const state_t& s) const
+    {
+        return state == s;
+    }
+
+    bool operator!=(const state_t& s) const
+    {
+        return state != s;
+    }
+
+    friend inline tristate fusion_tristate(const tristate& lhs, const tristate& rhs);
+    friend inline tristate merge_tristate(const tristate& previous, const tristate& current);
+    friend inline tristate difference_tristate(const tristate& previous, const tristate& current);
+};
+
+inline tristate fusion_tristate(const tristate &lhs, const tristate &rhs)
+{
+    if( lhs.state == rhs.state ) return lhs;
+    return tristate(tristate::neutral_value);
 }
 
-namespace sofa::gui::qt
+inline tristate merge_tristate(const tristate& previous, const tristate& current)
 {
-
-    extern "C" {
-        SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    }
-
-    void initExternalModule()
-    {
-        init();
-    }
-
-    const char* getModuleName()
-    {
-        return MODULE_NAME;
-    }
-
-    const char* getModuleVersion()
-    {
-        return MODULE_VERSION;
-    }
-
-    void init()
-    {
-        static bool first = true;
-        if (first)
-        {
-#if SOFA_GUI_QT_ENABLE_QGLVIEWER
-            sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
-#endif
-
-#if SOFA_GUI_QT_ENABLE_QTVIEWER
-            sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
-#endif
-            qInstallMessageHandler(redirectQtMessages);
-
-            first = false;
-        }
-    }
-
-} // namespace sofa::gui::qt
+    if(current.state == tristate::neutral_value ) return previous;
+    return current;
+}
+inline tristate difference_tristate(const tristate& previous, const tristate& current)
+{
+    if( current.state == tristate::neutral_value || current.state == previous.state )
+        return tristate(tristate::neutral_value);
+    return current;
+}
+}

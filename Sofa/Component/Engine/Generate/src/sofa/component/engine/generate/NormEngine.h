@@ -1,4 +1,4 @@
- 
+
 /******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
@@ -50,15 +50,6 @@ public:
     void reinit() override;
 
     void doUpdate() override;
-
-    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
-    /// so we need to override that by implementing GetCustomTemplateName() function
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName()
-    {
-        return defaulttype::DataTypeInfo<TDataType>::name();
-    }
-
 
 protected:
 

@@ -24,16 +24,9 @@
 #include <MultiThreading/config.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
-#include <sofa/simulation/CpuTask.h>
 
 namespace sofa::component::forcefield
 {
-
-template<class DataTypes>
-class AccumulateForceLargeTasks;
-
-template<class DataTypes>
-class AddDForceTask;
 
 /**
  * Parallel implementation of HexahedronFEMForceField
@@ -75,6 +68,13 @@ public:
 
     void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f,
                    const DataVecCoord& x, const DataVecDeriv& v) override;
+
+    /**
+     * The computation is done in 2 steps:
+     * 1) Elements are visited in parallel: a force derivative is computed inside each element
+     * 2) Vertices are visited in parallel: the force derivative in all adjacent hexahedra are
+     * accumulated in the vertices
+     */
     void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& df,
                     const DataVecDeriv& dx) override;
 
@@ -86,6 +86,18 @@ protected:
                                type::Vec<8, Deriv>& OutF);
 
     void initTaskScheduler();
+
+    /// Assuming a vertex has 8 adjacent hexahedra, the array stores where the vertex is referenced in each of the adjacent hexahedra
+    using HexaAroundVerticesIndex = sofa::type::fixed_array<sofa::Size, 8>;
+
+    /// Where all vertex ids are stored in their adjacent hexahedra
+    sofa::type::vector<HexaAroundVerticesIndex> m_vertexIdInAdjacentHexahedra;
+
+    /// A list of DF corresponding to all elements. It is stored as a class member to avoid to reallocate it
+    sofa::type::vector<type::Vec<8, Deriv> > m_elementsDf;
+
+    /// Cache the list of hexahedra around vertices
+    sofa::type::vector<core::topology::BaseMeshTopology::HexahedraAroundVertex> m_around;
 
 private:
     bool updateStiffnessMatrices; /// cache to avoid calling 'getValue' on f_updateStiffnessMatrix

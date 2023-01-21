@@ -131,8 +131,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
                  "</Node>                                               \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+                                                          scene.str().c_str()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* fem = root->getTreeNode("FEMnode")->getObject("fem") ;

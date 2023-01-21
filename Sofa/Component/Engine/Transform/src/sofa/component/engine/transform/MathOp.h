@@ -60,13 +60,6 @@ public:
 
     void doUpdate() override;
 
-    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
-    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
-    static std::string GetCustomTemplateName()
-    {
-        return Data<Value>::templateName();
-    }
-
     Data<unsigned int> f_nbInputs; ///< Number of input values
     type::vector<Data<VecValue>*> vf_inputs;
     sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > f_op; ///< Selected operation to apply
@@ -87,7 +80,7 @@ extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< defaulttype::R
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< defaulttype::Rigid3Types::VecCoord >;
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
- 
+
 #endif
 
 } //namespace sofa::component::engine::transform

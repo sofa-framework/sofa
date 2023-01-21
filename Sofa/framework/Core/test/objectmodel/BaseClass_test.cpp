@@ -26,6 +26,8 @@ using sofa::core::objectmodel::Base ;
 #include <sofa/helper/NameDecoder.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/defaulttype/VecTypes.h>
+
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
 
@@ -148,6 +150,10 @@ public:
     DefaultTemplate3<DataOne, DataTwo, NotAType> m_ptr9;
     OuterClass<DataOne> m_ptr10;
     OuterClass<DataOne>::InnerClass<DataTwo> m_ptr11;
+    DefaultTemplate1<float> m_ptr12;
+    DefaultTemplate1<sofa::type::vector<float>> m_ptr13;
+    DefaultTemplate1<sofa::type::Vec3d> m_ptr14;
+    DefaultTemplate1<sofa::defaulttype::Vec3dTypes> m_ptr15;
 
     sofa::core::objectmodel::Base* m_baseptr1 {&m_ptr1};
     sofa::core::objectmodel::Base* m_baseptr2 {&m_ptr2};
@@ -174,13 +180,13 @@ TEST_F(BaseClass_test, checkClassEquivalence  )
 
 TEST_F(BaseClass_test, checkStaticClassName  )
 {
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr1)>(),"EmptyObject");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr2)>(),"NumberedClass123");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr3)>(),"NumberedClass456");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr1)>(),"EmptyObject");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr2)>(),"NumberedClass123");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr3)>(),"NumberedClass456");
 
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::another_namespace::EmptyObject>(),"EmptyObject");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::NumberedClass123>(),"NumberedClass123");
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::NumberedClass456>(),"NumberedClass456");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::another_namespace::EmptyObject>(),"EmptyObject");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::numbered_namespace_123::NumberedClass123>(),"NumberedClass123");
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::numbered_namespace_123::NumberedClass456>(),"NumberedClass456");
 }
 
 TEST_F(BaseClass_test, checkDynamicClassName  )
@@ -227,6 +233,11 @@ TEST_F(BaseClass_test, checkStaticDefaultTemplate  )
 
     EXPECT_EQ(m_ptr9.getClassName(),"DefaultTemplate3") ;
     EXPECT_EQ(m_ptr9.getTemplateName(),"One,Two,NotAType") ;
+
+    EXPECT_EQ(m_ptr12.getTemplateName(),"f") ;
+    EXPECT_EQ(m_ptr13.getTemplateName(),"vector<f>") ;
+    EXPECT_EQ(m_ptr14.getTemplateName(),"Vec3d") ;
+    EXPECT_EQ(m_ptr15.getTemplateName(),"Vec3d") ;
 }
 
 TEST_F(BaseClass_test, checkStaticDefaultTemplateOverridenByCustom  )
@@ -247,11 +258,11 @@ TEST_F(BaseClass_test, checkNameSpace)
 TEST_F(BaseClass_test, checkStaticGetCustomClassNameOldWay  )
 {
     EXPECT_EQ(m_ptr5.getClass()->shortName,"MECHANICAL") ;
-    EXPECT_EQ(sofa::helper::NameDecoder::getShortName<sofa::numbered_namespace_123::CustomNameOldWay>(), "MECHANICAL" );
+    EXPECT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getShortName<sofa::numbered_namespace_123::CustomNameOldWay>(), "MECHANICAL" );
     ASSERT_EQ(m_ptr5.getClassName(),"ClassWithACustomNameOldWay") ;
     ASSERT_EQ(m_baseptr5->getClassName(),"ClassWithACustomNameOldWay") ;
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<decltype(m_ptr5)>(),"ClassWithACustomNameOldWay") ;
-    ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::CustomNameOldWay>(),"ClassWithACustomNameOldWay") ;
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<decltype(m_ptr5)>(),"ClassWithACustomNameOldWay") ;
+    ASSERT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getClassName<sofa::numbered_namespace_123::CustomNameOldWay>(),"ClassWithACustomNameOldWay") ;
 }
 
 TEST_F(BaseClass_test, checkNestedClass)

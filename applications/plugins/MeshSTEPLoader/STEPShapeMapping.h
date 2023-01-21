@@ -63,13 +63,13 @@ public:
 
         if (loader == NULL)
         {
-            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::helper::NameDecoder::getClassName<T>() << " as input model is missing or invalid.";
+            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::core::objectmodel::BaseClassNameHelper::getClassName<T>() << " as input model is missing or invalid.";
             return false;
         }
 
         if (topology == NULL)
         {
-            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::helper::NameDecoder::getClassName<T>() << " as output model is missing or invalid.";
+            msg_error("STEPShapeExtractor") << "Cannot create " << sofa::core::objectmodel::BaseClassNameHelper::getClassName<T>() << " as output model is missing or invalid.";
             return false;
         }
 

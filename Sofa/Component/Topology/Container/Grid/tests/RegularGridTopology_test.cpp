@@ -167,8 +167,8 @@ bool RegularGridTopology_test::regularGridPosition()
 
 bool RegularGridTopology_test::regularGridFindPoint()
 {
-    using Dimension = RegularGridTopology::Vec3i;
-    using BoundingBox = RegularGridTopology::BoundingBox;
+    using Dimension = sofa::type::Vec3i;
+    using BoundingBox = sofa::type::BoundingBox;
     using Coordinates = sofa::type::Vec3;
     using Epsilon = float;
 

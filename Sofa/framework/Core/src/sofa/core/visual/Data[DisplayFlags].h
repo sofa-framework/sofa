@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -21,16 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
-#ifdef SOFA_BUILD_SOFA_GUI_BATCH
-#  define SOFA_GUI_BATCH_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_GUI_BATCH_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::gui::batch
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::gui::batch
+template <> SOFA_CORE_API
+std::istream& sofa::core::objectmodel::Data<sofa::core::visual::DisplayFlags>::readValue(std::istream& in);

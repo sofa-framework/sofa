@@ -87,6 +87,8 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIP
     entry.parameters = parameters;
     entry.priority = priority;
     guiCreators.push_back(entry);
+
+    msg_info("GUIManager") << "Registered " << entry.name << " as a GUI.";
     return 0;
 }
 

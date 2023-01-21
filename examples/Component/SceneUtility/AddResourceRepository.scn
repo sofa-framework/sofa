@@ -5,10 +5,10 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <DefaultAnimationLoop/>
-        <MeshOBJLoader name="meshLoader_0" filename="mesh/add_repo_cube.obj" handleSeams="1" />
-	<OglModel name="VisualModel1" src="@meshLoader_0" />
+    <MeshOBJLoader name="meshLoader_0" filename="mesh/add_repo_cube.obj" handleSeams="1" />
+    <OglModel name="VisualModel1" src="@meshLoader_0" />
 
-        <AddDataRepository path="./mesh" />
-        <MeshOBJLoader name="meshLoader_1" filename="add_repo_cube.obj" translation="5 0 0" handleSeams="1" />
-        <OglModel name="VisualModel2" src="@meshLoader_1"/>
+    <AddDataRepository path="./mesh" />
+    <MeshOBJLoader name="meshLoader_1" filename="add_repo_cube.obj" translation="5 0 0" handleSeams="1" />
+    <OglModel name="VisualModel2" src="@meshLoader_1"/>
 </Node>

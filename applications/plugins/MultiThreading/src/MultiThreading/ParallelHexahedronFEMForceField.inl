@@ -34,6 +34,34 @@ void ParallelHexahedronFEMForceField<DataTypes>::init()
 {
     Inherit1::init();
     initTaskScheduler();
+
+    const auto indexedElements = *this->getIndexedElements();
+
+    m_vertexIdInAdjacentHexahedra.resize(this->l_topology->getNbPoints());
+    m_around.clear();
+    for (sofa::Size i = 0; i < this->l_topology->getNbPoints(); ++i)
+    {
+        const auto& around = this->l_topology->getHexahedraAroundVertex(i);
+        m_around.push_back(around);
+
+        sofa::Size j {};
+        for (const auto hexaId : around)
+        {
+            const auto element = indexedElements[hexaId];
+
+            sofa::Size indexInElement {};
+            for (const auto v : element)
+            {
+                if (v == i)
+                {
+                    m_vertexIdInAdjacentHexahedra[i][j] = indexInElement;
+                }
+                ++indexInElement;
+            }
+            ++j;
+        }
+
+    }
 }
 
 template<class DataTypes>
@@ -203,57 +231,60 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForce (const core::Mechanic
     assert(taskScheduler != nullptr);
 
     const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
+    const auto& indexedElements = *this->getIndexedElements();
 
-    std::mutex mutex;
+    m_elementsDf.resize(indexedElements.size());
 
     simulation::parallelForEachRange(*taskScheduler,
-        this->getIndexedElements()->begin(), this->getIndexedElements()->end(),
-        [this, &_dx, &_df, &elementStiffnesses, kFactor, &mutex](const auto& range)
+         indexedElements.begin(), indexedElements.end(),
+         [this, &_dx, &elementStiffnesses, kFactor, &indexedElements](const auto& range)
+         {
+             auto elementId = std::distance(indexedElements.begin(), range.start);
+             auto elementsDfIt = m_elementsDf.begin() + elementId;
+             auto elementStiffnessesIt = elementStiffnesses.begin() + elementId;
+             auto rotationIt = this->_rotations.begin() + elementId;
+
+             for (auto it = range.start; it != range.end; ++it, ++elementId)
+             {
+                 type::Vec<24, Real> X(type::NOINIT); //displacement
+                 type::Vec<24, Real> F(type::NOINIT); //force
+
+                 const auto& r = *rotationIt++;
+
+                 const auto& element = *it;
+                 for (sofa::Size w = 0; w < 8; ++w)
+                 {
+                     const Coord x_2 = r * _dx[element[w]];
+
+                     X[w * 3] = x_2[0];
+                     X[w * 3 + 1] = x_2[1];
+                     X[w * 3 + 2] = x_2[2];
+                 }
+
+                 // F = K * X
+                 this->computeForce(F, X, *elementStiffnessesIt++);
+
+                 type::Vec<8, Deriv>& df = *elementsDfIt++;
+                 for (sofa::Size w = 0; w < 8; ++w)
+                 {
+                     df[w] = -r.multTranspose(Deriv(F[w * 3], F[w * 3 + 1], F[w * 3 + 2])) * kFactor;
+                 }
+             }
+         });
+
+    simulation::parallelForEachRange(*taskScheduler,
+        static_cast<std::size_t>(0), _df.size(), [&_df, this](const auto& range)
         {
-            auto elementId = std::distance(this->getIndexedElements()->begin(), range.start);
-
-            std::vector<type::Vec<8, Deriv>> dfElements;
-            dfElements.reserve(std::distance(range.start, range.end));
-
-            type::Vec<24, Real> X; //displacement
-            type::Vec<24, Real> F; //force
-
-            for (auto it = range.start; it != range.end; ++it)
+            for (auto vertexId = range.start; vertexId < range.end; ++vertexId)
             {
-                const auto& element = *it;
-                for (int w = 0; w < 8; ++w)
+                const auto& around = m_around[vertexId];
+
+                sofa::Size hexaAroundId {};
+                for (const auto hexaId : around)
                 {
-                    Coord x_2 = this->_rotations[elementId] * _dx[element[w]];
-
-                    X[w * 3] = x_2[0];
-                    X[w * 3 + 1] = x_2[1];
-                    X[w * 3 + 2] = x_2[2];
+                    _df[vertexId] += m_elementsDf[hexaId][m_vertexIdInAdjacentHexahedra[vertexId][hexaAroundId]];
+                    hexaAroundId++;
                 }
-
-                // F = K * X
-                this->computeForce(F, X, elementStiffnesses[elementId]);
-
-                type::Vec<8, Deriv> df;
-                for (int w = 0; w < 8; ++w)
-                {
-                    df[w] -= this->_rotations[elementId].multTranspose(Deriv(F[w * 3], F[w * 3 + 1], F[w * 3 + 2])) * kFactor;
-                }
-
-                dfElements.emplace_back(df);
-
-                ++elementId;
-            }
-
-            std::lock_guard guard(mutex);
-
-            auto it = range.start;
-            for (const auto& df : dfElements)
-            {
-                for (int w = 0 ; w < 8; ++w)
-                {
-                    _df[(*it)[w]] += df[w];
-                }
-                ++it;
             }
         });
 }

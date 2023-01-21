@@ -175,9 +175,6 @@ sofa_add_subdirectory(library Sofa/Component/Compat Sofa.Component.Compat ON WHE
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
 
-# SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
-sofa_add_subdirectory(collection applications/collections/deprecated/SofaGui SofaGui ON)
-
 ### Compatibility
 # Deprecated (hollow) framework and component modules.
 # All depend on SOFA_ENABLE_LEGACY_HEADERS
