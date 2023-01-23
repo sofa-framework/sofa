@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,58 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
 #include <MultiThreading/config.h>
-#include <MultiThreading/initMultiThreading.h>
 
 namespace multithreading
 {
-
-extern "C" {
-SOFA_MULTITHREADING_PLUGIN_API void initExternalModule();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleName();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleVersion();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleLicense();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleDescription();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleComponentList();
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-void initExternalModule()
-{
-    init();
-}
-
-const char* getModuleName()
-{
-    return "MultiThreading";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "MultiThreading SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "DataExchange, AnimationLoopParallelScheduler ";
-}
-
+SOFA_MULTITHREADING_PLUGIN_API void init();
 }

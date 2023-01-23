@@ -3,6 +3,7 @@ project(MultiThreading VERSION 0.1)
 
 set(HEADER_FILES
     src/MultiThreading/config.h
+    src/MultiThreading/initMultiThreading.h
     src/MultiThreading/AnimationLoopParallelScheduler.h
     src/MultiThreading/AnimationLoopTasks.h
     src/MultiThreading/BeamLinearMapping_mt.h

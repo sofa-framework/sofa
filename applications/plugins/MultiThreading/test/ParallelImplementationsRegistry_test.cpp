@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <gtest/gtest.h>
+#include <MultiThreading/initMultiThreading.h>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -28,6 +29,8 @@ namespace multithreading
 
 TEST(ParallelImplementationsRegistry, existInObjectFactory)
 {
+    multithreading::init();
+
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
     ASSERT_FALSE(implementations.empty());
 
