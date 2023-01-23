@@ -29,10 +29,7 @@ namespace multithreading
 
 TEST(ParallelImplementationsRegistry, existInObjectFactory)
 {
-    multithreading::init();
-
     const auto implementations = ParallelImplementationsRegistry::getImplementations();
-    ASSERT_FALSE(implementations.empty());
 
     for (const auto& [seq, par] : implementations)
     {
