@@ -239,6 +239,17 @@ else()
     )
 endif()
 
+#Compatibility
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaBarycentricMapping.h
+        sofa/gpu/cuda/CudaBarycentricMapping.inl
+        sofa/gpu/cuda/CudaBarycentricMappingRigid.h
+        sofa/gpu/cuda/CudaRigidMapping.h
+        sofa/gpu/cuda/CudaRigidMapping.inl
+    )
+endif()
+
 set(README_FILES README.md)
 
 sofa_find_package(Sofa.Component.Mass REQUIRED)
