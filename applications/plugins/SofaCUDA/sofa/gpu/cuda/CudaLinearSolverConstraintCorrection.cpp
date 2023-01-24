@@ -31,6 +31,11 @@ using namespace sofa::gpu::cuda;
 template class SOFA_GPU_CUDA_API LinearSolverConstraintCorrection< CudaVec3fTypes >;
 template class SOFA_GPU_CUDA_API LinearSolverConstraintCorrection< CudaVec3f1Types >;
 
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API LinearSolverConstraintCorrection< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API LinearSolverConstraintCorrection< CudaVec3d1Types >;
+#endif
+
 } // namespace sofa::component::constraint::lagrangian::correction
 
 
@@ -41,6 +46,10 @@ namespace sofa::gpu::cuda
 const int CudaLinearSolverConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
     .add< LinearSolverConstraintCorrection< CudaVec3fTypes > >()
     .add< LinearSolverConstraintCorrection< CudaVec3f1Types > >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    .add< LinearSolverConstraintCorrection< CudaVec3dTypes > >()
+    .add< LinearSolverConstraintCorrection< CudaVec3d1Types > >()
+#endif
     ;
 
 } // namespace sofa::gpu::cuda
