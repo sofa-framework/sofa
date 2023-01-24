@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaTypes.h"
+#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/constraint/projective/FixedConstraint.h>
 
 namespace sofa::component::constraint::projective

@@ -62,7 +62,7 @@ Year = {2009}                                                                   
 #ifndef SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 #define SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 
-#include "CudaTypes.h"
+#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 

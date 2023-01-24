@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaCommon.h"
-#include "CudaMath.h"
+#include <SofaCUDA/sofa/gpu/cuda/CudaCommon.h>
+#include <SofaCUDA/sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 #include "CudaMathRigid.h"
 

@@ -19,43 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaBarycentricMapping.inl"
+#include <sofa/component/mapping/linear/BeamLinearMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-namespace sofa::component::mapping::linear
-{
-
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::gpu::cuda;
-
-// Spread the instanciations over multiple files for more efficient and lightweight compilation
-
-// instanciations involving both CudaVec3f1Types and Vec3dTypes
-
-
-
-template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3f1Types>;
-template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3f1Types, Vec3Types>;
-
-
-} // namespace sofa::component::mapping::linear
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.inl>
+#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa::gpu::cuda
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
 using namespace sofa::component::mapping::linear;
+using namespace defaulttype;
+using namespace core;
+using namespace core::behavior;
 
-int BarycentricMappingCudaClass_3f1_d = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
-        .add< BarycentricMapping< CudaVec3f1Types, Vec3Types> >()
 
+// Register in the Factory
+int BeamLinearMappingCudaClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+
+        .add< BeamLinearMapping<Rigid3fTypes, CudaVec3fTypes> >()
+        .add< BeamLinearMapping<Rigid3Types, CudaVec3Types> >()
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< BeamLinearMapping<Rigid3fTypes, CudaVec3dTypes> >()
+        .add< BeamLinearMapping<Rigid3dTypes, CudaVec3dTypes> >()
+#endif
         ;
 
 } // namespace sofa::gpu::cuda
+
+namespace sofa::component::mapping::linear
+{
+
+using namespace defaulttype;
+using namespace core;
+using namespace core::behavior;
+
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
+
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3dTypes, sofa::gpu::cuda::CudaVec3dTypes>;
+#endif
+
+
+} // namespace sofa::component::mapping::linear
