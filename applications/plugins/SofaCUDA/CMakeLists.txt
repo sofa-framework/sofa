@@ -249,6 +249,15 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaBarycentricMappingRigid.h
         sofa/gpu/cuda/CudaRigidMapping.h
         sofa/gpu/cuda/CudaRigidMapping.inl
+
+        sofa/gpu/cuda/CudaDiagonalMass.h
+        sofa/gpu/cuda/CudaDiagonalMass.inl
+
+        sofa/gpu/cuda/CudaMeshMatrixMass.h
+        sofa/gpu/cuda/CudaMeshMatrixMass.inl
+
+        sofa/gpu/cuda/CudaUniformMass.h
+        sofa/gpu/cuda/CudaUniformMass.inl
     )
 endif()
 
