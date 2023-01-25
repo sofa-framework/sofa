@@ -39,10 +39,12 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
     DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1,
     const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
-    VecDeriv&       f1 = *data_f1.beginEdit();
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f1 = sofa::helper::getWriteOnlyAccessor(data_f1);
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f2 = sofa::helper::getWriteOnlyAccessor(data_f2);
+
     const VecCoord& x1 =  data_x1.getValue();
     const VecDeriv& v1 =  data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
+
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
@@ -92,9 +94,6 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
                 ++i;
             }
         });
-
-    data_f1.endEdit();
-    data_f2.endEdit();
 }
 
 template <class DataTypes>
