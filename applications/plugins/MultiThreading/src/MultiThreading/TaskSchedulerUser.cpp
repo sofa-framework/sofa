@@ -34,7 +34,12 @@ void TaskSchedulerUser::initTaskScheduler()
     }
 
     m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry(d_taskSchedulerType.getValue());
-    assert(m_taskScheduler != nullptr);
+    if (m_taskScheduler == nullptr)
+    {
+        msg_error() << "Could not create task scheduler of type '" << d_taskSchedulerType.getValue() << "'";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     if (m_taskScheduler->getThreadCount() < 1)
     {
