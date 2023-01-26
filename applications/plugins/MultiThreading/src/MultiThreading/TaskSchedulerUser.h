@@ -33,12 +33,16 @@ class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerUser : virtual public sofa::co
 {
 public:
     sofa::Data<int> d_nbThreads;
+    sofa::Data<std::string> d_taskSchedulerType;
 
 protected:
     sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 
     TaskSchedulerUser();
     void initTaskScheduler();
+
+    void reinitTaskScheduler();
+    void stopTaskSchduler();
 };
 
 }

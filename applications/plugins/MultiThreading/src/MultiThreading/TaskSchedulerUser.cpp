@@ -21,14 +21,21 @@
 ******************************************************************************/
 #include <MultiThreading/TaskSchedulerUser.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/InitTasks.h>
 
 namespace multithreading
 {
 
 void TaskSchedulerUser::initTaskScheduler()
 {
-    m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+    if (!d_taskSchedulerType.isSet() || d_taskSchedulerType.getValue().empty())
+    {
+        d_taskSchedulerType.setValue(sofa::simulation::MainTaskSchedulerFactory::defaultTaskSchedulerType());
+    }
+
+    m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry(d_taskSchedulerType.getValue());
     assert(m_taskScheduler != nullptr);
+
     if (m_taskScheduler->getThreadCount() < 1)
     {
         auto nbThreads = sofa::helper::getWriteAccessor(d_nbThreads);
@@ -48,11 +55,27 @@ void TaskSchedulerUser::initTaskScheduler()
     }
 }
 
+void TaskSchedulerUser::reinitTaskScheduler()
+{
+    const auto nbThreads = d_nbThreads.getValue();
+    if ( nbThreads != m_taskScheduler->getThreadCount() )
+    {
+        m_taskScheduler->init(nbThreads);
+        sofa::simulation::initThreadLocalData();
+    }
+}
+
+void TaskSchedulerUser::stopTaskSchduler()
+{
+    m_taskScheduler->stop();
+}
+
 TaskSchedulerUser::TaskSchedulerUser()
     : d_nbThreads(initData(&d_nbThreads, 0, "nbThreads",
 "If not yet initialized, the main task scheduler is initialized with this number of threads. "
     "0 corresponds to the number of available cores on the CPU. "
     "-n (minus) corresponds to the number of available cores on the CPU minus the provided number."))
+    , d_taskSchedulerType(initData(&d_taskSchedulerType, sofa::simulation::MainTaskSchedulerFactory::defaultTaskSchedulerType(), "taskSchedulerType", "Type of task scheduler to use."))
 {
 }
 

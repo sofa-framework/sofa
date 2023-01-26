@@ -77,11 +77,7 @@ int AnimationLoopParallelSchedulerClass = sofa::core::RegisterObject("parallel a
 
 AnimationLoopParallelScheduler::AnimationLoopParallelScheduler(sofa::simulation::Node* _gnode)
     : Inherit()
-    , schedulerName(initData(&schedulerName, "scheduler", "name of the scheduler to use"))
-    , threadNumber(initData(&threadNumber, (unsigned int)0, "threadNumber", "number of thread") )
-    , mNbThread(0)
     , gnode(_gnode)
-    , _taskScheduler(nullptr)
 {}
 
 AnimationLoopParallelScheduler::~AnimationLoopParallelScheduler() = default;
@@ -90,38 +86,6 @@ void AnimationLoopParallelScheduler::init()
 {
     if (!gnode)
         gnode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-
-    if ( threadNumber.getValue() )
-    {
-        mNbThread = threadNumber.getValue();
-    }
-
-    if (schedulerName.isSet())
-    {
-        _taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry(schedulerName.getValue() );
-        if (!_taskScheduler)
-        {
-            msg_error() << "'" << schedulerName.getValue()
-                << "' is not a valid name for a task scheduler. Falling back to the default "
-                "task scheduler. The list of available schedulers is: ["
-                << sofa::helper::join(sofa::simulation::MainTaskSchedulerFactory::getAvailableSchedulers(), ',')
-                << "]";
-        }
-    }
-
-    if (!_taskScheduler)
-    {
-        _taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    }
-
-    if (_taskScheduler)
-    {
-        _taskScheduler->init( mNbThread );
-    }
-    else
-    {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    }
 }
 
 void AnimationLoopParallelScheduler::bwdInit()
@@ -131,17 +95,12 @@ void AnimationLoopParallelScheduler::bwdInit()
 
 void AnimationLoopParallelScheduler::reinit()
 {
-    if ( threadNumber.getValue() != _taskScheduler->getThreadCount() )
-    {
-        mNbThread = threadNumber.getValue();
-        _taskScheduler->init(mNbThread);
-        sofa::simulation::initThreadLocalData();
-    }
+    this->reinitTaskScheduler();
 }
 
 void AnimationLoopParallelScheduler::cleanup()
 {
-    _taskScheduler->stop();
+    this->stopTaskSchduler();
 }
 
 void AnimationLoopParallelScheduler::step(const sofa::core::ExecParams* params, SReal dt)
@@ -155,11 +114,11 @@ void AnimationLoopParallelScheduler::step(const sofa::core::ExecParams* params, 
     {
         if ( sofa::core::behavior::BaseAnimationLoop* aloop = it->getAnimationLoop() )
         {
-            _taskScheduler->addTask(new StepTask(aloop, dt, &status));
+            m_taskScheduler->addTask(new StepTask(aloop, dt, &status));
         }
     }
 
-    _taskScheduler->workUntilDone(&status);
+    m_taskScheduler->workUntilDone(&status);
 
     double startTime = gnode->getTime();
     gnode->setTime ( startTime + dt );
