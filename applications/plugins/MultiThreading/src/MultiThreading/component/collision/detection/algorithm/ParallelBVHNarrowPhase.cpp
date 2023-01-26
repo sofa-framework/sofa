@@ -51,18 +51,7 @@ void ParallelBVHNarrowPhase::init()
     NarrowPhaseDetection::init();
 
     // initialize the thread pool
-
-    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-    if (taskScheduler->getThreadCount() < 1)
-    {
-        taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-    }
-    else
-    {
-        msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-    }
+    initTaskScheduler();
 }
 
 void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pair<sofa::core::CollisionModel*, sofa::core::CollisionModel*> >& v)
@@ -71,15 +60,6 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
 
     if (v.empty())
     {
-        return;
-    }
-
-    auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-
-    if (taskScheduler->getThreadCount() == 0)
-    {
-        msg_error() << "Task scheduler not correctly initialized";
         return;
     }
 
@@ -95,13 +75,13 @@ void ParallelBVHNarrowPhase::addCollisionPairs(const sofa::type::vector< std::pa
         for (const auto &pair : v)
         {
             m_tasks.emplace_back(&status, this, pair);
-            taskScheduler->addTask(&m_tasks.back());
+            m_taskScheduler->addTask(&m_tasks.back());
         }
     }
 
     {
         ScopedAdvancedTimer waitTimer("ParallelTasks");
-        taskScheduler->workUntilDone(&status);
+        m_taskScheduler->workUntilDone(&status);
     }
 
     m_tasks.clear();
@@ -140,7 +120,7 @@ void ParallelBVHNarrowPhase::createOutput(
 
         //force the creation of all Detection Output before the parallel computation
         getDetectionOutputs(finestCollisionModel1, finestCollisionModel2);
-    };
+    }
 }
 
 void ParallelBVHNarrowPhase::initializeTopology(sofa::core::topology::BaseMeshTopology* topology)
