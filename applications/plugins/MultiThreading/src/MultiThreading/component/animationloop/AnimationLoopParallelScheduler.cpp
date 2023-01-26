@@ -63,6 +63,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/ParallelForEach.h>
 
 #include <cstdlib>
 #include <cmath>
@@ -110,15 +111,15 @@ void AnimationLoopParallelScheduler::step(const sofa::core::ExecParams* params, 
 
     sofa::simulation::CpuTask::Status status;
 
-    for (const auto& it : gnode->child)
-    {
-        if ( sofa::core::behavior::BaseAnimationLoop* aloop = it->getAnimationLoop() )
+    sofa::simulation::parallelForEach(*m_taskScheduler,
+        gnode->child.begin(), gnode->child.end(),
+        [dt](const auto& node)
         {
-            m_taskScheduler->addTask(new StepTask(aloop, dt, &status));
-        }
-    }
-
-    m_taskScheduler->workUntilDone(&status);
+            if ( sofa::core::behavior::BaseAnimationLoop* aloop = node->getAnimationLoop() )
+            {
+                aloop->step(sofa::core::ExecParams::defaultInstance(), dt);
+            }
+        });
 
     double startTime = gnode->getTime();
     gnode->setTime ( startTime + dt );
