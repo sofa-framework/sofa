@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BeamLinearMapping_mt.inl"
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#include <sofa/simulation/SceneCheckRegistry.h>
+#include <algorithm>
 
-namespace sofa
+namespace sofa::simulation
 {
 
-namespace component
+bool SceneCheckRegistry::addToRegistry(const SceneCheck::SPtr& sceneCheck)
 {
+    const auto it = std::find(m_registeredSceneChecks.begin(), m_registeredSceneChecks.end(), sceneCheck);
+    const auto found = it != m_registeredSceneChecks.end();
+    if(!found)
+    {
+        m_registeredSceneChecks.push_back(sceneCheck);
+    }
+    return !found;
+}
 
-namespace mapping
+void SceneCheckRegistry::removeFromRegistry(const SceneCheck::SPtr& sceneCheck)
 {
+    m_registeredSceneChecks.erase( std::remove( m_registeredSceneChecks.begin(), m_registeredSceneChecks.end(), sceneCheck ), m_registeredSceneChecks.end() );
+}
 
-const bool isBeamLinearMapping_mtImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
+void SceneCheckRegistry::clearRegistry()
+{
+    m_registeredSceneChecks.clear();
+}
 
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+const type::vector<SceneCheck::SPtr>& SceneCheckRegistry::getRegisteredSceneChecks() const
+{
+    return m_registeredSceneChecks;
+}
 
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
-
-
-
-        ;
-
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+}

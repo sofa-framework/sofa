@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BeamLinearMapping_mt.inl"
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#include <gtest/gtest.h>
+#include <sofa/simulation/SceneCheckRegistry.h>
 
 namespace sofa
 {
 
-namespace component
+class DummySceneCheck : public sofa::simulation::SceneCheck
 {
+    const std::string getName() override { return "DummySceneCheck"; }
+    const std::string getDesc() override { return "For tests"; }
+    void doCheckOn(sofa::simulation::Node*) override {}
+};
 
-namespace mapping
+TEST(SceneCheckRegistry, addToRegistry)
 {
+    simulation::SceneCheckRegistry registry;
 
-const bool isBeamLinearMapping_mtImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
+    EXPECT_TRUE(registry.getRegisteredSceneChecks().empty());
 
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+    const auto sceneCheck = std::make_shared<DummySceneCheck>();
+    EXPECT_TRUE(registry.addToRegistry(sceneCheck));
 
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+    EXPECT_FALSE(registry.getRegisteredSceneChecks().empty());
+    EXPECT_EQ(registry.getRegisteredSceneChecks().size(), 1);
 
+    const auto anotherSceneCheck = std::make_shared<DummySceneCheck>();
+    EXPECT_TRUE(registry.addToRegistry(anotherSceneCheck));
 
+    EXPECT_FALSE(registry.getRegisteredSceneChecks().empty());
+    EXPECT_EQ(registry.getRegisteredSceneChecks().size(), 2);
 
-        ;
+    EXPECT_FALSE(registry.addToRegistry(sceneCheck));
+    EXPECT_EQ(registry.getRegisteredSceneChecks().size(), 2);
 
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+    registry.removeFromRegistry(anotherSceneCheck);
+    EXPECT_EQ(registry.getRegisteredSceneChecks().size(), 1);
+}
+}

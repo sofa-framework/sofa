@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BeamLinearMapping_mt.inl"
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#pragma once
 
-namespace sofa
+#include <sofa/simulation/config.h>
+
+#include <string>
+#include <memory>
+
+namespace sofa::simulation
 {
+class Node;
 
-namespace component
+class SOFA_SIMULATION_CORE_API SceneCheck
 {
+public:
+    virtual ~SceneCheck();
 
-namespace mapping
-{
+    typedef std::shared_ptr<SceneCheck> SPtr;
+    virtual const std::string getName() = 0;
+    virtual const std::string getDesc() = 0;
+    virtual void doInit(sofa::simulation::Node* node);
+    virtual void doCheckOn(sofa::simulation::Node* node) = 0;
+    virtual void doPrintSummary();
+};
 
-const bool isBeamLinearMapping_mtImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
-
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
-
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
-
-
-
-        ;
-
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::simulation

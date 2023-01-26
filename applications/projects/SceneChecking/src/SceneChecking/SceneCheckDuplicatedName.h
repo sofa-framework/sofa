@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
+#include <sofa/simulation/SceneCheck.h>
 
 #include <map>
 #include <sstream>
@@ -30,7 +30,7 @@
 namespace sofa::_scenechecking_
 {
     
-class SOFA_SCENECHECKING_API SceneCheckDuplicatedName : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckDuplicatedName : public sofa::simulation::SceneCheck
 {
 public:
     virtual ~SceneCheckDuplicatedName() {}

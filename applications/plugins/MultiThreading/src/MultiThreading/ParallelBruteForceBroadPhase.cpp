@@ -26,9 +26,13 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <MultiThreading/ParallelImplementationsRegistry.h>
 
 namespace sofa::component::collision
 {
+
+const bool isParallelParallelBruteForceBroadPhaseImplementationRegistered =
+    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BruteForceBroadPhase", "ParallelBruteForceBroadPhase");
 
 using sofa::helper::ScopedAdvancedTimer;
 

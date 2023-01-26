@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,42 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BeamLinearMapping_mt.inl"
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
-namespace sofa
+namespace sofa::simulation
 {
 
-namespace component
+std::mutex SceneCheckMainRegistry::s_mutex;
+
+bool SceneCheckMainRegistry::addToRegistry(const SceneCheck::SPtr& sceneCheck)
 {
+    std::lock_guard lock(s_mutex);
+    return getInstance().addToRegistry(sceneCheck);
+}
 
-namespace mapping
+void SceneCheckMainRegistry::removeFromRegistry(const SceneCheck::SPtr& sceneCheck)
 {
+    std::lock_guard lock(s_mutex);
+    getInstance().removeFromRegistry(sceneCheck);
+}
 
-const bool isBeamLinearMapping_mtImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
+void SceneCheckMainRegistry::clearRegistry()
+{
+    std::lock_guard lock(s_mutex);
+    getInstance().clearRegistry();
+}
 
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+const type::vector<SceneCheck::SPtr>& SceneCheckMainRegistry::getRegisteredSceneChecks()
+{
+    std::lock_guard lock(s_mutex);
+    return getInstance().getRegisteredSceneChecks();
+}
 
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+SceneCheckRegistry& SceneCheckMainRegistry::getInstance()
+{
+    static SceneCheckRegistry registry;
+    return registry;
+}
 
-
-
-        ;
-
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+}

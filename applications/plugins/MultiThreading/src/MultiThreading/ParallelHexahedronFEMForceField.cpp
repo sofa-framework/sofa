@@ -23,10 +23,14 @@
 #include <MultiThreading/ParallelHexahedronFEMForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include "ParallelHexahedronFEMForceField.h"
+
+#include <MultiThreading/ParallelImplementationsRegistry.h>
 
 namespace sofa::component::forcefield
 {
+
+const bool isParallelHexahedronFEMForceFieldImplementationRegistered =
+    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("HexahedronFEMForceField", "ParallelHexahedronFEMForceField");
 
 using namespace sofa::defaulttype;
 

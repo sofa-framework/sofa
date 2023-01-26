@@ -24,10 +24,15 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <MultiThreading/ParallelImplementationsRegistry.h>
+
 namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
+
+const bool isParallelTetrahedronFEMForceFieldImplementationRegistered =
+    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("TetrahedronFEMForceField", "ParallelTetrahedronFEMForceField");
 
 // Register in the Factory
 int ParallelTetrahedronFEMForceFieldClass = core::RegisterObject("Parallel tetrahedral finite elements")
