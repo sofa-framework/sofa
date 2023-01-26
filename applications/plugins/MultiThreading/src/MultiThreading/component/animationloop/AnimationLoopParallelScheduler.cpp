@@ -22,52 +22,19 @@
 #include <MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h>
 
 #include <sofa/simulation/TaskScheduler.h>
-#include <MultiThreading/AnimationLoopTasks.h>
 #include <sofa/simulation/InitTasks.h>
 #include <MultiThreading/DataExchange.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
-#include <sofa/simulation/ExportGnuplotVisitor.h>
-#include <sofa/simulation/InitVisitor.h>
-#include <sofa/simulation/AnimateVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/CollisionBeginEvent.h>
-#include <sofa/simulation/CollisionEndEvent.h>
-#include <sofa/simulation/UpdateContextVisitor.h>
-#include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/simulation/ResetVisitor.h>
-#include <sofa/simulation/VisualVisitor.h>
-#include <sofa/simulation/ExportVisualModelOBJVisitor.h>
-#include <sofa/simulation/WriteStateVisitor.h>
-#include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
-#include <sofa/simulation/CleanupVisitor.h>
-#include <sofa/simulation/DeleteVisitor.h>
-#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
-
-#include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/PipeProcess.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/ParallelForEach.h>
-
-#include <cstdlib>
-#include <cmath>
-#include <algorithm>
 
 namespace multithreading::component::animationloop
 {
