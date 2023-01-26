@@ -65,22 +65,6 @@ void ParallelHexahedronFEMForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void ParallelHexahedronFEMForceField<DataTypes>::initTaskScheduler()
-{
-    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-    if (taskScheduler->getThreadCount() < 1)
-    {
-        taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-    }
-    else
-    {
-        msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-    }
-}
-
-template<class DataTypes>
 void ParallelHexahedronFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& f,
               const DataVecCoord& p, const DataVecDeriv& v)
 {
@@ -105,9 +89,6 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const sofa::core::Mech
         this->needUpdateTopology = false;
     }
 
-    auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-
     const auto* indexedElements = this->getIndexedElements();
     this->m_potentialEnergy = 0;
 
@@ -124,7 +105,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addForce(const sofa::core::Mech
 
     std::mutex mutex;
 
-    sofa::simulation::parallelForEachRange(*taskScheduler,
+    sofa::simulation::parallelForEachRange(*m_taskScheduler,
         indexedElements->begin(), indexedElements->end(),
         [this, &_p, &elementStiffnesses, &mutex, &_f](const auto& range)
         {
@@ -227,15 +208,12 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForce (const sofa::core::Me
     if (_df.size() != _dx.size())
         _df.resize(_dx.size());
 
-    auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-
     const auto& elementStiffnesses = this->_elementStiffnesses.getValue();
     const auto& indexedElements = *this->getIndexedElements();
 
     m_elementsDf.resize(indexedElements.size());
 
-    sofa::simulation::parallelForEachRange(*taskScheduler,
+    sofa::simulation::parallelForEachRange(*m_taskScheduler,
          indexedElements.begin(), indexedElements.end(),
          [this, &_dx, &elementStiffnesses, kFactor, &indexedElements](const auto& range)
          {
@@ -272,7 +250,7 @@ void ParallelHexahedronFEMForceField<DataTypes>::addDForce (const sofa::core::Me
              }
          });
 
-    sofa::simulation::parallelForEachRange(*taskScheduler,
+    sofa::simulation::parallelForEachRange(*m_taskScheduler,
         static_cast<std::size_t>(0), _df.size(), [&_df, this](const auto& range)
         {
             for (auto vertexId = range.start; vertexId < range.end; ++vertexId)

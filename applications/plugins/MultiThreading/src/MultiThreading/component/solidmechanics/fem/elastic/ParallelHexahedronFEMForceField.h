@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
 
@@ -45,7 +46,9 @@ namespace multithreading::component::forcefield::solidmechanics::fem::elastic
  * time-consumming step is to invert the matrix. This is where efforts should be put to accelerate the simulation.
  */
 template<class DataTypes>
-class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField : virtual public sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<DataTypes>
+class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField :
+    virtual public sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<DataTypes>,
+    public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelHexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField, DataTypes));
@@ -84,8 +87,6 @@ protected:
     void computeTaskForceLarge(RDataRefVecCoord& p, sofa::Index elementId, const Element& elem,
                                const VecElementStiffness& elementStiffnesses, SReal& OutPotentialEnery,
                                sofa::type::Vec<8, Deriv>& OutF);
-
-    void initTaskScheduler();
 
     /// Assuming a vertex has 8 adjacent hexahedra, the array stores where the vertex is referenced in each of the adjacent hexahedra
     using HexaAroundVerticesIndex = sofa::type::fixed_array<sofa::Size, 8>;

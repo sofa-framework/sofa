@@ -26,6 +26,10 @@
 
 namespace sofa::simulation
 {
+unsigned TaskScheduler::GetHardwareThreadsCount()
+{
+    return std::thread::hardware_concurrency() / 2;
+}
 
 bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
 {
