@@ -61,6 +61,8 @@ protected:
     ~AnimationLoopParallelScheduler() override;
 
 public:
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+
     void init() override;
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.

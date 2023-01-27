@@ -24,6 +24,8 @@
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/MainTaskSchedulerRegistry.h>
 
+#include <thread>
+
 namespace sofa::simulation
 {
 unsigned TaskScheduler::GetHardwareThreadsCount()
