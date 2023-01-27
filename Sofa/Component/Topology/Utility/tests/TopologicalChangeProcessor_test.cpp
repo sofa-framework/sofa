@@ -81,7 +81,7 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
 {
     InciseProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/IncisionTrianglesProcess.scn";
+        m_fileName = "/IncisionTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -134,7 +134,7 @@ struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/RemovingTrianglesProcess.scn";
+        m_fileName = "/RemovingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -187,7 +187,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     AddTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/AddingTrianglesProcess.scn";
+        m_fileName = "/AddingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -241,7 +241,7 @@ struct RemoveTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/RemovingTetraProcess.scn";
+        m_fileName = "/RemovingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -297,7 +297,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     AddTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/AddingTetraProcess.scn";
+        m_fileName = "/AddingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override
