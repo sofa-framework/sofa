@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/ParallelForEach.h>
@@ -50,6 +51,25 @@ void ParallelTetrahedronFEMForceField<DataTypes>::initTaskScheduler()
     {
         msg_info() << "Task scheduler already initialized on " << m_taskScheduler->getThreadCount() << " threads";
     }
+}
+
+template <class DataTypes>
+void ParallelTetrahedronFEMForceField<DataTypes>::drawTrianglesFromTetrahedra(
+    const sofa::core::visual::VisualParams* vparams, bool showVonMisesStressPerElement,
+    bool drawVonMisesStress, const VecCoord& x, const VecReal& youngModulus, bool heterogeneous,
+    Real minVM, Real maxVM, sofa::helper::ReadAccessor<sofa::Data<sofa::type::vector<Real>>> vM)
+{
+    this->m_renderedPoints.resize(this->_indexedElements->size() * 3 * 4);
+    this->m_renderedColors.resize(this->_indexedElements->size() * 3 * 4);
+
+    const auto showWireFrame = vparams->displayFlags().getShowWireFrame();
+
+    sofa::simulation::parallelForEachRange(*m_taskScheduler, this->_indexedElements->begin(), this->_indexedElements->end(),
+        [&](const sofa::simulation::Range<VecElement::const_iterator>& range)
+        {
+            this->drawTrianglesFromRangeOfTetrahedra(range, vparams, showVonMisesStressPerElement, drawVonMisesStress, showWireFrame, x, youngModulus, heterogeneous, minVM, maxVM, vM);
+        });
+    vparams->drawTool()->drawTriangles(this->m_renderedPoints, this->m_renderedColors);
 }
 
 template<class DataTypes>

@@ -87,6 +87,13 @@ protected:
                            const VecElement& indexedElements);
 
     void initTaskScheduler();
+    void drawTrianglesFromTetrahedra(const sofa::core::visual::VisualParams* vparams,
+                                     bool showVonMisesStressPerElement, bool drawVonMisesStress,
+                                     const VecCoord& x,
+                                     const VecReal& youngModulus, bool heterogeneous,
+                                     Real minVM,
+                                     Real maxVM,
+                                     sofa::helper::ReadAccessor<sofa::Data<sofa::type::vector<Real>>> vM) override;
 
     sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 
