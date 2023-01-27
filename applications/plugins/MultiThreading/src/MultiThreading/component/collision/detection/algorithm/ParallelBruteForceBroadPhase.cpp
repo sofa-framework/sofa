@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/ParallelBruteForceBroadPhase.h>
+#include <MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/TaskScheduler.h>
@@ -28,7 +28,7 @@
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 
-namespace sofa::component::collision
+namespace multithreading::component::collision::detection::algorithm
 {
 
 const bool isParallelParallelBruteForceBroadPhaseImplementationRegistered =
@@ -36,7 +36,7 @@ const bool isParallelParallelBruteForceBroadPhaseImplementationRegistered =
 
 using sofa::helper::ScopedAdvancedTimer;
 
-int ParallelBruteForceBroadPhaseClass = core::RegisterObject("Collision detection using extensive pair-wise tests performed in parallel")
+int ParallelBruteForceBroadPhaseClass = sofa::core::RegisterObject("Collision detection using extensive pair-wise tests performed in parallel")
         .add< ParallelBruteForceBroadPhase >()
 ;
 
@@ -63,7 +63,7 @@ void ParallelBruteForceBroadPhase::init()
     }
 }
 
-void ParallelBruteForceBroadPhase::addCollisionModel(core::CollisionModel *cm)
+void ParallelBruteForceBroadPhase::addCollisionModel(sofa::core::CollisionModel *cm)
 {
     if (cm == nullptr || cm->empty())
         return;
@@ -81,7 +81,7 @@ void ParallelBruteForceBroadPhase::addCollisionModel(core::CollisionModel *cm)
         cmPairs.emplace_back(cm, cm);
     }
 
-    core::CollisionModel* finalCollisionModel = cm->getLast();
+    sofa::core::CollisionModel* finalCollisionModel = cm->getLast();
     for (const auto& model : m_collisionModels)
     {
         m_pairs.emplace_back(FirstLastCollisionModel{cm, finalCollisionModel}, model);
@@ -90,7 +90,7 @@ void ParallelBruteForceBroadPhase::addCollisionModel(core::CollisionModel *cm)
     m_collisionModels.emplace_back(cm, finalCollisionModel);
 }
 
-void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<core::CollisionModel *>& v)
+void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<sofa::core::CollisionModel *>& v)
 {
     ScopedAdvancedTimer timer("ParallelBruteForceBroadPhase::addCollisionModels");
 
@@ -158,7 +158,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<c
 
 BruteForcePairTest::BruteForcePairTest(sofa::simulation::CpuTask::Status *status,
                                        PairIterator first, PairIterator last,
-                                       core::collision::Intersection* intersectionMethod)
+                                       sofa::core::collision::Intersection* intersectionMethod)
         : sofa::simulation::CpuTask(status)
         , m_intersectingPairs()
         , m_first(first)
@@ -185,13 +185,13 @@ sofa::simulation::Task::MemoryAlloc BruteForcePairTest::run()
             continue;
         }
 
-        if (!detection::algorithm::BruteForceBroadPhase::keepCollisionBetween(lastCm_1, lastCm_2))
+        if (!sofa::component::collision::detection::algorithm::BruteForceBroadPhase::keepCollisionBetween(lastCm_1, lastCm_2))
         {
             continue;
         }
 
         bool swapModels = false;
-        core::collision::ElementIntersector *intersector = m_intersectionMethod->findIntersector(cm_1, cm_2,swapModels);
+        sofa::core::collision::ElementIntersector *intersector = m_intersectionMethod->findIntersector(cm_1, cm_2,swapModels);
         if (intersector == nullptr)
         {
             continue;
@@ -209,7 +209,7 @@ sofa::simulation::Task::MemoryAlloc BruteForcePairTest::run()
         }
     }
 
-    return simulation::Task::Stack;
+    return sofa::simulation::Task::Stack;
 }
 
 }

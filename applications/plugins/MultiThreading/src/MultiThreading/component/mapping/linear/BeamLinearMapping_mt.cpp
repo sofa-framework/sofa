@@ -19,25 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_MULTITHREADING_PARALLELHEXAHEDRONFEMFORCEFIELD_CPP
-#include <MultiThreading/ParallelHexahedronFEMForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
+#include <MultiThreading/component/mapping/linear/BeamLinearMapping_mt.inl>
 #include <sofa/core/ObjectFactory.h>
-
+//#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.inl>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 
-namespace sofa::component::forcefield
+namespace multithreading::component::mapping::linear
 {
 
-const bool isParallelHexahedronFEMForceFieldImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("HexahedronFEMForceField", "ParallelHexahedronFEMForceField");
+const bool isBeamLinearMapping_mtImplementationRegistered =
+    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
 
-using namespace sofa::defaulttype;
-
+//using namespace defaulttype;
 // Register in the Factory
-int ParallelHexahedronFEMForceFieldClass = core::RegisterObject("Parallel hexahedral finite elements")
-                                           .add < ParallelHexahedronFEMForceField < Vec3Types > > ();
+int BeamLinearMapping_mtClass = sofa::core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+        ;
 
-template class SOFA_MULTITHREADING_PLUGIN_API ParallelHexahedronFEMForceField<Vec3Types>;
+template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
 
 }
+

@@ -19,42 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BeamLinearMapping_mt.inl"
-#include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
-#include <MultiThreading/ParallelImplementationsRegistry.h>
+#pragma once
 
-namespace sofa
+#include <MultiThreading/config.h>
+#include <sofa/simulation/CpuTask.h>
+
+// forawrd declaraion
+namespace sofa::core::behavior
+{
+class BaseAnimationLoop;
+}
+
+
+namespace multithreading::component::animationloop
 {
 
-namespace component
+class SOFA_MULTITHREADING_PLUGIN_API StepTask : public sofa::simulation::CpuTask
 {
+public:
+    StepTask(sofa::core::behavior::BaseAnimationLoop* aloop, const double t, sofa::simulation::CpuTask::Status* pStatus);
 
-namespace mapping
-{
+    ~StepTask() override;
 
-const bool isBeamLinearMapping_mtImplementationRegistered =
-    multithreading::ParallelImplementationsRegistry::addEquivalentImplementations("BeamLinearMapping", "BeamLinearMapping_mt");
+    MemoryAlloc run() final;
 
-//using namespace defaulttype;
-// Register in the Factory
-int BeamLinearMapping_mtClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+private:
 
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+    sofa::core::behavior::BaseAnimationLoop* animationloop;
+    const double dt;
 
+};
 
+}
 
-        ;
-
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
-
-
-
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
 

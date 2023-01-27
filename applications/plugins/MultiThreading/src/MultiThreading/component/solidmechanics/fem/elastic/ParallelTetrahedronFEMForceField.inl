@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <MultiThreading/ParallelTetrahedronFEMForceField.h>
+#include <MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.h>
 #include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/ParallelForEach.h>
 
-namespace sofa::component::forcefield
+namespace multithreading::component::solidmechanics::fem::elastic
 {
 
 template<class DataTypes>
@@ -53,7 +53,7 @@ void ParallelTetrahedronFEMForceField<DataTypes>::initTaskScheduler()
 }
 
 template<class DataTypes>
-void ParallelTetrahedronFEMForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f,
+void ParallelTetrahedronFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& d_f,
               const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     Inherit1::addForce(mparams, d_f, d_x, d_v);
@@ -76,10 +76,10 @@ void ParallelTetrahedronFEMForceField<DataTypes>::addDForceGeneric(VecDeriv& df,
 
                for (auto it = range.start; it != range.end; ++it, ++elementId)
                {
-                   Index a = (*it)[0];
-                   Index b = (*it)[1];
-                   Index c = (*it)[2];
-                   Index d = (*it)[3];
+                   sofa::Index a = (*it)[0];
+                   sofa::Index b = (*it)[1];
+                   sofa::Index c = (*it)[2];
+                   sofa::Index d = (*it)[3];
 
                    f( threadLocal_df, dx, elementId, a,b,c,d, kFactor );
                }
@@ -98,7 +98,7 @@ template <class DataTypes>
 void ParallelTetrahedronFEMForceField<DataTypes>::addDForceSmall(VecDeriv& df, const VecDeriv& dx, const Real kFactor, const VecElement& indexedElements)
 {
     addDForceGeneric(df, dx, kFactor, indexedElements,
-        [this](VecDeriv& f, const VecDeriv& x, Index i, Index a, Index b, Index c, Index d, SReal fact)
+        [this](VecDeriv& f, const VecDeriv& x, sofa::Index i, sofa::Index a, sofa::Index b, sofa::Index c, sofa::Index d, SReal fact)
         {
             this->applyStiffnessSmall(f, x, i, a, b, c, d, fact);
         });
@@ -108,14 +108,14 @@ template <class DataTypes>
 void ParallelTetrahedronFEMForceField<DataTypes>::addDForceCorotational(VecDeriv& df, const VecDeriv& dx, const Real kFactor, const VecElement& indexedElements)
 {
     addDForceGeneric(df, dx, kFactor, indexedElements,
-        [this](VecDeriv& f, const VecDeriv& x, Index i, Index a, Index b, Index c, Index d, SReal fact)
+        [this](VecDeriv& f, const VecDeriv& x, sofa::Index i, sofa::Index a, sofa::Index b, sofa::Index c, sofa::Index d, SReal fact)
         {
             this->applyStiffnessCorotational(f, x, i, a, b, c, d, fact);
         });
 }
 
 template<class DataTypes>
-void ParallelTetrahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams *mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void ParallelTetrahedronFEMForceField<DataTypes>::addDForce (const sofa::core::MechanicalParams *mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     auto dfAccessor = sofa::helper::getWriteAccessor(d_df);
     VecDeriv& df = dfAccessor.wref();
@@ -160,7 +160,7 @@ void ParallelTetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgeb
 
             auto elementId = std::distance(indexedElements.begin(), range.start);
 
-            using Block = sofa::type::fixed_array<sofa::type::fixed_array<type::Mat<S, S, double>, 4>, 4>;
+            using Block = sofa::type::fixed_array<sofa::type::fixed_array<sofa::type::Mat<S, S, double>, 4>, 4>;
             sofa::type::vector<Block> blocks;
             blocks.reserve(std::distance(range.start, range.end));
 
