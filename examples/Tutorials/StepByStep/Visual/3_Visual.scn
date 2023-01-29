@@ -3,6 +3,8 @@
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [LightManager OglShadowShader SpotLight] -->
+    <DefaultAnimationLoop/>
+    
     <LightManager name="lightManager" listening="1" shadows="1" />
     <SpotLight name="redLight" color="1 0 0" position="-5 -2.5 20" direction="0 0 -1" />
     <SpotLight name="greenLight" color="0 1 0" position="0 2.5 20" direction="0 0 -1" />

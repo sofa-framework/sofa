@@ -1,0 +1,8 @@
+<Node name="root" dt="0.02" gravity="0 -10 0">
+
+    <include href="../FEMBAR-common.xml"/>
+
+    <CGLinearSolver template="GraphScattered" iterations="1000" threshold="1e-9" tolerance="1e-9"/>
+    <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.45" method="large" />
+
+</Node>

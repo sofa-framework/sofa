@@ -15,6 +15,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <DefaultAnimationLoop/>
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase name="N2" />
     <BVHNarrowPhase />

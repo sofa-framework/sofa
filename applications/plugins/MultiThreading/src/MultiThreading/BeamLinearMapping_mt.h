@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,159 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/mapping/linear/BeamLinearMapping.h>
+#include <MultiThreading/config.h>
 
-#include <sofa/simulation/CpuTask.h>
-
-
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/mapping/linear/BeamLinearMapping_mt.h")
+#include <MultiThreading/component/mapping/linear/BeamLinearMapping_mt.h>
 namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
-class BeamLinearMapping_mt : public linear::BeamLinearMapping<TIn, TOut>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BeamLinearMapping_mt,TIn,TOut), SOFA_TEMPLATE2(linear::BeamLinearMapping,TIn,TOut) );
+using BeamLinearMapping_mt = multithreading::component::mapping::linear::BeamLinearMapping_mt<TIn, TOut>;
 
-    typedef core::Mapping<TIn, TOut> Inherit;
-    typedef TIn In;
-    typedef TOut Out;
-    typedef Out OutDataTypes;
-    typedef typename Out::VecCoord VecCoord;
-    typedef typename Out::VecDeriv VecDeriv;
-    typedef typename Out::Coord Coord;
-    typedef typename Out::Deriv Deriv;
-
-    typedef In InDataTypes;
-    typedef typename In::Deriv InDeriv;
-
-    typedef typename Coord::value_type Real;
-
-    typedef linear::BeamLinearMapping<TIn, TOut> BeamLinearMappingInOut;
-    enum { N    = BeamLinearMappingInOut::N    };
-    enum { NIn  = BeamLinearMappingInOut::NIn  };
-    enum { NOut = BeamLinearMappingInOut::NOut };
-
-    typedef type::Mat<N, N, Real> Mat;
-    typedef type::Vec<N, Real> Vector;
-    typedef type::Mat<NOut, NIn, Real> MBloc;
-    typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
-
-
-    BeamLinearMapping_mt();
-
-    virtual ~BeamLinearMapping_mt();
-
-
-    virtual void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in) override;
-
-    virtual void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in) override;
-
-    virtual void applyJT(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in) override;
-
-    //virtual void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in);
-
-
-    virtual void init() override;            // get the interpolation
-    virtual void bwdInit() override;        // get the points
-
-
-
-
-public:
-
-    // granularity
-    Data<unsigned int> mGrainSize; ///< minimum number of Beam points for task creation
-
-
-
-private:
-
-
-    // all tasks here
-
-    class applyTask : public simulation::CpuTask
-    {
-
-        typedef typename linear::BeamLinearMapping<TIn,TOut>::Out::VecCoord  VecCoord;
-        typedef typename linear::BeamLinearMapping<TIn,TOut>::In::VecCoord  InVecCoord;
-
-    public:
-
-        MemoryAlloc run() final;
-
-    protected:
-
-        applyTask( simulation::CpuTask::Status* status );
-
-    private:
-
-        BeamLinearMapping_mt<TIn,TOut>* _mapping;
-
-        const helper::ReadAccessor< Data< typename In::VecCoord > >* _in;
-        helper::WriteAccessor< Data< typename Out::VecCoord > >* _out;
-
-        size_t _firstPoint;
-        size_t _lastPoint;
-
-        friend class BeamLinearMapping_mt<TIn,TOut>;
-    };
-
-
-    class applyJTask : public simulation::CpuTask
-    {
-
-        typedef typename linear::BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
-        typedef typename linear::BeamLinearMapping<TIn,TOut>::In::VecDeriv  InVecDeriv;
-
-    public:
-
-        applyJTask( simulation::CpuTask::Status* status );
-
-        MemoryAlloc run() final;
-
-    private:
-
-        BeamLinearMapping_mt<TIn,TOut>* _mapping;
-
-        const helper::ReadAccessor< Data< typename In::VecDeriv > >* _in;
-        helper::WriteAccessor< Data< typename Out::VecDeriv > >* _out;
-
-        size_t _firstPoint;
-        size_t _lastPoint;
-
-        friend class BeamLinearMapping_mt<TIn,TOut>;
-    };
-
-
-    class applyJTmechTask : public simulation::CpuTask
-    {
-        typedef typename linear::BeamLinearMapping<TIn,TOut>::Out::VecDeriv  VecDeriv;
-        typedef typename linear::BeamLinearMapping<TIn,TOut>::In::VecDeriv  InVecDeriv;
-
-    public:
-
-        applyJTmechTask( simulation::CpuTask::Status* status );
-
-        MemoryAlloc run() final;
-
-    private:
-
-        BeamLinearMapping_mt<TIn,TOut>* _mapping;
-
-        const helper::ReadAccessor< Data< typename Out::VecDeriv > >* _in;
-        helper::WriteAccessor< Data< typename In::VecDeriv > >* _out;
-
-        size_t _firstPoint;
-        size_t _lastPoint;
-
-        friend class BeamLinearMapping_mt<TIn,TOut>;
-    };
-
-
-    friend class applyTask;
-    friend class applyJTask;
-    friend class applyJTmechTask;
-};
-
-} // namespace sofa::component::mapping
+}

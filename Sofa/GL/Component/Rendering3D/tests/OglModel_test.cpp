@@ -33,8 +33,8 @@ using gl::component::rendering3d::OglModel;
 
 TEST(OglModel, templateName)
 {
-    EXPECT_EQ(sofa::helper::NameDecoder::DefaultTypeTemplateName<OglModel>::Get(), "");
-    EXPECT_EQ(OglModel::GetCustomTemplateName(), "Vec3d");
+    EXPECT_EQ(sofa::core::objectmodel::BaseClassNameHelper::DefaultTypeTemplateName<OglModel>::Get(), "");
+    EXPECT_EQ(sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<OglModel>(), "Vec3d");
 
     const auto oglModel = core::objectmodel::New<OglModel>();
     EXPECT_EQ(oglModel->getTemplateName(), "Vec3d");

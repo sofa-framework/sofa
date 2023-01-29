@@ -16,6 +16,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
 	<DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <DefaultAnimationLoop/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />

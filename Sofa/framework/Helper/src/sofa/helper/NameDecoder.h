@@ -23,153 +23,51 @@
 
 #include <string>
 #include <typeinfo>
-#include <tuple>
 #include <sofa/helper/config.h>
 
 namespace sofa::helper
 {
 
-template<class T>
-class HasGetCustomTemplateName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::GetCustomTemplateName) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-template<class T>
-class HasGetCustomClassName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::GetCustomClassName) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-template<class T>
-class HasName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::Name) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-//TODO(dmarchal: 01/04/2020) This is for compatibility layer, remove it after 01/01/2021
-template<class T>
-class HasGetDefaultTemplateName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::GetDefaultTemplateName) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-//TODO(dmarchal: 01/04/2020) This is for compatibility layer, remove it after 01/01/2021
-template<class T>
-class HasDeprecatedTemplateName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::templateName) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-template<class T>
-class HasDeprecatedShortName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test(decltype(&C::template shortName<C>));
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-
-//TODO(dmarchal: 01/04/2020) This is for compatibility layer, remove it after 01/01/2021
-template<class T>
-class HasDeprecatedClassName
-{
-    typedef char YesType[1];
-    typedef char NoType[2];
-
-    template<typename C> static YesType& test( decltype (&C::className) );
-    template<typename C> static NoType& test(...);
-
-public:
-    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
-};
-
-template<typename T>
-std::string GetSofaTypeTemplateName(const std::string prefix="");
-
-template<typename T1, typename T2, typename ...Ts>
-std::string GetSofaTypeTemplateName(const std::string prefix="");
-
 class SOFA_HELPER_API NameDecoder
 {
 public:
+    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
+    template<class T>
+    std::string getClassName()
+    {
+        return decodeNamespaceName(typeid(T));
+    }
+
+    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
+    template<class T>
+    std::string getTemplateName()
+    {
+        return decodeTemplateName(typeid(T));
+    }
+
+    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
+    template<class T>
+    static std::string getShortName()
+    {
+        return shortName(decodeTypeName(typeid(T)));
+    }
+
     /// Helper method to get the type name
     template<class T>
     static std::string getTypeName()
     {
-        return decodeTypeName(typeid(T));
-    }
-
-
-    /// Helper method to get the class name
-    template<class T>
-    static std::string getClassName()
-    {
-        return getOverridableClassName<T>();
+        return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
     }
 
     /// Helper method to get the namespace name
     template<class T>
     static std::string getNamespaceName()
     {
-        return decodeNamespaceName(typeid(T));
+        return sofa::helper::NameDecoder::decodeNamespaceName(typeid(T));
     }
 
-    /// Helper method to get the template name
-    template<class T>
-    static std::string getTemplateName()
-    {
-        return getOverridableTemplateName<T>();
-    }
-
-    /// Helper method to get the template name
-    template<class T>
-    static std::string getShortName()
-    {
-        return getOverridableShortName<T>();
-    }
-
-    static std::string shortName( const std::string& src );
+    /// Helper method to generate a shortified version of the longname given as parameter.
+    static std::string shortName( const std::string& longname );
 
     /// Helper method to decode the type name
     static std::string decodeFullName(const std::type_info& t);
@@ -186,91 +84,10 @@ public:
     /// Helper method to extract the template name (removing namespaces and class name)
     static std::string decodeTemplateName(const std::type_info& t);
 
-    template <typename T>
-    struct DefaultTypeTemplateName {
-        static std::string Get() { return ""; }
-    };
-
-    template<template <typename, typename...> class C, typename T1, typename ...Ts>
-    struct DefaultTypeTemplateName<C<T1,Ts...>>{
-        static std::string Get()
-        {
-            return GetSofaTypeTemplateName<T1, Ts...>();
-        }
-    };
 private:
+    SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER()
     template<class T>
-    static const std::string getOverridableShortName()
-    {
-        /// If there is a Get CustomClassName method in T we use it to return the name
-        if constexpr( HasDeprecatedShortName<T>::value )
-        {
-            T* ptr{nullptr};
-            const std::string n = T::template shortName<T>(ptr);
-            return n;
-        }
-        return shortName(getOverridableClassName<T>());
-    }
-
-    template<class T>
-    static const std::string getOverridableClassName()
-    {
-        /// If there is a Get CustomClassName method in T we use it to return the name
-        if constexpr (HasGetCustomClassName<T>::value)
-                return T::GetCustomClassName();
-
-        //TODO(dmarchal 01/04/2020): compatibility layer, remove after 01/01/2020
-        // use the className method.
-        if constexpr (HasDeprecatedClassName<T>::value)
-        {
-            T* ptr {nullptr};
-            const std::string& n = T::className(ptr);
-            return n;
-        }
-
-        /// If nothing works we decode the class name from the typeid.
-        return decodeClassName(typeid(T));
-    }
-
-    template<class T>
-    static const std::string getOverridableTemplateName()
-    {
-        /// If the T object implement a GetCustomTemplateName static method... then we
-        /// use that to return the name.
-        if constexpr (HasGetCustomTemplateName<T>::value)
-                return T::GetCustomTemplateName();
-
-        //TODO(dmarchal 01/04/2020): compatibility layer, remove after 01/01/2020
-        // use the templateName method.
-        if constexpr (HasDeprecatedTemplateName<T>::value)
-        {
-            T* ptr {nullptr};
-            const std::string n = T::templateName(ptr);
-            return n;
-        }
-
-        /// A GetDefaultTemplateName method is added by the SOFA_CLASS macro, if the object is
-        /// has not better option it will use this one.
-        if constexpr (HasGetDefaultTemplateName<T>::value)
-                return T::GetDefaultTemplateName();
-
-        /// Finally if nothing matches, decode the template name from the typeid
-        return decodeTemplateName(typeid(T));
-    }
+    struct DefaultTypeTemplateName{};
 };
-
-template<typename T>
-std::string GetSofaTypeTemplateName(const std::string prefix)
-{
-    if constexpr (HasName<T>::value )
-            return prefix + T::Name();
-    return prefix + sofa::helper::NameDecoder::decodeTypeName(typeid(T));
-}
-
-template<typename T1, typename T2, typename ...Ts>
-std::string GetSofaTypeTemplateName(const std::string prefix)
-{
-    return GetSofaTypeTemplateName<T1>(prefix) + GetSofaTypeTemplateName<T2, Ts...>(",");
-}
 
 } /// namespace sofa::helper

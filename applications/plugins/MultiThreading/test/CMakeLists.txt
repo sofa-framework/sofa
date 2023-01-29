@@ -7,6 +7,7 @@ set ( HEADER_FILES
 set(SOURCE_FILES
     DataExchange_test.cpp
     MeanComputation_test.cpp
+    ParallelImplementationsRegistry_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})

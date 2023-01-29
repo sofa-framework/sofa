@@ -20,6 +20,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <DefaultAnimationLoop/>
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase name="N2" />
     <BVHNarrowPhase />

@@ -77,13 +77,6 @@ typename BlockFullMatrix<N,T>::Block  BlockFullMatrix<N, T>::Block::i() const
 }
 
 template<std::size_t N, typename T>
-typename BlockFullMatrix<N,T>::Index  BlockFullMatrix<N, T>::getSubMatrixDim(Index)
-{
-    return BSIZE;
-}
-
-
-template<std::size_t N, typename T>
 BlockFullMatrix<N, T>::BlockFullMatrix()
     : data(nullptr), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
 {

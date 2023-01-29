@@ -1,10 +1,47 @@
 <Node name="root" dt="0.01" gravity="0 0 0">
-    <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
+<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->  
+<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
+<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
+<RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->  
+<RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->  
+<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] --> 
+<DefaultAnimationLoop/>
+<VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
 
-    <Node name="Symplectic Explicit Euler">
-      <EulerExplicitSolver/>
+	<Node name="Symplectic Explicit Euler">
+	  <EulerExplicitSolver/>
 		<MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-		<MechanicalObject src="@loader" velocity="0 -20 100 20 30 60 50 -80 -60 20 30 60 40 0 14 30 0 60 0 50 30 10 40 -50 -30 -60 -70 120 -70 -80 -20 0 20 30 0 0 0 0 10 20 60 80"
+		<MechanicalObject src="@loader" 
+		velocity="
+					0 -20 100
+					20 30 60 
+					50 -80 -60 
+					20 30 60 
+					40 0 14 
+					30 0 60 
+					0 50 30 
+					10 40 -50 
+					-30 -60 -70 
+					120 -70 -80 
+					-20 0 20 
+					30 0 0 
+					0 0 10 
+					20 60 80
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0"
 		position="
 		      -7 -3.5 -10
 		      -7 -3.5 0
@@ -34,16 +71,43 @@
 		      7 3.5 0
 		      7 3.5 3.5"
 		/>
-		<UniformMass mass="1" />
+		<UniformMass/>
 		<include href="Objects/internalSpringsCube.xml" InternalSprings__name="InternalSprings1" />
-    </Node>
+	</Node>
 
-
-    <Node name="Implicit Euler">
-	    <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> <CGLinearSolver iterations="50" tolerance="1e-9" threshold="1e-9"/>
-
+	<Node name="Implicit Euler">
+	  <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
+	  <CGLinearSolver iterations="50" tolerance="1e-9" threshold="1e-9"/>
 		<MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
-		<MechanicalObject src="@loader" velocity="0 -20 100 20 30 60 50 -80 -60 20 30 60 40 0 14 30 0 60 0 50 30 10 40 -50 -30 -60 -70 120 -70 -80 -20 0 20 30 0 0 0 0 10 20 60 80"
+		<MechanicalObject src="@loader"
+			velocity="
+					0 -20 100
+					20 30 60 
+					50 -80 -60 
+					20 30 60 
+					40 0 14 
+					30 0 60 
+					0 50 30 
+					10 40 -50 
+					-30 -60 -70 
+					120 -70 -80 
+					-20 0 20 
+					30 0 0 
+					0 0 10 
+					20 60 80
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0
+					0 0 0"
 		position="
 		      -7 -3.5 -10
 		      -7 -3.5 0
@@ -73,9 +137,8 @@
 		      7 3.5 0
 		      7 3.5 3.5"
 		/>
-		<UniformMass mass="1" />
+		<UniformMass/>
 		<include href="Objects/internalSpringsCube.xml" InternalSprings__name="InternalSprings1" />
-    </Node>
-	    
+	</Node>
 	    
 </Node>

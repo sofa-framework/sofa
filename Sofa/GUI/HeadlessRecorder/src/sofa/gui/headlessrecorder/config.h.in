@@ -30,3 +30,9 @@
 #else
 #  define SOFA_GUI_HEADLESSRECORDER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+namespace sofa::gui::headlessrecorder
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofa::gui::headlessrecorder

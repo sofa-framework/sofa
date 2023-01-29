@@ -36,6 +36,15 @@ namespace sofa::gpu::cuda
         .add< ConstantForceField<CudaVec6Types> >()
         .add< ConstantForceField<CudaRigid3Types> >()
         .add< ConstantForceField<CudaRigid2Types> >()
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< ConstantForceField<CudaVec3dTypes> >()
+        .add< ConstantForceField<CudaVec2dTypes> >()
+        .add< ConstantForceField<CudaVec1dTypes> >()
+        .add< ConstantForceField<CudaVec6dTypes> >()
+        .add< ConstantForceField<CudaRigid3dTypes> >()
+        .add< ConstantForceField<CudaRigid2dTypes> >()
+#endif
     ;
 } // namespace sofa::gpu::cuda
 
@@ -54,4 +63,19 @@ namespace sofa::component::mechanicalload
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid2Types>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+    template <> SOFA_GPU_CUDA_API
+    SReal ConstantForceField<CudaRigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+    template <> SOFA_GPU_CUDA_API
+    SReal ConstantForceField<CudaRigid2dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+
+    template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec3dTypes>;
+    template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2dTypes>;
+    template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1dTypes>;
+    template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6dTypes>;
+    template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3dTypes>;
+    template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid2dTypes>;
+#endif
 } // namespace sofa::component::mechanicalload

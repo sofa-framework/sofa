@@ -13,10 +13,10 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Quad2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <DefaultAnimationLoop/>
+
 
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <DefaultPipeline verbose="0" />
-    
     
     <RegularGridTopology name="grid" n="40 1 40" min="0 0 0" max="10 0 10" />
     

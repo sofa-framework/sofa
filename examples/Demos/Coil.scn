@@ -11,11 +11,12 @@
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
+    <DefaultAnimationLoop/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="1.0" contactDistance="0.7" />
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
-    <include href="Objects/SaladBowl.xml" ry="-90" scale="15" dx="10" contactStiffness="500" color="1 0.7 0.55 0.3" />
-    <include href="Objects/SaladBowl.xml" ry="90" scale="15" dx="2" contactStiffness="500" color="1 0.7 0.55 0.3" />
+    <include href="Objects/SaladBowl.xml" name="SaladBowl1" ry="-90" scale="15" dx="10" contactStiffness="500" color="1 0.7 0.55 0.3" />
+    <include href="Objects/SaladBowl.xml" name="SaladBowl2" ry="90" scale="15" dx="2" contactStiffness="500" color="1 0.7 0.55 0.3" />
     <!-- <include href="Objects/InstrumentCoil.xml" dx="2.1" color="0 0 1 1" TopoMapping__radius="0.2" TubularMapping__radius="0.2" /> -->
 </Node>

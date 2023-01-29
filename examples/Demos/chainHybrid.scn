@@ -18,6 +18,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
     <DefaultPipeline verbose="0" draw="0"/>
+    <DefaultAnimationLoop/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />

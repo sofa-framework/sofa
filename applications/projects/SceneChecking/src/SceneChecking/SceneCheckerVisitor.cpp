@@ -39,14 +39,14 @@ SceneCheckerVisitor::~SceneCheckerVisitor()
 }
 
 
-void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
+void SceneCheckerVisitor::addCheck(sofa::simulation::SceneCheck::SPtr check)
 {
     if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
         m_checkset.push_back(check) ;
 }
 
 
-void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
+void SceneCheckerVisitor::removeCheck(sofa::simulation::SceneCheck::SPtr check)
 {
     m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
 }
@@ -55,21 +55,21 @@ void SceneCheckerVisitor::validate(sofa::simulation::Node* node)
 {
     std::stringstream tmp;
     bool first = true;
-    for(SceneCheck::SPtr& check : m_checkset)
+    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         tmp << (first ? "" : ", ") << check->getName() ;
         first = false;
     }
     msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
 
-    for(SceneCheck::SPtr& check : m_checkset)
+    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         check->doInit(node) ;
     }
 
     execute(node) ;
 
-    for(SceneCheck::SPtr& check : m_checkset)
+    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         check->doPrintSummary() ;
     }
@@ -79,7 +79,7 @@ void SceneCheckerVisitor::validate(sofa::simulation::Node* node)
 
 sofa::simulation::Visitor::Result SceneCheckerVisitor::processNodeTopDown(sofa::simulation::Node* node)
 {
-    for(SceneCheck::SPtr& check : m_checkset)
+    for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
         check->doCheckOn(node) ;
     }

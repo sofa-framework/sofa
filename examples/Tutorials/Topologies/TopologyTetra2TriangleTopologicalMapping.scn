@@ -25,6 +25,8 @@
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Tetrahedrons Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" template="Vec3d" name="Volume" />
