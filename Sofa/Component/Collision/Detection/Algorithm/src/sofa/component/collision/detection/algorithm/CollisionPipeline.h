@@ -57,4 +57,8 @@ public:
     static const int defaultDepthValue;
 };
 
+
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/component/collision/detection/algorithm/CollisionPipeline.h")
+using DefaultPipeline = sofa::component::collision::detection::algorithm::CollisionPipeline;
+
 } // namespace sofa::component::collision::detection::algorithm
