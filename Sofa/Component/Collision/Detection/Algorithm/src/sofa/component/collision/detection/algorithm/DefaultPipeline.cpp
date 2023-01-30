@@ -175,7 +175,7 @@ void DefaultPipeline::doCollisionDetection(const type::vector<core::CollisionMod
             else
             {
                 std::string msg = "Compute BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer BoundingTreeTimer(msg.c_str());
+                ScopedAdvancedTimer boundingTreeTimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
             }
 
