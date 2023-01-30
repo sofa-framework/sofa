@@ -16,7 +16,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <!--
-    <DefaultPipeline verbose="0" name="CollisionPipeline"/>
+    <CollisionPipeline verbose="0" name="CollisionPipeline"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DiscreteIntersection/>

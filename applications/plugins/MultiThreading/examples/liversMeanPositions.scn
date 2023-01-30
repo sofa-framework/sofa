@@ -2,7 +2,7 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
     <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [DataExchange MeanComputation] -->
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
     <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [UncoupledConstraintCorrection] -->
@@ -22,7 +22,7 @@
 
   <Node name="scene1" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop1" />
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -54,7 +54,7 @@
 
   <Node name="scene2" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -86,7 +86,7 @@
 
   <Node name="scene3" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -119,7 +119,7 @@
 
   <Node name="scene4" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -152,7 +152,7 @@
   
   <Node name="ResultScene" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="ResultAnimationLoop" />
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />

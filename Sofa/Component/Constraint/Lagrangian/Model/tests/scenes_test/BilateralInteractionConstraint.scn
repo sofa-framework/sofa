@@ -3,7 +3,7 @@
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="100" tolerance="1e-3" />
-    <DefaultPipeline  depth="6" verbose="0" draw="0" />
+    <CollisionPipeline  depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />

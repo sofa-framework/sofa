@@ -1,5 +1,5 @@
 <Node name="SandBox" animate="0" dt="0.06" gravity="0 0 -9.81" multiThreadSimulation="0" time="0.0">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -17,7 +17,7 @@
 
     <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showVisual" />
-    <DefaultPipeline verbose="0" draw="0" />
+    <CollisionPipeline verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />

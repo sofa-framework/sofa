@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.005" gravity="0.0 -9.81 0">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -17,7 +17,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Quad2TriangleTopologicalMapping] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaDistanceGrid"/> <!-- Needed to use components [RigidDistanceGridCollisionModel] -->
-    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
+    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="response" response="PenalityContactForceField" />

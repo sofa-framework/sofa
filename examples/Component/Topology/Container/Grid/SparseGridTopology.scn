@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- SparseGrid examples -->
 <Node name="root" dt="0.02" gravity="0 -9 0">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -20,7 +20,7 @@
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultAnimationLoop/>
-    <DefaultPipeline verbose="0" />
+    <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="Response"/>

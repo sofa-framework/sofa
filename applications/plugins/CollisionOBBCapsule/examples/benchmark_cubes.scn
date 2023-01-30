@@ -4,7 +4,7 @@
     <Node name="pluginList" >
         <RequiredPlugin name="CollisionOBBCapsule"/> <!-- Needed to use components [OBBCollisionModel] -->
         <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-        <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+        <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
         <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
         <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
         <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -27,7 +27,7 @@
 
     <!-- Basic Components to perform the collision detection -->
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelCollisionDetectionAndFreeMotion="true" />
-    <DefaultPipeline name="CollisionPipeline" />
+    <CollisionPipeline name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="0.2" contactDistance="0.09"/>

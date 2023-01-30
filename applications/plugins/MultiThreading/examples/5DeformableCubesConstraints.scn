@@ -7,7 +7,7 @@ In this scene, collision is detected in parallel.
 <Node name="root" gravity="0 -9.81 0">
     <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [ParallelBVHNarrowPhase ParallelBruteForceBroadPhase] -->
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -31,7 +31,7 @@ In this scene, collision is detected in parallel.
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop"
                              parallelCollisionDetectionAndFreeMotion="false"
                              parallelODESolving="true"/>
-    <DefaultPipeline/>
+    <CollisionPipeline/>
     <ParallelBruteForceBroadPhase/>
     <ParallelBVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
