@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_H
 #define SOFA_COMPONENT_MASS_CUDAMESHMATRIXMASS_H
 
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
 
 namespace sofa

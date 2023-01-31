@@ -35,7 +35,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa
 {

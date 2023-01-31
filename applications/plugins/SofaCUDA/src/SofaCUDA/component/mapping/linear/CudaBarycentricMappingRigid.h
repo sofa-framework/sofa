@@ -19,40 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
-#include "CudaBarycentricMapping.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+#ifndef SOFA_GPU_CUDA_CUDABARYCENTRICMAPPINGRIGID_H
+#define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPINGRIGID_H
 
-namespace sofa::component::mapping::linear
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaMiscMapping/BarycentricMappingRigid.h>
+
+namespace sofa
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::gpu::cuda;
-
-
-// Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
-
-// Instantiations involving both CudaVec3fTypes and Vec3dTypes
-template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3Types>;
-template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3Types, Vec3Types>;
-
-} // namespace sofa::component::mapping::linear
-
-namespace sofa::gpu::cuda
+namespace component
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::component::mapping::linear;
+namespace mapping
+{
 
-int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< BarycentricMapping< Vec3Types, CudaVec3Types> >()
-        .add< BarycentricMapping< CudaVec3Types, Vec3Types> >()
 
-        ;
+template<class TInReal, class TOutReal>
+class BarycentricMapperTetrahedronSetTopology< gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> > : public BarycentricMapperTetrahedronSetTopologyRigid< gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> >
+{
+public:
+    typedef gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal> In;
+    typedef sofa::defaulttype::StdRigidTypes<3,TOutReal> Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
+    typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
 
-} // namespace sofa::gpu::cuda
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+        : Inherit(fromTopology, _toTopology)
+    {}
+
+};
+
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa
+
+#endif

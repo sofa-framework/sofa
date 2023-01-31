@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_H
 #define SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_H
 
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/mass/DiagonalMass.h>
 
 namespace sofa

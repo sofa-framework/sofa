@@ -22,6 +22,6 @@
 #ifndef SOFA_GPU_CUDA_CUDAPARTICLESOURCE_H
 #define SOFA_GPU_CUDA_CUDAPARTICLESOURCE_H
 
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 #endif

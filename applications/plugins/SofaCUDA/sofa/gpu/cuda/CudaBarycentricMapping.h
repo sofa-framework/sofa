@@ -23,5 +23,5 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/sofa/gpu/cuda/component/mapping/linear/CudaBarycentricMapping.h")
-#include <SofaCUDA/sofa/gpu/cuda/component/mapping/linear/CudaBarycentricMapping.h>
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mapping/linear/CudaBarycentricMapping.h")
+#include <SofaCUDA/component/mapping/linear/CudaBarycentricMapping.h>

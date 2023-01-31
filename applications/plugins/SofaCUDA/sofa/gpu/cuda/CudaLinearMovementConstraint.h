@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/constraint/projective/LinearMovementConstraint.h>
 
 namespace sofa::gpu::cuda

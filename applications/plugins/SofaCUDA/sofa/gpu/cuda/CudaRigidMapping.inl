@@ -23,5 +23,5 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/sofa/gpu/cuda/component/mapping/nonlinear/CudaRigidMapping.inl")
-#include <SofaCUDA/sofa/gpu/cuda/component/mapping/nonlinear/CudaRigidMapping.inl>
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.inl")
+#include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.inl>

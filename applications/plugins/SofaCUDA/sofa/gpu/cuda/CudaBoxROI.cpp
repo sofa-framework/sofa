@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/engine/select/BoxROI.inl>
 #include <sofa/defaulttype/VecTypes.h>

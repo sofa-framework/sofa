@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP
 
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaMechanicalObject.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/statecontainer/MappedObject.inl>
