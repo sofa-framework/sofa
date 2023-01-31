@@ -169,13 +169,13 @@ void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionM
             if (continuous)
             {
                 const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer bboxtimer(msg.c_str());
+                ScopedAdvancedTimer continuousBoundingTreeTimer(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, used_depth);
             }
             else
             {
                 std::string msg = "Compute BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer bboxtimer(msg.c_str());
+                ScopedAdvancedTimer boundingTreeTimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
             }
 
