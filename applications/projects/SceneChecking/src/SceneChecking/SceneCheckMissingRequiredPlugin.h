@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
+#include <sofa/simulation/SceneCheck.h>
 
 #include <map>
 #include <vector>
@@ -36,7 +36,7 @@ namespace sofa::simulation
 namespace sofa::_scenechecking_
 {
 
-class SOFA_SCENECHECKING_API SceneCheckMissingRequiredPlugin : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckMissingRequiredPlugin : public sofa::simulation::SceneCheck
 {
 public:
     typedef std::shared_ptr<SceneCheckMissingRequiredPlugin> SPtr;
