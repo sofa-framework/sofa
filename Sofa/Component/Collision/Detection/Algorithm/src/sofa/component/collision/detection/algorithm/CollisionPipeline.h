@@ -58,7 +58,7 @@ public:
 };
 
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/component/collision/detection/algorithm/CollisionPipeline.h")
+SOFA_ATTRIBUTE_DISABLED__RENAME_COLLISIONPIPELINE()
 using DefaultPipeline = sofa::component::collision::detection::algorithm::CollisionPipeline;
 
 } // namespace sofa::component::collision::detection::algorithm
