@@ -19,6 +19,10 @@ set(HEADER_FILES
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.inl
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.h
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.inl
+    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h
+    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.inl
+    src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.h
+    src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.inl
     src/MultiThreading/SceneCheckMultithreading.h
     src/MultiThreading/ParallelImplementationsRegistry.h
     )
@@ -34,6 +38,8 @@ set(SOURCE_FILES
     src/MultiThreading/component/mapping/linear/BeamLinearMapping_mt.cpp
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.cpp
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.cpp
+    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.cpp
+    src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.cpp
     src/MultiThreading/SceneCheckMultithreading.cpp
     src/MultiThreading/ParallelImplementationsRegistry.cpp
     )
@@ -58,6 +64,7 @@ sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Common)
@@ -65,6 +72,7 @@ target_link_libraries(${PROJECT_NAME} Sofa.Component.Collision.Detection.Algorit
 target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.FEM.Elastic)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.Mapping.Linear)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.StateContainer)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.Spring)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
 
