@@ -15,7 +15,7 @@
    	<CGLinearSolver template="GraphScattered" iterations="200" threshold="1e-12" tolerance="1e-5"/>
 	
 	<MechanicalObject name="meca" template="Rigid3d" translation="7 7 0" />
-	<UniformMass template="Rigid3d" totalmass="10"/> 
+	<UniformMass template="Rigid3d" totalMass="10"/>
 
 	<Node name="Visu">
         <OglModel name="Visual" filename="mesh/cube.obj" translation="7 7 0"/>

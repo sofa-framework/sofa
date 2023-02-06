@@ -4,7 +4,7 @@
 	<MeshOBJLoader name="loader" filename="file"/>
 	<MeshTopology src="@loader"/> 
 	<MechanicalObject src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
-	<UniformMass totalmass="5" />
+	<UniformMass totalMass="5" />
 	<HexahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3"  method="polar"/>
     <VisualNodeTransformation/>
     <CollisionNodeTransformation/>

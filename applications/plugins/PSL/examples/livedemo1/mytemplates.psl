@@ -29,7 +29,7 @@ Template :
             name : "mstate"
         }
 
-        UniformMass : { totalmass : "1" }
+        UniformMass : { totalMass : "1" }
         RegularGridTopology : {
             n : "2 2 2"
             max:"2.5 0.5 2"

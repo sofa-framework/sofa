@@ -358,7 +358,7 @@ void addTriangleFEM(simulation::Node::SPtr node, const std::string& objectName,
 {
     simpleapi::createObject(node, "UniformMass", {
                                 {"name", objectName+"_mass"},
-                                {"totalmass", str(totalMass)}});
+                                {"totalMass", str(totalMass)}});
 
     simpleapi::createObject(node, "TriangularFEMForceField", {
                                 {"name", objectName+"_FEM"},

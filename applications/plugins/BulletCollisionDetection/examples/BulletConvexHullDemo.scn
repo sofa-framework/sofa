@@ -13,7 +13,7 @@
 	<Node 	 name="Dragon"  >
 	    <MeshOBJLoader name="loader"  filename="mesh/dragon.obj" />
 		<MechanicalObject template="Rigid3d" name="mObject1"  position="0 0 10 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid3d" name="uniformMass0"  totalmass="10" />
+		<UniformMass template="Rigid3d" name="uniformMass0"  totalMass="10" />
 		<TBulletConvexHullModel template="Rigid3d" name="tBulletTriangleModel2"  CHPoints="@loader.position" positionDefined="true" proximity="0" margin="1" computeConvexHullDecomposition="true" drawConvexHullDecomposition="true"/>
 		<MeshTopology name="meshTopology1"  triangles="@loader.triangles" />
 	</Node>
@@ -21,7 +21,7 @@
 	<Node 	 name="Frog"  >
 		<MeshOBJLoader name="loader"  filename="mesh/frog_body.obj" />
 		<MechanicalObject template="Rigid3d" name="mObject1"  position="0 0 30 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid3d" name="uniformMass0"  totalmass="10" />
+		<UniformMass template="Rigid3d" name="uniformMass0"  totalMass="10" />
 		<TBulletConvexHullModel template="Rigid3d" name="tBulletTriangleModel2"  CHPoints="@loader.position" positionDefined="true" proximity="0" margin="1" computeConvexHullDecomposition="true" drawConvexHullDecomposition="true" concavityThreeshold="50"/>
 		<MeshTopology name="meshTopology1"  triangles="@loader.triangles" />
 	</Node>

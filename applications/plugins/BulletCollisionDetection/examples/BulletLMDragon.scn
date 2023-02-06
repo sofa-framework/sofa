@@ -20,7 +20,7 @@
 			<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 0"  rotation="33 0 0" />
 			<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" proximity="0" margin="5"/>
 			<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../"  output="@./" />
-			<UniformMass template="Vec3d" name="uniformMass0"  totalmass="10" />
+			<UniformMass template="Vec3d" name="uniformMass0"  totalMass="10" />
 		</Node>
 	</Node>
 	<Node 	 name="Floor"  >
