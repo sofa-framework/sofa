@@ -37,7 +37,7 @@ namespace multithreading::component::animationloop
 {
 
 class SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "This class is no longer used.")
-SOFA_MULTITHREADING_PLUGIN_API StepTask : public sofa::simulation::CpuTask
+StepTask : public sofa::simulation::CpuTask
 {
 public:
     StepTask(sofa::core::behavior::BaseAnimationLoop* aloop, const double t, sofa::simulation::CpuTask::Status* pStatus);
