@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(chainHybrid)
 
 find_package(SceneCreator REQUIRED)
-find_package(SofaGui REQUIRED)
+find_package(Sofa.GUI REQUIRED)
 find_package(Sofa.GUI.Component REQUIRED)
 find_package(Sofa.Component REQUIRED)
 
