@@ -27,7 +27,7 @@
 			<Gravity name="Gravity" gravity="0 0 0" />
 			<QuatToRigidEngine name="controllerRigid" template="Vec3d" positions="@../../RazerHydraDriver.positionFirstTool" orientations="@../../RazerHydraDriver.orientationFirstTool" />
 			<MechanicalObject name="controller1State" template="Rigid3d" position="@./controllerRigid.rigids" />
-			<UniformMass name="uniformMass" template="Rigid3d"  totalmass="0.1" />
+			<UniformMass name="uniformMass" template="Rigid3d" totalMass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../controllerRigid.rigids" />
 				<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.05"/>
@@ -39,7 +39,7 @@
 			<Gravity name="Gravity" gravity="0 0 0" />
 			<QuatToRigidEngine name="controllerRigid" template="Vec3d" positions="@../../RazerHydraDriver.positionSecondTool" orientations="@../../RazerHydraDriver.orientationSecondTool" />
 			<MechanicalObject name="controller1State" template="Rigid3d" position="@./controllerRigid.rigids" />
-			<UniformMass name="uniformMass" template="Rigid3d"  totalmass="0.1" />
+			<UniformMass name="uniformMass" template="Rigid3d" totalMass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../controllerRigid.rigids" />
 				<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.05"/>
@@ -67,7 +67,7 @@
                         />
         <RegularGridTopology nx="7" ny="7" nz="14" xmin="-0.17" xmax="0.17" ymin="-0.17" ymax="0.17" zmin=" 0.0" zmax="0.7" />
         <!-- <MechanicalObject name="DOFs" /> -->
-		<UniformMass totalmass="1"/>
+		<UniformMass totalMass="1"/>
 		<BoxROI name="ROI" box="-0.2 -0.2 -0.01 0.2 0.2 0.11" />
         <FixedConstraint indices="@ROI.indices" />
         <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" localStiffnessFactor="1 1 1 0.8 0.8 0.6 0.4 0.4 0.4 1 1 0.05 0.05" />

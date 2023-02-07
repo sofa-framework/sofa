@@ -4,7 +4,7 @@
 	<MeshOBJLoader name="loader" filename="file"/>
 	<MeshTopology src="@loader"/> 
 	<MechanicalObject src="@loader" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
-	<UniformMass totalmass="1" />
+	<UniformMass totalMass="1" />
 	<MeshSpringForceField name="Springs" stiffness="400" damping="4"/>
     <VisualNodeTransformation/>
     <CollisionNodeTransformation/>

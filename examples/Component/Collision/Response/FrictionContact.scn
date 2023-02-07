@@ -51,7 +51,7 @@
 		<Node name="MAN">
 			<EulerExplicitSolver/>
 			<MechanicalObject template="Rigid3d"  dx="0.0" dy="0.0" dz="0.0"/>
-			<UniformMass totalmass="100.0"/>
+			<UniformMass totalMass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">
 				<MeshOBJLoader name="meshLoader_4" filename="mesh/man.obj" scale="10" handleSeams="1" />
@@ -92,7 +92,7 @@
 		<Node name="DRAGON1">
 			<EulerExplicitSolver/>
 			<MechanicalObject template="Rigid3d" scale="10.0"  dx="0.0" dy="2.5" dz="0.0"/>
-			<UniformMass totalmass="100.0"/>
+			<UniformMass totalMass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">
 				<MeshOBJLoader name="meshLoader_3" filename="mesh/dragon_clean.obj" scale="0.25" handleSeams="1" />

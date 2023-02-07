@@ -27,7 +27,7 @@
 		<EulerImplicitSolver name="ODE solver"  rayleighStiffness="0.01"  rayleighMass="1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-010"  threshold="1e-009" />
 		<MechanicalObject template="Rigid3d" name="instrumentState"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
-		<UniformMass template="Rigid3d" name="mass"  totalmass="0.05"  filename="BehaviorModels/dental_instrument.rigid" />
+		<UniformMass template="Rigid3d" name="mass"  totalMass="0.05"  filename="BehaviorModels/dental_instrument.rigid" />
 		<LCPForceFeedback template="Rigid3d" name="default44"  listening="1"  activate="1"  forceCoef="0.005" />
 		<UncoupledConstraintCorrection template="Rigid3d" name="default45" />
 		<Node 	name="VisualModel" gravity="0 -9.81 0" >

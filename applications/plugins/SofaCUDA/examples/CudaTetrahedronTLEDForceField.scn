@@ -11,7 +11,7 @@
         <MeshGmshLoader  filename="mesh/cylinder_Hexa.msh"  name="loader"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" template="CudaVec3f" showObject="true"/>
-        <UniformMass totalmass="0.216" />
+        <UniformMass totalMass="0.216" />
         <BoxConstraint box="-0.020 -0.020 -0.001 0.020 0.020 .001" fixAll="0" />
         <CudaTetrahedronTLEDForceField name="FEM" youngModulus="60000" poissonRatio="0.49" viscoelasticity="0" anisotropy="0" preferredDirection="0 0.707 0.707"/>
     </Node>
