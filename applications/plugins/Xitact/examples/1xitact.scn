@@ -2,7 +2,7 @@
 <Node 	name="Root" dt="0.02"  >
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<LCPConstraintSolver name="lCPConstraintSolver1"  printLog="0"  displayTime="0"  initial_guess="1"  build_lcp="1"  tolerance="1e-010"  maxIt="3000"  mu="0.7"  group="0" />
-	<DefaultPipeline name="defaultPipeline1"  verbose="0"  draw="0"  depth="6" />
+	<CollisionPipeline name="defaultPipeline1"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity"  alarmDistance="6"  contactDistance="1.5"  angleCone="-0.001"  coneFactor="0.5" />

@@ -456,7 +456,7 @@ int SofaPhysicsSimulation::loadPlugin(const char* pluginPath)
 void SofaPhysicsSimulation::createScene()
 {
     m_RootNode = sofa::simulation::getSimulation()->createNewGraph("root");
-    sofa::simpleapi::createObject(m_RootNode, "DefaultPipeline", { {"name","Collision Pipeline"} });
+    sofa::simpleapi::createObject(m_RootNode, "CollisionPipeline", { {"name","Collision Pipeline"} });
     sofa::simpleapi::createObject(m_RootNode, "BruteForceBroadPhase", { {"name","Broad Phase Detection"} });
     sofa::simpleapi::createObject(m_RootNode, "BVHNarrowPhase", { {"name","Narrow Phase Detection"} });
     sofa::simpleapi::createObject(m_RootNode, "MinProximityIntersection", { {"name","Proximity"},

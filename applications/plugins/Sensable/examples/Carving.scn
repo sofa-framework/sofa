@@ -6,7 +6,7 @@
     <RequiredPlugin name="Carving" pluginName="SofaCarving" />
 
   <VisualStyle displayFlags="" />
-    <DefaultPipeline verbose="0" />
+    <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />

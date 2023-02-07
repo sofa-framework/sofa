@@ -5,7 +5,7 @@
 	<RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
 
 	<Gravity name="G"  gravity="0 -9.8 0" />
-	<DefaultPipeline name="pipeline"  verbose="0"  depth="6" />
+	<CollisionPipeline name="pipeline"  verbose="0"  depth="6" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<DefaultContactManager name="response"  response="FrictionContactConstraint" />

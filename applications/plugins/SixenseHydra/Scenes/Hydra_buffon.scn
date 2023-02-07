@@ -8,7 +8,7 @@
 
     <RequiredPlugin name="Razer Hydra Driver" pluginName="SixenseHydra" />
 
-	<DefaultPipeline name="pipeline" depth="6" />
+	<CollisionPipeline name="pipeline" depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <!-- <NewProximityIntersection alarmDistance="0.02" contactDistance="0.01" /> -->

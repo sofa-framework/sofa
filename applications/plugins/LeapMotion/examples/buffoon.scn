@@ -9,7 +9,7 @@
     <VisualStyle displayFlags="showVisualModels hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 
 
-    <DefaultPipeline name="pipeline" depth="6" />
+    <CollisionPipeline name="pipeline" depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<DiscreteIntersection />

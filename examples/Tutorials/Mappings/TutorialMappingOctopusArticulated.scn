@@ -1,5 +1,5 @@
 <Node name="root" gravity="0 -9.81 0" dt="0.05" time="0" animate="0" multiThreadSimulation="0">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -16,7 +16,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showVisual showInteractionForceFields" />
-    <DefaultPipeline name="default94" />
+    <CollisionPipeline name="default94" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="default2" alarmDistance="3" contactDistance="2.5" />

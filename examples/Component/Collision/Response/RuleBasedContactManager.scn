@@ -2,7 +2,7 @@
 <!-- Mechanical RuleBasedContactManager Example -->
 <Node name="root" dt="0.01">
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [RuleBasedContactManager] -->
@@ -21,7 +21,7 @@
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <FreeMotionAnimationLoop />
 	<GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
-    <DefaultPipeline depth="6" verbose="0" draw="0" />
+    <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="1.5" contactDistance="1.0" angleCone="0.0" />
