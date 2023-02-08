@@ -30,13 +30,13 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int DifferenceEngineClass = core::RegisterObject("Computing the difference between two vector of dofs")
-        .add< DifferenceEngine<Vec1d> >()
-        .add< DifferenceEngine<Vec3d> >(true) // default template
+        .add< DifferenceEngine<Vec1> >()
+        .add< DifferenceEngine<Vec3> >(true) // default template
 
         ;
 
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<Vec1d>;
-template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<Vec3d>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<Vec1>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<Vec3>;
 
 
 } //namespace sofa::component::engine::transform
