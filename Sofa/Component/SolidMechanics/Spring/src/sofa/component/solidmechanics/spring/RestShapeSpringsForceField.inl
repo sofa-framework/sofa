@@ -81,6 +81,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_recompute_indices(initData(&d_recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
+    , d_activeDirections(initData(&d_activeDirections, type::Vec<6,bool>(1,1,1,1,1,1), "activeDirections","Directions in which the spring is active (default=[1, 1, 1, 1, 1, 1])"))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {
@@ -341,6 +342,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
 
         const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
 
+        const auto activeDirections = d_activeDirections.getValue();
+
         // rigid case
         if constexpr (isRigidType<DataTypes>())
         {
@@ -348,6 +351,14 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (i >= m_pivots.size())
             {
                 CPos dx = p1[index].getCenter() - p0[ext_index].getCenter();
+                // We filter the difference dx by setting to 0 the entries corresponding
+                // to 0 values in d_activeDirections
+                // TO DO: is there a clean and more efficient way ?
+                for (unsigned int entryId = 0; entryId < 3; entryId++)
+                {
+                    if (!activeDirections[entryId])
+                        dx[entryId] = 0;
+                }
                 getVCenter(f1[index]) -= dx * stiffness;
             }
             else
@@ -383,6 +394,13 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             const sofa::Index ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
+            // We filter the difference dx by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            for (unsigned int entryId = 0; entryId < 3; entryId++)
+            {
+                if (!activeDirections[entryId])
+                    dx[entryId] = 0;
+            }
             f1[index] -= dx * stiffness;
         }
     }
@@ -396,6 +414,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
+    const auto activeDirections = d_activeDirections.getValue();
 
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
@@ -406,12 +425,28 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
         {
             const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
 
-            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * stiffness * kFactor;
+            // We filter the difference in translation by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            auto currentSpringDx = getVCenter(dx1[curIndex]);
+            for (unsigned int entryId = 0; entryId < 3; entryId++)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringDx[entryId] = 0;
+            }
+            getVCenter(df1[curIndex]) -= currentSpringDx * stiffness * kFactor;
             getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * angularStiffness * kFactor;
         }
         else
         {
-            df1[m_indices[i]] -= dx1[m_indices[i]] * stiffness * kFactor;
+            // We filter the difference in translation by setting to 0 the entries corresponding
+            // to 0 values in d_activeDirections
+            auto currentSpringDx = dx1[m_indices[i]];
+            for (unsigned int entryId = 0; entryId < 3; entryId++)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringDx[entryId] = 0;
+            }
+            df1[m_indices[i]] -= currentSpringDx * stiffness * kFactor;
         }
     }
 
@@ -467,6 +502,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
+    const auto activeDirections = d_activeDirections.getValue();
 
     constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
     constexpr sofa::Size total_size = Deriv::total_size;
@@ -481,7 +517,10 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         const auto vt = -kFact * k[(index < k.size()) * index];
         for (int i = 0; i < space_size; i++)
         {
-            mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
+            // Contribution to the stiffness matrix are only taken into
+            // account for 1 values in d_activeDirections
+            if (activeDirections[i])
+                mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
         }
 
         // rotation (if applicable)

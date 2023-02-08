@@ -75,6 +75,7 @@ public:
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
     Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
+    Data< type::Vec<6,bool> > d_activeDirections; ///< directions (translation, and rotation in case of Rigids) in which the spring is active
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
     linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
