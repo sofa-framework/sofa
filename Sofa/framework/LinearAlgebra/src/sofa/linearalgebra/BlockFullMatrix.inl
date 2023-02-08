@@ -72,7 +72,10 @@ template<std::size_t N, typename T>
 typename BlockFullMatrix<N,T>::Block  BlockFullMatrix<N, T>::Block::i() const
 {
     Block r;
-    r.invert(*this);
+    bool res = r.invert(*this);
+    assert(res);
+
+    SOFA_UNUSED(res);
     return r;
 }
 
