@@ -7,18 +7,20 @@ set(HEADER_FILES
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsAPI.h
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsOutputMesh_impl.h
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsSimulation.h
+    ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsBindings.h
     ${SOFAPHYSICSAPI_SRC_DIR}/fakegui.h
 )
 
 set(SOURCE_FILES
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsOutputMesh.cpp
     ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsSimulation.cpp
+    ${SOFAPHYSICSAPI_SRC_DIR}/SofaPhysicsBindings.cpp
     ${SOFAPHYSICSAPI_SRC_DIR}/fakegui.cpp
 )
 
 find_package(Sofa.Simulation.Graph REQUIRED)
 sofa_find_package(Sofa.Component REQUIRED)
-sofa_find_package(SofaGui REQUIRED)
+sofa_find_package(Sofa.GUI.Common REQUIRED)
 sofa_find_package(SofaValidation QUIET)
 
 if(SofaValidation_FOUND)
@@ -36,7 +38,7 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph SofaGui)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph Sofa.GUI.Common)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component)
 
 if(SofaValidation_FOUND)

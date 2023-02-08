@@ -47,16 +47,7 @@ public:
         ::operator delete(ptr);
     }
 };
-        
-static StdTaskAllocator defaultTaskAllocator;
 
-// mac clang 3.5 doesn't support thread_local vars
-//static  WorkerThread* WorkerThread::_workerThreadIndex = nullptr;
-SOFA_THREAD_SPECIFIC_PTR(WorkerThread, workerThreadIndex);
-        
-std::map< std::thread::id, WorkerThread*> DefaultTaskScheduler::_threads;
-        
-        
 DefaultTaskScheduler* DefaultTaskScheduler::create()
 {
     return new DefaultTaskScheduler();
@@ -71,8 +62,7 @@ DefaultTaskScheduler::DefaultTaskScheduler()
             
     // init global static thread local var
     {
-        workerThreadIndex = new WorkerThread(this, 0, "Main  ");
-        _threads[std::this_thread::get_id()] = workerThreadIndex;// new WorkerThread(this, 0, "Main  ");
+        _threads[std::this_thread::get_id()] = new WorkerThread(this, 0, "Main  ");// new WorkerThread(this, 0, "Main  ");
     }
 }
         
@@ -84,14 +74,7 @@ DefaultTaskScheduler::~DefaultTaskScheduler()
     }
 }
         
-        
-unsigned DefaultTaskScheduler::GetHardwareThreadsCount()
-{
-    return std::thread::hardware_concurrency() / 2;
-}
-        
-        
-const WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
+WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
 {
     auto thread =_threads.find(id);
     if (thread == _threads.end() )
@@ -103,6 +86,7 @@ const WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id 
         
 Task::Allocator* DefaultTaskScheduler::getTaskAllocator()
 {
+    static StdTaskAllocator defaultTaskAllocator;
     return &defaultTaskAllocator;
 }
         
@@ -162,25 +146,25 @@ void DefaultTaskScheduler::stop()
         wakeUpWorkers();
         m_isInitialized = false;
                 
-        for (auto it : _threads)
+        for (auto [threadId, workerThread] : _threads)
         {
             // if this is the main thread continue
-            if (std::this_thread::get_id() == it.first)
+            if (std::this_thread::get_id() == threadId)
             {
                 continue;
             }
-                    
+
             // cpu busy wait
-            while (!it.second->isFinished())
+            while (!workerThread->isFinished())
             {
                 std::this_thread::yield();
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
-                    
+
             // free memory
             // cpu busy wait: thread.joint call
-            delete it.second;
-            it.second = nullptr;
+            delete workerThread;
+            workerThread = nullptr;
         }
                 
         m_threadCount = 1;
@@ -194,35 +178,40 @@ void DefaultTaskScheduler::stop()
             
     return;
 }
-        
+
+WorkerThread* DefaultTaskScheduler::getCurrent()
+{
+    return getWorkerThread(std::this_thread::get_id());
+}
+
 const char* DefaultTaskScheduler::getCurrentThreadName()
 {
-    WorkerThread* thread = WorkerThread::getCurrent();
+    const WorkerThread* thread = getCurrent();
     return thread->getName();
 }
         
 int DefaultTaskScheduler::getCurrentThreadType()
 {
-    WorkerThread* thread = WorkerThread::getCurrent();
+    const WorkerThread* thread = getCurrent();
     return thread->getType();
 }
         
 bool DefaultTaskScheduler::addTask(Task* task)
 {
-    WorkerThread* thread = WorkerThread::getCurrent();
+    WorkerThread* thread = getCurrent();
     return thread->addTask(task);
 }
         
 void DefaultTaskScheduler::workUntilDone(Task::Status* status)
 {
-    WorkerThread* thread = WorkerThread::getCurrent();
+    WorkerThread* thread = getCurrent();
     thread->workUntilDone(status);
 }
         
 void DefaultTaskScheduler::wakeUpWorkers()
 {
     {
-        std::lock_guard<std::mutex> guard(m_wakeUpMutex);
+        std::lock_guard guard(m_wakeUpMutex);
         m_workerThreadsIdle = false;
     }								
     m_wakeUpEvent.notify_all();

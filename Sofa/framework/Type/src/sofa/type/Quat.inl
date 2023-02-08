@@ -224,7 +224,8 @@ void Quat<Real>::fromMatrix(const Mat3x3 &m)
 template<class Real>
 auto Quat<Real>::axisToQuat(Vec3 a, Real phi) -> Quat
 {
-    if( a.norm() < std::numeric_limits<Real>::epsilon() )
+    const auto aNorm = a.norm();
+    if(aNorm < std::numeric_limits<Real>::epsilon() )
     {
         _q[0] = _q[1] = _q[2] = Real(0.0);
         _q[3] = Real(1.0);
@@ -232,16 +233,14 @@ auto Quat<Real>::axisToQuat(Vec3 a, Real phi) -> Quat
         return Quat();
     }
 
-    a = a / a.norm();
-    _q[0] = a.x();
-    _q[1] = a.y();
-    _q[2] = a.z();
+    a = a / aNorm;
+    const auto sp = sin(phi / Real(2.0));
+    const auto cp = cos(phi / Real(2.0));
 
-    _q[0] = _q[0] * sin(phi / Real(2.0));
-    _q[1] = _q[1] * sin(phi / Real(2.0));
-    _q[2] = _q[2] * sin(phi / Real(2.0));
-
-    _q[3] = cos(phi / Real(2.0));
+    _q[0] = a.x() * sp;
+    _q[1] = a.y() * sp;
+    _q[2] = a.z() * sp;
+    _q[3] = cp;
 
     return *this;
 }

@@ -27,9 +27,12 @@
 
 #include <sofa/simulation/RequiredPlugin.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
 namespace sofa::_scenechecking_
 {
+
+const bool SceneCheckMissingRequiredPluginRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckMissingRequiredPlugin::newSPtr());
 
 using sofa::core::objectmodel::Base;
 using sofa::simulation::RequiredPlugin;

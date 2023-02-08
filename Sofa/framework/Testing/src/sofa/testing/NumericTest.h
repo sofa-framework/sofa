@@ -202,6 +202,17 @@ protected:
     EXPECT_PRED_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<std::decay_t<decltype(val1)> >, \
         val1, val2);}
 
+// Generic macro for comparing floating-point numbers
+// Google Test provides ASSERT_FLOAT_EQ and ASSERT_DOUBLE_EQ, but it supposes that the type is known and constant. It
+// cannot rely on a template mechanism for example.
+#define ASSERT_FLOATINGPOINT_EQ(val1, val2) {\
+    static_assert(std::is_same_v<std::decay_t<decltype(val1)>, std::decay_t<decltype(val2)> >,\
+        "Different types for val1 and val2 are not supported");\
+    static_assert(std::is_floating_point_v<std::decay_t<decltype(val1)> >,\
+        "Non-floating-point types are not supported");\
+    ASSERT_PRED_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<std::decay_t<decltype(val1)> >, \
+        val1, val2);}
+
 
 /// Resize the Vector and copy it from the Data
 template<class Vector, class ReadData>

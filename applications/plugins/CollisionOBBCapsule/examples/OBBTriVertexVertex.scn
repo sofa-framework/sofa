@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node 	 name="Root"  gravity="0 0 -9.81"  >
     <RequiredPlugin name="CollisionOBBCapsule"/> <!-- Needed to use components [OBBCollisionModel] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -15,7 +15,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     
     <VisualStyle name="displayFlags"  displayFlags="showAll" />
-    <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+    <CollisionPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="newProximityIntersection0" alarmDistance="1" contactDistance="0.5"/>

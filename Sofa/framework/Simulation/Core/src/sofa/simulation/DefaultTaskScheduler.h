@@ -37,8 +37,7 @@
 
 namespace sofa::simulation
 {
-       
-class DefaultTaskScheduler;
+
 class WorkerThread;
 
 class SOFA_SIMULATION_CORE_API DefaultTaskScheduler : public TaskScheduler
@@ -54,19 +53,21 @@ public:
     // interface
 
     /**
-        * Call stop() and start() if not already initialized
-        * @param nbThread
-        */
+     * Call stop() and start() if not already initialized
+     * @param nbThread
+     */
     virtual void init(const unsigned int nbThread = 0) final;
 
     /**
-        * Wait and destroy worker threads
-        */
-    virtual void stop(void) final;
-    virtual unsigned int getThreadCount(void)  const final { return m_threadCount; }
-    virtual const char* getCurrentThreadName() override final;
-    virtual int getCurrentThreadType() override final;
-            
+     * Wait and destroy worker threads
+     */
+    void stop() final;
+
+    WorkerThread* getCurrent();
+    unsigned int getThreadCount(void)  const final { return m_threadCount; }
+    const char* getCurrentThreadName() override final;
+    int getCurrentThreadType() override final;
+
     // queue task if there is space, and run it otherwise
     bool addTask(Task* task) override final;
     void workUntilDone(Task::Status* status) override final;
@@ -76,9 +77,7 @@ public:
     static const char* name() { return "_default"; }
             
     static DefaultTaskScheduler* create();
-            
-    static const bool isRegistered;
-            
+
 private:
             
     bool isInitialized() const { return m_isInitialized; }
@@ -88,22 +87,15 @@ private:
     void	WaitForWorkersToBeReady();
             
     void	wakeUpWorkers();
-
-    /**
-    * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
-    */
-    static unsigned GetHardwareThreadsCount();
             
     WorkerThread* getCurrentThread();
             
-    const WorkerThread* getWorkerThread(const std::thread::id id);
+    WorkerThread* getWorkerThread(const std::thread::id id);
 
             
     static const std::string _name;
-            
-    // TO DO: replace with thread_specific_ptr. clang 3.5 doesn't support C++ 11 thread_local vars on Mac
-    //static thread_local WorkerThread* _workerThreadIndex;
-    static std::map< std::thread::id, WorkerThread*> _threads;
+
+    std::map< std::thread::id, WorkerThread*> _threads;
             
     const Task::Status*	m_mainTaskStatus;
             
@@ -113,17 +105,17 @@ private:
             
     DefaultTaskScheduler();
             
-    DefaultTaskScheduler(const DefaultTaskScheduler&) = default;
+    DefaultTaskScheduler(const DefaultTaskScheduler&) = delete;
             
     ~DefaultTaskScheduler() override;
 
     /**
-        * Create worker threads
-        * If the number of required threads is 0, the number of threads will be equal to the
-        * result of GetHardwareThreadsCount()
-        *
-        * @param NbThread
-        */
+     * Create worker threads
+     * If the number of required threads is 0, the number of threads will be equal to the
+     * result of GetHardwareThreadsCount()
+     *
+     * @param NbThread
+     */
     void start(unsigned int NbThread);
             
     bool m_isInitialized;

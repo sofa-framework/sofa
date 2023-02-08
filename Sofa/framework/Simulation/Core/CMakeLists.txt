@@ -19,6 +19,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
     ${SRC_ROOT}/CpuTask.h
+    ${SRC_ROOT}/CpuTaskStatus.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
@@ -36,6 +37,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MutationListener.h
     ${SRC_ROOT}/Node.h
     ${SRC_ROOT}/Node.inl
+    ${SRC_ROOT}/ParallelForEach.h
     ${SRC_ROOT}/ParallelVisitorScheduler.h
     ${SRC_ROOT}/PauseEvent.h
     ${SRC_ROOT}/PipelineImpl.h
@@ -74,6 +76,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/Locks.h
     ${SRC_ROOT}/MainTaskSchedulerFactory.h
     ${SRC_ROOT}/MainTaskSchedulerRegistry.h
+    ${SRC_ROOT}/SceneCheck.h
+    ${SRC_ROOT}/SceneCheckRegistry.h
+    ${SRC_ROOT}/SceneCheckMainRegistry.h
     ${SRC_ROOT}/WorkerThread.h
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
@@ -150,6 +155,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
     ${SRC_ROOT}/CpuTask.cpp
+    ${SRC_ROOT}/CpuTaskStatus.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
@@ -176,6 +182,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/RequiredPlugin.cpp
     ${SRC_ROOT}/ResetVisitor.cpp
     ${SRC_ROOT}/SceneLoaderFactory.cpp
+    ${SRC_ROOT}/SceneCheck.cpp
+    ${SRC_ROOT}/SceneCheckRegistry.cpp
+    ${SRC_ROOT}/SceneCheckMainRegistry.cpp
     ${SRC_ROOT}/Simulation.cpp
     ${SRC_ROOT}/SolveVisitor.cpp
     ${SRC_ROOT}/StateChangeVisitor.cpp

@@ -68,9 +68,9 @@ public:
                                     sofa::type::rebind_to<memory_manager, T2>,
                                     sofa::type::rebind_to<datatypeinfo_manager, T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        using other = rebind_to<T2>;
+        typedef DeprecatedAndRemoved other;
     };
 
 

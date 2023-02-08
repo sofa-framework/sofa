@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,41 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDABARYCENTRICMAPPINGRIGID_H
-#define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPINGRIGID_H
+#pragma once
 
-#include "CudaTypes.h"
-#include <SofaMiscMapping/BarycentricMappingRigid.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
-{
-
-
-template<class TInReal, class TOutReal>
-class BarycentricMapperTetrahedronSetTopology< gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> > : public BarycentricMapperTetrahedronSetTopologyRigid< gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> >
-{
-public:
-    typedef gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal> In;
-    typedef sofa::defaulttype::StdRigidTypes<3,TOutReal> Out;
-    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
-    typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
-
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
-        : Inherit(fromTopology, _toTopology)
-    {}
-
-};
-
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mapping/linear/CudaBarycentricMappingRigid.h")
+#include <SofaCUDA/component/mapping/linear/CudaBarycentricMappingRigid.h>

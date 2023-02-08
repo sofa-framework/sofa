@@ -3,11 +3,13 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Simulation.Core_test)
 
 set(SOURCE_FILES
+    ParallelForEach_test.cpp
     RequiredPlugin_test.cpp
     TaskSchedulerTests.cpp
     TaskSchedulerTestTasks.h
     TaskSchedulerTestTasks.cpp
     TaskSchedulerFactory_test.cpp
+    SceneCheckRegistry_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

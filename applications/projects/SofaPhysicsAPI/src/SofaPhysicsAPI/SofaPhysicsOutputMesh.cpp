@@ -46,18 +46,37 @@ unsigned int SofaPhysicsOutputMesh::getNbVertices() ///< number of vertices
 {
     return impl->getNbVertices();
 }
+
 const Real* SofaPhysicsOutputMesh::getVPositions()  ///< vertices positions (Vec3)
 {
     return impl->getVPositions();
 }
+
+int SofaPhysicsOutputMesh::getVPositions(Real* values)
+{
+    return impl->getVPositions(values);
+}
+
 const Real* SofaPhysicsOutputMesh::getVNormals()    ///< vertices normals   (Vec3)
 {
     return impl->getVNormals();
 }
+
+int SofaPhysicsOutputMesh::getVNormals(Real* values)
+{
+    return impl->getVNormals(values);
+}
+
 const Real* SofaPhysicsOutputMesh::getVTexCoords()  ///< vertices UVs       (Vec2)
 {
     return impl->getVTexCoords();
 }
+
+int SofaPhysicsOutputMesh::getVTexCoords(Real* values)
+{
+    return impl->getVTexCoords(values);
+}
+
 int SofaPhysicsOutputMesh::getTexCoordRevision()    ///< changes each time tex coord data are updated
 {
     return impl->getTexCoordRevision();
@@ -116,6 +135,12 @@ const Index* SofaPhysicsOutputMesh::getTriangles()   ///< triangles topology (3 
 {
     return impl->getTriangles();
 }
+
+int SofaPhysicsOutputMesh::getTriangles(int* values)
+{
+    return impl->getTriangles(values);
+}
+
 int SofaPhysicsOutputMesh::getTrianglesRevision()    ///< changes each time triangles data is updated
 {
     return impl->getTrianglesRevision();
@@ -129,6 +154,12 @@ const Index* SofaPhysicsOutputMesh::getQuads()   ///< quads topology (4 indices 
 {
     return impl->getQuads();
 }
+
+int SofaPhysicsOutputMesh::getQuads(int* values)
+{
+    return impl->getQuads(values);
+}
+
 int SofaPhysicsOutputMesh::getQuadsRevision()    ///< changes each time quads data is updated
 {
     return impl->getQuadsRevision();
@@ -153,9 +184,6 @@ SofaPhysicsOutputMesh::Impl::~Impl()
 
 void SofaPhysicsOutputMesh::Impl::setObject(SofaOutputMesh* o)
 {
-	if (!sObj)
-		return;
-
     sObj = o;
     sVA.clear();
     sofa::core::objectmodel::BaseContext* context = sObj->getContext();
@@ -171,10 +199,23 @@ void SofaPhysicsOutputMesh::Impl::setObject(SofaOutputMesh* o)
     }
 }
 
+const std::string& SofaPhysicsOutputMesh::Impl::getNameStr() const
+{
+    if (!sObj)
+        return defaultName;
+    else
+        return sObj->getName();
+}
+
 const char* SofaPhysicsOutputMesh::Impl::getName() ///< (non-unique) name of this object
 {
-    if (!sObj) return "";
-    return sObj->getName().c_str();
+    if (!sObj) 
+        return "None";
+
+    std::string value = sObj->getName();
+    char* cstr = new char[value.length() + 1];
+    std::strcpy(cstr, value.c_str()); // force copy to avoid possible segfault if object is destroyed
+    return cstr;
 }
 
 ID SofaPhysicsOutputMesh::Impl::getID() ///< unique ID of this object
@@ -198,16 +239,56 @@ const Real* SofaPhysicsOutputMesh::Impl::getVPositions()  ///< vertices position
         &(sObj->m_vertices2) : &(sObj->m_positions);
     return (const Real*) data->getValue().data();
 }
+
+int SofaPhysicsOutputMesh::Impl::getVPositions(Real* values)
+{
+    Data<sofa::type::vector<Coord> >* data =
+        (!sObj->m_vertPosIdx.getValue().empty()) ?
+        &(sObj->m_vertices2) : &(sObj->m_positions);
+
+    const sofa::type::vector<Coord>& coords = data->getValue();
+    for (unsigned int i = 0; i < coords.size(); ++i)
+    {
+        values[i * 3] = coords[i].x();
+        values[i * 3 + 1] = coords[i].y();
+        values[i * 3 + 2] = coords[i].z();
+    }
+    return API_SUCCESS;
+}
+
 const Real* SofaPhysicsOutputMesh::Impl::getVNormals()    ///< vertices normals   (Vec3)
 {
     Data<sofa::type::vector<Deriv> > * data = &(sObj->m_vnormals);
     return (const Real*) data->getValue().data();
 }
 
+int SofaPhysicsOutputMesh::Impl::getVNormals(Real* values)
+{
+    const sofa::type::vector<Coord>& normals = (sObj->m_vnormals).getValue();
+    for (unsigned int i = 0; i < normals.size(); ++i)
+    {
+        values[i * 3] = normals[i].x();
+        values[i * 3 + 1] = normals[i].y();
+        values[i * 3 + 2] = normals[i].z();
+    }
+    return API_SUCCESS;
+}
+
 const Real* SofaPhysicsOutputMesh::Impl::getVTexCoords()  ///< vertices UVs       (Vec2)
 {
     Data<sofa::type::vector<TexCoord> > * data = &(sObj->m_vtexcoords);
     return (const Real*) data->getValue().data();
+}
+
+int SofaPhysicsOutputMesh::Impl::getVTexCoords(Real* values)
+{
+    const sofa::type::vector<TexCoord>& texCoords = (sObj->m_vtexcoords).getValue();
+    for (unsigned int i = 0; i < texCoords.size(); ++i)
+    {
+        values[i * 2] = texCoords[i].x();
+        values[i * 2 + 1] = texCoords[i].y();
+    }
+    return API_SUCCESS;
 }
 
 int SofaPhysicsOutputMesh::Impl::getTexCoordRevision()    ///< changes each time tex coord data are updated
@@ -300,11 +381,25 @@ unsigned int SofaPhysicsOutputMesh::Impl::getNbTriangles() ///< number of triang
     Data<sofa::type::vector<Triangle> > * data = &(sObj->m_triangles);
     return (unsigned int) data->getValue().size();
 }
+
 const Index* SofaPhysicsOutputMesh::Impl::getTriangles()   ///< triangles topology (3 indices / triangle)
 {
     Data<sofa::type::vector<Triangle> > * data = &(sObj->m_triangles);
     return (const Index*) data->getValue().data();
 }
+
+int SofaPhysicsOutputMesh::Impl::getTriangles(int* values)
+{
+    const sofa::type::vector<Triangle>& dTriangles = (sObj->m_triangles).getValue();
+    for (unsigned int i = 0; i < dTriangles.size(); ++i)
+    {
+        values[i * 3] = dTriangles[i][0];
+        values[i * 3 + 1] = dTriangles[i][1];
+        values[i * 3 + 2] = dTriangles[i][2];
+    }
+    return API_SUCCESS;
+}
+
 int SofaPhysicsOutputMesh::Impl::getTrianglesRevision()    ///< changes each time triangles data is updated
 {
     Data<sofa::type::vector<Triangle> > * data = &(sObj->m_triangles);
@@ -312,16 +407,32 @@ int SofaPhysicsOutputMesh::Impl::getTrianglesRevision()    ///< changes each tim
     return data->getCounter();
 }
 
+
 unsigned int SofaPhysicsOutputMesh::Impl::getNbQuads() ///< number of quads
 {
     Data<sofa::type::vector<Quad> > * data = &(sObj->m_quads);
     return (unsigned int) data->getValue().size();
 }
+
 const Index* SofaPhysicsOutputMesh::Impl::getQuads()   ///< quads topology (4 indices / quad)
 {
     Data<sofa::type::vector<Quad> > * data = &(sObj->m_quads);
     return (const Index*) data->getValue().data();
 }
+
+int SofaPhysicsOutputMesh::Impl::getQuads(int* values)
+{
+    const sofa::type::vector<Quad>& dQuads = (sObj->m_quads).getValue();
+    for (unsigned int i = 0; i < dQuads.size(); ++i)
+    {
+        values[i * 4] = dQuads[i][0];
+        values[i * 4 + 1] = dQuads[i][1];
+        values[i * 4 + 2] = dQuads[i][2];
+        values[i * 4 + 3] = dQuads[i][3];
+    }
+    return API_SUCCESS;
+}
+
 int SofaPhysicsOutputMesh::Impl::getQuadsRevision()    ///< changes each time quads data is updated
 {
     Data<sofa::type::vector<Quad> > * data = &(sObj->m_quads);

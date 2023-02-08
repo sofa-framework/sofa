@@ -6,7 +6,7 @@ set(SOURCE_FILES
     LoadScene_test.cpp
 )
 
-add_definitions("-DSOFASIMULATION_TEST_SCENES_DIR=\"${CMAKE_SOURCE_DIR}/examples/Components/constraint\"")
+add_definitions("-DSOFASIMULATION_TEST_SCENES_DIR=\"${CMAKE_SOURCE_DIR}/examples/Component/Constraint/Projective\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Helper)

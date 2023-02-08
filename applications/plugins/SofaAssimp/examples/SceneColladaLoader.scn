@@ -5,7 +5,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaAssimp"/>
     
-    <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+    <CollisionPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity"  alarmDistance="5.0"  contactDistance="2.5" />

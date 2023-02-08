@@ -23,9 +23,4 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<SofaMatrix/GlobalSystemMatrixExporter.h>)
-#include <SofaMatrix/GlobalSystemMatrixExporter.h>
-SOFA_DISABLED_HEADER("v22.06", "v22.12", "SofaMatrix/GlobalSystemMatrixExporter.h")
-#else
-SOFA_PRAGMA_ERROR("GlobalSystemMatrixExporter has moved into the SofaMatrix plugin since v22.06. You need to enable SofaMatrix in your configuration.")
-#endif
+SOFA_DISABLED_HEADER("v22.06", "v22.12", "SofaMatrix/GlobalSystemMatrixExporter.h (from the SofaMatrix plugin)")

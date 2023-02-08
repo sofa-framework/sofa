@@ -49,6 +49,8 @@ public:
     static TaskScheduler* createInRegistry(const std::string& name);
     static TaskScheduler* createInRegistry();
 
+    static std::string defaultTaskSchedulerType();
+
 private:
     static std::mutex s_mutex;
 

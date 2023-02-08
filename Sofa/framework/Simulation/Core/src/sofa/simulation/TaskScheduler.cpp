@@ -24,8 +24,44 @@
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/MainTaskSchedulerRegistry.h>
 
+#include <thread>
+
 namespace sofa::simulation
 {
+unsigned TaskScheduler::GetHardwareThreadsCount()
+{
+    return std::thread::hardware_concurrency() / 2;
+}
+
+bool TaskScheduler::addTask(Task::Status& status, const std::function<void()>& task)
+{
+    class CallableTask final : public Task
+    {
+    public:
+        CallableTask(int scheduledThread, Task::Status& status, std::function<void()> task)
+            : Task(scheduledThread)
+            , m_status(status)
+            , m_task(std::move(task))
+        {}
+        ~CallableTask() override = default;
+        sofa::simulation::Task::MemoryAlloc run() final
+        {
+            m_task();
+            return MemoryAlloc::Dynamic;
+        }
+
+        Task::Status* getStatus() const override
+        {
+            return &m_status;
+        }
+
+    private:
+        Task::Status& m_status;
+        std::function<void()> m_task;
+    };
+
+    return addTask(new CallableTask(-1, status, task)); //destructor should be called after run() because it returns MemoryAlloc::Dynamic
+}
 
 TaskScheduler* TaskScheduler::create(const char* name)
 {

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaLinearForceField.h"
 #include <sofa/component/mechanicalload/LinearForceField.inl>
 

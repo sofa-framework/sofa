@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [MergeVisualModels OglModel] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->  
+    <DefaultAnimationLoop/>
+
+    <MeshOBJLoader name="meshLoader" filename="mesh/snake_body.obj" handleSeams="1"/>
+    <MeshTopology src="@meshLoader"/>
+
+    <OglModel name="visualModel1" src="@meshLoader" useNormals="0" translation="0 0 0" />
+    <OglModel name="visualModel2" src="@meshLoader" useNormals="0" translation="10 0 0"/>
+    <OglModel name="visualModel3" src="@meshLoader" useNormals="0" translation="20 0 0"/>
+    
+
+    <MergeVisualModels name="merged" nb="2" input1="@visualModel1"  input2="@visualModel3"   texturename="textures/snakeColorMap.png" color="red"  />
+    
+</Node>

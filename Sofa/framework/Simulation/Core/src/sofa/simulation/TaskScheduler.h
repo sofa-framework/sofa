@@ -44,6 +44,11 @@ class SOFA_SIMULATION_CORE_API TaskScheduler
 public:
     virtual ~TaskScheduler() = default;
 
+    /**
+    * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
+    */
+    static unsigned GetHardwareThreadsCount();
+
     // interface
     virtual void init(const unsigned int nbThread = 0) = 0;
             
@@ -57,6 +62,8 @@ public:
 
     // queue task if there is space, and run it otherwise
     virtual bool addTask(Task* task) = 0;
+
+    virtual bool addTask(Task::Status& status, const std::function<void()>& task);
 
     virtual void workUntilDone(Task::Status* status) = 0;
 

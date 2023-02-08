@@ -75,6 +75,12 @@ protected:
                                          sofa::core::MultiVecId freePos,
                                          sofa::core::MultiVecDerivId freeVel,
                                          simulation::common::MechanicalOperations* mop);
+
+    void computeFreeMotion(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
+                                         sofa::core::MultiVecId pos,
+                                         sofa::core::MultiVecId freePos,
+                                         sofa::core::MultiVecDerivId freeVel,
+                                         simulation::common::MechanicalOperations* mop);
 };
 
 } // namespace sofa::component::animationloop

@@ -20,10 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <MultiThreading/config.h>
+#include <MultiThreading/initMultiThreading.h>
 
-namespace sofa
-{
-namespace component
+namespace multithreading
 {
 
 extern "C" {
@@ -35,13 +34,18 @@ SOFA_MULTITHREADING_PLUGIN_API const char* getModuleDescription();
 SOFA_MULTITHREADING_PLUGIN_API const char* getModuleComponentList();
 }
 
-void initExternalModule()
+void init()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
+}
+
+void initExternalModule()
+{
+    init();
 }
 
 const char* getModuleName()
@@ -69,5 +73,4 @@ const char* getModuleComponentList()
     return "DataExchange, AnimationLoopParallelScheduler ";
 }
 
-} // namespace component
-} // namespace sofa
+}

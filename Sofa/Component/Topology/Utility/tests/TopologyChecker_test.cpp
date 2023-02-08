@@ -94,7 +94,7 @@ struct EdgeTopologyChecker_test : TopologyChecker_test
 {
     EdgeTopologyChecker_test() : TopologyChecker_test()
     {
-        m_fileName = "TopologicalModifiers/RemovingTriangle2EdgeProcess.scn";
+        m_fileName = "/RemovingTriangle2EdgeProcess.scn";
     }
 
 
@@ -244,7 +244,7 @@ struct TriangleTopologyChecker_test : TopologyChecker_test
 {
     TriangleTopologyChecker_test() : TopologyChecker_test()
     {
-        m_fileName = "TopologicalModifiers/RemovingTrianglesProcess.scn";
+        m_fileName = "/RemovingTrianglesProcess.scn";
     }
 
 
@@ -465,7 +465,7 @@ struct QuadTopologyChecker_test : TopologyChecker_test
 {
     QuadTopologyChecker_test() : TopologyChecker_test()
     {
-        m_fileName = "TopologicalModifiers/RemovingQuad2TriangleProcess.scn";
+        m_fileName = "/RemovingQuad2TriangleProcess.scn";
     }
 
 
@@ -685,7 +685,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
 {
     TetrahedronTopologyChecker_test() : TopologyChecker_test()
     {
-        m_fileName = "TopologicalModifiers/RemovingTetraProcess.scn";
+        m_fileName = "/RemovingTetraProcess.scn";
     }
 
 
@@ -969,7 +969,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
 {
     HexahedronTopologyChecker_test() : TopologyChecker_test()
     {
-        m_fileName = "TopologicalModifiers/RemovingHexa2QuadProcess.scn";
+        m_fileName = "/RemovingHexa2QuadProcess.scn";
     }
 
 

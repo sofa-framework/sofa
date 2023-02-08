@@ -1,0 +1,9 @@
+<?xml version='1.0'?>                                               
+<Node 	name='Root' gravity='0 0 0' time='0' animate='0' bbox="-1 -1 -1 1 1 1"  >   
+        <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [MakeAlias] -->  
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->     
+        <DefaultAnimationLoop/>
+        <MakeAlias targetcomponent='MechanicalObject' alias='Mecha'/>    
+        <Mecha name="createdWithAlias" position="1 2 3"/>    
+</Node>                                                             
+

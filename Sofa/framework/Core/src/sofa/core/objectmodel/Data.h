@@ -71,6 +71,8 @@ template < class T = void* >
 class Data : public BaseData
 {
 public:
+    using value_type = T;
+
     using BaseData::m_counter;
     using BaseData::m_isSet;
     using BaseData::setDirtyOutputs;
@@ -218,6 +220,8 @@ protected:
     /// Value
     ValueType m_value;
 
+    std::istream& readValue(std::istream& in);
+
 private:
 
 
@@ -230,6 +234,14 @@ private:
 };
 
 class EmptyData : public Data<void*> {};
+
+template <class T>
+std::istream& Data<T>::readValue(std::istream& in)
+{
+    in >> *beginEdit();
+    endEdit();
+    return in;
+}
 
 /// Specialization for reading strings
 template<>
@@ -277,8 +289,7 @@ bool Data<T>::read(const std::string& s)
     std::stringstream cerrbuffer;
     std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
 
-    istr >> *beginEdit();
-    endEdit();
+    readValue(istr);
 
     // restore the previous cerr
     std::cerr.rdbuf(old);

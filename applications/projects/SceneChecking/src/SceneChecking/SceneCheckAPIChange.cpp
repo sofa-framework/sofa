@@ -33,8 +33,12 @@ using sofa::simulation::Node;
 #include <sofa/component/sceneutility/APIVersion.h>
 using sofa::component::sceneutility::APIVersion;
 
+#include <sofa/simulation/SceneCheckMainRegistry.h>
+
 namespace sofa::_scenechecking_
 {
+
+// const bool SceneCheckAPIChangeRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckAPIChange::newSPtr());
 
 SceneCheckAPIChange::SceneCheckAPIChange()
 {

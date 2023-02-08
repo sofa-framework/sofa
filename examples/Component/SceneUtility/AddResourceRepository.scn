@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [AddDataRepository] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    
+    <DefaultAnimationLoop/>
+    <MeshOBJLoader name="meshLoader_0" filename="mesh/add_repo_cube.obj" handleSeams="1" />
+    <OglModel name="VisualModel1" src="@meshLoader_0" />
+
+    <AddDataRepository path="./mesh" />
+    <MeshOBJLoader name="meshLoader_1" filename="add_repo_cube.obj" translation="5 0 0" handleSeams="1" />
+    <OglModel name="VisualModel2" src="@meshLoader_1"/>
+</Node>

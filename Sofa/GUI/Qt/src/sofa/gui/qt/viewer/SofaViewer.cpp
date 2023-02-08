@@ -253,7 +253,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
 void SofaViewer::keyReleaseEvent(QKeyEvent * e)
 {
     sofa::core::objectmodel::KeyreleasedEvent kre(e->key());
-    if (!isControlPressed() && !e->isAutoRepeat())
+    if (isControlPressed())
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
         if (groot)

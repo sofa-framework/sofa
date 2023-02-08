@@ -4,7 +4,7 @@
 	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
 	<FreeMotionAnimationLoop />
 	<GenericConstraintSolver/>
-	<DefaultPipeline depth="6" verbose="0" draw="0"/>
+	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="0.06" contactDistance="0.02" coneFactor="0.5" angleCone="-0.001"/>

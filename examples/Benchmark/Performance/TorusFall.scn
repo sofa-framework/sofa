@@ -7,7 +7,7 @@
 
 <Node name="root" gravity="0 -100 0" dt="0.01">
   <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-  <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+  <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
   <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
   <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel TriangleCollisionModel] -->
   <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -31,7 +31,7 @@
 
   <FreeMotionAnimationLoop name="animationLoop" solveVelocityConstraintFirst="true" parallelCollisionDetectionAndFreeMotion="true" parallelODESolving="true"/>
   <GenericConstraintSolver name="constraintSolver" maxIterations="100" tolerance="1.0e-9" multithreading="1"/>
-  <DefaultPipeline name="Pipeline" />
+  <CollisionPipeline name="Pipeline" />
   <BruteForceBroadPhase name="BroadPhase" />
   <BVHNarrowPhase name="NarrowPhase" />
   <DefaultContactManager name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0" />

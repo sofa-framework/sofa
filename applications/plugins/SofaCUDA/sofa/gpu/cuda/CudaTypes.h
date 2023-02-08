@@ -22,7 +22,7 @@
 #ifndef SOFA_GPU_CUDA_CUDATYPES_H
 #define SOFA_GPU_CUDA_CUDATYPES_H
 
-#include "CudaCommon.h"
+#include <sofa/gpu/cuda/CudaCommon.h>
 #include "mycuda.h"
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/gl/gl.h>
@@ -57,9 +57,9 @@ class CudaDeprecatedAndRemoved {};
 template<typename T>
 struct DataTypeInfoManager
 {
-    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        using other = DataTypeInfoManager<T2>;
+        typedef DeprecatedAndRemoved other;
     };
 
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/core/behavior/StateAccessor.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::core::behavior
 {
