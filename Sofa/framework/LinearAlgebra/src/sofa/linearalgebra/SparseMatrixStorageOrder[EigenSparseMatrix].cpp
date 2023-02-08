@@ -79,7 +79,7 @@ void SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::buildOppositeOrder()
 }
 
 template<>
-SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::value() const
+float SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }

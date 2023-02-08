@@ -96,7 +96,7 @@ public:
     /// The last column is returned by the getSolutionIntegrationFactor method.
     SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
-        const double dt = getContext()->getDt();
+        const auto dt = getContext()->getDt();
         SReal matrix[3][3] =
         {
             { 1, dt, 0},
@@ -113,7 +113,7 @@ public:
     /// how much will it affect the output derivative of the given order.
     SReal getSolutionIntegrationFactor(int outputDerivative) const override
     {
-        const double dt = getContext()->getDt();
+        const auto dt = getContext()->getDt();
         SReal vect[3] = { dt, 1, 1/dt};
         if (outputDerivative >= 3)
             return 0;
