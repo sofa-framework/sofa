@@ -102,7 +102,7 @@ public:
         return result;
     }
 
-    SReal value() const;
+    typename TMatrix::Scalar value() const;
     typename TMatrix::Index row() const;
     typename TMatrix::Index col() const;
 
