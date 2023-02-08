@@ -28,11 +28,8 @@
 namespace sofa::component::visual
 {
 
-constexpr const char * visualGridDeprecatedName = "OglGrid";
-
 int VisualGridClass = core::RegisterObject("Display a simple grid")
         .add< VisualGrid>()
-        .addAlias(visualGridDeprecatedName)
         ;
 
 using namespace sofa::defaulttype;

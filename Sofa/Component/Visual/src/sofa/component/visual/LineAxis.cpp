@@ -29,11 +29,8 @@
 namespace sofa::component::visual
 {
 
-constexpr const char * lineAxisDeprecatedName = "OglLineAxis";
-
 int LineAxisClass = core::RegisterObject("Display scene axis")
         .add< LineAxis >()
-        .addAlias(lineAxisDeprecatedName)
         ;
 
 using namespace sofa::defaulttype;
