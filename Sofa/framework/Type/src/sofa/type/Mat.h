@@ -89,7 +89,7 @@ public:
     /// or
     /// sofa::type::Mat<3, 1, int> M {1, 2, 3}
     /// Initializer-list must match matrix column size, otherwise an assert is triggered.
-    template<sofa::Size TL = L, sofa::Size TC = C, typename = std::enable_if_t<TL == 1 && TC != 1 || TC == 1 && TL != 1> >
+    template<sofa::Size TL = L, sofa::Size TC = C, typename = std::enable_if_t< (TL == 1 && TC != 1) || (TC == 1 && TL != 1)> >
     constexpr Mat(std::initializer_list<Real>&& scalars) noexcept
     {
         if constexpr (L == 1 && C != 1)
