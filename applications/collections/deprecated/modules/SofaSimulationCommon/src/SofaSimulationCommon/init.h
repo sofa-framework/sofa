@@ -24,11 +24,4 @@
 
 #include <sofa/simulation/common/init.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/common/init.h")
-
-namespace sofasimulationcommon
-{
-
-SOFA_SOFASIMULATIONCOMMON_API void init();
-
-} // namespace sofasimulationcommon
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/simulation/common/init.h")
