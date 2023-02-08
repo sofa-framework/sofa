@@ -156,11 +156,11 @@ void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::Mechan
                 {
                     for (sofa::Index j = 0; j < N; ++j)
                     {
-                        const Real stiffness = -k * contact.norm[i] * contact.norm[j];
-                        mat.matrix->add(p1 + i, p1 + j,  stiffness);
-                        mat.matrix->add(p1 + i, p2 + j, -stiffness);
-                        mat.matrix->add(p2 + i, p1 + j, -stiffness);
-                        mat.matrix->add(p2 + i, p2 + j,  stiffness);
+                        const Real stiffness = k * contact.norm[i] * contact.norm[j];
+                        mat.matrix->add(p1 + i, p1 + j, -stiffness);
+                        mat.matrix->add(p1 + i, p2 + j,  stiffness);
+                        mat.matrix->add(p2 + i, p1 + j,  stiffness);
+                        mat.matrix->add(p2 + i, p2 + j, -stiffness);
                     }
                 }
             }
@@ -186,11 +186,11 @@ void PenalityContactForceField<DataTypes>::addKToMatrix(const sofa::core::Mechan
                 {
                     for (sofa::Index j = 0; j < N; ++j)
                     {
-                        const Real stiffness = -k * contact.norm[i] * contact.norm[j];
-                        mat11.matrix->add(mat11.offset + p1 + i, mat11.offset + p1 + j,  stiffness);
-                        mat12.matrix->add(mat12.offRow + p1 + i, mat12.offCol + p2 + j, -stiffness);
-                        mat21.matrix->add(mat21.offRow + p2 + i, mat21.offCol + p1 + j, -stiffness);
-                        mat22.matrix->add(mat22.offset + p2 + i, mat22.offset + p2 + j,  stiffness);
+                        const Real stiffness = k * contact.norm[i] * contact.norm[j];
+                        mat11.matrix->add(mat11.offset + p1 + i, mat11.offset + p1 + j, -stiffness);
+                        mat12.matrix->add(mat12.offRow + p1 + i, mat12.offCol + p2 + j,  stiffness);
+                        mat21.matrix->add(mat21.offRow + p2 + i, mat21.offCol + p1 + j,  stiffness);
+                        mat22.matrix->add(mat22.offset + p2 + i, mat22.offset + p2 + j, -stiffness);
                     }
                 }
             }
