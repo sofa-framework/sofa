@@ -385,6 +385,17 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (dq[3] < 1.0)
                 dq.quatToAxis(dir, angle);
 
+            // We change the direction of the axis of rotation based on
+            // the 0 values in d_activeDirections. This is equivalent
+            // to senting to 0 the rotation axis components along x, y
+            // and/or z, depending on the rotations we want to take into
+            // account.
+            for (unsigned int entryId = 3; entryId < 6; entryId++)
+            {
+                if (!activeDirections[entryId])
+                    dir[entryId-3] = 0;
+            }
+
             const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
             getVOrientation(f1[index]) -= dir * angle * angularStiffness;
         }
@@ -434,7 +445,19 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
                     currentSpringDx[entryId] = 0;
             }
             getVCenter(df1[curIndex]) -= currentSpringDx * stiffness * kFactor;
-            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * angularStiffness * kFactor;
+
+            auto currentSpringRotationalDx = getVOrientation(dx1[curIndex]);
+            // We change the direction of the axis of rotation based on
+            // the 0 values in d_activeDirections. This is equivalent
+            // to senting to 0 the rotation axis components along x, y
+            // and/or z, depending on the rotations we want to take into
+            // account.
+            for (unsigned int entryId = 3; entryId < 6; entryId++)
+            {
+                if (!activeDirections[entryId])
+                    currentSpringRotationalDx[entryId-3] = 0;
+            }
+            getVOrientation(df1[curIndex]) -= currentSpringRotationalDx * angularStiffness * kFactor;
         }
         else
         {
@@ -529,7 +552,10 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
             const auto vr = -kFact * k_a[(index < k_a.size()) * index];
             for (int i = space_size; i < total_size; i++)
             {
-                mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
+                // Contribution to the stiffness matrix are only taken into
+                // account for 1 values in d_activeDirections
+                if (activeDirections[i])
+                    mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
             }
         }
     }
