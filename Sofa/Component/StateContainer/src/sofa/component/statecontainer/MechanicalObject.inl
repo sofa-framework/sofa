@@ -2290,7 +2290,7 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::type
     const auto N = Deriv::size();
     Data<MatrixDeriv>* cMatrix= this->write(mID);
 
-    unsigned int columnIndex = 0;
+    [[maybe_unused]] unsigned int columnIndex = 0;
     MatrixDeriv& jacobian = *cMatrix->beginEdit();
 
 

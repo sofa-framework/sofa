@@ -65,7 +65,7 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
 
     unsigned int u,v;
 
-    unsigned int nb_activated = 0;
+    [[maybe_unused]] unsigned int nb_activated = 0;
 
     const typename DataTypes::VecCoord& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 

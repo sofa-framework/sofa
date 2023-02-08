@@ -129,7 +129,7 @@ bool SphereLoader::load()
         return false;
     }
 
-    int totalNumSpheres=0;
+    [[maybe_unused]] int totalNumSpheres=0;
 
     // Check first line
     if (fgets(cmd, 7, file) == nullptr || !strcmp(cmd,SPH_FORMAT))

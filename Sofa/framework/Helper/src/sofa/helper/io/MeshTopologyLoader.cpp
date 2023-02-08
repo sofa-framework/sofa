@@ -155,12 +155,12 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
     return false;
 
     std::string cmd;
-    int npoints = 0;
-    int nlines = 0;
-    int ntris = 0;
-    int nquads = 0;
-    int ntetrahedra = 0;
-    int ncubes = 0;
+    [[maybe_unused]] int npoints = 0;
+    [[maybe_unused]] int nlines = 0;
+    [[maybe_unused]] int ntris = 0;
+    [[maybe_unused]] int nquads = 0;
+    [[maybe_unused]] int ntetrahedra = 0;
+    [[maybe_unused]] int ncubes = 0;
 
     while (!file.eof())
     {

@@ -133,12 +133,12 @@ void MeshGmsh::normalizeGroup(type::vector< sofa::type::PrimitiveGroup>& group)
 
 bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
 {
-    int npoints = 0;
-    int nlines = 0;
-    int ntris = 0;
-    int nquads = 0;
-    int ntetrahedra = 0;
-    int ncubes = 0;
+    [[maybe_unused]] int npoints = 0;
+    [[maybe_unused]] int nlines = 0;
+    [[maybe_unused]] int ntris = 0;
+    [[maybe_unused]] int nquads = 0;
+    [[maybe_unused]] int ntetrahedra = 0;
+    [[maybe_unused]] int ncubes = 0;
 
     std::string cmd;
 
@@ -362,7 +362,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
         unsigned int nbEntityBlocks, nbNodes, minNodeTag, maxNodeTag;
         nodesHeader >> nbEntityBlocks >> nbNodes >> minNodeTag >> maxNodeTag;
 
-        unsigned int nodeCount = 0;
+        [[maybe_unused]] unsigned int nodeCount = 0;
 
         for (unsigned int entityIndex = 0; entityIndex < nbEntityBlocks; entityIndex++) // looping over the entity blocks
         {

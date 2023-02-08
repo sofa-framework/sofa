@@ -103,7 +103,7 @@ template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
 
-    int outside = 0;
+    [[maybe_unused]] int outside = 0;
     const auto& tetrahedra = this->m_fromTopology->getTetrahedra();
 
     sofa::type::vector<sofa::type::Matrix3> bases;

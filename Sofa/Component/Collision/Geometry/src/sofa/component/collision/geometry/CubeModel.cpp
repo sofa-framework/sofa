@@ -125,7 +125,7 @@ void CubeCollisionModel::updateCube(sofa::Index index)
         elems[index].coneAxis = c.getConeAxis();
         elems[index].coneAngle = c.getConeAngle();
 
-        int subCellsNb = 1;
+        [[maybe_unused]] int subCellsNb = 1;
 
         ++c;
         while(c != subcells.second)
@@ -167,9 +167,9 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
     if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
     // The deeper in the CubeModel graph, the higher the transparency of the bounding cube lines
-    int level=0;
+    [[maybe_unused]] int level=0;
     CollisionModel* m = getPrevious();
-    float color = 1.0f;
+    [[maybe_unused]] float color = 1.0f;
     while (m!=nullptr)
     {
         m = m->getPrevious();

@@ -159,11 +159,11 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     unsigned int npoints = 0;
     unsigned int nelems = 0;
 
-    unsigned int nlines = 0;
-    unsigned int ntris = 0;
-    unsigned int nquads = 0;
-    unsigned int ntetrahedra = 0;
-    unsigned int ncubes = 0;
+    [[maybe_unused]] unsigned int nlines = 0;
+    [[maybe_unused]] unsigned int ntris = 0;
+    [[maybe_unused]] unsigned int nquads = 0;
+    [[maybe_unused]] unsigned int ntetrahedra = 0;
+    [[maybe_unused]] unsigned int ncubes = 0;
 
     // Accessors to complete the loader data
     auto my_positions = getWriteOnlyAccessor(d_positions);
@@ -403,7 +403,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         unsigned int nbEntityBlocks, nbNodes, minNodeTag, maxNodeTag;
         nodesHeader >> nbEntityBlocks >> nbNodes >> minNodeTag >> maxNodeTag;
 
-        unsigned int nodeCount = 0;
+        [[maybe_unused]] unsigned int nodeCount = 0;
 
         for (unsigned int entityIndex = 0; entityIndex < nbEntityBlocks; entityIndex++) // looping over the entity blocks
         {

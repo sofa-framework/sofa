@@ -117,7 +117,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 
 
 
-    int outside = 0;
+    [[maybe_unused]] int outside = 0;
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = l_topology->getTetrahedra();
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = l_topology->getHexahedra();

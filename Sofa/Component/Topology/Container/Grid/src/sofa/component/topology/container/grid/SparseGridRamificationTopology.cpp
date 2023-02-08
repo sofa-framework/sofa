@@ -787,7 +787,7 @@ void SparseGridRamificationTopology::buildFromFiner()
     for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         auto finerChildren = this->_hierarchicalCubeMap[i];
-        unsigned nbchildren = 0;
+        [[maybe_unused]] unsigned nbchildren = 0;
         for(int w=0; w<8; ++w)
         {
             if( finerChildren[w] != InvalidID)

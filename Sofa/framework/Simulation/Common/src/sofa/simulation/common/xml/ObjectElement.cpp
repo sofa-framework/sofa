@@ -44,7 +44,7 @@ ObjectElement::~ObjectElement()
 
 bool ObjectElement::init()
 {
-    int i=0;
+    [[maybe_unused]] int i=0;
     for (child_iterator<> it = begin(); it != end(); ++it)
     {
         i++;
