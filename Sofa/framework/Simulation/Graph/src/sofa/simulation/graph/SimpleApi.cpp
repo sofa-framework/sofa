@@ -111,7 +111,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
     return createObject(parent, desc);
 }
 
-Node::SPtr createChild(Node::SPtr& node, const std::string& name, const std::map<std::string, std::string>& params)
+Node::SPtr createChild(Node::SPtr node, const std::string& name, const std::map<std::string, std::string>& params)
 {
     BaseObjectDescription desc(name.c_str(), "Node");
     for(auto& kv : params)
