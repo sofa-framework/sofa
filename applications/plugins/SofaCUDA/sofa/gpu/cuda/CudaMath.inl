@@ -22,7 +22,7 @@
 #ifndef CUDAMATH_INL
 #define CUDAMATH_INL
 
-#include "CudaMath.h"
+#include <sofa/gpu/cuda/CudaMath.h>
 #include <SofaCUDA/config.h>
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

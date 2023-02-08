@@ -22,7 +22,7 @@
 #ifndef SOFA_GPU_CUDA_CUDADISTANCEGRIDCOLLISIONMODEL_H
 #define SOFA_GPU_CUDA_CUDADISTANCEGRIDCOLLISIONMODEL_H
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>

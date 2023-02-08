@@ -22,7 +22,7 @@
 #ifndef SOFA_GPU_CUDA_CUDABASEVECTOR_H
 #define SOFA_GPU_CUDA_CUDABASEVECTOR_H
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaBarycentricMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -38,10 +38,11 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
+// Spread the instanciations over multiple files for more efficient and lightweight compilation
 
-// Spread the instanciations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
+// instanciations involving both CudaVec3f1Types and Vec3fTypes
 
-// Instantiations involving both CudaVec3fTypes and Vec3fTypes
+
 
 } // namespace mapping
 
@@ -58,7 +59,7 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping::linear;
 
-int BarycentricMappingCudaClass_f = core::RegisterObject("Supports GPU-side computations using CUDA")
+int BarycentricMappingCudaClass_3f1_f = core::RegisterObject("Supports GPU-side computations using CUDA")
         ;
 
 } // namespace cuda

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaSpringForceField.inl"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
