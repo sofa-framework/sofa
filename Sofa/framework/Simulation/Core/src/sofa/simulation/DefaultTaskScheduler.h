@@ -87,11 +87,6 @@ private:
     void	WaitForWorkersToBeReady();
             
     void	wakeUpWorkers();
-
-    /**
-    * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
-    */
-    static unsigned GetHardwareThreadsCount();
             
     WorkerThread* getCurrentThread();
             

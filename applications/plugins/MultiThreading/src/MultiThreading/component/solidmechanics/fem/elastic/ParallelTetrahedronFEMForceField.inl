@@ -37,22 +37,6 @@ void ParallelTetrahedronFEMForceField<DataTypes>::init()
     initTaskScheduler();
 }
 
-template<class DataTypes>
-void ParallelTetrahedronFEMForceField<DataTypes>::initTaskScheduler()
-{
-    m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(m_taskScheduler != nullptr);
-    if (m_taskScheduler->getThreadCount() < 1)
-    {
-        m_taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << m_taskScheduler->getThreadCount() << " threads";
-    }
-    else
-    {
-        msg_info() << "Task scheduler already initialized on " << m_taskScheduler->getThreadCount() << " threads";
-    }
-}
-
 template <class DataTypes>
 void ParallelTetrahedronFEMForceField<DataTypes>::drawTrianglesFromTetrahedra(
     const sofa::core::visual::VisualParams* vparams, bool showVonMisesStressPerElement,

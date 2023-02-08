@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 #include <sofa/simulation/CpuTask.h>
@@ -43,7 +44,9 @@ namespace multithreading::component::solidmechanics::fem::elastic
  * - addKToMatrix
  */
 template<class DataTypes>
-class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField : virtual public sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes>
+class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField :
+    virtual public sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes>,
+    public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelTetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField, DataTypes));
@@ -86,7 +89,6 @@ protected:
     void addDForceCorotational(VecDeriv& df, const VecDeriv& dx, Real kFactor,
                            const VecElement& indexedElements);
 
-    void initTaskScheduler();
     void drawTrianglesFromTetrahedra(const sofa::core::visual::VisualParams* vparams,
                                      bool showVonMisesStressPerElement, bool drawVonMisesStress,
                                      const VecCoord& x,
@@ -94,8 +96,6 @@ protected:
                                      Real minVM,
                                      Real maxVM,
                                      sofa::helper::ReadAccessor<sofa::Data<sofa::type::vector<Real>>> vM) override;
-
-    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 
     std::map<std::thread::id, VecDeriv> m_threadLocal_df;
 

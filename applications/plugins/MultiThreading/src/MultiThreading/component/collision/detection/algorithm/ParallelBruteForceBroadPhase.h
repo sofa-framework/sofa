@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
 
 #include <sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h>
 #include <sofa/simulation/CpuTask.h>
@@ -43,7 +44,9 @@ class BruteForcePairTest;
  * The work is divided into n tasks executed in parallel. n is the number of threads available in
  * the global thread pool.
  */
-class SOFA_MULTITHREADING_PLUGIN_API ParallelBruteForceBroadPhase : public sofa::component::collision::detection::algorithm::BruteForceBroadPhase
+class SOFA_MULTITHREADING_PLUGIN_API ParallelBruteForceBroadPhase :
+    public sofa::component::collision::detection::algorithm::BruteForceBroadPhase,
+    public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(ParallelBruteForceBroadPhase, sofa::component::collision::detection::algorithm::BruteForceBroadPhase);

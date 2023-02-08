@@ -21,40 +21,28 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/TaskSchedulerFactory.h>
-#include <mutex>
+#include <MultiThreading/config.h>
 
-namespace sofa::simulation
+#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/core/objectmodel/Base.h>
+
+namespace multithreading
 {
 
-/**
- * A set of static function with the same interface than @TaskSchedulerFactory, working on a single
- * instance of @TaskSchedulerFactory.
- *
- * The static functions @createInRegistry use the factory to instantiate a task scheduler
- * and store it in @MainTaskSchedulerRegistry
- */
-class SOFA_SIMULATION_CORE_API MainTaskSchedulerFactory
+class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerUser : virtual public sofa::core::Base
 {
 public:
+    sofa::Data<int> d_nbThreads;
+    sofa::Data<std::string> d_taskSchedulerType;
 
-    static bool registerScheduler(const std::string& name,
-                                  const std::function<TaskScheduler* ()>& creatorFunc);
+protected:
+    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 
-    static TaskScheduler* instantiate(const std::string& name);
+    TaskSchedulerUser();
+    void initTaskScheduler();
 
-    static std::set<std::string> getAvailableSchedulers();
-
-
-    static TaskScheduler* createInRegistry(const std::string& name);
-    static TaskScheduler* createInRegistry();
-
-    static std::string defaultTaskSchedulerType();
-
-private:
-    static std::mutex s_mutex;
-
-    static TaskSchedulerFactory& getFactory();
+    void reinitTaskScheduler();
+    void stopTaskSchduler();
 };
 
 }

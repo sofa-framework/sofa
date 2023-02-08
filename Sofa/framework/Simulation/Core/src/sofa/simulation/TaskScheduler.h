@@ -44,6 +44,11 @@ class SOFA_SIMULATION_CORE_API TaskScheduler
 public:
     virtual ~TaskScheduler() = default;
 
+    /**
+    * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
+    */
+    static unsigned GetHardwareThreadsCount();
+
     // interface
     virtual void init(const unsigned int nbThread = 0) = 0;
             
