@@ -85,6 +85,12 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "LMConstraintDirectSolver", Pluginized("v20.12", "LMConstraint") },
 
     /***********************/
+    // REMOVED SINCE v23.06
+
+    { "OglGrid", Removed("v22.12", "v23.06")},
+    { "OglLineAxis", Removed("v22.12", "v23.06")},
+
+    /***********************/
     // REMOVED SINCE v22.06
 
     {"PointConstraint", Removed("v21.12", "v22.06")},
