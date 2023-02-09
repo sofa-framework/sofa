@@ -10,6 +10,8 @@ if(NOT WIN32)
     set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 endif()
 
+set(SOFACUDA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/SofaCUDA")
+
 set(HEADER_FILES
     config.h.in
     
@@ -24,6 +26,7 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMemoryManager.h
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
+    sofa/gpu/cuda/CudaTexture.h
     sofa/gpu/cuda/CudaTypes.h
     sofa/gpu/cuda/mycuda.h
 
@@ -34,13 +37,13 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaParticleSource.inl
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping.h
-    sofa/gpu/cuda/CudaBarycentricMapping.inl
-    sofa/gpu/cuda/CudaBarycentricMappingRigid.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.h
     sofa/gpu/cuda/CudaIdentityMapping.h
     sofa/gpu/cuda/CudaIdentityMapping.inl
-    sofa/gpu/cuda/CudaRigidMapping.h
-    sofa/gpu/cuda/CudaRigidMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
     sofa/gpu/cuda/CudaSubsetMapping.h
     sofa/gpu/cuda/CudaSubsetMapping.inl
 
@@ -110,17 +113,17 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSetTopology.cpp
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-d.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping.cpp
-    sofa/gpu/cuda/CudaBarycentricMappingRigid.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-3f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-d.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.cpp
     sofa/gpu/cuda/CudaIdentityMapping.cpp
     sofa/gpu/cuda/CudaMultiMapping.cpp
-    sofa/gpu/cuda/CudaRigidMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
     sofa/gpu/cuda/CudaSubsetMapping.cpp
     sofa/gpu/cuda/CudaSubsetMultiMapping.cpp
 
@@ -163,7 +166,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaLinearMovementConstraint.cpp
     sofa/gpu/cuda/CudaLinearVelocityConstraint.cpp
 
-    sofa/gpu/cuda/CudaBeamLinearMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.cpp
     sofa/gpu/cuda/CudaBoxROI.cpp
     sofa/gpu/cuda/CudaNearestPointROI.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
@@ -187,8 +190,8 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaMechanicalObject.cu
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping.cu
-    sofa/gpu/cuda/CudaRigidMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cu
     sofa/gpu/cuda/CudaSubsetMapping.cu
 
     ### Mass
@@ -236,6 +239,17 @@ else()
     )
     list(APPEND CUDA_SOURCES
         sofa/gpu/cuda/CudaVisualModel.cu
+    )
+endif()
+
+#Compatibility
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaBarycentricMapping.h
+        sofa/gpu/cuda/CudaBarycentricMapping.inl
+        sofa/gpu/cuda/CudaBarycentricMappingRigid.h
+        sofa/gpu/cuda/CudaRigidMapping.h
+        sofa/gpu/cuda/CudaRigidMapping.inl
     )
 endif()
 
@@ -397,11 +411,12 @@ add_definitions("-DSOFA_BUILD_SOFACUDA")
 # Give include directories to nvcc compiler.
 # Note: keep cuda_include_directories() before cuda_add_library().
 cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/src>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
 target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Mass

@@ -37,8 +37,8 @@ public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
 
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-    Data<double> rate; ///< Factor used to reduce the velocities. Typically between 0 and 1.
-    Data<double> threshold; ///< Threshold under which the velocities are canceled.
+    Data<SReal> rate; ///< Factor used to reduce the velocities. Typically between 0 and 1.
+    Data<SReal> threshold; ///< Threshold under which the velocities are canceled.
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
@@ -48,7 +48,7 @@ public:
         SReal matrix[3][3] =
         {
             { 1, 0, },
-            { 0, exp(-rate.getValue()*dt), 0},
+            { 0, std::exp(-rate.getValue()*dt), 0},
             { 0, 0, 0}
         };
         if (inputDerivative >= 3 || outputDerivative >= 3)

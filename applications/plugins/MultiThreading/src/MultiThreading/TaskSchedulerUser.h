@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,32 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAEXTERNALFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDAEXTERNALFORCEFIELD_H
+#pragma once
 
-#include <sofa/component/interactionforcefield/ExternalForceField.h>
+#include <MultiThreading/config.h>
 
-namespace sofa
+#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/core/objectmodel/Base.h>
+
+namespace multithreading
 {
 
-namespace component
+class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerUser : virtual public sofa::core::Base
 {
+public:
+    sofa::Data<int> d_nbThreads;
+    sofa::Data<std::string> d_taskSchedulerType;
 
-namespace interactionforcefield
-{
+protected:
+    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 
-using namespace sofa::defaulttype;
-/** Apply given forces to given particles
-*/
-template <>
-void ExternalForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    TaskSchedulerUser();
+    void initTaskScheduler();
 
+    void reinitTaskScheduler();
+    void stopTaskSchduler();
+};
 
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+}

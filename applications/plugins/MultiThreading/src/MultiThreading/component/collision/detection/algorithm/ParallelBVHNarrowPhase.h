@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
 
 #include <sofa/component/collision/detection/algorithm/BVHNarrowPhase.h>
 #include <sofa/simulation/CpuTask.h>
@@ -32,7 +33,9 @@ namespace multithreading::component::collision::detection::algorithm
 
 class ParallelBVHNarrowPhasePairTask;
 
-class SOFA_MULTITHREADING_PLUGIN_API ParallelBVHNarrowPhase : public sofa::component::collision::detection::algorithm::BVHNarrowPhase
+class SOFA_MULTITHREADING_PLUGIN_API ParallelBVHNarrowPhase :
+    public sofa::component::collision::detection::algorithm::BVHNarrowPhase,
+    public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(ParallelBVHNarrowPhase, sofa::component::collision::detection::algorithm::BVHNarrowPhase);

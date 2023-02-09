@@ -68,10 +68,10 @@ public:
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<int> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<bool> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2u> >;
-extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<double> >;
-extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2d> >;
-extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec3d> >;
-extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec4d> >;
+extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<SReal> >;
+extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2> >;
+extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec3> >;
+extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec4> >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 extern template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;

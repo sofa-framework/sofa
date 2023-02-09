@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaEllipsoidForceField.inl"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/component/mechanicalload/EllipsoidForceField.inl>

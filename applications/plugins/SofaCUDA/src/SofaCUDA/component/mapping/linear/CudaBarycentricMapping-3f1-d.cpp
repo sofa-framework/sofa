@@ -19,31 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaExternalForceField.inl"
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include "CudaBarycentricMapping.inl"
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
+#include <sofa/defaulttype/VecTypes.h>
 
-
-namespace sofa
+namespace sofa::component::mapping::linear
 {
 
-namespace gpu
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::gpu::cuda;
+
+// Spread the instanciations over multiple files for more efficient and lightweight compilation
+
+// instanciations involving both CudaVec3f1Types and Vec3dTypes
+
+
+
+template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3f1Types, Vec3Types>;
+
+
+} // namespace sofa::component::mapping::linear
+
+namespace sofa::gpu::cuda
 {
 
-namespace cuda
-{
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::component::mapping::linear;
 
-int ExternalForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::interactionforcefield::ExternalForceField<CudaVec3fTypes> >()
-        .add< component::interactionforcefield::ExternalForceField<CudaVec3f1Types> >()
+int BarycentricMappingCudaClass_3f1_d = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
+        .add< BarycentricMapping< CudaVec3f1Types, Vec3Types> >()
+
         ;
 
-
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::gpu::cuda

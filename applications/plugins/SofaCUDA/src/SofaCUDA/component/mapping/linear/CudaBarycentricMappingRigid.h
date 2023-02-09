@@ -19,66 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaCommon.h"
-#include "CudaMath.h"
+#ifndef SOFA_GPU_CUDA_CUDABARYCENTRICMAPPINGRIGID_H
+#define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPINGRIGID_H
 
-#if defined(__cplusplus)
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaMiscMapping/BarycentricMappingRigid.h>
+
 namespace sofa
 {
-namespace gpu
+
+namespace component
 {
-namespace cuda
+
+namespace mapping
 {
-#endif
 
 
-extern "C"
+template<class TInReal, class TOutReal>
+class BarycentricMapperTetrahedronSetTopology< gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> > : public BarycentricMapperTetrahedronSetTopologyRigid< gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> >
 {
-    void ExternalForceFieldCuda3f_addForce(unsigned int size,void* f, const void* indices,const void *forces);
-}
+public:
+    typedef gpu::cuda::CudaVectorTypes<sofa::type::Vec<3,TInReal>,sofa::type::Vec<3,TInReal>,TInReal> In;
+    typedef sofa::defaulttype::StdRigidTypes<3,TOutReal> Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
+    typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
 
-//////////////////////
-// GPU-side methods //
-//////////////////////
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+        : Inherit(fromTopology, _toTopology)
+    {}
 
-__global__ void ExternalForceFieldCuda3f_addForce_kernel(int size,float * f, const unsigned * indices,const float *forces)
-{
-    int index0 = blockIdx.x*BSIZE;
-    int index0_3 = index0*3;
+};
 
-    forces += index0_3;
-    indices += index0_3;
-    f += index0_3;
+} // namespace mapping
 
-    int index = threadIdx.x;
-    int index_3 = index*3;
+} // namespace component
 
-    //! Dynamically allocated shared memory to reorder global memory access
-    extern  __shared__  float temp[];
-
-    if((index0+index)<size)
-    {
-        f[indices[index_3]  ] += forces[index_3];
-        f[indices[index_3]+1] += forces[index_3+1];
-        f[indices[index_3]+2] += forces[index_3+2];
-    }
-}
-
-
-//////////////////////
-// CPU-side methods //
-//////////////////////
-
-
-void ExternalForceFieldCuda3f_addForce(unsigned int size,void* f, const void* indices,const void *forces)
-{
-    dim3 threads(BSIZE,1);
-    dim3 grid((size+BSIZE-1)/BSIZE,1);
-    {ExternalForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (float*)f, (const unsigned*)indices,(const float*)forces); mycudaDebugError("ExternalForceFieldCuda3f_addForce_kernel");}
-}
-
-#if defined(__cplusplus)
-} // namespace cuda
-} // namespace gpu
 } // namespace sofa
+
 #endif

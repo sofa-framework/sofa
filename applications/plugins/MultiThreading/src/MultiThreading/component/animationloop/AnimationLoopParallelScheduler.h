@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
@@ -38,15 +39,19 @@ class TaskScheduler;
 namespace multithreading::component::animationloop
 {
 
-class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler : public sofa::core::behavior::BaseAnimationLoop
+class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler :
+    public sofa::core::behavior::BaseAnimationLoop,
+    public TaskSchedulerUser
 {
 public:
 
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
+    SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "Use TaskSchedulerUser::d_taskSchedulerType instead.")
     sofa::Data<std::string> schedulerName; ///< scheduler name type
 
+    SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "Use TaskSchedulerUser::d_nbThreads instead.")
     sofa::Data<unsigned int> threadNumber; ///< number of thread
 
 
@@ -56,6 +61,8 @@ protected:
     ~AnimationLoopParallelScheduler() override;
 
 public:
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+
     void init() override;
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.
@@ -81,11 +88,7 @@ public:
 
 private :
 
-    unsigned int mNbThread;
-
     sofa::simulation::Node* gnode;
-
-    sofa::simulation::TaskScheduler* _taskScheduler;
 
 };
 } // namespace multithreading::component::animationloop

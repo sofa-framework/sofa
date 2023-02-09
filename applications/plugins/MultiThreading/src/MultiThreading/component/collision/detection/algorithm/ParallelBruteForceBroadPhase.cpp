@@ -49,18 +49,7 @@ void ParallelBruteForceBroadPhase::init()
     BruteForceBroadPhase::init();
 
     // initialize the thread pool
-
-    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-    if (taskScheduler->getThreadCount() < 1)
-    {
-        taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-    }
-    else
-    {
-        msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-    }
+    this->initTaskScheduler();
 }
 
 void ParallelBruteForceBroadPhase::addCollisionModel(sofa::core::CollisionModel *cm)
@@ -102,15 +91,6 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<s
         return;
     }
 
-    auto *taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-
-    if (taskScheduler->getThreadCount() == 0)
-    {
-        msg_error() << "Task scheduler not correctly initialized";
-        return;
-    }
-
     sofa::simulation::CpuTask::Status status;
 
     {
@@ -118,7 +98,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<s
 
         const auto nbPairs = static_cast<unsigned int>(m_pairs.size());
 
-        const auto nbThreads = std::min(taskScheduler->getThreadCount(), nbPairs);
+        const auto nbThreads = std::min(m_taskScheduler->getThreadCount(), nbPairs);
         m_tasks.reserve(nbThreads);
 
         const auto nbElements = nbPairs / nbThreads;
@@ -132,7 +112,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<s
                 last = m_pairs.end();
             }
             m_tasks.emplace_back(&status, first, last, intersectionMethod);
-            taskScheduler->addTask(&m_tasks.back());
+            m_taskScheduler->addTask(&m_tasks.back());
 
             if (i < nbThreads - 1)
             {
@@ -144,7 +124,7 @@ void ParallelBruteForceBroadPhase::addCollisionModels(const sofa::type::vector<s
 
     {
         ScopedAdvancedTimer waitTimer("ParallelTasks");
-        taskScheduler->workUntilDone(&status);
+        m_taskScheduler->workUntilDone(&status);
     }
 
     // Merge the output of the tasks
