@@ -25,12 +25,12 @@
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3" name="dofs" />
             <TriangleCollisionModel moving="1" simulated="1" contactStiffness="100000000"/>
-            <RigidMapping template="Rigid3d,Vec3d" />
+            <RigidMapping template="Rigid3,Vec3" />
         </Node>
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_1" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="red" />
-            <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual" />
+            <RigidMapping template="Rigid3,Vec3" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Spoon2">
@@ -47,12 +47,12 @@
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3" name="dofs" />
             <TriangleCollisionModel moving="1" simulated="1" contactStiffness="100000000" />
-            <RigidMapping template="Rigid3d,Vec3d" />
+            <RigidMapping template="Rigid3,Vec3" />
         </Node>
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="green" />
-            <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual"/>
+            <RigidMapping template="Rigid3,Vec3" name="default161" input="@.." output="@Visual"/>
         </Node>
     </Node>
     <Node name="Spoon3">
@@ -69,12 +69,12 @@
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" template="Vec3" name="dofs" />
             <TriangleCollisionModel moving="1" simulated="1" contactStiffness="100000000" />
-            <RigidMapping template="Rigid3d,Vec3d" />
+            <RigidMapping template="Rigid3,Vec3" />
         </Node>
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_2" filename="mesh/liver.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="blue" />
-            <RigidMapping template="Rigid3d,Vec3d" name="default161" input="@.." output="@Visual" />
+            <RigidMapping template="Rigid3,Vec3" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

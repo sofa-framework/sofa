@@ -35,7 +35,7 @@
             <MeshTopology src="@loader" name="meshTopology" />
             <SubsetTopology template="Vec3" name="Subset" box="-5 -20 -5 5 -10 5" rest_position="@meshTopology.position" edges="@meshTopology.edges" triangles="@meshTopology.triangles" tetrahedra="@meshTopology.tetrahedra" indices="0" localIndices="1" drawROI="0" />
             <OglModel template="Vec3" name="visual" position="@meshTopology.position" useNormals="0" computeTangents="1" vertices="@meshTopology.position" triangles="@meshTopology.triangles" material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
-            <RigidMapping template="Rigid3d,Vec3d" name="default15" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@visual" />
+            <RigidMapping template="Rigid3,Vec3" name="default15" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@visual" />
         </Node>
         <Node name="InROI" gravity="0 -9.81 0">
             <MechanicalObject template="Vec3" name="mobj" position="@../topology/Subset.pointsInROI" velocity="0 0 0" force="0 0 0" externalForce="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
@@ -44,7 +44,7 @@
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="default12" />
             <UniformMass name="mass" vertexMass="15" />
             <TetrahedronFEMForceField template="Vec3" name="FEM" poissonRatio="0.49" youngModulus="1000" gatherPt=" " gatherBsize=" " />
-            <RigidMapping template="Rigid3d,Vec3d" name="rigidMapping" input="@.." output="@." />
+            <RigidMapping template="Rigid3,Vec3" name="rigidMapping" input="@.." output="@." />
             <Node name="Surf" gravity="0 -9.81 0">
                 <VisualStyle displayFlags="hideWireframe" />
                 <TriangleSetTopologyContainer name="container" />

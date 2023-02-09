@@ -36,11 +36,11 @@
         <QuadSetTopologyModifier name="Topology Modifier" />
         <QuadSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <!--<QuadularBendingSprings name="FEM-Bend" template="Vec3" stiffness="3000" damping="1"/>-->
-        <DiagonalMass name="Mass" template="Vec3d,Vec3d" massDensity="0.5" />
+        <DiagonalMass name="Mass" template="Vec3,Vec3" massDensity="0.5" />
         <FixedConstraint name="Fixed dof" template="Vec3" indices="4 5 6 7" />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping name="Mapping" template="Vec3d,Vec3d" input="@../Quads" output="@Visual" />
+            <IdentityMapping name="Mapping" template="Vec3,Vec3" input="@../Quads" output="@Visual" />
         </Node>
         <Node name="Triangles Mesh">
             <TriangleSetTopologyContainer name="Container" />

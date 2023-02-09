@@ -31,7 +31,7 @@
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
         <HexahedronSetGeometryAlgorithms />
         <HexahedronFEMForceField template="Vec3" name="FEM" poissonRatio="0.3" youngModulus="100" />
-        <DiagonalMass template="Vec3d,Vec3d" name="Mass" vertexMass="1" />
+        <DiagonalMass template="Vec3,Vec3" name="Mass" vertexMass="1" />
         <FixedConstraint template="Vec3" name="Fixed Dofs" indices="30 35 210 215" drawSize="0" />
         <Node name="Quad Mesh">
             <QuadSetTopologyContainer name="Container" />
@@ -47,7 +47,7 @@
                 <TriangleCollisionModel name="default9" />
                 <Node name="Visu">
                     <OglModel name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                    <IdentityMapping template="Vec3d,Vec3d" name="default12" input="@.." output="@Visual" />
+                    <IdentityMapping template="Vec3,Vec3" name="default12" input="@.." output="@Visual" />
                 </Node>
             </Node>
         </Node>

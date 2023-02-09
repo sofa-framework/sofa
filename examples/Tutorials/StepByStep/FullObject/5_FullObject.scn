@@ -34,7 +34,7 @@
 		<Node 	 name="VisualNode"  gravity="0 -9.81 0"  >
 			<MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
 			<OglModel name="Objective" src="@meshLoader_0"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-			<BarycentricMapping template="Vec3d,Vec3d" name="Visual Mapping"  input="@../"  output="@Objective" />
+			<BarycentricMapping template="Vec3,Vec3" name="Visual Mapping"  input="@../"  output="@Objective" />
 		</Node>
 	</Node>
 	<Node 	 name="Obstacle"  gravity="0 -9.81 0"  >

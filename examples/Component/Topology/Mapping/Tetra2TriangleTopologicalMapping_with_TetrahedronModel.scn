@@ -33,7 +33,7 @@
         <TetrahedronSetTopologyContainer src="@loader" name="Container" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <DiagonalMass template="Vec3d,Vec3d" name="default3" massDensity="0.5" />
+        <DiagonalMass template="Vec3,Vec3" name="default3" massDensity="0.5" />
         <FixedPlaneConstraint template="Vec3" name="default4" direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint template="Vec3" name="default5" indices="0" />
         <TetrahedronCollisionModel />
@@ -48,7 +48,7 @@
             <TrianglePressureForceField template="Vec3" name="default7" pressure="0.4 0 0" normal="0 0 1" dmin="0.9" dmax="1.1" />
             <Node name="Visu" gravity="0 -9.81 0">
                 <OglModel template="Vec3" name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45" />
-                <IdentityMapping template="Vec3d,Vec3d" name="default9" input="@../../Volume" output="@Visual" />
+                <IdentityMapping template="Vec3,Vec3" name="default9" input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
     </Node>
