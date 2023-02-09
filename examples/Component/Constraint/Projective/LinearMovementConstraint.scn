@@ -14,8 +14,8 @@
     <Node name="Spoon1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid3d" dx="0" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
-        <LinearMovementConstraint template="Rigid3d" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
+        <MechanicalObject template="Rigid3" dx="0" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
+        <LinearMovementConstraint template="Rigid3" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
 										      0 0 0   0 0 0
 										      0 0 -1  0 0 0
 										      0 0 -1  0 0 6.3
@@ -36,8 +36,8 @@
     <Node name="Spoon2">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid3d" dx="10" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388"/>
-        <LinearMovementConstraint template="Rigid3d" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
+        <MechanicalObject template="Rigid3" dx="10" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388"/>
+        <LinearMovementConstraint template="Rigid3" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
 										      0 0 0   0 0 0
 										      0 0 -1  0 0 0
 										      0 0 -1  0 0 6.3
@@ -58,8 +58,8 @@
     <Node name="Spoon3">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid3d" dx="20" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
-        <LinearMovementConstraint template="Rigid3d" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
+        <MechanicalObject template="Rigid3" dx="20" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
+        <LinearMovementConstraint template="Rigid3" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0
 										      0 0 0   0 0 0
 										      0 0 -1  0 0 0
 										      0 0 -1  0 0 6.3

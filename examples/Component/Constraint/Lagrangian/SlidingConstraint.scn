@@ -32,7 +32,7 @@
     <Node name="CUBE_1">
         <EulerImplicitSolver printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid3d" scale="1.0" dx="0.0" dy="0" dz="0.0" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
@@ -60,7 +60,7 @@
     <Node name="CUBE_2">
         <EulerImplicitSolver printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject template="Rigid3d" scale="1.0" dx="5.0" dy="0" dz="0.0" />
+        <MechanicalObject template="Rigid3" scale="1.0" dx="5.0" dy="0" dz="0.0" />
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">

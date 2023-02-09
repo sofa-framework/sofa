@@ -31,7 +31,7 @@
             <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" printLog="0" />
             
-            <MechanicalObject name="rigidframe" template="Rigid3d" position="1 0 1 0 0 0 1" />
+            <MechanicalObject name="rigidframe" template="Rigid3" position="1 0 1 0 0 0 1" />
             <UniformMass  />
             <FixedConstraint indices="0"/>
             

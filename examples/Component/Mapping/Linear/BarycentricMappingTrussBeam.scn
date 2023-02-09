@@ -51,7 +51,7 @@
             </Node>
         </Node>
         <Node name="Beam">
-            <MechanicalObject template="Rigid3d" name="BeamMO" position="0 0 0  0 0 0 1  0.02 0 0  0 0 0 1  0.04 0 0  0 0 0 1   0.06 0 0  0 0 0 1  0.08 0 0  0 0 0 1   0.1 0 0  0 0 0 1" />
+            <MechanicalObject template="Rigid3" name="BeamMO" position="0 0 0  0 0 0 1  0.02 0 0  0 0 0 1  0.04 0 0  0 0 0 1   0.06 0 0  0 0 0 1  0.08 0 0  0 0 0 1   0.1 0 0  0 0 0 1" />
             <MeshTopology name="BeamMesh" lines="0 1 1 2 2 3 3 4 4 5" />
             <FixedConstraint name="BeamFixedConstraint" indices="0" />
             <UniformMass vertexMass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" />

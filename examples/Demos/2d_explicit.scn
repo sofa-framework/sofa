@@ -11,7 +11,7 @@
 <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields showCollisionModels showMappings" />
     <RungeKutta4Solver />
     <Node name="Cube1">
-        <MechanicalObject template="Rigid2d" position="0 10 0" velocity="0.1 1 -100" />
+        <MechanicalObject template="Rigid2" position="0 10 0" velocity="0.1 1 -100" />
         <UniformMass vertexMass="10 1 0.83333" />
         <Node name="Points">
             <MechanicalObject template="Vec2" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" />

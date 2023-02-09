@@ -29,7 +29,7 @@
         <CGLinearSolver iterations="125" tolerance="1e-16" threshold="1e-16" />
 
         <RegularGridTopology name="MeshLines" nx="100" ny="1" nz="1" xmax="100" xmin="0" ymin="0" ymax="0" zmax="0" zmin="0"/>
-		<MechanicalObject template="Rigid3d" name="BeamDof" />
+		<MechanicalObject template="Rigid3" name="BeamDof" />
 		<FixedConstraint name="fix" indices="0" />
         <UniformMass totalMass="0.1" />
         <BeamFEMForceField name="BeamFEM" radius="1.0" youngModulus="1000" poissonRatio="0.45" />

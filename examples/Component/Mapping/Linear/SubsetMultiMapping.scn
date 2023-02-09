@@ -55,12 +55,12 @@
     <Node name="rigid1" activated="1">
         <GridMeshCreator name="loader" filename="nofile" resolution="2 2"  translation="0 2 0"/>
         <MeshTopology src="@loader" />
-        <MechanicalObject template="Rigid3d" src="@loader" name="dof1" />
+        <MechanicalObject template="Rigid3" src="@loader" name="dof1" />
 
         <Node name="origid2">
             <GridMeshCreator name="loader" filename="nofile" resolution="2 2" translation="2 2 0" />
             <MeshTopology src="@loader" />
-            <MechanicalObject template="Rigid3d" src="@loader"  name="dof2"/>
+            <MechanicalObject template="Rigid3" src="@loader"  name="dof2"/>
 
             <Node name="concatenation">
                 <MechanicalObject template="Vec3" name="dofall" showObject="1"/>

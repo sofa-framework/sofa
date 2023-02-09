@@ -13,7 +13,7 @@
     <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
     <Node name="Cube1" bbox="-1 -1 -1 1 1 1">
-        <MechanicalObject template="Rigid2d" position="0 10 0" velocity="0.1 1 -200" />
+        <MechanicalObject template="Rigid2" position="0 10 0" velocity="0.1 1 -200" />
         <UniformMass vertexMass="1 1 0.83333" />
         <Node name="Points">
             <MechanicalObject template="Vec2" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" />

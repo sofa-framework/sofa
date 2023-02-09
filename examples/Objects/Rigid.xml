@@ -1,7 +1,7 @@
 <Node name="RigidBody">
 	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001"  />
-	<MechanicalObject template="Rigid3d" translation="0 0 0" rotation="0 0 0" scale3d="1 1 1"/>
+	<MechanicalObject template="Rigid3" translation="0 0 0" rotation="0 0 0" scale3d="1 1 1"/>
 	<UniformMass />
 	<Node name="VisualNode" tags="Visual">
 		<OglModel name="Visual" filename="file" color="gray" scale3d="1 1 1" />

@@ -45,7 +45,7 @@
     <Node name="M2">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" dz="-10.5" />
+        <MechanicalObject template="Rigid3" dz="-10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
             <MechanicalObject template="Vec3" src="@../../meshLoader"/>
@@ -88,7 +88,7 @@
     <Node name="M4">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" dz="10.5" />
+        <MechanicalObject template="Rigid3" dz="10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
             <MechanicalObject template="Vec3" src="@../../meshLoader"/>
@@ -131,7 +131,7 @@
     <Node name="M6">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" dz="31.5" />
+        <MechanicalObject template="Rigid3" dz="31.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
             <MechanicalObject template="Vec3" src="@../../meshLoader"/>
