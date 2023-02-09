@@ -49,7 +49,7 @@
   <Node name="Simulation">
     <Node name="Torus0" activated="1">
       <EulerImplicitSolver name="ODE0" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear0"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear0"  />
       <TransformEngine name="Torus0VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-17.800790396426 30 18.046774108916" rotation="35.624275834125 79.418789031645 -15.634653477759" />
       <TetrahedronSetTopologyContainer name="Torus0Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus0Mod" />
@@ -71,7 +71,7 @@
     </Node>
     <Node name="Torus1" activated="1">
       <EulerImplicitSolver name="ODE1" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear1"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear1"  />
       <TransformEngine name="Torus1VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="31.203746381776 46 -3.9584052767411" rotation="-81.407505530588 -41.699467018107 65.027568971285" />
       <TetrahedronSetTopologyContainer name="Torus1Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus1Mod" />
@@ -93,7 +93,7 @@
     </Node>
     <Node name="Torus2" activated="1">
       <EulerImplicitSolver name="ODE2" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear2"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear2"  />
       <TransformEngine name="Torus2VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-22.646083078648 62 -29.076289417723" rotation="-48.524586576281 9.6813763210929 49.716395474838" />
       <TetrahedronSetTopologyContainer name="Torus2Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus2Mod" />
@@ -115,7 +115,7 @@
     </Node>
     <Node name="Torus3" activated="1">
       <EulerImplicitSolver name="ODE3" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear3"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear3"  />
       <TransformEngine name="Torus3VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-0.36212878318602 78 39.681506827325" rotation="58.536139097314 -42.029633536949 -32.440462048371" />
       <TetrahedronSetTopologyContainer name="Torus3Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus3Mod" />
@@ -137,7 +137,7 @@
     </Node>
     <Node name="Torus4" activated="1">
       <EulerImplicitSolver name="ODE4" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear4"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear4"  />
       <TransformEngine name="Torus4VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="23.392304286078 94 -30.079806740433" rotation="39.709873269177 15.292576442143 7.9574386952247" />
       <TetrahedronSetTopologyContainer name="Torus4Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus4Mod" />
@@ -159,7 +159,7 @@
     </Node>
     <Node name="Torus5" activated="0">
       <EulerImplicitSolver name="ODE5" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear5"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear5"  />
       <TransformEngine name="Torus5VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-39.61300034058 110 0.86055988485951" rotation="45.193954620135 -42.616531463627 77.409719260135" />
       <TetrahedronSetTopologyContainer name="Torus5Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus5Mod" />
@@ -181,7 +181,7 @@
     </Node>
     <Node name="Torus6" activated="0">
       <EulerImplicitSolver name="ODE6" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear6"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear6"  />
       <TransformEngine name="Torus6VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="17.130322557469 126 17.800171588454" rotation="72.186179143463 59.053434119119 88.31836399544" />
       <TetrahedronSetTopologyContainer name="Torus6Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus6Mod" />
@@ -203,7 +203,7 @@
     </Node>
     <Node name="Torus7" activated="0">
       <EulerImplicitSolver name="ODE7" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear7"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear7"  />
       <TransformEngine name="Torus7VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-10.390362092476 142 -33.168565888502" rotation="-89.649008726538 -67.300238701189 -9.8223450965352" />
       <TetrahedronSetTopologyContainer name="Torus7Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus7Mod" />
@@ -225,7 +225,7 @@
     </Node>
     <Node name="Torus8" activated="0">
       <EulerImplicitSolver name="ODE8" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear8"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear8"  />
       <TransformEngine name="Torus8VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-26.521328197104 158 28.966597611535" rotation="14.924939379527 81.74878913525 -44.199652361777" />
       <TetrahedronSetTopologyContainer name="Torus8Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus8Mod" />
@@ -247,7 +247,7 @@
     </Node>
     <Node name="Torus9" activated="0">
       <EulerImplicitSolver name="ODE9" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear9"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear9"  />
       <TransformEngine name="Torus9VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="35.093469803731 174 -3.1191041148822" rotation="-5.1181413303679 82.199841808621 -51.436056066973" />
       <TetrahedronSetTopologyContainer name="Torus9Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus9Mod" />

@@ -15,7 +15,7 @@
     <DefaultVisualManagerLoop/>
 
     <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-    <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+    <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3"/>
 
     <Node name="fix">
         <MechanicalObject template="Vec3" name="dofs" position="0 0 0" showObject="true"/>

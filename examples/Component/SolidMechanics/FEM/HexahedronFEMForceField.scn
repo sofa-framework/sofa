@@ -22,7 +22,7 @@
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <Node name="M1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" template="CompressedRowSparseMatrixMat3x3d"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" template="CompressedRowSparseMatrixMat3x3"/>
         <MechanicalObject />
         <UniformMass vertexMass="1" />
         <RegularGridTopology nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />

@@ -37,7 +37,7 @@
 
     <Node name="Number1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 6 3" fileTopology="mesh/n1.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
@@ -68,7 +68,7 @@
 
     <Node name="Number01">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-22 20 -22"/>
@@ -97,7 +97,7 @@
 
     <Node name="Number02">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
@@ -126,7 +126,7 @@
 
     <Node name="Number03">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
@@ -155,7 +155,7 @@
 
     <Node name="Sofa">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="2 2 2" fileTopology="mesh/sofa_logo.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         

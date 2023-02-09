@@ -11,7 +11,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <include href="../FEMBAR-common.xml"/>
 
-    <SVDLinearSolver template="CompressedRowSparseMatrixMat3x3d"/>
+    <SVDLinearSolver template="CompressedRowSparseMatrixMat3x3"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>
