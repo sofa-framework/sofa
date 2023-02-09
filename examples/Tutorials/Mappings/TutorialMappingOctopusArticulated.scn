@@ -37,7 +37,7 @@
         <Node name="Collision" activated="1" gravity="0 0 -9.81" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
             <MeshOBJLoader name="loader" filename="mesh/Teodule_LowRes.obj" />
             <MeshTopology src="@loader" name="default47" />
-            <MechanicalObject src="@loader" template="Vec3d" name="default36" translation="2 5 -20" rotation="90 0 0" />
+            <MechanicalObject src="@loader" template="Vec3" name="default36" translation="2 5 -20" rotation="90 0 0" />
             <TriangleCollisionModel name="Teodule Triangle" selfCollision="1" />
             <LineCollisionModel name="Teodule Line" moving="0" simulated="0" contactStiffness="100" />
             <PointCollisionModel name="Teodule Point" moving="0" simulated="0" contactStiffness="100" />
@@ -45,7 +45,7 @@
         </Node>
         <Node name="Visu" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/Teodule_Smoothed2.obj" translation="2 5 -20" rotation="90 0 0" handleSeams="1" />
-            <MechanicalObject template="Vec3d" name="dofs"/>
+            <MechanicalObject template="Vec3" name="dofs"/>
             <OglModel name="Visual" src="@meshLoader_0" texturename="textures/textureorange3569.png" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" /> 
             <SkinningMapping template="Rigid3d,Vec3d" name="default67" input="@.." output="@dofs" />
         </Node>
@@ -53,7 +53,7 @@
     <Node name="Salad Bowl" gravity="0 -9.81 0">
         <MeshOBJLoader name="loader" filename="mesh/SaladBowl.obj" />
         <MeshTopology src="@loader" name="default74" />
-        <MechanicalObject src="@loader" template="Vec3d" name="default75" translation="0 -50 -20" rotation="-90 0 0" scale="100" />
+        <MechanicalObject src="@loader" template="Vec3" name="default75" translation="0 -50 -20" rotation="-90 0 0" scale="100" />
         <TriangleCollisionModel name="Floor_triangle" moving="0" simulated="0" contactStiffness="1000" />
         <LineCollisionModel name="Floor_line" moving="0" simulated="0" contactStiffness="1000" />
         <PointCollisionModel name="Floor_point" moving="0" simulated="0" contactStiffness="1000" />

@@ -26,7 +26,7 @@
         <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <Node name="CubeSphere1">
-            <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="-2 1 2" />
+            <MechanicalObject name="Particles" template="Vec3" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="-2 1 2" />
             <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
             <UniformMass name="Mass" totalMass="1" />
             <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
@@ -34,7 +34,7 @@
             <SphereCollisionModel name="Spheres Cube1" radius="0.4" />
         </Node>
         <Node name="CubeSphere2">
-            <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 0 6" />
+            <MechanicalObject name="Particles" template="Vec3" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 0 6" />
             <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
             <UniformMass name="Mass" totalMass="1" />
             <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
@@ -42,7 +42,7 @@
             <SphereCollisionModel name="Spheres Cube2" radius="0.4" />
         </Node>
         <Node name="CubeGeometry1">
-            <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 1 2" />
+            <MechanicalObject name="Particles" template="Vec3" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 1 2" />
             <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
             <UniformMass name="Mass" totalMass="1" />
             <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
@@ -52,7 +52,7 @@
             <PointCollisionModel name="Points CubeGeometry1" />
         </Node>
         <Node name="CubeGeometry2">
-            <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="2 1 2" />
+            <MechanicalObject name="Particles" template="Vec3" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="2 1 2" />
             <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
             <UniformMass name="Mass" totalMass="1" />
             <MeshSpringForceField name="Springs" stiffness="100" damping="1" />

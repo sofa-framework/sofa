@@ -30,21 +30,21 @@
     <Node name="Hexa Mesh">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="40" tolerance="1e-09" threshold="1e-09" />
-        <MechanicalObject template="Vec3d" name="Hexa" />
-        <UniformMass template="Vec3d" name="Mass" vertexMass="0.25" />
+        <MechanicalObject template="Vec3" name="Hexa" />
+        <UniformMass template="Vec3" name="Mass" vertexMass="0.25" />
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
-        <HexahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.45" youngModulus="5000"/>
-        <RegularGridSpringForceField template="Vec3d" name="FEM-bend" />
-        <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="0 5 180 185" drawSize="0" />
+        <HexahedronFEMForceField template="Vec3" name="FEM" poissonRatio="0.45" youngModulus="5000"/>
+        <RegularGridSpringForceField template="Vec3" name="FEM-bend" />
+        <FixedConstraint template="Vec3" name="Fixed Dofs" indices="0 5 180 185" drawSize="0" />
         <Node name="Tetra Mesh">
             <TetrahedronSetTopologyContainer name="Container" />
             <TetrahedronSetTopologyModifier name="Modifier" />
-            <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
             <Hexa2TetraTopologicalMapping name="default7" input="@../grid" output="@Container" />
             <Node name="Triangles" gravity="0 -9.81 0">
                 <TriangleSetTopologyContainer name="Container" />
                 <TriangleSetTopologyModifier name="Modifier" />
-                <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+                <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="default8" input="@../Container" output="@Container" />
                 <TriangleCollisionModel name="default9" />
                 <Node name="Visu">

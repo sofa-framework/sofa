@@ -58,8 +58,8 @@
         <NearestPointROI template="Vec3" name="np1" object1="@./M1/mo" object2="@./M2/mo" radius="0.1"/>
         <NearestPointROI template="Vec3" name="np2" object1="@./M2/mo" object2="@./M3/mo" radius="0.1"/>
 
-        <BilateralInteractionConstraint template="Vec3d" object1="@M1" object2="@M2" first_point="@np1.indices1" second_point="@np1.indices2" />
-        <BilateralInteractionConstraint template="Vec3d" object1="@M2" object2="@M3" first_point="@np2.indices1" second_point="@np2.indices2" />
+        <BilateralInteractionConstraint template="Vec3" object1="@M1" object2="@M2" first_point="@np1.indices1" second_point="@np1.indices2" />
+        <BilateralInteractionConstraint template="Vec3" object1="@M2" object2="@M3" first_point="@np2.indices1" second_point="@np2.indices2" />
     </Node>
 
     <!--

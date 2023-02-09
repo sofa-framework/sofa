@@ -27,7 +27,7 @@
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
     <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <Node name="SlidingPoint">
-        <MechanicalObject name="points" template="Vec3d" position="1 1.25 -0.2 &#x09;1 1.25 0.2" free_position="1 1.25 -0.2 &#x09;1 1.25 0.2" />
+        <MechanicalObject name="points" template="Vec3" position="1 1.25 -0.2 &#x09;1 1.25 0.2" free_position="1 1.25 -0.2 &#x09;1 1.25 0.2" />
     </Node>
     <Node name="CUBE_1">
         <EulerImplicitSolver printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -49,13 +49,13 @@
             <RigidMapping />
         </Node>
         <Node name="Constraints">
-            <MechanicalObject name="points" template="Vec3d" position="1 1.25 1&#x09;1 1.25 -1&#x09;0 0 0" />
+            <MechanicalObject name="points" template="Vec3" position="1 1.25 1&#x09;1 1.25 -1&#x09;0 0 0" />
             <RigidMapping />
         </Node>
     </Node>
     <SlidingConstraint name="constraint1" object1="@SlidingPoint/points" object2="@CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
     <Node name="Line">
-        <MechanicalObject name="points" template="Vec3d" position="6 1.25 1&#x09;6 1.25 -1" free_position="6 1.25 1&#x09;6 1.25 -1" />
+        <MechanicalObject name="points" template="Vec3" position="6 1.25 1&#x09;6 1.25 -1" free_position="6 1.25 1&#x09;6 1.25 -1" />
     </Node>
     <Node name="CUBE_2">
         <EulerImplicitSolver printLog="false" />
@@ -77,7 +77,7 @@
             <RigidMapping />
         </Node>
         <Node name="Constraints">
-            <MechanicalObject name="points" template="Vec3d" position="1 1.25 1" />
+            <MechanicalObject name="points" template="Vec3" position="1 1.25 1" />
             <RigidMapping />
         </Node>
     </Node>

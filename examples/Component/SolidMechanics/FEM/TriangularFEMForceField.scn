@@ -29,7 +29,7 @@
         <MechanicalObject src="@loader" name="DOFs" scale3d="100 100 0" />
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <DiagonalMass massDensity="0.005" />
         <FixedConstraint indices="0 1 2" />
         <TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />

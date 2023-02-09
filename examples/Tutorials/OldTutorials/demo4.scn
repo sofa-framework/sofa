@@ -37,7 +37,7 @@
             <MechanicalObject template="Rigid3d" dz="-10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../loader"/>
+                <MechanicalObject template="Vec3" src="@../../loader"/>
                 <RigidMapping />
                 <Node name="Surf">
                     <MechanicalObject />
@@ -70,7 +70,7 @@
             <MechanicalObject template="Rigid3d" dz="10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../loader"/>
+                <MechanicalObject template="Vec3" src="@../../loader"/>
                 <RigidMapping />
                 <Node name="Visu">
                     <OglModel name="Visual" filename="mesh/smCube27.obj" />
@@ -103,7 +103,7 @@
             <MechanicalObject template="Rigid3d" dz="31.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../loader"/>
+                <MechanicalObject template="Vec3" src="@../../loader"/>
                 <RigidMapping />
             </Node>
             <Node name="Visu">

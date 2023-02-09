@@ -30,7 +30,7 @@
         <!-- Container for the tetrahedra-->
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader0" />
         <!-- Algorithms: used in DiagonalMass to compute the mass -->
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <DiagonalMass massDensity="1" name="computed using mass density" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />

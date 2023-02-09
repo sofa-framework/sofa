@@ -31,15 +31,15 @@
     <Node name="object1">        
         <GridMeshCreator name="loader" filename="nofile" resolution="2 2" />
         <MeshTopology src="@loader" />
-        <MechanicalObject template="Vec3d" src="@loader" name="dof1" />
+        <MechanicalObject template="Vec3" src="@loader" name="dof1" />
 
         <Node name="object2">        
             <GridMeshCreator name="loader" filename="nofile" resolution="2 2" translation="2 0 0" />
             <MeshTopology src="@loader" />
-            <MechanicalObject template="Vec3d" src="@loader"  name="dof2"/>
+            <MechanicalObject template="Vec3" src="@loader"  name="dof2"/>
             
             <Node name="concatenation">
-                <MechanicalObject template="Vec3d" name="dofall" showObject="1"/>
+                <MechanicalObject template="Vec3" name="dofall" showObject="1"/>
                 <IdentityMultiMapping template="Vec3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" />
                 <SphereCollisionModel radius="0.3" selfCollision="1"/>
                 <UniformMass vertexMass="1" />

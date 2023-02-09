@@ -15,7 +15,7 @@
             <MechanicalObject template="Rigid3d" dz="10.5" showObject="1"/>
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../loader"/>
+                <MechanicalObject template="Vec3" src="@../../loader"/>
                 <RigidMapping />
             </Node>
         </Node>
@@ -28,7 +28,7 @@
             <MechanicalObject template="Rigid3d" dz="31.5" showObject="1"/>
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../loader"/>
+                <MechanicalObject template="Vec3" src="@../../loader"/>
                 <RigidMapping />
             </Node>
         </Node>

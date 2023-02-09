@@ -22,10 +22,10 @@
         <MeshTopology triangles="0 1 2  0 2 3" />
         <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
 
-        <BoxROI template="Vec3d" name="box_roi1" box="0 0 0  1 0.5 0"/>
+        <BoxROI template="Vec3" name="box_roi1" box="0 0 0  1 0.5 0"/>
         <ConstantForceField indices="@box_roi1.indices" force="0 -1 0" showArrowSize=".2"/>
 
-        <BoxROI template="Vec3d" name="box_roi2" box="0 0.5 0  1 1 0"/>
+        <BoxROI template="Vec3" name="box_roi2" box="0 0.5 0  1 1 0"/>
         <ConstantForceField indices="@box_roi2.indices" force="0 1 0" showArrowSize=".2"/>
 
         <Node name="Visu">

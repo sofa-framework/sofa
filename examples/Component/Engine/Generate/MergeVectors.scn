@@ -14,7 +14,7 @@
                 <MeshOBJLoader name="mesh2" filename="mesh/snake_body.obj"/>  
                 
                 <MergeVectors template="Data<double>" name="mergedPositions"  nbInputs="2" input1="@mesh1.position" input2="@mesh2.position" />
-                <MechanicalObject  template="Vec3d"  position="@mergedPositions.output" showObject="True" />
+                <MechanicalObject  template="Vec3"  position="@mergedPositions.output" showObject="True" />
                                 
     </Node>
 </Node>

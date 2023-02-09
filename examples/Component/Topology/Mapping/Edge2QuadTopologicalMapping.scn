@@ -36,10 +36,10 @@
         
         
         <Node name="VisuBeam" activated="true">
-			<MechanicalObject template="Vec3d" name="SurfDof" />
+			<MechanicalObject template="Vec3" name="SurfDof" />
 			<QuadSetTopologyContainer  name="Container" />
 			<QuadSetTopologyModifier   name="Modifier" />
-            <QuadSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" drawQuads="1"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo"  template="Vec3" drawQuads="1"/>
 			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="2" input="@../MeshLines" output="@Container" flipNormals="true"/>
             <TubularMapping nbPointsOnEachCircle="10" radius="2" input="@../BeamDof" output="@SurfDof" />
             

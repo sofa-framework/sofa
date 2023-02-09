@@ -16,7 +16,7 @@
   <EulerImplicitSolver name="Euler Implicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
  
-  <MechanicalObject name="Particles" template="Vec3d"
+  <MechanicalObject name="Particles" template="Vec3"
                     position="0 0 0 0 0 1"
                     velocity="0 0 0 0 1 0"/>
  

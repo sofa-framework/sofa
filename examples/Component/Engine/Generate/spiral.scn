@@ -10,7 +10,7 @@
     <Node name="Spiral">
         <RegularGridTopology name="topo" n="201 5 2" min="-5 -0.1 -0.1" max="5 0.1 0.1" />
         <MechanicalObject name="dofs1" />
-        <Spiral name="spiral" template="Vec3d" rest_position="@dofs1.position" />
+        <Spiral name="spiral" template="Vec3" rest_position="@dofs1.position" />
         <Node>
             <MechanicalObject name="dofs" position="@../spiral.position" />
             <TriangleCollisionModel />

@@ -19,7 +19,7 @@
         <PartialFixedConstraint fixedDirections="1 1 0" />
         <UniformMass template="Rigid2d" name="mass" />
         <Node name="child node with DOFs mapped from the parent">
-            <MechanicalObject template="Vec2d" name="endpoint coordinates" position="1 0 "  />
+            <MechanicalObject template="Vec2" name="endpoint coordinates" position="1 0 "  />
             <RigidMapping template="" name="angle-coord mapping" input="@.." output="@." index="0" />
             <ConstantForceField force="1 -1" indices="0" />
         </Node>

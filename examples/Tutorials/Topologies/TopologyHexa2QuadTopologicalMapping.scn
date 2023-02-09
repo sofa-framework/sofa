@@ -31,21 +31,21 @@
         <MeshGmshLoader name="loader" filename="mesh/nine_hexa.msh" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
-        <MechanicalObject src="@loader" template="Vec3d" name="Hexa" />
-        <UniformMass template="Vec3d" name="Mass" vertexMass="0.25" />
+        <MechanicalObject src="@loader" template="Vec3" name="Hexa" />
+        <UniformMass template="Vec3" name="Mass" vertexMass="0.25" />
         <HexahedronSetTopologyContainer src="@loader" name="Container" />
         <HexahedronSetTopologyModifier name="Modifier" />
-        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />
+        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />
         <!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" 
       p0="-10 -10 -10"/>-->
-        <HexahedronFEMForceField name="FEM" template="Vec3d" poissonRatio="0.45" youngModulus="5000"/>
-        <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="12 15 28 31" drawSize="0" />
+        <HexahedronFEMForceField name="FEM" template="Vec3" poissonRatio="0.45" youngModulus="5000"/>
+        <FixedConstraint template="Vec3" name="Fixed Dofs" indices="12 15 28 31" drawSize="0" />
         <Node name="Q">
             <QuadSetTopologyContainer name="Container" />
             <QuadSetTopologyModifier name="Modifier" />
-            <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <QuadSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
             <Hexa2QuadTopologicalMapping name="default6" input="@../Container" output="@Container" />
-            <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1" />
+            <QuadularBendingSprings template="Vec3" name="FEM-Bend" stiffness="3000" damping="1" />
             <TriangleCollisionModel name="default7" />
             <Node name="Visu">
                 <OglModel name="Visual" color="green" />

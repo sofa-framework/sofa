@@ -50,7 +50,7 @@ There is no DefaultCollisionGroupManager component in this scene.
         <Node name="Collision">
             <QuadSetTopologyContainer name="Quad_topology"/>
             <QuadSetTopologyModifier name="Modifier"/>
-            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3"/>
             <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
 
             <Node name="CollisionTriangles">
@@ -77,7 +77,7 @@ There is no DefaultCollisionGroupManager component in this scene.
         <Node name="Collision">
             <QuadSetTopologyContainer name="Quad_topology"/>
             <QuadSetTopologyModifier name="Modifier"/>
-            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3"/>
             <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
 
             <Node name="CollisionTriangles">

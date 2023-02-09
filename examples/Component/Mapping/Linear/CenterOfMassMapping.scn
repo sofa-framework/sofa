@@ -51,7 +51,7 @@
             <SkinningMapping template="Rigid3d,Vec3d" name="map" input="@.." output="@Visual" />
         </Node>
         <Node name="CenterOfMass" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" multiThreadSimulation="0">
-            <MechanicalObject template="Vec3d" name="default88" listening="0" printLog="0" restScale="1" position="3.2 0 0" velocity="0 0 0" force="0 0 0" dx="-1.87325e-005 3.16272e-005 8.66385e-005" free_position="3.2 0 0" free_velocity="0 0 0" rest_position="0 0 0"/>
+            <MechanicalObject template="Vec3" name="default88" listening="0" printLog="0" restScale="1" position="3.2 0 0" velocity="0 0 0" force="0 0 0" dx="-1.87325e-005 3.16272e-005 8.66385e-005" free_position="3.2 0 0" free_velocity="0 0 0" rest_position="0 0 0"/>
             <SphereCollisionModel name="default88Sphere" active="1" moving="1" simulated="1" selfCollision="0" proximity="0" contactStiffness="10" contactFriction="0.01" color="1 0.5 0 1" radius="0.2"/>
             <CenterOfMassMapping template="Rigid3d,Vec3d" name="default105" />
         </Node>

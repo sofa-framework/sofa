@@ -40,7 +40,7 @@
         <RigidMapping template="Rigid3d,Vec3d" index="0" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_1" filename="mesh/gear0.obj" handleSeams="1" />
-            <OglModel template="Vec3d" name="Visual" src="@meshLoader_1" />
+            <OglModel template="Vec3" name="Visual" src="@meshLoader_1" />
             <IdentityMapping template="Vec3d,Vec3d" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -52,7 +52,7 @@
         <RigidMapping template="Rigid3d,Vec3d" index="1" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_3" filename="mesh/gear1.obj" handleSeams="1" />
-            <OglModel template="Vec3d" name="Visual" src="@meshLoader_3" />
+            <OglModel template="Vec3" name="Visual" src="@meshLoader_3" />
             <IdentityMapping template="Vec3d,Vec3d" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -64,7 +64,7 @@
         <RigidMapping template="Rigid3d,Vec3d" index="2" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/gear2.obj" handleSeams="1" />
-            <OglModel template="Vec3d" name="Visual" src="@meshLoader_0" />
+            <OglModel template="Vec3" name="Visual" src="@meshLoader_0" />
             <IdentityMapping template="Vec3d,Vec3d" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -76,7 +76,7 @@
         <RigidMapping template="Rigid3d,Vec3d" index="3" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_2" filename="mesh/gear3.obj" handleSeams="1" />
-            <OglModel template="Vec3d" name="Visual" src="@meshLoader_2" />
+            <OglModel template="Vec3" name="Visual" src="@meshLoader_2" />
             <IdentityMapping template="Vec3d,Vec3d" input="@.." output="@Visual" />
         </Node>
     </Node>
@@ -88,7 +88,7 @@
         <RigidMapping template="Rigid3d,Vec3d" index="4" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_4" filename="mesh/gearsupport.obj" handleSeams="1" />
-            <OglModel template="Vec3d" name="Visual" src="@meshLoader_4" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+            <OglModel template="Vec3" name="Visual" src="@meshLoader_4" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
             <IdentityMapping template="Vec3d,Vec3d" input="@.." output="@Visual" />
         </Node>
     </Node>

@@ -29,10 +29,10 @@
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
         <MeshTopology name="mesh" src="@meshLoader0" />
-        <MechanicalObject template="Vec3d" name="dofs" />
-        <MeshSpringForceField template="Vec3d" name="Springs" stiffness="4500" />
-        <UniformMass template="Vec3d" name="mass" />
-        <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
+        <MechanicalObject template="Vec3" name="dofs" />
+        <MeshSpringForceField template="Vec3" name="Springs" stiffness="4500" />
+        <UniformMass template="Vec3" name="mass" />
+        <FixedConstraint template="Vec3" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />

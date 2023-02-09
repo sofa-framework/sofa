@@ -39,7 +39,7 @@
         <Node name="Q">
             <QuadSetTopologyContainer  name="Container" />
             <QuadSetTopologyModifier   name="Modifier" />
-            <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+            <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
             <TriangleCollisionModel />

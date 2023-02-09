@@ -52,7 +52,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />
@@ -82,7 +82,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />
@@ -111,7 +111,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />
@@ -140,7 +140,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />

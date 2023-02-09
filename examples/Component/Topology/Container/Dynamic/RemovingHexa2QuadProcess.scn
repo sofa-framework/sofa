@@ -31,7 +31,7 @@
         <MechanicalObject src="@loader" name="Hexa" />
         <HexahedronSetTopologyContainer name="Hexa_topo" src="@loader" />
         <HexahedronSetTopologyModifier name="Modifier" />
-        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <TopologicalChangeProcessor listening="1" filename="RemovingHexa2QuadProcess.txt" />
         <HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
         <DiagonalMass massDensity="0.5" />
@@ -40,7 +40,7 @@
         <Node name="Q">
             <QuadSetTopologyContainer name="Quad_topo" src="@../loader" tags=" " />
             <QuadSetTopologyModifier name="Modifier" />
-            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawQuads="1" />
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3" drawQuads="1" />
             <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@Quad_topo" />
             <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
             <TriangleCollisionModel />

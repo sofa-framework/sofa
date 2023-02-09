@@ -31,7 +31,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshOBJLoader name="loader" filename="mesh/sphere_02b.obj" scale="0.25 0.25 0.25" rotation="-90 0 0" triangulate="1" />
         <TriangleSetTopologyContainer src="@loader" />
-        <MechanicalObject src="@loader" template="Vec3d" name="DOFs" />
+        <MechanicalObject src="@loader" template="Vec3" name="DOFs" />
         <TriangleSetTopologyModifier />
         <TriangleSetGeometryAlgorithms />
         <BoxConstraint box="-10 -10 -10  10 -5 10" />

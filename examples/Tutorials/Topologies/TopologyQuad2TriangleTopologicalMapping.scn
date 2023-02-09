@@ -29,15 +29,15 @@
     
     <Node name="Quads Mesh">
         <MeshOBJLoader name="loader" filename="mesh/cubeQuad.obj" />
-        <MechanicalObject src="@loader" template="Vec3d" name="Quads" />
+        <MechanicalObject src="@loader" template="Vec3" name="Quads" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="40" tolerance="1e-09" threshold="1e-09" />
         <QuadSetTopologyContainer src="@loader" name="Container" />
         <QuadSetTopologyModifier name="Topology Modifier" />
-        <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <!--<QuadularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="3000" damping="1"/>-->
+        <QuadSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <!--<QuadularBendingSprings name="FEM-Bend" template="Vec3" stiffness="3000" damping="1"/>-->
         <DiagonalMass name="Mass" template="Vec3d,Vec3d" massDensity="0.5" />
-        <FixedConstraint name="Fixed dof" template="Vec3d" indices="4 5 6 7" />
+        <FixedConstraint name="Fixed dof" template="Vec3" indices="4 5 6 7" />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
             <IdentityMapping name="Mapping" template="Vec3d,Vec3d" input="@../Quads" output="@Visual" />
@@ -45,10 +45,10 @@
         <Node name="Triangles Mesh">
             <TriangleSetTopologyContainer name="Container" />
             <TriangleSetTopologyModifier name="Topology Modifier" />
-            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawEdges="1" drawColorEdges="1.0 1.0 0.3" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" drawEdges="1" drawColorEdges="1.0 1.0 0.3" />
             <Quad2TriangleTopologicalMapping name="Topological Mapping" input="@../Container" output="@Container" />
-            <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="1000" />
-            <TriangularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="3000" damping="1" />
+            <TriangularFEMForceField name="FEM" template="Vec3" method="large" poissonRatio="0.3" youngModulus="1000" />
+            <TriangularBendingSprings name="FEM-Bend" template="Vec3" stiffness="3000" damping="1" />
             <TriangleCollisionModel name="Models" />
         </Node>
     </Node>

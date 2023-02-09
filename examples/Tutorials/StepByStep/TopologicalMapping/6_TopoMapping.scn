@@ -27,23 +27,23 @@
     <Node name="Hexahedra Mesh">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="40" tolerance="1e-09" threshold="1e-09" />
-        <MechanicalObject template="Vec3d" name="Hexa" />
+        <MechanicalObject template="Vec3" name="Hexa" />
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
         <HexahedronSetGeometryAlgorithms />
-        <HexahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.3" youngModulus="100" />
+        <HexahedronFEMForceField template="Vec3" name="FEM" poissonRatio="0.3" youngModulus="100" />
         <DiagonalMass template="Vec3d,Vec3d" name="Mass" vertexMass="1" />
-        <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="30 35 210 215" drawSize="0" />
+        <FixedConstraint template="Vec3" name="Fixed Dofs" indices="30 35 210 215" drawSize="0" />
         <Node name="Quad Mesh">
             <QuadSetTopologyContainer name="Container" />
             <QuadSetTopologyModifier name="Modifier" />
-            <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+            <QuadSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
             <Hexa2QuadTopologicalMapping name="default6" input="@../grid" output="@Container" />
             <Node name="Triangles Mesh" gravity="0 -9.81 0">
                 <TriangleSetTopologyContainer name="Container" />
                 <TriangleSetTopologyModifier name="Modifier" />
-                <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+                <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
                 <Quad2TriangleTopologicalMapping name="default8" input="@../Container" output="@Container" />
-                <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="200" damping="1" />
+                <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="200" damping="1" />
                 <TriangleCollisionModel name="default9" />
                 <Node name="Visu">
                     <OglModel name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />

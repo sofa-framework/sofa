@@ -23,7 +23,7 @@
     
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
     <MeshTopology name="mesh" src="@loader" />
-    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" src="@mesh" name="roi" drawBoxes="true"/>
+    <BoxROI template="Vec3" box="0 -2 0 5 2 5" src="@mesh" name="roi" drawBoxes="true"/>
 
     <MeshSplittingEngine name="split" src="@loader" nbInputs="1" tetrahedronIndices1="@roi.tetrahedronIndices" printLog="true"/>
 
