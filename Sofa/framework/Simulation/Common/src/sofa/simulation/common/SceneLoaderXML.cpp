@@ -149,11 +149,5 @@ Node::SPtr SceneLoaderXML::loadFromMemory(const char* filename, const char* data
     return root;
 }
 
-Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
-{
-    SOFA_UNUSED(size);
-    return loadFromMemory(filename, data);
-}
-
 
 } // namespace sofa::simulation

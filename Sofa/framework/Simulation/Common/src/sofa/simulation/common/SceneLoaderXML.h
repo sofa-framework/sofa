@@ -50,7 +50,7 @@ public:
     static NodeSPtr loadFromMemory(const char* filename, const char* data);
 
     SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
-    DeprecatedAndRemoved loadFromMemory();
+    static NodeSPtr loadFromMemory( const char *filename, const char *data, unsigned int size ) = delete;
 
     /// get the file type description
     virtual std::string getFileTypeDesc() override;
