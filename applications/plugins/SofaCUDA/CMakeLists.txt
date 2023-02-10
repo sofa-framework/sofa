@@ -60,14 +60,13 @@ set(HEADER_FILES
     ### FEM
     sofa/gpu/cuda/CudaHexahedronFEMForceField.h
     sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
-    sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
+
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
-    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
 
@@ -134,11 +133,9 @@ set(SOURCE_FILES
 
     ### FEM
     sofa/gpu/cuda/CudaHexahedronFEMForceField.cpp
-    sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
@@ -201,11 +198,9 @@ set(CUDA_SOURCES
 
     ### FEM
     sofa/gpu/cuda/CudaHexahedronFEMForceField.cu
-    sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.cu
-    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
 
     ### ForceFields
@@ -221,9 +216,17 @@ set(CUDA_SOURCES
     ### Constraints
     sofa/gpu/cuda/CudaFixedConstraint.cu
     sofa/gpu/cuda/CudaLinearMovementConstraint.cu
-    
-    
 )
+
+if (CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 12.0.00)
+  # https://forums.developer.nvidia.com/t/cuda-12-0-still-support-for-texture-reference-support-for-pascal-architecture-warp-synchronous-programming/237284/2
+  # Used texture API has been deprecated for a long time and is is removed since CUDA12
+  message("Your CUDA compiler cannot compile TLED Forcefields due the removal of the legacy texture API (since CUDA v12).")
+else()
+  list(APPEND HEADER_FILES sofa/gpu/cuda/CudaHexahedronTLEDForceField.h sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h)
+  list(APPEND SOURCE_FILES sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp)
+  list(APPEND CUDA_SOURCES sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu)
+endif()
 
 sofa_find_package(Sofa.GL QUIET)
 if(NOT Sofa.GL_FOUND)
