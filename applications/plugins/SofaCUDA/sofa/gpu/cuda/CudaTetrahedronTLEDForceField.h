@@ -65,7 +65,7 @@ Year = {2009}                                                                   
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
-
+#include "vector_types.h"
 
 namespace sofa
 {
@@ -77,6 +77,9 @@ namespace cuda
 {
 
 using namespace sofa::defaulttype;
+
+template<class T>
+class CudaTextureObject;
 
 class CudaTetrahedronTLEDForceField : public core::behavior::ForceField<CudaVec3fTypes>
 {
@@ -120,6 +123,8 @@ public:
     void ComputeDhDxTetra(const Element& e, const VecCoord& x, float DhDr[4][3], float DhDx[4][3]);
 
 protected:
+
+    int4* m_device_nodesPerElement { nullptr };
 
 };
 

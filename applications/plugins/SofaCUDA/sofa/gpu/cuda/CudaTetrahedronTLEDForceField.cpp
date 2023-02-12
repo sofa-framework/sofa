@@ -41,8 +41,8 @@ int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetr
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
-    void InitGPU_TetrahedronTLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, float* Volume, int* FCrds, int valence, int nbVertex, int nbElements);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
+    void InitGPU_TetrahedronTLED(float* DhC0, float* DhC1, float* DhC2, float* Volume, int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_TetrahedronAniso(float* A);
     void ClearGPU_TetrahedronTLED(void);
@@ -79,6 +79,11 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
     if (isAnisotropic.getValue())
     {
         ClearGPU_TetrahedronAniso();
+    }
+
+    if (m_device_nodesPerElement)
+    {
+        mycudaFree(m_device_nodesPerElement);
     }
 }
 
@@ -236,12 +241,12 @@ void CudaTetrahedronTLEDForceField::reinit()
     memset(index, 0, nbVertex*sizeof(int));
 
     // Stores list of nodes for each element
-    int * NodesPerElement = new int[4*nbElems];
+    sofa::type::vector<int4> nodesPerElement(nbElems);
 
     // Stores shape function global derivatives
     float DhDx[4][3];
 
-    for (int i=0; i<nbElems; i++)
+    for (int i = 0; i < nbElems; i++)
     {
         Element& e = inputElems[i];
 
@@ -251,11 +256,13 @@ void CudaTetrahedronTLEDForceField::reinit()
         // Compute shape function global derivatives DhDx (DhDx = DhDr * invJ^T)
         ComputeDhDxTetra(e, x, DhDr, DhDx);
 
-        for (unsigned int j=0; j<e.size(); j++)
-        {
-            // List of nodes belonging to current element
-            NodesPerElement[e.size()*i+j] = e[j];
+        nodesPerElement[i].x = e[0];
+        nodesPerElement[i].y = e[1];
+        nodesPerElement[i].z = e[2];
+        nodesPerElement[i].w = e[3];
 
+        for (unsigned int j = 0; j < Element::size(); j++)
+        {
             // Store DhDx values in 3 texture data arrays (the 3 columns of the shape function derivatives matrix)
             DhC0[e.size()*i+j] = DhDx[j][0];
             DhC1[e.size()*i+j] = DhDx[j][1];
@@ -269,10 +276,14 @@ void CudaTetrahedronTLEDForceField::reinit()
         }
     }
 
+    mycudaMalloc((void**)&m_device_nodesPerElement, nodesPerElement.size() * sizeof(int4));
+    mycudaMemcpyHostToDevice(m_device_nodesPerElement, nodesPerElement.data(), nodesPerElement.size() * sizeof(int4));
+
+
     /** Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
-    InitGPU_TetrahedronTLED(NodesPerElement, DhC0, DhC1, DhC2, Volume, FCrds, nbElementPerVertex, nbVertex, nbElems);
-    delete [] NodesPerElement; delete [] DhC0; delete [] DhC1; delete [] DhC2; delete [] index;
+    InitGPU_TetrahedronTLED(DhC0, DhC1, DhC2, Volume, FCrds, nbElementPerVertex, nbVertex, nbElems);
+    delete [] DhC0; delete [] DhC1; delete [] DhC2; delete [] index;
     delete [] FCrds; delete [] Volume;
 
 
@@ -368,7 +379,7 @@ void CudaTetrahedronTLEDForceField::addForce (const sofa::core::MechanicalParams
     const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     f.resize(x.size());
-    CudaTetrahedronTLEDForceField3f_addForce(
+    CudaTetrahedronTLEDForceField3f_addForce(m_device_nodesPerElement,
         Lambda,
         Mu,
         nbElems,
