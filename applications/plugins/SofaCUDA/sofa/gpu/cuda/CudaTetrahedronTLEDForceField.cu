@@ -38,8 +38,8 @@ namespace cuda
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
-    void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElements);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, int2* forceCoordinates, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
+    void InitGPU_TetrahedronTLED(int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_TetrahedronAniso();
     void ClearGPU_TetrahedronTLED(void);
@@ -68,7 +68,6 @@ static __constant__ float Av_gpu[2];
 static __constant__ int Eta_gpu;
 
 // References on textures - TLED second kernel
-static texture <int2, 1, cudaReadModeElementType> texFCrds;
 static texture <float4, 1, cudaReadModeElementType> texF0;
 static texture <float4, 1, cudaReadModeElementType> texF1;
 static texture <float4, 1, cudaReadModeElementType> texF2;
@@ -77,8 +76,6 @@ static texture <float4, 1, cudaReadModeElementType> texF3;
 /**
  * GPU pointers
  */
-// Force coordinates for each node
-static int2* FCrds_gpu = 0;
 // Element nodal force contribution
 static float4* F0_gpu = 0;
 static float4* F1_gpu = 0;
@@ -909,7 +906,7 @@ __device__ float4 computeForce_tet(const int node, const float4 DhC0, const floa
 /**
  * This kernel gathers the forces by element computed by the first kernel to each node
  */
-__global__ void CudaTetrahedronTLEDForceField3f_addForce_kernel(int nbVertex, unsigned int valence, float* f)
+__global__ void CudaTetrahedronTLEDForceField3f_addForce_kernel(int nbVertex, unsigned int valence, float* f, int2* forceCoordinates)
 {
     int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
@@ -936,7 +933,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_addForce_kernel(int nbVertex, un
     {
         // Grabs the force coordinate (slice, texture index)
         int nd = valence*index+val;
-        FCrds = tex1Dfetch(texFCrds, nd);
+        FCrds = forceCoordinates[nd];
 
         // Retrieves the force components for that node at that index and on that slice
         switch ( FCrds.x )
@@ -990,7 +987,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_addForce_kernel(int nbVertex, un
 /**
  * Initialises GPU textures with the precomputed arrays for the TLED algorithm
  */
-void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElements)
+void InitGPU_TetrahedronTLED(int valence, int nbVertex, int nbElements)
 {
     // Sizes in bytes of different arrays
     sizeNodesInt = nbVertex*sizeof(int);
@@ -1012,14 +1009,6 @@ void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElemen
 
     mycudaMalloc((void**)&F3_gpu, 4*sizeElsFloat);
     cudaBindTexture(0, texF3, F3_gpu, channelDesc);
-
-    /**
-     * Force coordinates array
-     */
-    channelDesc = cudaCreateChannelDesc(32, 32, 0, 0, cudaChannelFormatKindSigned);
-    mycudaMalloc((void**)&FCrds_gpu, 2*sizeNodesInt*valence);
-    mycudaMemcpyHostToDevice(FCrds_gpu, FCrds, 2*sizeNodesInt*valence);
-    cudaBindTexture(0, texFCrds, FCrds_gpu, channelDesc);
 
     mycudaPrintf("GPU initialised for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
@@ -1061,7 +1050,6 @@ void InitGPU_TetrahedronAniso()
  */
 void ClearGPU_TetrahedronTLED(void)
 {
-    mycudaFree(FCrds_gpu);
     mycudaFree(F0_gpu);
     mycudaFree(F1_gpu);
     mycudaFree(F2_gpu);
@@ -1091,6 +1079,7 @@ void ClearGPU_TetrahedronAniso(void)
  */
 void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1,
                                               float4* DhC2, float* volume,
+                                              int2* forceCoordinates,
                                               float3* preferredDirection,
                                               float4* Di1, float4* Di2, float4* Dv1, float4* Dv2,
                                               float Lambda, float Mu,
@@ -1137,7 +1126,7 @@ void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC
     // The second kernel operates over nodes and reads the previously calculated element force contributions and sums them for each node
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    {CudaTetrahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f); mycudaDebugError("CudaTetrahedronTLEDForceField3f_addForce_kernel");}
+    {CudaTetrahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (float*)f, forceCoordinates); mycudaDebugError("CudaTetrahedronTLEDForceField3f_addForce_kernel");}
 
 }
 

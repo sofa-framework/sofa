@@ -44,8 +44,8 @@ int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetr
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
-    void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElements);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, int2* forceCoordinates, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
+    void InitGPU_TetrahedronTLED(int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_TetrahedronAniso();
     void ClearGPU_TetrahedronTLED(void);
@@ -127,6 +127,11 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
     if (m_device_Dv2)
     {
         mycudaFree(m_device_Dv2);
+    }
+
+    if (m_device_forceCoordinates)
+    {
+        mycudaFree(m_device_forceCoordinates);
     }
 }
 
@@ -266,9 +271,6 @@ void CudaTetrahedronTLEDForceField::reinit()
     DhDr[2][0] = 0;  DhDr[2][1] = 1;  DhDr[2][2] = 0;
     DhDr[3][0] = 0;  DhDr[3][1] = 0;  DhDr[3][2] = 1;
 
-    // Force coordinates (slice number and index) for each node
-    int * FCrds = 0;
-
     // 3 data pointers for the shape function global derivatives (DhDx matrix columns for each element stored in separated arrays)
     sofa::type::vector<float4> DhC0(nbElems);
     sofa::type::vector<float4> DhC1(nbElems);
@@ -278,8 +280,7 @@ void CudaTetrahedronTLEDForceField::reinit()
     sofa::type::vector<float> volume(nbElems);
 
     // Retrieves force coordinates (slice number and index) for each node
-    FCrds = new int[nbVertex*2*nbElementPerVertex];
-    memset(FCrds, -1, nbVertex*2*nbElementPerVertex*sizeof(int));
+    sofa::type::vector<int2> FCrds(nbVertex * nbElementPerVertex, {-1, -1});
     int * index = new int[nbVertex];
     memset(index, 0, nbVertex*sizeof(int));
 
@@ -319,11 +320,10 @@ void CudaTetrahedronTLEDForceField::reinit()
         DhC2[i].z = DhDx[2][2];
         DhC2[i].w = DhDx[3][2];
 
-        for (unsigned int j = 0; j < Element::size(); j++)
+        for (int j = 0; j < Element::size(); j++)
         {
             // Force coordinates (slice number and index) for each node
-            FCrds[ 2*nbElementPerVertex * e[j] + 2*index[e[j]] ] = j;
-            FCrds[ 2*nbElementPerVertex * e[j] + 2*index[e[j]]+1 ] = i;
+            FCrds[ nbElementPerVertex * e[j] + index[e[j]] ] = int2{j, i};
 
             index[e[j]]++;
         }
@@ -344,11 +344,13 @@ void CudaTetrahedronTLEDForceField::reinit()
     mycudaMalloc((void**)&m_device_volume, volume.size() * sizeof(float));
     mycudaMemcpyHostToDevice(m_device_volume, volume.data(), volume.size() * sizeof(float));
 
+    mycudaMalloc((void**)&m_device_forceCoordinates, FCrds.size() * sizeof(int2));
+    mycudaMemcpyHostToDevice(m_device_forceCoordinates, FCrds.data(), FCrds.size() * sizeof(int2));
+
     /** Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
-    InitGPU_TetrahedronTLED(FCrds, nbElementPerVertex, nbVertex, nbElems);
+    InitGPU_TetrahedronTLED(nbElementPerVertex, nbVertex, nbElems);
     delete [] index;
-    delete [] FCrds;
 
 
     /**
@@ -460,6 +462,7 @@ void CudaTetrahedronTLEDForceField::addForce (const sofa::core::MechanicalParams
         m_device_DhC1,
         m_device_DhC2,
         m_device_volume,
+        m_device_forceCoordinates,
         m_device_preferredDirection,
         m_device_Di1,
         m_device_Di2,

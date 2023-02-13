@@ -132,6 +132,8 @@ protected:
 
     float* m_device_volume { nullptr };
 
+    int2* m_device_forceCoordinates { nullptr };
+
     float3* m_device_preferredDirection { nullptr };
 
     // Rate-dependant stress (isochoric part)
