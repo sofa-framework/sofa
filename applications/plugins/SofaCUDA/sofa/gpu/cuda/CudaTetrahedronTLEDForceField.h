@@ -132,6 +132,8 @@ protected:
 
     float* m_device_volume { nullptr };
 
+    float3* m_device_preferredDirection { nullptr };
+
 };
 
 } // namespace cuda

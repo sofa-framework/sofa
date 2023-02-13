@@ -41,10 +41,10 @@ int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetr
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
     void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
-    void InitGPU_TetrahedronAniso(float* A);
+    void InitGPU_TetrahedronAniso();
     void ClearGPU_TetrahedronTLED(void);
     void ClearGPU_TetrahedronVisco(void);
     void ClearGPU_TetrahedronAniso(void);
@@ -102,6 +102,11 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
     if (m_device_volume)
     {
         mycudaFree(m_device_volume);
+    }
+
+    if (m_device_preferredDirection)
+    {
+        mycudaFree(m_device_preferredDirection);
     }
 }
 
@@ -385,19 +390,19 @@ void CudaTetrahedronTLEDForceField::reinit()
     if (isAnisotropic.getValue())
     {
         // Stores the preferred direction for each element (used with transverse isotropic formulation)
-        float* A = new float[3*inputElems.size()];
+        sofa::type::vector<float3> preferredDirectionList;
 
         // By default, every element is set up with the same direction (given by the vector preferredDirection provided by the scene file)
         Vec3f a = preferredDirection.getValue();
         for (unsigned int i = 0; i<inputElems.size(); i++)
         {
-            A[3*i] =   a[0];
-            A[3*i+1] = a[1];
-            A[3*i+2] = a[2];
+            preferredDirectionList[i].x = a[0];
+            preferredDirectionList[i].y = a[1];
+            preferredDirectionList[i].z = a[2];
         }
 
         // Stores the precomputed information on GPU
-        InitGPU_TetrahedronAniso(A);
+        InitGPU_TetrahedronAniso();
     }
 
     // Computes Lame coefficients
@@ -423,6 +428,7 @@ void CudaTetrahedronTLEDForceField::addForce (const sofa::core::MechanicalParams
         m_device_DhC1,
         m_device_DhC2,
         m_device_volume,
+        m_device_preferredDirection,
         Lambda,
         Mu,
         nbElems,

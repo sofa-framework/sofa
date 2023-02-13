@@ -38,10 +38,10 @@ namespace cuda
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
     void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
-    void InitGPU_TetrahedronAniso(float* A);
+    void InitGPU_TetrahedronAniso();
     void ClearGPU_TetrahedronTLED(void);
     void ClearGPU_TetrahedronVisco(void);
     void ClearGPU_TetrahedronAniso(void);
@@ -67,9 +67,6 @@ static __constant__ float Av_gpu[2];
 // A material constant used for the transverse isotropy
 static __constant__ int Eta_gpu;
 
-// Constant used with anisotropic formulation
-static texture <float4, 1, cudaReadModeElementType> texA;
-
 // Viscoelasticity
 static texture <float4, 1, cudaReadModeElementType> texDi1;
 static texture <float4, 1, cudaReadModeElementType> texDi2;
@@ -93,9 +90,6 @@ static float4* F0_gpu = 0;
 static float4* F1_gpu = 0;
 static float4* F2_gpu = 0;
 static float4* F3_gpu = 0;
-
-// Array that contains the preferred direction for each element (transverse isotropy)
-static float4* A_gpu = 0;
 
 // Viscoelasticity
 static float4 * Di1_gpu = 0;
@@ -315,7 +309,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet0(int4* node
 /**
  * This version is valid for tetrahedral meshes and uses a transversely isotropic and elastic formulation
  */
-__global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float Lambda, float Mu, int nbElem, float4* F0, float4* F1, float4* F2, float4* F3)
+__global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, int nbElem, float4* F0, float4* F1, float4* F2, float4* F3)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -401,7 +395,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1(int4* node
         // Bracketed term is I4 = A:C
 
         // Reads the preferred direction
-        float4 a = tex1Dfetch(texA, index);
+        float3 a = preferredDirection[index];
 
         float x2 = J23*(a.x*a.x*C11 + a.y*a.y*C22 + a.z*a.z*C33 + 2*a.x*a.y*C12 + 2*a.y*a.z*C23 + 2*a.x*a.z*C13) - 1;
         float x3 = J23*Eta_gpu*x2;
@@ -641,7 +635,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(int4* node
 /**
  * This version is valid for tetrahedral meshes and uses an viscoelastic and anisotropic formulation
  */
-__global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0, float4* F1, float4* F2, float4* F3)
+__global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0, float4* F1, float4* F2, float4* F3)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -728,7 +722,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(int4* node
         // Bracketed term is I4 = A:C
 
         // Reads the preferred direction
-        float4 a = tex1Dfetch(texA, index);
+        float3 a = preferredDirection[index];
 
         float x2 = J23*(a.x*a.x*C11 + a.y*a.y*C22 + a.z*a.z*C33 + 2*a.x*a.y*C12 + 2*a.y*a.z*C23 + 2*a.x*a.z*C13) - 1;
         float x3 = J23*Eta_gpu*x2;
@@ -1087,17 +1081,11 @@ void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv)
 /**
  * Initialises GPU textures with the precomputed arrays for the anisotropic formulation
  */
-void InitGPU_TetrahedronAniso(float* A)
+void InitGPU_TetrahedronAniso()
 {
     // A material constant
     int Eta = 13136;    // 13136 liver
     cudaMemcpyToSymbol("Eta_gpu", &Eta, sizeof(int));
-
-    // Preferred direction for each element (transverse isotropy)
-    cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-    mycudaMalloc((void**)&A_gpu, 4*sizeElsFloat);
-    cudaMemcpy((void*)A_gpu, (void*)A, 4*sizeElsFloat, cudaMemcpyHostToDevice);
-    cudaBindTexture(0, texA, A_gpu, channelDesc);
 
     mycudaPrintf("GPU initialised for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
@@ -1134,15 +1122,13 @@ void ClearGPU_TetrahedronVisco(void)
  */
 void ClearGPU_TetrahedronAniso(void)
 {
-    mycudaFree(A_gpu);
-
     mycudaPrintf("GPU memory cleaned for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
 /**
  * Calls the two kernels to compute the internal forces
  */
-void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f)
+void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f)
 {
     setX(x);
     setX0(x0);
@@ -1165,7 +1151,7 @@ void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC
 
     case 1 :
         // Anisotropic
-    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1");}
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, preferredDirection, Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1");}
     break;
 
     case 2 :
@@ -1175,7 +1161,7 @@ void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC
 
     case 3 :
         // Viscoelastic and anisotropic
-    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3");}
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, preferredDirection, Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3");}
     break;
     }
 
