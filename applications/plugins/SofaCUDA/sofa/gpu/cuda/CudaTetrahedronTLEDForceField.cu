@@ -38,7 +38,7 @@ namespace cuda
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
     void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_TetrahedronAniso();
@@ -67,12 +67,6 @@ static __constant__ float Av_gpu[2];
 // A material constant used for the transverse isotropy
 static __constant__ int Eta_gpu;
 
-// Viscoelasticity
-static texture <float4, 1, cudaReadModeElementType> texDi1;
-static texture <float4, 1, cudaReadModeElementType> texDi2;
-static texture <float4, 1, cudaReadModeElementType> texDv1;
-static texture <float4, 1, cudaReadModeElementType> texDv2;
-
 // References on textures - TLED second kernel
 static texture <int2, 1, cudaReadModeElementType> texFCrds;
 static texture <float4, 1, cudaReadModeElementType> texF0;
@@ -90,12 +84,6 @@ static float4* F0_gpu = 0;
 static float4* F1_gpu = 0;
 static float4* F2_gpu = 0;
 static float4* F3_gpu = 0;
-
-// Viscoelasticity
-static float4 * Di1_gpu = 0;
-static float4 * Di2_gpu = 0;
-static float4 * Dv1_gpu = 0;
-static float4 * Dv2_gpu = 0;
 
 // Function to be called from the device to compute forces from stresses (Prototype)
 __device__ float4 computeForce_tet(const int node, const float4 DhC0, const float4 DhC1, const float4 DhC2,
@@ -453,7 +441,10 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet1(int4* node
 /**
  * This version is valid for tetrahedral meshes and uses a viscoelastic formulation based on separated isochoric and volumetric terms. The model is isotropic.
  */
-__global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0, float4* F1, float4* F2, float4* F3)
+__global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(
+    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float Lambda,
+    float Mu, int nbElem, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float4* F0,
+    float4* F1, float4* F2, float4* F3)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -570,7 +561,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(int4* node
 
 #ifdef ISOCHORIC
         // Isochoric part
-        temp = tex1Dfetch(texDi1, index);
+        temp = Di1[index];
         temp.x *= Ai_gpu[1]; temp.x += Ai_gpu[0]*SiE11;
         SPK[0] -= temp.x;
         temp.y *= Ai_gpu[1]; temp.y += Ai_gpu[0]*SiE22;
@@ -581,7 +572,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(int4* node
         SPK[3] -= temp.w;
         Di1[index] = make_float4(temp.x, temp.y, temp.z, temp.w);
 
-        temp = tex1Dfetch(texDi2, index);
+        temp = Di2[index];
         temp.x *= Ai_gpu[1]; temp.x += Ai_gpu[0]*SiE23;
         SPK[4] -= temp.x;
         temp.y *= Ai_gpu[1]; temp.y += Ai_gpu[0]*SiE13;
@@ -590,7 +581,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(int4* node
 
 #else
         // Volumetric part
-        temp = tex1Dfetch(texDi1, index);
+        temp = Di1[index];
         temp.x *= Av_gpu[1]; temp.x += Av_gpu[0]*SvE11;
         SPK[0] -= temp.x;
         temp.y *= Av_gpu[1]; temp.y += Av_gpu[0]*SvE22;
@@ -601,7 +592,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2(int4* node
         SPK[3] -= temp.w;
         Dv1[index] = make_float4(temp.x, temp.y, temp.z, temp.w);
 
-        temp = tex1Dfetch(texDi2, index);
+        temp = Di2[index];
         temp.x *= Av_gpu[1]; temp.x += Av_gpu[0]*SvE23;
         SPK[4] -= temp.x;
         temp.y *= Av_gpu[1]; temp.y += Av_gpu[0]*SvE13;
@@ -759,7 +750,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(int4* node
 
 #ifdef ISOCHORIC
         // Isochoric part
-        temp = tex1Dfetch(texDi1, index);
+        temp = Di1[index];
         temp.x *= Ai_gpu[1]; temp.x += Ai_gpu[0]*SiE11;
         SPK[0] -= temp.x;
         temp.y *= Ai_gpu[1]; temp.y += Ai_gpu[0]*SiE22;
@@ -770,7 +761,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(int4* node
         SPK[3] -= temp.w;
         Di1[index] = make_float4(temp.x, temp.y, temp.z, temp.w);
 
-        temp = tex1Dfetch(texDi2, index);
+        temp = Di2[index];
         temp.x *= Ai_gpu[1]; temp.x += Ai_gpu[0]*SiE23;
         SPK[4] -= temp.x;
         temp.y *= Ai_gpu[1]; temp.y += Ai_gpu[0]*SiE13;
@@ -779,7 +770,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(int4* node
 
 #else
         // Volumetric part
-        temp = tex1Dfetch(texDi1, index);
+        temp = Di1[index];
         temp.x *= Av_gpu[1]; temp.x += Av_gpu[0]*SvE11;
         SPK[0] -= temp.x;
         temp.y *= Av_gpu[1]; temp.y += Av_gpu[0]*SvE22;
@@ -790,7 +781,7 @@ __global__ void CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3(int4* node
         SPK[3] -= temp.w;
         Dv1[index] = make_float4(temp.x, temp.y, temp.z, temp.w);
 
-        temp = tex1Dfetch(texDi2, index);
+        temp = Di2[index];
         temp.x *= Av_gpu[1]; temp.x += Av_gpu[0]*SvE23;
         SPK[4] -= temp.x;
         temp.y *= Av_gpu[1]; temp.y += Av_gpu[0]*SvE13;
@@ -1050,31 +1041,6 @@ void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv)
         cudaMemcpyToSymbol(Av_gpu, Av, 2*Nv*sizeof(float), 0, cudaMemcpyHostToDevice);
     }
 
-    // Rate-dependant stress (isochoric part)
-    cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-    if (Ni != 0)
-    {
-        mycudaMalloc((void**)&Di1_gpu, 4*sizeElsFloat);
-        cudaMemset(Di1_gpu, 0, 4*sizeElsFloat);
-        cudaBindTexture(0, texDi1, Di1_gpu, channelDesc);
-
-        mycudaMalloc((void**)&Di2_gpu, 4*sizeElsFloat);
-        cudaMemset(Di2_gpu, 0, 4*sizeElsFloat);
-        cudaBindTexture(0, texDi2, Di2_gpu, channelDesc);
-    }
-
-    // Rate-dependant stress (volumetric part)
-    if (Nv != 0)
-    {
-        mycudaMalloc((void**)&Dv1_gpu, 4*sizeElsFloat);
-        cudaMemset(Dv1_gpu, 0, 4*sizeElsFloat);
-        cudaBindTexture(0, texDv1, Dv1_gpu, channelDesc);
-
-        mycudaMalloc((void**)&Dv2_gpu, 4*sizeElsFloat);
-        cudaMemset(Dv2_gpu, 0, 4*sizeElsFloat);
-        cudaBindTexture(0, texDv2, Dv2_gpu, channelDesc);
-    }
-
     mycudaPrintf("GPU initialised for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
@@ -1109,11 +1075,6 @@ void ClearGPU_TetrahedronTLED(void)
  */
 void ClearGPU_TetrahedronVisco(void)
 {
-    mycudaFree(Di1_gpu);
-    mycudaFree(Di2_gpu);
-    mycudaFree(Dv1_gpu);
-    mycudaFree(Dv2_gpu);
-
     mycudaPrintf("GPU memory cleaned for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
@@ -1128,7 +1089,15 @@ void ClearGPU_TetrahedronAniso(void)
 /**
  * Calls the two kernels to compute the internal forces
  */
-void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f)
+void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1,
+                                              float4* DhC2, float* volume,
+                                              float3* preferredDirection,
+                                              float4* Di1, float4* Di2, float4* Dv1, float4* Dv2,
+                                              float Lambda, float Mu,
+                                              unsigned int nbElem, unsigned int nbVertex,
+                                              unsigned int nbElemPerVertex,
+                                              unsigned int viscoelasticity, unsigned int anisotropy,
+                                              const void* x, const void* x0, void* f)
 {
     setX(x);
     setX0(x0);
@@ -1156,12 +1125,12 @@ void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC
 
     case 2 :
         // Viscoelastic
-    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2");}
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, Lambda, Mu, nbElem, Di1, Di2, Dv1, Dv2, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet2");}
     break;
 
     case 3 :
         // Viscoelastic and anisotropic
-    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, preferredDirection, Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3");}
+    {CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3<<< grid1, threads1>>>(nodesPerElement, DhC0, DhC1, DhC2, volume, preferredDirection, Lambda, Mu, nbElem, Di1, Di2, Dv1, Dv2, F0_gpu, F1_gpu, F2_gpu, F3_gpu); mycudaDebugError("CudaTetrahedronTLEDForceField3f_calcForce_kernel_tet3");}
     break;
     }
 

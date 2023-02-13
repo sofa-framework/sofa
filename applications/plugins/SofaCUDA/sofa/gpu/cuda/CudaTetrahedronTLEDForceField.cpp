@@ -21,6 +21,9 @@
 ******************************************************************************/
 
 #include "CudaTetrahedronTLEDForceField.h"
+
+#include <cuda_runtime_api.h>
+
 #include "mycuda.h"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -41,7 +44,7 @@ int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetr
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
     void InitGPU_TetrahedronTLED(int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_TetrahedronAniso();
@@ -107,6 +110,23 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
     if (m_device_preferredDirection)
     {
         mycudaFree(m_device_preferredDirection);
+    }
+
+    if (m_device_Di1)
+    {
+        mycudaFree(m_device_Di1);
+    }
+    if (m_device_Di2)
+    {
+        mycudaFree(m_device_Di2);
+    }
+    if (m_device_Dv1)
+    {
+        mycudaFree(m_device_Dv1);
+    }
+    if (m_device_Dv2)
+    {
+        mycudaFree(m_device_Dv2);
     }
 }
 
@@ -361,6 +381,12 @@ void CudaTetrahedronTLEDForceField::reinit()
                 Ai[2*i]   = timestep.getValue()*Visco_iso[2*i]/(timestep.getValue() + Visco_iso[2*i+1]);    // Denoted A in Taylor et al.
                 Ai[2*i+1] = Visco_iso[2*i+1]/(timestep.getValue() + Visco_iso[2*i+1]);                      // Denoted B in Taylor et al.
             }
+
+            mycudaMalloc((void**)&m_device_Di1, nbElems * sizeof(float4));
+            cudaMemset(m_device_Di1, 0, nbElems * sizeof(float4));
+
+            mycudaMalloc((void**)&m_device_Di2, nbElems * sizeof(float4));
+            cudaMemset(m_device_Di2, 0, nbElems * sizeof(float4));
         }
 
         if (Nv != 0)
@@ -378,6 +404,12 @@ void CudaTetrahedronTLEDForceField::reinit()
                 Av[2*i]   = timestep.getValue()*Visco_vol[2*i]/(timestep.getValue() + Visco_vol[2*i+1]);
                 Av[2*i+1] = Visco_vol[2*i+1]/(timestep.getValue() + Visco_vol[2*i+1]);
             }
+
+            mycudaMalloc((void**)&m_device_Dv1, nbElems * sizeof(float4));
+            cudaMemset(m_device_Dv1, 0, nbElems * sizeof(float4));
+
+            mycudaMalloc((void**)&m_device_Dv2, nbElems * sizeof(float4));
+            cudaMemset(m_device_Dv2, 0, nbElems * sizeof(float4));
         }
 
         InitGPU_TetrahedronVisco(Ai, Av, Ni, Nv);
@@ -429,6 +461,10 @@ void CudaTetrahedronTLEDForceField::addForce (const sofa::core::MechanicalParams
         m_device_DhC2,
         m_device_volume,
         m_device_preferredDirection,
+        m_device_Di1,
+        m_device_Di2,
+        m_device_Dv1,
+        m_device_Dv2,
         Lambda,
         Mu,
         nbElems,
