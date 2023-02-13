@@ -157,8 +157,8 @@ void WorkerThread::runTask(Task *task)
         {
             // pooled memory: call destructor and free
             //task->~Task();
-            task->operator delete(task, sizeof(*task));
-            //delete task;
+            //task->operator delete(task, sizeof(*task));
+            delete task;
         }
     }
 
