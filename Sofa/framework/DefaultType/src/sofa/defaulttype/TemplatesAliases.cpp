@@ -126,8 +126,8 @@ static RegisterTemplateAlias Vec1fAlias("Vec1f", sofa::defaulttype::Vec1Types::N
 static RegisterTemplateAlias Vec2fAlias("Vec2f", sofa::defaulttype::Vec2Types::Name(), isSRealDouble());
 static RegisterTemplateAlias Vec3fAlias("Vec3f", sofa::defaulttype::Vec3Types::Name(), isSRealDouble());
 static RegisterTemplateAlias Vec6fAlias("Vec6f", sofa::defaulttype::Vec6Types::Name(), isSRealDouble());
-static RegisterTemplateAlias CompressedRowSparseMatrixfAlias("CompressedRowSparseMatrixf", sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Name(), isSRealDouble());
-static RegisterTemplateAlias CompressedRowSparseMatrixMat3x3fAlias("CompressedRowSparseMatrixMat3x3f", sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>::Name(), isSRealDouble());
+//static RegisterTemplateAlias CompressedRowSparseMatrixfAlias("CompressedRowSparseMatrixf", sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Name(), isSRealDouble());
+//static RegisterTemplateAlias CompressedRowSparseMatrixMat3x3fAlias("CompressedRowSparseMatrixMat3x3f", sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>::Name(), isSRealDouble());
 
 static RegisterTemplateAlias Vec1dAlias("Vec1d", sofa::defaulttype::Vec1Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Vec2dAlias("Vec2d", sofa::defaulttype::Vec2Types::Name(), isSRealFloat());
@@ -135,8 +135,8 @@ static RegisterTemplateAlias Vec3dAlias("Vec3d", sofa::defaulttype::Vec3Types::N
 static RegisterTemplateAlias Vec6dAlias("Vec6d", sofa::defaulttype::Vec6Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid2dAlias("Rigid2d", sofa::defaulttype::Rigid2Types::Name(), isSRealFloat());
 static RegisterTemplateAlias Rigid3dAlias("Rigid3d", sofa::defaulttype::Rigid3Types::Name(), isSRealFloat());
-static RegisterTemplateAlias CompressedRowSparseMatrixdAlias("CompressedRowSparseMatrixd", sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Name(), isSRealFloat());
-static RegisterTemplateAlias CompressedRowSparseMatrixMat3x3dAlias("CompressedRowSparseMatrixMat3x3d", sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>::Name(), isSRealFloat());
+//static RegisterTemplateAlias CompressedRowSparseMatrixdAlias("CompressedRowSparseMatrixd", sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Name(), isSRealFloat());
+//static RegisterTemplateAlias CompressedRowSparseMatrixMat3x3dAlias("CompressedRowSparseMatrixMat3x3d", sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>::Name(), isSRealFloat());
 
 // Compatibility aliases used previously in DataExchange (see PR#3380)
 static RegisterTemplateAlias floatAlias("float", sofa::defaulttype::DataTypeName<float>::name(), true);
