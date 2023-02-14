@@ -23,4 +23,4 @@
 
 #include <sofa/component/topology/container/grid/polygon_cube_intersection/vec.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/polygon_cube_intersection/vec.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/polygon_cube_intersection/vec.h")

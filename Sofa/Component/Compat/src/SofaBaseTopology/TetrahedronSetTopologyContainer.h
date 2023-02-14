@@ -22,11 +22,5 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h")
 
-namespace sofa::component::topology
-{
-
-    using TetrahedronSetTopologyContainer = sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer;
-
-} // namespace sofa::component::topology

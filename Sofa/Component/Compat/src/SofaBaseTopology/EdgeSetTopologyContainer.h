@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h")
-
-namespace sofa::component::topology
-{
-
-    using EdgeSetTopologyContainer = sofa::component::topology::container::dynamic::EdgeSetTopologyContainer;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h")
