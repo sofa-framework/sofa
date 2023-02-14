@@ -22,15 +22,4 @@
 #pragma once
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/ContactIdentifier.h")
-
-namespace sofa::component::collision
-{
-    using ContactIdentifier = sofa::component::collision::response::contact::ContactIdentifier;
-
-    inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
-    {
-        return sofa::component::collision::response::contact::cantorPolynomia(x, y);
-    }
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/ContactIdentifier.h")
