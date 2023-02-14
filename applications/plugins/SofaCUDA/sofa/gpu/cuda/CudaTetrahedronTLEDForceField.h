@@ -124,6 +124,9 @@ public:
 
 protected:
 
+    /// Device data
+    //@{
+
     int4* m_device_nodesPerElement { nullptr };
 
     float4* m_device_DhC0 { nullptr };
@@ -148,6 +151,8 @@ protected:
     float4* m_device_F1 { nullptr };
     float4* m_device_F2 { nullptr };
     float4* m_device_F3 { nullptr };
+
+    //@}
 
 };
 

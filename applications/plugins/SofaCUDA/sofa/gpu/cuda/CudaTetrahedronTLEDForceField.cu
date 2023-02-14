@@ -78,9 +78,6 @@ __device__ float4 computeForce_tet(const int node, const float4 DhC0, const floa
         const float3 Node1Disp, const float3 Node2Disp, const float3 Node3Disp,
         const float3 Node4Disp, const float * SPK, const int tid);
 
-// A few global constants
-static int sizeNodesInt, sizeElsFloat, sizeElsInt;
-
 // Device function returning the position of vertex i as a float3
 __device__ CudaVec3f getX(const float* x, int i)
 {
