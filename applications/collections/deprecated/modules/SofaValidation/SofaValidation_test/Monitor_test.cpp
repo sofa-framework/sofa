@@ -182,8 +182,7 @@ struct Monitor_test : public BaseSimulationTest
                 "</Node>"
                 "</Node>";
 
-        root = SceneLoaderXML::loadFromMemory("MonitorTest", scene.c_str(),
-                                              scene.size());
+        root = SceneLoaderXML::loadFromMemory("MonitorTest", scene.c_str());
         root->init(sofa::core::execparams::defaultInstance());
 
         std::string s = "/node/monitor";
