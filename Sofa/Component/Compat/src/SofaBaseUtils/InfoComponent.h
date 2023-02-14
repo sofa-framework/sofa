@@ -22,18 +22,4 @@
 #pragma once
 #include <sofa/component/sceneutility/InfoComponent.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/InfoComponent.h")
-
-namespace sofa::component::infocomponent
-{
-
-    using InfoComponent = sofa::component::sceneutility::InfoComponent;
-
-} // namespace sofa::component::infocomponent
-
-namespace sofa::component
-{
-
-    using InfoComponent = sofa::component::sceneutility::InfoComponent;
-
-} // namespace sofa::component
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/InfoComponent.h")
