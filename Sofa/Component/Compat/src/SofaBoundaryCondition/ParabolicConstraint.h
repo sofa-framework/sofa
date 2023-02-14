@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/projective/ParabolicConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/ParabolicConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using ParabolicConstraint = sofa::component::constraint::projective::ParabolicConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/ParabolicConstraint.h")

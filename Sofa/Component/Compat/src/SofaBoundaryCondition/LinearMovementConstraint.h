@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/projective/LinearMovementConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/LinearMovementConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using LinearMovementConstraint = sofa::component::constraint::projective::LinearMovementConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/LinearMovementConstraint.h")
