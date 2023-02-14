@@ -35,20 +35,6 @@ int LineAxisClass = core::RegisterObject("Display scene axis")
 
 using namespace sofa::defaulttype;
 
-void LineAxis::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    if (std::string(arg->getAttribute("type")) == lineAxisDeprecatedName)
-    {
-        msg_warning(lineAxisDeprecatedName) << lineAxisDeprecatedName << " is deprecated since SOFA v22.12, and has"
-            " been replaced by " << this->getClassName() << ". Please modify your scene. Note that the new component "
-            << this->getClassName() << " is located in another module (Sofa.Component.Visual). It means that you "
-            "probably need to update also the appropriate RequiredPlugin in your scene. For example, in XML, "
-            "consider removing the line <RequiredPlugin name=\"Sofa.GL.Component.Rendering3D\"> to replace it by "
-            "<RequiredPlugin name=\"Sofa.Component.Visual\">.";
-    }
-    Inherit1::parse(arg);
-}
-
 LineAxis::LineAxis()
     : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
     , d_size(initData(&d_size, 10.f,  "size", "Size of the squared grid"))
