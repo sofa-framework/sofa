@@ -23,10 +23,4 @@
 
 #include <sofa/component/collision/detection/algorithm/MirrorIntersector.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/MirrorIntersector.h")
-
-namespace sofa::component::collision
-{
-    using MirrorIntersector = sofa::component::collision::detection::algorithm::MirrorIntersector;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/MirrorIntersector.h")
