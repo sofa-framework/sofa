@@ -95,9 +95,6 @@ void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
             helper::visual::DrawTool::Vec3(0.0, 0.0, s*0.5),
             helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
     }
-
-
-
 }
 
 

@@ -47,8 +47,6 @@ public:
         PLANE_Z = 2
     };
 
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
-
     Data<std::string> d_plane; ///< Plane of the grid
 
 
