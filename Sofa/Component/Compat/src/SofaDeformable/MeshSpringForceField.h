@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/MeshSpringForceField.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using MeshSpringForceField = sofa::component::solidmechanics::spring::MeshSpringForceField<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/MeshSpringForceField.h")
