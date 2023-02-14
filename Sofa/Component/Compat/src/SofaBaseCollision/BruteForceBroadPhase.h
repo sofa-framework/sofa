@@ -23,10 +23,4 @@
 
 #include <sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h")
-
-namespace sofa::component::collision
-{
-    using BruteForceBroadPhase = sofa::component::collision::detection::algorithm::BruteForceBroadPhase;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h")
