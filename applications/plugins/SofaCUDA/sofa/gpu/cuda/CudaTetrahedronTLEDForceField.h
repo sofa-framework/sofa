@@ -144,6 +144,11 @@ protected:
     float4* m_device_Dv1 { nullptr };
     float4* m_device_Dv2 { nullptr };
 
+    float4* m_device_F0 { nullptr };
+    float4* m_device_F1 { nullptr };
+    float4* m_device_F2 { nullptr };
+    float4* m_device_F3 { nullptr };
+
 };
 
 } // namespace cuda

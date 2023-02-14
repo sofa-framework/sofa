@@ -44,7 +44,7 @@ int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetr
 
 extern "C"
 {
-    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, int2* forceCoordinates, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
+    void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* volume, int2* forceCoordinates, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, float4* F0, float4* F1, float4* F2, float4* F3, float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f);
     void InitGPU_TetrahedronTLED(int valence, int nbVertex, int nbElements);
     void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_TetrahedronAniso();
@@ -132,6 +132,23 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
     if (m_device_forceCoordinates)
     {
         mycudaFree(m_device_forceCoordinates);
+    }
+
+    if (m_device_F0)
+    {
+        mycudaFree(m_device_F0);
+    }
+    if (m_device_F1)
+    {
+        mycudaFree(m_device_F1);
+    }
+    if (m_device_F2)
+    {
+        mycudaFree(m_device_F2);
+    }
+    if (m_device_F3)
+    {
+        mycudaFree(m_device_F3);
     }
 }
 
@@ -347,6 +364,11 @@ void CudaTetrahedronTLEDForceField::reinit()
     mycudaMalloc((void**)&m_device_forceCoordinates, FCrds.size() * sizeof(int2));
     mycudaMemcpyHostToDevice(m_device_forceCoordinates, FCrds.data(), FCrds.size() * sizeof(int2));
 
+    mycudaMalloc((void**)&m_device_F0, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F1, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F2, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F3, nbElems * sizeof(float4));
+
     /** Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
     InitGPU_TetrahedronTLED(nbElementPerVertex, nbVertex, nbElems);
@@ -468,6 +490,10 @@ void CudaTetrahedronTLEDForceField::addForce (const sofa::core::MechanicalParams
         m_device_Di2,
         m_device_Dv1,
         m_device_Dv2,
+        m_device_F0,
+        m_device_F1,
+        m_device_F2,
+        m_device_F3,
         Lambda,
         Mu,
         nbElems,
