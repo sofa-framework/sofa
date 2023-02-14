@@ -22,16 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.h")
-
-namespace sofa::component::mapping::_topologybarycentricmapper_
-{
-    template<class In, class Out>
-    using TopologyBarycentricMapper = sofa::component::mapping::linear::_topologybarycentricmapper_::TopologyBarycentricMapper<In, Out>;
-}
-
-namespace sofa::component::mapping
-{
-    template<class In, class Out>
-    using TopologyBarycentricMapper = sofa::component::mapping::linear::_topologybarycentricmapper_::TopologyBarycentricMapper<In, Out>;
-}
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.h")
