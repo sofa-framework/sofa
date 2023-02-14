@@ -58,7 +58,7 @@ public:
 };
 
 
-SOFA_ATTRIBUTE_DISABLED__RENAME_COLLISIONPIPELINE()
+SOFA_ATTRIBUTE_DEPRECATED__RENAME_COLLISIONPIPELINE()
 using DefaultPipeline = sofa::component::collision::detection::algorithm::CollisionPipeline;
 
 } // namespace sofa::component::collision::detection::algorithm
