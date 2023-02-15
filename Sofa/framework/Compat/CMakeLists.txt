@@ -5,21 +5,6 @@ set(SOFACOMPATSRC_ROOT "src")
 
 set(HEADER_FILES
     # ${SOFACOMPATSRC_ROOT}/config.h.in 
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/vectorData.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/vectorLinks.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/vector.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/vector_device.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/SVector.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/stable_vector.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/vector_algebra.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/vector_algorithm.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/fixed_array.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/Quater.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/Quater.inl
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/DualQuat.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/DualQuat.inl
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/LCPSolver.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/StateMask.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/template.h
@@ -36,26 +21,10 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/glText.inl
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Color.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/types/RGBAColor.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/types/RGBAColor_fwd.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/types/Material.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/gl.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/glu.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Vec.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Mat.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Quat.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BoundingBox.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Color.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Frame.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Ray.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseVector.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseMatrix.h
     ${SOFACOMPATSRC_ROOT}/sofa/core/behavior/RotationMatrix.h
