@@ -6,30 +6,11 @@ set(SOFACOMPATSRC_ROOT "src")
 set(HEADER_FILES
     # ${SOFACOMPATSRC_ROOT}/config.h.in 
     ${SOFACOMPATSRC_ROOT}/sofa/helper/StateMask.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/template.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Texture.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/FrameBufferObject.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/GLSLShader.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Transformation.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/RAII.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/BasicShapes.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Capture.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/VideoRecorderFFMPEG.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Axis.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/glText.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/glText.inl
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Color.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/system/gl.h
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/system/glu.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Color.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseVector.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseMatrix.h
     ${SOFACOMPATSRC_ROOT}/sofa/core/behavior/RotationMatrix.h
-    ${SOFACOMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
-    ${SOFACOMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CompressedRowSparseMatrix.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/DiagonalMatrix.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullMatrix.inl
