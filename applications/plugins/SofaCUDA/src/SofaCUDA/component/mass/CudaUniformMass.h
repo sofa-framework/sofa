@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#ifndef SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
+#define SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
 
-#include <SofaCUDA/config.h>
-
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/sofa/gpu/cuda/component/mass/CudaDiagonalMass.h")
-#include <SofaCUDA/sofa/gpu/cuda/component/mass/CudaDiagonalMass.h>
+#endif

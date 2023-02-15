@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
-#include "CudaMathRigid.h"
+#include <sofa/gpu/cuda/CudaMathRigid.h>
 #include "cuda.h"
 
 #include <cstdio>
