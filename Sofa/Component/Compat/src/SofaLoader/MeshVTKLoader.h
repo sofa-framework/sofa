@@ -24,9 +24,3 @@
 #include <sofa/component/io/mesh/MeshVTKLoader.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshVTKLoader.h")
-
-namespace sofa::component::loader
-{
-    using MeshVTKLoader = sofa::component::io::mesh::MeshVTKLoader;
-
-} // namespace sofa::component::loader

@@ -24,10 +24,3 @@
 #include <sofa/component/engine/generate/ExtrudeQuadsAndGenerateHexas.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/ExtrudeQuadsAndGenerateHexas.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using ExtrudeQuadsAndGenerateHexas = sofa::component::engine::generate::ExtrudeQuadsAndGenerateHexas<DataTypes>;
-
-} // namespace sofa::component::engine

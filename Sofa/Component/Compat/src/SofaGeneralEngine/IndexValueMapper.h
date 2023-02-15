@@ -24,10 +24,3 @@
 #include <sofa/component/engine/transform/IndexValueMapper.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/IndexValueMapper.h")
-
-namespace sofa::component::engine
-{
-    template<class DataTypes>
-    using IndexValueMapper = sofa::component::engine::transform::IndexValueMapper<DataTypes>;
-
-} // namespace sofa::component::engine

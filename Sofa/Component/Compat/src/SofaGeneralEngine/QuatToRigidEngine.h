@@ -24,10 +24,3 @@
 #include <sofa/component/engine/transform/QuatToRigidEngine.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/QuatToRigidEngine.h")
-
-namespace sofa::component::engine
-{
-    template<class T>
-    using QuatToRigidEngine = sofa::component::engine::transform::QuatToRigidEngine<T>;
-
-} // namespace sofa::component::engine

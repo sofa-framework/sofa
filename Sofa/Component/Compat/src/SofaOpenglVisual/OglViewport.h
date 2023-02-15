@@ -32,13 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering2d/OglVie
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering2d/OglViewport.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLVIEWPORT
-
-namespace sofa::component::visualmodel
-{
-    using OglViewport = sofa::gl::component::rendering2d::OglViewport;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLVIEWPORT

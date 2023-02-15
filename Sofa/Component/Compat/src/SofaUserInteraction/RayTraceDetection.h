@@ -24,11 +24,3 @@
 #include <sofa/component/collision/detection/algorithm/RayTraceDetection.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/RayTraceDetection.h")
-
-namespace sofa::component::collision
-{
-    using RayTraceDetection = sofa::component::collision::detection::algorithm::RayTraceDetection;
-
-
-} // namespace sofa::component::collision
-

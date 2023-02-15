@@ -23,10 +23,3 @@
 #include <sofa/component/setting/SofaDefaultPathSetting.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/SofaDefaultPathSetting.h")
-
-namespace sofa::component::configurationsetting
-{ 
-    using SofaDefaultPathSetting = sofa::component::setting::SofaDefaultPathSetting;
-
-} // namespace sofa::component::configurationsetting
-

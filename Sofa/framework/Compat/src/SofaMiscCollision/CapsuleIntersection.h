@@ -32,14 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/inters
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/CapsuleIntersection.h> instead of this one."
 #endif
-
-#ifdef COLLISIONOBBCAPSULE_CAPSULEINTERSECTION
-
-namespace sofa::component::collision
-{
-	using CapsuleDiscreteIntersection = collisionobbcapsule::detection::intersection::CapsuleDiscreteIntersection;
-	using CapsuleMeshDiscreteIntersection = collisionobbcapsule::detection::intersection::CapsuleMeshDiscreteIntersection;
-
-} // namespace sofa::component::collision
-
-#endif // COLLISIONOBBCAPSULE_CAPSULEINTERSECTION

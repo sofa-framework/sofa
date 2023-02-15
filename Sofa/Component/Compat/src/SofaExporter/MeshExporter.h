@@ -24,15 +24,3 @@
 #include <sofa/component/io/mesh/MeshExporter.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshExporter.h")
-
-namespace sofa::component::_meshexporter_
-{
-    using MeshExporter = sofa::component::io::mesh::MeshExporter;
-
-} // namespace sofa::component::_meshexporter_
-
-namespace sofa::component::exporter
-{
-    using MeshExporter = sofa::component::io::mesh::MeshExporter;
-
-} // namespace sofa::component::exporter

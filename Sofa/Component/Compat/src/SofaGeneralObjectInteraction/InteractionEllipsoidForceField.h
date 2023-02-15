@@ -24,10 +24,3 @@
 #include <sofa/componentmechanicalload/InteractionEllipsoidForceField.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/InteractionEllipsoidForceField.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<typename TDataTypes1, typename TDataTypes2>
-    using InteractionEllipsoidForceField = sofa::component::mechanicalload::InteractionEllipsoidForceField<TDataTypes1, TDataTypes2>;
-
-} // namespace sofa::component::interactionforcefield

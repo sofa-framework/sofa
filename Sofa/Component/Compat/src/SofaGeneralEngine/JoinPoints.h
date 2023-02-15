@@ -24,10 +24,3 @@
 #include <sofa/component/engine/generate/JoinPoints.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/JoinPoints.h")
-
-namespace sofa::component::engine
-{
-    template<class DataTypes>
-    using JoinPoints = sofa::component::engine::generate::JoinPoints<DataTypes>;
-
-} // namespace sofa::component::engine

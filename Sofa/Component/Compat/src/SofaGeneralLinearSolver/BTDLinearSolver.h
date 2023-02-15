@@ -24,10 +24,3 @@
 #include <sofa/component/linearsolver/direct/BTDLinearSolver.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/BTDLinearSolver.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector>
-    using BTDLinearSolver = sofa::component::linearsolver::direct::BTDLinearSolver<TMatrix, TVector>;
-
-} // namespace sofa::component::linearsolver

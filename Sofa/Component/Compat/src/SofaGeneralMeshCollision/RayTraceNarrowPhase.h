@@ -24,9 +24,3 @@
 #include <sofa/component/collision/detection/algorithm/RayTraceNarrowPhase.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/RayTraceNarrowPhase.h")
-
-namespace sofa::component::collision
-{
-    using RayTraceNarrowPhase = sofa::component::collision::detection::algorithm::RayTraceNarrowPhase;
-
-} // namespace sofa::component::collision

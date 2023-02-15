@@ -23,10 +23,3 @@
 #include <sofa/component/topology/container/constant/SphereQuadTopology.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/constant/SphereQuadTopology.h")
-
-namespace sofa::component::topology
-{
-
-    using SphereQuadTopology = sofa::component::topology::container::constant::SphereQuadTopology;
-
-} // namespace sofa::component::topology

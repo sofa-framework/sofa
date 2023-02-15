@@ -24,10 +24,3 @@
 #include <sofa/component/solidmechanics/fem/elastic/TriangularAnisotropicFEMForceField.inl>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/TriangularAnisotropicFEMForceField.inl")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using TriangularAnisotropicFEMForceField = sofa::component::solidmechanics::fem::elastic::TriangularAnisotropicFEMForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield

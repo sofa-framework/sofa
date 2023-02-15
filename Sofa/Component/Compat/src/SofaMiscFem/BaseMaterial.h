@@ -24,9 +24,3 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/BaseMaterial.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/BaseMaterial.h")
-
-namespace sofa::component::fem
-{
-    using BaseMaterial = sofa::component::solidmechanics::fem::hyperelastic::material::BaseMaterial;
-
-} // namespace sofa::component::fem

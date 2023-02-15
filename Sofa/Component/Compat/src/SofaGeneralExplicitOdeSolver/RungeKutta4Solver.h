@@ -24,10 +24,3 @@
 #include <sofa/component/odesolver/forward/RungeKutta4Solver.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/forward/RungeKutta4Solver.h")
-
-namespace sofa::component::odesolver
-{
-
-using RungeKutta4Solver = sofa::component::odesolver::forward::RungeKutta4Solver;
-
-} // namespace sofa::component::odesolver

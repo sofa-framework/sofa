@@ -24,11 +24,3 @@
 #include <sofa/component/collision/detection/algorithm/EndPoint.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/EndPoint.h")
-
-namespace sofa::component::collision
-{
-    using EndPoint = sofa::component::collision::detection::algorithm::EndPoint;
-    using CompPEndPoint = sofa::component::collision::detection::algorithm::CompPEndPoint;
-
-
-} // namespace sofa::component::collision

@@ -24,10 +24,3 @@
 #include <sofa/component/solidmechanics/fem/elastic/QuadBendingFEMForceField.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/QuadBendingFEMForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using QuadBendingFEMForceField = sofa::component::solidmechanics::fem::elastic::QuadBendingFEMForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield

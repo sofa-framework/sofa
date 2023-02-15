@@ -23,10 +23,3 @@
 #include <sofa/component/mapping/nonlinear/DistanceMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/DistanceMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using DistanceMapping = sofa::component::mapping::nonlinear::DistanceMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping

@@ -24,10 +24,3 @@
 #include <sofa/component/engine/generate/GenerateSphere.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateSphere.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using GenerateSphere = sofa::component::engine::generate::GenerateSphere<DataTypes>;
-
-} // namespace sofa::component::engine

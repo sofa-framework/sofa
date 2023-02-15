@@ -23,11 +23,3 @@
 #include <sofa/component/topology/container/dynamic/MultilevelHexahedronSetTopologyContainer.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/MultilevelHexahedronSetTopologyContainer.h")
-
-namespace sofa::component::topology
-{
-
-    using MultilevelHexahedronSetTopologyContainer = sofa::component::topology::container::dynamic::MultilevelHexahedronSetTopologyContainer;
-    using MultilevelModification = sofa::component::topology::container::dynamic::MultilevelModification;
-    
-} // namespace sofa::component::topology

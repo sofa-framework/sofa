@@ -24,10 +24,3 @@
 #include <sofa/component/engine/transform/DilateEngine.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/DilateEngine.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using DilateEngine = sofa::component::engine::transform::DilateEngine<DataTypes>;
-
-} // namespace sofa::component::engine

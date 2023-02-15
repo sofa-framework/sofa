@@ -32,13 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglLin
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglLineAxis.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLLINEAXIS
-
-namespace sofa::component::visualmodel
-{
-    using OglLineAxis = sofa::gl::component::rendering3d::OglLineAxis;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLLINEAXIS

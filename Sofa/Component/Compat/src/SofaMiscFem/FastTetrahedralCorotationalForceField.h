@@ -24,10 +24,3 @@
 #include <sofa/component/solidmechanics/fem/elastic/FastTetrahedralCorotationalForceField.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/FastTetrahedralCorotationalForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using FastTetrahedralCorotationalForceField = sofa::component::solidmechanics::fem::elastic::FastTetrahedralCorotationalForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield

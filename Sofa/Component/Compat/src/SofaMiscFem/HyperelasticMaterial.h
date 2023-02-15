@@ -24,10 +24,3 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h")
-
-namespace sofa::component::fem
-{
-    template<class DataTypes>
-    using HyperelasticMaterial = sofa::component::solidmechanics::fem::hyperelastic::material::HyperelasticMaterial<DataTypes>;
-
-} // namespace sofa::component::fem

@@ -33,16 +33,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/InciseA
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/InciseAlongPathPerformer.h> instead of this one."
 #endif
 
-
-#ifdef SOFA_GUI_COMPONENT_FIXPARTICLEPERFORMER
-
-namespace sofa::component::collision
-{
-    using InciseAlongPathPerformer = sofa::gui::component::performer::InciseAlongPathPerformer;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_FIXPARTICLEPERFORMER
-
-#undef SOFA_GUI_COMPONENT_FIXPARTICLEPERFORMER

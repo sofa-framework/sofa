@@ -24,9 +24,3 @@
 #include <sofa/component/io/mesh/MeshTrianLoader.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshTrianLoader.h")
-
-namespace sofa::component::loader
-{
-    using MeshTrianLoader = sofa::component::io::mesh::MeshTrianLoader;
-
-} // namespace sofa::component::loader

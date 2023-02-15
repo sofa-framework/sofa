@@ -23,9 +23,3 @@
 #include <sofa/component/setting/ViewerSetting.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/ViewerSetting.h")
-
-namespace sofa::component::configurationsetting
-{ 
-    using ViewerSetting = sofa::component::setting::ViewerSetting;
-
-} // namespace sofa::component::configurationsetting

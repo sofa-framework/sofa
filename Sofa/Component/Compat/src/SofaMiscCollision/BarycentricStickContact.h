@@ -23,10 +23,3 @@
 #include <sofa/component/collision/response/contact/BarycentricStickContact.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/BarycentricStickContact.h")
-
-namespace sofa::component::collision
-{
-    template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-    using BarycentricStickContact = sofa::component::collision::response::contact::BarycentricStickContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes>;
-
-} // namespace sofa::component::collision

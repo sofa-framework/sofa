@@ -23,10 +23,3 @@
 #include <sofa/component/topology/mapping/Hexa2QuadTopologicalMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/Hexa2QuadTopologicalMapping.h")
-
-namespace sofa::component::topology
-{
-
-    using Hexa2QuadTopologicalMapping = sofa::component::topology::mapping::Hexa2QuadTopologicalMapping;
-
-} // namespace sofa::component::topology

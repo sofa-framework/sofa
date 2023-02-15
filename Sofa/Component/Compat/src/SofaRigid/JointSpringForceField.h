@@ -24,10 +24,3 @@
 #include <sofa/component/solidmechanics/spring/JointSpringForceField.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/JointSpringForceField.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using JointSpringForceField = sofa::component::solidmechanics::spring::JointSpringForceField<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield

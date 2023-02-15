@@ -24,11 +24,3 @@
 #include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h")
-
-#include <SofaBaseCollision/NewProximityIntersection.h>
-
-namespace sofa::component::collision
-{
-    using MeshNewProximityIntersection = sofa::component::collision::detection::intersection::MeshNewProximityIntersection;
-
-} // namespace sofa::component::collision

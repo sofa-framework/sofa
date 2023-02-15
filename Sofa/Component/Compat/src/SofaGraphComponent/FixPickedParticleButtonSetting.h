@@ -32,17 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/FixPickedParticle
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/FixPickedParticleButtonSetting.h> instead of this one."
 #endif
-
-
-#ifdef SOFA_GUI_COMPONENT_FIXPICKEDPARTICLEBUTTONSETTING
-
-namespace sofa::component::configurationsetting
-{
-    using FixPickedParticleButtonSetting = sofa::gui::component::FixPickedParticleButtonSetting;
-
-} // namespace sofa::component::configurationsetting
-
-
-#endif // SOFA_GUI_COMPONENT_FIXPICKEDPARTICLEBUTTONSETTING
-
-#undef SOFA_GUI_COMPONENT_FIXPICKEDPARTICLEBUTTONSETTING

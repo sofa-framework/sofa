@@ -32,19 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/RemoveP
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/RemovePrimitivePerformer.h> instead of this one."
 #endif
-
-
-#ifdef SOFA_GUI_COMPONENT_REMOVEPRIMITIVEPERFORMERCONFIGURATION
-
-namespace sofa::component::collision
-{
-    using RemovePrimitivePerformerConfiguration = sofa::gui::component::performer::RemovePrimitivePerformerConfiguration;
-    template <class DataTypes>
-    using RemovePrimitivePerformer = sofa::gui::component::performer::RemovePrimitivePerformer<DataTypes>;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_REMOVEPRIMITIVEPERFORMERCONFIGURATION
-
-#undef SOFA_GUI_COMPONENT_REMOVEPRIMITIVEPERFORMERCONFIGURATION

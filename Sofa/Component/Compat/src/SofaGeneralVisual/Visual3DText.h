@@ -23,9 +23,3 @@
 #include <sofa/component/visual/Visual3DText.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/Visual3DText.h")
-
-namespace sofa::component::visualmodel
-{
-    using Visual3DText = sofa::component::visual::Visual3DText;
-
-} // namespace sofa::component::visual

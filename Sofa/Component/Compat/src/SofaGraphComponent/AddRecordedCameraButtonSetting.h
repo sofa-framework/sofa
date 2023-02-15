@@ -32,18 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AddRecordedCamera
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AddRecordedCameraButtonSetting.h> instead of this one."
 #endif
-
-
-#ifdef SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING
-
-namespace sofa::component::configurationsetting
-{
-    using AddRecordedCameraButtonSetting = sofa::gui::component::AddRecordedCameraButtonSetting;
-    using StartNavigationButtonSetting = sofa::gui::component::StartNavigationButtonSetting;
-
-} // namespace sofa::component::configurationsetting
-
-
-#endif // SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING
-
-#undef SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING

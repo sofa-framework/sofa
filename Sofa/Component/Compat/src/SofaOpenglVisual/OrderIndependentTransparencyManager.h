@@ -32,13 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OrderIndepe
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OrderIndependentTransparencyManager.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER
-
-namespace sofa::component::visualmodel
-{
-    using OrderIndependentTransparencyManager = sofa::gl::component::shader::OrderIndependentTransparencyManager;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER

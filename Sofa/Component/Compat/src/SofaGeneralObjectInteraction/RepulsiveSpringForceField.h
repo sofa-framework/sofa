@@ -24,10 +24,3 @@
 #include <sofa/component/solidmechanics/spring/RepulsiveSpringForceField.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/RepulsiveSpringForceField.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using RepulsiveSpringForceField = sofa::component::solidmechanics::spring::RepulsiveSpringForceField<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield

@@ -32,13 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShadowSh
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglShadowShader.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLSHADOWSHADER
-
-namespace sofa::component::visualmodel
-{
-    using OglShadowShader = sofa::gl::component::shader::OglShadowShader;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLSHADOWSHADER

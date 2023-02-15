@@ -24,9 +24,3 @@
 #include <sofa/component/collision/geometry/TriangleModelInRegularGrid.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/TriangleModelInRegularGrid.h")
-
-namespace sofa::component::collision
-{
-    using TriangleModelInRegularGrid = sofa::component::collision::geometry::TriangleModelInRegularGrid;
-
-} // namespace sofa::component::collision

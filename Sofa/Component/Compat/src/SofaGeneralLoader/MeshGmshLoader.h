@@ -24,9 +24,3 @@
 #include <sofa/component/io/mesh/MeshGmshLoader.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshGmshLoader.h")
-
-namespace sofa::component::loader
-{
-    using MeshGmshLoader = sofa::component::io::mesh::MeshGmshLoader;
-
-} // namespace sofa::component::loader

@@ -24,12 +24,3 @@
 #include <sofa/component/solidmechanics/spring/GearSpringForceField.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/GearSpringForceField.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using GearSpring = sofa::component::solidmechanics::spring::GearSpring<DataTypes>;
-    template<class DataTypes>
-    using GearSpringForceField = sofa::component::solidmechanics::spring::GearSpringForceField<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield

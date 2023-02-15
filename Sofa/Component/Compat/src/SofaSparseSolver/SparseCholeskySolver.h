@@ -24,10 +24,3 @@
 #include <sofa/component/linearsolver/direct/SparseCholeskySolver.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseCholeskySolver.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector>
-    using SparseCholeskySolver = sofa::component::linearsolver::direct::SparseCholeskySolver<TMatrix, TVector>;
-
-} // namespace sofa::component::linearsolver

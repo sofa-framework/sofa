@@ -32,13 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/LightManage
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/LightManager.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_LIGHTMANAGER
-
-namespace sofa::component::visualmodel
-{
-    using LightManager = sofa::gl::component::shader::LightManager;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_LIGHTMANAGER

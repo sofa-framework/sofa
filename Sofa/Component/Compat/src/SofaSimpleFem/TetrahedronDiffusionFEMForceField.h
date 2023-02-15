@@ -24,10 +24,3 @@
 #include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using TetrahedronDiffusionFEMForceField = sofa::component::diffusion::TetrahedronDiffusionFEMForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield

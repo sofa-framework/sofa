@@ -32,13 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/inters
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h> instead of this one."
 #endif
-
-#ifdef COLLISIONOBBCAPSULE_BASEINTTOOL
-
-namespace sofa::component::collision
-{
-	using BaseIntTool = collisionobbcapsule::detection::intersection::BaseIntTool;
-
-} // namespace sofa::component::collision
-
-#endif // COLLISIONOBBCAPSULE_BASEINTTOOL

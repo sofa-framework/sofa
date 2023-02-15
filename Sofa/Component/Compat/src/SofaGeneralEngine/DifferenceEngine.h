@@ -24,10 +24,3 @@
 #include <sofa/component/engine/transform/DifferenceEngine.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/DifferenceEngine.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using DifferenceEngine = sofa::component::engine::transform::DifferenceEngine<DataTypes>;
-
-} // namespace sofa::component::engine

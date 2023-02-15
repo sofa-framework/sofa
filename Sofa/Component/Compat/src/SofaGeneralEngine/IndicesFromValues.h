@@ -24,10 +24,3 @@
 #include <sofa/component/engine/select/IndicesFromValues.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/IndicesFromValues.h")
-
-namespace sofa::component::engine
-{
-    template<class T>
-    using IndicesFromValues = sofa::component::engine::select::IndicesFromValues<T>;
-
-} // namespace sofa::component::engine

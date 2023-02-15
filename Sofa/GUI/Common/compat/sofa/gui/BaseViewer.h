@@ -23,9 +23,3 @@
 #include <sofa/gui/common/BaseViewer.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/BaseViewer.h")
-
-namespace sofa::gui
-{
-    using BaseViewer = sofa::gui::common::BaseViewer;
-
-} // namespace sofa::gui

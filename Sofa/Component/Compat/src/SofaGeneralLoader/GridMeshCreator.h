@@ -24,9 +24,3 @@
 #include <sofa/component/io/mesh/GridMeshCreator.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/GridMeshCreator.h")
-
-namespace sofa::component::loader
-{
-    using GridMeshCreator = sofa::component::io::mesh::GridMeshCreator;
-
-} // namespace sofa::component::loader

@@ -23,10 +23,3 @@
 #include <sofa/component/topology/container/dynamic/DynamicSparseGridTopologyModifier.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/DynamicSparseGridTopologyModifier.h")
-
-namespace sofa::component::topology
-{
-
-    using DynamicSparseGridTopologyModifier = sofa::component::topology::container::dynamic::DynamicSparseGridTopologyModifier;
-
-} // namespace sofa::component::topology

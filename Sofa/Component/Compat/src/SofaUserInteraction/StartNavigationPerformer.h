@@ -33,16 +33,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/StartNa
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/StartNavigationPerformer.h> instead of this one."
 #endif
 
-
-#ifdef SOFA_GUI_COMPONENT_STARTNAVIGATIONPERFORMER
-
-namespace sofa::component::collision
-{
-    using StartNavigationPerformer = sofa::gui::component::performer::StartNavigationPerformer;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_STARTNAVIGATIONPERFORMER
-
-#undef SOFA_GUI_COMPONENT_STARTNAVIGATIONPERFORMER

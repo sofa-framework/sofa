@@ -24,11 +24,3 @@
 #include <sofa/component/linearsolver/iterative/MinResLinearSolver.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/iterative/MinResLinearSolver.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector>
-    using MinResLinearSolver = sofa::component::linearsolver::iterative::MinResLinearSolver<TMatrix, TVector>;
-
-} // namespace sofa::component::linearsolver
-

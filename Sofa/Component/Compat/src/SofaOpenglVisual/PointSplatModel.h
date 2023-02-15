@@ -33,12 +33,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/PointS
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/PointSplatModel.h> instead of this one."
 #endif
 
-#ifdef SOFAGL_COMPONENT_POINTSPLATMODEL
-
-namespace sofa::component::visualmodel
-{
-    using PointSplatModel = sofa::gl::component::rendering3d::PointSplatModel;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_POINTSPLATMODEL

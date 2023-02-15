@@ -24,10 +24,3 @@
 #include <sofa/component/odesolver/forward/DampVelocitySolver.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/forward/DampVelocitySolver.h")
-
-namespace sofa::component::odesolver
-{
-
-    using DampVelocitySolver = sofa::component::odesolver::forward::DampVelocitySolver;
-
-} // namespace sofa::component::odesolver

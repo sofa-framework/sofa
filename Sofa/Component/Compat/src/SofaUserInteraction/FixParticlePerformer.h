@@ -33,18 +33,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/FixPart
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/FixParticlePerformer.h> instead of this one."
 #endif
 
-
-#ifdef SOFA_GUI_COMPONENT_FIXPARTICLEPERFORMER
-
-namespace sofa::component::collision
-{
-    using FixParticlePerformerConfiguration = sofa::gui::component::performer::FixParticlePerformerConfiguration;
-    template <class DataTypes>
-    using FixParticlePerformer = sofa::gui::component::performer::FixParticlePerformer<DataTypes>;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_FIXPARTICLEPERFORMER
-
-#undef SOFA_GUI_COMPONENT_FIXPARTICLEPERFORMER

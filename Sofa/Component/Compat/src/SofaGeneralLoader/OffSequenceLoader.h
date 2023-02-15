@@ -24,9 +24,3 @@
 #include <sofa/component/io/mesh/OffSequenceLoader.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/OffSequenceLoader.h")
-
-namespace sofa::component::loader
-{
-    using OffSequenceLoader = sofa::component::io::mesh::OffSequenceLoader;
-
-} // namespace sofa::component::loader

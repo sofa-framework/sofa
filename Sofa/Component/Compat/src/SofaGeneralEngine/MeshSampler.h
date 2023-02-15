@@ -24,10 +24,3 @@
 #include <sofa/component/engine/select/MeshSampler.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/MeshSampler.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using MeshSampler = sofa::component::engine::select::MeshSampler<DataTypes>;
-
-} // namespace sofa::component::engine

@@ -32,17 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AddFrameButtonSet
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AddFrameButtonSetting.h> instead of this one."
 #endif
-
-
-#ifdef SOFA_GUI_COMPONENT_ADDFRAMEBUTTONSETTING
-
-namespace sofa::component::configurationsetting
-{
-    using AddFrameButtonSetting = sofa::gui::component::AddFrameButtonSetting;
-
-} // namespace sofa::component::configurationsetting
-
-
-#endif // SOFA_GUI_COMPONENT_ADDFRAMEBUTTONSETTING
-
-#undef SOFA_GUI_COMPONENT_ADDFRAMEBUTTONSETTING

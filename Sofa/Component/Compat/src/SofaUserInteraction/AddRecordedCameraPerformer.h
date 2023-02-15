@@ -32,17 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/AddReco
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/AddRecordedCameraPerformer.h> instead of this one."
 #endif
-
-
-#ifdef SOFA_GUI_COMPONENT_ADDRECORDEDCAMERAPERFORMER
-
-namespace sofa::component::collision
-{
-    using AddRecordedCameraPerformer = sofa::gui::component::performer::AddRecordedCameraPerformer;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_ADDRECORDEDCAMERAPERFORMER
-
-#undef SOFA_GUI_COMPONENT_ADDRECORDEDCAMERAPERFORMER

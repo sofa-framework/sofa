@@ -24,10 +24,3 @@
 #include <sofa/component/odesolver/forward/EulerSolver.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/forward/EulerSolver.h")
-
-namespace sofa::component::odesolver
-{
-
-using EulerExplicitSolver = sofa::component::odesolver::forward::EulerExplicitSolver;
-
-} // namespace sofa::component::odesolver

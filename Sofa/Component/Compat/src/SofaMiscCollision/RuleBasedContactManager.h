@@ -23,9 +23,3 @@
 #include <sofa/component/collision/response/contact/RuleBasedContactManager.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/RuleBasedContactManager.h")
-
-namespace sofa::component::collision
-{
-    using RuleBasedContactManager = sofa::component::collision::response::contact::RuleBasedContactManager;
-
-} // namespace sofa::component::collision

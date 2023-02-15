@@ -23,10 +23,3 @@
 #include <sofa/component/mapping/nonlinear/SquareMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/SquareMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using SquareMapping = sofa::component::mapping::nonlinear::SquareMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping

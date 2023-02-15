@@ -24,10 +24,3 @@
 #include <sofa/component/collision/geometry/TriangleOctree.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/TriangleOctree.h")
-
-namespace sofa::component::collision
-{
-    using TriangleOctreeRoot = sofa::component::collision::geometry::TriangleOctreeRoot;
-    using TriangleOctree = sofa::component::collision::geometry::TriangleOctree; 
-
-} // namespace sofa::component::collision

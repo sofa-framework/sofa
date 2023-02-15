@@ -23,10 +23,3 @@
 #include <sofa/component/topology/container/grid/SphereGridTopology.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/SphereGridTopology.h")
-
-namespace sofa::component::topology
-{
-
-    using SphereGridTopology = sofa::component::topology::container::grid::SphereGridTopology;
-
-} // namespace sofa::component::topology

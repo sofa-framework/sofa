@@ -24,9 +24,3 @@
 #include <sofa/component/engine/select/MergeROIs.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/MergeROIs.h")
-
-namespace sofa::component::engine
-{
-    using MergeROIs = sofa::component::engine::select::MergeROIs;
-
-} // namespace sofa::component::engine

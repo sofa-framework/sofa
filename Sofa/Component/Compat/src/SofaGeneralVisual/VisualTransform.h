@@ -23,9 +23,3 @@
 #include <sofa/component/visual/VisualTransform.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualTransform.h")
-
-namespace sofa::component::visualmodel
-{
-    using VisualTransform = sofa::component::visual::VisualTransform;
-
-} // namespace sofa::component::visual

@@ -32,14 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/inters
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/IntrOBBOBB.h> instead of this one."
 #endif
-
-#ifdef COLLISIONOBBCAPSULE_INTROBBOBB
-
-namespace sofa::component::collision
-{
-	template <typename TDataTypes,typename TDataTypes2>
-	using TIntrOBBOBB = collisionobbcapsule::detection::intersection::TIntrOBBOBB<TDataTypes, TDataTypes2>;
-
-} // namespace sofa::component::collision
-
-#endif // COLLISIONOBBCAPSULE_INTROBBOBB

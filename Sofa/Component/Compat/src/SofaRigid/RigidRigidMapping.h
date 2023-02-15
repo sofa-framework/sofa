@@ -23,10 +23,3 @@
 #include <sofa/component/mapping/nonlinear/RigidRigidMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/RigidRigidMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using RigidRigidMapping = sofa::component::mapping::nonlinear::RigidRigidMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping

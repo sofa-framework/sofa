@@ -23,10 +23,3 @@
 #include <sofa/component/mapping/linear/CenterOfMassMappingOperation.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMappingOperation.h")
-
-namespace sofa::component::mapping
-{
-	template<class Model>
-    using CenterOfMassMappingOperation = sofa::component::mapping::linear::CenterOfMassMappingOperation<Model>;
-
-} // namespace sofa::component::mapping

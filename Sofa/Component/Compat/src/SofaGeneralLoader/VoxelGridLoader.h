@@ -24,9 +24,3 @@
 #include <sofa/component/io/mesh/VoxelGridLoader.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/VoxelGridLoader.h")
-
-namespace sofa::component::loader
-{
-    using VoxelGridLoader = sofa::component::io::mesh::VoxelGridLoader;
-
-} // namespace sofa::component::loader

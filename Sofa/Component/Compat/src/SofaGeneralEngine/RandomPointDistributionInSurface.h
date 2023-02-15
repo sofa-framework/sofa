@@ -24,10 +24,3 @@
 #include <sofa/component/engine/generate/RandomPointDistributionInSurface.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/RandomPointDistributionInSurface.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using RandomPointDistributionInSurface = sofa::component::engine::generate::RandomPointDistributionInSurface<DataTypes>;
-
-} // namespace sofa::component::engine

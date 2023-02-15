@@ -24,10 +24,3 @@
 #include <sofa/component/engine/generate/NormEngine.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/NormEngine.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using NormEngine = sofa::component::engine::generate::NormEngine<DataTypes>;
-
-} // namespace sofa::component::engine

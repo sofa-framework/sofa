@@ -24,11 +24,3 @@
 #include <sofa/component/playback/CompareState.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/CompareState.h")
-
-namespace sofa::component::misc
-{
-    using CompareState = sofa::component::playback::CompareState;
-    using CompareStateCreator = sofa::component::playback::CompareStateCreator;
-    using CompareStateResult = sofa::component::playback::CompareStateResult;
-
-} // namespace sofa::component::misc

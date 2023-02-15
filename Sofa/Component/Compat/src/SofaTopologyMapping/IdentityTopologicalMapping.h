@@ -23,10 +23,3 @@
 #include <sofa/component/topology/mapping/IdentityTopologicalMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/IdentityTopologicalMapping.h")
-
-namespace sofa::component::topology
-{
-
-    using IdentityTopologicalMapping = sofa::component::topology::mapping::IdentityTopologicalMapping;
-
-} // namespace sofa::component::topology

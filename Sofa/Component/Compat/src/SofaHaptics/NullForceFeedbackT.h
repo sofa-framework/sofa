@@ -24,10 +24,3 @@
 #include <sofa/component/haptics/NullForceFeedbackT.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/NullForceFeedbackT.h")
-
-namespace sofa::component::controller
-{
-    template<class TDataTypes>
-    using NullForceFeedbackT = sofa::component::haptics::NullForceFeedbackT<TDataTypes>;
-
-} // namespace sofa::component::controller

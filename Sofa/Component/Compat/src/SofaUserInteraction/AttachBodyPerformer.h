@@ -32,18 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/AttachB
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/AttachBodyPerformer.h> instead of this one."
 #endif
-
-
-#ifdef SOFA_GUI_COMPONENT_ATTACHBODYPERFORMER
-
-namespace sofa::component::collision
-{
-    template <class DataTypes>
-    using AttachBodyPerformer = sofa::gui::component::performer::AttachBodyPerformer<DataTypes>;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_ATTACHBODYPERFORMER
-
-#undef SOFA_GUI_COMPONENT_ATTACHBODYPERFORMER

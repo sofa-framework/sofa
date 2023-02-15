@@ -23,10 +23,3 @@
 #include <sofa/component/topology/mapping/CenterPointTopologicalMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/CenterPointTopologicalMapping.h")
-
-namespace sofa::component::topology
-{
-
-    using CenterPointTopologicalMapping = sofa::component::topology::mapping::CenterPointTopologicalMapping;
-
-} // namespace sofa::component::topology

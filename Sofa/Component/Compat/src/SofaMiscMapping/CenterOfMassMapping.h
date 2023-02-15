@@ -23,10 +23,3 @@
 #include <sofa/component/mapping/linear/CenterOfMassMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using CenterOfMassMapping = sofa::component::mapping::linear::CenterOfMassMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping

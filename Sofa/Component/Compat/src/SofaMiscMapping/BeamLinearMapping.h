@@ -23,10 +23,3 @@
 #include <sofa/component/mapping/linear/BeamLinearMapping.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BeamLinearMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using BeamLinearMapping = sofa::component::mapping::linear::BeamLinearMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping

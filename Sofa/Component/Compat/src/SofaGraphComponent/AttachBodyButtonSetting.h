@@ -33,17 +33,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AttachBodyButtonS
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AttachBodyButtonSetting.h> instead of this one."
 #endif
 
-
-#ifdef SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
-
-namespace sofa::component::configurationsetting
-{
-    using AttachBodyButtonSetting = sofa::gui::component::AttachBodyButtonSetting;
-
-} // namespace sofa::component::configurationsetting
-
-
-#endif // SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
-
-#undef SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
-

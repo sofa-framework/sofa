@@ -24,10 +24,3 @@
 #include <sofa/component/odesolver/backward/NewmarkImplicitSolver.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/backward/NewmarkImplicitSolver.h")
-
-namespace sofa::component::odesolver
-{
-
-using NewmarkImplicitSolver = sofa::component::odesolver::backward::NewmarkImplicitSolver;
-
-} // namespace sofa::component::odesolver

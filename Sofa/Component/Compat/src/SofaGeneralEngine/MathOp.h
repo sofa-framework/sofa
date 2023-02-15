@@ -24,10 +24,3 @@
 #include <sofa/component/engine/transform/MathOp.h>
 
 SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/MathOp.h")
-
-namespace sofa::component::engine
-{
-    template< class VecT >
-    using MathOp = sofa::component::engine::transform::MathOp<VecT>;
-
-} // namespace sofa::component::engine

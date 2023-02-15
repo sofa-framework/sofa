@@ -32,13 +32,3 @@ SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglOITShade
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglOITShader.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLOITSHADER
-
-namespace sofa::component::visualmodel
-{
-    using OglOITShader = sofa::gl::component::shader::OglOITShader;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLOITSHADER
