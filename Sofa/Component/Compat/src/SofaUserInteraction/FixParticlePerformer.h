@@ -27,7 +27,7 @@
 #include <sofa/gui/component/performer/FixParticlePerformer.h>
 #define SOFA_GUI_COMPONENT_FIXPARTICLEPERFORMER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/FixParticlePerformer.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/FixParticlePerformer.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/FixParticlePerformer.h> instead of this one."

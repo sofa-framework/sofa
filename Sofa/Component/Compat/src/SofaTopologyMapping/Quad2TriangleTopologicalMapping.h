@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/component/topology/mapping/Quad2TriangleTopologicalMapping.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/Quad2TriangleTopologicalMapping.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/Quad2TriangleTopologicalMapping.h")

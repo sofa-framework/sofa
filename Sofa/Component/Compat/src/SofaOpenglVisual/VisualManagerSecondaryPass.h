@@ -27,7 +27,7 @@
 #include <sofa/gl/component/shader/VisualManagerSecondaryPass.h>
 #define SOFAGL_COMPONENT_VISUALMANAGERSECONDARYPASS
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/VisualManagerSecondaryPass.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/VisualManagerSecondaryPass.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/VisualManagerSecondaryPass.h> instead of this one."

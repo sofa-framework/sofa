@@ -23,4 +23,4 @@
 
 #include <sofa/component/odesolver/backward/NewmarkImplicitSolver.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/backward/NewmarkImplicitSolver.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/backward/NewmarkImplicitSolver.h")

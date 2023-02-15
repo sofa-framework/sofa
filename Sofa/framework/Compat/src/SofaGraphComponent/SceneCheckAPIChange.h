@@ -27,7 +27,7 @@
 #include <SceneChecking/SceneCheckAPIChange.h>
 #define SCENECHECKING_SCENECHECKAPICHANGE
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckAPIChange.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckAPIChange.h")
 
 #else
 #error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckAPIChange.h> instead of this file."

@@ -26,7 +26,7 @@
 #if __has_include(<CollisionOBBCapsule/model/RigidCapsuleModel.h>)
 #include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/model/RigidCapsuleModel.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/model/RigidCapsuleModel.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/model/RigidCapsuleModel.h> instead of this one."

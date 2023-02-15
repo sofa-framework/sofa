@@ -27,7 +27,7 @@
 #include <sofa/gui/component/AttachBodyButtonSetting.h>
 #define SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AttachBodyButtonSetting.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/AttachBodyButtonSetting.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AttachBodyButtonSetting.h> instead of this one."

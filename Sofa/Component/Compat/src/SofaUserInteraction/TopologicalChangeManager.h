@@ -27,7 +27,7 @@
 #include <sofa/gui/component/performer/TopologicalChangeManager.h>
 #define SOFA_GUI_COMPONENT_TOPOLOGICALCHANGEMANAGER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/TopologicalChangeManager.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/TopologicalChangeManager.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/TopologicalChangeManager.h> instead of this one."

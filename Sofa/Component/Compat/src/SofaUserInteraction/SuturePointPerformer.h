@@ -27,7 +27,7 @@
 #include <sofa/gui/component/performer/SuturePointPerformer.h>
 #define SOFA_GUI_COMPONENT_SUTUREPOINTPERFORMER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/SuturePointPerformer.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/SuturePointPerformer.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/SuturePointPerformer.h> instead of this one."

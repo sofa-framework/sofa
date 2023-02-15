@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/component/io/mesh/BaseVTKReader.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/BaseVTKReader.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/BaseVTKReader.inl")

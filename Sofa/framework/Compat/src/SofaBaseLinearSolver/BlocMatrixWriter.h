@@ -23,4 +23,4 @@
 
 #include <sofa/core/behavior/BlocMatrixWriter.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/core/behavior/BlocMatrixWriter.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/core/behavior/BlocMatrixWriter.h")

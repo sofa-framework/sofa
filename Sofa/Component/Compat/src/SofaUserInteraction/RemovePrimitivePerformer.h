@@ -27,7 +27,7 @@
 #include <sofa/gui/component/performer/RemovePrimitivePerformer.h>
 #define SOFA_GUI_COMPONENT_REMOVEPRIMITIVEPERFORMERCONFIGURATION
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/RemovePrimitivePerformer.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/RemovePrimitivePerformer.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/RemovePrimitivePerformer.h> instead of this one."

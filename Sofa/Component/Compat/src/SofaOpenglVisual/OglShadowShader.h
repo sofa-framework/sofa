@@ -27,7 +27,7 @@
 #include <sofa/gl/component/shader/OglShadowShader.h>
 #define SOFAGL_COMPONENT_OGLSHADOWSHADER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShadowShader.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShadowShader.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglShadowShader.h> instead of this one."

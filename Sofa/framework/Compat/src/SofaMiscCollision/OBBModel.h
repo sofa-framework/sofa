@@ -27,7 +27,7 @@
 #include <CollisionOBBCapsule/geometry/OBBModel.h>
 #define COLLISIONOBBOBB_OBBMODEL
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/geometry/OBBModel.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/geometry/OBBModel.h")
 
 #else
 #error "OBB and OBB-related contents has been moved to CollisionOBBOBB. Include <CollisionOBBCapsule/geometry/OBBModel.h> instead of this one."

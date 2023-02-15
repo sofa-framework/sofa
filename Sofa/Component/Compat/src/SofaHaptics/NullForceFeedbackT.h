@@ -23,4 +23,4 @@
 
 #include <sofa/component/haptics/NullForceFeedbackT.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/haptics/NullForceFeedbackT.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/haptics/NullForceFeedbackT.h")

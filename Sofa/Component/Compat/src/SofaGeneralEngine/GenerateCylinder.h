@@ -23,4 +23,4 @@
 
 #include <sofa/component/engine/generate/GenerateCylinder.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateCylinder.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateCylinder.h")

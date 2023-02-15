@@ -27,7 +27,7 @@
 #include <sofa/gl/component/rendering3d/PointSplatModel.h>
 #define SOFAGL_COMPONENT_POINTSPLATMODEL
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/PointSplatModel.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/PointSplatModel.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/PointSplatModel.h> instead of this one."

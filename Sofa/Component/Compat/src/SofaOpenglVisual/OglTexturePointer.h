@@ -27,7 +27,7 @@
 #include <sofa/gl/component/shader/OglTexturePointer.h>
 #define SOFAGL_COMPONENT_OGLTEXTUREPOINTER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglTexturePointer.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglTexturePointer.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglTexturePointer.h> instead of this one."

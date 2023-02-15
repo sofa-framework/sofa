@@ -27,7 +27,7 @@
 #include <SceneChecking/SceneCheckCollisionResponse.h>
 #define SCENECHECKING_SCENECHECKCOLLISIONRESPONSE
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckCollisionResponse.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckCollisionResponse.h")
 
 #else
 #error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckCollisionResponse.h> instead of this file."

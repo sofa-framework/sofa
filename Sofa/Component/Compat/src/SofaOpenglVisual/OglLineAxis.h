@@ -27,7 +27,7 @@
 #include <sofa/gl/component/rendering3d/OglLineAxis.h>
 #define SOFAGL_COMPONENT_OGLLINEAXIS
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglLineAxis.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglLineAxis.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglLineAxis.h> instead of this one."

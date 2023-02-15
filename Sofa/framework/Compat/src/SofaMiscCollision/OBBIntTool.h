@@ -27,7 +27,7 @@
 #include <CollisionOBBCapsule/detection/intersection/OBBIntTool.h>
 #define COLLISIONOBBCAPSULE_OBBINTTOOL
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/OBBIntTool.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/OBBIntTool.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/OBBIntTool.h> instead of this one."
