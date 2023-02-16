@@ -163,16 +163,15 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive() || !((getNext()==nullptr)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;
 
-    // The deeper in the CubeModel graph, the higher the transparency of the bounding cube lines
+    // The deeper in the CubeModel graph, the higher the transparency of the bounding cube lines  
+    const float* collisionColor = getColor4f();
+    sofa::type::RGBAColor c(collisionColor[0], collisionColor[1], collisionColor[2], collisionColor[3]);
     CollisionModel* m = getPrevious();
-    [[maybe_unused]] float color = 1.0f;
     while (m!=nullptr)
     {
         m = m->getPrevious();
-        color *= 0.8f;
+        c.a() *= 0.8f;
     }
-
-    sofa::type::RGBAColor c(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
     std::vector< Vec3 > points;
     points.reserve( size * 8 * 3);
