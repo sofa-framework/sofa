@@ -2290,7 +2290,6 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::type
     const auto N = Deriv::size();
     Data<MatrixDeriv>* cMatrix= this->write(mID);
 
-    [[maybe_unused]] unsigned int columnIndex = 0;
     MatrixDeriv& jacobian = *cMatrix->beginEdit();
 
 
@@ -2304,7 +2303,6 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::type
             Deriv d;
             d[j]=1.0;
             rowIterator.setCol(node,  d);
-            columnIndex++;
         }
     }
     cMatrix->endEdit();
