@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -23,5 +23,5 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mass/CudaDiagonalMass.h")
-#include <SofaCUDA/component/mass/CudaDiagonalMass.h>
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl")
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl>

@@ -259,6 +259,17 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
 
         sofa/gpu/cuda/CudaUniformMass.h
         sofa/gpu/cuda/CudaUniformMass.inl
+
+        sofa/gpu/cuda/CudaHexahedronFEMForceField.h
+        sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
+        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
+        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
+        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
+        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
+        sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
+        sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
+        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
+        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
     )
 endif()
 
