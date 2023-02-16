@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h>
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.h>
 #include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.inl>
 
 namespace sofa::gpu::cuda

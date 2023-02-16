@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
-#include "CudaTexture.h"
+#include <sofa/gpu/cuda/CudaTexture.h>
 #include "cuda.h"
-#include "mycuda.h"
+#include <sofa/gpu/cuda/mycuda.h>
 #include <stdio.h>
 
 #if defined(__cplusplus)

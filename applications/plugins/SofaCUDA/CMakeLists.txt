@@ -58,18 +58,18 @@ set(HEADER_FILES
     
 
     ### FEM
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.h
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.inl
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl
 
     ### ForceFields
     sofa/gpu/cuda/CudaEllipsoidForceField.h
@@ -133,13 +133,13 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cpp
 
     ### FEM
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cpp
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
     sofa/gpu/cuda/CudaConstantForceField.cpp
@@ -200,13 +200,13 @@ set(CUDA_SOURCES
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cu
 
     ### FEM
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cu
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.cu
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cu
 
     ### ForceFields
     sofa/gpu/cuda/CudaEllipsoidForceField.cu
