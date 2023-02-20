@@ -36,3 +36,11 @@ namespace sofa::component::constraint::lagrangian::model
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::constraint::lagrangian::model
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL
+#define SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA(msg)
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v22.12", "v23.06", msg)
+#endif // SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL

@@ -23,7 +23,10 @@
 #pragma once
 
 #include <sofa/component/animationloop/config.h>
+
+#ifndef SOFA_BUILD_SOFA_COMPONENT_ANIMATIONLOOP
 SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.12", "v23.06")
+#endif
 
 #include <sofa/simulation/CpuTask.h>
 
