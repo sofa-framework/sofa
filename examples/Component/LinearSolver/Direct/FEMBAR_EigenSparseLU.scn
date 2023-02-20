@@ -2,7 +2,7 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <EigenSparseLU template="CompressedRowSparseMatrixMat3x3d" ordering="Natural"/>
+    <EigenSparseLU template="CompressedRowSparseMatrixMat3x3" ordering="Natural"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

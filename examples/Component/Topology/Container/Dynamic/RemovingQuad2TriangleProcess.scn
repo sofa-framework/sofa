@@ -33,7 +33,7 @@
         <MechanicalObject src="@loader" name="Quads" />
         <QuadSetTopologyContainer name="Quad_topo" src="@loader" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <TopologicalChangeProcessor listening="1" filename="RemovingQuad2TriangleProcess.txt" />
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
         <DiagonalMass massDensity="0.5" />
@@ -42,7 +42,7 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
             <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" name="mapping_topo" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />

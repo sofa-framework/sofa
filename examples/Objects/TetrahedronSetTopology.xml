@@ -1,7 +1,7 @@
 <Node name="Group"> 
   <TetrahedronSetTopologyContainer  name="Container" src="@" tags=" "/>
   <TetrahedronSetTopologyModifier   name="Modifier" />
-  <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
+  <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3" />
 </Node>
 <!-- 
      Template List 
@@ -14,5 +14,5 @@
        - Vec1f
 
      Example of use:
-     <include href="Objects/TetrahedronSetTopology.xml" template="Vec1d" />
+     <include href="Objects/TetrahedronSetTopology.xml" template="Vec1" />
 -->

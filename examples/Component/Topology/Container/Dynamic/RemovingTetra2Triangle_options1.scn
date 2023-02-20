@@ -35,7 +35,7 @@
         <MechanicalObject src="@../loader" name="Volume" translation="4 0 0"/>
         <TetrahedronSetTopologyContainer name="TetraCon" tetrahedra="@../loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         
         <DiagonalMass massDensity="1.0" />
         <FixedConstraint name="fix" indices="7 8 14 15" />
@@ -44,7 +44,7 @@
         <Node name="T_out">
             <TriangleSetTopologyContainer name="Tri1Con"/>
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         
             <Tetra2TriangleTopologicalMapping input="@../TetraCon" output="@Tri1Con" noNewTriangles="1" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
@@ -57,7 +57,7 @@
         <Node name="T_in">
             <TriangleSetTopologyContainer name="Tri2Con"/>
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
             <Tetra2TriangleTopologicalMapping input="@../TetraCon" output="@Tri2Con" noInitialTriangles="1" />
             <Node name="Visu">
                 <OglModel name="Visual" color="red" />

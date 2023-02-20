@@ -23,7 +23,7 @@
     
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
     <MeshTopology name="mesh" src="@loader" />
-    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" src="@mesh" name="roi" drawBoxes="true"/>
+    <BoxROI template="Vec3" box="0 -2 0 5 2 5" src="@mesh" name="roi" drawBoxes="true"/>
 
     <MeshSplittingEngine name="split" src="@loader" nbInputs="1" tetrahedronIndices1="@roi.tetrahedronIndices" printLog="true"/>
 
@@ -31,7 +31,7 @@
             <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" printLog="0" />
             
-            <MechanicalObject name="rigidframe" template="Rigid3d" position="1 0 1 0 0 0 1" />
+            <MechanicalObject name="rigidframe" template="Rigid3" position="1 0 1 0 0 0 1" />
             <UniformMass  />
             <FixedConstraint indices="0"/>
             
@@ -41,12 +41,12 @@
 
                     <Node name="free points">
                         <MechanicalObject position="@/split.position2" showObject="true"/>
-                        <UniformMass totalMass=1 />
+                        <UniformMass totalMass="1" />
     
                         <Node name="multimapped full object">
                             <MeshTopology name="mesh" src="@/mesh" />
                             <MechanicalObject src="@mesh" />
-                            <SubsetMultiMapping template = "Vec3d,Vec3d" input="@../../ @../" output="@./" indexPairs="@/split.indexPairs"/>
+                            <SubsetMultiMapping template = "Vec3,Vec3" input="@../../ @../" output="@./" indexPairs="@/split.indexPairs"/>
                             <TetrahedronFEMForceField youngModulus="100" poissonRatio="0.3"/>
                             
                             <Node name="Visu">

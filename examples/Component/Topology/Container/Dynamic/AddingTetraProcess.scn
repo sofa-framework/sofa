@@ -22,7 +22,7 @@
         <MechanicalObject src="@loader" name="Volume" />
         <TetrahedronSetTopologyContainer src="@loader" name="Tetra_topo" listening="1" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTetrahedra="1" />
         
         <UniformMass totalMass="1.0" />
 

@@ -4,7 +4,7 @@
 
     <ShewchukPCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner"/>
     <WarpPreconditioner name="preconditioner" linearSolver="@initSolver" printLog="true"/>
-    <SparseLDLSolver name="initSolver" template="CompressedRowSparseMatrixMat3x3d" />
+    <SparseLDLSolver name="initSolver" template="CompressedRowSparseMatrixMat3x3" />
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

@@ -24,8 +24,8 @@
     <Node name="Object" gravity="0 -9.81 0">
         <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="100" tolerance="1e-5" threshold="1e-10"/>
-        <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0" />
-        <UniformMass template="Vec3d" name="Mass" totalMass="10" />
-        <PlaneForceField template="Vec3d" name="Plane" normal="0 0 1" d="-10" showPlane="1"/>
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0" />
+        <UniformMass template="Vec3" name="Mass" totalMass="10" />
+        <PlaneForceField template="Vec3" name="Plane" normal="0 0 1" d="-10" showPlane="1"/>
     </Node>
 </Node>

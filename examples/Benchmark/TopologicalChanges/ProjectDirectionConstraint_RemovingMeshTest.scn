@@ -30,19 +30,19 @@
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="linear solver"/>
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
-        <MechanicalObject name="dofs" src="@loader" template="Vec3d" />
+        <MechanicalObject name="dofs" src="@loader" template="Vec3" />
         <TriangleSetTopologyContainer name="Triangle_topo" src="@loader"/>
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass template="Vec3d,Vec3d" name="mass" massDensity="1.0" />
+        <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <DiagonalMass template="Vec3,Vec3" name="mass" massDensity="1.0" />
         <ProjectDirectionConstraint direction="1 0 0" indices="0 1 2 3 4 25 26 27 28 29" drawSize="0.03" />
         
-        <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
-        <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
+        <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
+        <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleCollisionModel name="CollisionModel" />
         <Node name="Visu">
-            <OglModel template="Vec3d" name="Visual" color="red" />
-            <IdentityMapping template="Vec3d,Vec3d" input="@.." output="@Visual" />
+            <OglModel template="Vec3" name="Visual" color="red" />
+            <IdentityMapping template="Vec3,Vec3" input="@.." output="@Visual" />
         </Node>
         
         <TopologicalChangeProcessor listening="1" filename="RemovingTrianglesProcess_constraint.txt" />

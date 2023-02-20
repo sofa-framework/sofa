@@ -28,13 +28,13 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
-        <MechanicalObject name="mecaObj" src="@loader" template="Vec3d" scale3d="10 10 10" restScale="1" />
+        <MechanicalObject name="mecaObj" src="@loader" template="Vec3" scale3d="10 10 10" restScale="1" />
         <TriangleSetTopologyContainer src="@loader" name="Container" />
         <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <DiagonalMass name="default5" massDensity="0.15" />
-        <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
-        <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
+        <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
+        <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleCollisionModel name="default7" />
 
         <Node >
@@ -42,7 +42,7 @@
             <IdentityMapping name="default8" input="@.." output="@Visual" />
         </Node>
 
-        <BoxROI template="Vec3d" box="2 0 -1 8 -3 1" drawBoxes="1" position="@mecaObj.position" drawTriangles="1" triangles="@Container.triangles" name="trash" />
+        <BoxROI template="Vec3" box="2 0 -1 8 -3 1" drawBoxes="1" position="@mecaObj.position" drawTriangles="1" triangles="@Container.triangles" name="trash" />
         <TopologicalChangeProcessor listening="1" useDataInputs="1" trianglesToRemove="@trash.triangleIndices" timeToRemove="0.1" interval="0.05" />
     </Node>
 </Node>

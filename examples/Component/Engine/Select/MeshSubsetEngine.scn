@@ -11,7 +11,7 @@
     <DefaultAnimationLoop/>
     
     <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
-    <BoxROI name="boxroi" template="Vec3d" position="@loader.position" box="-15 0 -5 0 10 5" drawBoxes="1"/>
+    <BoxROI name="boxroi" template="Vec3" position="@loader.position" box="-15 0 -5 0 10 5" drawBoxes="1"/>
     <MeshSubsetEngine name="engine" inputPosition="@loader.position" inputTriangles="@loader.triangles" inputQuads="@loader.quads" indices="@boxroi.indices"/>
 
     <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />

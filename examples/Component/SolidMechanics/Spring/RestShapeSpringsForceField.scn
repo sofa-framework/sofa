@@ -64,7 +64,7 @@
 	<Node name="CUBE">
 		<EulerImplicitSolver />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
-		<MechanicalObject template="Rigid3d" dx="-12.0" dy="-20" rx="10" />
+		<MechanicalObject template="Rigid3" dx="-12.0" dy="-20" rx="10" />
 		<UniformMass totalMass="1.0" />
 		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50"/>
 		<Node name="Visu">
@@ -85,7 +85,7 @@
 	<Node name="CUBE with Damping">
 		<EulerImplicitSolver />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
-		<MechanicalObject template="Rigid3d" dx="12.0" dy="-20" rx="10" />
+		<MechanicalObject template="Rigid3" dx="12.0" dy="-20" rx="10" />
 		<UniformMass totalMass="1.0" />
 		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50" />
 		<Node name="Visu">

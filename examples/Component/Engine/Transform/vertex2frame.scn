@@ -9,8 +9,8 @@
     <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showCollisionModels" />
     <MeshOBJLoader name="loader" filename="mesh/icosahedron.obj" />
-    <Vertex2Frame name="vertex2frame" template="Rigid3d" src="@loader" />
-    <MechanicalObject name="dofs" template="Rigid3d" position="@vertex2frame.frames" />
+    <Vertex2Frame name="vertex2frame" template="Rigid3" src="@loader" />
+    <MechanicalObject name="dofs" template="Rigid3" position="@vertex2frame.frames" />
     <UniformMass totalMass="0.1" />
     <MeshOBJLoader name='myLoader' filename="mesh/icosahedron.obj"/>  
     <OglModel name="Visual" color="red" src='@myLoader'/>

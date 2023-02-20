@@ -9,15 +9,15 @@
     <EulerExplicitSolver name="solver" />
 
     <Node name="Point Oscillator"  >
-        <MechanicalObject template="Vec3d" name="mech" position="0 0 0"  velocity="1 0 0"  force="1 0 0" externalForce="1 0 0" derivX="1 0 0"  restScale="1" />
+        <MechanicalObject template="Vec3" name="mech" position="0 0 0"  velocity="1 0 0"  force="1 0 0" externalForce="1 0 0" derivX="1 0 0"  restScale="1" />
         <UniformMass name="m" />
-        <OscillatorConstraint template="Vec3d" name="osc"  oscillators="0  1 1 1  1 0 0  1 5" />
+        <OscillatorConstraint template="Vec3" name="osc"  oscillators="0  1 1 1  1 0 0  1 5" />
     </Node>
 
     <Node name="Rigid Oscillator" >
-        <MechanicalObject template="Rigid3d" name="mech2" position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0" />
+        <MechanicalObject template="Rigid3" name="mech2" position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0" />
         <UniformMass name="m2" />
-        <OscillatorConstraint template="Rigid3d" name="osc2" oscillators="0  1 1 0 0 0 0 1   0 1 1 0 0.707 0.707  1 5" />
+        <OscillatorConstraint template="Rigid3" name="osc2" oscillators="0  1 1 0 0 0 0 1   0 1 1 0 0.707 0.707  1 5" />
     </Node>
 
 </Node>
