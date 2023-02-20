@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/linearalgebra/BlockFullMatrix.inl>
 
-SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/linearalgebra/BlockFullMatrix.inl")
+SOFA_DISABLED_HEADER("v22.12", "v23.06", "sofa/linearalgebra/BlockFullMatrix.inl")

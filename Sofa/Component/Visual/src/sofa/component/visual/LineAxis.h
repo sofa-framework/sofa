@@ -32,8 +32,6 @@ class SOFA_COMPONENT_VISUAL_API LineAxis : public core::visual::VisualModel
 public:
     SOFA_CLASS(LineAxis, VisualModel);
 
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
-
     Data<std::string> d_axis; ///< Axis to draw
     Data<float> d_size; ///< Size of the squared grid
     Data<float> d_thickness; ///< Thickness of the lines in the grid

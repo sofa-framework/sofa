@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/simulation/graph/DAGNode.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/graph/DAGNode.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/simulation/graph/DAGNode.h")
