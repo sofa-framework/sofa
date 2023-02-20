@@ -45,9 +45,9 @@ BaseObject::BaseObject()
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","nullptr for regular objects, or master object for which this object is one sub-objects"))
 {
-    l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
+    l_context.setValidator(std::bind(&sofa::core::objectmodel::BaseObject::changeContextLink, this, std::placeholders::_1, std::placeholders::_2));
     l_context.set(BaseContext::getDefault());
-    l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
+    l_slaves.setValidator(std::bind(&sofa::core::objectmodel::BaseObject::changeSlavesLink, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     f_listening.setAutoLink(false);
 }
 
