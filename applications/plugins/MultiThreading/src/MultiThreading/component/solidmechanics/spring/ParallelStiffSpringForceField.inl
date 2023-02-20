@@ -96,19 +96,4 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
         });
 }
 
-template <class DataTypes>
-void ParallelStiffSpringForceField<DataTypes>::initTaskScheduler()
-{
-    m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(m_taskScheduler != nullptr);
-    if (m_taskScheduler->getThreadCount() < 1)
-    {
-        m_taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << m_taskScheduler->getThreadCount() << " threads";
-    }
-    else
-    {
-        msg_info() << "Task scheduler already initialized on " << m_taskScheduler->getThreadCount() << " threads";
-    }
-}
 }

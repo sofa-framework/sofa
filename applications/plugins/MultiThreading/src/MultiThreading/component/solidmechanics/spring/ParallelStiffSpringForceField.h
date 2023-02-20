@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 
 namespace sofa::simulation
@@ -36,7 +37,7 @@ template <class DataTypes>
 using StiffSpringForceField = sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes>;
 
 template <class DataTypes>
-class ParallelStiffSpringForceField : public virtual StiffSpringForceField<DataTypes>
+class ParallelStiffSpringForceField : public virtual StiffSpringForceField<DataTypes>, public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelStiffSpringForceField, DataTypes),
@@ -54,10 +55,6 @@ public:
     void init() override;
 
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
-
-protected:
-    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
-    void initTaskScheduler();
 };
 
 }
