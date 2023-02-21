@@ -39,7 +39,7 @@ namespace sofa::component::mechanicalload
 template<class DataTypes>
 ConstantForceField<DataTypes>::ConstantForceField()
     : d_indices(initData(&d_indices, "indices", "indices where the forces are applied"))
-    , d_indexFromEnd(initData(&d_indexFromEnd,bool(false),"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
+    , d_indexFromEnd(initData(&d_indexFromEnd,false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
     , d_forces(initData(&d_forces, "forces", "applied forces at each point"))
     , d_force(initData(&d_force, "force", "applied force to all points if forces attribute is not specified"))
     , d_totalForce(initData(&d_totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
@@ -160,6 +160,11 @@ void ConstantForceField<DataTypes>::init()
             return;
         }
         msg_info() << "Input totalForce is used for initialization";
+    }
+    else
+    {
+        msg_warning() << "Force has not been set. Define one of the following Data: " << d_forces.getName() << ", " << d_force.getName() << " or " << d_totalForce.getName();
+        computeForceFromSingleForce();
     }
 
     // init from ForceField
