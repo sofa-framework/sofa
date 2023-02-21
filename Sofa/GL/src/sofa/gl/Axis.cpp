@@ -35,7 +35,7 @@ const int Axis::quadricDiscretisation = 16;
 
 //GLuint Axis::displayList;
 //GLUquadricObj *Axis::quadratic = nullptr;
-std::map < std::pair<std::pair<float,float>,float>, Axis* > Axis::axisMap; // great idea but no more valid when creating a new opengl context when switching sofa viewer
+std::map < type::Vec3f, Axis::AxisSPtr > Axis::axisMap; // great idea but no more valid when creating a new opengl context when switching sofa viewer
 
 void Axis::initDraw()
 {
@@ -255,52 +255,52 @@ Axis::~Axis()
         gluDeleteQuadric(quadratic);
 }
 
-Axis* Axis::get(const type::Vec3& len)
+Axis::AxisSPtr Axis::get(const type::Vec3& len)
 {
-    Axis*& a = axisMap[std::make_pair(std::make_pair((float)len[0],(float)len[1]),(float)len[2])];
+    auto& a = axisMap[ { float(len[0]),float(len[1]),float(len[2]) }];
     if (a==nullptr)
-        a = new Axis(len);
+        a = std::make_shared<Axis>(len);
     return a;
 }
 
 void Axis::draw(const type::Vec3& center, const Quaternion& orient, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ )
 {
-    Axis* a = get(len);
+    auto a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(len);
+    auto a = get(len);
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const double *mat, const type::Vec3& len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(len);
+    auto a = get(len);
     a->update(mat);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const type::Vec3& center, const Quaternion& orient, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(type::Vec3(len,len,len));
+    auto a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const type::Vec3& center, const double orient[4][4], SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(type::Vec3(len,len,len));
+    auto a = get(type::Vec3(len,len,len));
     a->update(center, orient);
     a->draw( colorX, colorY, colorZ );
 }
 
 void Axis::draw(const double *mat, SReal len, const type::Vec4f& colorX, const type::Vec4f& colorY, const type::Vec4f& colorZ)
 {
-    Axis* a = get(type::Vec3(len,len,len));
+    auto a = get(type::Vec3(len,len,len));
     a->update(mat);
     a->draw( colorX, colorY, colorZ );
 }

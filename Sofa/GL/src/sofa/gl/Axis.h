@@ -27,6 +27,7 @@
 #include <sofa/gl/glu.h>
 
 #include <map>
+#include <memory>
 
 #include <sofa/gl/config.h>
 
@@ -79,8 +80,10 @@ private:
 
     void initDraw();
 
-    static std::map < std::pair<std::pair<float,float>,float>, Axis* > axisMap;
-    static Axis* get(const type::Vec3& len);
+    using AxisSPtr = std::shared_ptr<Axis>;
+
+    static std::map < type::Vec3f, AxisSPtr > axisMap;
+    static AxisSPtr get(const type::Vec3& len);
 public:
     static void clear() { axisMap.clear(); } // need to be called when display list has been created in another opengl context
 
