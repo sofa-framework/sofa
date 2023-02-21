@@ -152,7 +152,7 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-    if (strlen(name) >= 3)
+    if (strlen(name) >= 4)
     {
         std::string_view prefix = std::string_view(name).substr(0, 4);
 
