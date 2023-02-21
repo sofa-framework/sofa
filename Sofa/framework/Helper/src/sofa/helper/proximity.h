@@ -25,7 +25,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/helper/config.h>
 
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/geometry/proximity/PointTriangle.h, sofa/geometry/proximity/SegmentTriangle.h or sofa/geometry/proximity/TriangleTriangle.h")
 
 namespace sofa
 {
@@ -46,7 +46,8 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    void SOFA_PROXIMITY_CLASSES_DEPRECATED() NewComputation(const sofa::type::Vec3& P1, const sofa::type::Vec3& P2, const sofa::type::Vec3& P3, const sofa::type::Vec3& Q1, const sofa::type::Vec3& Q2, const sofa::type::Vec3& Q3, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
+    SOFA_PROXIMITY_CLASSES_DEPRECATED()
+    void NewComputation(const sofa::type::Vec3& P1, const sofa::type::Vec3& P2, const sofa::type::Vec3& P3, const sofa::type::Vec3& Q1, const sofa::type::Vec3& Q2, const sofa::type::Vec3& Q3, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
 
 };
 
@@ -63,7 +64,8 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    void SOFA_PROXIMITY_CLASSES_DEPRECATED() NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q1, const sofa::type::Vec3 &Q2, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
+    SOFA_PROXIMITY_CLASSES_DEPRECATED()
+    void NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q1, const sofa::type::Vec3 &Q2, sofa::type::Vec3 &Presult, sofa::type::Vec3 &Qresult);
 };
 
 //-----------------------------------------------------------------------------
@@ -79,7 +81,8 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    void SOFA_PROXIMITY_CLASSES_DEPRECATED() NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q, sofa::type::Vec3 &Presult);
+    SOFA_PROXIMITY_CLASSES_DEPRECATED()
+    void NewComputation(const sofa::type::Vec3 &P1, const sofa::type::Vec3 &P2, const sofa::type::Vec3 &P3, const sofa::type::Vec3 &Q, sofa::type::Vec3 &Presult);
 };
 
 } // namespace helper
