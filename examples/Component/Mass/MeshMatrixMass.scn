@@ -35,7 +35,7 @@
         <TetrahedronSetTopologyContainer name="TetraTopo" src="@../MeshLoader"/>
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <MeshMatrixMass totalMass="60" name="SparseMass" topology="@TetraTopo" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
+        <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
 
         <Node name="Visu" >

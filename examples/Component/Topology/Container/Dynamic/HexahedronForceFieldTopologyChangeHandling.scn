@@ -27,11 +27,11 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         
-        <MechanicalObject template="Vec3d" name="HexahedralFEMForceField" src="@../grid"/>
+        <MechanicalObject template="Vec3" name="HexahedralFEMForceField" src="@../grid"/>
         <include href="Objects/HexahedronSetTopology.xml" src="@../grid" />
         <HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.1" method="large" />
         <DiagonalMass massDensity="1.0" />
-        <BoxROI template="Vec3d" name="box_roi" box="-11 11 -11 11 9 11" indices="0" drawSize="0" drawBoxes="1" drawPoints="1" drawEdges="1"  />
+        <BoxROI template="Vec3" name="box_roi" box="-11 11 -11 11 9 11" indices="0" drawSize="0" drawBoxes="1" drawPoints="1" drawEdges="1"  />
 
         <TopologicalChangeProcessor listening="1" filename="RemovingHexaProcess.txt" />
     </Node>

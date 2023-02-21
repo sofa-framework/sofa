@@ -33,8 +33,8 @@
         <MeshGmshLoader name="meshLoader0" filename="mesh/truss_tetra.msh" />
         <TetrahedronSetTopologyContainer name="Container" src="@meshLoader0" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <MechanicalObject template="Vec3d" name="TrussMO" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <MechanicalObject template="Vec3" name="TrussMO" />
         <UniformMass totalMass="0.05" />
         <BoxConstraint box="-0.001 -0.001 -0.001 0.001 0.011 0.011" />
         <TetrahedronFEMForceField name="FEM" youngModulus="300000" poissonRatio="0.45" method="large" />
@@ -47,11 +47,11 @@
             <TriangleCollisionModel />
             <Node name="TriangleVisual">
                 <OglModel template="Vec3" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Vec3d,Vec3" name="default12" input="@.." output="@Visual" />
+                <IdentityMapping template="Vec3,Vec3" name="default12" input="@.." output="@Visual" />
             </Node>
         </Node>
         <Node name="Beam">
-            <MechanicalObject template="Rigid3d" name="BeamMO" position="0 0 0  0 0 0 1  0.02 0 0  0 0 0 1  0.04 0 0  0 0 0 1   0.06 0 0  0 0 0 1  0.08 0 0  0 0 0 1   0.1 0 0  0 0 0 1" />
+            <MechanicalObject template="Rigid3" name="BeamMO" position="0 0 0  0 0 0 1  0.02 0 0  0 0 0 1  0.04 0 0  0 0 0 1   0.06 0 0  0 0 0 1  0.08 0 0  0 0 0 1   0.1 0 0  0 0 0 1" />
             <MeshTopology name="BeamMesh" lines="0 1 1 2 2 3 3 4 4 5" />
             <FixedConstraint name="BeamFixedConstraint" indices="0" />
             <UniformMass vertexMass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" />

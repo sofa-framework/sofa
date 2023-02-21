@@ -23,9 +23,9 @@
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
         <MechanicalObject name="dofs" src="@meshLoader" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <DiagonalMass  name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+        <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <OglModel  name="VisualModel" src="@../../LiverSurface" />
@@ -33,7 +33,7 @@
         </Node>
 
         <Node name="Weight" >
-            <MechanicalObject template="Vec3d" name="myParticle" rest_position="0 0 0" position="0 0 0" />
+            <MechanicalObject template="Vec3" name="myParticle" rest_position="0 0 0" position="0 0 0" />
             <UniformMass totalMass="30" />
             <PolynomialSpringsForceField polynomialDegree="3" polynomialStiffness="20 10 50" object1='@.' firstObjectPoints='0' object2='@../dofs' secondObjectPoints='15' drawMode='0' showIndicesScale="1"/>
         </Node>

@@ -49,12 +49,12 @@ set(HEADER_FILES
 
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.h
-    sofa/gpu/cuda/CudaDiagonalMass.inl
-    sofa/gpu/cuda/CudaMeshMatrixMass.h
-    sofa/gpu/cuda/CudaMeshMatrixMass.inl
-    sofa/gpu/cuda/CudaUniformMass.h
-    sofa/gpu/cuda/CudaUniformMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.inl
     
 
     ### FEM
@@ -128,9 +128,9 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSubsetMultiMapping.cpp
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.cpp
-    sofa/gpu/cuda/CudaMeshMatrixMass.cpp
-    sofa/gpu/cuda/CudaUniformMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cpp
 
     ### FEM
     sofa/gpu/cuda/CudaHexahedronFEMForceField.cpp
@@ -195,9 +195,9 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSubsetMapping.cu
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.cu
-    sofa/gpu/cuda/CudaMeshMatrixMass.cu
-    sofa/gpu/cuda/CudaUniformMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cu
 
     ### FEM
     sofa/gpu/cuda/CudaHexahedronFEMForceField.cu
@@ -250,6 +250,15 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaBarycentricMappingRigid.h
         sofa/gpu/cuda/CudaRigidMapping.h
         sofa/gpu/cuda/CudaRigidMapping.inl
+
+        sofa/gpu/cuda/CudaDiagonalMass.h
+        sofa/gpu/cuda/CudaDiagonalMass.inl
+
+        sofa/gpu/cuda/CudaMeshMatrixMass.h
+        sofa/gpu/cuda/CudaMeshMatrixMass.inl
+
+        sofa/gpu/cuda/CudaUniformMass.h
+        sofa/gpu/cuda/CudaUniformMass.inl
     )
 endif()
 

@@ -27,10 +27,10 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <MeshTopology src="@loader" />
-        <MechanicalObject src="@loader" template="Vec3d" name="Liver" />
+        <MechanicalObject src="@loader" template="Vec3" name="Liver" />
         <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
-        <ConicalForceField template="Vec3d" coneCenter="0.0 -10.0 0.0" coneHeight="0 20 0" coneAngle="40" />
+        <ConicalForceField template="Vec3" coneCenter="0.0 -10.0 0.0" coneHeight="0 20 0" coneAngle="40" />
         <Node name="Visu">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_0" color="red" />

@@ -31,7 +31,7 @@ The differences are in the way the global system matrix is built and solved:
             and provided to the linear solver.
             The template CompressedRowSparseMatrixMat3x3d indicates that the matrix is defined by 3x3 blocs.
          -->
-        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <TetrahedronSetTopologyContainer src="@loader" name="topologyContainer"/>

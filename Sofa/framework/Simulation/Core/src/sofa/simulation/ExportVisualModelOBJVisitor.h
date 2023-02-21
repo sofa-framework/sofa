@@ -56,10 +56,6 @@ protected:
     int count;
 };
 
-using ExportOBJVisitor
-    SOFA_ATTRIBUTE_DISABLED("v21.12", "v22.06", "Use ExportVisualModelOBJVisitor instead.")
-    = DeprecatedAndRemoved;
-
 } // namespace simulation
 
 } // namespace sofa

@@ -12,7 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
 
     <DefaultAnimationLoop/>
-    <GenerateCylinder template="Vec3d" name="Cylinder" radius="0.2" height="1" resHeight="7" resCircumferential="7" resRadial="3" />
+    <GenerateCylinder template="Vec3" name="Cylinder" radius="0.2" height="1" resHeight="7" resCircumferential="7" resRadial="3" />
     <Node name="Tetra" >
         <CGLinearSolver iterations="3000" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" /> 
         <EulerImplicitSolver name="default12" rayleighStiffness="0.01"  rayleighMass="0.1" />

@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/simulation/common/SceneLoaderPHP.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/common/SceneLoaderPHP.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/simulation/common/SceneLoaderPHP.h")

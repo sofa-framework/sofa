@@ -27,15 +27,15 @@
 		<EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.1"  rayleighMass="0.1"  vdamping="0"  />
 		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="100"  tolerance="1e-06"  threshold="1e-10" />
 		<MeshGmshLoader name="loader"  filename="mesh/square3.msh" createSubelements="true"/>
-		<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="@loader.translation"  rotation="@loader.rotation"  scale3d="@loader.scale3d" />
+		<MechanicalObject template="Vec3" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="@loader.translation"  rotation="@loader.rotation"  scale3d="@loader.scale3d" />
 		<TriangleSetTopologyContainer name="Container"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles" />
 		<TriangleSetTopologyModifier name="Modifier" />
-		<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+		<TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
 		<DiagonalMass name="diagonalMass1"  massDensity="0.15" />
 
-		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
-		<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />
-		<TriangleCollisionModel template="Vec3d" name="tTriangleModel1" />
+		<TriangularFEMForceField template="Vec3" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
+		<TriangularBendingSprings template="Vec3" name="FEM-Bend"  stiffness="300"  damping="1" />
+		<TriangleCollisionModel template="Vec3" name="tTriangleModel1" />
 
         <Node >
 			<OglModel name="Visual"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material " />
@@ -44,10 +44,10 @@
 		<Node 	name="Edge Mesh"  >
 			<EdgeSetTopologyContainer name="Container" />
 			<EdgeSetTopologyModifier name="Modifier" />
-			<EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawEdges="1" />
+			<EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
-			<EdgePressureForceField template="Vec3d" name="edgePressureFF0"  edges="@Container.edges" pressure="0 0 -0.1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10"/>
+			<EdgePressureForceField template="Vec3" name="edgePressureFF0"  edges="@Container.edges" pressure="0 0 -0.1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10"/>
 		</Node>
-		<StiffSpringForceField template="Vec3d" name="FF" />
+		<StiffSpringForceField template="Vec3" name="FF" />
 	</Node>
 </Node>

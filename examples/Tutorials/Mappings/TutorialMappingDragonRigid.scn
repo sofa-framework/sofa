@@ -15,7 +15,7 @@
     
     <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-    <MechanicalObject name="RigidDOF" template="Rigid3d" dz="1" rotation="90 0 -90" />
+    <MechanicalObject name="RigidDOF" template="Rigid3" dz="1" rotation="90 0 -90" />
     <UniformMass name="Mass" filename="BehaviorModels/dragon.rigid" />
     <Node name="DragonVisual">
         <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" scale="0.1" handleSeams="1" />

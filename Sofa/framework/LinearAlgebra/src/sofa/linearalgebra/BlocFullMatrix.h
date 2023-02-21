@@ -22,12 +22,4 @@
 #pragma once
 #include <sofa/linearalgebra/BlockFullMatrix.h>
 
-SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/linearalgebra/BlockFullMatrix.h")
-
-namespace sofa::linearalgebra
-{
-
-template< std::size_t N, typename T>
-using BlocFullMatrix = BlockFullMatrix<N, T>;
-
-} // namespace sofa::linearalgebra
+SOFA_DISABLED_HEADER("v22.12", "v23.06", "sofa/linearalgebra/BlockFullMatrix.h")

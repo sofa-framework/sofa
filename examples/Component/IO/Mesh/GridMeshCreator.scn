@@ -20,7 +20,7 @@
     <Node name="Thin shell">
                 <GridMeshCreator name="loader" filename="nofile" resolution="2 2" trianglePattern="1" rotation="180 0 0 " scale="10 10 0" />
                 <MeshTopology src="@loader" />
-                <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1"/>
+                <MechanicalObject name="defoDOF" template="Vec3"  src="@loader" showObject="1"/>
                 <EdgeSetGeometryAlgorithms />
                 <BoxConstraint box="-0.5 -0.5 -0.5  10.5 0.005 0.005  " />
                 <TriangleFEMForceField name="FEM1" youngModulus="20000" poissonRatio="0.3" method="large" />

@@ -30,7 +30,7 @@
 		<MechanicalObject name="Volume" src="@loader" scale="10" />
 		<TriangleSetTopologyContainer  name="Container" src="@loader" />
 		<TriangleSetTopologyModifier   name="Modifier" />
-		<TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+		<TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
 		<DiagonalMass massDensity="1" />
 		<StiffSpringForceField name="FF" />
 		<TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />

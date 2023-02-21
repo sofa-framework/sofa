@@ -32,8 +32,8 @@ SOFA_SIMULATION_COMMON_API BaseElement* processXMLLoading(const char *filename, 
 
 SOFA_SIMULATION_COMMON_API BaseElement* loadFromFile(const char *filename);
 
-SOFA_ATTRIBUTE_DEPRECATED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
-SOFA_SIMULATION_COMMON_API BaseElement* loadFromMemory(const char* filename, const char* data, unsigned int size);
+SOFA_ATTRIBUTE_DISABLED("v22.12 (PR#)", "v23.06", "loadFromMemory with 3 arguments specifying the size has been deprecated. Use loadFromMemory(const char* filename, const char* data).")
+BaseElement* loadFromMemory(const char* filename, const char* data, unsigned int size) = delete;
 
 SOFA_SIMULATION_COMMON_API BaseElement* loadFromMemory(const char *filename, const char *data);
 

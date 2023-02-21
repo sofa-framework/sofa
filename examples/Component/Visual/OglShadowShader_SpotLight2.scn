@@ -16,7 +16,7 @@
 		<OglShadowShader name="oglShadowShader1" />
 
 		<MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj"  translation="0 0 -5"  scale3d="0.3 0.3 0.3" handleSeams="1" />
-		<OglModel template="Vec3d" name="VisualModel" src="@meshLoader_0"  material="Default Diffuse 1 0 1 0 1 Ambient 1 0 0.2 0 1 Specular 0 0 1 0 1 Emissive 0 0 1 0 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+		<OglModel template="Vec3" name="VisualModel" src="@meshLoader_0"  material="Default Diffuse 1 0 1 0 1 Ambient 1 0 0.2 0 1 Specular 0 0 1 0 1 Emissive 0 0 1 0 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
 	</Node>
 	<Node name="shader2">
 		<OglShadowShader name="oglShadowShader1" />
@@ -27,7 +27,7 @@
 		<OglShaderDefineMacro id="USE_TEXTURE" indexShader="1" />
 
 		<MeshOBJLoader name="meshLoader_1" filename="mesh/floor2.obj"  translation="0 -2.5 0"  scale3d="1 1 1" handleSeams="1" />
-		<OglModel template="Vec3d"  putOnlyTexCoords="true" name="FloorV" src="@meshLoader_1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />	
+		<OglModel template="Vec3"  putOnlyTexCoords="true" name="FloorV" src="@meshLoader_1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />	
 	</Node>
 
 

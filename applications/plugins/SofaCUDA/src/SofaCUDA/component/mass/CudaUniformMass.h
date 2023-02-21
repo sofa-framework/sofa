@@ -19,34 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/linearalgebra/config.h>
+#ifndef SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
+#define SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
 
-#ifndef SOFA_BUILD_SOFA_LINEARALGEBRA
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.06", "v23.06")
-#endif // SOFA_BUILD_SOFA_LINEARALGEBRA
-
-#include <sofa/type/vector.h>
-
-#include <Eigen/Core>
-#ifndef EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
-#define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #endif
-#include <Eigen/Sparse>
-
-namespace sofa::linearalgebra
-{
-
-typedef Eigen::SparseMatrix<SReal>    SparseMatrixEigen;
-typedef Eigen::SparseVector<SReal>    SparseVectorEigen;
-typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
-
-SOFA_LINEARALGEBRA_API
-SOFA_MATRIXMANIPULATOR_DISABLED()
-typedef DeprecatedAndRemoved LLineManipulator;
-
-SOFA_LINEARALGEBRA_API
-SOFA_MATRIXMANIPULATOR_DISABLED()
-typedef DeprecatedAndRemoved LMatrixManipulator;
-
-} // namespace sofa::linearalgebra
