@@ -22,7 +22,7 @@
 #ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
 #define SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
 
-#include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
+#include <SofaCUDA/component/mass/CudaMeshMatrixMass.inl>
 #include <sofa/component/mass/MeshMatrixMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/behavior/ForceField.inl>

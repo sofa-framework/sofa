@@ -24,3 +24,4 @@
 
 #include <sofa/component/animationloop/config.h>
 SOFA_DISABLED_HEADER_NOT_REPLACED("v22.12", "v23.06")
+

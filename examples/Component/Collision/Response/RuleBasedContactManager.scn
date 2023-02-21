@@ -41,7 +41,7 @@
     <Node name="Torus2">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" scale="5.0" dx="-12" dy="0" />
+        <MechanicalObject template="Rigid3" scale="5.0" dx="-12" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
@@ -63,7 +63,7 @@
     <Node name="Torus3">
         <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" scale="5.0" dx="-25" dy="0" />
+        <MechanicalObject template="Rigid3" scale="5.0" dx="-25" dy="0" />
         <UniformMass filename="BehaviorModels/torus2.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">
@@ -85,7 +85,7 @@
     <Node name="Torus4">
         <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" scale="5.0" dx="-38" dy="0" />
+        <MechanicalObject template="Rigid3" scale="5.0" dx="-38" dy="0" />
         <UniformMass filename="BehaviorModels/torus.rigid"/>
         <UncoupledConstraintCorrection />
         <Node name="Visu">

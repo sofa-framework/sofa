@@ -11,7 +11,7 @@
 
 	<Node name="Example">
 		<RegularGridTopology n="50 50 50"  min="0 0 0" max="10 10 10" />
-        	<MechanicalObject name="DOFs" template="Vec3d" />
+        	<MechanicalObject name="DOFs" template="Vec3" />
         	<SphereCollisionModel radius="0.1" />
     </Node >
 		

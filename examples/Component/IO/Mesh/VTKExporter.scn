@@ -7,7 +7,7 @@
 
     <MeshTopology name="mesh" filename="mesh/dragon.obj" />
     <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
-    <MechanicalObject src="@loader" template="Vec3d" name="mecha" showObject="1" />
+    <MechanicalObject src="@loader" template="Vec3" name="mecha" showObject="1" />
     <TetrahedronSetTopologyContainer src="@loader" name="topo" />
     <VTKExporter filename="example.vtk" listening="true" edges="0" triangles="1" quads="0" tetras="0" pointsDataFields="mecha.position" exportAtBegin="1" />
 </Node>

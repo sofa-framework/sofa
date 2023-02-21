@@ -497,9 +497,8 @@ bool IncrSAP::assertion_end_points_sorted() const{
     CompPEndPoint inferior;
     int n = 0;
     for(int dim = 0 ; dim < 3 ; ++dim){
-        int ID = 0;
+        [[maybe_unused]] int ID = 0;
         EndPointList::const_iterator next_it2;
-        int equality_number = 0;
         for(EndPointList::const_iterator it2 = _end_points[dim].begin() ; it2 != _end_points[dim].end() ; ++it2){
             assert((**it2).ID == ID);
 
@@ -510,9 +509,6 @@ bool IncrSAP::assertion_end_points_sorted() const{
 
                 if(!inferior(*it2,*next_it2)){
                     ++n;
-
-                    if((**it2).value == (**next_it2).value)
-                        ++equality_number;
                 }
             }
 

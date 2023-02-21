@@ -45,7 +45,7 @@
 
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/init.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/init.h>
 
 
 
@@ -250,7 +250,7 @@ int main(int argc, char** argv)
     //force load SofaComponentAll
     sofa::component::init();
     //force load SofaGui (registering guis)
-    sofa::gui::initSofaGui();
+    sofa::gui::init();
 
     if (int err = sofa::gui::common::GUIManager::Init(argv[0],"")) return err;
     if (int err=sofa::gui::common::GUIManager::createGUI(NULL)) return err;

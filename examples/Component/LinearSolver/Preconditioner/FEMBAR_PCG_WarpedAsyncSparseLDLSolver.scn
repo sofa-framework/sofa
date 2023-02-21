@@ -4,7 +4,7 @@
 
     <ShewchukPCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner" update_step="1"/>
     <WarpPreconditioner name="preconditioner" linearSolver="@factorization" update_step="15"/>
-    <AsyncSparseLDLSolver name="factorization" template="CompressedRowSparseMatrixMat3x3d"/>
+    <AsyncSparseLDLSolver name="factorization" template="CompressedRowSparseMatrixMat3x3"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

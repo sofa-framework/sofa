@@ -79,7 +79,7 @@ void SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::buildOppositeOrder()
 }
 
 template<>
-SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::value() const
+float SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }
@@ -103,7 +103,7 @@ void SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::buildOppositeOrder(
 }
 
 template<>
-SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::value() const
+double SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }
@@ -128,7 +128,7 @@ void SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::bui
 }
 
 template<>
-SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::value() const
+float SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }
@@ -152,7 +152,7 @@ void SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::bu
 }
 
 template<>
-SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::value() const
+double SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }

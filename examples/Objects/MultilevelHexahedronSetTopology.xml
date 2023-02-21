@@ -1,7 +1,7 @@
 <Node name="Group"> 
   <MultilevelHexahedronSetTopologyContainer  name="Container" src="" level="0"/>
   <MultilevelHexahedronSetTopologyModifier   name="Modifier" />
-  <MultilevelHexahedronSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+  <MultilevelHexahedronSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
 </Node>
 <!-- 
      Template List 
@@ -14,5 +14,5 @@
        - Vec1f
 
      Example of use:
-     <include href="Objects/MultilevelHexahedronSetTopology.xml" template="Vec3d" />
+     <include href="Objects/MultilevelHexahedronSetTopology.xml" template="Vec3" />
 -->

@@ -198,7 +198,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<double>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API LinearSpring<SReal>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<defaulttype::Vec1Types>;

@@ -1816,6 +1816,8 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
     bool drawVonMisesStress, bool showWireFrame, const VecCoord& x, const VecReal& youngModulus, bool heterogeneous,
     Real minVM, Real maxVM, helper::ReadAccessor<Data<type::vector<Real>>> vM)
 {
+    SOFA_UNUSED(vparams);
+
     auto elementId = std::distance(this->_indexedElements->begin(), range.start);
     auto pointsIt = m_renderedPoints.begin() + elementId * 3 * 4;
     auto colorsIt = m_renderedColors.begin() + elementId * 3 * 4;

@@ -61,3 +61,11 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

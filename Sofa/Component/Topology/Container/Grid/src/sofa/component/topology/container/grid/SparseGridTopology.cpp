@@ -328,7 +328,6 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
         _max.setValue(type::Vec3((SReal)xmax, (SReal)ymax, (SReal)zmax));
 
         int value;
-        int numVoxels = 0;
         dataVoxels.beginEdit()->resize(fileNx * fileNy * fileNz, (unsigned char) 0);
 
         for(int z=0; z<fileNz; ++z)
@@ -341,7 +340,6 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
                     if (value != 0)
                     {
                         setVoxel(x + fileNx * y + fileNx * fileNy * z,1);
-                        numVoxels++;
                     }
                 }
             }
@@ -1195,14 +1193,12 @@ void SparseGridTopology::buildFromFiner()
     for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         type::fixed_array<Index,8> finerChildren = this->_hierarchicalCubeMap[i];
-        unsigned nbchildren = 0;
         for(int w=0; w<8; ++w)
         {
             if( finerChildren[w] != InvalidID)
             {
                 _stiffnessCoefs[i] += _finerSparseGrid->_stiffnessCoefs[finerChildren[w]];
                 _massCoefs[i] += _finerSparseGrid->_massCoefs[finerChildren[w]];
-                ++nbchildren;
             }
         }
         _stiffnessCoefs[i] /= 8.0;//(float)nbchildren;

@@ -19,17 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#ifndef SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
+#define SOFA_GPU_CUDA_CUDAUNIFORMMASS_H
 
-#include <sofa/core/topology/TopologySubsetIndices.h>
-
-SOFA_DISABLED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologySubsetIndices.h")
-
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TopologyDataHandler.h>
-
-namespace sofa::component::topology
-{
-    using TopologySubsetIndices = sofa::core::topology::TopologySubsetIndices;
-
-} // namespace sofa::component::topology
+#endif

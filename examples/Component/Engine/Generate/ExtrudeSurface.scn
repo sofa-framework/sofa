@@ -12,8 +12,8 @@
         <MeshOBJLoader name="meshLoader" filename="mesh/liver.obj" />
         <MechanicalObject src="@meshLoader"/>
         <SphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" isVisible="0" src="@meshLoader" />
-        <ExtrudeSurface template="Vec3d" name="extrusion" triangles="@meshLoader.triangles" surfaceVertices="@meshLoader.position" surfaceTriangles="@surface1.triangleIndices" isVisible="0" />
-        <RandomPointDistributionInSurface template="Vec3d" vertices="@extrusion.extrusionVertices" triangles="@extrusion.extrusionTriangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1" />
+        <ExtrudeSurface template="Vec3" name="extrusion" triangles="@meshLoader.triangles" surfaceVertices="@meshLoader.position" surfaceTriangles="@surface1.triangleIndices" isVisible="0" />
+        <RandomPointDistributionInSurface template="Vec3" vertices="@extrusion.extrusionVertices" triangles="@extrusion.extrusionTriangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1" />
     </Node>
     <Node name="Extrusion">
         <MeshTopology points="@../extrude/extrusion.extrusionVertices" triangles="@../extrude/extrusion.extrusionTriangles" />

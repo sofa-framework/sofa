@@ -787,14 +787,12 @@ void SparseGridRamificationTopology::buildFromFiner()
     for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         auto finerChildren = this->_hierarchicalCubeMap[i];
-        unsigned nbchildren = 0;
         for(int w=0; w<8; ++w)
         {
             if( finerChildren[w] != InvalidID)
             {
                 _massCoefs[i] += this->_finerSparseGrid->getMassCoef(finerChildren[w]);
                 _stiffnessCoefs[i] += this->_finerSparseGrid->getStiffnessCoef(finerChildren[w]);
-                ++nbchildren;
             }
         }
         _stiffnessCoefs[i] /= 8.0;//(float)nbchildren;

@@ -45,7 +45,7 @@
         <Node name="Edge Mesh">
             <EdgeSetTopologyContainer name="Container" />
             <EdgeSetTopologyModifier name="Modifier" />
-            <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1" />
+            <EdgeSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawEdges="1" />
             <Triangle2EdgeTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
         </Node>
     </Node>

@@ -13,34 +13,34 @@
     <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
     <Node name="Cube1" bbox="-1 -1 -1 1 1 1">
-        <MechanicalObject template="Rigid2d" position="0 10 0" velocity="0.1 1 -200" />
+        <MechanicalObject template="Rigid2" position="0 10 0" velocity="0.1 1 -200" />
         <UniformMass vertexMass="1 1 0.83333" />
         <Node name="Points">
-            <MechanicalObject template="Vec2d" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" />
+            <MechanicalObject template="Vec2" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" />
             <RigidMapping />
             <PlaneForceField showPlane="1" stiffness="10000" />
         </Node>
     </Node>
     <Node name="Cube2">
-        <MechanicalObject template="Vec2d" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="10" dx="2" />
+        <MechanicalObject template="Vec2" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="10" dx="2" />
         <UniformMass totalMass="4" />
         <PlaneForceField showPlane="1" stiffness="10000" />
-        <StiffSpringForceField template="Vec2d" name="Springs" spring="0 1 1000 1 1  1 2 1000 1 1  2 3 1000 1 1  3 0 1000 1 1  0 2 500 0 1.414  1 3 500 0 1.414" />
+        <StiffSpringForceField template="Vec2" name="Springs" spring="0 1 1000 1 1  1 2 1000 1 1  2 3 1000 1 1  3 0 1000 1 1  0 2 500 0 1.414  1 3 500 0 1.414" />
     </Node>
     <Node name="Cube3">
-        <MechanicalObject template="Vec2d" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="10" dx="-2" />
+        <MechanicalObject template="Vec2" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="10" dx="-2" />
         <UniformMass totalMass="4" />
         <PlaneForceField showPlane="1" stiffness="10000" />
         <StiffSpringForceField name="Springs" spring="0 1 1000 1 1  1 2 1000 1 1  2 3 1000 1 1  3 0 1000 1 1  0 2 500 0 1.414  1 3 500 0 1.414" />
     </Node>
     <Node name="Cube4">
-        <MechanicalObject template="Vec2d" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="8" dx="0" />
+        <MechanicalObject template="Vec2" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="8" dx="0" />
         <UniformMass totalMass="4" />
         <PlaneForceField showPlane="1" stiffness="10000" />
         <StiffSpringForceField name="Springs" spring="0 1 1000 1 1  1 2 1000 1 1  2 3 1000 1 1  3 0 1000 1 1  0 2 500 0 1.414  1 3 500 0 1.414" />
     </Node>
     <Node name="Cube5">
-        <MechanicalObject template="Vec2d" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="12" dx="0" />
+        <MechanicalObject template="Vec2" position="-0.5 -0.5  0.5 -0.5  0.5 0.5  -0.5 0.5" dy="12" dx="0" />
         <UniformMass totalMass="4" />
         <PlaneForceField showPlane="1" stiffness="10000" />
         <StiffSpringForceField name="Springs" spring="0 1 1000 1 1  1 2 1000 1 1  2 3 1000 1 1  3 0 1000 1 1  0 2 500 0 1.414  1 3 500 0 1.414" />

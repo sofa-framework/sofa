@@ -35,7 +35,7 @@
         <MechanicalObject src="@../loader" name="Volume" translation="4 0 0"/>
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawTetrahedra="0" showTetrahedraIndices="0"/>
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" drawTetrahedra="0" showTetrahedraIndices="0"/>
         
         <DiagonalMass massDensity="1.0" />
         <FixedConstraint name="fix" indices="7 8 14 15" />
@@ -44,7 +44,7 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
+            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" printLog="1"/>
 
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
@@ -67,7 +67,7 @@
         <MechanicalObject src="@../loader" name="Volume" translation="-4 0 0"/>
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawTetrahedra="0" showTetrahedraIndices="0"/>
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" drawTetrahedra="0" showTetrahedraIndices="0"/>
         
         <DiagonalMass massDensity="1.0" />
         <FixedConstraint name="fix" indices="7 8 14 15" />
@@ -76,7 +76,7 @@
         <Node name="T_2">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
+            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTriangles="1" drawNormals="1" drawNormalLength="1.0"/>
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" printLog="1"/>
 
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />

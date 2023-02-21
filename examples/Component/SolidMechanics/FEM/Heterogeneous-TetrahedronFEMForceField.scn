@@ -40,12 +40,12 @@
     <Node name="FEM">
         <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1" _velocityDamping="0.5"/>
         <ShewchukPCGLinearSolver preconditioner="@precond" update_step="15"/>
-        <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3d"/>
+        <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3"/>
 
         <TetrahedronSetTopologyContainer name="Container" position="@../Topology/HexaTop.position" tetrahedra="@../Topology/Container.tetrahedra"/>
         <TetrahedronSetTopologyModifier name="Modifier"/>
 
-        <MechanicalObject name="mstate" template="Vec3d" showIndices="0"/>
+        <MechanicalObject name="mstate" template="Vec3" showIndices="0"/>
         <BoxConstraint name="support" box="-0.06 -0.06 0.29 0.06 0.06 0.295"  drawBoxes="true" />
 
         <BoxROI name="Gel1" box="-0.05 -0.05 0.210 0.05 0.05 0.225"  drawBoxes="false"/>

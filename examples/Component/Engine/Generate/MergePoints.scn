@@ -34,13 +34,13 @@
     
     <Node name="mesh">
 		<MeshOBJLoader name="meshLoader" filename="mesh/raptor_35kp.obj"/>  
-		<SubsetTopology template="Vec3d" name="subset_head" box="-2 4 4 2 8 8" drawROI="1" src="@meshLoader" rest_position="@meshLoader.position" localIndices="1"/>
+		<SubsetTopology template="Vec3" name="subset_head" box="-2 4 4 2 8 8" drawROI="1" src="@meshLoader" rest_position="@meshLoader.position" localIndices="1"/>
 		
 		<Node name="simu_head">
 			<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
 			<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 			<SparseGridRamificationTopology position="@../subset_head.pointsInROI" n="10 10 10" nbVirtualFinerLevels="0" finestConnectivity="0" />			
-			<MechanicalObject template="Vec3d" name="mecaObj2"  />
+			<MechanicalObject template="Vec3" name="mecaObj2"  />
 			<BoxConstraint box="-2 4 4 2 8 4.5" drawBoxes="0"/>
 			<UniformMass totalMass="50.0" />
             <HexahedronFEMForceField name="FEM" youngModulus="4000.0" poissonRatio="0.30" method="large" updateStiffnessMatrix="false" printLog="0" 
@@ -53,13 +53,13 @@
 					quads="@../../subset_head.quadsInROI"
 					 />
 				<QuadSetTopologyModifier   name="Modifier" />
-				<QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" drawEdges="0" />		                    
+				<QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" drawEdges="0" />		                    
 				<MechanicalObject name="CollisModel" />
 				<BarycentricMapping input="@.." output="@CollisModel" />
 			</Node>  
 		</Node>
         
-   		<MergePoints template="Vec3d" name="merge_subsets" position1="@meshLoader.position"
+   		<MergePoints template="Vec3" name="merge_subsets" position1="@meshLoader.position"
 			position2="@simu_head/Visu/CollisModel.position" mappingX2="@subset_head.indices"/>
 
        <Node>

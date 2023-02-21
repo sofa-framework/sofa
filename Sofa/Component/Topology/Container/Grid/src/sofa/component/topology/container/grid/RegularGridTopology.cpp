@@ -239,9 +239,9 @@ RegularGridTopology::Index RegularGridTopology::findCube(const type::Vec3& pos)
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
-    int ix = int(x+1000000)-1000000; // Do not round toward 0...
-    int iy = int(y+1000000)-1000000;
-    int iz = int(z+1000000)-1000000;
+    int ix = int(std::floor(x));
+    int iy = int(std::floor(y));
+    int iz = int(std::floor(z));
     if (   (unsigned)ix <= (unsigned)n[0]-2
             && (unsigned)iy <= (unsigned)n[1]-2
             && (unsigned)iz <= (unsigned)n[2]-2 )
@@ -263,9 +263,9 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const type::Vec3
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
-    int ix = int(x+1000000)-1000000; // Do not round toward 0...
-    int iy = int(y+1000000)-1000000;
-    int iz = int(z+1000000)-1000000;
+    int ix = int(std::floor(x));
+    int iy = int(std::floor(y));
+    int iz = int(std::floor(z));
     if (ix<0) ix=0; else if (ix>n[0]-2) ix=n[0]-2;
     if (iy<0) iy=0; else if (iy>n[1]-2) iy=n[1]-2;
     if (iz<0) iz=0; else if (iz>n[2]-2) iz=n[2]-2;
@@ -311,9 +311,9 @@ RegularGridTopology::Index RegularGridTopology::findNearestCube(const type::Vec3
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
-    int ix = int(x+1000000)-1000000; // Do not round toward 0...
-    int iy = int(y+1000000)-1000000;
-    int iz = int(z+1000000)-1000000;
+    int ix = int(std::floor(x));
+    int iy = int(std::floor(y));
+    int iz = int(std::floor(z));
     if (ix<0) ix=0; else if (ix>n[0]-2) ix=n[0]-2;
     if (iy<0) iy=0; else if (iy>n[1]-2) iy=n[1]-2;
     if (iz<0) iz=0; else if (iz>n[2]-2) iz=n[2]-2;

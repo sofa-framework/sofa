@@ -35,7 +35,7 @@
         <MechanicalObject name="Volume" src="@meshLoader" translation="0 0 0" />
         <TetrahedronSetTopologyContainer name="Container" tetrahedra="@meshLoader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <TopologicalChangeProcessor listening="1" filename="RemovingTetra2TriangleProcess_performanceTest.txt" />
         <DiagonalMass massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
