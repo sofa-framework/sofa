@@ -23,5 +23,5 @@
 
 #include <SofaCUDA/config.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/sofa/gpu/cuda/component/mass/CudaDiagonalMass.h")
-#include <SofaCUDA/sofa/gpu/cuda/component/mass/CudaDiagonalMass.h>
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mass/CudaDiagonalMass.h")
+#include <SofaCUDA/component/mass/CudaDiagonalMass.h>

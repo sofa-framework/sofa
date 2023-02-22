@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl>
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
