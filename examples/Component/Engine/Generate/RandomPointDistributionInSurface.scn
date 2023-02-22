@@ -11,7 +11,7 @@
     <Node name="Random">
         <MeshOBJLoader name="meshLoader" filename="mesh/liver.obj" />
         <MechanicalObject src="@meshLoader"/>
-        <RandomPointDistributionInSurface template="Vec3d" drawOutputPoints="true"
+        <RandomPointDistributionInSurface template="Vec3" drawOutputPoints="true"
             vertices="@meshLoader.position" triangles="@meshLoader.triangles" numberOfInPoints="100" numberOfTests="3" minDistanceBetweenPoints="0.1" 
         />
     </Node>

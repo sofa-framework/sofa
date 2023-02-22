@@ -28,7 +28,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <MeshTopology src="@loader" />
-        <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
+        <MechanicalObject src="@loader" template="Vec3" name="dofs" />
         <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <BoxConstraint box="-5 0 -1 -2 1 2" />

@@ -29,7 +29,7 @@
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5" />
         <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
-        <MechanicalObject name="dofs" src="@loader" template="Vec3d" />
+        <MechanicalObject name="dofs" src="@loader" template="Vec3" />
         <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" listening="1" />
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />

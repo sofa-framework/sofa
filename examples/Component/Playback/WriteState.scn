@@ -17,7 +17,7 @@
 
     <Node name="Particle" bbox="-1 -1 -1 1 1 1" >
         <!-- Particle falling under gravity -->
-        <MechanicalObject name="ParticleMO" template="Rigid3d" position="0 0 0 0 0 0 1" showObject="1" />
+        <MechanicalObject name="ParticleMO" template="Rigid3" position="0 0 0 0 0 0 1" showObject="1" />
         <UniformMass totalMass="1.0" />
 
         <!-- WriteState: finds automatically the Mechanical within its node/context -->

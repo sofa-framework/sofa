@@ -33,7 +33,7 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <sofa/gui/init.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <SofaCommon/initSofaCommon.h>
@@ -669,7 +669,7 @@ int main(int argc, char** argv)
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
     sofa::component::initSofaMisc();
-    sofa::gui::initMain();
+    sofa::gui::init();
 
     if (int err = sofa::gui::common::GUIManager::Init(argv[0],"")) return err;
     if (int err=sofa::gui::common::GUIManager::createGUI(NULL)) return err;

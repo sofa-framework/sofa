@@ -46,6 +46,8 @@ void showErrorLetterCase(sofa::core::visual::DisplayFlags& value,
                          sofa::core::objectmodel::Data<sofa::core::visual::DisplayFlags>& data,
                          std::string incorrectLetterCaseFlag, std::string flagWithCorrectLetterCase)
 {
+    SOFA_UNUSED(value);
+
     if (data.getOwner())
     {
         msg_error(data.getOwner()) << "Letter case of flag '" + incorrectLetterCaseFlag

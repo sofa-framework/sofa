@@ -27,7 +27,7 @@
     <Node name="Cube1">
         <EulerImplicitSolver name="EulerImplicit Cube1"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver Cube1" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject name="Particles Cube1" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0.5 2 0" />
+        <MechanicalObject name="Particles Cube1" template="Vec3" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0.5 2 0" />
         <MeshTopology name="Topology Cube1" hexas="0 4 6 2 1 5 7 3" />
         <UniformMass name="Mass Cube1" totalMass="1" />
         <MeshSpringForceField name="Springs Cube1" stiffness="100" damping="1" />
@@ -38,7 +38,7 @@
     <Node name="Cube2">
         <EulerImplicitSolver name="EulerImplicit Cube2" />
         <CGLinearSolver name="CG Solver Cube2" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject name="Particles Cube2" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />
+        <MechanicalObject name="Particles Cube2" template="Vec3" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />
         <MeshTopology name="Topology Cube2" hexas="0 4 6 2 1 5 7 3" />
         <UniformMass name="Mass Cube2" totalMass="1" />
         <MeshSpringForceField name="Springs Cube2" stiffness="15" damping="1" />

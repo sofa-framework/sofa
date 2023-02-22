@@ -24,7 +24,7 @@
 #include <sofa/sofa.h>
 #include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/Main.h>
+#include <sofa/gui/init.h>
 
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
     sofa::component::initSofaGeneral();
-    sofa::gui::initMain();
+    sofa::gui::init();
     sofa::gui::common::GUIManager::Init(argv[0]);
 
     sofa::helper::parse("This is a SOFA application.")

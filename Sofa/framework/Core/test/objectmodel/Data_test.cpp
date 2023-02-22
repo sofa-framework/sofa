@@ -38,29 +38,56 @@ class Data_test : public BaseTest
 public:
     Data<int> dataInt;
     Data<float> dataFloat;
+    Data<double> dataDouble;
+    Data<sofa::type::vector<sofa::type::RGBAColor>> dataVectorColor;
     Data<bool> dataBool;
+
+    Data<SReal> dataSReal;
     Data<sofa::type::Vec3> dataVec3;
     Data<sofa::type::vector<sofa::type::Vec3>> dataVectorVec3;
-    Data<sofa::type::vector<sofa::type::RGBAColor>> dataVectorColor;
 };
 
 TEST_F(Data_test, getValueTypeString)
 {
     EXPECT_EQ(dataInt.getValueTypeString(), "i");
     EXPECT_EQ(dataFloat.getValueTypeString(), "f");
+    EXPECT_EQ(dataDouble.getValueTypeString(), "d");
     EXPECT_EQ(dataBool.getValueTypeString(), "bool");
-    EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3d");
-    EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3d>");
     EXPECT_EQ(dataVectorColor.getValueTypeString(), "vector<RGBAColor>");
+
+    if constexpr (std::is_same_v <SReal, double>)
+    {
+        EXPECT_EQ(dataSReal.getValueTypeString(), "d");
+        EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3d");
+        EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3d>");
+    }
+    else
+    {
+        EXPECT_EQ(dataSReal.getValueTypeString(), "f");
+        EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3f");
+        EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3f>");
+    }
 }
 
 TEST_F(Data_test, getNameWithValueTypeInfo)
 {
     EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "i");
     EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "f");
+    EXPECT_EQ(dataDouble.getValueTypeInfo()->name(), "d");
     EXPECT_EQ(dataBool.getValueTypeInfo()->name(), "bool");
-    EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
-    EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3d>");
     EXPECT_EQ(dataVectorColor.getValueTypeInfo()->name(), "vector<RGBAColor>");
+
+    if constexpr (std::is_same_v <SReal, double>)
+    {
+        EXPECT_EQ(dataSReal.getValueTypeInfo()->name(), "d");
+        EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
+        EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3d>");
+    }
+    else
+    {
+        EXPECT_EQ(dataSReal.getValueTypeInfo()->name(), "f");
+        EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3f");
+        EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3f>");
+    }
 }
 }// namespace sofa

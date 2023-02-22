@@ -2,7 +2,7 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <SparseLUSolver template="CompressedRowSparseMatrixMat3x3d" permutation="None"/>
+    <SparseLUSolver template="CompressedRowSparseMatrixMat3x3" permutation="None"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

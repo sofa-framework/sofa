@@ -26,7 +26,7 @@
         
         <QuadSetTopologyContainer name="Quad_topo" src="@../grid" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         
         <MechanicalObject name="TriangularFEMForceField_dof" />
         <DiagonalMass totalMass="1.0" />
@@ -35,7 +35,7 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
 
             <Quad2TriangleTopologicalMapping name="TriangularFEMForceField_mapTopo" input="@../Quad_topo" output="@Triangle_topo" />
             <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
@@ -55,7 +55,7 @@
         
         <QuadSetTopologyContainer name="Quad_topo" src="@../grid" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         
         <MechanicalObject name="TriangularFEMForceFieldOptim_dof" />
         <DiagonalMass totalMass="1.0" />
@@ -64,7 +64,7 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
 
             <Quad2TriangleTopologicalMapping name="TriangularFEMForceFieldOptim_mapTopo" input="@../Quad_topo" output="@Triangle_topo" />
             <TriangularFEMForceFieldOptim name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
@@ -84,7 +84,7 @@
         
         <QuadSetTopologyContainer name="Quad_topo" src="@../grid" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         
         <MechanicalObject name="TriangleFEMForceField_dof" />
         <DiagonalMass totalMass="1.0" />
@@ -93,7 +93,7 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+            <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
 
             <Quad2TriangleTopologicalMapping name="TriangleFEMForceField_mapTopo" input="@../Quad_topo" output="@Triangle_topo" />
             <TriangleFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />

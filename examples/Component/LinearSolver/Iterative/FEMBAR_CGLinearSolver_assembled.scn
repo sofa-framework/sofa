@@ -2,7 +2,7 @@
 
     <include href="../FEMBAR-common.xml"/>
 
-    <CGLinearSolver template="CompressedRowSparseMatrixMat3x3d" iterations="1000" threshold="1e-9" tolerance="1e-9"/>
+    <CGLinearSolver template="CompressedRowSparseMatrixMat3x3" iterations="1000" threshold="1e-9" tolerance="1e-9"/>
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.45" method="large" />
 
 </Node>

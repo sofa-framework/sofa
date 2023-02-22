@@ -12,7 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [HexahedronSetGeometryAlgorithms HexahedronSetTopologyContainer TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
     <DefaultAnimationLoop/>
 
-    <GenerateGrid template="Vec3d" name="Slab" max="0.5 1.5 1" resolution="5 3 4" />
+    <GenerateGrid template="Vec3" name="Slab" max="0.5 1.5 1" resolution="5 3 4" />
     <Node name="Tetra">
         <CGLinearSolver iterations="3000" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" /> 
         <EulerImplicitSolver name="default12" rayleighStiffness="0.01"  rayleighMass="0.1" />

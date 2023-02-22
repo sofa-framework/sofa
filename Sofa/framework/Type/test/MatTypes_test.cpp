@@ -99,17 +99,17 @@ TEST(MatTypesTest, mat3x3product)
     static constexpr Matrix3 a{ Matrix3::Line{1., 2., 3.}, Matrix3::Line{4., 5., 6.}, Matrix3::Line{7., 8., 9.} };
     static constexpr auto a2 = a * a;
 
-    EXPECT_FLOATINGPOINT_EQ(a2[0][0], 30.)
-    EXPECT_FLOATINGPOINT_EQ(a2[0][1], 36.)
-    EXPECT_FLOATINGPOINT_EQ(a2[0][2], 42.)
+    EXPECT_FLOATINGPOINT_EQ(a2[0][0], 30_sreal)
+    EXPECT_FLOATINGPOINT_EQ(a2[0][1], 36_sreal)
+    EXPECT_FLOATINGPOINT_EQ(a2[0][2], 42_sreal)
 
-    EXPECT_FLOATINGPOINT_EQ(a2[1][0], 66.)
-    EXPECT_FLOATINGPOINT_EQ(a2[1][1], 81.)
-    EXPECT_FLOATINGPOINT_EQ(a2[1][2], 96.)
+    EXPECT_FLOATINGPOINT_EQ(a2[1][0], 66_sreal)
+    EXPECT_FLOATINGPOINT_EQ(a2[1][1], 81_sreal)
+    EXPECT_FLOATINGPOINT_EQ(a2[1][2], 96_sreal)
 
-    EXPECT_FLOATINGPOINT_EQ(a2[2][0], 102.)
-    EXPECT_FLOATINGPOINT_EQ(a2[2][1], 126.)
-    EXPECT_FLOATINGPOINT_EQ(a2[2][2], 150.)
+    EXPECT_FLOATINGPOINT_EQ(a2[2][0], 102_sreal)
+    EXPECT_FLOATINGPOINT_EQ(a2[2][1], 126_sreal)
+    EXPECT_FLOATINGPOINT_EQ(a2[2][2], 150_sreal)
 }
 
 TEST(MatTypesTest, multTranspose)
@@ -171,7 +171,14 @@ void test_transformInverse(Matrix4 const& M)
     M_inv.transformInvert(M);
     Matrix4 res = M*M_inv;
     Matrix4 I;I.identity();
-    EXPECT_MAT_NEAR(I, res, 1e-12_sreal);
+    if constexpr (std::is_same_v <SReal, double>)
+    {
+        EXPECT_MAT_NEAR(I, res, 1e-12_sreal);
+    }
+    else
+    {
+        EXPECT_MAT_NEAR(I, res, 1e-6_sreal);
+    }
 }
 
 TEST(MatTypesTest, transformInverse)

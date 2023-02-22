@@ -34,10 +34,10 @@ const bool isBeamLinearMapping_mtImplementationRegistered =
 //using namespace defaulttype;
 // Register in the Factory
 int BeamLinearMapping_mtClass = sofa::core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
-        .add< BeamLinearMapping_mt< Rigid3Types, Vec3dTypes > >()
+        .add< BeamLinearMapping_mt< Rigid3Types, Vec3Types > >()
         ;
 
-template class BeamLinearMapping_mt< Rigid3Types, Vec3dTypes >;
+template class BeamLinearMapping_mt< Rigid3Types, Vec3Types >;
 
 }
 

@@ -33,7 +33,7 @@
         <MechanicalObject src="@loader" name="Volume" />
         <TetrahedronSetTopologyContainer src="@loader" name="Tetra_topo" listening="1" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="1" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTetrahedra="1" />
         
         <UniformMass totalMass="1.0" />
 
@@ -43,7 +43,7 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" listening="1" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
+            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTriangles="1" />
             <Tetra2TriangleTopologicalMapping input="@../Tetra_topo" output="@Triangle_topo" listening="1" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" /> 
             

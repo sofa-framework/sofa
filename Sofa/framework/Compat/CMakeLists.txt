@@ -16,33 +16,6 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullMatrix.inl
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.inl
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/GlobalSystemMatrixExporter.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/RotationMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/matrix_bloc_traits.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CompressedRowSparseMatrix.inl
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/MatrixExpr.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/SparseMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyData.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyData.inl
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyDataHandler.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyDataHandler.inl
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySparseData.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySparseData.inl
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.inl
-    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetIndices.h
-    ${SOFACOMPATSRC_ROOT}/SofaDenseSolver/LULinearSolver.h
-    ${SOFACOMPATSRC_ROOT}/SofaDenseSolver/NewMatMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaDenseSolver/NewMatVector.h
-    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenBaseSparseMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenBaseSparseMatrix_MT.h
-    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenMatrixManipulator.h
-    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenSparseMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVector.h
-    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVectorWrapper.h
-    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/SVDLinearSolver.h
-    ${SOFACOMPATSRC_ROOT}/SofaExporter/OBJExporter.h
     ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.h
     ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.inl
     ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedSystemMapping.h

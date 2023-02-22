@@ -9,7 +9,7 @@
     <DefaultAnimationLoop/>
     <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0" rayleighMass="0" />
     <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-    <MechanicalObject template="Vec3d" showObject="1" drawMode="1">
+    <MechanicalObject template="Vec3" showObject="1" drawMode="1">
         <Attribute type="name">
             <Data value="particleDOF" />
         </Attribute>
@@ -41,7 +41,7 @@
             <Data value="1" />
         </Attribute>
     </MechanicalObject>
-    <HermiteSplineConstraint template="Vec3d">
+    <HermiteSplineConstraint template="Vec3">
         <Attribute type="name">
             <Data value="thierry" />
         </Attribute>

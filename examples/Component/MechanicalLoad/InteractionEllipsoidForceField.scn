@@ -26,7 +26,7 @@
     <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
     <Node name="RotatingObstacle">
         <EulerExplicitSolver name="odesolver" printLog="false" />
-        <MechanicalObject name="MS2" template="Rigid3d" position="0 5 3 0 0 0 1" velocity="0 0 0 -0.1 0 0" />
+        <MechanicalObject name="MS2" template="Rigid3" position="0 5 3 0 0 0 1" velocity="0 0 0 -0.1 0 0" />
         <UniformMass totalMass="1" />
         <PartialFixedConstraint indices="0" fixedDirections="1 1 1 0 0 0" />
     </Node>
@@ -42,7 +42,7 @@
         <FixedConstraint indices="@box2.indices"/>
         <MeshSpringForceField name="Springs" stiffness="2000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="20" damping="0" />
-        <InteractionEllipsoidForceField template="Vec3d,Rigid3d" object1="@MS1" object2="@../RotatingObstacle/MS2" stiffness="1000" damping="1" center="0 0 0 0 -5 0" vradius="6 2 4   2 4 2" object2_forces="false" object2_invert="false" />
+        <InteractionEllipsoidForceField template="Vec3,Rigid3" object1="@MS1" object2="@../RotatingObstacle/MS2" stiffness="1000" damping="1" center="0 0 0 0 -5 0" vradius="6 2 4   2 4 2" object2_forces="false" object2_invert="false" />
         <!--EllipsoidForceField stiffness="1000" damping="1" center="0 5 3" vradius="6 2 6" /-->
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
