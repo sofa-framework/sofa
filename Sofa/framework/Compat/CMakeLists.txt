@@ -5,7 +5,6 @@ set(SOFACOMPATSRC_ROOT "src")
 
 set(HEADER_FILES
     # ${SOFACOMPATSRC_ROOT}/config.h.in 
-    ${SOFACOMPATSRC_ROOT}/sofa/helper/StateMask.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Color.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/GlobalSystemMatrixExporter.h
