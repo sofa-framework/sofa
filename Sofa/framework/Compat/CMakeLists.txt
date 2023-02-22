@@ -8,13 +8,6 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/helper/StateMask.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Color.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseVector.h
-    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseMatrix.h
-    ${SOFACOMPATSRC_ROOT}/sofa/core/behavior/RotationMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CompressedRowSparseMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/DiagonalMatrix.h
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullMatrix.inl
-    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.inl
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/GlobalSystemMatrixExporter.h
     ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.h
     ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.inl
