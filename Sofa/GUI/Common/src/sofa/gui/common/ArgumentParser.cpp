@@ -94,7 +94,7 @@ void ArgumentParser::parse()
     // copy result
     for (const auto& arg : vecArg)
     {
-        m_parseResult.insert({ arg.key(), arg.value() });
+        m_parseResult[arg.key()] = arg.value();
         if(arg.key() == "argv")
             extra.push_back(arg.value());
 
