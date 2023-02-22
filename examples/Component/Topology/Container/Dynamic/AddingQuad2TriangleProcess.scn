@@ -27,7 +27,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshOBJLoader name="loader" filename="mesh/cubeQuad.obj" />
-        <MechanicalObject template="Vec3d" src="@loader" name="Quads" showObject="1" />
+        <MechanicalObject template="Vec3" src="@loader" name="Quads" showObject="1" />
         <QuadSetTopologyContainer src="@loader" name="Quad_topo" listening="1" />
         <QuadSetTopologyModifier name="Modifier" />
         <QuadSetGeometryAlgorithms />
@@ -39,7 +39,7 @@
         <Node name="T">
             <TriangleSetTopologyContainer name="Triangle_topo" listening="1" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
+            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTriangles="1" />
             <Quad2TriangleTopologicalMapping input="@../Quad_topo" output="@Triangle_topo" />
             <!--      		<TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
 			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>		-->

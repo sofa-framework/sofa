@@ -26,8 +26,8 @@
         <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-10"/>
         <SparseGridTopology name="Embedded Sparse Grid" fileTopology="mesh/dragon.obj" n="7 6 5" />
-        <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0" showObject="1" showObjectScale="10"/>
-        <UniformMass template="Vec3d" name="Mass" totalMass="10" />
-        <PlaneForceField template="Vec3d" name="Plane" normal="0 0 1" d="-10" showPlane="1" />
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0" showObject="1" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" totalMass="10" />
+        <PlaneForceField template="Vec3" name="Plane" normal="0 0 1" d="-10" showPlane="1" />
     </Node>
 </Node>

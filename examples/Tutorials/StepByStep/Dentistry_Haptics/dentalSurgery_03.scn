@@ -28,7 +28,7 @@
     <Node name="Instrument">
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-        <MechanicalObject name="instrumentState" template="Rigid3d" />
+        <MechanicalObject name="instrumentState" template="Rigid3" />
         <UniformMass name="mass" filename="BehaviorModels/dental_instrument.rigid" />
         <Node name="VisualModel">
             <MeshOBJLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" handleSeams="1" />

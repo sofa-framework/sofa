@@ -39,7 +39,7 @@
 
         <TetrahedronSetTopologyContainer name="Container" src="@../MeshVolume/Container" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo"  template="Vec3" />
         
         <MechanicalObject />
         <DiagonalMass massDensity="10.0" />

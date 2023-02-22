@@ -30,7 +30,7 @@
         <MeshOBJLoader name="meshLoader" filename="mesh/square_2594_triangles.obj" scale="10" createSubelements="true" />
         <TriangleSetTopologyContainer  name="Container" src="@meshLoader"/>
         <TriangleSetTopologyModifier   name="Modifier" />
-        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <MechanicalObject name="Mo"/>
         <DiagonalMass massDensity="0.08" />
         <FixedConstraint indices="617 618 57 1301 1302 49" />

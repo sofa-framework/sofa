@@ -31,14 +31,14 @@ def createScene(rootNode):
         meshDivision = rootNode.addChild('meshDivision')
         meshDivision.addObject('RegularGridTopology', name='topology', n=[8, 8, 16] , min=[-1, -1, -2], max=[1, 1, 2])
         meshOfStructure = meshDivision.addObject('MeshTopology',name='beamMesh', src="@topology")
-        meshDivision.addObject('MechanicalObject', template='Vec3d')
-        boxDeformable= meshDivision.addObject('BoxROI',template="Vec3d", name='box_roi_deformable', box=[-1, -1, -2.05, 1, 1, 1.5], position="@beamMesh.position" )
-        boxRigid= meshDivision.addObject('BoxROI',template="Vec3d", name='box_roi_rigid', box=[-1, -1, 1.500001, 1, 1, 2.05], position="@beamMesh.position")
+        meshDivision.addObject('MechanicalObject', template='Vec3')
+        boxDeformable= meshDivision.addObject('BoxROI',template="Vec3", name='box_roi_deformable', box=[-1, -1, -2.05, 1, 1, 1.5], position="@beamMesh.position" )
+        boxRigid= meshDivision.addObject('BoxROI',template="Vec3", name='box_roi_rigid', box=[-1, -1, 1.500001, 1, 1, 2.05], position="@beamMesh.position")
 
         SolverNode= rootNode.addChild('SolverNode')
         SolverNode.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
         SolverNode.addObject('SparseLDLSolver', name="ldlsolveur")
-        SolverNode.addObject('MechanicalMatrixMapper', template='Vec3d,Rigid3d', fastMatrixProduct=True,
+        SolverNode.addObject('MechanicalMatrixMapper', template='Vec3,Rigid3', fastMatrixProduct=True,
                              object1='@./deformablePartNode/beamPart1Mech',
                              object2='@./RigidNode/rigid1',
                              nodeToParse='@./deformablePartNode/FEMNode')
@@ -46,16 +46,16 @@ def createScene(rootNode):
 
 #####   Deformable Part of the BEAM (Main Body)
         deformablePartNode= SolverNode.addChild('deformablePartNode')
-        deformablePartNode.addObject('MechanicalObject', template='Vec3d',name='beamPart1Mech', position="@"+boxDeformable.getPathName()+".pointsInROI")
-        deformablePartNode.addObject('BoxROI',template="Vec3d", name='box_roi_fix', box=[-1, -1, -2.05,  1, 1, -1.5], position="@beamPart1Mech.position" )
+        deformablePartNode.addObject('MechanicalObject', template='Vec3',name='beamPart1Mech', position="@"+boxDeformable.getPathName()+".pointsInROI")
+        deformablePartNode.addObject('BoxROI',template="Vec3", name='box_roi_fix', box=[-1, -1, -2.05,  1, 1, -1.5], position="@beamPart1Mech.position" )
         deformablePartNode.addObject('FixedConstraint', indices='@box_roi_fix.indices')
 
 #####   Rigid Part of the BEAM (Top)
         RigidNode= SolverNode.addChild('RigidNode')
-        RigidNode.addObject("MechanicalObject",template="Rigid3d",name="rigid1", position=[0, 0, 2,  0, 0, 0, 1], showObject=True, showObjectScale=0.5)
+        RigidNode.addObject("MechanicalObject",template="Rigid3",name="rigid1", position=[0, 0, 2,  0, 0, 0, 1], showObject=True, showObjectScale=0.5)
         RigidifiedNode= RigidNode.addChild('RigidifiedNode')
 
-        RigidifiedNode.addObject("MechanicalObject",name="rigidMecha",template="Vec3d", position="@"+boxRigid.getPathName()+".pointsInROI")
+        RigidifiedNode.addObject("MechanicalObject",name="rigidMecha",template="Vec3", position="@"+boxRigid.getPathName()+".pointsInROI")
         RigidifiedNode.addObject("RigidMapping",globalToLocalCoords="true")
 
 #####   COMBINED BEAM
@@ -63,7 +63,7 @@ def createScene(rootNode):
         RigidifiedNode.addChild(FEMNode)
 
         FEMNode.addObject('MeshTopology',name='meshInput',src="@"+meshOfStructure.getPathName())
-        FEMNode.addObject('MechanicalObject', template='Vec3d',name='beamMecha')
+        FEMNode.addObject('MechanicalObject', template='Vec3',name='beamMecha')
         FEMNode.addObject('HexahedronFEMForceField', name='HexaFF', src="@meshInput", poissonRatio=0.49, youngModulus=2000)
         FEMNode.addObject('UniformMass', totalMass=0.1)
 
@@ -85,7 +85,7 @@ def createScene(rootNode):
                 index_pairs[index] = [1, i]
                 i += 1
 
-        FEMNode.addObject("SubsetMultiMapping",name="subsetMapping",template="Vec3d,Vec3d",
+        FEMNode.addObject("SubsetMultiMapping",name="subsetMapping",template="Vec3,Vec3",
                           input="@../beamPart1Mech @../../RigidNode/RigidifiedNode/rigidMecha",
                           output="@./beamMecha",
                           indexPairs=index_pairs)

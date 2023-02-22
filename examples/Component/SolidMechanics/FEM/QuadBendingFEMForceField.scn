@@ -27,10 +27,10 @@
         <EulerImplicitSolver name="cg_odesolver" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshVTKLoader filename="mesh/test_quad.vtk" name="loader" />
-        <MechanicalObject template="Vec3d" src="@loader" name="DOFs" />
+        <MechanicalObject template="Vec3" src="@loader" name="DOFs" />
         <QuadSetTopologyContainer src="@loader" name="topology" />
         <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
         <DiagonalMass massDensity="0.5" name="mass" />
 
         <QuadBendingFEMForceField name="FEM" youngModulus="2000" poissonRatio="0.49" thickness="0.5" method="small" />
@@ -39,7 +39,7 @@
 
         <Node name="Visual">
             <OglModel name="Visual" color="yellow" />
-            <IdentityMapping template="Vec3d,Vec3d" name="visualMapping" input="@../DOFs" output="@Visual" />
+            <IdentityMapping template="Vec3,Vec3" name="visualMapping" input="@../DOFs" output="@Visual" />
         </Node>
     </Node>
 </Node>

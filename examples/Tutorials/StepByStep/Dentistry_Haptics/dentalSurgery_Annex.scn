@@ -18,6 +18,6 @@
         <TetrahedronSetTopologyContainer name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <VTKExporter filename="volumetricTongue" edges="0" tetras="1" listening="true" exportAtBegin="true" />
-        <MechanicalObject template="Vec3d"/>
+        <MechanicalObject template="Vec3"/>
     </Node>
 </Node>

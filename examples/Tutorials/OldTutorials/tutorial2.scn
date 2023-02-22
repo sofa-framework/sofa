@@ -64,7 +64,7 @@
 		<RungeKutta4Solver />
 		<EulerExplicitSolver />
 		-->
-        <MechanicalObject template="Rigid3d" dx="-36" />
+        <MechanicalObject template="Rigid3" dx="-36" />
         <UniformMass filename="BehaviorModels/smCube125.rigid" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="white" />

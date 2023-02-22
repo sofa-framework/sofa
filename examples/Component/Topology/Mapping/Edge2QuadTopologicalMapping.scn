@@ -29,17 +29,17 @@
         <CGLinearSolver iterations="125" tolerance="1e-16" threshold="1e-16" />
 
         <RegularGridTopology name="MeshLines" nx="100" ny="1" nz="1" xmax="100" xmin="0" ymin="0" ymax="0" zmax="0" zmin="0"/>
-		<MechanicalObject template="Rigid3d" name="BeamDof" />
+		<MechanicalObject template="Rigid3" name="BeamDof" />
 		<FixedConstraint name="fix" indices="0" />
         <UniformMass totalMass="0.1" />
         <BeamFEMForceField name="BeamFEM" radius="1.0" youngModulus="1000" poissonRatio="0.45" />
         
         
         <Node name="VisuBeam" activated="true">
-			<MechanicalObject template="Vec3d" name="SurfDof" />
+			<MechanicalObject template="Vec3" name="SurfDof" />
 			<QuadSetTopologyContainer  name="Container" />
 			<QuadSetTopologyModifier   name="Modifier" />
-            <QuadSetGeometryAlgorithms name="GeomAlgo"  template="Vec3d" drawQuads="1"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo"  template="Vec3" drawQuads="1"/>
 			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="2" input="@../MeshLines" output="@Container" flipNormals="true"/>
             <TubularMapping nbPointsOnEachCircle="10" radius="2" input="@../BeamDof" output="@SurfDof" />
             

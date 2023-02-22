@@ -1,7 +1,7 @@
 <Node name="Group"> 
   <DynamicSparseGridTopologyContainer  name="Container" src=""/>
   <DynamicSparseGridTopologyModifier   name="Modifier" />
-  <DynamicSparseGridGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+  <DynamicSparseGridGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
 </Node>
 <!-- 
      Template List 
@@ -14,5 +14,5 @@
        - Vec1f
 
      Example of use:
-     <include href="Objects/DynamicSparseGridTopology.xml" template="Vec1d" />
+     <include href="Objects/DynamicSparseGridTopology.xml" template="Vec1" />
 -->

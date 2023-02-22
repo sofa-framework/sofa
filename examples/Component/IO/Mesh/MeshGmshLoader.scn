@@ -50,7 +50,7 @@
         <MechanicalObject name="dofs" scale="10" src="@GmshLoaderv4" />
         <TetrahedronSetTopologyContainer name="topo" src="@GmshLoaderv4" />
         <TetrahedronSetTopologyModifier name="modif" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="tetraGeo" />
         <DiagonalMass massDensity="0.2" />
         <FixedConstraint indices="0 1" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />

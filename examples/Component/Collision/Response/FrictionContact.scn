@@ -29,7 +29,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="TORUS">
-            <MechanicalObject template="Rigid3d" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
+            <MechanicalObject template="Rigid3" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
             <UniformMass totalMass="40.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -50,7 +50,7 @@
         <!--
 		<Node name="MAN">
 			<EulerExplicitSolver/>
-			<MechanicalObject template="Rigid3d"  dx="0.0" dy="0.0" dz="0.0"/>
+			<MechanicalObject template="Rigid3"  dx="0.0" dy="0.0" dz="0.0"/>
 			<UniformMass totalMass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">
@@ -70,7 +70,7 @@
 		</Node>
 -->
         <Node name="CUBE">
-            <MechanicalObject template="Rigid3d" scale="0.3" dx="-2.0" dy="-3.5" dz="-0.5" rx="10" />
+            <MechanicalObject template="Rigid3" scale="0.3" dx="-2.0" dy="-3.5" dz="-0.5" rx="10" />
             <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
@@ -91,7 +91,7 @@
         <!--
 		<Node name="DRAGON1">
 			<EulerExplicitSolver/>
-			<MechanicalObject template="Rigid3d" scale="10.0"  dx="0.0" dy="2.5" dz="0.0"/>
+			<MechanicalObject template="Rigid3" scale="10.0"  dx="0.0" dy="2.5" dz="0.0"/>
 			<UniformMass totalMass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">

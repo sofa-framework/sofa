@@ -28,7 +28,7 @@
         <MechanicalObject src="@loader" name="TetrahedralCorotationalFEM" />
         <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
 
         <DiagonalMass massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
@@ -45,7 +45,7 @@
         <MechanicalObject src="@loader" name="TetrahedralCorotationalFEM" />
         <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
 
         <DiagonalMass massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />

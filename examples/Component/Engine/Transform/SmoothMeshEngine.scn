@@ -15,6 +15,6 @@
     <Node name="smoothed" >
         <VisualStyle displayFlags="hideWireframe" />
         <MeshTopology name="topology" src="@/origin/loader"/>
-        <SmoothMeshEngine template="Vec3d" name="smoother" input_position="@/origin/loader.position" nb_iterations="1" showOutput="true"/>
+        <SmoothMeshEngine template="Vec3" name="smoother" input_position="@/origin/loader.position" nb_iterations="1" showOutput="true"/>
     </Node>
 </Node>

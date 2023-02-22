@@ -25,9 +25,9 @@
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false" />
         <MeshGmshLoader name="loader" filename="mesh/edgeSet.msh" />
-        <MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1" showObject="1"/>
-        <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid3d" />
-        <MechanicalStateController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
+        <MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid3" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1" showObject="1"/>
+        <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid3" />
+        <MechanicalStateController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
         <FixedConstraint name="FixedConstraint" indices="0" />
         <UniformMass vertexMass="1 1 0.1 0 0 0 0.1 0 0 0 0.1" printLog="false" /> 
 

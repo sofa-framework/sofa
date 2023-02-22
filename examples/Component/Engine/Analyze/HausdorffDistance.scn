@@ -64,10 +64,10 @@
     </Node>
 
     <Node name="case6">
-        <HausdorffDistance template="Vec2d" points1="10 0" points2="0 0"/>
+        <HausdorffDistance template="Vec2" points1="10 0" points2="0 0"/>
     </Node>
 
     <Node name="case7">
-        <HausdorffDistance template="Vec1d" points1="10" points2="0"/>
+        <HausdorffDistance template="Vec1" points1="10" points2="0"/>
     </Node>
 </Node>

@@ -37,7 +37,7 @@
         <Node name="Q">
             <QuadSetTopologyContainer  name="Container" />
             <QuadSetTopologyModifier   name="Modifier" />
-            <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+            <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
@@ -48,7 +48,7 @@
             <Node name="T">
                 <TriangleSetTopologyContainer  name="Container" />
                 <TriangleSetTopologyModifier   name="Modifier" />
-                <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
                 <TriangularFEMForceField name="FEM" youngModulus="10" poissonRatio="0.3" method="large" />
                 <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />

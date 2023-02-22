@@ -20,19 +20,19 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
         
         <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="true"
         method="small" computeVonMisesStress="2" showVonMisesStressPerElement="true"/>
         
-        <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
-        <FixedConstraint template="Vec3d" indices="@box_roi.indices" />
+        <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
+        <FixedConstraint template="Vec3" indices="@box_roi.indices" />
     </Node>
 
     
@@ -41,19 +41,19 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
         <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
-        <MechanicalObject template="Vec3d" translation="11 0 0"/>
+        <MechanicalObject template="Vec3" translation="11 0 0"/>
         
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="true"
         method="large" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
         
-        <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
-        <FixedConstraint template="Vec3d" indices="@box_roi.indices" />
+        <BoxROI template="Vec3" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
+        <FixedConstraint template="Vec3" indices="@box_roi.indices" />
     </Node>
 
 </Node>

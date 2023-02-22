@@ -72,7 +72,7 @@ To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrow
     <Node name="Torus3">
         <EulerImplicitSolver/>
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" scale="5.0" dx="-25" dy="0"/>
+        <MechanicalObject template="Rigid3" scale="5.0" dx="-25" dy="0"/>
         <UniformMass filename="BehaviorModels/torus2.rigid" totalMass="0.02"/>
         <UncoupledConstraintCorrection/>
         <Node name="Visu">

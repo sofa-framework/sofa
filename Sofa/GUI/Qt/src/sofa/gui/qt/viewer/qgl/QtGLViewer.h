@@ -187,8 +187,8 @@ public slots:
     void setSizeW(int) override;
     void setSizeH(int) override;
 
-    virtual void getView(type::Vec3d& pos, type::Quat<SReal>& ori) const override;
-    virtual void setView(const type::Vec3d& pos, const type::Quat<SReal> &ori) override;
+    virtual void getView(type::Vec3& pos, type::Quat<SReal>& ori) const override;
+    virtual void setView(const type::Vec3& pos, const type::Quat<SReal> &ori) override;
     virtual void captureEvent() override { SofaViewer::captureEvent(); }
     void fitObjectBBox(sofa::core::objectmodel::BaseObject* object) override
     {

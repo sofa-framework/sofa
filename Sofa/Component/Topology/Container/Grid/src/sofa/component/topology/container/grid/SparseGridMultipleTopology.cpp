@@ -85,8 +85,12 @@ void SparseGridMultipleTopology::buildAsFinest()
     type::vector< helper::io::Mesh*> meshes(_fileTopologies.getValue().size());
 
 
-    SReal xMing=99999999, xMaxg=-99999999, yMing=99999999, yMaxg=-99999999, zMing=99999999, zMaxg=-99999999;
-
+    SReal xMing = std::numeric_limits<SReal>::max();
+    SReal xMaxg = std::numeric_limits<SReal>::lowest();
+    SReal yMing = std::numeric_limits<SReal>::max();
+    SReal yMaxg = std::numeric_limits<SReal>::lowest();
+    SReal zMing = std::numeric_limits<SReal>::max();
+    SReal zMaxg = std::numeric_limits<SReal>::lowest();
 
     for(unsigned i=0; i<_fileTopologies.getValue().size(); ++i)
     {

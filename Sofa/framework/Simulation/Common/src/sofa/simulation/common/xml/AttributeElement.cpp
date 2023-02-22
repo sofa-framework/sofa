@@ -39,10 +39,8 @@ AttributeElement::~AttributeElement()
 
 bool AttributeElement::init()
 {
-    int i=0;
     for (child_iterator<> it = begin(); it != end(); ++it)
     {
-        i++;
         it->initNode();
     }
     return initNode();
