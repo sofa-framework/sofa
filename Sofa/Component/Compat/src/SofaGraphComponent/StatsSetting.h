@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/component/setting/StatsSetting.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/StatsSetting.h")
-
-namespace sofa::component::configurationsetting
-{ 
-    using StatsSetting = sofa::component::setting::StatsSetting;
-
-} // namespace sofa::component::configurationsetting
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/setting/StatsSetting.h")

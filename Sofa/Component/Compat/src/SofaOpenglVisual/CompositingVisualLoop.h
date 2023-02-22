@@ -27,18 +27,8 @@
 #include <sofa/gl/component/shader/CompositingVisualLoop.h>
 #define SOFAGL_COMPONENT_COMPOSITINGVISUALLOOP
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/CompositingVisualLoop.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/CompositingVisualLoop.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/CompositingVisualLoop.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_COMPOSITINGVISUALLOOP
-
-namespace sofa::component::visualmodel
-{
-    using CompositingVisualLoop = sofa::gl::component::shader::CompositingVisualLoop;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_COMPOSITINGVISUALLOOP

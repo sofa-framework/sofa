@@ -22,12 +22,4 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/DynamicSparseGridGeometryAlgorithms.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/DynamicSparseGridGeometryAlgorithms.h")
-
-namespace sofa::component::topology
-{
-
-    template < class DataTypes >
-    using DynamicSparseGridGeometryAlgorithms = sofa::component::topology::container::dynamic::DynamicSparseGridGeometryAlgorithms<DataTypes>;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/DynamicSparseGridGeometryAlgorithms.h")

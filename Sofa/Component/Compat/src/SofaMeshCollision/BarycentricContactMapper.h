@@ -23,13 +23,4 @@
 
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/BarycentricContactMapper.h")
-
-#include <SofaBaseCollision/BaseContactMapper.h>
-
-namespace sofa::component::collision
-{
-    template<class TCollisionModel, class DataTypes>
-    using BarycentricContactMapper = sofa::component::collision::response::mapper::BarycentricContactMapper<TCollisionModel, DataTypes>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/BarycentricContactMapper.h")

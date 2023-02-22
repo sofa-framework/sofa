@@ -22,12 +22,4 @@
 #pragma once
 #include <sofa/component/topology/utility/TopologyBoundingTrasher.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/utility/TopologyBoundingTrasher.h")
-
-namespace sofa::component::misc
-{
-
-    template <class DataTypes>
-    using TopologyBoundingTrasher = sofa::component::topology::utility::TopologyBoundingTrasher<DataTypes>;
-
-} // namespace sofa::component::misc
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/utility/TopologyBoundingTrasher.h")

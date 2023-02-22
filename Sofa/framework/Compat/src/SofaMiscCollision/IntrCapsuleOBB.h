@@ -27,19 +27,8 @@
 #include <CollisionOBBCapsule/detection/intersection/IntrCapsuleOBB.h>
 #define COLLISIONOBBCAPSULE_INTRCAPSULEOBB
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrCapsuleOBB.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/IntrCapsuleOBB.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/IntrCapsuleOBB.h> instead of this one."
 #endif
-
-#ifdef COLLISIONOBBCAPSULE_INTRCAPSULEOBB
-
-namespace sofa::component::collision
-{
-	template <typename TDataTypes,typename TDataTypes2>
-	using TIntrCapsuleOBB = collisionobbcapsule::detection::intersection::TIntrCapsuleOBB<TDataTypes, TDataTypes2>;
-
-} // namespace sofa::component::collision
-
-#endif // COLLISIONOBBCAPSULE_INTRCAPSULEOBB

@@ -23,11 +23,4 @@
 
 #include <sofa/component/linearsolver/preconditioner/WarpPreconditioner.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/WarpPreconditioner.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector, class TThreadManager>
-    using WarpPreconditioner = sofa::component::linearsolver::preconditioner::WarpPreconditioner<TMatrix, TVector, TThreadManager>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/WarpPreconditioner.h")

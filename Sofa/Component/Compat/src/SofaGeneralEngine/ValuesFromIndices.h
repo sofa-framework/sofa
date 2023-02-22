@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/select/ValuesFromIndices.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/ValuesFromIndices.h")
-
-namespace sofa::component::engine
-{
-    template<class T>
-    using ValuesFromIndices = sofa::component::engine::select::ValuesFromIndices<T>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/ValuesFromIndices.h")

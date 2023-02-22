@@ -27,30 +27,8 @@
 #include <sofa/gl/component/shader/OglAttribute.h>
 #define SOFAGL_COMPONENT_OGLATTRIBUTE
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglAttribute.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglAttribute.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglAttribute.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLATTRIBUTE
-
-namespace sofa::component::visualmodel
-{
-    using OglAttribute = sofa::gl::component::shader::OglAttribute;
-    using OglFloatAttribute = sofa::gl::component::shader::OglFloatAttribute;
-    using OglFloat2Attribute = sofa::gl::component::shader::OglFloat2Attribute;
-    using OglFloat3Attribute = sofa::gl::component::shader::OglFloat3Attribute;
-    using OglFloat4Attribute = sofa::gl::component::shader::OglFloat4Attribute;
-    using OglIntAttribute = sofa::gl::component::shader::OglAttribute;
-    using OglInt2Attribute = sofa::gl::component::shader::OglInt2Attribute;
-    using OglInt3Attribute = sofa::gl::component::shader::OglInt3Attribute
-    using OglInt4Attribute = sofa::gl::component::shader::OglInt4Attribute;
-    using OglUIntAttribute = sofa::gl::component::shader::OglUIntAttribute;
-    using OglUInt2Attribute = sofa::gl::component::shader::OglUInt2Attribute;
-    using OglUInt3Attribute = sofa::gl::component::shader::OglUInt3Attribute;
-    using OglUInt4Attribute = sofa::gl::component::shader::OglUInt4Attribute;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLATTRIBUTE

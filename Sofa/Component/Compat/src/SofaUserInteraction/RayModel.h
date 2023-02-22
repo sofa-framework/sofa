@@ -23,11 +23,4 @@
 
 #include <sofa/component/collision/geometry/RayModel.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/RayModel.h")
-
-namespace sofa::component::collision
-{
-    using Ray = sofa::component::collision::geometry::Ray;
-    using RayCollisionModel = sofa::component::collision::geometry::RayCollisionModel;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/RayModel.h")

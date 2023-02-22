@@ -22,12 +22,4 @@
 #pragma once
 
 #include <sofa/config.h>
-SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/component/visual/LineAxis.h")
-
-#include <sofa/component/visual/LineAxis.h>
-
-namespace sofa::gl::component::rendering3d
-{
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "sofa::gl::component::rendering3d::OglLineAxis has been replaced by sofa::component::visual::LineAxis")
-    using OglLineAxis = sofa::component::visual::LineAxis;
-}
+SOFA_DISABLED_HEADER("v22.12", "v23.06", "sofa/component/visual/LineAxis.h")

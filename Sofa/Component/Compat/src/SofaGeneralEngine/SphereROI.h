@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/select/SphereROI.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SphereROI.h")
-
-namespace sofa::component::engine
-{
-    template<class DataTypes>
-    using SphereROI = sofa::component::engine::select::SphereROI<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SphereROI.h")

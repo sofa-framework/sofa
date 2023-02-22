@@ -26,7 +26,7 @@
 #if __has_include(<SofaMatrix/FillReducingOrdering.h>)
 #include <SofaMatrix/FillReducingOrdering.h>>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SofaMatrix/FillReducingOrdering.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "SofaMatrix/FillReducingOrdering.h")
 
 #else
 #error "FillReducingOrdering component has been moved to SofaMatrix plugin."

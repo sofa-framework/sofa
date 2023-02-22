@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/linear/TubularMapping.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/TubularMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using TubularMapping = sofa::component::mapping::linear::TubularMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/TubularMapping.h")

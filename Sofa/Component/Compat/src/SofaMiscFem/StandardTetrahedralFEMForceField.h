@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.inl")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using StandardTetrahedralFEMForceField = sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.inl")

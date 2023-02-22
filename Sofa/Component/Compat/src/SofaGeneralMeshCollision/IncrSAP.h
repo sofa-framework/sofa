@@ -23,11 +23,4 @@
 
 #include <sofa/component/collision/detection/algorithm/IncrSAP.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/IncrSAP.h")
-
-namespace sofa::component::collision
-{
-    using ISAPBox = sofa::component::collision::detection::algorithm::ISAPBox;
-    using IncrSAP = sofa::component::collision::detection::algorithm::IncrSAP;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/IncrSAP.h")

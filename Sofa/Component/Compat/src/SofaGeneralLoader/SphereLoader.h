@@ -23,10 +23,4 @@
 
 #include <sofa/component/io/mesh/SphereLoader.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/SphereLoader.h")
-
-namespace sofa::component::loader
-{
-    using SphereLoader = sofa::component::io::mesh::SphereLoader;
-
-} // namespace sofa::component::loader
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/SphereLoader.h")

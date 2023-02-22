@@ -23,4 +23,4 @@
 
 #include <sofa/component/engine/transform/RigidToQuatEngine.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/RigidToQuatEngine.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/RigidToQuatEngine.inl")

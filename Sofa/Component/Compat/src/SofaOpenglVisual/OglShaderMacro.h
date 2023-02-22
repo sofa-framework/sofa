@@ -27,18 +27,8 @@
 #include <sofa/gl/component/shader/OglShaderMacro.h>
 #define SOFAGL_COMPONENT_OGLSHADERMACRO
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShaderMacro.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShaderMacro.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglShaderMacro.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLSHADERMACRO
-
-namespace sofa::component::visualmodel
-{
-    using OglShaderMacro = sofa::gl::component::shader::OglShaderMacro;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLSHADERMACRO

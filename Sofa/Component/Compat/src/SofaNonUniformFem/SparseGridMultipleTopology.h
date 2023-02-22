@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/topology/container/grid/SparseGridMultipleTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/SparseGridMultipleTopology.h")
-
-namespace sofa::component::topology
-{
-
-    using SparseGridMultipleTopology = sofa::component::topology::container::grid::SparseGridMultipleTopology;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/SparseGridMultipleTopology.h")
