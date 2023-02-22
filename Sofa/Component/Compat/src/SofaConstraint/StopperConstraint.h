@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/StoppingConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/StoppingConstraint.h")
-
-namespace sofa::component::constraintset
-{
-    template<class DataTypes>
-    using StoppingConstraint = sofa::component::constraint::lagrangian::model::StoppingConstraint<DataTypes>;
-    
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/StoppingConstraint.h")

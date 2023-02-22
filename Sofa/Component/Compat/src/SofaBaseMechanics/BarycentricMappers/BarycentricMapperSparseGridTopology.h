@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperSparseGridTopology.h")
-
-namespace sofa::component::mapping
-{
-	template<class In, class Out>
-	using BarycentricMapperSparseGridTopology = sofa::component::mapping::linear::BarycentricMapperSparseGridTopology<In, Out>;
-}
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperSparseGridTopology.h")

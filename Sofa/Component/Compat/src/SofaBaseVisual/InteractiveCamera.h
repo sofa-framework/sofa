@@ -22,13 +22,4 @@
 #pragma once
 #include <sofa/component/visual/InteractiveCamera.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/InteractiveCamera.h")
-
-// code using InteractiveCamera often use BaseCamera too
-#include <SofaBaseVisual/BaseCamera.h>
-
-namespace sofa::component::visualmodel
-{
-    using InteractiveCamera = sofa::component::visual::InteractiveCamera;
-
-} // namespace sofa::component::visual
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/visual/InteractiveCamera.h")

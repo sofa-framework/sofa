@@ -22,12 +22,4 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.h")
-
-namespace sofa::component::topology
-{
-
-    template < class DataTypes >
-    using PointSetGeometryAlgorithms = sofa::component::topology::container::dynamic::PointSetGeometryAlgorithms<DataTypes>;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.h")

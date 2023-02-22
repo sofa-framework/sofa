@@ -23,4 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/UniformConstraint.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/UniformConstraint.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/UniformConstraint.inl")

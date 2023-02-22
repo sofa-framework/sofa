@@ -22,10 +22,5 @@
 #pragma once
 #include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperEdgeSetTopology.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperEdgeSetTopology.h")
 
-namespace sofa::component::mapping
-{
-	template<class In, class Out>
-	using BarycentricMapperEdgeSetTopology = sofa::component::mapping::linear::BarycentricMapperEdgeSetTopology<In, Out>;
-}

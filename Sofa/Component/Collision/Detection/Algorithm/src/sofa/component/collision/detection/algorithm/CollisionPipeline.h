@@ -57,8 +57,4 @@ public:
     static const int defaultDepthValue;
 };
 
-
-SOFA_ATTRIBUTE_DISABLED__RENAME_COLLISIONPIPELINE()
-using DefaultPipeline = sofa::component::collision::detection::algorithm::CollisionPipeline;
-
 } // namespace sofa::component::collision::detection::algorithm

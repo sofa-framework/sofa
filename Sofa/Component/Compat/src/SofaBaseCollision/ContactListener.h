@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/component/collision/response/contact/ContactListener.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/ContactListener.h")
-
-namespace sofa::core::collision
-{
-    using ContactListener = sofa::component::collision::response::contact::ContactListener;
-
-} // namespace sofa::core::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/ContactListener.h")

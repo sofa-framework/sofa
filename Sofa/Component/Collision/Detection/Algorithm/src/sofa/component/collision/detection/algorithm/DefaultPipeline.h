@@ -20,7 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/config.h>
 
-#include <sofa/component/mass/DiagonalMass.h>
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/component/collision/detection/algorithm/CollisionPipeline.h")
 
-SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mass/DiagonalMass.h")
+#include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
+
+namespace sofa::component::collision::detection::algorithm
+{
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_COLLISIONPIPELINE()
+    using DefaultPipeline = sofa::component::collision::detection::algorithm::CollisionPipeline;
+
+} // namespace sofa::component::collision::detection::algorithm
