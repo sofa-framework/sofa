@@ -71,6 +71,8 @@ void AnimationLoopParallelScheduler::init()
 {
     if (!gnode)
         gnode = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+
+    initTaskScheduler();
 }
 
 void AnimationLoopParallelScheduler::bwdInit()

@@ -48,10 +48,10 @@ public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
-    SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "Use TaskSchedulerUser::d_taskSchedulerType instead.")
+    SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_taskSchedulerType instead.")
     sofa::Data<std::string> schedulerName; ///< scheduler name type
 
-    SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "Use TaskSchedulerUser::d_nbThreads instead.")
+    SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_nbThreads instead.")
     sofa::Data<unsigned int> threadNumber; ///< number of thread
 
 
