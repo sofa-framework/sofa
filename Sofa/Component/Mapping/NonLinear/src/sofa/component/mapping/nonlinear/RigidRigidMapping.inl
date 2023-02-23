@@ -132,26 +132,35 @@ void RigidRigidMapping<TIn, TOut>::init()
 
         if(globalToLocalCoords.getValue() == true)
         {
-            const typename In::VecCoord& xfrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
+            const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
             switch (repartition.getValue().size())
             {
             case 0 :
                 for (i = 0; i < x.size(); i++)
                 {
-                    // pts[i] = x[i] - xfrom[0];
                     pts[i].getCenter() = xfrom[index.getValue()].getOrientation().inverse().rotate( x[i].getCenter() - xfrom[index.getValue()].getCenter() ) ;
                     pts[i].getOrientation() = xfrom[index.getValue()].getOrientation().inverse() * x[i].getOrientation() ;
                 }
                 break;
             case 1 :
                 for (i=0; i<xfrom.size(); i++)
+                {
                     for(sofa::Index j=0; j<repartition.getValue()[0]; j++,cpt++)
-                        pts[cpt] = x[cpt] - xfrom[i];
+                    {
+                        pts[cpt].getCenter() = xfrom[i].getOrientation().inverse().rotate( x[cpt].getCenter() - xfrom[i].getCenter() ) ;
+                        pts[cpt].getOrientation() = xfrom[i].getOrientation().inverse() * x[cpt].getOrientation() ;
+                    }
+                }
                 break;
             default :
                 for (i=0; i<xfrom.size(); i++)
+                {
                     for(sofa::Index j=0; j<repartition.getValue()[i]; j++,cpt++)
-                        pts[cpt] = x[cpt] - xfrom[i];
+                    {
+                        pts[cpt].getCenter() = xfrom[i].getOrientation().inverse().rotate( x[cpt].getCenter() - xfrom[i].getCenter() ) ;
+                        pts[cpt].getOrientation() = xfrom[i].getOrientation().inverse() * x[cpt].getOrientation() ;
+                    }
+                }
                 break;
             }
         }
