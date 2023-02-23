@@ -116,6 +116,10 @@ static RegisterTemplateAlias Rigid2Alias("Rigid2", sofa::defaulttype::Rigid2Type
 static RegisterTemplateAlias Rigid3Alias("Rigid3", sofa::defaulttype::Rigid3Types::Name());
 static RegisterTemplateAlias CompressedRowSparseMatrixAlias("CompressedRowSparseMatrix", sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Name());
 static RegisterTemplateAlias CompressedRowSparseMatrixMat3x3Alias("CompressedRowSparseMatrixMat3x3", sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>::Name());
+static RegisterTemplateAlias Mat2x2Alias("Mat2x2", sofa::defaulttype::DataTypeName<type::Mat<2, 2, SReal>>::name());
+static RegisterTemplateAlias Mat3x3Alias("Mat3x3", sofa::defaulttype::DataTypeName<type::Mat<3, 3, SReal>>::name());
+static RegisterTemplateAlias Mat4x4Alias("Mat4x4", sofa::defaulttype::DataTypeName<type::Mat<4, 4, SReal>>::name());
+static RegisterTemplateAlias Mat6x6Alias("Mat6x6", sofa::defaulttype::DataTypeName<type::Mat<6, 6, SReal>>::name());
 
 /// Compatibility aliases for niceness.
 static RegisterTemplateAlias RigidAlias("Rigid", sofa::defaulttype::Rigid3Types::Name(), true);
