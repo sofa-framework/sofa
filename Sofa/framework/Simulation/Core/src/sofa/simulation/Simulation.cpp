@@ -62,6 +62,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/helper/system/FileSystem.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
@@ -439,9 +440,23 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 /// Load a scene from a file
 Node::SPtr Simulation::load ( const std::string& filename, bool reload, const std::vector<std::string>& sceneArgs )
 {
-    if( sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).empty() || // no filename
-            sofa::helper::system::SetDirectory::GetExtension(filename.c_str()).empty() ) // filename with no extension
+    if( sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).empty())
+    {
+        msg_error() << "Cannot load file '" << filename << "': filename cannot be extracted from the given path";
         return nullptr;
+    }
+
+    if (sofa::helper::system::SetDirectory::GetExtension(filename.c_str()).empty() )
+    {
+        msg_error() << "Cannot load file '" << filename << "': extension cannot be extracted from the given path";
+        return nullptr;
+    }
+
+    if (!sofa::helper::system::FileSystem::exists(filename))
+    {
+        msg_error() << "Cannot load file '" << filename << "': file cannot be found";
+        return nullptr;
+    }
 
     SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
