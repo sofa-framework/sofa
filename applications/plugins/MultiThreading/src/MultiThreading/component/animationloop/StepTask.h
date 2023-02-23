@@ -22,7 +22,10 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+
+#ifndef SOFA_BUILD_MULTITHREADING
 SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#endif
 
 #include <sofa/simulation/CpuTask.h>
 
