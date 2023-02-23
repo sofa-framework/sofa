@@ -39,11 +39,11 @@ namespace sofa::component::mechanicalload
 template<class DataTypes>
 ConstantForceField<DataTypes>::ConstantForceField()
     : d_indices(initData(&d_indices, "indices", "indices where the forces are applied"))
-    , d_indexFromEnd(initData(&d_indexFromEnd,bool(false),"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
+    , d_indexFromEnd(initData(&d_indexFromEnd,false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
     , d_forces(initData(&d_forces, "forces", "applied forces at each point"))
-    , d_force(initData(&d_force, "force", "applied force to all points if forces attribute is not specified"))
+    , d_force(initData(&d_force, Deriv{}, "force", "applied force to all points if forces attribute is not specified"))
     , d_totalForce(initData(&d_totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
-    , d_showArrowSize(initData(&d_showArrowSize,SReal(0.0), "showArrowSize", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
+    , d_showArrowSize(initData(&d_showArrowSize, 0_sreal, "showArrowSize", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_systemSize(0)
@@ -160,6 +160,11 @@ void ConstantForceField<DataTypes>::init()
             return;
         }
         msg_info() << "Input totalForce is used for initialization";
+    }
+    else
+    {
+        msg_warning() << "Force has not been set. Define one of the following Data: " << d_forces.getName() << ", " << d_force.getName() << " or " << d_totalForce.getName();
+        computeForceFromSingleForce();
     }
 
     // init from ForceField
