@@ -228,18 +228,20 @@ public:
         for (const auto& [attribute, dataType, classDescription] : attributes)
         {
             const std::string attributeStr = arg->getAttribute(attribute,"");
-            if (attributeStr.empty())
-            {
-                arg->logError("Data attribute '" + std::string(attribute) + "' is empty, but it is required to set it. "
-                            "Set this attribute to a mechanical state of data type '" + std::string(dataType) + "'");
-                error = true;
-            }
-            else if (!PathResolver::CheckPaths(context, classDescription, attributeStr))
+            if (!attributeStr.empty() && !PathResolver::CheckPaths(context, classDescription, attributeStr))
             {
                 arg->logError("Data attribute '" + std::string(attribute) + "' does not point to a "
                             "mechanical state of data type '" + std::string(dataType) + "'");
                 error = true;
             }
+        }
+
+        const std::string attributeStr = arg->getAttribute("output","");
+        if (attributeStr.empty())
+        {
+            arg->logError("Data attribute 'output' is empty, but it is required to set it. "
+                        "Set this attribute to a mechanical state of data type '" + std::string(Out::Name()) + "'");
+            error = true;
         }
 
         return !error && BaseMapping::canCreate(obj, context, arg);
