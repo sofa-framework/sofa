@@ -44,6 +44,11 @@
 #include <deque>
 #include <unordered_map>
 
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+using namespace QtCharts;
+#endif
+
 namespace sofa::gui::qt
 {
 
@@ -54,11 +59,11 @@ typedef sofa::helper::system::thread::ctime_t ctime_t;
  * to be able to catch mouse selection and update all widgets of \sa SofaWindowProfiler
  * Will also overide drawForeground to draw a line to show the selected step.
  */
-class ProfilerChartView : public QtCharts::QChartView
+class ProfilerChartView : public QChartView
 {
     Q_OBJECT
 public:
-    ProfilerChartView(QtCharts::QChart *chart, QWidget *parent, int bufferSize);
+    ProfilerChartView(QChart *chart, QWidget *parent, int bufferSize);
 
     /// method to update the max value of the Y axis (for line rendering).
     void updateYMax(int y) {m_maxY = y;}
@@ -220,9 +225,9 @@ signals:
 
 protected:
     /// Pointer to the chart Data
-    QtCharts::QChart *m_chart;
+    QChart *m_chart;
     /// Pointer to Y Axis
-    QtCharts::QValueAxis *m_axisY;
+    QValueAxis *m_axisY;
     /// Pointer to the \sa ProfilerChartView class to handle chart drawing/selection
     ProfilerChartView* m_chartView;
 
@@ -239,14 +244,14 @@ protected:
     std::deque<AnimationStepData*> m_profilingData;
 
     /// Serie of step duration in ms to be plot on the graph. size = \sa m_bufferSize
-    QtCharts::QLineSeries *m_series;
+    QLineSeries *m_series;
 
     /// Serie of selection substep duration in ms to be plot on the graph. size = \sa m_bufferSize
-    QtCharts::QLineSeries *m_selectionSeries;
+    QLineSeries *m_selectionSeries;
 
     struct CheckedSeries
     {
-        QtCharts::QLineSeries* lineSeries;
+        QLineSeries* lineSeries;
         std::string checkedParentStep;
     };
     std::unordered_map<std::string, CheckedSeries> m_checkedSeries;

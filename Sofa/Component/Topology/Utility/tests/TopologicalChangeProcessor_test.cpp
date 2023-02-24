@@ -81,7 +81,7 @@ struct InciseProcessor_test : TopologicalChangeProcessor_test
 {
     InciseProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/IncisionTrianglesProcess.scn";
+        m_fileName = "/IncisionTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -134,7 +134,7 @@ struct RemoveTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/RemovingTrianglesProcess.scn";
+        m_fileName = "/RemovingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -187,7 +187,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
 {
     AddTriangleProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/AddingTrianglesProcess.scn";
+        m_fileName = "/AddingTrianglesProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -219,7 +219,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
         // check topology at start
         EXPECT_EQ(topoCon->getNbTriangles(), 0);
         EXPECT_EQ(topoCon->getNbEdges(), 0);
-        EXPECT_EQ(topoCon->getNbPoints(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         // to test incise animates the scene at least 1.2s
         for (int i = 0; i < 100; i++)
@@ -229,7 +229,7 @@ struct AddTriangleProcessor_test : TopologicalChangeProcessor_test
 
         EXPECT_EQ(topoCon->getNbTriangles(), 24);
         EXPECT_EQ(topoCon->getNbEdges(), 42);
-        EXPECT_EQ(topoCon->getNbPoints(), 18);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         return true;
     }
@@ -241,7 +241,7 @@ struct RemoveTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     RemoveTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/RemovingTetraProcess.scn";
+        m_fileName = "/RemovingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -297,7 +297,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
 {
     AddTetrahedronProcessor_test() : TopologicalChangeProcessor_test()
     {
-        m_fileName = "/TopologicalModifiers/AddingTetraProcess.scn";
+        m_fileName = "/AddingTetraProcess.scn";
     }
 
     bool testTopologyChanges() override
@@ -330,7 +330,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
         EXPECT_EQ(topoCon->getNbTetrahedra(), 0);
         EXPECT_EQ(topoCon->getNbTriangles(), 0);
         EXPECT_EQ(topoCon->getNbEdges(), 0);
-        EXPECT_EQ(topoCon->getNbPoints(), 0);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         for (int i = 0; i < 41; i++)
         {
@@ -340,7 +340,7 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
         EXPECT_EQ(topoCon->getNbTetrahedra(), 8);
         EXPECT_EQ(topoCon->getNbTriangles(), 24);
         EXPECT_EQ(topoCon->getNbEdges(), 25);
-        EXPECT_EQ(topoCon->getNbPoints(), 14);
+        EXPECT_EQ(topoCon->getNbPoints(), 27);
 
         return true;
     }

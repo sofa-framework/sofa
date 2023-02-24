@@ -1,11 +1,20 @@
-<Node dt="0.001">
+<Node dt="0.001" bbox="-1 -1 -1 1 1 1">
+<RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->  
+<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+<RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField] -->  
+<RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [RungeKutta2Solver] -->  
+<RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RegularGridSpringForceField] -->  
+<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+<RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->  
+<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->  
+<DefaultAnimationLoop/>
 <RungeKutta2Solver/>
 <VisualStyle displayFlags="showBehavior showMapping" />
 
 <Node name="rigid">
-<MechanicalObject template="Rigid3d" translation="2 0.5 0"/>
-<PlaneForceField template="Rigid3d"  normal="0 1 0" d="-5" stiffness="10000" />
-<UniformMass template="Rigid3d" />
+<MechanicalObject template="Rigid3" translation="2 0.5 0"/>
+<PlaneForceField template="Rigid3"  normal="0 1 0" d="-5" stiffness="10000" />
+<UniformMass template="Rigid3" />
 <Node name="mapped">
 	<MechanicalObject />
 	<RegularGridTopology p0="-0.5 -0.5 -0.5"/>

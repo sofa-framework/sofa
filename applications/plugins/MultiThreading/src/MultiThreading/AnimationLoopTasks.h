@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,52 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef AnimationLoopTasks_h__
-#define AnimationLoopTasks_h__
+#pragma once
 
-#include <sofa/simulation/CpuTask.h>
+#include <MultiThreading/config.h>
 
-
-namespace sofa
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#include <MultiThreading/component/animationloop/StepTask.h>
+namespace sofa::simulation
 {
-    
-    // forawrd declaraion
-    namespace core { namespace behavior {
-        class BaseAnimationLoop;
-    } }
-    
-    //namespace helper { namespace system {
-    //    template<int> class atomic;
-    //} }
-    
-    
-    
-    namespace simulation
-    {
-        
-        using namespace sofa;
-        
-        
-        class StepTask : public CpuTask
-        {
-        public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, CpuTask::Status* pStatus);
-            
-            ~StepTask() override;
-            
-            MemoryAlloc run() final;
-            
-            
-        private:
-            
-            core::behavior::BaseAnimationLoop* animationloop;
-            const double dt;
-            
-        };
-        
-        
-    } // namespace simulation
-    
-} // namespace sofa
-
-#endif // AnimationLoopTasks_h__
+    using StepTask = multithreading::component::animationloop::StepTask;
+}

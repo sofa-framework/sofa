@@ -404,20 +404,20 @@ public:
     }
 
 
-    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vec3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        type::Vec<8,type::Vector3> p;
-        p[0]=type::Vector3(-0.5,-0.5,-0.5);
-        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vec3> p;
+        p[0]=type::Vec3(-0.5,-0.5,-0.5);
+        p[1]=type::Vec3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vec3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vec3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vec3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vec3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vec3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vec3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -429,7 +429,7 @@ public:
         SOFA_UNUSED(onlyVisible);
         //if( onlyVisible) return;
 
-        type::Vec<8,type::Vector3> c;
+        type::Vec<8,type::Vec3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -651,8 +651,8 @@ protected:
                     if(i==1 || rplane->getDimensions()[1]>1)
                         if(i==2 || rplane->getDimensions()[2]>1)
                         {
-                            type::Vec<4,type::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
-                            type::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
+                            type::Vec<4,type::Vec3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
+                            type::Vec3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
 
                             glEnable( GL_TEXTURE_2D );
                             glDisable( GL_LIGHTING);

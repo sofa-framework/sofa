@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/SlidingConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/SlidingConstraint.h")
-
-namespace sofa::component::constraintset
-{
-    template<class DataTypes>
-    using SlidingConstraint = sofa::component::constraint::lagrangian::model::SlidingConstraint<DataTypes>;
-    
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/SlidingConstraint.h")

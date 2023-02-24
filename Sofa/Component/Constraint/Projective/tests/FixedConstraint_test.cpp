@@ -76,7 +76,7 @@ struct FixedConstraint_test : public BaseTest
 
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity( type::Vector3(0,0,0) );
+        root->setGravity( type::Vec3(0,0,0) );
 
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.LinearSolver.Direct"}}) ;
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.ODESolver.Forward"}}) ;
@@ -153,7 +153,7 @@ struct FixedConstraint_test : public BaseTest
         
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
-        root->setGravity(type::Vector3(0, 0, 0));
+        root->setGravity(type::Vec3(0, 0, 0));
 
         /// Create euler solver
         simulation::Node::SPtr node = createEulerSolverNode(root, "test");

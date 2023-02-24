@@ -41,11 +41,12 @@ public:
     typedef TBlock Block;
     typedef matrix_bloc_traits<Block, Matrix::Index> traits;
     typedef typename traits::Real Real;
-    enum { NL = traits::NL };  ///< Number of rows of a block
-    enum { NC = traits::NC };  ///< Number of columns of a block
+
+    static constexpr Index NL = traits::NL;  ///< Number of rows of a block
+    static constexpr Index NC = traits::NC;  ///< Number of columns of a block
 
     typedef Matrix Expr;
-    typedef CompressedRowSparseMatrix<double> matrix_type;
+    typedef CompressedRowSparseMatrix<Real> matrix_type;
     enum { category = MATRIX_SPARSE };
     enum { operand = 1 };
 

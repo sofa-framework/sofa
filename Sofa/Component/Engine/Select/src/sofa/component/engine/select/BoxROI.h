@@ -63,9 +63,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef type::Vec<3,Real> Vec3;
-    typedef type::Vec<6,Real> Vec6;
-    typedef type::Vec<10,Real> Vec10;
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec3, sofa::type::Vec3);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vec6, sofa::type::Vec6);
+    typedef type::Vec<10,SReal> Vec10;
     typedef BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
@@ -107,7 +108,7 @@ public:
 
 public:
     //Input
-    Data<vector<Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
+    Data<vector<type::Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
     /// Rest position coordinates of the degrees of freedom.
     /// If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context.
@@ -171,7 +172,7 @@ protected:
     void computeOrientedBoxes();
 
     bool isPointInOrientedBox(const CPos& p, const OrientedBox& box);
-    static bool isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box);
+    static bool isPointInAlignedBox(const typename DataTypes::CPos& p, const type::Vec6& box);
     bool isPointInBoxes(const CPos& p);
     bool isPointInBoxes(const PointID& pid);
     bool isEdgeInBoxes(const Edge& e);
@@ -185,7 +186,7 @@ protected:
     bool isQuadInBoxes(const Quad& q);
     bool isQuadInBoxesStrict(const Quad& q);
 
-    void getPointsFromOrientedBox(const Vec10& box, vector<Vec3> &points);
+    void getPointsFromOrientedBox(const Vec10& box, vector<type::Vec3> &points);
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
@@ -194,7 +195,7 @@ extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec2T
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API BoxROI<defaulttype::Vec6Types>;
- 
+
 #endif
 
 } // namespace sofa::component::engine::select::boxroi

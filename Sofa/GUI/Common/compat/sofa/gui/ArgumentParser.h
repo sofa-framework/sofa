@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/gui/common/ArgumentParser.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/ArgumentParser.h")
-
-namespace sofa::gui
-{
-    using ArgumentParser = sofa::gui::common::ArgumentParser;
-
-} // namespace sofa::gui
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/common/ArgumentParser.h")

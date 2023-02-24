@@ -33,38 +33,45 @@
 namespace sofa::gl
 {
 
+namespace
+{
+    using sofa::type::Vec3;
+}
+
 class SOFA_GL_API Cylinder
 {
 public:
-    typedef sofa::type::Vector3 Vector3;
     typedef sofa::type::Quat<SReal> Quaternion;
-    Cylinder(SReal len=(SReal)1);
-    Cylinder(const Vector3& len);
-    Cylinder(const Vector3& center, const Quaternion &orient, const Vector3& length);
-    Cylinder(const Vector3& center, const double orient[4][4], const Vector3& length);
-    Cylinder(const double *mat, const Vector3& length);
-    Cylinder(const Vector3& center, const Quaternion &orient, SReal length=(SReal)1);
-    Cylinder(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
-    Cylinder(const double *mat, SReal length=(SReal)1.0);
+
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
+
+    Cylinder(SReal len=1.0_sreal);
+    Cylinder(const Vec3& len);
+    Cylinder(const Vec3& center, const Quaternion &orient, const Vec3& length);
+    Cylinder(const Vec3& center, const double orient[4][4], const Vec3& length);
+    Cylinder(const double *mat, const Vec3& length);
+    Cylinder(const Vec3& center, const Quaternion &orient, SReal length=1.0_sreal);
+    Cylinder(const Vec3& center, const double orient[4][4], SReal length=1.0_sreal);
+    Cylinder(const double *mat, SReal length=1.0_sreal);
 
     ~Cylinder();
 
-    void update(const Vector3& center, const Quaternion& orient = Quaternion());
-    void update(const Vector3& center, const double orient[4][4]);
+    void update(const Vec3& center, const Quaternion& orient = Quaternion());
+    void update(const Vec3& center, const double orient[4][4]);
     void update(const double *mat);
 
     void draw();
 
-    static void draw(const Vector3& center, const Quaternion& orient, const Vector3& length);
-    static void draw(const Vector3& center, const double orient[4][4], const Vector3& length);
-    static void draw(const double *mat, const Vector3& length);
-    static void draw(const Vector3& center, const Quaternion& orient, SReal length=(SReal)1);
-    static void draw(const Vector3& center, const double orient[4][4], SReal length=(SReal)1);
-    static void draw(const double *mat, SReal length=(SReal)1.0);
+    static void draw(const Vec3& center, const Quaternion& orient, const Vec3& length);
+    static void draw(const Vec3& center, const double orient[4][4], const Vec3& length);
+    static void draw(const double *mat, const Vec3& length);
+    static void draw(const Vec3& center, const Quaternion& orient, SReal length=1.0_sreal);
+    static void draw(const Vec3& center, const double orient[4][4], SReal length=1.0_sreal);
+    static void draw(const double *mat, SReal length=1.0_sreal);
 
 private:
 
-    Vector3 length;
+    Vec3 length;
     double matTransOpenGL[16];
 
     GLUquadricObj *quadratic;
@@ -73,7 +80,7 @@ private:
     void initDraw();
 
     static std::map < std::pair<std::pair<float,float>,float>, Cylinder* > CylinderMap;
-    static Cylinder* get(const Vector3& len);
+    static Cylinder* get(const Vec3& len);
 public:
     static void clear() { CylinderMap.clear(); } // need to be called when display list has been created in another opengl context
 

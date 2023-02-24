@@ -27,24 +27,8 @@
 #include <sofa/gui/component/performer/SuturePointPerformer.h>
 #define SOFA_GUI_COMPONENT_SUTUREPOINTPERFORMER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/SuturePointPerformer.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/SuturePointPerformer.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/SuturePointPerformer.h> instead of this one."
 #endif
-
-
-#ifdef SOFA_GUI_COMPONENT_SUTUREPOINTPERFORMER
-
-namespace sofa::component::collision
-{
-    using SuturePointPerformerConfiguration = sofa::gui::component::performer::SuturePointPerformerConfiguration;
-    template <class DataTypes>
-    using SuturePointPerformer = sofa::gui::component::performer::SuturePointPerformer<DataTypes>;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_SUTUREPOINTPERFORMER
-
-#undef SOFA_GUI_COMPONENT_SUTUREPOINTPERFORMER

@@ -67,7 +67,7 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef sofa::type::Vector3 Vector3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
     typedef type::vector<Index> Indices;
     typedef sofa::core::topology::TopologySubsetIndices IndexSubsetData;
     typedef linearalgebra::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
@@ -86,7 +86,7 @@ public:
     Data<SReal> f_drawSize;    ///< The size of the square used to display the constrained particles
     Data<CPos> f_origin;       ///< A point on the line
     Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
-             
+
     /// Link to be set to the topology container in the component graph.
     SingleLink<ProjectToLineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 

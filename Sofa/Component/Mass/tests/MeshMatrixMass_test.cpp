@@ -101,7 +101,9 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
@@ -172,6 +174,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -179,10 +182,8 @@ public:
                 "    <MeshMatrixMass name='m_mass' />                                                               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
-
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+    
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -213,6 +214,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -220,10 +222,8 @@ public:
                 "    <MeshMatrixMass name='m_mass' totalMass='2.0' />                                               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
-
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+    
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -256,6 +256,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -263,9 +264,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0' />                                             "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -299,6 +298,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -307,10 +307,8 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
-
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+    
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -350,6 +348,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -357,10 +356,8 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='2.0' />                             "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
-
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
+    
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
@@ -382,6 +379,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -390,9 +388,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -416,6 +412,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -424,9 +421,7 @@ public:
                 "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -453,6 +448,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -460,9 +456,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' totalMass='-2.0' />                                              "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -485,6 +479,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -492,9 +487,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='-1.0' />                                            "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -517,6 +510,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -524,9 +518,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' massDensity='1.0 4.0' />                                         "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -549,6 +541,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -557,9 +550,7 @@ public:
                 "               vertexMass='1 -1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />              "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -582,6 +573,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -589,9 +581,7 @@ public:
                 "    <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 2' />                                  "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -616,6 +606,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -625,9 +616,7 @@ public:
 
         /// Here : default totalMass value will be used since negative value is given
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -650,6 +639,7 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
@@ -659,9 +649,7 @@ public:
 
         /// Here : totalMass value will be used due to concurrent data
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -690,7 +678,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -703,9 +692,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -735,7 +722,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -748,9 +736,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -774,7 +760,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -787,9 +774,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -812,7 +797,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -825,9 +811,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -856,7 +840,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -869,9 +854,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -894,7 +877,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -907,9 +891,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -933,7 +915,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -946,9 +929,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -975,7 +956,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -988,9 +970,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());   
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1013,7 +993,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1026,9 +1007,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1051,7 +1030,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1064,9 +1044,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1089,7 +1067,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1102,9 +1081,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1127,7 +1104,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1139,9 +1117,7 @@ public:
                 "        <MeshMatrixMass name='m_mass' vertexMass='1.0 2.0' lumping='1' />                          "
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            ";
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1166,7 +1142,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1181,9 +1158,7 @@ public:
 
         /// Here : default totalMass value will be used since negative value is given
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1206,7 +1181,8 @@ public:
         static const string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <MechanicalObject />                                                                           "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
@@ -1221,9 +1197,7 @@ public:
 
         /// Here : totalMass value will be used due to concurrent data
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -1250,6 +1224,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Hexa' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1265,6 +1240,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Hexa' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1275,9 +1251,7 @@ public:
                     "    </Node>                                                                                        "
                     "</Node>                                                                                            ";
         }
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
-            scene.c_str(),
-            sofa::Size(scene.size()));
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
@@ -1402,7 +1376,8 @@ public:
              scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                    "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                    "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Tetra' >                                                                           "
                     "            <MechanicalObject position='@../grid.position' />                                      "
@@ -1419,7 +1394,8 @@ public:
             scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RequiredPlugin name='Sofa.Component.Topology.Mapping'/>                                       "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Tetra' >                                                                           "
                 "            <MechanicalObject position='@../grid.position' />                                      "
@@ -1432,9 +1408,7 @@ public:
                 "</Node>                                                                                            ";
         }
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
-            scene.c_str(),
-            sofa::Size(scene.size()));
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
@@ -1559,6 +1533,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Quad' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1574,6 +1549,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Quad' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1585,9 +1561,7 @@ public:
                     "</Node>                                                                                            ";
         }
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
-            scene.c_str(),
-            sofa::Size(scene.size()));
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
@@ -1690,6 +1664,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Triangle' >                                                                        "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1705,6 +1680,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Triangle' >                                                                        "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1716,9 +1692,7 @@ public:
                     "</Node>                                                                                            ";
         }
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
-            scene.c_str(),
-            sofa::Size(scene.size()));
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
@@ -1844,6 +1818,7 @@ public:
             scene =
                     "<?xml version='1.0'?>                                                                              "
                     "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <DefaultAnimationLoop />                                                                       "
                     "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                     "    <Node name='Edge' >                                                                            "
                     "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1859,6 +1834,7 @@ public:
             scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
                 "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
                 "    <Node name='Edge' >                                                                            "
                 "            <MechanicalObject position = '@../grid.position' />                                    "
@@ -1870,9 +1846,7 @@ public:
                 "</Node>                                                                                            ";
         }
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
-            scene.c_str(),
-            sofa::Size(scene.size()));
+        Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam", scene.c_str());
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation

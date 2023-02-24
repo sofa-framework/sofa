@@ -23,10 +23,4 @@
 
 #include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/core/behavior/CRSMultiMatrixAccessor.h")
-
-namespace sofa::component::linearsolver
-{
-    using CRSMultiMatrixAccessor = sofa::core::behavior::CRSMultiMatrixAccessor;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/core/behavior/CRSMultiMatrixAccessor.h")

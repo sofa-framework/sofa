@@ -42,7 +42,7 @@ TransformPosition<DataTypes>::TransformPosition()
     , f_translation(initData(&f_translation, "translation", "translation vector ") )
     , f_rotation(initData(&f_rotation, "rotation", "rotation vector ") )
     , f_scale(initData(&f_scale, Coord(1.0,1.0,1.0), "scale", "scale factor") )
-    , f_affineMatrix(initData(&f_affineMatrix, Mat4x4::s_identity, "matrix", "4x4 affine matrix") )
+    , f_affineMatrix(initData(&f_affineMatrix, Mat4x4::Identity(), "matrix", "4x4 affine matrix") )
     , f_method(initData(&f_method, "method", "transformation method either translation or scale or rotation or random or projectOnPlane") )
     , f_seed(initData(&f_seed, (long) 0, "seedValue", "the seed value for the random generator") )
     , f_maxRandomDisplacement(initData(&f_maxRandomDisplacement, (Real) 1.0, "maxRandomDisplacement", "the maximum displacement around initial position for the random transformation") )
@@ -177,7 +177,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
     if (stream)
     {
         std::string line;
-        Mat4x4 mat(Mat4x4::s_identity);
+        Mat4x4 mat(Mat4x4::Identity());
 
         bool found = false;
         while (getline(stream,line) && !found)
@@ -245,7 +245,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
     {
         std::string line;
         unsigned int nbLines = 0;
-        Mat4x4 mat(Mat4x4::s_identity);
+        Mat4x4 mat(Mat4x4::Identity());
 
         while (getline(stream,line))
         {
@@ -323,7 +323,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
     {
         std::string line;
         unsigned int nbLines = 0;
-        Mat4x4 mat(Mat4x4::s_identity);
+        Mat4x4 mat(Mat4x4::Identity());
 
         while (getline(stream,line))
         {
@@ -472,12 +472,12 @@ void TransformPosition<DataTypes>::doUpdate()
 template <class DataTypes>
 void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (f_drawInput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
-        std::vector<sofa::type::Vector3> points;
+        std::vector<sofa::type::Vec3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
         vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::type::RGBAColor(0.8f, 0.2f, 0.2f, 1.0f));
@@ -486,12 +486,12 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (f_drawOutput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > out = f_outputX;
-        std::vector<sofa::type::Vector3> points;
+        std::vector<sofa::type::Vec3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
         vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::type::RGBAColor(0.2f, 0.8f, 0.2f, 1.0f));
     }
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

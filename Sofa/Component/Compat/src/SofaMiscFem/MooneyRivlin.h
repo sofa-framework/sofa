@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h")
-
-namespace sofa::component::fem
-{
-    template<class DataTypes>
-    using MooneyRivlin = sofa::component::solidmechanics::fem::hyperelastic::material::MooneyRivlin<DataTypes>;
-
-} // namespace sofa::component::fem
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h")

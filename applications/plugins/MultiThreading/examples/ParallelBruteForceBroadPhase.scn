@@ -13,16 +13,6 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
 
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
     <Node name="pluginList" />
-        <RequiredPlugin name="SofaOpenglVisual"/>
-        <RequiredPlugin name="SofaConstraint"/>
-        <RequiredPlugin name="SofaMeshCollision"/>
-        <RequiredPlugin name="SofaRigid"/>
-        <RequiredPlugin name="SofaImplicitOdeSolver"/>
-        <RequiredPlugin name="SofaLoader"/>
-        <RequiredPlugin name="SofaGeneralEngine"/>
-        <RequiredPlugin name='MultiThreading'/>
-        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
-        <RequiredPlugin name="SofaMiscCollision"/>
     </Node>
 
 
@@ -31,7 +21,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
 
     <!-- Basic Components to perform the collision detection -->
     <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" />
-    <DefaultPipeline name="CollisionPipeline" />
+    <CollisionPipeline name="CollisionPipeline" />
 
     <ParallelBruteForceBroadPhase/>
     <ParallelBVHNarrowPhase/>

@@ -19,25 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASECLASS_H
-#define SOFA_CORE_OBJECTMODEL_BASECLASS_H
+#pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/helper/NameDecoder.h>
+#include <sofa/core/fwd.h>
+#include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <map>
 
-namespace sofa
+namespace sofa::core::objectmodel
 {
-
-namespace core
-{
-
-namespace objectmodel
-{
-
-class Base;
-using sofa::helper::NameDecoder;
 
 /**
  *  \brief Class hierarchy reflection base class
@@ -54,10 +45,7 @@ protected:
     virtual ~BaseClass();
 
 public:
-
-
     /// @todo the names could be hashed for faster comparisons
-
     std::string namespaceName;
     std::string typeName;
     std::string className;
@@ -235,8 +223,8 @@ public:
 // Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
 #define SOFA_ABSTRACT_CLASS_DECL                                        \
     typedef MyType* Ptr;                                                \
-    friend class sofa::helper::NameDecoder;                             \
-    static std::string GetDefaultTemplateName(){ return sofa::helper::NameDecoder::DefaultTypeTemplateName<MyType>::Get(); } \
+    friend class sofa::core::objectmodel::BaseClassNameHelper;          \
+    static std::string GetDefaultTemplateName(){ return sofa::core::objectmodel::BaseClassNameHelper::DefaultTypeTemplateName<MyType>::Get(); } \
     using SPtr = sofa::core::sptr<MyType>;                              \
     static const ::sofa::core::objectmodel::BaseClass* GetClass() { return MyClass::get(); }   \
     virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
@@ -331,11 +319,11 @@ class TClass : public BaseClass
 protected:
     TClass()
     {
-        typeName = NameDecoder::getTypeName<T>();
-        namespaceName = NameDecoder::getNamespaceName<T>();
-        className = NameDecoder::getClassName<T>();
-        templateName = NameDecoder::getTemplateName<T>();
-        shortName = NameDecoder::getShortName<T>();
+        typeName = BaseClassNameHelper::getTypeName<T>();
+        namespaceName = BaseClassNameHelper::getNamespaceName<T>();
+        className = BaseClassNameHelper::getClassName<T>();
+        templateName = BaseClassNameHelper::getTemplateName<T>();
+        shortName = BaseClassNameHelper::getShortName<T>();
 
         parents.resize(TClassParents<Parents>::nb());
         for (std::size_t i = 0; i < TClassParents<Parents>::nb(); ++i)
@@ -364,13 +352,6 @@ public:
     }
 };
 
-} // namespace objectmodel
+} // namespace sofa::core::objectmodel
 
-} // namespace core
-
-} // namespace sofa
-
-
-
-#endif
 

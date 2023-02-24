@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/linear/IdentityMapping.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/IdentityMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using IdentityMapping = sofa::component::mapping::linear::IdentityMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/IdentityMapping.h")

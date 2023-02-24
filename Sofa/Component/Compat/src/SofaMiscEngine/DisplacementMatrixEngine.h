@@ -23,15 +23,4 @@
 
 #include <sofa/component/engine/transform/DisplacementMatrixEngine.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/DisplacementMatrixEngine.h")
-
-namespace sofa::component::engine
-{
-    template < class DataTypes, class OutputType >
-    using DisplacementTransformEngine = sofa::component::engine::transform::DisplacementTransformEngine<DataTypes, OutputType>;
-
-    template < class DataTypes >
-    using DisplacementMatrixEngine = sofa::component::engine::transform::DisplacementTransformEngine<DataTypes>;
-{
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/DisplacementMatrixEngine.h")

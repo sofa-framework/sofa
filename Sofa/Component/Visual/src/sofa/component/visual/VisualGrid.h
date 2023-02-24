@@ -28,12 +28,17 @@
 namespace sofa::component::visual
 {
 
+namespace
+{
+    using sofa::type::Vec3;
+}
+
 class SOFA_COMPONENT_VISUAL_API VisualGrid : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(VisualGrid, VisualModel);
 
-    typedef sofa::type::Vector3 Vector3;
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
     enum PLANE
     {
@@ -41,8 +46,6 @@ public:
         PLANE_Y = 1,
         PLANE_Z = 2
     };
-
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data<std::string> d_plane; ///< Plane of the grid
 
@@ -68,7 +71,7 @@ protected:
     PLANE internalPlane;
 
     ///< Pre-computed points used to draw the grid
-    sofa::type::vector<Vector3> m_drawnPoints;
+    sofa::type::vector<Vec3> m_drawnPoints;
 
 };
 

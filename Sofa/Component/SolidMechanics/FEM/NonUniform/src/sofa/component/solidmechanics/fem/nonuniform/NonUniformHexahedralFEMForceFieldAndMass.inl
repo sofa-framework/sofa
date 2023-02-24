@@ -934,7 +934,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
 {
     Real mFactor=(Real)sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue());
     Real kFactor=(Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(HexahedralFEMForceFieldT::mstate);
+    helper::ReadAccessor < DataVecDeriv > dx = *mparams->readDx(HexahedralFEMForceFieldT::mstate.get());
     helper::WriteAccessor< DataVecDeriv > df = *dfId[HexahedralFEMForceFieldT::mstate.get()].write();
     const VecElement& hexahedra = this->_topology->getHexahedra();
     const auto& hexahedronInf = this->hexahedronInfo.getValue();

@@ -126,8 +126,6 @@ struct DefaultDataTypeInfo
     {
     }
 
-    // mtournier: wtf is this supposed to do?
-    // mtournier: wtf is this not returning &type?
     static const void* getValuePtr(const DataType& /*type*/)
     {
         return nullptr;
@@ -139,7 +137,7 @@ struct DefaultDataTypeInfo
     }
 
     static const std::string name() { return GetTypeName(); }
-    static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeFullName(typeid(DataType)); }
+    static const std::string GetTypeName() { return sofa::helper::NameDecoder::decodeTypeName(typeid(DataType)); }
 };
 
 template<class TDataType>

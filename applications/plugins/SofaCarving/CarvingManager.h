@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_CARVINGMANAGER_H
-#define SOFA_COMPONENT_COLLISION_CARVINGMANAGER_H
+#pragma once
 
 #include <SofaCarving/config.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -34,13 +33,7 @@
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 /**
@@ -53,17 +46,11 @@ class SOFA_SOFACARVING_API CarvingManager : public core::behavior::BaseControlle
 {
 public:
 	SOFA_CLASS(CarvingManager,sofa::core::behavior::BaseController);
-
-	typedef defaulttype::Vec3Types DataTypes;
-    typedef DataTypes::Coord Coord;
-    typedef DataTypes::Real Real;
     
-    typedef type::vector<core::collision::DetectionOutput> ContactVector;
+    using ContactVector = type::vector<core::collision::DetectionOutput>;
     
     /// Sofa API init method of the component
     void init() override;
-    /// Sofa API reset method of the component
-    void reset() override;
 
     /// Method to handle various event like keyboard or omni.
     void handleEvent(sofa::core::objectmodel::Event* event) override;
@@ -77,17 +64,22 @@ protected:
     CarvingManager();
 
     /// Default destructor
-    ~CarvingManager() override;
+    ~CarvingManager() override {};
 
 
 public:
     /// Tool model path
-    Data < std::string > d_toolModelPath; 
+    // link to the forceFeedBack component, if not set will search through graph and take first one encountered
+    SingleLink<CarvingManager, core::CollisionModel, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_toolModel;
+
+    // link to the scene detection Method component (Narrow phase only)
+    SingleLink<CarvingManager, core::collision::NarrowPhaseDetection, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_detectionNP;
+
     /// TriangleSetModel or SphereCollisionModel<sofa::defaulttype::Vec3Types> path
     Data < std::string > d_surfaceModelPath;
 
-    /// Collision distance at which cavring will start. Equal to contactDistance by default.
-    Data < Real > d_carvingDistance;
+    /// Collision distance at which carving will start. Equal to contactDistance by default.
+    Data < SReal > d_carvingDistance;
     
     ///< Activate this object. Note that this can be dynamically controlled by using a key
     Data < bool > d_active;
@@ -103,26 +95,9 @@ public:
     Data < std::string > d_activatorName;
     
 protected:
-    /// Pointer to the tool collision model
-    core::CollisionModel* m_toolCollisionModel;
-
     // Pointer to the target object collision model
     std::vector<core::CollisionModel*> m_surfaceCollisionModels;
-
-    // Pointer to the scene intersection Method component
-    core::collision::Intersection* m_intersectionMethod;
-    // Pointer to the scene detection Method component (Narrow phase only)
-    core::collision::NarrowPhaseDetection* m_detectionNP;
-
-    // Bool to store the information if component has well be init and can be used.
-    bool m_carvingReady;
-    
+   
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision

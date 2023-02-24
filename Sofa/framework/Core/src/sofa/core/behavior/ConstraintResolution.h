@@ -32,21 +32,21 @@ namespace sofa::core::behavior
 class SOFA_CORE_API ConstraintResolution
 {
 public:
-    ConstraintResolution(unsigned int nbLines, double tolerance = 0.0);
+    ConstraintResolution(unsigned int nbLines, SReal tolerance = 0.0);
 
     virtual ~ConstraintResolution();
 
     /// The resolution object can do precomputation with the compliance matrix, and give an initial guess.
-    virtual void init(int /*line*/, double** /*w*/, double* /*force*/);
+    virtual void init(int /*line*/, SReal** /*w*/, SReal* /*force*/);
 
     /// The resolution object can provide an initial guess
-    virtual void initForce(int /*line*/, double* /*force*/);
+    virtual void initForce(int /*line*/, SReal* /*force*/);
 
     /// Resolution of the constraint for one Gauss-Seidel iteration
-    virtual void resolution(int line, double** w, double* d, double* force, double * dFree);
+    virtual void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dFree);
 
     /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
-    virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/);
+    virtual void store(int /*line*/, SReal* /*force*/, bool /*convergence*/);
 
     void setNbLines(unsigned int nbLines)
     {
@@ -58,12 +58,12 @@ public:
         return m_nbLines;
     }
 
-    void setTolerance(double tolerance)
+    void setTolerance(SReal tolerance)
     {
         m_tolerance = tolerance;
     }
 
-    double getTolerance() const
+    SReal getTolerance() const
     {
         return m_tolerance;
     }
@@ -73,7 +73,7 @@ private:
     unsigned int m_nbLines;
 
     /// Custom tolerance, used for the convergence of this particular constraint instead of the global tolerance
-    double m_tolerance;
+    SReal m_tolerance;
 };
 
 } // namespace sofa

@@ -23,16 +23,4 @@
 
 #include <sofa/component/io/mesh/STLExporter.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/STLExporter.h")
-
-namespace sofa::component::_stlexporter_
-{
-    using STLExporter = sofa::component::io::mesh::STLExporter;
-
-} // namespace sofa::component::_stlexporter_
-
-namespace sofa::component::exporter
-{
-    using STLExporter = sofa::component::io::mesh::STLExporter;
-
-} // namespace sofa::component::exporter
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/STLExporter.h")

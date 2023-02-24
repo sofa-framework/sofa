@@ -23,16 +23,4 @@
 
 #include <sofa/component/io/mesh/VisualModelOBJExporter.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/VisualModelOBJExporter.h")
-
-namespace sofa::component::_visualmodelobjexporter_
-{
-    using VisualModelOBJExporter = sofa::component::io::mesh::VisualModelOBJExporter;
-
-} // namespace sofa::component::_visualmodelobjexporter_
-
-namespace sofa::component::exporter
-{
-    using VisualModelOBJExporter = sofa::component::io::mesh::VisualModelOBJExporter;
-
-} // namespace sofa::component::exporter
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/VisualModelOBJExporter.h")

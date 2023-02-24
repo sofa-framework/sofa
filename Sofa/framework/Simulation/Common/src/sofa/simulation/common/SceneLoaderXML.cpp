@@ -136,11 +136,11 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 }
 
 /// Load from a string in memory
-Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
+Node::SPtr SceneLoaderXML::loadFromMemory(const char* filename, const char* data)
 {
     notifyLoadingSceneBefore();
 
-    xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
+    xml::BaseElement* xml = xml::loadFromMemory(filename, data);
 
     Node::SPtr root = processXML(xml, filename);
 

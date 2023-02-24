@@ -196,7 +196,7 @@ public:
     Real getPoisson() { return (f_poisson.getValue())[0]; }
     void setPoisson(Real val);
     void setPoissonArray(const type::vector<Real>& values);
-    
+
     Real getYoung() { return (f_young.getValue())[0]; }
     void setYoung(Real val);
     void setYoungArray(const type::vector<Real>& values);
@@ -225,8 +225,9 @@ public:
 protected :
     /// Forcefield computations
     void computeStiffness(Stiffness &K, const StrainDisplacement& J, const MaterialStiffness &D);
-    void computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain);
-    void computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress);
+    void computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo);
+    void computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo);
+    void computeStressPerVertex(); ///< Method to compute the averageStress per vertex. Call if @sa showStressValue is true
 
     /// f += Kx where K is the stiffness matrix and x a displacement
     virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
@@ -286,8 +287,10 @@ public:
 #endif
 
 private:
-    bool p_computeDrawInfo;
-    sofa::helper::ColorMap* p_drawColorMap;
+    bool p_computeDrawInfo; ///< bool set to true if at least one of @sa showStressValue, @sa showStressVector or @sa showFracturableTriangles is true
+    sofa::helper::ColorMap* p_drawColorMap; ///< colormap to display the gradiant of stress if @sa showStressValue is set to true
+    Real m_minStress = 0; ///< min stress computed for @sa showStressValue
+    Real m_maxStress = 0; ///< max stress computed for @sa showStressValue
 
     TriangleFEMUtils<DataTypes> m_triangleUtils;
 };

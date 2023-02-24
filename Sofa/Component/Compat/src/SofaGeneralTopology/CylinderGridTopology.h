@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/topology/container/grid/CylinderGridTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/CylinderGridTopology.h")
-
-namespace sofa::component::topology
-{
-
-    using CylinderGridTopology = sofa::component::topology::container::grid::CylinderGridTopology;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/CylinderGridTopology.h")

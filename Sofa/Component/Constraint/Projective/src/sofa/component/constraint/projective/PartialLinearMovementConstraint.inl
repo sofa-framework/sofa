@@ -450,12 +450,12 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
 
-    sofa::type::vector<type::Vector3> vertices;
+    sofa::type::vector<type::Vec3> vertices;
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
@@ -468,8 +468,8 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                const type::Vector3 v0 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]) };
-                const type::Vector3 v1 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]) };
+                const type::Vec3 v0 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]) };
+                const type::Vec3 v1 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]) };
 
                 vertices.push_back(v0);
                 vertices.push_back(v1);
@@ -481,7 +481,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        type::Vector3 point;
+        type::Vec3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -491,6 +491,6 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         vparams->drawTool()->drawPoints(vertices, 10, color);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 } // namespace sofa::component::constraint::projective

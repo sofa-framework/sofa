@@ -28,11 +28,7 @@
 #include <sofa/core/config.h>
 #include <sofa/helper/logging/MessageHandler.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace logging
+namespace sofa::helper::logging
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
@@ -77,14 +73,11 @@ public:
     static PerComponentLoggingMessageHandler& getInstance() ;
 };
 
-} // loggingmessagehandler
+} // namespace percomponentloggingmessagehandler
 
 using percomponentloggingmessagehandler::PerComponentLoggingMessageHandler ;
 using percomponentloggingmessagehandler::MainPerComponentLoggingMessageHandler ;
-
-} // logging
-} // helper
-} // sofa
+} // sofa::helper::logging
 
 #endif // PERCOMPONENTLOGGINGMESSAGEHANDLER_H
 

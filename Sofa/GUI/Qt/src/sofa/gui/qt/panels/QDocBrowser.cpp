@@ -247,7 +247,7 @@ void DocBrowser::onLinkClicked(const QUrl& u)
 
     if( u.isLocalFile() && ! u.hasQuery() )
     {
-        QFileInfo theFile = u.toLocalFile() ;
+        QFileInfo theFile(u.toLocalFile());
         std::string sofafile = asStr( theFile.absoluteDir().absoluteFilePath(u.toLocalFile()) );
         std::string extension = FileSystem::getExtension(sofafile) ;
 
@@ -274,7 +274,7 @@ void DocBrowser::goTo(const QUrl& u)
             return ;
         }
 
-        QFileInfo htmlfile = u.toLocalFile() ;
+        QFileInfo htmlfile(u.toLocalFile());
         std::string sofafile = asStr( htmlfile.absoluteDir().absoluteFilePath(q.queryItemValue("sofafile")) );
         std::string extension = FileSystem::getExtension(sofafile) ;
 

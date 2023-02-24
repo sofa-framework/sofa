@@ -114,6 +114,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/AspectPool.h
     ${SRC_ROOT}/objectmodel/Base.h
     ${SRC_ROOT}/objectmodel/BaseClass.h
+    ${SRC_ROOT}/objectmodel/BaseClassNameHelper.h
     ${SRC_ROOT}/objectmodel/BaseContext.h
     ${SRC_ROOT}/objectmodel/BaseData.h
     ${SRC_ROOT}/objectmodel/BaseLink.h
@@ -146,6 +147,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
     ${SRC_ROOT}/objectmodel/Tag.h
+    ${SRC_ROOT}/objectmodel/TagSet.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
@@ -164,8 +166,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.h
+    ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
+    ${SRC_ROOT}/visual/FlagTreeItem.h
     ${SRC_ROOT}/visual/Shader.h
+    ${SRC_ROOT}/visual/Tristate.h
     ${SRC_ROOT}/visual/VisualLoop.h
     ${SRC_ROOT}/visual/VisualManager.h
     ${SRC_ROOT}/visual/VisualModel.h
@@ -196,6 +201,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
+    ${SRC_ROOT}/VecId.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraint.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
@@ -270,6 +276,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
+    ${SRC_ROOT}/objectmodel/TagSet.cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
@@ -278,7 +285,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
     ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
+    ${SRC_ROOT}/visual/Data[DisplayFlags].cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
+    ${SRC_ROOT}/visual/FlagTreeItem.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
     ${SRC_ROOT}/visual/VisualManager.cpp

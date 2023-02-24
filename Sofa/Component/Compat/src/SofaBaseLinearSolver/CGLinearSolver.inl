@@ -23,4 +23,4 @@
 
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/iterative/CGLinearSolver.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/iterative/CGLinearSolver.inl")

@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Core_test)
 
 set(SOURCE_FILES
+    accessor/ReadAccessor.cpp
+    accessor/WriteAccessor.cpp
     collision/NarrowPhaseDetection_test.cpp
     loader/MeshLoader_test.cpp
     objectmodel/AspectPool_test.cpp
@@ -26,6 +28,7 @@ set(SOURCE_FILES
     PathResolver_test.cpp
     TrackedData_test.cpp
     VecId_test.cpp
+    visual/DisplayFlags_test.cpp
 )
 
 set(HEADER_FILES

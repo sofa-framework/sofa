@@ -55,7 +55,7 @@ void UnilateralInteractionConstraint<DataTypes>::clear(int reserve)
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralInteractionConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm, P, Q, contactDistance, m1, m2,
             this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue()[m2],
@@ -64,7 +64,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
+void UnilateralInteractionConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Real contactDistance, int m1, int m2, long id, PersistentID localid)
 {
     addContact(mu, norm,
             this->getMState2()->read(core::ConstVecCoordId::position())->getValue()[m2],
@@ -76,7 +76,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
+void UnilateralInteractionConstraint<DataTypes>::addContact(SReal mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long id, PersistentID localid)
 {
     contacts.resize(contacts.size() + 1);
     Contact &c = contacts.back();
@@ -389,16 +389,13 @@ bool UnilateralInteractionConstraint<DataTypes>::isActive() const
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    vparams->drawTool()->saveLastState();
-
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
-    vparams->drawTool()->saveLastState();
 
-    std::vector<sofa::type::Vector3> redVertices;
-    std::vector<sofa::type::Vector3> otherVertices;
+    std::vector<sofa::type::Vec3> redVertices;
+    std::vector<sofa::type::Vec3> otherVertices;
     std::vector<sofa::type::RGBAColor> otherColors;
 
     for (unsigned int i=0; i<contacts.size(); i++)
@@ -421,7 +418,7 @@ void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::Visual
     vparams->drawTool()->drawLines(otherVertices, 3, otherColors);
 
 
-    vparams->drawTool()->restoreLastState();
+
 
 }
 

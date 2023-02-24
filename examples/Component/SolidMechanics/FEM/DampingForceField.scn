@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  gravity="0 0 0"  dt="0.02"  bbox="-1 -1 -1 1 1 1">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [DiagonalVelocityDampingForceField UniformVelocityDampingForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <VisualStyle name="displayFlags"  displayFlags="showAll hideOptions" />
+    <DefaultAnimationLoop/>
+
+    <DefaultAnimationLoop/>
+
+    <EulerImplicitSolver name="eulerImplicitSolver0"  rayleighStiffness="0"  rayleighMass="0" />
+    <CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  tolerance="1e-015"  threshold="1e-015" iterations="25"/>
+
+    <Node name="noDamping (white)"  >
+        <MechanicalObject name="mObject2"  position="0 0 0"  velocity="1 1 1"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObject="1"  showObjectScale="0.1"  drawMode="1" />
+        <UniformMass template="Vec3" name="uniformMass3" />
+        <TrailRenderer template="Vec3" position="@mObject2.position" color="1 1 1 1"/>
+    </Node>
+
+    <Node name="uniform (green)"  >
+        <MechanicalObject template="Vec3" name="mObject2"  position="0 0 0 0 0 0"  velocity="1 1 1 1 1 1"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObject="1"  showObjectScale="0.1"  drawMode="3" />
+        <UniformMass name="uniformMass3" />
+        <UniformVelocityDampingForceField template="Vec3" name="uniformVelocityDampingFF0" />
+        <TrailRenderer template="Vec3" position="@mObject2.position" color="0 1 0 1"/>
+    </Node>
+
+    <Node name="diagonal (red)"  >
+        <MechanicalObject template="Vec3" name="mObject2"  position="0 0 0 0 0 0"  velocity="1 1 1 1 1 1"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1"  drawMode="2" />
+        <UniformMass name="uniformMass3" />
+        <DiagonalVelocityDampingForceField template="Vec3" name="diagonalVelocityDampingFF1"  dampingCoefficient="0.5 0.2 0.2 1 1 1" />
+        <TrailRenderer template="Vec3" position="@mObject2.position" color="1 0 0 1"/>
+    </Node>
+
+</Node>

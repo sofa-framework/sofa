@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_INTERSECTORFACTORY_H
-#define SOFA_CORE_COLLISION_INTERSECTORFACTORY_H
+#pragma once
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
+#include <typeindex>
+#include <typeinfo>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 template<class TIntersectionClass>
@@ -40,7 +35,7 @@ class BaseIntersectorCreator
 public:
     virtual ~BaseIntersectorCreator() {}
 
-    virtual void addIntersectors(TIntersectionClass* object) = 0;
+    virtual std::tuple<std::type_index, std::shared_ptr<void>> addIntersectors(TIntersectionClass* object) = 0;
 
     virtual std::string name() const = 0;
 };
@@ -52,6 +47,9 @@ protected:
     typedef BaseIntersectorCreator<TIntersectionClass> Creator;
     typedef std::vector<Creator*> CreatorVector;
     CreatorVector creatorVector;
+    // keep track of already created TIntersectorClass instances for each template combination
+    // when the factory is destroyed, the refcount of the instances is zero and they are cleaned up correctly
+    std::unordered_map<std::type_index, std::shared_ptr<void>> intersectorCache;
 
 public:
 
@@ -68,7 +66,10 @@ public:
         while (it != end)
         {
             BaseIntersectorCreator<TIntersectionClass>* creator = (*it);
-            creator->addIntersectors(object);
+            std::tuple<std::type_index, std::shared_ptr<void>> intersectorHandleInfo = creator->addIntersectors(object);
+            // add the specific TIntersectorClass and the respective pointer to the map
+            // if an old one of the same type is replaced, the old one will be cleaned up because its refcount is reduced to zero.
+            intersectorCache[std::get<0>(intersectorHandleInfo)] = std::get<1>(intersectorHandleInfo);
             ++it;
         }
     }
@@ -90,20 +91,13 @@ public:
     }
     virtual ~IntersectorCreator() {}
 
-    virtual void addIntersectors(TIntersectionClass* object)
+    virtual std::tuple<std::type_index, std::shared_ptr<void>> addIntersectors(TIntersectionClass* object)
     {
-        new TIntersectorClass(object);
+        return std::make_tuple(std::type_index(typeid(TIntersectorClass)), std::make_shared<TIntersectorClass>(object));
     }
 
     virtual std::string name() const { return m_name; }
 protected:
     std::string m_name;
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

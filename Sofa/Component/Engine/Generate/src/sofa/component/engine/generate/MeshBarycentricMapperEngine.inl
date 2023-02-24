@@ -84,7 +84,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
     if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    using sofa::type::Vector3;
+    using sofa::type::Vec3;
     using sofa::type::Matrix3;
     using sofa::type::Mat3x3d;
     using sofa::type::Vec3d;
@@ -115,17 +115,13 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         linearInterpolValues.resize(out.size());
     }
 
-
-
-    int outside = 0;
-
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = l_topology->getTetrahedra();
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = l_topology->getHexahedra();
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = l_topology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = l_topology->getQuads();
     sofa::type::vector<Matrix3> bases;
-    sofa::type::vector<Vector3> centers;
+    sofa::type::vector<Vec3> centers;
 
     if ( tetrahedra.empty() && cubes.empty() )
     {
@@ -137,14 +133,14 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             if ( edges.empty() ) return;
 
             sofa::type::vector< SReal >   lengthEdges;
-            sofa::type::vector< Vector3 > unitaryVectors;
+            sofa::type::vector< Vec3 > unitaryVectors;
 
             unsigned int e;
             for ( e=0; e<edges.size(); e++ )
             {
                 lengthEdges.push_back ( ( (in)[edges[e][1]]-(in)[edges[e][0]] ).norm() );
 
-                Vector3 V12 = ( (in)[edges[e][1]]-(in)[edges[e][0]] ); V12.normalize();
+                Vec3 V12 = ( (in)[edges[e][1]]-(in)[edges[e][0]] ); V12.normalize();
                 unitaryVectors.push_back ( V12 );
             }
 
@@ -154,9 +150,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                 for ( e=0; e<edges.size(); e++ )
                 {
                     SReal lengthEdge = lengthEdges[e];
-                    Vector3 V12 =unitaryVectors[e];
+                    Vec3 V12 =unitaryVectors[e];
 
-                    coef = ( V12 ) *Vector3 ((out)[i]-(in)[edges[e][0]] ) /lengthEdge;
+                    coef = ( V12 ) *Vec3 ((out)[i]-(in)[edges[e][0]] ) /lengthEdge;
                     if ( coef >= 0 && coef <= 1 )
                     {
                         addPointInLine ( e, &coef );
@@ -219,10 +215,6 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                     if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
                 }
-                if ( distance>0 )
-                {
-                    ++outside;
-                }
                 if ( index < c0 )
                 {
                     addPointInTriangle ( index, coefs.ptr(),i );
@@ -283,10 +275,6 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                 if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
             }
-            if ( distance>0 )
-            {
-                ++outside;
-            }
             if ( index < c0 )
                 addPointInTetra ( index, coefs.ptr() , i);
             else
@@ -314,14 +302,14 @@ void MeshBarycentricMapperEngine<DataTypes>::draw(const core::visual::VisualPara
 
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const Index /*lineIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const sofa::Index /*lineIndex*/, const SReal* /*baryCoords*/)
 {
     msg_error() << "addPointInLine not implemented";
 
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const Index triangleIndex, const SReal* baryCoords,  const Index pointIndex)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const sofa::Index triangleIndex, const SReal* baryCoords,  const sofa::Index pointIndex)
 {
     auto baryPos = sofa::helper::getWriteOnlyAccessor(d_barycentricPositions);
     auto tableElts = sofa::helper::getWriteOnlyAccessor(d_tableElements);
@@ -364,13 +352,13 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const Index tria
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const Index /*quadIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const sofa::Index /*quadIndex*/, const SReal* /*baryCoords*/)
 {
     msg_error() << "addPointInQuad not implemented";
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const Index tetraIndex, const SReal* baryCoords, const Index pointIndex)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const sofa::Index tetraIndex, const SReal* baryCoords, const sofa::Index pointIndex)
 {
     auto baryPos = sofa::helper::getWriteOnlyAccessor(d_barycentricPositions);
     auto tableElts = sofa::helper::getWriteOnlyAccessor(d_tableElements);
@@ -415,7 +403,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const Index tetraIn
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const Index /*cubeIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const sofa::Index /*cubeIndex*/, const SReal* /*baryCoords*/)
 {
     msg_error() << "addPointInCube not implemented";
 }

@@ -400,7 +400,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
@@ -408,9 +408,9 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     size_t nbTriangles=m_topology->getNbTriangles();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
-    std::vector<sofa::type::Vector3> normals;
+    std::vector<sofa::type::Vec3> normals;
 
     vparams->drawTool()->disableLighting();
 
@@ -432,7 +432,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::solidmechanics::tensormass

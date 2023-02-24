@@ -38,6 +38,7 @@ using namespace defaulttype;
 int DepthMapToMeshEngineClass = core::RegisterObject("Compute a mesh from a depth map image ")
         .add<DepthMapToMeshEngine<ImageUC> >(true)
         .add<DepthMapToMeshEngine<ImageD> >()
+        .add<DepthMapToMeshEngine<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<DepthMapToMeshEngine<ImageC> >()
         .add<DepthMapToMeshEngine<ImageI> >()
@@ -47,12 +48,12 @@ int DepthMapToMeshEngineClass = core::RegisterObject("Compute a mesh from a dept
         .add<DepthMapToMeshEngine<ImageL> >()
         .add<DepthMapToMeshEngine<ImageUL> >()
         .add<DepthMapToMeshEngine<ImageF> >()
-        .add<DepthMapToMeshEngine<ImageB> >()
 #endif
         ;
 
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUC>;
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageD>;
+template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageB>;
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageC>;
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageI>;
@@ -62,7 +63,6 @@ template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUS>;
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageL>;
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUL>;
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageF>;
-template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageB>;
 #endif // PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 
 } //

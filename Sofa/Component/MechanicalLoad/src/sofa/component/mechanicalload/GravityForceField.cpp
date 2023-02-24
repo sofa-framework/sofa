@@ -32,7 +32,6 @@ namespace sofa::component::mechanicalload
 
 using namespace sofa::defaulttype;
 
-
 int GravityForceFieldClass = core::RegisterObject("Gravity as an external force in the world coordinate system")
         .add< GravityForceField<Vec3Types> >()
         .add< GravityForceField<Vec2Types> >()
@@ -40,7 +39,6 @@ int GravityForceFieldClass = core::RegisterObject("Gravity as an external force 
         .add< GravityForceField<Vec6Types> >()
         .add< GravityForceField<Rigid3Types> >()
         .add< GravityForceField<Rigid2Types> >()
-
         ;
 
 template class SOFA_CORE_API GravityForceField<Vec3Types>;

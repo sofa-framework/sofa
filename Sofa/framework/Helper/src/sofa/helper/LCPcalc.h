@@ -43,14 +43,14 @@ namespace helper
 class SOFA_HELPER_API LCP
 {
     int maxConst;
-    double* dfree;
-    double** W;
-    double* f, *f_1;
-    double* d;
-    double tol;
+    SReal* dfree;
+    SReal** W;
+    SReal* f, *f_1;
+    SReal* d;
+    SReal tol;
     int numItMax;
     bool useInitialF;
-    double mu;
+    SReal mu;
     int dim;  //=3*nbContact !!
     //unsigned int nbConst;
 
@@ -60,55 +60,55 @@ public:
     ~LCP();
     void reset(void);
     void allocate (unsigned int maxConst);
-    inline double** getW(void) {return W;};
-    inline double& getMu(void) { return mu;};
-    inline double* getDfree(void) {return dfree;};
-    inline double getTolerance(void) {return tol;};
-    inline double getMaxIter(void) {return numItMax;};
-    inline double* getF(void) {return f;};
-    inline double* getF_1(void) {return f_1;};
-    inline double* getD(void) {return d;};
+    inline SReal** getW(void) {return W;};
+    inline SReal& getMu(void) { return mu;};
+    inline SReal* getDfree(void) {return dfree;};
+    inline SReal getTolerance(void) {return tol;};
+    inline SReal getMaxIter(void) {return numItMax;};
+    inline SReal* getF(void) {return f;};
+    inline SReal* getF_1(void) {return f_1;};
+    inline SReal* getD(void) {return d;};
     inline bool useInitialGuess(void) {return useInitialF;};
     inline unsigned int getDim(void) {return dim;};
     inline unsigned int setDim(unsigned int nbC) {dim = nbC; return 0;};
     inline unsigned int getMaxConst(void) {return maxConst;};
     inline void setNumItMax(int input_numItMax) {numItMax = input_numItMax;};
-    inline void setTol(double input_tol) {tol = input_tol;};
+    inline void setTol(SReal input_tol) {tol = input_tol;};
 
-    void setLCP(unsigned int input_dim, double *input_dfree, double **input_W, double *input_f, double &input_mu, double &input_tol, int input_numItMax);
+    void setLCP(unsigned int input_dim, SReal *input_dfree, SReal **input_W, SReal *input_f, SReal &input_mu, SReal &input_tol, int input_numItMax);
 
-    void solveNLCP(bool convergenceTest, std::vector<double>* residuals = nullptr, std::vector<double>* violations = nullptr);
+    void solveNLCP(bool convergenceTest, std::vector<SReal>* residuals = nullptr, std::vector<SReal>* violations = nullptr);
     int it; // to get the number of iteration that is necessary for convergence
-    double error; // to get the error at the end of the convergence
+    SReal error; // to get the error at the end of the convergence
 };
 
 
 
 
-inline SOFA_HELPER_API void set3Dof(double *vector, int index, double vx, double vy, double vz)
+inline SOFA_HELPER_API void set3Dof(SReal*vector, int index, SReal vx, SReal vy, SReal vz)
 {vector[3*index]=vx; vector[3*index+1]=vy; vector[3*index+2]=vz;}
-inline SOFA_HELPER_API void add3Dof(double *vector, int index, double vx, double vy, double vz)
+inline SOFA_HELPER_API void add3Dof(SReal*vector, int index, SReal vx, SReal vy, SReal vz)
 {vector[3*index]+=vx; vector[3*index+1]+=vy; vector[3*index+2]+=vz;}
-inline SOFA_HELPER_API double normError(double f1x, double f1y, double f1z, double f2x, double f2y, double f2z)
+inline SOFA_HELPER_API SReal normError(SReal f1x, SReal f1y, SReal f1z, SReal f2x, SReal f2y, SReal f2z)
 {
     return sqrt( ((f2x-f1x)*(f2x-f1x) + (f2y-f1y)*(f2y-f1y) + (f2z-f1z)*(f2z-f1z)) /
             (f1x*f1x + f1y*f1y + f1z*f1z) ) ;
 }
 
-inline SOFA_HELPER_API double absError(double f1x, double f1y, double f1z, double f2x, double f2y, double f2z)
+inline SOFA_HELPER_API SReal absError(SReal f1x, SReal f1y, SReal f1z, SReal f2x, SReal f2y, SReal f2z)
 {return sqrt ((f2x-f1x)*(f2x-f1x) + (f2y-f1y)*(f2y-f1y) + (f2z-f1z)*(f2z-f1z));}
 
 
-SOFA_HELPER_API int resoudreLCP(int, double *, double **, double *);
+SOFA_HELPER_API int resoudreLCP(int, SReal *, SReal **, SReal *);
 
 
-SOFA_HELPER_API void afficheSyst(double *q,double **M, int *base, double **mat, int dim);
-SOFA_HELPER_API void afficheLCP(double *q, double **M, int dim);
-SOFA_HELPER_API void afficheLCP(double *q, double **M, double *f, int dim);
-SOFA_HELPER_API void resultToString(std::ostream& s, double *f, int dim);
+SOFA_HELPER_API void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim);
+SOFA_HELPER_API void afficheLCP(SReal *q, SReal **M, int dim);
+SOFA_HELPER_API void afficheLCP(SReal *q, SReal **M, SReal *f, int dim);
+SOFA_HELPER_API void resultToString(std::ostream& s, SReal *f, int dim);
 
-typedef double FemClipsReal;
-SOFA_HELPER_API void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax, double minW=0.0, double maxF=0.0, std::vector<double>* residuals = nullptr);
+typedef SReal FemClipsReal;
+SOFA_HELPER_API void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, SReal tol, int numItMax, SReal minW=0.0, SReal maxF=0.0, std::vector<SReal>* residuals = nullptr);
 
 
 
@@ -119,40 +119,40 @@ public:
     LocalBlock33() {computed=false;};
     ~LocalBlock33() {};
 
-    void compute(double &w11, double &w12, double &w13, double &w22, double &w23, double &w33);
-    void stickState(double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
-    void slipState(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
+    void compute(SReal &w11, SReal &w12, SReal &w13, SReal &w22, SReal &w23, SReal &w33);
+    void stickState(SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs);
+    void slipState(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs);
 
     // computation of a new state using a simple gauss-seidel loop // pseudo-potential
-    void GS_State(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
+    void GS_State(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs);
 
     // computation of a new state using a simple gauss-seidel loop // pseudo-potential (new: dn, dt, ds already take into account current value of fn, ft and fs)
-    void New_GS_State(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
+    void New_GS_State(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs);
 
     // computation of a new state using biPotential approach
-    void BiPotential(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs);
+    void BiPotential(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs);
 
-    void setPreviousForce(double &fn, double &ft, double &fs) {f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;}
+    void setPreviousForce(SReal &fn, SReal &ft, SReal &fs) {f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;}
 
     bool computed;
 
-    double w[6];
-    double wInv[6];
-    double det;
-    double f_1[3]; // previous value of force
+    SReal w[6];
+    SReal wInv[6];
+    SReal det;
+    SReal f_1[3]; // previous value of force
 };
 
 // Multigrid algorithm for contacts
-SOFA_HELPER_API int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double** W_coarse, std::vector<int> &contact_group, unsigned int num_group,  bool verbose=false);
-SOFA_HELPER_API int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
-        std::vector< int> &contact_group, unsigned int num_group, std::vector< int> &constraint_group, std::vector<double> &constraint_group_fact, bool verbose, std::vector<double>* residuals1 = nullptr, std::vector<double>* residuals2 = nullptr);
-SOFA_HELPER_API int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
-        std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, std::vector< std::vector< int> > &constraint_group_hierarchy, std::vector< std::vector< double> > &constraint_group_fact_hierarchy, bool verbose, std::vector<double> *residualsN = nullptr, std::vector<double> *residualLevels = nullptr, std::vector<double> *violations = nullptr);
+SOFA_HELPER_API int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal tol, int numItMax, bool useInitialF, SReal** W_coarse, std::vector<int> &contact_group, unsigned int num_group,  bool verbose=false);
+SOFA_HELPER_API int nlcp_multiGrid_2levels(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal tol, int numItMax, bool useInitialF,
+        std::vector< int> &contact_group, unsigned int num_group, std::vector< int> &constraint_group, std::vector<SReal> &constraint_group_fact, bool verbose, std::vector<SReal>* residuals1 = nullptr, std::vector<SReal>* residuals2 = nullptr);
+SOFA_HELPER_API int nlcp_multiGrid_Nlevels(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal tol, int numItMax, bool useInitialF,
+        std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, std::vector< std::vector< int> > &constraint_group_hierarchy, std::vector< std::vector< SReal> > &constraint_group_fact_hierarchy, bool verbose, std::vector<SReal> *residualsN = nullptr, std::vector<SReal> *residualLevels = nullptr, std::vector<SReal> *violations = nullptr);
 
 // Gauss-Seidel like algorithm for contacts
-SOFA_HELPER_API int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose = false, double minW=0.0, double maxF=0.0, std::vector<double>* residuals = nullptr, std::vector<double>* violations = nullptr);
+SOFA_HELPER_API int nlcp_gaussseidel(int dim, SReal*dfree, SReal**W, SReal*f, SReal mu, SReal tol, int numItMax, bool useInitialF, bool verbose = false, SReal minW=0.0, SReal maxF=0.0, std::vector<SReal>* residuals = nullptr, std::vector<SReal>* violations = nullptr);
 // Timed Gauss-Seidel like algorithm for contacts
-SOFA_HELPER_API int nlcp_gaussseidelTimed(int, double *, double**, double *, double, double, int, bool, double timeout, bool verbose=false);
+SOFA_HELPER_API int nlcp_gaussseidelTimed(int, SReal*, SReal**, SReal*, SReal, SReal, int, bool, SReal timeout, bool verbose=false);
 } // namespace helper
 
 } // namespace sofa

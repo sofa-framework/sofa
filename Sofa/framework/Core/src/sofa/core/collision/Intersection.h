@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISION_INTERSECTION_H
-#define SOFA_CORE_COLLISION_INTERSECTION_H
+#pragma once
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace collision
+namespace sofa::core::collision
 {
 
 class BaseIntersector
@@ -45,6 +38,7 @@ public:
     template<class Model1, class Model2>
     sofa::core::collision::TDetectionOutputVector<Model1,Model2>* createOutputVector(Model1*, Model2*)
     {
+        // NOTE: this raw pointer is stored in NarrowPhaseDetection's m_outputsMap and cleaned up when NarrowPhaseDetection is destroyed
         return new sofa::core::collision::TDetectionOutputVector<Model1,Model2>;
     }
 
@@ -136,11 +130,11 @@ public:
 protected:
     Intersection() {}
     ~Intersection() override;
-	
+
 private:
-	Intersection(const Intersection& n) ;
-	Intersection& operator=(const Intersection& n) ;
-	
+    Intersection(const Intersection& n) = delete;
+    Intersection& operator=(const Intersection& n) = delete;
+
 public:
     /// Return the intersector class handling the given pair of collision models, or nullptr if not supported.
     /// @param swapModels output value set to true if the collision models must be swapped before calling the intersector.
@@ -191,11 +185,4 @@ public:
 
 
 };
-
-} // namespace collision
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::collision

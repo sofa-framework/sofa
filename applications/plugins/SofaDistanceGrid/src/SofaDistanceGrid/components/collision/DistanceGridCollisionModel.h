@@ -67,7 +67,7 @@ public:
 
     bool isTransformed();
     const type::Matrix3& getRotation();
-    const type::Vector3& getTranslation();
+    const type::Vec3& getTranslation();
     bool isFlipped();
 
     void setGrid(DistanceGrid* surf);
@@ -77,12 +77,12 @@ public:
     /// @{
     DistanceGrid* getPrevGrid();
     const type::Matrix3& getPrevRotation();
-    const type::Vector3& getPrevTranslation();
+    const type::Vec3& getPrevTranslation();
     double getPrevDt();
     /// @}
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vector3& translation);
+    void setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation);
 };
 
 class SOFA_SOFADISTANCEGRID_API RigidDistanceGridCollisionModel : public core::CollisionModel
@@ -96,7 +96,7 @@ protected:
     {
     public:
         type::Matrix3 rotation;
-        type::Vector3 translation;
+        type::Vec3 translation;
         DistanceGrid* grid;
 
         /// @name Previous state data
@@ -104,7 +104,7 @@ protected:
         /// @{
         DistanceGrid* prevGrid; ///< Previous grid
         type::Matrix3 prevRotation; ///< Previous rotation
-        type::Vector3 prevTranslation; ///< Previous translation
+        type::Vec3 prevTranslation; ///< Previous translation
         double prevDt; ///< Time difference between previous and current state
         /// @}
 
@@ -126,8 +126,8 @@ public:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
     Data< double > scale; ///< scaling factor for input file
-    Data< type::Vector3 > translation; ///< translation to apply to input file
-    Data< type::Vector3 > rotation; ///< rotation to apply to input file
+    Data< type::Vec3 > translation; ///< translation to apply to input file
+    Data< type::Vec3 > rotation; ///< rotation to apply to input file
     Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
     Data< type::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data< int > nx; ///< number of values on X axis
@@ -151,24 +151,24 @@ public:
 
     void init() override;
 
-    DistanceGrid* getGrid(Index index=0)
+    DistanceGrid* getGrid(sofa::Index index=0)
     {
         return elems[index].grid;
     }
-    bool isTransformed(Index index=0) const
+    bool isTransformed(sofa::Index index=0) const
     {
         return elems[index].isTransformed;
     }
-    const type::Matrix3& getRotation(Index index=0) const
+    const type::Matrix3& getRotation(sofa::Index index=0) const
     {
         return elems[index].rotation;
     }
-    const type::Vector3& getTranslation(Index index=0) const
+    const type::Vec3& getTranslation(sofa::Index index=0) const
     {
         return elems[index].translation;
     }
 
-    const type::Vector3& getInitTranslation() const
+    const type::Vec3& getInitTranslation() const
     {
         return translation.getValue();
     }
@@ -179,9 +179,9 @@ public:
         SReal y = rotation.getValue()[1] * M_PI / 180;
         SReal z = rotation.getValue()[2] * M_PI / 180;
 
-        type::Matrix3 X(type::Vector3(1,0,0), type::Vector3(0, cos(x), -sin(x)), type::Vector3(0, sin(x), cos(x)));
-        type::Matrix3 Y(type::Vector3(cos(y), 0, sin(y)), type::Vector3(0, 1, 0), type::Vector3(-sin(y), 0, cos(y)));
-        type::Matrix3 Z(type::Vector3(cos(z), -sin(z), 0), type::Vector3(sin(z), cos(z), 0), type::Vector3(0, 0, 1));
+        type::Matrix3 X(type::Vec3(1,0,0), type::Vec3(0, cos(x), -sin(x)), type::Vec3(0, sin(x), cos(x)));
+        type::Matrix3 Y(type::Vec3(cos(y), 0, sin(y)), type::Vec3(0, 1, 0), type::Vec3(-sin(y), 0, cos(y)));
+        type::Matrix3 Z(type::Vec3(cos(z), -sin(z), 0), type::Vec3(sin(z), cos(z), 0), type::Vec3(0, 0, 1));
 
         return X * Y * Z;
     }
@@ -191,44 +191,40 @@ public:
         return flipNormals.getValue();
     }
 
-    void setGrid(DistanceGrid* surf, Index index=0);
+    void setGrid(DistanceGrid* surf, sofa::Index index=0);
 
-    DistanceGrid* getPrevGrid(Index index=0)
+    DistanceGrid* getPrevGrid(sofa::Index index=0)
     {
         return elems[index].prevGrid;
     }
-    const type::Matrix3& getPrevRotation(Index index=0) const
+    const type::Matrix3& getPrevRotation(sofa::Index index=0) const
     {
         return elems[index].prevRotation;
     }
-    const type::Vector3& getPrevTranslation(Index index=0) const
+    const type::Vec3& getPrevTranslation(sofa::Index index=0) const
     {
         return elems[index].prevTranslation;
     }
-    double getPrevDt(Index index=0) const
+    double getPrevDt(sofa::Index index=0) const
     {
         return elems[index].prevDt;
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(Index index, double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vector3& translation);
+    void setNewState(sofa::Index index, double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation);
 
     /// @}
 
-    /// Set new grid and transform, keeping the old state to estimate velocity
-//    void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 
     /// Update transformation matrices from current rigid state
     void updateState();
 
-    // -- CollisionModel interface
-
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };
@@ -247,15 +243,15 @@ inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { ret
 
 inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
 inline const type::Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
-inline const type::Vector3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+inline const type::Vec3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
 inline bool RigidDistanceGridCollisionElement::isFlipped() { return model->isFlipped(); }
 
 inline DistanceGrid* RigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
 inline const type::Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
-inline const type::Vector3& RigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
+inline const type::Vec3& RigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
 inline double RigidDistanceGridCollisionElement::getPrevDt() { return model->getPrevDt(index); }
 
-inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vector3& translation)
+inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation)
 {
     return model->setNewState(this->getIndex(), dt, grid, rotation, translation);
 }
@@ -296,7 +292,7 @@ public:
         struct Point
         {
             GCoord bary; ///< Barycentric coordinates
-            Index index; ///< Index of corresponding point in DistanceGrid
+            sofa::Index index; ///< Index of corresponding point in DistanceGrid
         };
         type::vector<Point> points; ///< barycentric coordinates of included points
         type::vector<GCoord> normals; ///< normals in barycentric coordinates of included points
@@ -470,27 +466,27 @@ public:
 
     void init() override;
 
-    DistanceGrid* getGrid(Index index=0)
+    DistanceGrid* getGrid(sofa::Index index=0)
     {
         return elems[index].grid;
     }
 
-    DeformedCube& getDeformCube(Index index=0)
+    DeformedCube& getDeformCube(sofa::Index index=0)
     {
         return elems[index];
     }
 
-    void setGrid(DistanceGrid* surf, Index index=0);
+    void setGrid(DistanceGrid* surf, sofa::Index index=0);
 
     /// CollisionModel interface
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0) override;
 
-    bool canCollideWithElement(Index index, CollisionModel* model2, Index index2) override;
+    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };

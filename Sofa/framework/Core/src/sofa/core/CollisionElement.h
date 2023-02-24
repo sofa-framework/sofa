@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_COLLISIONELEMENT_H
-#define SOFA_CORE_COLLISIONELEMENT_H
+#pragma once
+
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>
 
 #include <vector>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /**
@@ -264,13 +261,13 @@ public:
     }
 
     /// Distance to the actual (visual) surface
-    double getProximity() { return model->getProximity(); }
+    [[nodiscard]] SReal getProximity() const { return model->getProximity(); }
 
     /// Contact stiffness
-    double getContactStiffness() { return model->getContactStiffness(index); }
+    [[nodiscard]] SReal getContactStiffness() const { return model->getContactStiffness(index); }
 
     /// Contact friction (damping) coefficient
-    double getContactFriction() { return model->getContactFriction(index); }
+    [[nodiscard]] SReal getContactFriction() const { return model->getContactFriction(index); }
 
 
     /// Render this element.
@@ -362,9 +359,4 @@ std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIt
 {
     return model->getExternalChildren(index);
 }
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core

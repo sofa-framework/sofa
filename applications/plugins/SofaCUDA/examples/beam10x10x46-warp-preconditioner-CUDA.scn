@@ -1,7 +1,7 @@
 <Node name="root" dt="0.04" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
-	<DefaultPipeline verbose="0" />
+	<CollisionPipeline verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<DefaultContactManager name="Response" />

@@ -19,14 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef DefaultTaskScheduler_h__
-#define DefaultTaskScheduler_h__
+#pragma once
 
 #include <sofa/config.h>
 
 #include <sofa/simulation/TaskScheduler.h>
-
-#include <atomic>
 
 // default
 #include <thread>
@@ -38,133 +35,100 @@
 
 
 
-namespace sofa  {
+namespace sofa::simulation
+{
 
-    namespace simulation
+class WorkerThread;
+
+class SOFA_SIMULATION_CORE_API DefaultTaskScheduler : public TaskScheduler
+{
+    enum
     {
+        MAX_THREADS = 16,
+        STACKSIZE = 64 * 1024 /* 64K */,
+    };
+            
+public:
+            
+    // interface
 
- //#define ENABLE_TASK_SCHEDULER_PROFILER 1     // Comment this line to disable the profiler
+    /**
+     * Call stop() and start() if not already initialized
+     * @param nbThread
+     */
+    virtual void init(const unsigned int nbThread = 0) final;
 
-#ifdef ENABLE_TASK_SCHEDULER_PROFILER
+    /**
+     * Wait and destroy worker threads
+     */
+    void stop() final;
 
-#include "TaskSchedulerProfiler.h"
+    WorkerThread* getCurrent();
+    unsigned int getThreadCount(void)  const final { return m_threadCount; }
+    const char* getCurrentThreadName() override final;
+    int getCurrentThreadType() override final;
 
-#else
-        //----------------------
-        // Profiler is disabled
-        //----------------------
-#define DECLARE_TASK_SCHEDULER_PROFILER(name)
-#define DEFINE_TASK_SCHEDULER_PROFILER(name)
-#define TASK_SCHEDULER_PROFILER(name)
+    // queue task if there is space, and run it otherwise
+    bool addTask(Task* task) override final;
+    void workUntilDone(Task::Status* status) override final;
+    Task::Allocator* getTaskAllocator() override final;
 
-#endif
-        
-        
-        class DefaultTaskScheduler;
-        class WorkerThread;
+    // factory methods: name, creator function
+    static const char* name() { return "_default"; }
+            
+    static DefaultTaskScheduler* create();
 
-        class SOFA_SIMULATION_CORE_API DefaultTaskScheduler : public TaskScheduler
-        {
-            enum
-            {
-                MAX_THREADS = 16,
-                STACKSIZE = 64 * 1024 /* 64K */,
-            };
+private:
             
-        public:
+    bool isInitialized() const { return m_isInitialized; }
             
-            // interface
-
-            /**
-             * Call stop() and start() if not already initialized
-             * @param nbThread
-             */
-            virtual void init(const unsigned int nbThread = 0) final;
-
-            /**
-             * Wait and destroy worker threads
-             */
-            virtual void stop(void) final;
-            virtual unsigned int getThreadCount(void)  const final { return m_threadCount; }
-            virtual const char* getCurrentThreadName() override final;
-            virtual int getCurrentThreadType() override final;
+    bool isClosing() const { return m_isClosing; }
             
-            // queue task if there is space, and run it otherwise
-            bool addTask(Task* task) override final;
-            void workUntilDone(Task::Status* status) override final;
-            Task::Allocator* getTaskAllocator() override final;
-
-            // factory methods: name, creator function
-            static const char* name() { return "_default"; }
+    void	WaitForWorkersToBeReady();
             
-            static DefaultTaskScheduler* create();
+    void	wakeUpWorkers();
             
-            static const bool isRegistered;
+    WorkerThread* getCurrentThread();
             
-        private:
-            
-            bool isInitialized() { return m_isInitialized; }
-            
-            bool isClosing(void) const { return m_isClosing; }
-            
-            void	WaitForWorkersToBeReady();
-            
-            void	wakeUpWorkers();
-
-            /**
-             * Assuming 2 concurrent threads by CPU core, return the number of CPU core on the system
-             */
-            static unsigned GetHardwareThreadsCount();
-            
-            WorkerThread* getCurrentThread();
-            
-            const WorkerThread* getWorkerThread(const std::thread::id id);
+    WorkerThread* getWorkerThread(const std::thread::id id);
 
             
-            static const std::string _name;
-            
-            // TO DO: replace with thread_specific_ptr. clang 3.5 doesn't support C++ 11 thread_local vars on Mac
-            //static thread_local WorkerThread* _workerThreadIndex;
-            static std::map< std::thread::id, WorkerThread*> _threads;
-            
-            const Task::Status*	m_mainTaskStatus;
-            
-            std::mutex  m_wakeUpMutex;
-            
-            std::condition_variable m_wakeUpEvent;
-            
-            DefaultTaskScheduler();
-            
-            DefaultTaskScheduler(const DefaultTaskScheduler&) {}
-            
-            ~DefaultTaskScheduler() override;
+    static const std::string _name;
 
-            /**
-             * Create worker threads
-             * If the number of required threads is 0, the number of threads will be equal to the
-             * result of GetHardwareThreadsCount()
-             *
-             * @param NbThread
-             */
-            void start(unsigned int NbThread);
+    std::map< std::thread::id, WorkerThread*> _threads;
             
-            bool m_isInitialized;
+    const Task::Status*	m_mainTaskStatus;
             
-            unsigned m_workerThreadCount;
+    std::mutex  m_wakeUpMutex;
             
-            volatile bool m_workerThreadsIdle;
+    std::condition_variable m_wakeUpEvent;
             
-            bool m_isClosing;
+    DefaultTaskScheduler();
             
-            unsigned m_threadCount;
+    DefaultTaskScheduler(const DefaultTaskScheduler&) = delete;
             
-            
-            friend class WorkerThread;
-        };
+    ~DefaultTaskScheduler() override;
 
-	} // namespace simulation
+    /**
+     * Create worker threads
+     * If the number of required threads is 0, the number of threads will be equal to the
+     * result of GetHardwareThreadsCount()
+     *
+     * @param NbThread
+     */
+    void start(unsigned int NbThread);
+            
+    bool m_isInitialized;
+            
+    unsigned m_workerThreadCount;
+            
+    volatile bool m_workerThreadsIdle;
+            
+    bool m_isClosing;
+            
+    unsigned m_threadCount;
+            
+    friend class WorkerThread;
+};
 
-} // namespace sofa
-
-
-#endif // DefaultTaskScheduler_h__
+} // namespace sofa::simulation

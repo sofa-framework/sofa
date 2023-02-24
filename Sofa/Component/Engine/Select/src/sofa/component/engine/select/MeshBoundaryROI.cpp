@@ -29,7 +29,7 @@ namespace sofa::component::engine::select
 int MeshBoundaryROIClass = core::RegisterObject("Outputs indices of boundary vertices of a triangle/quad mesh")
         .add< MeshBoundaryROI >(true);
 
-MeshBoundaryROI::MeshBoundaryROI(): Inherited()
+MeshBoundaryROI::MeshBoundaryROI(): Inherit1()
                                     , d_triangles(initData(&d_triangles,"triangles","input triangles"))
                                     , d_quads(initData(&d_quads,"quads","input quads"))
                                     , d_inputROI(initData(&d_inputROI,"inputROI","optional subset of the input mesh"))

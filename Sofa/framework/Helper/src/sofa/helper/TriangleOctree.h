@@ -76,7 +76,7 @@ public:
 
 protected:
     /// used to add a triangle  to the octree
-    int fillOctree(int t, int d = 0, type::Vec3 v = { 0, 0, 0 });
+    int fillOctree(int t, int d = 0, type::Vec3 v = { 0_sreal, 0_sreal, 0_sreal });
     /// used to compute the Bounding Box for each triangle
     void calcTriangleAABB(int t, SReal* bb, SReal& size);
 };

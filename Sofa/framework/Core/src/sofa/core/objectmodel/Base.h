@@ -19,15 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_BASE_H
-#define SOFA_CORE_OBJECTMODEL_BASE_H
+#pragma once
 
+#include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/objectmodel/TagSet.h>
 #include <list>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/sptr.h>
 
 #include <deque>
@@ -37,65 +38,6 @@
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerCallback.h>
 #include <sofa/type/fwd.h>
-
-// forward declaration of castable classes
-// @author Matthieu Nesme, 2015
-// it is not super elegant, but it is way more efficient than dynamic_cast
-namespace sofa::core {
-    class BaseState;
-    class BaseMapping;
-    class BehaviorModel;
-    class CollisionModel;
-    class DataEngine;
-    class DevBaseMonitor;
-namespace objectmodel {
-    class BaseContext;
-    class BaseObject;
-    class BaseNode;
-    class ContextObject;
-    class ConfigurationSetting;
-} // namespace objectmodel
-namespace behavior {
-    class BaseAnimationLoop;
-    class OdeSolver;
-    class BaseLinearSolver;
-    class LinearSolver;
-    class ConstraintSolver;
-    class BaseMass;
-    class BaseMechanicalState;
-    class BaseInteractionForceField;
-    class BaseInteractionConstraint;
-    class BaseForceField;
-    class BaseProjectiveConstraintSet;
-    class BaseInteractionProjectiveConstraintSet;
-    class BaseConstraintSet;
-    class BaseConstraint;
-} // namespace behavior
-namespace visual {
-    class VisualModel;
-    class VisualManager;
-    class VisualLoop;
-    class Shader;
-} // namespace visual
-namespace topology {
-    class Topology;
-    class BaseMeshTopology;
-    class BaseTopologyObject;
-} // namespace topology
-namespace collision {
-    class CollisionGroupManager;
-    class ContactManager;
-    class Detection;
-    class Intersection;
-    class Pipeline;
-} // namespace collision
-namespace loader {
-    class BaseLoader;
-} // namespace loader
-} // namespace sofa::core
-
-// VisitorScheduler
-
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
@@ -118,7 +60,7 @@ public:
     typedef Base* Ptr;
 
     using SPtr = sptr<Base>;
-    
+
     using MyClass = TClass< Base, void >;
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
@@ -179,26 +121,21 @@ public:
     void setName(const std::string& n, int counter);
 
     /// Get the type name of this object (i.e. class and template types)
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getTypeName() method.
-    virtual std::string getTypeName() const ;
+    std::string getTypeName() const ;
 
     /// Get the class name of this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getClassName() method. To specify custom class name you need
-    /// to implement a single static std::string GetCustomClassName(){} method.
+    /// To specify custom static class name you need to implement a single
+    /// static std::string GetCustomClassName(){} method.
+    /// Override only if the class name cannot be known at compile-time (e.g. Python).
     virtual std::string getClassName() const ;
 
     /// Get the template type names (if any) used to instantiate this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getClassName() method. To specify custom class name you need
-    /// to implement a single static std::string GetCustomTemplateName(){} method.
-    virtual std::string getTemplateName() const ;
+    /// To specify custom static template name you need to implement a single
+    /// static std::string GetCustomTemplateName(){} method.
+    virtual std::string getTemplateName() const final;
 
     /// Get the template type names (if any) used to instantiate this object
-    /// Since #PR 1283, the signature has changed to "final" so it is not possible
-    /// to override the getNameSpaceName() method.
-    virtual std::string getNameSpaceName() const ;
+    std::string getNameSpaceName() const ;
 
     /// Set the source filename (where the component is implemented)
     void setDefinitionSourceFileName(const std::string& sourceFileName);
@@ -417,7 +354,7 @@ public:
     static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )
     {
         SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::shortName(sofa::helper::NameDecoder::getClassName<T>());
+        return sofa::helper::NameDecoder::shortName(BaseClassNameHelper::getClassName<T>());
     }
 
     /// @name componentstate
@@ -557,4 +494,3 @@ inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base*
 
 } // namespace sofa::helper::logging
 
-#endif

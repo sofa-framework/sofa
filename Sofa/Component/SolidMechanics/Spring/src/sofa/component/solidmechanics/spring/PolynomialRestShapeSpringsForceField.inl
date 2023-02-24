@@ -378,7 +378,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (m_useRestMState ? m_ext_indices : m_indices);
 
-    std::vector< type::Vector3 > points;
+    std::vector< type::Vec3 > points;
 
     for (sofa::Index i=0; i<indices.size(); i++)
     {
@@ -388,7 +388,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
         points.push_back(p0[ext_index]);
     }
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     vparams->drawTool()->drawLines(points, 5, d_springColor.getValue());
@@ -398,14 +398,14 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     // draw connected point indices
     Real scale = (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * d_showIndicesScale.getValue();
 
-    type::vector<type::Vector3> positions;
+    type::vector<type::Vec3> positions;
     for (sofa::Index i = 0; i < indices.size(); i++) {
         const sofa::Index index = indices[i];
-        positions.push_back(type::Vector3(p0[index][0], p0[index][1], p0[index][2] ));
+        positions.push_back(type::Vec3(p0[index][0], p0[index][1], p0[index][2] ));
     }
 
     vparams->drawTool()->draw3DText_Indices(positions, float(scale), type::RGBAColor::white());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

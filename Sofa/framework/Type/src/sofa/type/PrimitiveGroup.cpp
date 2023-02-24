@@ -46,6 +46,7 @@ bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
 
 PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
 
-PrimitiveGroup::PrimitiveGroup(int p0, int nbp, std::string materialName, std::string groupName, int materialId) : p0(p0), nbp(nbp), materialName(materialName), groupName(groupName), materialId(materialId) {}
+PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
+    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
 
 } /// namespace sofa::type

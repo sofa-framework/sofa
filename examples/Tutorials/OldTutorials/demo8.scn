@@ -1,6 +1,6 @@
 <!-- Collision Response Stress Test -->
 <Node name="root" dt="0.005">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -16,7 +16,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showForceFields" />
-    <DefaultPipeline verbose="0" />
+    <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="Response" response="PenalityContactForceField" />
@@ -44,10 +44,10 @@
     <Node name="M2">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" dz="-10.5" />
+        <MechanicalObject template="Rigid3" dz="-10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
-            <MechanicalObject template="Vec3d" src="@../../meshLoader" />
+            <MechanicalObject template="Vec3" src="@../../meshLoader" />
             <RigidMapping />
         </Node>
         <Node name="Surf">
@@ -83,10 +83,10 @@
     <Node name="M4">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" dz="10.5" />
+        <MechanicalObject template="Rigid3" dz="10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
-            <MechanicalObject template="Vec3d" src="@../../meshLoader" />
+            <MechanicalObject template="Vec3" src="@../../meshLoader" />
             <RigidMapping />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" />
@@ -122,10 +122,10 @@
     <Node name="M6">
         <EulerImplicitSolver />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
-        <MechanicalObject template="Rigid3d" dz="31.5" />
+        <MechanicalObject template="Rigid3" dz="31.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
-            <MechanicalObject template="Vec3d" src="@../../meshLoader"/>
+            <MechanicalObject template="Vec3" src="@../../meshLoader"/>
             <RigidMapping />
         </Node>
         <Node name="Visu">

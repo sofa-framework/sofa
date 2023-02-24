@@ -40,7 +40,7 @@ class SOFA_COMPONENT_ODESOLVER_BACKWARD_API VariationalSymplecticSolver : public
 public:
     SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
 
-    Data<double>       f_newtonError; ///< Error tolerance for Newton iterations
+    Data<SReal>       f_newtonError; ///< Error tolerance for Newton iterations
     Data<unsigned int> f_newtonSteps; ///< Maximum number of Newton steps
     Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
@@ -49,7 +49,7 @@ public:
     Data<bool>       f_explicit; ///< Use explicit integration scheme
     Data<std::string> f_fileName; ///< File name where kinetic and potential energies are saved in a CSV file
     Data<bool> f_computeHamiltonian; ///< Compute hamiltonian
-    Data<double> f_hamiltonianEnergy; ///< hamiltonian energy
+    Data<SReal> f_hamiltonianEnergy; ///< hamiltonian energy
     Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
@@ -66,7 +66,7 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt.
-    double getVelocityIntegrationFactor() const override
+    SReal getVelocityIntegrationFactor() const override
     {
         return 0;
     }
@@ -75,17 +75,17 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt².
-    double getPositionIntegrationFactor() const override
+    SReal getPositionIntegrationFactor() const override
     {
         return 0;
     }
 
-    double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const override
+    SReal getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const override
     {
         return 0;
     }
 
-    double getSolutionIntegrationFactor(int /*outputDerivative*/) const override
+    SReal getSolutionIntegrationFactor(int /*outputDerivative*/) const override
     {
 
         return 0;
@@ -93,7 +93,7 @@ public:
 
 protected:
     sofa::core::MultiVecDerivId pID;
-    double m_incrementalPotentialEnergy;
+    SReal m_incrementalPotentialEnergy;
 };
 
 } // namespace sofa::component::odesolver::backward

@@ -39,13 +39,13 @@ namespace sofa::helper::visual
  *k
  */
 
-class DrawTool
+class SOFA_HELPER_API DrawTool
 {
 
 public:
     typedef sofa::type::RGBAColor RGBAColor;
-    typedef sofa::type::Vec3f   Vec3f;
-    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::type::Vec3f Vec3f;
+    typedef sofa::type::Vec3 Vec3;
     typedef sofa::type::Vec<3,int> Vec3i;
     typedef sofa::type::Vec<2,int> Vec2i;
     typedef sofa::type::Quat<SReal> Quaternion;
@@ -57,119 +57,119 @@ public:
 
     /// @name Primitive rendering methods
     /// @{
-    virtual void drawPoints(const std::vector<Vector3> &points, float size,  const  RGBAColor& color) = 0 ;
-    virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<RGBAColor>& color) = 0;
+    virtual void drawPoints(const std::vector<Vec3> &points, float size,  const  RGBAColor& color) = 0 ;
+    virtual void drawPoints(const std::vector<Vec3> &points, float size, const std::vector<RGBAColor>& color) = 0;
 
-    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const RGBAColor& color) =  0;
-    virtual void drawInfiniteLine(const Vector3 &point, const Vector3 &direction, const RGBAColor& color) = 0;
-    virtual void drawLines(const std::vector<Vector3> &points, float size, const RGBAColor& color) = 0 ;
-    virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<RGBAColor>& colors) = 0 ;
-    virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const RGBAColor& color) = 0 ;
+    virtual void drawLine(const Vec3 &p1, const Vec3 &p2, const RGBAColor& color) =  0;
+    virtual void drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const RGBAColor& color) = 0;
+    virtual void drawLines(const std::vector<Vec3> &points, float size, const RGBAColor& color) = 0 ;
+    virtual void drawLines(const std::vector<Vec3> &points, float size, const std::vector<RGBAColor>& colors) = 0 ;
+    virtual void drawLines(const std::vector<Vec3> &points, const std::vector< Vec2i > &index , float size, const RGBAColor& color) = 0 ;
 
-    virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const RGBAColor& color) = 0 ;
-    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const RGBAColor& color) = 0 ;
+    virtual void drawLineStrip(const std::vector<Vec3> &points, float size, const RGBAColor& color) = 0 ;
+    virtual void drawLineLoop(const std::vector<Vec3> &points, float size, const RGBAColor& color) = 0 ;
 
     virtual void drawDisk(float radius, double from, double to, int resolution, const RGBAColor& color) = 0;
     virtual void drawCircle(float radius, float lineThickness, int resolution, const RGBAColor& color) = 0;
 
-    virtual void drawTriangles(const std::vector<Vector3> &points, const RGBAColor& color) = 0 ;
-    virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const RGBAColor& color) = 0 ;
-    virtual void drawTriangles(const std::vector<Vector3> &points,
+    virtual void drawTriangles(const std::vector<Vec3> &points, const RGBAColor& color) = 0 ;
+    virtual void drawTriangles(const std::vector<Vec3> &points, const Vec3& normal, const RGBAColor& color) = 0 ;
+    virtual void drawTriangles(const std::vector<Vec3> &points,
             const std::vector< Vec3i > &index,
-            const std::vector<Vector3>  &normal,
+            const std::vector<Vec3>  &normal,
             const RGBAColor& color) = 0 ;
-    virtual void drawTriangles(const std::vector<Vector3> &points,
+    virtual void drawTriangles(const std::vector<Vec3> &points,
         const std::vector< Vec3i > &index,
-        const std::vector<Vector3>  &normal,
+        const std::vector<Vec3>  &normal,
         const std::vector<RGBAColor>& color) = 0;
-    virtual void drawTriangles(const std::vector<Vector3> &points,
+    virtual void drawTriangles(const std::vector<Vec3> &points,
             const std::vector< RGBAColor > &color) = 0 ;
-    virtual void drawTriangles(const std::vector<Vector3> &points,
-            const std::vector<Vector3>  &normal,
+    virtual void drawTriangles(const std::vector<Vec3> &points,
+            const std::vector<Vec3>  &normal,
             const std::vector< RGBAColor > &color) = 0 ;
-    virtual void drawTriangleStrip(const std::vector<Vector3> &points,
-            const std::vector<Vector3>  &normal,
+    virtual void drawTriangleStrip(const std::vector<Vec3> &points,
+            const std::vector<Vec3>  &normal,
             const RGBAColor& color) = 0 ;
-    virtual void drawTriangleFan(const std::vector<Vector3> &points,
-            const std::vector<Vector3>  &normal,
+    virtual void drawTriangleFan(const std::vector<Vec3> &points,
+            const std::vector<Vec3>  &normal,
             const RGBAColor& color) = 0 ;
 
 
 
-    virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size) = 0 ;
-    virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size, const RGBAColor &color) = 0 ;
+    virtual void drawFrame   (const Vec3& position, const Quaternion &orientation, const Vec3f &size) = 0 ;
+    virtual void drawFrame   (const Vec3& position, const Quaternion &orientation, const Vec3f &size, const RGBAColor &color) = 0 ;
 
-    virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& color) = 0;
-    virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const RGBAColor& color) = 0 ;
-    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& color) = 0;
-    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const RGBAColor& color) = 0;
+    virtual void drawSpheres (const std::vector<Vec3> &points, const std::vector<float>& radius, const RGBAColor& color) = 0;
+    virtual void drawSpheres (const std::vector<Vec3> &points, float radius, const RGBAColor& color) = 0 ;
+    virtual void drawFakeSpheres(const std::vector<Vec3> &points, const std::vector<float>& radius, const RGBAColor& color) = 0;
+    virtual void drawFakeSpheres(const std::vector<Vec3> &points, float radius, const RGBAColor& color) = 0;
 
-    virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const RGBAColor& color, int subd=16) = 0 ;
+    virtual void drawCone    (const Vec3& p1, const Vec3 &p2, float radius1, float radius2, const RGBAColor& color, int subd=16) = 0 ;
 
     /// Draw a cube of size one centered on the current point.
     virtual void drawCube    (const float& radius, const RGBAColor& color, const int& subd=16) = 0 ;
 
-    virtual void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
+    virtual void drawCylinder(const Vec3& p1, const Vec3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
 
-    virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
+    virtual void drawCapsule(const Vec3& p1, const Vec3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
 
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const RGBAColor& color,  int subd=16) = 0 ;
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, float coneRadius, const RGBAColor& color,  int subd=16) = 0;
+    virtual void drawArrow   (const Vec3& p1, const Vec3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
+    virtual void drawArrow   (const Vec3& p1, const Vec3 &p2, float radius, float coneLength, const RGBAColor& color,  int subd=16) = 0 ;
+    virtual void drawArrow   (const Vec3& p1, const Vec3 &p2, float radius, float coneLength, float coneRadius, const RGBAColor& color,  int subd=16) = 0;
 
     /// Draw a cross (3 lines) centered on p
-    virtual void drawCross(const Vector3&p, float length, const RGBAColor& color) = 0;
+    virtual void drawCross(const Vec3&p, float length, const RGBAColor& color) = 0;
 
     /// Draw a plus sign of size one centered on the current point.
     virtual void drawPlus    (const float& radius, const RGBAColor& color, const int& subd=16) = 0 ;
 
-    virtual void drawPoint(const Vector3 &p, const RGBAColor &c) = 0 ;
-    virtual void drawPoint(const Vector3 &p, const Vector3 &n, const RGBAColor &c) = 0 ;
+    virtual void drawPoint(const Vec3 &p, const RGBAColor &c) = 0 ;
+    virtual void drawPoint(const Vec3 &p, const Vec3 &n, const RGBAColor &c) = 0 ;
 
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
-            const Vector3 &normal) = 0 ;
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
-            const Vector3 &normal, const RGBAColor &c) = 0 ;
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
-            const Vector3 &normal,
+    virtual void drawTriangle(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,
+            const Vec3 &normal) = 0 ;
+    virtual void drawTriangle(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,
+            const Vec3 &normal, const RGBAColor &c) = 0 ;
+    virtual void drawTriangle(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,
+            const Vec3 &normal,
             const RGBAColor &c1, const RGBAColor &c2, const RGBAColor &c3) = 0 ;
-    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
-            const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3,
+    virtual void drawTriangle(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,
+            const Vec3 &normal1, const Vec3 &normal2, const Vec3 &normal3,
             const RGBAColor &c1, const RGBAColor &c2, const RGBAColor &c3) = 0 ;
 
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
-            const Vector3 &normal) = 0 ;
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
-            const Vector3 &normal, const RGBAColor &c) = 0 ;
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
-            const Vector3 &normal,
+    virtual void drawQuad(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,const Vec3 &p4,
+            const Vec3 &normal) = 0 ;
+    virtual void drawQuad(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,const Vec3 &p4,
+            const Vec3 &normal, const RGBAColor &c) = 0 ;
+    virtual void drawQuad(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,const Vec3 &p4,
+            const Vec3 &normal,
             const RGBAColor &c1, const RGBAColor &c2, const RGBAColor &c3, const RGBAColor &c4) = 0 ;
-    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
-            const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
+    virtual void drawQuad(const Vec3 &p1,const Vec3 &p2,const Vec3 &p3,const Vec3 &p4,
+            const Vec3 &normal1, const Vec3 &normal2, const Vec3 &normal3, const Vec3 &normal4,
             const RGBAColor &c1, const RGBAColor &c2, const RGBAColor &c3, const RGBAColor &c4) = 0 ;
-    virtual void drawQuads(const std::vector<Vector3> &points, const RGBAColor& color) = 0 ;
-    virtual void drawQuads(const std::vector<Vector3> &points, const std::vector<RGBAColor>& colors) = 0 ;
+    virtual void drawQuads(const std::vector<Vec3> &points, const RGBAColor& color) = 0 ;
+    virtual void drawQuads(const std::vector<Vec3> &points, const std::vector<RGBAColor>& colors) = 0 ;
 
-    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const RGBAColor &color) = 0 ;
-    virtual void drawScaledTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const RGBAColor& color, const float scale) = 0;
-    virtual void drawTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color) = 0;
+    virtual void drawTetrahedron(const Vec3 &p0, const Vec3 &p1, const Vec3 &p2, const Vec3 &p3, const RGBAColor &color) = 0 ;
+    virtual void drawScaledTetrahedron(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& p3, const RGBAColor& color, const float scale) = 0;
+    virtual void drawTetrahedra(const std::vector<Vec3> &points, const RGBAColor& color) = 0;
     //Scale each tetrahedron
-    virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color, const float scale) = 0;
+    virtual void drawScaledTetrahedra(const std::vector<Vec3> &points, const RGBAColor& color, const float scale) = 0;
 
-    virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
-        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const RGBAColor &color) = 0;
-    virtual void drawHexahedra(const std::vector<Vector3> &points, const RGBAColor& color) = 0;
+    virtual void drawHexahedron(const Vec3 &p0, const Vec3 &p1, const Vec3 &p2, const Vec3 &p3,
+        const Vec3 &p4, const Vec3 &p5, const Vec3 &p6, const Vec3 &p7, const RGBAColor &color) = 0;
+    virtual void drawHexahedra(const std::vector<Vec3> &points, const RGBAColor& color) = 0;
     //Scale each hexahedron
-    virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const RGBAColor& color, const float scale) = 0;
+    virtual void drawScaledHexahedra(const std::vector<Vec3> &points, const RGBAColor& color, const float scale) = 0;
 
-    virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
-    virtual void drawSphere(const Vector3 &p, float radius, const RGBAColor& color) = 0;
-    virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;
+    virtual void drawSphere( const Vec3 &p, float radius) = 0 ;
+    virtual void drawSphere(const Vec3 &p, float radius, const RGBAColor& color) = 0;
+    virtual void drawEllipsoid(const Vec3 &p, const Vec3 &radii) = 0;
 
-    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0 ) = 0;
+    virtual void drawBoundingBox( const Vec3 &min, const Vec3 &max, float size = 1.0 ) = 0;
 
-    virtual void draw3DText(const Vector3 &p, float scale, const RGBAColor &color, const char* text) = 0;
-    virtual void draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const RGBAColor &color) = 0;
+    virtual void draw3DText(const Vec3 &p, float scale, const RGBAColor &color, const char* text) = 0;
+    virtual void draw3DText_Indices(const std::vector<Vec3> &positions, float scale, const RGBAColor &color) = 0;
     /// @}
 
     /// @name Transformation methods.
@@ -208,6 +208,13 @@ public:
     virtual void saveLastState() = 0;
     virtual void restoreLastState() = 0;
 
+    struct StateLifeCycle;
+
+    /// Use RAII to bind state save and restore to the returned object: saveLastState is called
+    /// at object creation, and restoreLastState is called when the object is destroyed.
+    [[nodiscard]]
+    StateLifeCycle makeStateLifeCycle();
+
     /// @name Overlay methods
 
     /// draw 2D text at position (x,y) from top-left corner
@@ -224,8 +231,18 @@ public:
 
     virtual void clear() {}
 
-    /// Compatibility wrapper functions 
+    /// Compatibility wrapper functions
     using Vec4f = sofa::type::Vec4f;
+};
+
+struct SOFA_HELPER_API DrawTool::StateLifeCycle
+{
+    StateLifeCycle() = delete;
+    StateLifeCycle(const StateLifeCycle&) = delete;
+    StateLifeCycle(DrawTool* drawTool);
+    ~StateLifeCycle();
+private:
+    DrawTool* m_drawTool { nullptr };
 };
 
 } // namespace sofa::helper::visual

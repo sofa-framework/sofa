@@ -34,12 +34,12 @@ using namespace helper;
 
 
 template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const Vector3& )
+Vec3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const Vec3& )
 {
     return center();
 }
 template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const Vector3& )
+Vec3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const Vec3& )
 {
     return center();
 }

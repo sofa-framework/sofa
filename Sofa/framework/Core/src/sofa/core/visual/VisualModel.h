@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VISUAL_VISUALMODEL_H
-#define SOFA_CORE_VISUAL_VISUALMODEL_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Quat.h>
 #include <sofa/defaulttype/TopologyTypes.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
+namespace sofa::core::visual
 {
 
 class VisualParams;
@@ -176,11 +169,5 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 };
+} // namespace sofa::core::visual
 
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
-
-#endif //SOFA_CORE_VISUAL_VISUALMODEL_H

@@ -27,7 +27,7 @@
 #include <CollisionOBBCapsule/response/mapper/CapsuleContactMapper.h>
 #define COLLISIONOBBCAPSULE_CAPSULECONTACTMAPPER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/response/mapper/CapsuleContactMapper.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/response/mapper/CapsuleContactMapper.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/response/mapper/CapsuleContactMapper.h> instead of this one."

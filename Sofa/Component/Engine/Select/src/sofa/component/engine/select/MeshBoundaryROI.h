@@ -39,8 +39,8 @@ namespace sofa::component::engine::select
 class MeshBoundaryROI : public core::DataEngine
 {
 public:
-    typedef core::DataEngine Inherited;
-    SOFA_CLASS(MeshBoundaryROI,Inherited);
+    SOFA_CLASS(MeshBoundaryROI, DataEngine);
+    SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Inherited, Inherit1);
 
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
     typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;

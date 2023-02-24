@@ -27,35 +27,33 @@ namespace sofa::component::engine::generate
 {
 
 int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine several inputs")
-    .add< MergeVectors< type::vector<double> > >(true)
+    .add< MergeVectors< type::vector<SReal> > >(true)
     .add< MergeVectors< type::vector<int> > >()
     .add< MergeVectors< type::vector<bool> > >()
     //.add< MergeVectors< type::vector<std::string> > >()
     .add< MergeVectors< type::vector<type::Vec2u> > >()
-    .add< MergeVectors< type::vector<type::Vec2d> > >()
-    .add< MergeVectors< type::vector<type::Vec3d> > >()
-    .add< MergeVectors< type::vector<type::Vec4d> > >()
+    .add< MergeVectors< type::vector<type::Vec2> > >()
+    .add< MergeVectors< type::vector<type::Vec3> > >()
+    .add< MergeVectors< type::vector<type::Vec4> > >()
     .add< MergeVectors< defaulttype::Rigid2Types::VecCoord > >()
     .add< MergeVectors< defaulttype::Rigid2Types::VecDeriv > >()
     .add< MergeVectors< defaulttype::Rigid3Types::VecCoord > >()
-    .add< MergeVectors< defaulttype::Rigid3Types::VecDeriv > >()
- 
-        ;
+    .add< MergeVectors< defaulttype::Rigid3Types::VecDeriv > >();
+
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<int> >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<bool> >;
-//template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<std::string> >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2u> >;
 
-template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<double> >;
-template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2d> >;
-template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec3d> >;
-template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec4d> >;
+template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<SReal> >;
+template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec2> >;
+template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec3> >;
+template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< type::vector<type::Vec4> >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
 template class SOFA_COMPONENT_ENGINE_GENERATE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
- 
+
 
 
 } //namespace sofa::component::engine::generate

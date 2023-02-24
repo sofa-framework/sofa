@@ -69,13 +69,13 @@ void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparam
     if (!this->isActive()) return;
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const SetIndexArray & indices = d_indices.getValue();
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    
-    std::vector< Vector3 > points;
-    
+
+    std::vector< type::Vec3 > points;
+
     if (d_fixAll.getValue())
     {
         for (unsigned i = 0; i < x.size(); i++)
@@ -100,7 +100,7 @@ void FixedConstraint<Rigid3Types>::draw(const core::visual::VisualParams* vparam
     else
         vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <>
@@ -111,14 +111,14 @@ void FixedConstraint<Rigid2Types>::draw(const core::visual::VisualParams* vparam
     if (!this->isActive()) return;
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const SetIndexArray& indices = d_indices.getValue();
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
 
     vparams->drawTool()->setLightingEnabled(false);
     constexpr sofa::type::RGBAColor color (1,0.5,0.5,1);
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     if(d_fixAll.getValue())
     {
@@ -132,7 +132,7 @@ void FixedConstraint<Rigid2Types>::draw(const core::visual::VisualParams* vparam
     }
 
     vparams->drawTool()->drawPoints(vertices, 10, color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

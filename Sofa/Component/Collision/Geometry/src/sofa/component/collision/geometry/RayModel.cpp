@@ -42,7 +42,7 @@ RayCollisionModel::RayCollisionModel(SReal length)
     this->contactResponse.setValue("RayContact"); // use RayContact response class
 }
 
-void RayCollisionModel::resize(Size size)
+void RayCollisionModel::resize(sofa::Size size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -53,7 +53,7 @@ void RayCollisionModel::resize(Size size)
             length.push_back(defaultLength.getValue());
         direction.reserve(size);
         while (direction.size() < size)
-            direction.push_back(Vector3());
+            direction.push_back(Vec3());
 
     }
     else
@@ -82,7 +82,7 @@ void RayCollisionModel::init()
 }
 
 
-int RayCollisionModel::addRay(const Vector3& origin, const Vector3& direction, SReal length)
+int RayCollisionModel::addRay(const Vec3& origin, const Vec3& direction, SReal length)
 {
     int i = size;
     resize(i);
@@ -93,19 +93,19 @@ int RayCollisionModel::addRay(const Vector3& origin, const Vector3& direction, S
     return i;
 }
 
-void RayCollisionModel::draw(const core::visual::VisualParams* vparams, Index index)
+void RayCollisionModel::draw(const core::visual::VisualParams* vparams, sofa::Index index)
 {
     if( !vparams->isSupported(core::visual::API_OpenGL) ) return;
 
     Ray r(this, index);
-    const Vector3& p1 = r.origin();
-    const Vector3 p2 = p1 + r.direction()*r.l();
+    const Vec3& p1 = r.origin();
+    const Vec3 p2 = p1 + r.direction()*r.l();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
     vparams->drawTool()->drawLine(p1,p2,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 void RayCollisionModel::draw(const core::visual::VisualParams* vparams)
@@ -129,7 +129,7 @@ void RayCollisionModel::computeBoundingTree(int maxDepth)
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-    Vector3 minElem, maxElem;
+    Vec3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -137,8 +137,8 @@ void RayCollisionModel::computeBoundingTree(int maxDepth)
         for (sofa::Index i=0; i<size; i++)
         {
             Ray r(this, i);
-            const Vector3& o = r.origin();
-            const Vector3& d = r.direction();
+            const Vec3& o = r.origin();
+            const Vec3& d = r.direction();
             const SReal l = r.l();
             for (int c=0; c<3; c++)
             {
@@ -162,7 +162,7 @@ void RayCollisionModel::computeBoundingTree(int maxDepth)
 
 void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
 {
-    Vector3 d(dx,dy,dz);
+    Vec3 d(dx,dy,dz);
     for (int i = 0; i < getNbRay(); i++)
     {
         Ray ray = getRay(i);

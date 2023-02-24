@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-#include <SceneChecking/SceneCheck.h>
+#include <sofa/simulation/SceneCheck.h>
 #include <sofa/core/ExecParams.h>
 #include <functional>
 #include <map>
@@ -41,11 +41,11 @@ public:
     void validate(sofa::simulation::Node* node) ;
     Result processNodeTopDown(sofa::simulation::Node* node) override ;
 
-    void addCheck(SceneCheck::SPtr check) ;
-    void removeCheck(SceneCheck::SPtr check) ;
+    void addCheck(sofa::simulation::SceneCheck::SPtr check) ;
+    void removeCheck(sofa::simulation::SceneCheck::SPtr check) ;
 
 private:
-    std::vector<SceneCheck::SPtr> m_checkset ;
+    std::vector<sofa::simulation::SceneCheck::SPtr> m_checkset ;
 };
 
 } // namespace sofa::_scenechecking_

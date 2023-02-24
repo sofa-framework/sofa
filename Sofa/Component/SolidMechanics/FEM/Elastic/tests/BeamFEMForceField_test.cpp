@@ -29,6 +29,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/testing/NumericTest.h>
 using sofa::simulation::Node;
 
 #include <sofa/testing/BaseTest.h>
@@ -56,6 +57,8 @@ public:
     using EdgeModifier = sofa::component::topology::container::dynamic::EdgeSetTopologyModifier;
     typedef typename BeamFEM::BeamInfo BeamInfo;
     typedef typename type::vector<BeamInfo> VecBeamInfo;
+
+    static constexpr const char* rigidTypeName = StdRigidTypes<3, Real>::Name();
 
 protected:
     simulation::Simulation* m_simulation = nullptr;
@@ -86,12 +89,12 @@ public:
 
         createObject(m_root, "EulerImplicitSolver");
         createObject(m_root, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" }, {"tolerance", "1e-5"} });
-        createObject(m_root, "MechanicalObject", {{"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "MechanicalObject", {{"template", rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer", { {"edges","0 1  1 2  2 3"} });
         createObject(m_root, "EdgeSetTopologyModifier");
-        createObject(m_root, "EdgeSetGeometryAlgorithms", { {"template","Rigid3d"} });
+        createObject(m_root, "EdgeSetGeometryAlgorithms", { {"template", rigidTypeName} });
 
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"}, {"radius", str(radius)}, {"youngModulus", str(youngModulus)}, {"poissonRatio", str(poissonRatio)} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName}, {"radius", str(radius)}, {"youngModulus", str(youngModulus)}, {"poissonRatio", str(poissonRatio)} });
         createObject(m_root, "UniformMass", { {"name","mass"}, {"totalMass","1.0"} });
         createObject(m_root, "FixedConstraint", { {"name","fix"}, {"indices","0"} });
 
@@ -102,7 +105,7 @@ public:
 
     void checkCreation()
     {
-        createSimpleBeam(0.05, 20000000, 0.49);
+        createSimpleBeam(static_cast<Real>(0.05), static_cast<Real>(20000000), static_cast<Real>(0.49));
 
         typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
@@ -110,9 +113,9 @@ public:
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         ASSERT_TRUE(bFEM.get() != nullptr);
-        ASSERT_FLOAT_EQ(bFEM->d_radius.getValue(), 0.05);
-        ASSERT_FLOAT_EQ(bFEM->d_youngModulus.getValue(), 20000000);
-        ASSERT_FLOAT_EQ(bFEM->d_poissonRatio.getValue(), 0.49);
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_radius.getValue(), static_cast<Real>(0.05));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_youngModulus.getValue(), static_cast<Real>(20000000));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_poissonRatio.getValue(), static_cast<Real>(0.49));
     }
 
 
@@ -121,7 +124,7 @@ public:
         EXPECT_MSG_EMIT(Error);
         
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"}, {"radius", "0.05"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName}, {"radius", "0.05"} });
         
         sofa::simulation::getSimulation()->init(m_root.get());
     }
@@ -132,8 +135,8 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-        createObject(m_root, "MechanicalObject", { {"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"} });
+        createObject(m_root, "MechanicalObject", { {"template", rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
         sofa::simulation::getSimulation()->init(m_root.get());
     }
@@ -142,9 +145,9 @@ public:
     void checkEmptyTopology()
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-        createObject(m_root, "MechanicalObject", { {"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "MechanicalObject", { {"template",rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer");
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
         EXPECT_MSG_EMIT(Error);
 
@@ -157,23 +160,23 @@ public:
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
 
-        createObject(m_root, "MechanicalObject", { {"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
+        createObject(m_root, "MechanicalObject", { {"template",rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer", { {"edges","0 1  1 2  2 3"} });
-        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", "Rigid3d"} });
+        createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         ASSERT_TRUE(bFEM.get() != nullptr);
-        ASSERT_FLOAT_EQ(bFEM->d_radius.getValue(), 0.1);
-        ASSERT_FLOAT_EQ(bFEM->d_youngModulus.getValue(), 5000);
-        ASSERT_FLOAT_EQ(bFEM->d_poissonRatio.getValue(), 0.49);
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_radius.getValue(), static_cast<Real>(0.1));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_youngModulus.getValue(), static_cast<Real>(5000));
+        ASSERT_FLOATINGPOINT_EQ(bFEM->d_poissonRatio.getValue(), static_cast<Real>(0.49));
     }
 
 
     void checkInit()
     {
-        Real radius = 0.05;
-        Real young = 20000000;
-        Real poisson = 0.49;
+        static constexpr SReal radius = 0.05_sreal;
+        static constexpr SReal young = 20000000_sreal;
+        static constexpr SReal poisson = 0.49_sreal;
         createSimpleBeam(radius, young, poisson);
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
@@ -188,7 +191,7 @@ public:
         ASSERT_EQ(bI._nu, poisson);
         ASSERT_EQ(bI._r, radius);
         ASSERT_EQ(bI._L, 1.0);
-        ASSERT_FLOAT_EQ(bI._G, young/(2.0*(1.0+poisson)));
+        ASSERT_FLOATINGPOINT_EQ(bI._G, young / (2.0_sreal * (1.0_sreal + poisson)));
     }
 
 

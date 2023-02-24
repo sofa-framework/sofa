@@ -3,12 +3,15 @@ cmake_minimum_required(VERSION 3.12)
 project(Sofa.Helper_test)
 
 set(SOURCE_FILES
+    DiffLib_test.cpp
     Factory_test.cpp
     KdTree_test.cpp
     NameDecoder_test.cpp
     narrow_cast_test.cpp
     TagFactory_test.cpp
     Utils_test.cpp
+    accessor/ReadAccessor.cpp
+    accessor/WriteAccessor.cpp
     io/MeshOBJ_test.cpp
     io/XspLoader_test.cpp
     io/STBImage_test.cpp

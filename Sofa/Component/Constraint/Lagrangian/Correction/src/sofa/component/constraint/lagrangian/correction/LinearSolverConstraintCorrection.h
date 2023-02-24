@@ -79,7 +79,7 @@ public:
 
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
-    void rebuildSystem(double massFactor, double forceFactor) override;
+    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
 
     /// @name Deprecated API
     /// @{
@@ -115,11 +115,11 @@ public:
 
     bool hasConstraintNumber(int index) override;  // virtual ???
 
-    void resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering) override;
+    void resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& renumbering) override;
 
-    void addConstraintDisplacement(double *d, int begin,int end) override;
+    void addConstraintDisplacement(SReal*d, int begin,int end) override;
 
-    void setConstraintDForce(double *df, int begin, int end, bool update) override;
+    void setConstraintDForce(SReal*df, int begin, int end, bool update) override;
 
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
@@ -149,7 +149,7 @@ private:
     linearalgebra::BaseMatrix* systemMatrix_buf;
     linearalgebra::BaseVector* systemRHVector_buf;
     linearalgebra::BaseVector* systemLHVector_buf;
-
+    linearalgebra::FullVector<Real>* systemLHVector_buf_fullvector { nullptr };
 
     // par un vecteur de listes precaclues pour chaque contrainte
     std::vector< ListIndex > Vec_I_list_dof;   // vecteur donnant la liste des indices des dofs par block de contrainte

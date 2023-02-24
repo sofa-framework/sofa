@@ -40,6 +40,7 @@ namespace sofa::type
 
 static constexpr bool isEnabledVectorAccessChecking {SOFA_VECTOR_CHECK_ACCESS};
 
+[[noreturn]]
 extern void SOFA_TYPE_API vector_access_failure(const void* vec, std::size_t size, std::size_t i, const std::type_info& type);
 
 // standard vector dont use the CPUMemoryManager given as template
@@ -66,9 +67,9 @@ public:
     template<class T2>
     using rebind_to = vector< T2, CPUMemoryManager<T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
-        using other = rebind_to<T2>;
+        typedef DeprecatedAndRemoved other;
     };
 
 

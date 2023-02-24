@@ -42,14 +42,15 @@ class AffineMovementConstraintInternalData
 {
 };
 
-/** 
-    Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation. 
+/**
+    Impose a motion to all the boundary points of a mesh. The motion of the 4 corners are given in the data m_cornerMovements and the movements of the edge points are computed by linear interpolation.
 */
 template <class TDataTypes>
 class AffineMovementConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(AffineMovementConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(AffineMovementConstraint,TDataTypes),
+               SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
 
     using Index = sofa::Index;
     typedef TDataTypes DataTypes;
@@ -64,7 +65,7 @@ public:
     typedef type::vector<Index> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef type::Quat<SReal> Quat;
-    typedef type::Vector3 Vector3;
+    typedef type::Vec3 Vec3;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
@@ -90,7 +91,7 @@ public :
     /// Quaternion of affine transformation (for rigid)
     Data<Quat> m_quaternion;
     /// Translation Matrix of affine transformation
-    Data<Vector3> m_translation;
+    Data<Vec3> m_translation;
     /// Draw constrained points
     Data <bool> m_drawConstrainedPoints;
     /// initial constrained DOFs position
@@ -104,7 +105,7 @@ public :
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<AffineMovementConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
- 
+
 protected:
     AffineMovementConstraint();
 
@@ -115,7 +116,7 @@ public:
     void clearConstraints();
     void addConstraint(Index index);
     void removeConstraint(Index index);
-   
+
     /// -- Constraint interface
     void init() override;
 
@@ -132,7 +133,7 @@ public:
     }
 
     /// Compute the theoretical final positions
-    void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
+    void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData);
 
     // Implement projectMatrix for assembled solver of compliant
     void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
@@ -141,7 +142,7 @@ public:
      void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
-    
+
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
@@ -160,7 +161,7 @@ private:
 #if !defined(SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementConstraint<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementConstraint<defaulttype::Rigid3Types>;
- 
+
 #endif //SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
 
 } // namespace sofa::component::constraint::projective

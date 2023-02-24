@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!-- Mechanical EllipsoidForceField Example -->
+<Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping SubsetMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [EllipsoidForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField QuadBendingSprings] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MergeVectors] -->  
+
+    <VisualStyle displayFlags="showForceFields showVisual" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <DefaultContactManager name="Response" />
+    <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
+    <DefaultAnimationLoop/>
+
+    <Node name="SquareCloth1">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MechanicalObject />
+        <UniformMass totalMass="100" />
+        <RegularGridTopology nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+        <BoxROI name="box1" box="-12 7 12 -10 7 12" />
+        <BoxROI name="box2" box="10 7 12 12 7 12" />
+        <MergeVectors template="Data<int>" name="mergedFixedIndices" nbInputs="2" input1="@box1.indices" input2="@box2.indices" />
+        <FixedConstraint name="ProjectiveFixedConstraint" indices="@mergedFixedIndices.output" />
+        
+        <MeshSpringForceField name="Springs" stiffness="2000" damping="0" />
+        <QuadBendingSprings name="Bend" stiffness="20" damping="0" />
+        <EllipsoidForceField stiffness="1000" damping="1" center="0 5 3" vradius="6 2 6" />
+        <!--		<EllipsoidForceField stiffness="-100" damping="0.1" center="0 10 3" vradius="20 10 20" color="1 0 0 1" />
+		<PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" /> -->
+        <Node name="Visu">
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+        <Node>
+            <RegularGridTopology nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
+            <MechanicalObject />
+            <SphereCollisionModel radius="1.0" contactStiffness="1" />
+            <SubsetMapping radius="0.8"/>
+        </Node>
+        <!--
+		<Node name="Surf">
+			<MechanicalObject />
+			<RegularGridTopology
+				nx="100" ny="1" nz="100"
+				xmin="12" xmax="-12"
+				ymin="7" ymax="7"
+				zmin="-12" zmax="12" />
+			<IdentityMapping />
+			<TriangleCollisionModel />
+		</Node>
+		-->
+    </Node>
+</Node>

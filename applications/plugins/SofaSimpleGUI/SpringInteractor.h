@@ -4,15 +4,15 @@
 #include <SofaSimpleGUI/config.h>
 #include "Interactor.h"
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa{
 namespace simplegui{
     using sofa::defaulttype::Vec3Types ;
-    using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
-    using StiffSpringForceField3 = sofa::component::interactionforcefield::StiffSpringForceField<Vec3Types> ;
+    using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<Vec3Types> ;
+    using StiffSpringForceField3 = sofa::component::solidmechanics::spring::StiffSpringForceField<Vec3Types> ;
 
 /**
  * @brief Interaction using a spring.

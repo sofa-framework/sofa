@@ -69,7 +69,7 @@ template< class DataTypes>
 TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForceField()
     : tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
-    , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
+    , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45,"poissonRatio","FEM Poisson Ratio"))
     , _youngModulus(core::objectmodel::BaseObject::initData(&_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
     , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
     , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
@@ -1261,7 +1261,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -1269,7 +1269,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
         vparams->drawTool()->setPolygonMode(0,true);
 
 
-    std::vector< type::Vector3 > points[4];
+    std::vector< type::Vec3 > points[4];
     for(Size i = 0 ; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t=m_topology->getTetrahedron(i);
@@ -1310,7 +1310,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
         vparams->drawTool()->setPolygonMode(0,false);
 
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

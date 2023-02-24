@@ -24,6 +24,20 @@
 namespace sofa::core::collision
 {
 
+NarrowPhaseDetection::~NarrowPhaseDetection()
+{
+    for (auto& it : m_outputsMap)
+    {
+        DetectionOutputVector* do_vec = it.second;
+
+        if (do_vec != nullptr)
+        {
+            do_vec->clear();
+            do_vec->release();
+        }
+    }
+}
+
 void NarrowPhaseDetection::beginNarrowPhase()
 {
     for (DetectionOutputMap::iterator it = m_outputsMap.begin(); it != m_outputsMap.end(); it++)

@@ -49,13 +49,11 @@ public:
 protected:
     BaseMass();
 
-    ~BaseMass() override
-    {
-    }
+    ~BaseMass() override = default;
 
 private:
-	BaseMass(const BaseMass& n) = delete;
-	BaseMass& operator=(const BaseMass& n) = delete;
+    BaseMass(const BaseMass& n) = delete;
+    BaseMass& operator=(const BaseMass& n) = delete;
 
 public:
     /// @name Vector operations
@@ -97,7 +95,8 @@ public:
     virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
-    virtual type::Vector6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+
     /// @}
 
 

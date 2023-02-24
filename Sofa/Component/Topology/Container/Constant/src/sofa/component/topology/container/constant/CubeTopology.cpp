@@ -51,8 +51,8 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         float xmax = arg->getAttributeAsFloat("xmax",1);
         float ymax = arg->getAttributeAsFloat("ymax",1);
         float zmax = arg->getAttributeAsFloat("zmax",1);
-        min.setValue(Vector3((SReal)(xmin*scale), (SReal)(ymin*scale), (SReal)(zmin*scale)));
-        max.setValue(Vector3((SReal)(xmax*scale), (SReal)(ymax*scale), (SReal)(zmax*scale)));
+        min.setValue(Vec3((SReal)(xmin*scale), (SReal)(ymin*scale), (SReal)(zmin*scale)));
+        max.setValue(Vec3((SReal)(xmax*scale), (SReal)(ymax*scale), (SReal)(zmax*scale)));
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }
@@ -65,8 +65,8 @@ CubeTopology::CubeTopology(int _nx, int _ny, int _nz)
     : nx(initData(&nx,_nx,"nx","x grid resolution")), ny(initData(&ny,_ny,"ny","y grid resolution")), nz(initData(&nz,_nz,"nz","z grid resolution"))
     , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
     , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
-    , min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
-    , max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+    , min(initData(&min,Vec3(0.0_sreal,0.0_sreal,0.0_sreal),"min", "Min"))
+    , max(initData(&max,Vec3(1.0_sreal,1.0_sreal,1.0_sreal),"max", "Max"))
 {
     setSize();
 }
@@ -75,8 +75,8 @@ CubeTopology::CubeTopology()
     : nx(initData(&nx,0,"nx","x grid resolution")), ny(initData(&ny,0,"ny","y grid resolution")), nz(initData(&nz,0,"nz","z grid resolution"))
     , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
     , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
-    , min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
-    , max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+    , min(initData(&min,Vec3(0.0_sreal,0.0_sreal,0.0_sreal),"min", "Min"))
+    , max(initData(&max,Vec3(1.0_sreal,1.0_sreal,1.0_sreal),"max", "Max"))
 {
 }
 
@@ -252,22 +252,22 @@ void CubeTopology::updateQuads()
 
 void CubeTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)
 {
-    setP0(Vector3(xmin,ymin,zmin));
+    setP0(Vec3(xmin,ymin,zmin));
     if (nx.getValue()>1)
-        setDx(Vector3((xmax-xmin)/(nx.getValue()-1),0,0));
+        setDx(Vec3((xmax-xmin)/(nx.getValue()-1),0_sreal,0_sreal));
     else
-        setDx(Vector3(0,0,0));
+        setDx(Vec3(0_sreal,0_sreal,0_sreal));
     if (ny.getValue()>1)
-        setDy(Vector3(0,(ymax-ymin)/(ny.getValue()-1),0));
+        setDy(Vec3(0_sreal,(ymax-ymin)/(ny.getValue()-1),0_sreal));
     else
-        setDy(Vector3(0,0,0));
+        setDy(Vec3(0_sreal,0_sreal,0_sreal));
     if (nz.getValue()>1)
-        setDz(Vector3(0,0,(zmax-zmin)/(nz.getValue()-1)));
+        setDz(Vec3(0_sreal,0_sreal,(zmax-zmin)/(nz.getValue()-1)));
     else
-        setDz(Vector3(0,0,0));
+        setDz(Vec3(0_sreal,0_sreal,0_sreal));
 }
 
-Vector3 CubeTopology::getPoint(int i) const
+Vec3 CubeTopology::getPoint(int i) const
 {
     const int nx = this->nx.getValue();
     const int ny = this->ny.getValue();
@@ -362,7 +362,7 @@ Vector3 CubeTopology::getPoint(int i) const
     return getPoint(x,y,z);
 }
 
-Vector3 CubeTopology::getPoint(int x, int y, int z) const
+Vec3 CubeTopology::getPoint(int x, int y, int z) const
 {
     return p0+dx*x+dy*y+dz*z;
 }

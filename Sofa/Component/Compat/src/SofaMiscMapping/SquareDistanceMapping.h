@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/nonlinear/SquareDistanceMapping.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/SquareDistanceMapping.h")
-
-namespace sofa::component::mapping
-{
-	template<class TIn, class TOut>
-    using SquareDistanceMapping = sofa::component::mapping::nonlinear::SquareDistanceMapping<TIn, TOut>;
-
-} // namespace sofa::component::mapping
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/SquareDistanceMapping.h")

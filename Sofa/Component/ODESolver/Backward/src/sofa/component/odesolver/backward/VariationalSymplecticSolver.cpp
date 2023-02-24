@@ -36,7 +36,7 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 VariationalSymplecticSolver::VariationalSymplecticSolver()
-    : f_newtonError( initData(&f_newtonError,0.01,"newtonError","Error tolerance for Newton iterations") )
+    : f_newtonError( initData(&f_newtonError,0.01_sreal,"newtonError","Error tolerance for Newton iterations") )
     , f_newtonSteps( initData(&f_newtonSteps,(unsigned int)5,"steps","Maximum number of Newton steps") )
     , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
     , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
@@ -45,7 +45,7 @@ VariationalSymplecticSolver::VariationalSymplecticSolver()
     , f_explicit( initData(&f_explicit,false,"explicitIntegration","Use explicit integration scheme") )
     , f_fileName(initData(&f_fileName,"file","File name where kinetic and potential energies are saved in a CSV file"))
     , f_computeHamiltonian( initData(&f_computeHamiltonian,true,"computeHamiltonian","Compute hamiltonian") )
-    , f_hamiltonianEnergy( initData(&f_hamiltonianEnergy,0.0,"hamiltonianEnergy","hamiltonian energy") )
+    , f_hamiltonianEnergy( initData(&f_hamiltonianEnergy,0.0_sreal,"hamiltonianEnergy","hamiltonian energy") )
     , f_useIncrementalPotentialEnergy( initData(&f_useIncrementalPotentialEnergy,true,"useIncrementalPotentialEnergy","use real potential energy, if false use approximate potential energy"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {

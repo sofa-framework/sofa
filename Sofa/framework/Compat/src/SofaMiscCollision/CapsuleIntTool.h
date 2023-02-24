@@ -27,19 +27,9 @@
 #include <CollisionOBBCapsule/detection/intersection/CapsuleIntTool.h>
 #define COLLISIONOBBCAPSULE_CAPSULEINTTOOL
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/CapsuleIntTool.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/detection/intersection/CapsuleIntTool.h")
 
 #else
 #error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/detection/intersection/CapsuleIntTool.h> instead of this one."
 #endif
-
-#ifdef COLLISIONOBBCAPSULE_CAPSULEINTTOOL
-
-namespace sofa::component::collision
-{
-	using CapsuleIntTool = collisionobbcapsule::detection::intersection::CapsuleIntTool;
-
-} // namespace sofa::component::collision
-
-#endif // COLLISIONOBBCAPSULE_CAPSULEINTTOOL
 

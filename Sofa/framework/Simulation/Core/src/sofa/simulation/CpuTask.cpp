@@ -26,35 +26,17 @@
 
 namespace sofa::simulation
 {
-    CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
-    : Task(scheduledThread)
-    , m_status(status)
-    {
-    }
 
-    CpuTask::~CpuTask()
-    {
-    }
-
-    CpuTask::Status *CpuTask::getStatus(void) const
-    {
-        return m_status;
-    }
-
-    bool CpuTask::Status::isBusy() const
-    {
-        return (m_busy.load(std::memory_order_relaxed) > 0);
-    }
-
-    int CpuTask::Status::setBusy(bool busy)
-    {
-        if (busy)
-        {
-            return m_busy.fetch_add(1, std::memory_order_relaxed);
-        }
-        else
-        {
-            return m_busy.fetch_sub(1, std::memory_order_relaxed);
-        }
-    }
+CpuTask::CpuTask(CpuTask::Status* status, int scheduledThread)
+: Task(scheduledThread)
+, m_status(status)
+{
 }
+
+CpuTask::Status *CpuTask::getStatus(void) const
+{
+    return m_status;
+}
+
+
+} // namespace sofa::simulation

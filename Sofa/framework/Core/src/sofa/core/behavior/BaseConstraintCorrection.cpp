@@ -27,7 +27,7 @@ namespace sofa::core::behavior
 BaseConstraintCorrection::BaseConstraintCorrection(){}
 BaseConstraintCorrection::~BaseConstraintCorrection(){}
 
-void BaseConstraintCorrection::rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+void BaseConstraintCorrection::rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
 
 void BaseConstraintCorrection::getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
 {
@@ -45,9 +45,9 @@ void BaseConstraintCorrection::getBlockDiagonalCompliance(linearalgebra::BaseMat
 }
 
 bool BaseConstraintCorrection::hasConstraintNumber(int /*index*/) {return true;}
-void BaseConstraintCorrection::resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/) {}
-void BaseConstraintCorrection::addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/) {}
-void BaseConstraintCorrection::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
+void BaseConstraintCorrection::resetForUnbuiltResolution(SReal* /*f*/, std::list<unsigned int>& /*renumbering*/) {}
+void BaseConstraintCorrection::addConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/) {}
+void BaseConstraintCorrection::setConstraintDForce(SReal* /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
 
 
 } // namespace sofa::core::behavior

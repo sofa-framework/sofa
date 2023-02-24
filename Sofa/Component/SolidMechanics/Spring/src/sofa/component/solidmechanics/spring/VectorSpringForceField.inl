@@ -361,7 +361,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
     const VecCoord& x2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
 
-    std::vector< Vector3 > points;
+    std::vector< Vec3 > points;
     if(useTopology)
     {
         for (unsigned int i=0; i<springArray.getValue().size(); i++)
@@ -369,8 +369,8 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
             const core::topology::BaseMeshTopology::Edge &e=m_topology->getEdge(i);
             //const Spring &s=springArray[i];
 
-            points.push_back(Vector3(x1[e[0]]));
-            points.push_back(Vector3(x2[e[1]]));
+            points.push_back(Vec3(x1[e[0]]));
+            points.push_back(Vec3(x2[e[1]]));
         }
 
     }
@@ -382,8 +382,8 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
             const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
             //const Spring &s=springArray[i];
 
-            points.push_back(Vector3(x1[e[0]]));
-            points.push_back(Vector3(x2[e[1]]));
+            points.push_back(Vec3(x1[e[0]]));
+            points.push_back(Vec3(x2[e[1]]));
         }
     }
     vparams->drawTool()->drawLines(points, 3, sofa::type::RGBAColor::red());

@@ -14,16 +14,15 @@ set(SOURCE_FILES
 )
 
 
-sofa_find_package(SofaBaseLinearSolver REQUIRED)
-sofa_find_package(SofaBaseMechanics REQUIRED)
-sofa_find_package(SofaBaseTopology REQUIRED)
-sofa_find_package(SofaBoundaryCondition REQUIRED)
+sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED)
+sofa_find_package(Sofa.Component.Topology REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
 sofa_find_package(SofaGraphComponent REQUIRED)
-sofa_find_package(SofaImplicitOdeSolver REQUIRED)
-sofa_find_package(SofaSimpleFem REQUIRED)
+sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver SofaBaseMechanics SofaBaseTopology SofaBoundaryCondition SofaGraphComponent SofaImplicitOdeSolver SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.LinearSolver.Iterative Sofa.Component.Topology Sofa.Component.Constraint.Projective SofaGraphComponent Sofa.Component.ODESolver.Backward Sofa.Component.SolidMechanics.FEM.Elastic)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_${PROJECT_NAME}")
 
 sofa_create_package_with_targets(

@@ -58,7 +58,7 @@ sofa::core::sptr<BaseObject> SOFA_SIMULATION_GRAPH_API createObject( NodeSPtr no
 
 ///@brief create a child to the provided nodeof given name.
 ///The parameter "params" is for passing specific data argument to the created object.
-NodeSPtr SOFA_SIMULATION_GRAPH_API createChild( NodeSPtr& node, const std::string& name,
+NodeSPtr SOFA_SIMULATION_GRAPH_API createChild( NodeSPtr node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided node.

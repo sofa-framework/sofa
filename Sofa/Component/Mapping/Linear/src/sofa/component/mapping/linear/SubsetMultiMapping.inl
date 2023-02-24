@@ -66,7 +66,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
             unsigned row = i*Nout + k;
 
             // the Jacobian could be filled in order, but empty rows should have to be managed
-            jacobian->add( row, Nin*bcol +k, (SReal)1. );
+            jacobian->add( row, Nin*bcol +k, 1._sreal );
         }
     }
     // finalize the Jacobians

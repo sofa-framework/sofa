@@ -66,7 +66,7 @@ using core::behavior::ForceField;
 using linearalgebra::BaseMatrix;
 using core::VecCoordId;
 using core::MechanicalParams;
-using type::Vector3;
+using type::Vec3;
 using type::Vec4f;
 using type::vector;
 using core::visual::VisualParams;
@@ -339,6 +339,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         if (useRestMState)
             ext_index = m_ext_indices[i];
 
+        const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
+
         // rigid case
         if constexpr (isRigidType<DataTypes>())
         {
@@ -346,7 +348,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (i >= m_pivots.size())
             {
                 CPos dx = p1[index].getCenter() - p0[ext_index].getCenter();
-                getVCenter(f1[index]) -= dx * (i < k.size() ? k[i] : k[0]);
+                getVCenter(f1[index]) -= dx * stiffness;
             }
             else
             {
@@ -354,7 +356,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
                 CPos rotatedPivot = p1[index].getOrientation().rotate(localPivot);
                 CPos pivot2 = p1[index].getCenter() + rotatedPivot;
                 CPos dx = pivot2 - m_pivots[i];
-                getVCenter(f1[index]) -= dx * (i < k.size() ? k[i] : k[0]);
+                getVCenter(f1[index]) -= dx * stiffness;
             }
 
             // rotation
@@ -372,7 +374,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             if (dq[3] < 1.0)
                 dq.quatToAxis(dir, angle);
 
-            getVOrientation(f1[index]) -= dir * angle * (i < k_a.size() ? k_a[i] : k_a[0]);
+            const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
+            getVOrientation(f1[index]) -= dir * angle * angularStiffness;
         }
         else // non-rigid implementation 
         {
@@ -380,7 +383,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             const sofa::Index ext_index = m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            f1[index] -= dx * ((i < k.size()) ? k[i] : k[0]);
+            f1[index] -= dx * stiffness;
         }
     }
 }
@@ -397,14 +400,18 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     for (unsigned int i = 0; i < m_indices.size(); i++)
     {
         const sofa::Index curIndex = m_indices[i];
+        const auto stiffness = k[static_cast<std::size_t>(i < k.size()) * i];
+
         if constexpr (isRigidType<DataTypes>())
         {
-            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * ((i < k.size()) ? k[i] : k[0]) * kFactor;
-            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * (i < k_a.size() ? k_a[i] : k_a[0]) * kFactor;
+            const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
+
+            getVCenter(df1[curIndex]) -= getVCenter(dx1[curIndex]) * stiffness * kFactor;
+            getVOrientation(df1[curIndex]) -= getVOrientation(dx1[curIndex]) * angularStiffness * kFactor;
         }
         else
         {
-            df1[m_indices[i]] -= dx1[m_indices[i]] * ((i < k.size()) ? k[i] : k[0]) * kFactor;
+            df1[m_indices[i]] -= dx1[m_indices[i]] * stiffness * kFactor;
         }
     }
 
@@ -417,7 +424,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
     ReadAccessor< DataVecCoord > p0 = *getExtPosition();
@@ -426,15 +433,15 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
 
-    std::vector<Vector3> vertices;
+    std::vector<Vec3> vertices;
 
     for (sofa::Index i=0; i<indices.size(); i++)
     {
         const sofa::Index index = indices[i];
         const sofa::Index ext_index = ext_indices[i];
 
-        Vector3 v0(0.0, 0.0, 0.0);
-        Vector3 v1(0.0, 0.0, 0.0);
+        Vec3 v0(0.0, 0.0, 0.0);
+        Vec3 v1(0.0, 0.0, 0.0);
         for(sofa::Index j=0 ; j< std::min(DataTypes::spatial_dimensions, static_cast<sofa::Size>(3)) ; j++)
         {
             v0[j] = (DataTypes::getCPos(p[index]))[j];
@@ -447,7 +454,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
     vparams->drawTool()->drawLines(vertices,5, d_springColor.getValue());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template<class DataTypes>
@@ -460,7 +467,9 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
-    constexpr const sofa::Size N = (isRigidType<DataTypes>()) ? Coord::spatial_dimensions * 2 : Coord::spatial_dimensions;
+
+    constexpr sofa::Size space_size = Deriv::spatial_dimensions; // == total_size if DataTypes = VecTypes
+    constexpr sofa::Size total_size = Deriv::total_size;
 
     sofa::Index curIndex = 0;
 
@@ -469,19 +478,19 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         curIndex = m_indices[index];
 
         // translation
-        const auto vt = -kFact * (index < k.size() ? k[index] : k[0]);
-        for (int i = 0; i < 3; i++)
+        const auto vt = -kFact * k[(index < k.size()) * index];
+        for (sofa::Size i = 0; i < space_size; i++)
         {
-            mat->add(offset + N * curIndex + i, offset + N * curIndex + i, vt);
+            mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vt);
         }
 
         // rotation (if applicable)
-        const auto vr = -kFact * (index < k_a.size() ? k_a[index] : k_a[0]);
         if constexpr (isRigidType<DataTypes>())
         {
-            for (int i = 3; i < 6; i++)
+            const auto vr = -kFact * k_a[(index < k_a.size()) * index];
+            for (sofa::Size i = space_size; i < total_size; i++)
             {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, vr);
+                mat->add(offset + total_size * curIndex + i, offset + total_size * curIndex + i, vr);
             }
         }
     }

@@ -1,0 +1,8 @@
+<Node name="root" dt="0.02" gravity="0 -10 0">
+
+    <include href="../FEMBAR-common.xml"/>
+
+    <PrecomputedLinearSolver use_file="false"/>
+    <HexahedronFEMForceField name="FEM" youngModulus="400000" poissonRatio="0.3" method="large" />
+
+</Node>

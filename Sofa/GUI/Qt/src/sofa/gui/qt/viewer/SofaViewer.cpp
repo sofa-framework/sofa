@@ -52,6 +52,7 @@ void SofaViewer::redraw()
 
 void SofaViewer::keyPressEvent(QKeyEvent * e)
 {
+
     if (currentCamera)
     {
         sofa::core::objectmodel::KeypressedEvent kpe(e->key());
@@ -74,8 +75,6 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     {
         if (!getPickHandler()) break;
         int viewport[4] = {};
-        //todo
-//        glGetIntegerv(GL_VIEWPORT,viewport);
         getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
         break;
     }
@@ -254,8 +253,14 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
 void SofaViewer::keyReleaseEvent(QKeyEvent * e)
 {
     sofa::core::objectmodel::KeyreleasedEvent kre(e->key());
-    currentCamera->manageEvent(&kre);
+    if (isControlPressed())
+    {
+        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
+        if (groot)
+            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
+    }
 
+    currentCamera->manageEvent(&kre);
     switch (e->key())
     {
     case Qt::Key_V:
@@ -287,12 +292,7 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
     }
     }
 
-    if (isControlPressed())
-    {
-        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        if (groot)
-            groot->propagateEvent(core::execparams::defaultInstance(), &keyEvent);
-    }
+
 
 }
 
@@ -346,7 +346,7 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
 #endif
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, e->x(), e->y());
 	} else {
-		// A fallback event to rules them all... 
+		// A fallback event to rules them all...
 	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonPressed, e->x(), e->y());
 	}
     currentCamera->manageEvent(mEvent);
@@ -372,7 +372,7 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
 #endif
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, e->x(), e->y());
 	} else {
-		// A fallback event to rules them all... 
+		// A fallback event to rules them all...
 	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonReleased, e->x(), e->y());
 	}
 

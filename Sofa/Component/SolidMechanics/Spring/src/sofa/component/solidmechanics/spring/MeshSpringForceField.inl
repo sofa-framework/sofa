@@ -216,7 +216,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     if(this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid || !mstate1 || !mstate2)
         return ;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if(vparams->displayFlags().getShowForceFields())
     {
@@ -247,7 +247,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         {
             const Spring& s = ss[i];
             const Coord pa[2] = {p1[s.m1], p2[s.m2]};
-            const std::vector<sofa::type::Vector3> points(pa, pa+2);
+            const std::vector<sofa::type::Vec3> points(pa, pa+2);
             Deriv v = pa[0] - pa[1];
             Real elongation = (s.initpos - v.norm()) / s.initpos;
             Real R = 0.;
@@ -270,7 +270,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
             vparams->drawTool()->drawLines(points, float(drawSpringSize), sofa::type::RGBAColor{ float(R), float(G), float(B), 1.f });
         }
 
-        vparams->drawTool()->restoreLastState();
+
     }
 }
 

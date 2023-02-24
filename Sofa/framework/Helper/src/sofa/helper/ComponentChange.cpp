@@ -85,6 +85,12 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "LMConstraintDirectSolver", Pluginized("v20.12", "LMConstraint") },
 
     /***********************/
+    // REMOVED SINCE v23.06
+
+    { "OglGrid", Removed("v22.12", "v23.06")},
+    { "OglLineAxis", Removed("v22.12", "v23.06")},
+
+    /***********************/
     // REMOVED SINCE v22.06
 
     { "Gravity", Removed("v22.06", "v22.06") },
@@ -689,7 +695,7 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     { "ExtrudeSurface", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GenerateCylinder", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GenerateGrid", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
-    { "GenerateRigidMass", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "GenerateRigidMass", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GenerateSphere", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "GroupFilterYoungModulus", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Generate") },
     { "HausdorffDistance", Moved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Analyze") },
@@ -765,9 +771,6 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
     // SofaValidation was deprecated in #3039
     { "CompareState", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
     { "CompareTopology", Moved("v22.06", "SofaValidation", "Sofa.Component.Playback") },
-
-    { "OglGrid", Deprecated("v22.12", "v23.06")},
-    { "OglLineAxis", Deprecated("v22.12", "v23.06")},
 };
 
 } // namespace sofa::helper::lifecycle

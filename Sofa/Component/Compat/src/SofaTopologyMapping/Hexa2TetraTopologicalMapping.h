@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/topology/mapping/Hexa2TetraTopologicalMapping.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/Hexa2TetraTopologicalMapping.h")
-
-namespace sofa::component::topology
-{
-
-    using Hexa2TetraTopologicalMapping = sofa::component::topology::mapping::Hexa2TetraTopologicalMapping;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/Hexa2TetraTopologicalMapping.h")

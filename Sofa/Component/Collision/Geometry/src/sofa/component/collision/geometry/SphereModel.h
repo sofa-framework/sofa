@@ -40,6 +40,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real   Real;
     typedef typename TDataTypes::CPos Coord;
+    static_assert(std::is_same_v<TSphere<DataTypes>::Coord, Coord>, "Data mismatch");
 
     typedef SphereCollisionModel<DataTypes> ParentModel;
 
@@ -60,12 +61,12 @@ public:
 
     Real r() const;
 
-    sofa::type::Vector3 getContactPointByNormal( const sofa::type::Vector3& contactNormal )
+    sofa::type::Vec3 getContactPointByNormal( const sofa::type::Vec3& contactNormal )
     {
         return center() - contactNormal * r();
     }
 
-    sofa::type::Vector3 getContactPointWithSurfacePoint( const sofa::type::Vector3& surfacePoint )
+    sofa::type::Vec3 getContactPointWithSurfacePoint( const sofa::type::Vec3& surfacePoint )
     {
         return surfacePoint;
     }
@@ -73,9 +74,9 @@ public:
 
 // Specializations
 template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-sofa::type::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::type::Vector3& /*contactNormal*/ );
+sofa::type::Vec3 TSphere<defaulttype::Vec3Types >::getContactPointByNormal( const sofa::type::Vec3& /*contactNormal*/ );
 template <> SOFA_COMPONENT_COLLISION_GEOMETRY_API
-sofa::type::Vector3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::type::Vector3& );
+sofa::type::Vec3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoint( const sofa::type::Vec3& );
 
 
 template< class TDataTypes>
@@ -102,13 +103,13 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth=0) override;
 
     void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -117,9 +118,9 @@ public:
 
     const VecReal& getR() const { return this->radius.getValue(); }
 
-    Real getRadius(const Index i) const;
+    Real getRadius(const sofa::Index i) const;
 
-    const Coord & velocity(Index index)const;
+    const Coord & velocity(sofa::Index index)const;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -194,7 +195,7 @@ template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return (*this->model->mstate->read(core::ConstVecCoordId::freePosition())).getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(Index index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
+inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(sofa::Index index) const { return DataTypes::getDPos(mstate->read(core::ConstVecDerivId::velocity())->getValue()[index]);}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->index]); }

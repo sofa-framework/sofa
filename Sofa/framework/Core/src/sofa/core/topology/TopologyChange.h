@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H
-#define SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H
+#pragma once
 
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/list.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 
@@ -1449,13 +1442,7 @@ public:
     sofa::type::vector<Topology::HexahedronID> indexArray;
     sofa::type::vector<Topology::HexahedronID> inv_indexArray;
 };
-
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::topology
 
 #ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_DEFINITION
 namespace std
@@ -1468,5 +1455,3 @@ namespace sofa::core::objectmodel
 }
 
 #endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION
-
-#endif // SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H

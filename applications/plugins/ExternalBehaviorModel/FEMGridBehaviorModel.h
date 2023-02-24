@@ -31,10 +31,9 @@
 
 
 // internal stuff, here it is using SOFA components that could be replaced by any library
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaSimpleFem/HexahedronFEMForceField.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
 #include <sofa/simulation/Node.h>
 
 
@@ -132,8 +131,8 @@ protected:
     /// @name internal sofa stuff that could be replaced by any library
     /// @{
     typename Dofs::SPtr m_internalDofs;
-    component::topology::RegularGridTopology::SPtr m_internalTopology;
-    typename component::forcefield::HexahedronFEMForceField<DataTypes>::SPtr m_internalForceField;
+    sofa::component::topology::container::grid::RegularGridTopology::SPtr m_internalTopology;
+    typename sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<DataTypes>::SPtr m_internalForceField;
     typename component::mass::UniformMass<DataTypes>::SPtr m_internalMass;
     sofa::simulation::Node::SPtr m_internalNode;
 

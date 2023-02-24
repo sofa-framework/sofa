@@ -23,8 +23,9 @@
 #include <sofa/linearalgebra/config.h>
 
 #include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/linearalgebra/BlocFullMatrix.h>
+#include <sofa/linearalgebra/BlockFullMatrix.h>
 #include <sofa/linearalgebra/FullVector.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 
 namespace sofa::linearalgebra
 {
@@ -91,15 +92,11 @@ public:
         }
         type::Mat<BSIZE,BSIZE,Real> operator*(const type::Mat<BSIZE,BSIZE,Real>& m)
         {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
-        }
-        type::Mat<BSIZE,BSIZE,Real> operator*(const Block& m)
-        {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
+            return sofa::type::operator*(*this, m);
         }
         type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBlock& mt)
         {
-            return type::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
+            return operator*(mt.m.transposed());
         }
         TransposedBlock t() const
         {
@@ -117,9 +114,19 @@ public:
 
     typedef Block SubMatrixType;
     typedef sofa::type::Mat<N,N,Real> BlockType;
-    typedef BlocFullMatrix<N, T> InvMatrixType;
-    // return the dimension of submatrices when requesting a given size
-    static Index getSubMatrixDim(Index) { return BSIZE; }
+    typedef BlockFullMatrix<N, T> InvMatrixType;
+
+    // return the dimension of submatrices
+    constexpr static Index getSubMatrixDim()
+    {
+        return BSIZE;
+    }
+
+    SOFA_ATTRIBUTE_DEPRECATED__GETSUBMATRIXSIZE("Use directly getSubMatrixDim(), without any parameter")
+    static Index getSubMatrixDim(Index)
+    {
+        return getSubMatrixDim();
+    }
 
 protected:
     Block* data;
@@ -212,7 +219,15 @@ public:
         return res;
     }
 
-    static const char* Name();
+    static const char* Name()
+    {
+        static std::string name { "BTDMatrix" + std::to_string(N) + matrix_bloc_traits<T, Index>::Name() };
+        return name.c_str();
+    }
 };
+
+#if !defined(SOFA_LINEARALGEBRA_BTDMATRIX_CPP)
+extern template class SOFA_LINEARALGEBRA_API linearalgebra::BTDMatrix<6, SReal>;
+#endif
 
 } // namespace sofa::linearalgebra

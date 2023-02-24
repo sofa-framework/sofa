@@ -71,6 +71,8 @@ template < class T = void* >
 class Data : public BaseData
 {
 public:
+    using value_type = T;
+
     using BaseData::m_counter;
     using BaseData::m_isSet;
     using BaseData::setDirtyOutputs;
@@ -200,12 +202,6 @@ public:
     std::string getValueString() const override;
     std::string getValueTypeString() const override;
 
-    friend std::ostream & operator << (std::ostream &out, const Data& df)
-    {
-        out<<df.getValue();
-        return out;
-    }
-
     void operator =( const T& value )
     {
         this->setValue(value);
@@ -224,6 +220,8 @@ protected:
     /// Value
     ValueType m_value;
 
+    std::istream& readValue(std::istream& in);
+
 private:
 
 
@@ -236,6 +234,14 @@ private:
 };
 
 class EmptyData : public Data<void*> {};
+
+template <class T>
+std::istream& Data<T>::readValue(std::istream& in)
+{
+    in >> *beginEdit();
+    endEdit();
+    return in;
+}
 
 /// Specialization for reading strings
 template<>
@@ -283,8 +289,7 @@ bool Data<T>::read(const std::string& s)
     std::stringstream cerrbuffer;
     std::streambuf* old = std::cerr.rdbuf(cerrbuffer.rdbuf());
 
-    istr >> *beginEdit();
-    endEdit();
+    readValue(istr);
 
     // restore the previous cerr
     std::cerr.rdbuf(old);
@@ -363,12 +368,6 @@ public:
 
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type& d) : Inherit(d.getValue()) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    ReadAccessor(const core::ExecParams*, const data_container_type* d) : Inherit(d->getValue()) {}
 };
 
 /// Read/Write Accessor.
@@ -399,12 +398,6 @@ protected:
 public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type& d) : WriteAccessor(d) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteAccessor(const core::ExecParams*, data_container_type* d) : WriteAccessor(d) {}
     ~WriteAccessor() { data.endEdit(); }
 };
 
@@ -430,12 +423,6 @@ public:
 
     WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
     WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
-
-    SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
-    WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 
 

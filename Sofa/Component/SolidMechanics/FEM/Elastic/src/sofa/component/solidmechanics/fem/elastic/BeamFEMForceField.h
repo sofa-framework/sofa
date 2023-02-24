@@ -37,7 +37,7 @@ using core::behavior::ForceField;
 using core::topology::BaseMeshTopology;
 using type::Vec;
 using type::Mat;
-using type::Vector3;
+using type::Vec3;
 using type::Quat;
 using core::topology::EdgeData;
 
@@ -63,8 +63,7 @@ public:
 
     typedef BaseMeshTopology::Edge Element;
     typedef type::vector<BaseMeshTopology::Edge> VecElement;
-    typedef Vec<3, Real> Vec3;
-
+    
     typedef Vec<12, Real> Displacement;     ///< the displacement vector
     typedef Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
     typedef Mat<12, 12, Real> StiffnessMatrix;
@@ -190,8 +189,7 @@ public:
     void initBeams(std::size_t size);
 
 protected:
-
-    void drawElement(int i, std::vector< Vector3 >* points, const VecCoord& x);
+    void drawElement(int i, std::vector< type::Vec3 >* points, const VecCoord& x);
     Real pseudoDeterminantForCoef ( const Mat<2, 3, Real>&  M );
     void computeStiffness(int i, Index a, Index b);
 

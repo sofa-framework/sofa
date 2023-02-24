@@ -37,15 +37,15 @@ public:
 
     explicit Cube(const core::CollisionElementIterator& i);
 
-    const sofa::type::Vector3& minVect() const;
+    const sofa::type::Vec3& minVect() const;
 
-    const sofa::type::Vector3& maxVect() const;
+    const sofa::type::Vec3& maxVect() const;
 
     const std::pair<Cube,Cube>& subcells() const;
 
     SReal getConeAngle() const;
     
-    const sofa::type::Vector3& getConeAxis() const;
+    const sofa::type::Vec3& getConeAxis() const;
 };
 
 class SOFA_COMPONENT_COLLISION_GEOMETRY_API CubeCollisionModel : public core::CollisionModel
@@ -55,12 +55,12 @@ public:
 
     struct CubeData
     {
-        sofa::type::Vector3 minBBox, maxBBox;
+        sofa::type::Vec3 minBBox, maxBBox;
         std::pair<Cube,Cube> subcells;
         std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
 
         // additional datas for implementing Volino's method for efficient cloth self collision 
-        sofa::type::Vector3 coneAxis;
+        sofa::type::Vec3 coneAxis;
         SReal coneAngle;
     };
 
@@ -79,7 +79,7 @@ public:
 
 protected:
     sofa::type::vector<CubeData> elems;
-    sofa::type::vector<Index> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
+    sofa::type::vector<sofa::Index> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
 
 public:
     typedef core::CollisionElementIterator ChildIterator;
@@ -89,35 +89,35 @@ public:
 protected:
     CubeCollisionModel();
 public:
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
-    void setParentOf(Index childIndex, const sofa::type::Vector3& min, const sofa::type::Vector3& max);
-    void setParentOf(Index childIndex, const sofa::type::Vector3& min, const sofa::type::Vector3& max, const sofa::type::Vector3& normal, const SReal angle=0);
-    void setLeafCube(Index cubeIndex, Index childIndex);
-    void setLeafCube(Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::type::Vector3& min, const sofa::type::Vector3& max);
+    void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max);
+    void setParentOf(sofa::Index childIndex, const sofa::type::Vec3& min, const sofa::type::Vec3& max, const sofa::type::Vec3& normal, const SReal angle=0);
+    void setLeafCube(sofa::Index cubeIndex, sofa::Index childIndex);
+    void setLeafCube(sofa::Index cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::type::Vec3& min, const sofa::type::Vec3& max);
 
-    Size getNumberCells() const { return Size(elems.size());}
+    sofa::Size getNumberCells() const { return sofa::Size(elems.size());}
 
-    void getBoundingTree ( sofa::type::vector< std::pair< sofa::type::Vector3, sofa::type::Vector3> > &bounding )
+    void getBoundingTree ( sofa::type::vector< std::pair< sofa::type::Vec3, sofa::type::Vec3> > &bounding )
     {
         bounding.resize(elems.size());
-        for (Size index=0; index<elems.size(); index++)
+        for (sofa::Size index=0; index<elems.size(); index++)
         {
             bounding[index] = std::make_pair( elems[index].minBBox, elems[index].maxBBox);
         }
     }
 
-    Index getLeafIndex(Index index) const
+    sofa::Index getLeafIndex(sofa::Index index) const
     {
         return elems[index].children.first.getIndex();
     }
 
-    Index getLeafEndIndex(Index index) const
+    sofa::Index getLeafEndIndex(sofa::Index index) const
     {
         return elems[index].children.second.getIndex();
     }
 
-    const CubeData & getCubeData(Index index)const{return elems[index];}
+    const CubeData & getCubeData(sofa::Index index)const{return elems[index];}
 
     // -- CollisionModel interface
 
@@ -132,16 +132,16 @@ public:
       */
     void computeBoundingTree(int maxDepth=0) override;
 
-    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(Index index) const override;
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(sofa::Index index) const override;
 
-    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(Index index) const override;
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(sofa::Index index) const override;
 
-    bool isLeaf(Index index ) const override;
+    bool isLeaf(sofa::Index index ) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    Index addCube(Cube subcellsBegin, Cube subcellsEnd);
-    void updateCube(Index index);
+    sofa::Index addCube(Cube subcellsBegin, Cube subcellsEnd);
+    void updateCube(sofa::Index index);
     void updateCubes();
 };
 
@@ -154,12 +154,12 @@ inline Cube::Cube(const core::CollisionElementIterator& i)
 {
 }
 
-inline const sofa::type::Vector3& Cube::minVect() const
+inline const sofa::type::Vec3& Cube::minVect() const
 {
     return model->elems[index].minBBox;
 }
 
-inline const sofa::type::Vector3& Cube::maxVect() const
+inline const sofa::type::Vec3& Cube::maxVect() const
 {
     return model->elems[index].maxBBox;
 }
@@ -177,7 +177,7 @@ inline SReal Cube::getConeAngle() const
 }
 
 
-inline const sofa::type::Vector3& Cube::getConeAxis() const
+inline const sofa::type::Vec3& Cube::getConeAxis() const
 {
     return model->elems[index].coneAxis;
 }

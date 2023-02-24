@@ -48,7 +48,7 @@ void TriangleOctree::draw (sofa::helper::visual::DrawTool* drawTool)
         drawTool->pushMatrix();
         drawTool->translate((float)center[0], (float)center[1], (float)center[2]);
         drawTool->setPolygonMode(0, false);
-        drawTool->drawCube(size, sofa::type::RGBAColor(0.5, 0.5, 0.5, 1.0));
+        drawTool->drawCube(size, sofa::type::RGBAColor(0.5f, 0.5f, 0.5f, 1.0f));
         drawTool->popMatrix();
 
         drawTool->setPolygonMode(0, true);
@@ -838,8 +838,6 @@ void TriangleOctreeRoot::buildOctree()
 
 int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, type::Vec3 /*v*/)
 {
-    type::Vec3 corner (-cubeSize, -cubeSize, -cubeSize);
-
     SReal bb[6];
     SReal bbsize;
     calcTriangleAABB(tId, bb, bbsize);

@@ -209,7 +209,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
 #endif
 }
 
-double EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
+SReal EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
 {
     if (inputDerivative >= 3 || outputDerivative >= 3)
     {
@@ -218,7 +218,7 @@ double EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int output
 
     const SReal dt = getContext()->getDt();
     const SReal k_a = d_symplectic.getValue() * dt * dt;
-    const double matrix[3][3] =
+    const SReal matrix[3][3] =
         {
                 { 1, dt, k_a}, //x = 1 * x + dt * v + k_a * a
                 { 0,  1,  dt}, //v = 0 * x +  1 * v +  dt * a
@@ -228,14 +228,14 @@ double EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int output
     return matrix[outputDerivative][inputDerivative];
 }
 
-double EulerExplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
+SReal EulerExplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
 {
     if (outputDerivative >= 3)
         return 0;
 
     const SReal dt = getContext()->getDt();
     const SReal k_a = d_symplectic.getValue() * dt * dt;
-    const double vect[3] = {k_a, dt, 1};
+    const SReal vect[3] = {k_a, dt, 1};
     return vect[outputDerivative];
 }
 

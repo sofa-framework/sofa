@@ -47,15 +47,15 @@ public:
     /// Get the first MechanicalState
     /// \todo Rename to getMechState2()
     virtual BaseMechanicalState* getMechModel2() { return l_mechanicalStates[1]; }
-	
+
 protected:
     BaseInteractionConstraint() {}
     ~BaseInteractionConstraint()override {}
-	
+
 private:
-	BaseInteractionConstraint(const BaseInteractionConstraint& n) = delete ;
-	BaseInteractionConstraint& operator=(const BaseInteractionConstraint& n) = delete ;
-	
+    BaseInteractionConstraint(const BaseInteractionConstraint& n) = delete ;
+    BaseInteractionConstraint& operator=(const BaseInteractionConstraint& n) = delete ;
+
 };
 
 } // namespace sofa::core::behavior

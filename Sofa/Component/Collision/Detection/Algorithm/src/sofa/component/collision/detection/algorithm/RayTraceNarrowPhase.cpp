@@ -111,10 +111,10 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
         /*resTriangle and resTriangle2 will store the triangle result from the trace method */
         int resTriangle = -1;
         int resTriangle2 = -1;
-        sofa::type::Vector3 trianglePoints[4];
+        sofa::type::Vec3 trianglePoints[4];
         //bool found = false;
         int nPoints = 0;
-        sofa::type::Vector3 normau[3];
+        sofa::type::Vec3 normau[3];
         /*if it fails to find a correspondence between the triangles it tries the raytracing procedure */
         /*test if this triangle was tested before */
 
@@ -185,7 +185,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
             if (cosAngle2 > 0)
                 continue;
 
-            sofa::type::Vector3 Q =
+            sofa::type::Vec3 Q =
                     (triang2.p1 () * (1.0 - res.u - res.v)) +
                     (triang2.p2 () * res.u) + (triang2.p3 () * res.v);
 
@@ -234,12 +234,12 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
     if (!bDraw.getValue ())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
     constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
     vparams->drawTool()->setPolygonMode(0, true);
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     const DetectionOutputMap& outputsMap = this->getDetectionOutputs();
 
@@ -255,8 +255,8 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
                 TriangleOctreeModel >::iterator it2 = (outputs)->begin ();
              it2 != outputs->end (); ++it2)
         {
-            vertices.push_back(sofa::type::Vector3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
-            vertices.push_back(sofa::type::Vector3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
+            vertices.push_back(sofa::type::Vec3(it2->point[0][0], it2->point[0][1],it2->point[0][2]));
+            vertices.push_back(sofa::type::Vec3(it2->point[1][0], it2->point[1][1],it2->point[1][2]));
 
             msg_error() << it2->point[0] << " " << it2->point[0];
 
@@ -265,7 +265,7 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
         }
     }
     vparams->drawTool()->drawLines(vertices,3,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::collision::detection::algorithm

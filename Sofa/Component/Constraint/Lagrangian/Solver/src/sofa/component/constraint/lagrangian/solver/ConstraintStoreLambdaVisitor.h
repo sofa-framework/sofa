@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,31 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
-#include <sofa/component/constraint/lagrangian/solver/config.h>
+#include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
-
-
-namespace sofa::component::constraint::lagrangian::solver
-{
-
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintStoreLambdaVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda);
-
-    Visitor::Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
-
-    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-
-private:
-    const sofa::core::ConstraintParams* m_cParams;
-    const sofa::linearalgebra::BaseVector* m_lambda;
-};
-
-
-} // namespace sofa::component::constraint::lagrangian::solver
+SOFA_DISABLED_HEADER("v22.12", "v23.06", "sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h")

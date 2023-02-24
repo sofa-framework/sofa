@@ -7,6 +7,8 @@ sofa_find_package(Eigen3 REQUIRED)
 sofa_find_package(Json 3.1.2 REQUIRED)
 # STB (header only)
 sofa_find_package(STB REQUIRED)
+# DiffLib (header only)
+sofa_find_package(DiffLib REQUIRED)
 
 
 set(SRC_ROOT "src/sofa/helper")
@@ -19,6 +21,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/cast.h
     ${SRC_ROOT}/ColorMap.h
     ${SRC_ROOT}/ComponentChange.h
+    ${SRC_ROOT}/DiffLib.h
     ${SRC_ROOT}/Factory.h
     ${SRC_ROOT}/Factory.inl
     ${SRC_ROOT}/TypeInfo.h
@@ -51,6 +54,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/hash.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
+    ${SRC_ROOT}/accessor/ReadAccessor.h
+    ${SRC_ROOT}/accessor/ReadAccessorVector.h
+    ${SRC_ROOT}/accessor/WriteAccessor.h
+    ${SRC_ROOT}/accessor/WriteAccessorVector.h
+    ${SRC_ROOT}/accessor/WriteOnlyAccessor.h
     ${SRC_ROOT}/io/BaseFileAccess.h
     ${SRC_ROOT}/io/FileAccess.h
     ${SRC_ROOT}/io/File.h
@@ -82,7 +90,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/PipeProcess.h
     ${SRC_ROOT}/system/PluginManager.h
     ${SRC_ROOT}/system/SetDirectory.h
-    ${SRC_ROOT}/system/SofaOStream.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
     ${SRC_ROOT}/system/thread/CTime.h
@@ -120,6 +127,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/BackTrace.cpp
     ${SRC_ROOT}/ColorMap.cpp
     ${SRC_ROOT}/ComponentChange.cpp
+    ${SRC_ROOT}/DiffLib.cpp
     ${SRC_ROOT}/Factory.cpp
     ${SRC_ROOT}/GenerateRigid.cpp
     ${SRC_ROOT}/LCPcalc.cpp
@@ -179,6 +187,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/RoutingMessageHandler.cpp
     ${SRC_ROOT}/logging/ExceptionMessageHandler.cpp
     ${SRC_ROOT}/messaging/FileMessage.cpp
+    ${SRC_ROOT}/visual/DrawTool.cpp
     ${SRC_ROOT}/visual/Transformation.cpp
     ${SRC_ROOT}/visual/Trackball.cpp
 )
@@ -232,6 +241,9 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JS
 
 # STB (header only) for Image
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${STB_INCLUDE_DIR}>")
+
+# DiffLib (header only)
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${DIFFLIB_INCLUDE_DIR}>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 

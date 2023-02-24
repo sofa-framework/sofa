@@ -19,6 +19,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
     ${SRC_ROOT}/CpuTask.h
+    ${SRC_ROOT}/CpuTaskStatus.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
@@ -36,6 +37,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MutationListener.h
     ${SRC_ROOT}/Node.h
     ${SRC_ROOT}/Node.inl
+    ${SRC_ROOT}/ParallelForEach.h
     ${SRC_ROOT}/ParallelVisitorScheduler.h
     ${SRC_ROOT}/PauseEvent.h
     ${SRC_ROOT}/PipelineImpl.h
@@ -66,16 +68,25 @@ set(HEADER_FILES
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/BaseSimulationExporter.h
     ${SRC_ROOT}/TaskScheduler.h
+    ${SRC_ROOT}/TaskSchedulerFactory.h
+    ${SRC_ROOT}/TaskSchedulerRegistry.h
     ${SRC_ROOT}/DefaultTaskScheduler.h
     ${SRC_ROOT}/Task.h
     ${SRC_ROOT}/InitTasks.h
     ${SRC_ROOT}/Locks.h
+    ${SRC_ROOT}/MainTaskSchedulerFactory.h
+    ${SRC_ROOT}/MainTaskSchedulerRegistry.h
+    ${SRC_ROOT}/SceneCheck.h
+    ${SRC_ROOT}/SceneCheckRegistry.h
+    ${SRC_ROOT}/SceneCheckMainRegistry.h
     ${SRC_ROOT}/WorkerThread.h
+    ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
     ${SRC_ROOT}/events/SimulationInitStartEvent.h
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
+    ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
@@ -143,6 +154,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
     ${SRC_ROOT}/CpuTask.cpp
+    ${SRC_ROOT}/CpuTaskStatus.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
@@ -153,6 +165,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
+    ${SRC_ROOT}/MainTaskSchedulerRegistry.cpp
+    ${SRC_ROOT}/MainTaskSchedulerFactory.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalVPrintVisitor.cpp
     ${SRC_ROOT}/MechanicalVisitor.cpp
@@ -167,6 +181,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/RequiredPlugin.cpp
     ${SRC_ROOT}/ResetVisitor.cpp
     ${SRC_ROOT}/SceneLoaderFactory.cpp
+    ${SRC_ROOT}/SceneCheck.cpp
+    ${SRC_ROOT}/SceneCheckRegistry.cpp
+    ${SRC_ROOT}/SceneCheckMainRegistry.cpp
     ${SRC_ROOT}/Simulation.cpp
     ${SRC_ROOT}/SolveVisitor.cpp
     ${SRC_ROOT}/StateChangeVisitor.cpp
@@ -188,15 +205,19 @@ set(SOURCE_FILES
     ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/TaskScheduler.cpp
+    ${SRC_ROOT}/TaskSchedulerFactory.cpp
+    ${SRC_ROOT}/TaskSchedulerRegistry.cpp
     ${SRC_ROOT}/DefaultTaskScheduler.cpp
     ${SRC_ROOT}/Task.cpp
     ${SRC_ROOT}/InitTasks.cpp
     ${SRC_ROOT}/WorkerThread.cpp
+    ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.cpp
     ${SRC_ROOT}/events/SimulationInitDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationInitStartEvent.cpp
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
+    ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.cpp
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.cpp
@@ -252,7 +273,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVSizeVisitor.cpp
 )
 
-find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
@@ -278,7 +299,7 @@ sofa_create_package_with_targets(
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
 cmake_dependent_option(SOFA_SIMULATION_CORE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFA_SIMULATION_GRAPH_BUILD_TESTS)
+if(SOFA_SIMULATION_CORE_BUILD_TESTS)
     add_subdirectory(test)
     add_subdirectory(simutest)
 endif()

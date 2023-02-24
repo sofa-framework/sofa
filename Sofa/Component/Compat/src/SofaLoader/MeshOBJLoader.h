@@ -23,11 +23,4 @@
 
 #include <sofa/component/io/mesh/MeshOBJLoader.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshOBJLoader.h")
-
-namespace sofa::component::loader
-{
-    using MeshOBJLoader = sofa::component::io::mesh::MeshOBJLoader;
-    using MeshObjLoader SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2428)", "v22.12", "MeshObjLoader has been renamed to MeshOBJLoader") = MeshOBJLoader;
-
-} // namespace sofa::component::loader
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshOBJLoader.h")

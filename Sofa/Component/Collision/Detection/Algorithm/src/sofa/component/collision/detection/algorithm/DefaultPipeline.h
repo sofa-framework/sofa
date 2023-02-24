@@ -20,41 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/detection/algorithm/config.h>
+#include <sofa/config.h>
 
-#include <sofa/simulation/PipelineImpl.h>
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/component/collision/detection/algorithm/CollisionPipeline.h")
+
+#include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
-
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DefaultPipeline : public sofa::simulation::PipelineImpl
-{
-public:
-    SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
-
-    Data<bool> d_doPrintInfoMessage;
-    Data<bool> d_doDebugDraw;
-    Data<int>  d_depth;
-protected:
-    DefaultPipeline();
-public:
-    void init() override;
-
-    /// get the set of response available with the current collision pipeline
-    std::set< std::string > getResponseList() const override;
-protected:
-    // -- Pipeline interface
-    /// Remove collision response from last step
-    void doCollisionReset() override;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
-    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
-    /// Add collision response in the simulation graph
-    void doCollisionResponse() override;
-
-    virtual void checkDataValues() ;
-
-public:
-    static const int defaultDepthValue;
-};
+    SOFA_ATTRIBUTE_DEPRECATED__RENAME_COLLISIONPIPELINE()
+    using DefaultPipeline = sofa::component::collision::detection::algorithm::CollisionPipeline;
 
 } // namespace sofa::component::collision::detection::algorithm

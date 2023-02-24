@@ -2141,9 +2141,9 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getGravitationalPotentialEner
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class GeometricalTypes>
-type::Vector6 MeshMatrixMass<DataTypes, GeometricalTypes>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+type::Vec6 MeshMatrixMass<DataTypes, GeometricalTypes>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return type::Vector6();
+    return type::Vec6();
 }
 
 
@@ -2270,15 +2270,15 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
     const auto &vertexMass= d_vertexMass.getValue();
 
     const auto& x = l_geometryState->read(core::ConstVecCoordId::position())->getValue();
-    type::Vector3 gravityCenter;
+    type::Vec3 gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  type::Vector3 > points;
+    std::vector<  type::Vec3 > points;
     constexpr sofa::Size dimensions = std::min(static_cast<sofa::Size>(GeometricalTypes::spatial_dimensions), static_cast<sofa::Size>(3));
     for (unsigned int i = 0; i < x.size(); i++)
     {
         const auto& position = GeometricalTypes::getCPos(x[i]);
-        type::Vector3 p;
+        type::Vec3 p;
         for (sofa::Index j = 0; j < dimensions; j++)
         {
             p[j] = position[j];
@@ -2289,13 +2289,13 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
         totalMass += vertexMass[i] * m_massLumpingCoeff;
     }
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
     sofa::type::RGBAColor color = sofa::type::RGBAColor::white();
 
     vparams->drawTool()->drawPoints(points, 2, color);
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     if(d_showCenterOfGravity.getValue())
     {
@@ -2304,14 +2304,14 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::draw(const core::visual::Visua
         for(unsigned int i=0 ; i<Coord::spatial_dimensions ; i++)
         {
 
-            type::Vector3 v{};
+            type::Vec3 v{};
             v[i] = d_showAxisSize.getValue();
             vertices.push_back(gravityCenter - v); 
             vertices.push_back(gravityCenter + v);
         }
     }
     vparams->drawTool()->drawLines(vertices,5,color);
-    vparams->drawTool()->restoreLastState();
+
 }
 
 

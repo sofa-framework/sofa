@@ -25,6 +25,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
+#include <sofa/helper/DiffLib.h>
 
 namespace sofa::core
 {
@@ -137,7 +138,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             /// This alias results in "undefined" behavior.
             if( alias->second )
             {
-                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+". As they have different precisions this may result in undefined behavior. To remove this message, please update your scene to use the generic 'Vec3' templates or one of 'Vec3f/Vec3d' that match your the precision of your Sofa binary.");
+                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+".");
             }
 
             name = alias->first;
@@ -207,11 +208,26 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         using sofa::helper::lifecycle::uncreatableComponents;
         if(it == registry.end())
         {
-            arg->logError("The object is not in the factory.");
+            arg->logError("The object '" + classname + "' is not in the factory.");
             auto uuncreatableComponent = uncreatableComponents.find(classname);
             if( uuncreatableComponent != uncreatableComponents.end() )
             {
                 arg->logError( uuncreatableComponent->second.getMessage() );
+            }
+            else
+            {
+                std::vector<std::string> possibleNames;
+                possibleNames.reserve(registry.size());
+                for(auto& k : registry)
+                {
+                    possibleNames.emplace_back(k.first);
+                }
+
+                arg->logError("But the following exits:");
+                for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames, 5, 0.6))
+                {
+                    arg->logError( "                      : " + name + " ("+ std::to_string((int)(100*score))+"% match)");
+                }
             }
         }
         else
@@ -288,16 +304,16 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
         if (isUserTemplateNameInTemplateList)
         {
-            msg_warning(object.get()) << "Requested template '" << usertemplatename << "' "
+            msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
                                       << "is not compatible with the current context. "
                                       << "Falling back to the first compatible template: '"
                                       << object->getTemplateName() << "'.";
         }
         else
         {
-            msg_warning(object.get()) << "Requested template '" << usertemplatename << "' "
+            msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
                                       << "cannot be found in the list of available templates [" << ss.str() << "]. "
-                                      << "Falling back to default template: '"
+                                      << "Falling back to the first compatible template: '"
                                       << object->getTemplateName() << "'.";
         }
     }

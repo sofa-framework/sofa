@@ -23,14 +23,14 @@
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-using Coord3 = sofa::type::Vector3;
+using Coord3 = sofa::type::Vec3;
 using Deriv3 = sofa::defaulttype::Vec3Types::Deriv;
 using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Rigid3Mass;
 #include <sofa/gui/common/GUIManager.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/init.h>
 #include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -239,7 +239,7 @@ int main(int argc, char** argv)
     //force load SofaComponentAll
     sofa::component::init();
     //force load SofaGui (registering guis)
-    sofa::gui::initSofaGui();
+    sofa::gui::init();
 
     sofa::gui::common::GUIManager::Init(argv[0]);
 

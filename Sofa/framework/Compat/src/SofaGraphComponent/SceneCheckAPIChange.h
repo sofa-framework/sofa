@@ -27,28 +27,8 @@
 #include <SceneChecking/SceneCheckAPIChange.h>
 #define SCENECHECKING_SCENECHECKAPICHANGE
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckAPIChange.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckAPIChange.h")
 
 #else
 #error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckAPIChange.h> instead of this file."
 #endif
-
-#ifdef SCENECHECKING_SCENECHECKAPICHANGE
-
-namespace sofa::simulation::_scenechecking_
-{
-    using SceneCheckAPIChange = sofa::_scenechecking_::SceneCheckAPIChange;
-    using ChangeSetHookFunction = sofa::_scenechecking_::ChangeSetHookFunction;
-
-} // namespace sofa::simulation::_scenechecking_
-
-namespace sofa::simulation::scenechecking
-{
-    using SceneCheckAPIChange = sofa::scenechecking::SceneCheckAPIChange;
-
-} // namespace sofa::simulation::_scenechecking_
-
-#endif // SCENECHECKING_SCENECHECKAPICHANGE
-
-#undef SCENECHECKING_SCENECHECKAPICHANGE
-

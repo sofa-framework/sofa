@@ -166,7 +166,7 @@ public:
 
     /// Initialize the components
     void init(const sofa::core::ExecParams* params);
-    bool isInitialized() {return initialized;}
+    bool isInitialized() const {return initialized;}
     /// Apply modifications to the components
     void reinit(const sofa::core::ExecParams* params);
     /// Draw the objects (using visual visitors)
@@ -479,11 +479,6 @@ public:
     BaseContext* getRootContext() const override
     {
         return getRoot()->getContext();
-    }
-
-    Node* getRoot() const
-    {
-        return static_cast<Node*>(BaseNode::getRoot());
     }
 
     Node* setDebug(bool);

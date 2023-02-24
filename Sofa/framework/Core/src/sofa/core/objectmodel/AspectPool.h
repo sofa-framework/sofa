@@ -29,10 +29,7 @@
 #include <sofa/core/sptr.h>
 
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 enum { SOFA_DATA_MAX_ASPECTS = 1 };
@@ -166,9 +163,6 @@ protected:
 };
 
 } // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core
 
 #endif /* SOFA_CORE_OBJECTMODEL_ASPECTPOOL_H */

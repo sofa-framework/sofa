@@ -272,7 +272,7 @@ bool PointSetGeometryAlgorithms<DataTypes>::mustComputeBBox() const
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     if (d_showPointIndices.getValue())
     {
@@ -286,17 +286,17 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
         float scale = getIndicesScale();
 
-        std::vector<type::Vector3> positions;
+        std::vector<type::Vec3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
-            type::Vector3 center; center = DataTypes::getCPos(coords[i]);
+            type::Vec3 center; center = DataTypes::getCPos(coords[i]);
             positions.push_back(center);
 
         }
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 template <class DataTypes>

@@ -107,13 +107,14 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
         return false;
     }
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
-    Matrix2 A;
-    Vector2 b;
+    const Line::Coord AB = e1.p2()-e1.p1();
+    const Line::Coord CD = e2.p2()-e2.p1();
+    const Line::Coord AC = e2.p1()-e1.p1();
+
+    MatNoInit<2, 2, Line::Coord::value_type> A;
+    VecNoInit<2, Line::Coord::value_type> b;
 
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
@@ -121,10 +122,10 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
     b[0] = AB*AC;
     b[1] = -CD*AC;
 
-    const double det = type::determinant(A);
+    const Line::Coord::value_type det = type::determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
+    Line::Coord::value_type alpha = 0.5;
+    Line::Coord::value_type beta = 0.5;
 
     if (det < -1.0e-30 || det > 1.0e-30)
     {
@@ -135,7 +136,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
             return false;
     }
 
-    const Vector3 PQ = AC + CD * beta - AB * alpha;
+    const Line::Coord PQ = AC+CD*beta-AB*alpha;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -146,7 +147,7 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
             if (!testValidity(e1, PQ))
                 return false;
 
-            const Vector3 QP = -PQ;
+            const Line::Coord QP = -PQ;
             return testValidity(e2, QP);
         }
 
@@ -166,15 +167,15 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         return 0;
     }
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     // E1 => A-->B
     // E2 => C-->D
-    const Vector3 AB = e1.p2()-e1.p1();
-    const Vector3 CD = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p1()-e1.p1();
+    const Line::Coord AB = e1.p2()-e1.p1();
+    const Line::Coord CD = e2.p2()-e2.p1();
+    const Line::Coord AC = e2.p1()-e1.p1();
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
 
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
@@ -209,7 +210,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     }
 
 
-    Vector3 P,Q,PQ;
+    Vec3 P,Q,PQ;
     P = e1.p1() + AB * alpha;
     Q = e2.p1() + CD * beta;
     PQ = Q-P;
@@ -229,7 +230,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
             return 0;
         }
 
-        Vector3 QP = -PQ;
+        Vec3 QP = -PQ;
 
         if (!testValidity(e2, QP))
         {
@@ -246,7 +247,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree, Qfree, ABfree, CDfree;
+        type::Vec3 Pfree, Qfree, ABfree, CDfree;
         ABfree = e1.p2Free()-e1.p1Free();
         CDfree = e2.p2Free()-e2.p1Free();
         Pfree = e1.p1Free() + ABfree * alpha;
@@ -276,13 +277,13 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
     if(!e1.isActive(e2.getCollisionModel()))
         return false;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p3()-e2.p1();
-    const Vector3 AP = e1.p() -e2.p1();
+    const Vec3 AB = e2.p2()-e2.p1();
+    const Vec3 AC = e2.p3()-e2.p1();
+    const Vec3 AP = e1.p() -e2.p1();
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
 
     // We want to find alpha,beta so that:
     // AQ = AB*alpha+AC*beta
@@ -315,7 +316,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
             alpha + beta  > 0.999999)
         return false;
 
-    const Vector3 PQ = AB * alpha + AC * beta - AP;
+    const Vec3 PQ = AB * alpha + AC * beta - AP;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -325,7 +326,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
             if (!testValidity(e1, PQ))
                 return false;
 
-            Vector3 QP = -PQ;
+            Vec3 QP = -PQ;
             return testValidity(e2, QP);
         }
         else
@@ -343,13 +344,16 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     if(!e1.isActive(e2.getCollisionModel()))
         return 0;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p3()-e2.p1();
-    const Vector3 AP = e1.p() -e2.p1();
-    Matrix2 A;
-    Vector2 b;
+    static_assert(std::is_same_v<Triangle::Coord, Point::Coord>, "Data mismatch");
+    using Real = Triangle::Coord::value_type;
+
+    const Triangle::Coord AB = e2.p2()-e2.p1();
+    const Triangle::Coord AC = e2.p3()-e2.p1();
+    const auto AP = e1.p() -e2.p1();
+    MatNoInit<2, 2, Real> A;
+    VecNoInit<2, Real> b;
 
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
@@ -357,31 +361,24 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     b[0] = AP*AB;
     b[1] = AP*AC;
 
+    const Real det = type::determinant(A);
 
+    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
+    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
 
-    const double det = type::determinant(A);
-
-    double alpha = 0.5;
-    double beta = 0.5;
-
-
-    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
         return 0;
 
-
-    Vector3 P,Q; //PQ
-    P = e1.p();
-    Q = e2.p1() + AB * alpha + AC * beta;
-    Vector3 PQ = Q-P;
-    Vector3 QP = -PQ;
+    Point::Coord P = e1.p();
+    Triangle::Coord Q = e2.p1()+AB*alpha+AC*beta;
+    auto PQ = Q-P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
+    auto QP = -PQ;
 
     // filter for LMD
 
@@ -402,7 +399,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree,ABfree,ACfree;
+        type::Vec3 Pfree,Qfree,ABfree,ACfree;
         ABfree = e2.p2Free()-e2.p1Free();
         ACfree = e2.p3Free()-e2.p1Free();
         Pfree = e1.pFree();
@@ -432,13 +429,16 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
     if (!e1.isActive(e2.getCollisionModel()))
         return false;
 
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p3()-e2.p1();
-    const Vector3 AP = e1.p() -e2.p1();
-    Matrix2 A;
-    Vector2 b;
+    static_assert(std::is_same_v<Triangle::Coord, Sphere::Coord>, "Data mismatch");
+    using Real = Triangle::Coord::value_type;
+
+    const Triangle::Coord AB = e2.p2()-e2.p1();
+    const Triangle::Coord AC = e2.p3()-e2.p1();
+    const auto AP = e1.p() -e2.p1();
+    MatNoInit<2, 2, Real> A;
+    VecNoInit<2, Real> b;
 
     // We want to find alpha,beta so that:
     // AQ = AB*alpha+AC*beta
@@ -458,21 +458,17 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AP*AB;
     b[1] = AP*AC;
-    const double det = type::determinant(A);
+    const Real det = type::determinant(A);
 
-    double alpha = 0.5;
-    double beta = 0.5;
-
-
-    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
+    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
         return false;
 
 
-    const Vector3 PQ = AB * alpha + AC * beta - AP;
+    const auto PQ = AB * alpha + AC * beta - AP;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -484,7 +480,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
             if (!testValidity(e1, PQ))
                 return false;
 
-            Vector3 QP = -PQ;
+            Vec3 QP = -PQ;
             return testValidity(e2, QP);
         }
         else
@@ -503,13 +499,16 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     if (!e1.isActive(e2.getCollisionModel()))
         return false;
 
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AC = e2.p3()-e2.p1();
-    const Vector3 AP = e1.p() -e2.p1();
-    Matrix2 A;
-    Vector2 b;
+    static_assert(std::is_same_v<Triangle::Coord, Sphere::Coord>, "Data mismatch");
+    using Real = Triangle::Coord::value_type;
+
+    const Triangle::Coord AB = e2.p2()-e2.p1();
+    const Triangle::Coord AC = e2.p3()-e2.p1();
+    const auto AP = e1.p() -e2.p1();
+    MatNoInit<2, 2, Real> A;
+    VecNoInit<2, Real> b;
 
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
@@ -517,29 +516,23 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
     b[0] = AP*AB;
     b[1] = AP*AC;
 
+    const Real det = type::determinant(A);
 
-
-    const double det = type::determinant(A);
-
-    double alpha = 0.5;
-    double beta = 0.5;
-
-    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    const Real alpha=(b[0]*A[1][1]-b[1]*A[0][1])/det;
+    const Real beta=(b[1]*A[0][0]-b[0]*A[1][0])/det;
     if (alpha < 0.000001 ||
             beta  < 0.000001 ||
             alpha + beta  > 0.999999)
         return 0;
 
-    Vector3 P,Q; //PQ
-    P = e1.p();
-    Q = e2.p1() + AB * alpha + AC * beta;
-    Vector3 PQ = Q-P;
-    Vector3 QP = -PQ;
+    const Sphere::Coord& P = e1.p();
+    Triangle::Coord Q = e2.p1()+AB*alpha+AC*beta;
+    auto PQ = Q-P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
+    auto QP = -PQ;
 
     // filter for LMD
 
@@ -560,7 +553,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree,ABfree,ACfree;
+        type::Vec3 Pfree,Qfree,ABfree,ACfree;
         ABfree = e2.p2Free()-e2.p1Free();
         ACfree = e2.p3Free()-e2.p1Free();
         Pfree = e1.pFree();
@@ -586,31 +579,27 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 
 bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 {
+    static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
+    using Real = Triangle::Coord::value_type;
 
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return false;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
-    double A;
-    double b;
-    A = AB*AB;
-    b = AP*AB;
+    const Real A = AB*AB;
+    const Real b = AP*AB;
 
-    double alpha = 0.5;
+    const Real alpha = b / A;
 
-
-    alpha = b/A;
     if (alpha < 0.000001 || alpha > 0.999999)
         return false;
 
-
-    Vector3 P,Q,PQ;
-    P = e1.p();
-    Q = e2.p1() + AB * alpha;
-    PQ = Q-P;
+    const Point::Coord& P = e1.p();
+    Line::Coord Q = e2.p1()+AB*alpha;
+    const auto PQ = Q - P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -621,7 +610,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
             if (!testValidity(e1, PQ))
                 return false;
 
-            Vector3 QP = -PQ;
+            Vec3 QP = -PQ;
             return testValidity(e2, QP);
         }
         else
@@ -637,38 +626,36 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 
 int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
 {
+    static_assert(std::is_same_v<Line::Coord, Point::Coord>, "Data mismatch");
+    using Real = Triangle::Coord::value_type;
+
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return 0;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
     if (AB.norm()<0.000000000001*AP.norm())
     {
         return 0;
     }
 
+    const Real A=AB*AB;
+    const Real b=AP*AB;
 
-    double A;
-    double b;
-    A = AB*AB;
-    b = AP*AB;
-
-    double alpha = 0.5;
-
-    alpha = b/A;
+    const Real alpha = b / A;
     if (alpha < 0.000001 || alpha > 0.999999)
         return 0;
 
-    Vector3 P,Q;
-    P = e1.p();
-    Q = e2.p1() + AB * alpha;
-    Vector3 PQ = Q - P;
-    Vector3 QP = -PQ;
+    const Point::Coord& P = e1.p();
+    Line::Coord Q = e2.p1() + AB * alpha;
+    const auto PQ = Q - P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
+
+    const auto QP = -PQ;
 
     // filter for LMD
     if (!useLMDFilters.getValue())
@@ -688,9 +675,9 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 ABfree = e2.p2Free() - e2.p1Free();
-        Vector3 Pfree = e1.pFree();
-        Vector3 Qfree = e2.p1Free() + ABfree * alpha;
+        type::Vec3 ABfree = e2.p2Free() - e2.p1Free();
+        type::Vec3 Pfree = e1.pFree();
+        type::Vec3 Qfree = e2.p1Free() + ABfree * alpha;
 
         detection->freePoint[0] = Qfree;
         detection->freePoint[1] = Pfree;
@@ -714,28 +701,23 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
 bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
 {
+    static_assert(std::is_same_v<Line::Coord, Sphere::Coord>, "Data mismatch");
+    using Real = Triangle::Coord::value_type;
 
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
-    double A;
-    double b;
-    A = AB*AB;
-    b = AP*AB;
+    const Real A = AB * AB;
+    const Real b = AP * AB;
 
-    double alpha = 0.5;
-
-
-    alpha = b/A;
+    const Real alpha = b / A;
     if (alpha < 0.000001 || alpha > 0.999999)
         return false;
 
-
-    Vector3 P,Q,PQ;
-    P = e1.p();
-    Q = e2.p1() + AB * alpha;
-    PQ = Q-P;
+    const Sphere::Coord& P = e1.p();
+    Line::Coord Q = e2.p1() + AB * alpha;
+    const auto PQ = Q - P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -746,7 +728,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
             if (!testValidity(e1, PQ))
                 return false;
 
-            Vector3 QP = -PQ;
+            auto QP = -PQ;
             return testValidity(e2, QP);
         }
         else
@@ -762,34 +744,29 @@ bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
 
 int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* contacts)
 {
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-    const Vector3 AB = e2.p2()-e2.p1();
-    const Vector3 AP = e1.p()-e2.p1();
+    static_assert(std::is_same_v<Line::Coord, Sphere::Coord>, "Data mismatch");
+    using Real = Triangle::Coord::value_type;
+
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const Line::Coord AB = e2.p2()-e2.p1();
+    const Line::Coord AP = e1.p()-e2.p1();
 
     if (AB.norm()<0.000000000001*AP.norm())
     {
         return 0;
     }
 
+    const Real A = AB * AB;
+    const Real b = AP * AB;
 
-    double A;
-    double b;
-    A = AB*AB;
-    b = AP*AB;
-
-    double alpha = 0.5;
-
-
-    alpha = b/A;
+    const Real alpha = b / A;
     if (alpha < 0.000001 || alpha > 0.999999)
         return 0;
 
-
-    Vector3 P,Q;
-    P = e1.p();
-    Q = e2.p1() + AB * alpha;
-    Vector3 PQ = Q - P;
-    Vector3 QP = -PQ;
+    const Sphere::Coord& P = e1.p();
+    Line::Coord Q = e2.p1()+AB*alpha;
+    const auto PQ = Q - P;
+    const auto QP = -PQ;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -813,9 +790,9 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 ABfree = e2.p2Free() - e2.p1Free();
-        Vector3 Pfree = e1.pFree();
-        Vector3 Qfree = e2.p1Free() + ABfree * alpha;
+        type::Vec3 ABfree = e2.p2Free() - e2.p1Free();
+        type::Vec3 Pfree = e1.pFree();
+        type::Vec3 Qfree = e2.p1Free() + ABfree * alpha;
 
         detection->freePoint[0] = Qfree;
         detection->freePoint[1] = Pfree;
@@ -841,9 +818,9 @@ bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return false;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    Vector3 PQ = e2.p()-e1.p();
+    const Point::Coord PQ = e2.p()-e1.p();
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -854,7 +831,7 @@ bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
             if (!testValidity(e1, PQ))
                 return false;
 
-            Vector3 QP = -PQ;
+            Point::Coord QP = -PQ;
             return testValidity(e2, QP);
         }
         else
@@ -873,13 +850,11 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
     if(!e1.isActive(e2.getCollisionModel()) || !e2.isActive(e1.getCollisionModel()))
         return 0;
 
-    const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    Vector3 P,Q,PQ;
-    P = e1.p();
-    Q = e2.p();
-    PQ = Q-P;
-
+    const Point::Coord& P = e1.p();
+    const Point::Coord& Q = e2.p();
+    const Point::Coord PQ = Q - P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -891,7 +866,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
         if (!testValidity(e1, PQ))
             return 0;
 
-        Vector3 QP = -PQ;
+        Point::Coord QP = -PQ;
 
         if (!testValidity(e2, QP))
             return 0;
@@ -905,7 +880,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree;
+        type::Vec3 Pfree,Qfree;
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 
@@ -929,9 +904,10 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
 
 bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
 {
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    Vector3 PQ = e2.p()-e1.p();
+    static_assert(std::is_same_v<Sphere::Coord, Point::Coord>, "Data mismatch");
+    const auto PQ = e2.p()-e1.p();
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -942,7 +918,7 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
             if (!testValidity(e1, PQ))
                 return false;
 
-            Vector3 QP = -PQ;
+            auto QP = -PQ;
             return testValidity(e2, QP);
         }
         else
@@ -958,13 +934,12 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
 
 int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
 {
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+    static_assert(std::is_same_v<Sphere::Coord, Point::Coord>, "Data mismatch");
 
-    Vector3 P,Q,PQ;
-    P = e1.p();
-    Q = e2.p();
-    PQ = Q-P;
-
+    const Sphere::Coord& P = e1.p();
+    const Point::Coord& Q = e2.p();
+    const auto PQ = Q - P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -976,7 +951,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
         if (!testValidity(e1, PQ))
             return 0;
 
-        Vector3 QP = -PQ;
+        auto QP = -PQ;
 
         if (!testValidity(e2, QP))
             return 0;
@@ -990,7 +965,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree;
+        type::Vec3 Pfree,Qfree;
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 
@@ -1014,10 +989,9 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
 
 bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2)
 {
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
 
-    Vector3 PQ = e2.p()-e1.p();
-
+    const Sphere::Coord PQ = e2.p()-e1.p();
     if (PQ.norm2() < alarmDist*alarmDist)
     {
         // filter for LMD
@@ -1027,7 +1001,7 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2)
             if (!testValidity(e1, PQ))
                 return false;
 
-            Vector3 QP = -PQ;
+            Sphere::Coord QP = -PQ;
             return testValidity(e2, QP);
         }
         else
@@ -1043,13 +1017,11 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Sphere& e2)
 
 int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* contacts)
 {
-    const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
 
-    Vector3 P,Q,PQ;
-    P = e1.p();
-    Q = e2.p();
-    PQ = Q-P;
-
+    const Sphere::Coord& P = e1.p();
+    const Sphere::Coord& Q = e2.p();
+    Sphere::Coord PQ = Q - P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -1061,8 +1033,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
         if (!testValidity(e1, PQ))
             return 0;
 
-        Vector3 QP = -PQ;
-
+        Sphere::Coord QP = -PQ;
         if (!testValidity(e2, QP))
             return 0;
     }
@@ -1075,7 +1046,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 #ifdef SOFA_DETECTIONOUTPUT_FREEMOTION
     if (e1.hasFreePosition() && e2.hasFreePosition())
     {
-        Vector3 Pfree,Qfree;
+        type::Vec3 Pfree,Qfree;
         Pfree = e1.pFree();
         Qfree = e2.pFree();
 
@@ -1100,19 +1071,19 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 
 bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
 {
-    Vector3 P,Q,PQ;
+    type::Vec3 P,Q;
     static DistanceSegTri proximitySolver;
 
-    const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
 
-    Vector3 A = t1.origin();
-    Vector3 B = A + t1.direction() * t1.l();
+    Vec3 A = t1.origin();
+    Vec3 B = A + t1.direction() * t1.l();
 
     proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
-    PQ = Q-P;
+    auto PQ=Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -1124,20 +1095,20 @@ bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
 
 int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
 {
-    const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
+    const SReal alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
 
-    Vector3 A = t1.origin();
-    Vector3 B = A + t1.direction() * t1.l();
+    Vec3 A = t1.origin();
+    Vec3 B = A + t1.direction() * t1.l();
 
-    Vector3 P,Q,PQ;
+    Vec3 P,Q;
     static DistanceSegTri proximitySolver;
 
     proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A,B,P,Q);
-    PQ = Q-P;
+    Vec3 PQ=Q-P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
@@ -1164,14 +1135,14 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
 bool LocalMinDistance::testIntersection(Ray &ray1,Sphere &sph2)
 {
     // Center of the sphere
-    const Vector3 sph2Pos(sph2.center());
+    const Vec3 sph2Pos(sph2.center());
     // Radius of the sphere
     const double radius1 = sph2.r();
 
-    const Vector3 ray1Origin(ray1.origin());
-    const Vector3 ray1Direction(ray1.direction());
+    const Vec3 ray1Origin(ray1.origin());
+    const Vec3 ray1Direction(ray1.direction());
     const double length2 = ray1.l();
-    const Vector3 tmp = sph2Pos - ray1Origin;
+    const Vec3 tmp = sph2Pos - ray1Origin;
     const double rayPos = tmp*ray1Direction;
     const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
     const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
@@ -1181,14 +1152,14 @@ bool LocalMinDistance::testIntersection(Ray &ray1,Sphere &sph2)
 int LocalMinDistance::computeIntersection(Ray &ray1, Sphere &sph2, OutputVector* contacts)
 {
     // Center of the sphere
-    const Vector3 sph2Pos(sph2.center());
+    const Vec3 sph2Pos(sph2.center());
     // Radius of the sphere
     const double radius1 = sph2.r();
 
-    const Vector3 ray1Origin(ray1.origin());
-    const Vector3 ray1Direction(ray1.direction());
+    const Vec3 ray1Origin(ray1.origin());
+    const Vec3 ray1Direction(ray1.direction());
     const double length2 = ray1.l();
-    const Vector3 tmp = sph2Pos - ray1Origin;
+    const Vec3 tmp = sph2Pos - ray1Origin;
     const double rayPos = tmp*ray1Direction;
     const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
     const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
@@ -1212,12 +1183,12 @@ int LocalMinDistance::computeIntersection(Ray &ray1, Sphere &sph2, OutputVector*
 }
 
 
-bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) const
+bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
 {
     if (!filterIntersection.getValue())
         return true;
 
-    Vector3 pt = p.p();
+    Vec3 pt = p.p();
 
     sofa::simulation::Node* node = dynamic_cast<sofa::simulation::Node*>(p.getCollisionModel()->getContext());
     if ( !(node->get< LineCollisionModel<sofa::defaulttype::Vec3Types> >()) )
@@ -1228,13 +1199,13 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) const
 
     const auto& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
     const auto& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
-    Vector3 nMean;
+    Vec3 nMean;
 
     for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
         unsigned int t = trianglesAroundVertex[i];
         const auto& ptr = topology->getTriangle(t);
-        Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
+        Vec3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
     }
@@ -1245,7 +1216,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) const
         {
             unsigned int e = edgesAroundVertex[i];
             const auto& ped = topology->getEdge(e);
-            Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+            Vec3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
             nMean += l;
         }
@@ -1269,7 +1240,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) const
     {
         unsigned int e = edgesAroundVertex[i];
         const auto& ped = topology->getEdge(e);
-        Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
+        Vec3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
         double computedAngleCone = dot(nMean , l) * coneFactor.getValue();
         if (computedAngleCone<0)
@@ -1284,7 +1255,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) const
     return true;
 }
 
-bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
+bool LocalMinDistance::testValidity(Line &l, const Vec3 &PQ) const
 {
     if (!filterIntersection.getValue())
         return true;
@@ -1292,12 +1263,12 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
     LineCollisionModel<sofa::defaulttype::Vec3Types> *lM = l.getCollisionModel();
     bool bothSide_computation = lM->bothSide.getValue();
 
-    Vector3 n1;
+    Vec3 n1;
 
-    const Vector3 &pt1 = l.p1();
-    const Vector3 &pt2 = l.p2();
+    const Line::Coord &pt1 = l.p1();
+    const Line::Coord &pt2 = l.p2();
 
-    Vector3 AB = pt2 - pt1;
+    Line::Coord AB = pt2 - pt1;
     AB.normalize();
 
     BaseMeshTopology* topology = l.getCollisionModel()->getCollisionTopology();
@@ -1319,16 +1290,16 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
         const BaseMeshTopology::Triangle& triangleRight = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[1]): topology->getTriangle(trianglesAroundEdge[0]);
         n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]);
         n1.normalize();
-        Vector3 nMean=n1;
-        Vector3 t1=cross(n1, AB);
+        Vec3 nMean=n1;
+        Vec3 t1=cross(n1, AB);
         t1.normalize(); // necessary ?
 
         // compute the normal of the triangle situated on the left
         const BaseMeshTopology::Triangle& triangleLeft = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[0]): topology->getTriangle(trianglesAroundEdge[1]);
-        Vector3 n2=cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
+        Vec3 n2=cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
         n2.normalize();
         nMean += n2;
-        Vector3 t2=cross(AB, n2);
+        Vec3 t2=cross(AB, n2);
         t2.normalize(); // necessary ?
 
         nMean.normalize();
@@ -1384,7 +1355,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
     return true;
 }
 
-bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ) const
+bool LocalMinDistance::testValidity(Triangle &t, const Vec3 &PQ) const
 {
     TriangleCollisionModel<sofa::defaulttype::Vec3Types> *tM = t.getCollisionModel();
     bool bothSide_computation = tM->d_bothSide.getValue();
@@ -1392,11 +1363,11 @@ bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ) const
     if (!filterIntersection.getValue()  || bothSide_computation)
         return true;
 
-    const Vector3& pt1 = t.p1();
-    const Vector3& pt2 = t.p2();
-    const Vector3& pt3 = t.p3();
+    const Vec3& pt1 = t.p1();
+    const Vec3& pt2 = t.p2();
+    const Vec3& pt3 = t.p3();
 
-    const Vector3 n = cross(pt2-pt1,pt3-pt1);
+    const Vec3 n = cross(pt2-pt1,pt3-pt1);
 
     return n * PQ >= 0.0;
 }

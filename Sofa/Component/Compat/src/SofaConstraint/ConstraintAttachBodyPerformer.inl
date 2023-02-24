@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/component/userinteraction/performer/ConstraintAttachBodyPerformer.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/performer/ConstraintAttachBodyPerformer.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/performer/ConstraintAttachBodyPerformer.inl")

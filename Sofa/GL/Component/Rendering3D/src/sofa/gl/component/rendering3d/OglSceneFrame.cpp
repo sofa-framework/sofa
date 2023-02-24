@@ -84,17 +84,16 @@ void OglSceneFrame::drawCylinders(const core::visual::VisualParams* vparams)
 
 void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
 {
-    using Vector3 = sofa::core::visual::DrawTool::Vector3;
-    using Real = Vector3::value_type;
-    static constexpr Real s = 0.25;
-    static constexpr Vector3 p0 {-s, -s, -s};
-    static constexpr Vector3 p1 {s, -s, -s};
-    static constexpr Vector3 p2 {s, s, -s};
-    static constexpr Vector3 p3 {-s, s, -s};
-    static constexpr Vector3 p4 {-s, -s, s};
-    static constexpr Vector3 p5 {s, -s, s};
-    static constexpr Vector3 p6 {s, s, s};
-    static constexpr Vector3 p7 {-s, s, s};
+    using sofa::type::Vec3;
+    static constexpr SReal s = 0.25;
+    static constexpr Vec3 p0 {-s, -s, -s};
+    static constexpr Vec3 p1 {s, -s, -s};
+    static constexpr Vec3 p2 {s, s, -s};
+    static constexpr Vec3 p3 {-s, s, -s};
+    static constexpr Vec3 p4 {-s, -s, s};
+    static constexpr Vec3 p5 {s, -s, s};
+    static constexpr Vec3 p6 {s, s, s};
+    static constexpr Vec3 p7 {-s, s, s};
 
     vparams->drawTool()->drawHexahedron(p0, p1, p2, p3, p4, p5, p6, p7,
         sofa::core::visual::DrawTool::RGBAColor::darkgray());
@@ -102,12 +101,12 @@ void OglSceneFrame::drawCubeCones(const core::visual::VisualParams* vparams)
     for (unsigned int i = 0; i < 3; ++i)
     {
         vparams->drawTool()->drawCone(
-             s * Vector3{i == 0, i == 1, i == 2}, static_cast<Real>(3) * s * Vector3{i == 0, i == 1, i == 2},
+             s * Vec3{i == 0, i == 1, i == 2}, 3_sreal * s * Vec3{i == 0, i == 1, i == 2},
             0, s,
             sofa::core::visual::DrawTool::RGBAColor(i == 0, i == 1, i == 2, 1.)
         );
         vparams->drawTool()->drawCone(
-             - s * Vector3{i == 0, i == 1, i == 2}, - static_cast<Real>(3) * s * Vector3{i == 0, i == 1, i == 2},
+             - s * Vec3{i == 0, i == 1, i == 2}, - 3_sreal * s * Vec3{i == 0, i == 1, i == 2},
             0, s,
             sofa::core::visual::DrawTool::RGBAColor::gray()
         );
@@ -118,7 +117,7 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 {
     if (!d_drawFrame.getValue()) return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     const Viewport& viewport = vparams->viewport();
 
@@ -190,7 +189,7 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
     glMatrixMode(GL_MODELVIEW);
     vparams->drawTool()->popMatrix();
 
-    vparams->drawTool()->restoreLastState();
+
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 
 }

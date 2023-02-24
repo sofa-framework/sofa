@@ -660,7 +660,7 @@ protected:
 
         if (this->showEdges.getValue())
         {
-            std::vector<type::Vector3> points;
+            std::vector<type::Vec3> points;
             points.resize(2*e.size());
             for (unsigned int i=0; i<e.size(); ++i)
             {
@@ -671,7 +671,7 @@ protected:
         }
         if (this->showGraph.getValue())
         {
-            std::vector<type::Vector3> points;
+            std::vector<type::Vec3> points;
             points.resize(2*g.size());
             for (unsigned int i=0; i<g.size(); ++i)
                 for (unsigned int j=0; j<2; ++j)
@@ -686,18 +686,18 @@ protected:
         if(this->showFaces.getValue())
         {
             //Tableau des points du cube
-            std::vector<type::Vector3> points;
+            std::vector<type::Vec3> points;
             points.resize(36);
 
             //Tableau des normales de ces faces
-            std::vector<type::Vector3> normales;
+            std::vector<type::Vec3> normales;
 
             //Tableau des couleurs des faces
             std::vector<type::RGBAColor> couleurs;
 
             int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
             int ns1, ns2, ns3;
-            type::Vector3 s1, s2, s3;
+            type::Vec3 s1, s2, s3;
             for(size_t iH=0;iH<this->hexahedra.getValue().size(); iH++)
             {
                 sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
@@ -722,9 +722,9 @@ protected:
                     points.push_back(s3);
 
                     //Calcul de la normale de la surface
-                    type::Vector3 ab = s2 - s1;
-                    type::Vector3 ac = s3 - s1;
-                    type::Vector3 normal = ab.cross(ac);
+                    type::Vec3 ab = s2 - s1;
+                    type::Vec3 ac = s3 - s1;
+                    type::Vec3 normal = ab.cross(ac);
                     normal.normalize();
                     normales.push_back(normal);
 
@@ -780,7 +780,7 @@ protected:
                 c=it->first;
             C[dir]=c;
         }
-        Coord p;
+
         // add corners
         unsigned int corners[8]= {addPoint(Coord(BB[0][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[1][2]),pos,indices)};
         // add cell center

@@ -70,8 +70,8 @@ protected:
 
     ~BaseMechanicalState() override;
 private:
-	BaseMechanicalState(const BaseMechanicalState& n);
-	BaseMechanicalState& operator=(const BaseMechanicalState& n);
+    BaseMechanicalState(const BaseMechanicalState& n) = delete;
+    BaseMechanicalState& operator=(const BaseMechanicalState& n) = delete;
 
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
@@ -238,7 +238,7 @@ public:
 
     /// Compute the error given a state vector and a line of the Jacobian (line in vector C)
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, ConstVecId /*id*/)
-    {  
+    {
         msg_error() << "getConstraintJacobianTimesVecDeriv not implemented yet.";
         return SReal(0.0);
     }
@@ -282,7 +282,7 @@ public:
     /// Scale the current state
     virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)=0;
 
-    virtual type::Vector3 getScale() const { return type::Vector3(1.0,1.0,1.0); }
+    virtual type::Vec3 getScale() const { return type::Vec3(1.0_sreal,1.0_sreal,1.0_sreal); }
 
     virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {
@@ -338,7 +338,7 @@ public:
     ///
     /// *Exact* element count must be provided for consistency checks.
     virtual void addFromBuffer(VecId dst, const SReal* src, unsigned int n) = 0;
-    
+
     /// \brief Add data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     virtual void addToBaseVector(linearalgebra::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;

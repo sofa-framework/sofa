@@ -275,7 +275,7 @@ void PickHandler::setCompatibleInteractor()
 }
 
 
-void PickHandler::updateRay(const sofa::type::Vector3 &position,const sofa::type::Vector3 &orientation)
+void PickHandler::updateRay(const sofa::type::Vec3 &position,const sofa::type::Vec3 &orientation)
 {
     if (!interactorInUse || !mouseCollision) return;
 
@@ -381,8 +381,8 @@ BodyPicked PickHandler::findCollisionUsingPipeline()
         return result;
     }
 
-    const type::Vector3& origin          = mouseCollision->getRay(0).origin();
-    const type::Vector3& direction       = mouseCollision->getRay(0).direction();
+    const type::Vec3& origin          = mouseCollision->getRay(0).origin();
+    const type::Vec3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength              = mouseCollision->getRay(0).l();
     
     const auto &contacts = mouseCollision->getContacts();
@@ -434,8 +434,8 @@ BodyPicked PickHandler::findCollisionUsingPipeline()
 
 BodyPicked PickHandler::findCollisionUsingBruteForce()
 {
-    const type::Vector3& origin          = mouseCollision->getRay(0).origin();
-    const type::Vector3& direction       = mouseCollision->getRay(0).direction();
+    const type::Vec3& origin          = mouseCollision->getRay(0).origin();
+    const type::Vec3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength                     = mouseCollision->getRay(0).l();
 
     return findCollisionUsingBruteForce(origin, direction, maxLength, mouseNode->getRoot());
@@ -443,15 +443,15 @@ BodyPicked PickHandler::findCollisionUsingBruteForce()
 
 BodyPicked PickHandler::findCollisionUsingColourCoding()
 {
-    const type::Vector3& origin          = mouseCollision->getRay(0).origin();
-    const type::Vector3& direction       = mouseCollision->getRay(0).direction();
+    const type::Vec3& origin          = mouseCollision->getRay(0).origin();
+    const type::Vec3& direction       = mouseCollision->getRay(0).direction();
 
     return findCollisionUsingColourCoding(origin, direction);
 
 }
 
-BodyPicked PickHandler::findCollisionUsingBruteForce(const type::Vector3& origin,
-        const type::Vector3& direction,
+BodyPicked PickHandler::findCollisionUsingBruteForce(const type::Vec3& origin,
+        const type::Vec3& direction,
         double maxLength, core::objectmodel::BaseNode* rootNode)
 {
     BodyPicked result;
@@ -470,8 +470,8 @@ BodyPicked PickHandler::findCollisionUsingBruteForce(const type::Vector3& origin
 }
 
 //WARNING: do not use this method with Ogre
-BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
-        const type::Vector3& direction)
+BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vec3& origin,
+        const type::Vec3& direction)
 {
     SOFA_UNUSED(origin);
     SOFA_UNUSED(direction);

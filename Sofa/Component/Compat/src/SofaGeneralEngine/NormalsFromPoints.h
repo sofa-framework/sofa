@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/generate/NormalsFromPoints.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/NormalsFromPoints.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using NormalsFromPoints = sofa::component::engine::generate::NormalsFromPoints<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/NormalsFromPoints.h")

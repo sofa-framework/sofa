@@ -23,7 +23,7 @@
 #include <sofa/gui/qt/config.h>
 
 #include <sofa/gl/gl.h>
-#include <qgl.h>
+
 #include <qtimer.h>
 #include <cmath>
 #include <cstdlib>
@@ -53,7 +53,7 @@ namespace sofa::gui::qt::viewer::qgl
 
 class SOFA_GUI_QT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
-    typedef type::Vector3::value_type Real;
+    typedef type::Vec3::value_type Real;
     Q_OBJECT
 private:
 
@@ -187,8 +187,8 @@ public slots:
     void setSizeW(int) override;
     void setSizeH(int) override;
 
-    virtual void getView(type::Vec3d& pos, type::Quat<SReal>& ori) const override;
-    virtual void setView(const type::Vec3d& pos, const type::Quat<SReal> &ori) override;
+    virtual void getView(type::Vec3& pos, type::Quat<SReal>& ori) const override;
+    virtual void setView(const type::Vec3& pos, const type::Quat<SReal> &ori) override;
     virtual void captureEvent() override { SofaViewer::captureEvent(); }
     void fitObjectBBox(sofa::core::objectmodel::BaseObject* object) override
     {

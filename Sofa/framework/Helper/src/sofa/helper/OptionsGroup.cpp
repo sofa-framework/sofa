@@ -69,7 +69,7 @@ OptionsGroup & OptionsGroup::operator=(const OptionsGroup & m_radiotrick)
     return *this;
 }
 ///////////////////////////////////////
-void OptionsGroup::setNbItems( unsigned int nbofRadioButton )
+void OptionsGroup::setNbItems( size_type nbofRadioButton )
 {
     textItems.resize( nbofRadioButton );
     selectedItem = 0;

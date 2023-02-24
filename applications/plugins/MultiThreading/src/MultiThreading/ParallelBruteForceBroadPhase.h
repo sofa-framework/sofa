@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -23,78 +23,9 @@
 
 #include <MultiThreading/config.h>
 
-#include <sofa/component/collision/detection/algorithm/BruteForceBroadPhase.h>
-#include <sofa/simulation/CpuTask.h>
-
-namespace sofa::core::collision
-{
-    class Intersection;
-    class ElementIntersector;
-}
-
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h")
+#include <MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h>
 namespace sofa::component::collision
 {
-
-class BruteForcePairTest;
-
-/**
- * @brief A parallel implementation of the component BruteForceBroadPhase
- *
- * The work is divided into n tasks executed in parallel. n is the number of threads available in
- * the global thread pool.
- */
-class SOFA_MULTITHREADING_PLUGIN_API ParallelBruteForceBroadPhase : public detection::algorithm::BruteForceBroadPhase
-{
-public:
-    SOFA_CLASS(ParallelBruteForceBroadPhase, detection::algorithm::BruteForceBroadPhase);
-
-    void init() override;
-
-    void addCollisionModel(core::CollisionModel *cm) override;
-    void addCollisionModels(const sofa::type::vector<core::CollisionModel *>& v) override;
-
-protected:
-    ParallelBruteForceBroadPhase();
-    ~ParallelBruteForceBroadPhase() override = default;
-
-    /// List of tasks executed in parallel.
-    /// They are created at each time step, but the memory is not freed
-    std::vector<BruteForcePairTest> m_tasks;
-
-public:
-    using FirstLastCollisionModelPair = std::pair<FirstLastCollisionModel, FirstLastCollisionModel>;
-
-protected:
-    std::vector<FirstLastCollisionModelPair> m_pairs;
-};
-
-/**
- * @brief Task meant to be executed in parallel, and performing pair-wise collision tests
- */
-class SOFA_MULTITHREADING_PLUGIN_API BruteForcePairTest : public sofa::simulation::CpuTask
-{
-    using PairIterator = std::vector<ParallelBruteForceBroadPhase::FirstLastCollisionModelPair>::const_iterator;
-
-public:
-    BruteForcePairTest(sofa::simulation::CpuTask::Status* status,
-                       PairIterator first, PairIterator last,
-                       core::collision::Intersection* intersectionMethod);
-    ~BruteForcePairTest() override = default;
-    sofa::simulation::Task::MemoryAlloc run() final;
-
-    /// After this task is executed, this list contains pairs of collision models which are intersecting
-    std::vector<std::pair<core::CollisionModel*, core::CollisionModel*> > m_intersectingPairs;
-
-private:
-
-    /// Begining of a range of pairs of collision models to tests in this task
-    PairIterator m_first;
-    /// End of a range of pairs of collision models to tests in this task
-    PairIterator m_last;
-
-    /// The intersection method used to perform the collision tests
-    core::collision::Intersection* m_intersectionMethod { nullptr };
-
-};
-
+    using ParallelBruteForceBroadPhase = multithreading::component::collision::detection::algorithm::ParallelBruteForceBroadPhase;
 }

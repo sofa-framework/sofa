@@ -67,16 +67,16 @@ public:
     void init() override;
 
     // -- CollisionModel interface
-    void resize(Size size) override;
+    void resize(sofa::Size size) override;
 
     void computeBoundingTree(int maxDepth) override;
 
-    void draw(const core::visual::VisualParams*, Index index) override;
+    void draw(const core::visual::VisualParams*, sofa::Index index) override;
     void draw(const core::visual::VisualParams* vparams) override;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------
-    int addRay(const type::Vector3& origin, const type::Vector3& direction, SReal length);
+    int addRay(const type::Vec3& origin, const type::Vec3& direction, SReal length);
     Ray getRay(int index) { return Ray(this, index); }
 
     int getNbRay() const { return size; }

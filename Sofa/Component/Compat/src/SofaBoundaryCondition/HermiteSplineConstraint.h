@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/projective/HermiteSplineConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/HermiteSplineConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using HermiteSplineConstraint = sofa::component::constraint::projective::HermiteSplineConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/HermiteSplineConstraint.h")

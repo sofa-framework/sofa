@@ -22,9 +22,4 @@
 #pragma once
 
 #include <sofa/type/config.h>
-#include <sofa/type/RGBAColor.h>
-
-namespace sofa::type
-{
-    using sofa::type::RGBAColor ;
-}
+SOFA_DISABLED_HEADER("v22.12", "v23.06", "sofa/type/RGBAColor.h")

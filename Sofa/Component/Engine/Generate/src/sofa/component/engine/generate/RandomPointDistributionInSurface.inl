@@ -251,13 +251,13 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     
     const VecCoord& in = f_inPoints.getValue();
     const VecCoord& out = f_outPoints.getValue();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
 
     for (unsigned int i=0 ; i<in.size() ; i++)
         vertices.push_back(in[i]);
@@ -273,7 +273,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
         vparams->drawTool()->drawPoints(vertices, 5.0, sofa::type::RGBAColor::blue());
     }
 
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } //namespace sofa::component::engine::generate

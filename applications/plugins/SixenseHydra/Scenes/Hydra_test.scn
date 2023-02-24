@@ -11,7 +11,7 @@
         <Gravity name="Gravity" gravity="0 0 0" />
 		<QuatToRigidEngine name="controllerRigid" template="Vec3d" positions="@../RHdriver1.positionFirstTool" orientations="@../RHdriver1.orientationFirstTool" />
 		<MechanicalObject name="controller1State" template="Rigid3d" position="@./controllerRigid.rigids" showObject="true" showObjectScale="0.15" />
-		<UniformMass name="uniformMass" template="Rigid3d"  totalmass="0.1" />
+		<UniformMass name="uniformMass" template="Rigid3d" totalMass="0.1" />
 		<Node name="Collision_Model" >
 			<MergePoints name="controller2DOFS" template="Rigid3d" position1="@../controllerRigid.rigids" position2="0 0 -0.5  0 0 0 1" />
 			<MechanicalObject name="collisDOFs" template="Vec3d" position="@./controller2DOFS.points" />
@@ -26,7 +26,7 @@
 		<Gravity name="Gravity" gravity="0 0 0" />
 		<QuatToRigidEngine name="controllerRigid" template="Vec3d" positions="@../RHdriver1.positionSecondTool" orientations="@../RHdriver1.orientationSecondTool" />
 		<MechanicalObject name="controller1State" template="Rigid3d" position="@./controllerRigid.rigids" showObject="true" showObjectScale="0.15"  />
-		<UniformMass name="uniformMass" template="Rigid3d"  totalmass="0.1" />
+		<UniformMass name="uniformMass" template="Rigid3d" totalMass="0.1" />
 		<Node name="Collision_Model" >
 			<MergePoints name="controller2DOFS" template="Rigid3d" position1="@../controllerRigid.rigids" position2="0 0 -0.5  0 0 0 1" />
 			<MechanicalObject name="collisDOFs" template="Vec3d" position="@./controller2DOFS.points" />

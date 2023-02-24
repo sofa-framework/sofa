@@ -73,10 +73,13 @@ void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgeb
 {
     if( !d_implicit.getValue() ) return;
 
-    const unsigned int size = this->mstate->getMatrixSize();
+    const sofa::Size size = this->mstate->getMatrixSize();
+    const auto dampingContribution = -dampingCoefficient.getValue() * bFact;
 
-    for( unsigned i=0 ; i<size ; i++ )
-        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
+    for( sofa::Size i = 0 ; i < size; ++i )
+    {
+        mat->add( offset + i, offset + i, dampingContribution );
+    }
 }
 
 template <class DataTypes>

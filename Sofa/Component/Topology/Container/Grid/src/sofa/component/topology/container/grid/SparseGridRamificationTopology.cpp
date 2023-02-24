@@ -221,7 +221,7 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, Ind
 
     const Hexa& hexa=getHexahedron( cubeIdx );
 
-    Vector3 a,b,c,d;//P,Q;
+    type::Vec3 a,b,c,d;//P,Q;
 
     //trouver la face commune
     switch(where)
@@ -787,14 +787,12 @@ void SparseGridRamificationTopology::buildFromFiner()
     for(size_t i=0; i<this->getNbHexahedra(); ++i)
     {
         auto finerChildren = this->_hierarchicalCubeMap[i];
-        unsigned nbchildren = 0;
         for(int w=0; w<8; ++w)
         {
             if( finerChildren[w] != InvalidID)
             {
                 _massCoefs[i] += this->_finerSparseGrid->getMassCoef(finerChildren[w]);
                 _stiffnessCoefs[i] += this->_finerSparseGrid->getStiffnessCoef(finerChildren[w]);
-                ++nbchildren;
             }
         }
         _stiffnessCoefs[i] /= 8.0;//(float)nbchildren;
@@ -870,7 +868,7 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
 
 
 
-typename SparseGridRamificationTopology::Index SparseGridRamificationTopology::findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
+typename SparseGridRamificationTopology::Index SparseGridRamificationTopology::findCube(const type::Vec3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
     if(  _nbVirtualFinerLevels.getValue() == 0 )
         return SparseGridTopology::findCube(pos, fx, fy, fz);
@@ -891,7 +889,7 @@ typename SparseGridRamificationTopology::Index SparseGridRamificationTopology::f
 
 }
 
-typename SparseGridRamificationTopology::Index SparseGridRamificationTopology::findNearestCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
+typename SparseGridRamificationTopology::Index SparseGridRamificationTopology::findNearestCube(const type::Vec3 &pos, SReal &fx, SReal &fy, SReal &fz)
 {
     if( _nbVirtualFinerLevels.getValue() == 0 )
         return SparseGridTopology::findNearestCube(pos, fx, fy, fz);
@@ -1221,15 +1219,15 @@ void SparseGridRamificationTopology::printHexaIdx()
 }
 
 
-bool SparseGridRamificationTopology::intersectionSegmentTriangle(Vector3 s0, Vector3 s1, Vector3 t0, Vector3 t1, Vector3 t2)
+bool SparseGridRamificationTopology::intersectionSegmentTriangle(type::Vec3 s0, type::Vec3 s1, type::Vec3 t0, type::Vec3 t1, type::Vec3 t2)
 {
     // compute the offset origin, edges, and normal
-    Vector3 kDiff = s0 - t0;
-    Vector3 kEdge1 = t1 - t0;
-    Vector3 kEdge2 = t2 - t0;
-    Vector3 kNormal = kEdge1.cross(kEdge2);
+    type::Vec3 kDiff = s0 - t0;
+    type::Vec3 kEdge1 = t1 - t0;
+    type::Vec3 kEdge2 = t2 - t0;
+    type::Vec3 kNormal = kEdge1.cross(kEdge2);
 
-    Vector3 dir = s1-s0;
+    type::Vec3 dir = s1-s0;
     SReal norm = (s1-s0).norm();
     dir /= norm;
 
@@ -1242,11 +1240,11 @@ bool SparseGridRamificationTopology::intersectionSegmentTriangle(Vector3 s0, Vec
     SReal fSign;
     if (fDdN > 1.0e-10)
     {
-        fSign = (SReal)1.0;
+        fSign = 1.0_sreal;
     }
-    else if (fDdN < -1.0e-10)
+    else if (fDdN < -1.0e-10_sreal)
     {
-        fSign = (SReal)-1.0;
+        fSign = -1.0_sreal;
         fDdN = -fDdN;
     }
     else

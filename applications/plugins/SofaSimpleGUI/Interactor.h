@@ -29,7 +29,7 @@ protected:
 
 public:
 
-    typedef type::Vector3 Vec3;
+    typedef type::Vec3 Vec3;
 
     Interactor( const PickedPoint&  picked );
     virtual ~Interactor();

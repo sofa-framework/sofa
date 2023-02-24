@@ -63,11 +63,11 @@ void LCP::reset(void)
 
     for (int i = 0; i < maxConst; i++)
     {
-        memset(W[i], 0, maxConst * sizeof(double));
+        memset(W[i], 0, maxConst * sizeof(SReal));
     }
 
-    memset(dfree, 0, maxConst * sizeof(double));
-    memset(f, 0, (2 * maxConst + 1) * sizeof(double));
+    memset(dfree, 0, maxConst * sizeof(SReal));
+    memset(f, 0, (2 * maxConst + 1) * sizeof(SReal));
 
 
 }
@@ -77,24 +77,24 @@ void LCP::allocate (unsigned int input_maxConst)
 {
     this->maxConst = input_maxConst;
 
-    W = new double*[maxConst];
+    W = new SReal*[maxConst];
     for (int i = 0; i < (int)maxConst; i++)
     {
-        W[i] = new double[maxConst];
-        memset(W[i], 0, maxConst * sizeof(double));
+        W[i] = new SReal[maxConst];
+        memset(W[i], 0, maxConst * sizeof(SReal));
     }
-    dfree = new double[maxConst];
-    d = new double[maxConst];
-    f = new double[2 * maxConst + 1];
-    f_1= new double[maxConst];
+    dfree = new SReal[maxConst];
+    d = new SReal[maxConst];
+    f = new SReal[2 * maxConst + 1];
+    f_1= new SReal[maxConst];
 
-    memset(dfree, 0, maxConst * sizeof(double));
-    memset(f, 0, (2 * maxConst + 1) * sizeof(double));
-    memset(f_1, 0, maxConst * sizeof(double));
+    memset(dfree, 0, maxConst * sizeof(SReal));
+    memset(f, 0, (2 * maxConst + 1) * sizeof(SReal));
+    memset(f_1, 0, maxConst * sizeof(SReal));
 
 }
 
-void LCP::setLCP(unsigned int input_dim, double *input_dfree, double **input_W, double *input_f, double &input_mu, double &input_tol, int input_numItMax)
+void LCP::setLCP(unsigned int input_dim, SReal *input_dfree, SReal **input_W, SReal *input_f, SReal &input_mu, SReal &input_tol, int input_numItMax)
 {
     dim = input_dim;
     dfree = input_dfree;
@@ -105,17 +105,17 @@ void LCP::setLCP(unsigned int input_dim, double *input_dfree, double **input_W, 
     mu = input_mu;
     maxConst = dim;
 
-    d = new double[maxConst];
-    f_1= new double[maxConst];
-    memset(d, 0, maxConst * sizeof(double));
-    memset(f_1, 0, maxConst * sizeof(double));
+    d = new SReal[maxConst];
+    f_1= new SReal[maxConst];
+    memset(d, 0, maxConst * sizeof(SReal));
+    memset(f_1, 0, maxConst * sizeof(SReal));
 
 }
 
-void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals, std::vector<double>* violations)
+void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::vector<SReal>* violations)
 {
-    //double error;
-    double f_1[3],dn, ds, dt;
+    //SReal error;
+    SReal f_1[3],dn, ds, dt;
     int numContacts = dim/3;
     const bool computeError = (convergenceTest || residuals);
     for (it=0; it<numItMax; it++)
@@ -134,7 +134,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals, std::v
 
 
             // error measure
-            double Ddn, Ddt, Dds;
+            SReal Ddn, Ddt, Dds;
             Ddn=0; Ddt=0; Dds=0;
 
             /////// CONTACT
@@ -171,7 +171,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals, std::v
             f[3*c+1] -= 2*dt/(W[3*c+1][3*c+1]+W[3*c+2][3*c+2]);
             f[3*c+2] -= 2*ds/(W[3*c+1][3*c+1]+W[3*c+2][3*c+2]);
 
-            double normFt=sqrt(f[3*c+1]*f[3*c+1]+ f[3*c+2]* f[3*c+2]);
+            SReal normFt=sqrt(f[3*c+1]*f[3*c+1]+ f[3*c+2]* f[3*c+2]);
 
             if (normFt > mu*f[3*c])
             {
@@ -195,7 +195,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals, std::v
         if (residuals) residuals->push_back(error);
         if (violations)
         {
-            double sum_d = 0;
+            SReal sum_d = 0;
             for (int c=0;  c<numContacts ; c++)
             {
                 dn = dfree[3*c];  //dt = dfree[3*c+1]; ds = dfree[3*c+2];
@@ -226,26 +226,26 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals, std::v
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-int resoudreLCP(int dim, double * q, double ** M, double * res)
+int resoudreLCP(int dim, SReal * q, SReal ** M, SReal * res)
 {
 
     // déclaration des variables
     int compteur;	// compteur de boucle
     int compteur2;	// compteur de boucle
-    double ** mat;	// matrice de travail
+    SReal ** mat;	// matrice de travail
     int * base;		// base des variables non nulles
     int ligPiv;		// ligne du pivot
     int colPiv;		// colonne du pivot
-    double min;		// recherche du minimum pour le pivot
-    double coeff;	// valeur du coefficient de la combinaison linéaire
+    SReal min;		// recherche du minimum pour le pivot
+    SReal coeff;	// valeur du coefficient de la combinaison linéaire
     int boucles;	// compteur du nombre de passages dans la boucle
     int result=1;
 
     // allocation de la mémoire nécessaire
-    mat = (double **)malloc(dim*sizeof(double *));
+    mat = (SReal **)malloc(dim*sizeof(SReal *));
     for(compteur=0; compteur<dim; compteur++)
     {
-        mat[compteur]=(double *)malloc((2*dim+1)*sizeof(double));
+        mat[compteur]=(SReal *)malloc((2*dim+1)*sizeof(SReal));
     }
 
     base = (int *)malloc(dim*sizeof(int));
@@ -322,7 +322,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
         }
 
         // stockage de la valeur du pivot
-        double pivot=mat[ligPiv][colPiv];
+        SReal pivot=mat[ligPiv][colPiv];
         // et son affichage
         // printf("pivot=mat[%d][%d]=%f\n\n",ligPiv,colPiv,pivot);
 
@@ -412,7 +412,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
 
 
 
-void afficheSyst(double *q,double **M, int *base, double **mat, int dim)
+void afficheSyst(SReal *q,SReal **M, int *base, SReal **mat, int dim)
 {
     int compteur, compteur2;
 
@@ -458,7 +458,7 @@ void afficheSyst(double *q,double **M, int *base, double **mat, int dim)
 }
 
 /********************************************************************************************/
-void afficheLCP(double *q, double **M, int dim)
+void afficheLCP(SReal *q, SReal **M, int dim)
 {
     int compteur, compteur2;
     // affichage de la matrice du LCP
@@ -483,7 +483,7 @@ void afficheLCP(double *q, double **M, int dim)
 }
 
 /********************************************************************************************/
-void afficheLCP(double *q, double **M, double *f, int dim)
+void afficheLCP(SReal *q, SReal **M, SReal *f, int dim)
 {
     int compteur, compteur2;
     // affichage de la matrice du LCP
@@ -517,7 +517,7 @@ void afficheLCP(double *q, double **M, double *f, int dim)
 }
 
 
-void resultToString(ostream& s, double *f, int dim)
+void resultToString(ostream& s, SReal*f, int dim)
 {
     int compteur;
     s << std::fixed << std::setw( 11 ) << std::setprecision( 9 ) ;
@@ -531,7 +531,7 @@ void resultToString(ostream& s, double *f, int dim)
 
 /********************************************************************************************/
 // special class to obtain the inverse of a symetric matrix 3x3
-void LocalBlock33::compute(double &w11, double &w12, double &w13, double &w22, double &w23, double &w33)
+void LocalBlock33::compute(SReal& w11, SReal& w12, SReal& w13, SReal& w22, SReal& w23, SReal& w33)
 {
     w[0]=w11; w[1]=w12; w[2] = w13; w[3]=w22; w[4]=w23; w[5]=w33;
     det = w11*w22*w33-w11*w23*w23-w12*w12*w33+2*w12*w13*w23-w13*w13*w22;
@@ -544,7 +544,7 @@ void LocalBlock33::compute(double &w11, double &w12, double &w13, double &w22, d
     computed=true;
 }
 
-void LocalBlock33::stickState(double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+void LocalBlock33::stickState(SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs)
 {
     fn = -wInv[0]*dn - wInv[1]*dt - wInv[2]*ds;
     ft = -wInv[1]*dn - wInv[3]*dt - wInv[4]*ds;
@@ -554,9 +554,9 @@ void LocalBlock33::stickState(double &dn, double &dt, double &ds, double &fn, do
 
 
 
-void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+void LocalBlock33::slipState(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs)
 {
-    double d[3];
+    SReal d[3];
 
     for (int iteration=0; iteration<10000; iteration++)
     {
@@ -575,7 +575,7 @@ void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, dou
         // envaluation of the new fricton forces
         ft -= 2*d[1]/(w[3]+w[5]);
         fs -= 2*d[2]/(w[3]+w[5]);
-        double normFt=sqrt(ft*ft+fs*fs);
+        SReal normFt=sqrt(ft*ft+fs*fs);
         ft *=mu*fn/normFt;
         fs *=mu*fn/normFt;
 
@@ -594,11 +594,11 @@ void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, dou
 }
 
 // computation of a new state using a simple gauss-seidel loop // pseudo-potential (new: dn, dt, ds already take into account current value of fn, ft and fs)
-void LocalBlock33::New_GS_State(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+void LocalBlock33::New_GS_State(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs)
 {
 
-    double d[3];
-    double normFt;
+    SReal d[3];
+    SReal normFt;
     f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;
 
     // evaluation of the current normal position
@@ -612,7 +612,7 @@ void LocalBlock33::New_GS_State(double &mu, double &dn, double &dt, double &ds, 
         // if the force was previously not null -> update the state
         if (f_1[0]>0)
         {
-            double df[3];
+            SReal df[3];
             df[0] = fn-f_1[0];  df[1] = ft-f_1[1];  df[2] = fs-f_1[2];
 
             dn += w[0]*df[0] + w[1]*df[1] + w[2]*df[2];
@@ -639,7 +639,7 @@ void LocalBlock33::New_GS_State(double &mu, double &dn, double &dt, double &ds, 
         fs *=mu*fn/normFt;
     }
 
-    double df[3];
+    SReal df[3];
     df[0] = fn-f_1[0];  df[1] = ft-f_1[1];  df[2] = fs-f_1[2];
 
     dn += w[0]*df[0] + w[1]*df[1] + w[2]*df[2];
@@ -650,10 +650,10 @@ void LocalBlock33::New_GS_State(double &mu, double &dn, double &dt, double &ds, 
 
 }
 
-void LocalBlock33::GS_State(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+void LocalBlock33::GS_State(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs)
 {
-    double d[3];
-    double normFt;
+    SReal d[3];
+    SReal normFt;
     f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;
 
     // evaluation of the current normal position
@@ -691,10 +691,10 @@ void LocalBlock33::GS_State(double &mu, double &dn, double &dt, double &ds, doub
 }
 
 
-void LocalBlock33::BiPotential(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+void LocalBlock33::BiPotential(SReal &mu, SReal &dn, SReal &dt, SReal &ds, SReal &fn, SReal &ft, SReal &fs)
 {
-    double d[3];
-    double normFt;
+    SReal d[3];
+    SReal normFt;
     f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;
 ///////////
 // evaluation of a new contact force based on bi-potential approach
@@ -706,10 +706,10 @@ void LocalBlock33::BiPotential(double &mu, double &dn, double &dt, double &ds, d
     d[2] = w[2]*fn + w[4]*ft + w[5]*fs + ds;
 
     // evaluate a unique compliance for both normal and tangential direction //
-    double rho = (w[0] + w[3] + w[5]) / 3;
+    SReal rho = (w[0] + w[3] + w[5]) / 3;
 
     // evaluation of the bi-potential
-    double v[3];
+    SReal v[3];
     v[0] = d[0] + mu * sqrt(d[1]*d[1] + d[2]*d[2]);
     v[1] = d[1];
     v[2] = d[2];
@@ -731,7 +731,7 @@ void LocalBlock33::BiPotential(double &mu, double &dn, double &dt, double &ds, d
     normFt=sqrt(ft*ft+fs*fs);
     if (normFt > mu*fn)
     {
-        double proj = (normFt - mu * fn) / (1 + mu*mu);
+        SReal proj = (normFt - mu * fn) / (1 + mu*mu);
 
         fn += mu * proj ;
         ft -= proj * ft/normFt;
@@ -753,8 +753,8 @@ void LocalBlock33::BiPotential(double &mu, double &dn, double &dt, double &ds, d
 
 // if (nlhs>0)
 // {
-//double *prF;
-//plhs[0]=mxCreateDoubleMatrix(3,1,mxREAL);
+//SReal *prF;
+//plhs[0]=mxCreateSRealMatrix(3,1,mxREAL);
 //prF = mxGetPr(plhs[0]);
 //for(i=0; i<3; i++)
 //	prF[i] = f[i];
@@ -768,7 +768,7 @@ void LocalBlock33::BiPotential(double &mu, double &dn, double &dt, double &ds, d
 //////////////
 
 /*
-typedef struct { double value; int index;} listElem;
+typedef struct { SReal value; int index;} listElem;
 struct listSortAscending
 {
     bool operator()(const listElem& e1, const listElem& e2)
@@ -786,7 +786,7 @@ struct listSortAscending
    Classe
    - NLCP {dim , dfree, W , f
 
-    void NLCPSolve( int numIteration, const double &tol, bool convergenceTest)
+    void NLCPSolve( int numIteration, const SReal &tol, bool convergenceTest)
     }
 
 
@@ -810,7 +810,7 @@ struct listSortAscending
 ///                contact_is_projected => (size= fine level) => for each contact at the fine level, tell if the contact is projected or not
 
 
-void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
+void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<SReal> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
 
 {
     SOFA_UNUSED(verbose) ;
@@ -825,13 +825,13 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 
     for (int c=0;  c<3*nbContactsCoarse ; c++)
     {
-        memset(coarseLevel.getW()[c], 0, 3*nbContactsCoarse*sizeof(double));
+        memset(coarseLevel.getW()[c], 0, 3*nbContactsCoarse*sizeof(SReal));
     }
 
-    memset(coarseLevel.getDfree(), 0, 3*nbContactsCoarse*sizeof(double));
-    memset(coarseLevel.getF(), 0, 3*nbContactsCoarse*sizeof(double));
-    memset(coarseLevel.getF_1(), 0, 3*nbContactsCoarse*sizeof(double));
-    memset(coarseLevel.getD(), 0, 3*nbContactsCoarse*sizeof(double));
+    memset(coarseLevel.getDfree(), 0, 3*nbContactsCoarse*sizeof(SReal));
+    memset(coarseLevel.getF(), 0, 3*nbContactsCoarse*sizeof(SReal));
+    memset(coarseLevel.getF_1(), 0, 3*nbContactsCoarse*sizeof(SReal));
+    memset(coarseLevel.getD(), 0, 3*nbContactsCoarse*sizeof(SReal));
 
 
     // STEP1 => which contact is being projected ?
@@ -851,7 +851,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 
     for (int c1=0; c1<numContactFine; c1++)
     {
-        double dn=fineLevel.getDfree()[3*c1];
+        SReal dn=fineLevel.getDfree()[3*c1];
         for (int i=0; i<(int)fineLevel.getDim(); i++)
         {
             dn += fineLevel.getW()[3*c1  ][i]*fineLevel.getF()[i];
@@ -877,7 +877,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
         {
             dmsg_error("LCPcalc") <<"NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact" ;
 
-            double dmin = 0.0;
+            SReal dmin = 0.0;
             int projected_contact=-1;
             for (int c1=0; c1<numContactFine; c1++)
             {
@@ -906,17 +906,17 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 
 
     // STEP 3: set up the new coarse LCP
-    double** fineW = fineLevel.getW();
-    double** coarseW = coarseLevel.getW();
+    SReal** fineW = fineLevel.getW();
+    SReal** coarseW = coarseLevel.getW();
     for (int c1=0; c1<numContactFine; c1++)
     {
         if (contact_is_projected[c1])
         {
 
             int group = projectionTable[c1];
-            int g_n_id = projectionConstraints[3*c1  ]; double g_n_f = projectionValues[3*c1  ];
-            int g_t_id = projectionConstraints[3*c1+1]; double g_t_f = projectionValues[3*c1+1];
-            int g_s_id = projectionConstraints[3*c1+2]; double g_s_f = projectionValues[3*c1+2];
+            int g_n_id = projectionConstraints[3*c1  ]; SReal g_n_f = projectionValues[3*c1  ];
+            int g_t_id = projectionConstraints[3*c1+1]; SReal g_t_f = projectionValues[3*c1+1];
+            int g_s_id = projectionConstraints[3*c1+2]; SReal g_s_f = projectionValues[3*c1+2];
             ////////////
             // on calcule le système grossier
             ////////////
@@ -936,9 +936,9 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
                 if (contact_is_projected[c2])
                 {
                     //int group2 = projectionTable[c2];
-                    int g_n2_id = projectionConstraints[3*c2  ]; double g_n2_f = projectionValues[3*c2  ];
-                    int g_t2_id = projectionConstraints[3*c2+1]; double g_t2_f = projectionValues[3*c2+1];
-                    int g_s2_id = projectionConstraints[3*c2+2]; double g_s2_f = projectionValues[3*c2+2];
+                    int g_n2_id = projectionConstraints[3*c2  ]; SReal g_n2_f = projectionValues[3*c2  ];
+                    int g_t2_id = projectionConstraints[3*c2+1]; SReal g_t2_f = projectionValues[3*c2+1];
+                    int g_s2_id = projectionConstraints[3*c2+2]; SReal g_s2_f = projectionValues[3*c2+2];
 
                     coarseW[g_n_id][g_n2_id] += fineW[3*c1  ][3*c2  ]*g_n_f*g_n2_f;   coarseW[g_n_id][g_t2_id] += fineW[3*c1  ][3*c2+1]*g_n_f*g_t2_f;   coarseW[g_n_id][g_s2_id] += fineW[3*c1  ][3*c2+2]*g_n_f*g_s2_f;
                     coarseW[g_t_id][g_n2_id] += fineW[3*c1+1][3*c2  ]*g_t_f*g_n2_f;   coarseW[g_t_id][g_t2_id] += fineW[3*c1+1][3*c2+1]*g_t_f*g_t2_f;   coarseW[g_t_id][g_s2_id] += fineW[3*c1+1][3*c2+2]*g_t_f*g_s2_f;
@@ -953,7 +953,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 /// all parameters as input
 /// output=> change value of F in fineLevel
 
-void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
+void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<SReal> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
 {
     SOFA_UNUSED(verbose) ;
 
@@ -970,9 +970,9 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
         if (contact_is_projected[c1])
         {
             //int group = projectionTable[c1];
-            int g_n_id = projectionConstraints[3*c1  ]; double g_n_f = projectionValues[3*c1  ];
-            int g_t_id = projectionConstraints[3*c1+1]; double g_t_f = projectionValues[3*c1+1];
-            int g_s_id = projectionConstraints[3*c1+2]; double g_s_f = projectionValues[3*c1+2];
+            int g_n_id = projectionConstraints[3*c1  ]; SReal g_n_f = projectionValues[3*c1  ];
+            int g_t_id = projectionConstraints[3*c1+1]; SReal g_t_f = projectionValues[3*c1+1];
+            int g_s_id = projectionConstraints[3*c1+2]; SReal g_s_f = projectionValues[3*c1+2];
 
             fineLevel.getF()[3*c1  ]  +=  ( coarseLevel.getF()[g_n_id] - coarseLevel.getF_1()[g_n_id] ) * g_n_f;
             fineLevel.getF()[3*c1+1]  +=  ( coarseLevel.getF()[g_t_id] - coarseLevel.getF_1()[g_t_id] ) * g_t_f;
@@ -988,11 +988,11 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
 
 /// new multigrid resolution of a problem with projection & prolongation
 
-int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu,
-        double tol, int numItMax, bool useInitialF,
+int nlcp_multiGrid_2levels(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu,
+        SReal tol, int numItMax, bool useInitialF,
         std::vector< int> &contact_group, unsigned int num_group,
-        std::vector< int> &constraint_group, std::vector<double> &constraint_group_fact,
-        bool verbose, std::vector<double>* residuals1, std::vector<double>* residuals2)
+        std::vector< int> &constraint_group, std::vector<SReal> &constraint_group_fact,
+        bool verbose, std::vector<SReal>* residuals1, std::vector<SReal>* residuals2)
 {
 
     LCP *fineLevel = new LCP();
@@ -1000,7 +1000,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 
 
     if (!useInitialF)
-        memset(fineLevel->getF(), 0, dim*sizeof(double));
+        memset(fineLevel->getF(), 0, dim*sizeof(SReal));
 
     // iterations at the fine Level (no test of convergence)
     bool convergenceTest= false;
@@ -1057,7 +1057,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 }
 
 
-int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, std::vector< std::vector< int> > &constraint_group_hierarchy, std::vector< std::vector< double> > &constraint_group_fact_hierarchy, bool verbose, std::vector<double> *residualsN, std::vector<double> *residualLevels, std::vector<double> *violations)
+int nlcp_multiGrid_Nlevels(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal tol, int numItMax, bool useInitialF, std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, std::vector< std::vector< int> > &constraint_group_hierarchy, std::vector< std::vector< SReal> > &constraint_group_fact_hierarchy, bool verbose, std::vector<SReal> *residualsN, std::vector<SReal> *residualLevels, std::vector<SReal> *violations)
 {
     if (dim == 0) return 1; // nothing to do
     std::size_t num_hierarchies = Tab_num_group.size();
@@ -1084,7 +1084,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
     hierarchicalLevels[0]->setLCP(dim,dfree, W, f, mu,tol,numItMax);
 
     if (!useInitialF)
-        memset(hierarchicalLevels[0]->getF(), 0, dim*sizeof(double));
+        memset(hierarchicalLevels[0]->getF(), 0, dim*sizeof(SReal));
 
 
 
@@ -1103,7 +1103,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
         if (residualsN && residualLevels)
             while(residualsN->size() > residualLevels->size())
-                residualLevels->push_back(pow(10.0,(double)h));
+                residualLevels->push_back(pow(10.0,(SReal)h));
 
         // projection step & construction of the coarse LCP
         hierarchicalLevels[h+1] = new LCP();
@@ -1127,7 +1127,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
     if (residualsN && residualLevels)
         while(residualsN->size() > residualLevels->size())
-            residualLevels->push_back(pow(10.0,(double)num_hierarchies));
+            residualLevels->push_back(pow(10.0,(SReal)num_hierarchies));
 
     if(verbose)
     {
@@ -1150,7 +1150,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
         hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN, violations);
         if (residualsN && residualLevels)
             while(residualsN->size() > residualLevels->size())
-                residualLevels->push_back(pow(10.0,(double)h));
+                residualLevels->push_back(pow(10.0,(SReal)h));
 
         if(verbose)
         {
@@ -1168,13 +1168,13 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
 
 
-int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
-        double** W_coarse, std::vector< int> &contact_group, unsigned int num_group, bool verbose)
+int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal tol, int numItMax, bool useInitialF,
+        SReal** W_coarse, std::vector< int> &contact_group, unsigned int num_group, bool verbose)
 {
     msg_info("LCPcalc")<<"entering nlcp_multiGrid fct";
 
-    double test = dim/3;
-    double zero = 0.0;
+    SReal test = dim/3;
+    SReal zero = 0.0;
     int numContacts =  (int) floor(test);
     test = dim/3 - numContacts;
 
@@ -1188,44 +1188,44 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     int it,c1,i;
 
     // memory allocation of vector d
-    double *d;
-    d = (double*)malloc(dim*sizeof(double));
-    memset(d, 0, dim*sizeof(double));
+    SReal *d;
+    d = (SReal*)malloc(dim*sizeof(SReal));
+    memset(d, 0, dim*sizeof(SReal));
     // put the vector force to zero
     if (!useInitialF)
-        memset(f, 0, dim*sizeof(double));
+        memset(f, 0, dim*sizeof(SReal));
 
     dmsg_info("LCPcalc")<<"step 1 allocation ok";
 
     // previous value of the force and the displacment
-    double f_1[3];
-    double d_1[3];
+    SReal f_1[3];
+    SReal d_1[3];
 
     ////////////////////////////////
     // allocation du système grossier
     ////////////////////////////////
-    //double **W_coarse;
-    double *d_free_coarse;
-    double *F_coarse_1, *F_coarse;
-    double *d_coarse;
+    //SReal **W_coarse;
+    SReal *d_free_coarse;
+    SReal *F_coarse_1, *F_coarse;
+    SReal *d_coarse;
 
-    // W_coarse = (double **) malloc (3*num_group * sizeof(double*));
-    d_free_coarse= (double*) malloc (3*num_group * sizeof(double));
-    F_coarse_1 = (double*) malloc (3*num_group * sizeof(double));
-    F_coarse= (double*) malloc (3*num_group * sizeof(double));
-    d_coarse= (double*) malloc (3*num_group * sizeof(double));
+    // W_coarse = (SReal **) malloc (3*num_group * sizeof(SReal*));
+    d_free_coarse= (SReal*) malloc (3*num_group * sizeof(SReal));
+    F_coarse_1 = (SReal*) malloc (3*num_group * sizeof(SReal));
+    F_coarse= (SReal*) malloc (3*num_group * sizeof(SReal));
+    d_coarse= (SReal*) malloc (3*num_group * sizeof(SReal));
     dmsg_info("LCPcalc")<<"step 2 allocation ok";
 
     for (unsigned int g=0;  g<3*num_group ; g++)
     {
-        W_coarse[g] = (double*) malloc(3*num_group * sizeof(double));
-        memset(W_coarse[g], 0, 3*num_group*sizeof(double));
+        W_coarse[g] = (SReal*) malloc(3*num_group * sizeof(SReal));
+        memset(W_coarse[g], 0, 3*num_group*sizeof(SReal));
     }
 
-    memset(d_free_coarse, 0, 3*num_group*sizeof(double));
-    memset(F_coarse_1, 0, 3*num_group*sizeof(double));
-    memset(F_coarse, 0, 3*num_group*sizeof(double));
-    memset(d_coarse, 0, 3*num_group*sizeof(double));
+    memset(d_free_coarse, 0, 3*num_group*sizeof(SReal));
+    memset(F_coarse_1, 0, 3*num_group*sizeof(SReal));
+    memset(F_coarse, 0, 3*num_group*sizeof(SReal));
+    memset(d_coarse, 0, 3*num_group*sizeof(SReal));
     if(verbose)
     {
         dmsg_info("LCPcalc") << "allocation ok" ;
@@ -1236,13 +1236,13 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
     // STEP1: 3 premières itérations au niveau fin
 
-    double dn, dt, ds, fn, ft, fs;
+    SReal dn, dt, ds, fn, ft, fs;
     // allocation of the inverted system 3x3
     LocalBlock33 **W33;
     W33 = (LocalBlock33 **) malloc (dim*sizeof(LocalBlock33));
     for (c1=0; c1<numContacts; c1++)
         W33[c1] = new LocalBlock33();
-    double error = 0;
+    SReal error = 0;
 
 
     for (int it_fin =0; it_fin<0; it_fin++)
@@ -1335,7 +1335,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
         {
             dmsg_warning("LCPcalc")<<"NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact";
 
-            double dmin = 9.9e99;
+            SReal dmin = 9.9e99;
             int projected_contact=-1;
             for (c1=0; c1<numContacts; c1++)
             {
@@ -1439,7 +1439,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
             }
 
             // error measure
-            double Ddn, Ddt, Dds;
+            SReal Ddn, Ddt, Dds;
             Ddn=0; Ddt=0; Dds=0;
 
             /////// CONTACT
@@ -1476,7 +1476,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
             F_coarse[3*g1+1] -= 2*dt/(W_coarse[3*g1+1][3*g1+1]+W_coarse[3*g1+2][3*g1+2]);
             F_coarse[3*g1+2] -= 2*ds/(W_coarse[3*g1+1][3*g1+1]+W_coarse[3*g1+2][3*g1+2]);
 
-            double normFt=sqrt(F_coarse[3*g1+1]*F_coarse[3*g1+1]+ F_coarse[3*g1+2]* F_coarse[3*g1+2]);
+            SReal normFt=sqrt(F_coarse[3*g1+1]*F_coarse[3*g1+1]+ F_coarse[3*g1+2]* F_coarse[3*g1+2]);
 
             if (normFt > mu*F_coarse[3*g1])
             {
@@ -1563,7 +1563,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
 }
 
-int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose, double minW, double maxF, std::vector<double>* residuals, std::vector<double>* violations)
+int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal tol, int numItMax, bool useInitialF, bool verbose, SReal minW, SReal maxF, std::vector<SReal>* residuals, std::vector<SReal>* violations)
 
 {
     const int numContacts =  dim/3;
@@ -1577,16 +1577,16 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
     int it,c1,i;
 
     // memory allocation of vector d
-    double *d;
-    d = (double*)malloc(dim*sizeof(double));
+    SReal *d;
+    d = (SReal*)malloc(dim*sizeof(SReal));
 
     // put the vector force to zero
     if (!useInitialF)
-        memset(f, 0, dim*sizeof(double));
+        memset(f, 0, dim*sizeof(SReal));
 
     // previous value of the force and the displacment
-    double f_1[3];
-    double d_1[3];
+    SReal f_1[3];
+    SReal d_1[3];
 
     // allocation of the inverted system 3x3
     LocalBlock33 **W33;
@@ -1597,8 +1597,8 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
     //////////////
     // Beginning of iterative computations
     //////////////
-    double error = 0;
-    double dn, dt, ds, fn, ft, fs;
+    SReal error = 0;
+    SReal dn, dt, ds, fn, ft, fs;
 
     for (it=0; it<numItMax; it++)
     {
@@ -1651,7 +1651,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
         if (residuals) residuals->push_back(error);
         if (violations)
         {
-            double sum_d = 0;
+            SReal sum_d = 0;
             for (int c=0;  c<numContacts ; c++)
             {
                 dn = dfree[3*c];
@@ -1715,10 +1715,10 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
 }
 
-int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double timeout, bool verbose)
+int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SReal tol, int numItMax, bool useInitialF, SReal timeout, bool verbose)
 {
-    double test = dim/3;
-    double zero = 0.0;
+    SReal test = dim/3;
+    SReal zero = 0.0;
     int numContacts =  (int) floor(test);
     test = dim/3 - numContacts;
 
@@ -1734,15 +1734,15 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
     int it,c1,i;
 
     // memory allocation of vector d
-    double *d;
-    d = (double*)malloc(dim*sizeof(double));
+    SReal*d;
+    d = (SReal*)malloc(dim*sizeof(SReal));
     // put the vector force to zero
     if (!useInitialF)
-        memset(f, 0, dim*sizeof(double));
+        memset(f, 0, dim*sizeof(SReal));
 
     // previous value of the force and the displacment
-    double f_1[3];
-    double d_1[3];
+    SReal f_1[3];
+    SReal d_1[3];
 
     // allocation of the inverted system 3x3
     LocalBlock33 **W33;
@@ -1764,8 +1764,8 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
     //////////////
     // Beginning of iterative computations
     //////////////
-    double error = 0;
-    double dn, dt, ds, fn, ft, fs;
+    SReal error = 0;
+    SReal dn, dt, ds, fn, ft, fs;
 
     for (it=0; it<numItMax; it++)
     {
@@ -1852,13 +1852,13 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax, double minW, double maxF, std::vector<double>* residuals)
+void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, SReal tol, int numItMax, SReal minW, SReal maxF, std::vector<SReal>* residuals)
 {
     int compteur;	// compteur de boucle
     int compteur2, compteur3;	// compteur de boucle
 
-    double f_1;
-    double error=0.0;
+    SReal f_1;
+    SReal error=0.0;
 
     for (compteur=0; compteur<numItMax; compteur++)
     {

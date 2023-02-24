@@ -15,7 +15,7 @@ into a single bigger system.
 -->
 
 <Node name="root" gravity="0 -9.81 0">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -32,8 +32,9 @@ into a single bigger system.
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [InteractiveCamera VisualStyle] -->
 
     <VisualStyle displayFlags="showCollisionModels"/>
-
-    <DefaultPipeline/>
+    
+    <DefaultAnimationLoop/>
+    <CollisionPipeline/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
@@ -51,7 +52,7 @@ into a single bigger system.
         <Node name="Collision">
             <QuadSetTopologyContainer name="Quad_topology"/>
             <QuadSetTopologyModifier name="Modifier"/>
-            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3"/>
             <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
 
             <Node name="CollisionTriangles">
@@ -80,7 +81,7 @@ into a single bigger system.
         <Node name="Collision">
             <QuadSetTopologyContainer name="Quad_topology"/>
             <QuadSetTopologyModifier name="Modifier"/>
-            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+            <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3"/>
             <Hexa2QuadTopologicalMapping input="@../grid" output="@Quad_topology"/>
 
             <Node name="CollisionTriangles">

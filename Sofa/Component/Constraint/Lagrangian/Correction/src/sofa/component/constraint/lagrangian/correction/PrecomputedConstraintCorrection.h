@@ -62,7 +62,7 @@ public:
     Data<bool> m_restRotations;
 
     Data<bool> recompute; ///< if true, always recompute the compliance
-	Data<double> debugViewFrameScale; ///< Scale on computed node's frame
+	Data<SReal> debugViewFrameScale; ///< Scale on computed node's frame
 	sofa::core::objectmodel::DataFileName f_fileCompliance; ///< Precomputed compliance matrix data file
 	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
     
@@ -103,13 +103,13 @@ public:
     /// @name Unbuilt constraint system during resolution
     /// @{
 
-    void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/) override;
+    void resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& /*renumbering*/) override;
 
     bool hasConstraintNumber(int index) override;  // virtual ???
 
-    void addConstraintDisplacement(double *d, int begin,int end) override;
+    void addConstraintDisplacement(SReal* d, int begin,int end) override;
 
-    void setConstraintDForce(double *df, int begin, int end, bool update) override;
+    void setConstraintDForce(SReal* df, int begin, int end, bool update) override;
 
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
@@ -150,7 +150,7 @@ public:
     type::vector<unsigned int> localIndex_to_id; //inverse table that gives the id of a constraint given its local index
     std::list<unsigned int> active_local_force; // table of local index of the non-null forces;
     linearalgebra::FullMatrix< Real > localW;
-    double* constraint_force;
+    SReal* constraint_force;
 
     // NEW METHOD FOR UNBUILT
     // new :  for non building the constraint system during solving process //

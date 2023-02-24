@@ -23,14 +23,19 @@
 #include <sofa/simulation/DefaultTaskScheduler.h>
 
 #include <cassert>
+#include <mutex>
+
+#ifdef WIN32
+#include <processthreadsapi.h>
+#endif
 
 namespace sofa::simulation
 {
 
-WorkerThread::WorkerThread(DefaultTaskScheduler *const &pScheduler, const int index, const std::string &name)
-        : m_name(name + std::to_string(index)), m_type(0), m_tasks(), m_taskScheduler(pScheduler)
+WorkerThread::WorkerThread(DefaultTaskScheduler *const &taskScheduler, const int index, const std::string &name)
+        : m_name(name + std::to_string(index)), m_type(0), m_tasks(), m_taskScheduler(taskScheduler)
 {
-    assert(pScheduler);
+    assert(taskScheduler);
     m_finished.store(false, std::memory_order_relaxed);
     m_currentStatus = nullptr;
 }
@@ -45,9 +50,9 @@ WorkerThread::~WorkerThread()
     m_finished.store(true, std::memory_order_relaxed);
 }
 
-bool WorkerThread::isFinished()
+bool WorkerThread::isFinished() const
 {
-    return m_finished.load(std::memory_order_relaxed);;
+    return m_finished.load(std::memory_order_relaxed);
 }
 
 bool WorkerThread::start(DefaultTaskScheduler *const &taskScheduler)
@@ -62,23 +67,19 @@ bool WorkerThread::start(DefaultTaskScheduler *const &taskScheduler)
 std::thread *WorkerThread::create_and_attach(DefaultTaskScheduler *const &taskScheduler)
 {
     SOFA_UNUSED(taskScheduler);
-    m_stdThread = std::thread(std::bind(&WorkerThread::run, this));
+    m_stdThread = std::thread([this] { run(); });
     return &m_stdThread;
-}
-
-WorkerThread *WorkerThread::getCurrent()
-{
-    //return workerThreadIndex;
-    auto thread = DefaultTaskScheduler::_threads.find(std::this_thread::get_id());
-    if (thread == DefaultTaskScheduler::_threads.end())
-    {
-        return nullptr;
-    }
-    return thread->second;
 }
 
 void WorkerThread::run(void)
 {
+#ifdef WIN32
+    const std::wstring widestr = std::wstring(m_name.begin(), m_name.end());
+    HRESULT r = SetThreadDescription(
+        GetCurrentThread(),
+        widestr.c_str()
+        );
+#endif
 
     //workerThreadIndex = this;
     //TaskSchedulerDefault::_threads[std::this_thread::get_id()] = this;
@@ -93,7 +94,6 @@ void WorkerThread::run(void)
 
             doWork(nullptr);
 
-
             if (m_taskScheduler->isClosing())
             {
                 break;
@@ -102,7 +102,6 @@ void WorkerThread::run(void)
     }
 
     m_finished.store(true, std::memory_order_relaxed);
-    return;
 }
 
 const std::thread::id WorkerThread::getId() const
@@ -112,21 +111,13 @@ const std::thread::id WorkerThread::getId() const
 
 void WorkerThread::Idle()
 {
-    {
-        std::unique_lock <std::mutex> lock(m_taskScheduler->m_wakeUpMutex);
-        //if (!_taskScheduler->_workerThreadsIdle)
-        //{
-        //	return;
-        //}
-        // cpu free wait
-        m_taskScheduler->m_wakeUpEvent.wait(lock, [&] { return !m_taskScheduler->m_workerThreadsIdle; });
-    }
-    return;
+    std::unique_lock lock(m_taskScheduler->m_wakeUpMutex);
+    m_taskScheduler->m_wakeUpEvent.wait(lock,
+        [&] { return !m_taskScheduler->m_workerThreadsIdle; });
 }
 
 void WorkerThread::doWork(Task::Status *status)
 {
-
     for (;;)// do
     {
         Task *task;
@@ -192,8 +183,6 @@ void WorkerThread::workUntilDone(Task::Status *status)
 
 bool WorkerThread::popTask(Task **task)
 {
-    TASK_SCHEDULER_PROFILER(Pop);
-
     simulation::ScopedLock lock(m_taskMutex);
     if (!m_tasks.empty())
     {
@@ -215,8 +204,6 @@ bool WorkerThread::pushTask(Task *task)
     }
 
     {
-        TASK_SCHEDULER_PROFILER(Push);
-
         simulation::ScopedLock lock(m_taskMutex);
         int taskId = task->getStatus()->setBusy(true);
         task->m_id = taskId;
@@ -248,34 +235,28 @@ bool WorkerThread::addTask(Task *task)
 
 bool WorkerThread::stealTask(Task **task)
 {
+    for (auto it : m_taskScheduler->_threads)
     {
-        //TASK_SCHEDULER_PROFILER(StealTask);
-
-        for (auto it : m_taskScheduler->_threads)
+        // if this is the main thread continue
+        if (std::this_thread::get_id() == it.first)
         {
-            // if this is the main thread continue
-            if (std::this_thread::get_id() == it.first)
-            {
-                continue;
-            }
-
-            WorkerThread *otherThread = it.second;
-
-            {
-                TASK_SCHEDULER_PROFILER(Steal);
-
-                simulation::ScopedLock lock(otherThread->m_taskMutex);
-                if (!otherThread->m_tasks.empty())
-                {
-                    *task = otherThread->m_tasks.front();
-                    otherThread->m_tasks.pop_front();
-                    return true;
-                }
-            }
-
+            continue;
         }
+
+        WorkerThread *otherThread = it.second;
+        {
+            simulation::ScopedLock lock(otherThread->m_taskMutex);
+            if (!otherThread->m_tasks.empty())
+            {
+                *task = otherThread->m_tasks.front();
+                otherThread->m_tasks.pop_front();
+                return true;
+            }
+        }
+
     }
 
     return false;
 }
-}
+
+} // namespace sofa::simulation

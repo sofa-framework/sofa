@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/linear/CenterOfMassMulti2Mapping.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMulti2Mapping.h")
-
-namespace sofa::component::mapping
-{
-	template <class TIn1, class TIn2, class TOut>
-    using CenterOfMassMulti2Mapping = sofa::component::mapping::linear::CenterOfMassMapping<TIn1, TIn2, TOut>;
-
-} // namespace sofa::component::mapping
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/CenterOfMassMulti2Mapping.h")

@@ -53,12 +53,15 @@ void TriangleSetTopologyContainer::addTriangle(Index a, Index b, Index c )
 
 void TriangleSetTopologyContainer::init()
 {
-    d_triangle.updateIfDirty(); // make sure m_triangle is up to date
-
     helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
-    // Todo (epernod 2019-03-12): optimise by removing this loop or at least create AroundVertex buffer at the same time.
-    if (!m_triangle.empty())
+
+    if (d_initPoints.isSet())
     {
+        setNbPoints(Size(d_initPoints.getValue().size()));
+    }
+    else if (!m_triangle.empty())
+    {
+        // Todo (epernod 2019-03-12): optimise by removing this loop or at least create AroundVertex buffer at the same time.
         for (size_t i=0; i<m_triangle.size(); ++i)
         {
             for(PointID j=0; j<3; ++j)
@@ -1055,5 +1058,17 @@ bool TriangleSetTopologyContainer::linkTopologyHandlerToData(core::topology::Top
     }
 }
 
+bool TriangleSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::TRIANGLE)
+    {
+        d_triangle.delOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return EdgeSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
 
 } //namespace sofa::component::topology::container::dynamic

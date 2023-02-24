@@ -105,6 +105,74 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 }
 
 template <class DataTypes>
+void SpringForceField<DataTypes>::applyRemovedEdges(const sofa::core::topology::EdgesRemoved* edgesRemoved, sofa::Index mstateId)
+{
+    if (edgesRemoved == nullptr)
+        return;
+
+    const type::vector<sofa::core::topology::Topology::EdgeID>& edges = edgesRemoved->getArray();
+
+    if (edges.empty())
+        return;
+    
+    core::topology::BaseMeshTopology* modifiedTopology;
+    if (mstateId == 0)
+    {
+        modifiedTopology = this->getMState1()->getContext()->getMeshTopology();
+    }
+    else
+    {
+        modifiedTopology = this->getMState2()->getContext()->getMeshTopology();
+    }
+
+    if (modifiedTopology == nullptr)
+        return;
+
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    
+    const auto& topologyEdges = modifiedTopology->getEdges();
+
+    type::vector<sofa::Index> springIdsToDelete;
+
+    for (const auto& edgeId : edges) // iterate on the edgeIds to remove and save the respective point pairs
+    {
+        auto& firstPointId = topologyEdges[edgeId][0];
+        auto& secondPointId = topologyEdges[edgeId][1];
+
+        // sane default value to check against, if no spring is found for the edge
+        int springIdToDelete = -1;
+        sofa::Index i = 0;
+
+        for (const auto& spring : springsValue) // loop on the list of springs to find the spring with targeted pointIds
+        {
+            auto& firstSpringPointId = mstateId == 0 ? spring.m1 : spring.m2;
+            auto& secondSpringPointId = mstateId == 0 ? spring.m2 : spring.m1;
+
+            if (firstSpringPointId == firstPointId && secondSpringPointId == secondPointId)
+            {
+                dmsg_info() << "Spring " << spring << " has an edge to be removed: REMOVED edgeId: " << edgeId;
+                springIdToDelete = i;
+                break; // break as soon as the first matching spring is found. TODO is there a valid case for having multiple springs on the same topology edge?
+            }
+            ++i;
+        }
+       
+        if (springIdToDelete != -1) // if a matching spring was found, add it to the vector of Ids that will be removed
+        {
+            springIdsToDelete.push_back(springIdToDelete);
+        }
+    }
+
+    // sort the edges to make sure we detele them from last to first
+    std::sort (springIdsToDelete.begin(), springIdsToDelete.end());
+    for (auto it = springIdsToDelete.rbegin(); it != springIdsToDelete.rend(); ++it) // delete accumulated springs to be removed
+    {
+        springsValue.erase(springsValue.begin() + (*it));
+    }
+}
+
+
+template <class DataTypes>
 void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId)
 {
     if (pointsRemoved == nullptr)
@@ -135,7 +203,7 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     {
         --nbPoints;
 
-        sofa::type::vector<sofa::Index> toDelete;
+        type::vector<sofa::Index> toDelete;
         sofa::Index i {};
         for (const auto& spring : springsValue) // loop on the list of springs to find springs with targeted pointId
         {
@@ -199,6 +267,19 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
                 msg_info(this) << "Removed points: [" << pointsRemoved->getArray() << "]";
                 applyRemovedPoints(pointsRemoved, mstateId);
             });
+
+        if (topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
+        {
+            indices.linkToEdgeDataArray();  
+            indices.addTopologyEventCallBack(core::topology::TopologyChangeType::EDGESREMOVED,
+                [this, mstateId](const core::topology::TopologyChange* change)
+                {
+                    const auto* edgesRemoved = static_cast<const core::topology::EdgesRemoved*>(change);
+                    msg_info(this) << "Removed edges: [" << edgesRemoved->getArray() << "]";
+                    applyRemovedEdges(edgesRemoved, mstateId);
+                });
+        }
+        
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
             [this](const core::topology::TopologyChange*)
             {
@@ -214,23 +295,42 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
 template<class DataTypes>
 void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring)
 {
+    const auto springForce = this->computeSpringForce(p1, v1, p2, v2, spring);
+
+    if (springForce)
+    {
+        sofa::Index a = spring.m1;
+        sofa::Index b = spring.m2;
+
+        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + std::get<0>(springForce->force)) ;
+        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) + std::get<1>(springForce->force)) ;
+
+        ener += springForce->energy;
+    }
+}
+
+template <class DataTypes>
+auto SpringForceField<DataTypes>::computeSpringForce(const VecCoord& p1, const VecDeriv& v1, const VecCoord& p2, const VecDeriv& v2, const Spring& spring)
+-> std::unique_ptr<SpringForce>
+{
     sofa::Index a = spring.m1;
     sofa::Index b = spring.m2;
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d<1.0e-4 ) // null length => no force
-        return;
+        return {};
+    std::unique_ptr<SpringForce> springForce = std::make_unique<SpringForce>();
+
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
     Real elongation = d - spring.initpos;
-    ener += elongation * elongation * spring.ks /2;
+    springForce->energy = elongation * elongation * spring.ks /2;
     typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
     Real elongationVelocity = dot(u,relativeVelocity);
     Real forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
     typename DataTypes::DPos force = u*forceIntensity;
-
-    DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
-    DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
+    springForce->force = std::make_pair(force, -force);
+    return springForce;
 }
 
 template<class DataTypes>
@@ -239,26 +339,23 @@ void SpringForceField<DataTypes>::addForce(
     const DataVecCoord& data_x1, const DataVecCoord& data_x2,
     const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
-
-    VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 = data_x1.getValue();
     const VecDeriv& v1 = data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
+
     const VecCoord& x2 = data_x2.getValue();
     const VecDeriv& v2 = data_v2.getValue();
 
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f1 = sofa::helper::getWriteOnlyAccessor(data_f1);
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f2 = sofa::helper::getWriteOnlyAccessor(data_f2);
 
     const type::vector<Spring>& springs= this->springs.getValue();
-
     f1.resize(x1.size());
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
+    for (unsigned int i=0; i < springs.size(); i++)
     {
-        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
+        this->addSpringForce(this->m_potentialEnergy,f1.wref(),x1,v1,f2.wref(),x2,v2, i, springs[i]);
     }
-    data_f1.endEdit();
-    data_f2.endEdit();
 }
 
 template<class DataTypes>
@@ -309,14 +406,14 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< Vector3 > points[4];
+    std::vector< Vec3 > points[4];
     bool external = (this->mstate1 != this->mstate2);
     const type::vector<Spring>& springs = this->springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
         Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
-        Vector3 point2, point1;
+        Vec3 point2, point1;
         point1 = DataTypes::getCPos(p1[springs[i].m1]);
         point2 = DataTypes::getCPos(p2[springs[i].m2]);
 

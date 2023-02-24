@@ -47,7 +47,7 @@ namespace sofa
 {
 
 typedef ::testing::Types<
-TestDataEngine< component::engine::transform::DifferenceEngine<type::Vector3> >,
+TestDataEngine< component::engine::transform::DifferenceEngine<type::Vec3> >,
 TestDataEngine< component::engine::transform::DilateEngine<defaulttype::Vec3Types> >, // DilateEngine only defined for Vec3dTypes
 TestDataEngine< component::engine::transform::IndexValueMapper<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::transform::MapIndices<int> >,

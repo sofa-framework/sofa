@@ -23,13 +23,4 @@
 
 #include <sofa/component/engine/transform/TransformMatrixEngine.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/TransformMatrixEngine.h")
-
-namespace sofa::component::engine
-{
-    using AbstractTransformMatrixEngine = sofa::component::engine::transform::AbstractTransformMatrixEngine;
-    using TranslateTransformMatrixEngine = sofa::component::engine::transform::TranslateTransformMatrixEngine;
-    using RotateTransformMatrixEngine = sofa::component::engine::transform::RotateTransformMatrixEngine;
-    using ScaleTransformMatrixEngine = sofa::component::engine::transform::ScaleTransformMatrixEngine;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/TransformMatrixEngine.h")

@@ -368,8 +368,8 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::Visua
 {
     if (!vparams->displayFlags().getShowMappings()) return;
 
-    std::vector< sofa::type::Vector3 > points;
-    sofa::type::Vector3 point;
+    std::vector< sofa::type::Vec3 > points;
+    sofa::type::Vec3 point;
 
     for(unsigned int i=0; i<_qFine.size(); i++)
     {

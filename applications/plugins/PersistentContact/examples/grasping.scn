@@ -5,7 +5,7 @@
 	<GenericConstraintSolver tolerance="1e-6" printLog="0" maxIterations="200"/>
 	<FreeMotionAnimationLoop/>
 	
-	<DefaultPipeline depth="6" verbose="0" draw="0"/>
+	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="3" contactDistance="0" coneFactor="0.5" angleCone="0.002"/>
@@ -20,7 +20,7 @@
 		<SparseTAUCSLLtSolver name="taucs"/>
 		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>
 		<MechanicalObject name="MichelleM0" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
-		<UniformMass totalmass="3.0"/>
+		<UniformMass totalMass="3.0"/>
 		<TetrahedronFEMForceField name="FEM" youngModulus="500000" poissonRatio="0.4"/>
                 <LinearSolverConstraintCorrection  linearSolver="@taucs"/>
 		
@@ -52,7 +52,7 @@
 		
 		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>
 		<MechanicalObject name="MichelleM0" dx="30" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
-		<UniformMass totalmass="3.0"/>
+		<UniformMass totalMass="3.0"/>
 		<TetrahedronFEMForceField name="FEM" youngModulus="500000" poissonRatio="0.4"/>
                 <LinearSolverConstraintCorrection linearSolver="@taucs"/>
 		

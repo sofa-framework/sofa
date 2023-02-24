@@ -36,4 +36,17 @@ namespace sofa::core
     template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec3Types >;
     template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec6Types >;
     template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaRigid3Types >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec1dTypes, CudaVec1dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec2dTypes, CudaVec1dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3dTypes, CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3dTypes, CudaVec2dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3dTypes, CudaVec1dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec6dTypes, CudaVec1dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3dTypes, CudaVec1dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3dTypes, CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3dTypes, CudaVec6dTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3dTypes, CudaRigid3dTypes >;
+#endif
 } // namespace sofa::core

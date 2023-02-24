@@ -226,10 +226,10 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     Real dt = (Real) this->getContext()->getDt();
     Real DT = m_tEnd.getValue() - m_tBegin.getValue();
 
-    vparams->drawTool()->saveLastState();
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::Vec3> vertices;
     constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     const Vec3R& mx0 = m_x0.getValue();
@@ -246,14 +246,14 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
 
         Vec3R p = mx0*H00 + mdx0*H10 + mx1*H01 + mdx1*H11;
 
-        sofa::type::Vector3 v(p[0], p[1],p[2]);
+        sofa::type::Vec3 v(p[0], p[1],p[2]);
         vertices.push_back(v);
     }
     vparams->drawTool()->drawLineStrip(vertices, 2, color);
 
     vertices.clear();
-    vertices.push_back(sofa::type::Vector3(mx0[0], mx0[1], mx0[2]));
-    vertices.push_back(sofa::type::Vector3(mx1[0], mx1[1], mx1[2]));
+    vertices.push_back(sofa::type::Vec3(mx0[0], mx0[1], mx0[2]));
+    vertices.push_back(sofa::type::Vec3(mx1[0], mx1[1], mx1[2]));
 
     vparams->drawTool()->drawPoints(vertices, 5.0, sofa::type::RGBAColor::red());
 
@@ -265,7 +265,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     vertices.push_back(mx1 + mdx1*0.1);
 
     vparams->drawTool()->drawLines(vertices, 1.0, sofa::type::RGBAColor::red());
-    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace sofa::component::constraint::projective

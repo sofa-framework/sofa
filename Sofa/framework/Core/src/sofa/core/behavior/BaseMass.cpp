@@ -26,7 +26,7 @@ namespace sofa::core::behavior
 {
 
 BaseMass::BaseMass()
-    : rayleighMass (initData(&rayleighMass , SReal(0), "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
+    : rayleighMass (initData(&rayleighMass , 0_sreal, "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
 {
 }
 

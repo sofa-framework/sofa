@@ -54,10 +54,12 @@ void QuadSetTopologyContainer::addQuad(Index a, Index b, Index c, Index d )
 
 void QuadSetTopologyContainer::init()
 {
-    d_quad.updateIfDirty(); // make sure m_quad is up to date
-
     helper::ReadAccessor< Data< sofa::type::vector<Quad> > > m_quads = d_quad;
-    if (!m_quads.empty())
+    if (d_initPoints.isSet())
+    {
+        setNbPoints(Size(d_initPoints.getValue().size()));
+    } 
+    else if (!m_quads.empty())
     {
         for (size_t i=0; i<m_quads.size(); ++i)
         {
@@ -778,6 +780,19 @@ bool QuadSetTopologyContainer::linkTopologyHandlerToData(core::topology::Topolog
     else
     {
         return EdgeSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
+bool QuadSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::QUAD)
+    {
+        d_quad.delOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return EdgeSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
     }
 }
 

@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/QuadBendingSprings.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/QuadBendingSprings.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using QuadBendingSprings = sofa::component::solidmechanics::spring::QuadBendingSprings<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/QuadBendingSprings.h")
