@@ -438,7 +438,7 @@ void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()
     NonUniformHexahedronFEMForceFieldAndMassT::init();
 
 
-    if(d_drawSize.getValue()==-1)
+    if(d_drawSize.getValue()==-1 && this->_sparseGrid != nullptr)
         d_drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
 
 }

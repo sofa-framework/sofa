@@ -170,8 +170,12 @@ Operation *PickHandler::changeOperation(sofa::component::setting::MouseButtonSet
         operations[setting->button.getValue().getSelectedId()] = nullptr;
     }
     Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
-    mouseOp->configure(this,setting);
-    operations[setting->button.getValue().getSelectedId()]=mouseOp;
+    if (mouseOp)
+    {
+        mouseOp->configure(this,setting);
+        operations[setting->button.getValue().getSelectedId()]=mouseOp;
+    }
+
     return mouseOp;
 }
 
