@@ -23,15 +23,4 @@
 
 #include <sofa/component/collision/geometry/TriangleModel.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/TriangleModel.h")
-
-namespace sofa::component::collision
-{
-    template<class DataTypes>
-    using TTriangle = sofa::component::collision::geometry::TTriangle<DataTypes>;
-    template<class DataTypes>
-    using TriangleCollisionModel = sofa::component::collision::geometry::TriangleCollisionModel<DataTypes>;
-
-    using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/TriangleModel.h")

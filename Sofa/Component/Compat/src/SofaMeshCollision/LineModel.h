@@ -23,15 +23,4 @@
 
 #include <sofa/component/collision/geometry/LineModel.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/LineModel.h")
-
-namespace sofa::component::collision
-{
-    template<class DataTypes>
-    using TLine = sofa::component::collision::geometry::TLine<DataTypes>;
-    template<class DataTypes>
-    using LineCollisionModel = sofa::component::collision::geometry::LineCollisionModel<DataTypes>;
-
-    using Line = TLine<sofa::defaulttype::Vec3Types>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/LineModel.h")

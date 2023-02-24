@@ -16,13 +16,15 @@
     <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-  
-  <AnimationLoopParallelScheduler name="mainLoop" threadNumber="0" />
+
+  <AnimationLoopParallelScheduler name="mainLoop" nbThreads="0" />
 
   <Node name="scene1" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop1" />
     <CollisionPipeline name="CollisionPipeline" verbose="0" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -55,6 +57,7 @@
   <Node name="scene2" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
     <CollisionPipeline name="CollisionPipeline" verbose="0" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -87,6 +90,7 @@
   <Node name="scene3" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
     <CollisionPipeline name="CollisionPipeline" verbose="0" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -120,6 +124,7 @@
   <Node name="scene4" gravity="0 -9.81 0" dt="0.02">
     <FreeMotionAnimationLoop name="loop2" />
     <CollisionPipeline name="CollisionPipeline" verbose="0" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />

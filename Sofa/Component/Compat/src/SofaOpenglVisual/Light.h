@@ -27,21 +27,8 @@
 #include <sofa/gl/component/shader/Light.h>
 #define SOFAGL_COMPONENT_LIGHT
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/Light.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/Light.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/Light.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_LIGHT
-
-namespace sofa::component::visualmodel
-{
-    using Light = sofa::gl::component::shader::Light;
-    using SpotLight = sofa::gl::component::shader::SpotLight;
-    using PositionalLight = sofa::gl::component::shader::PositionalLight;
-    using DirectionalLight = sofa::gl::component::shader::DirectionalLight;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_LIGHT

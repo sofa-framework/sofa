@@ -30,21 +30,12 @@ set(SOURCE_FILES
 )
 
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set (COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/helper/testing/BaseTest.h
-	${COMPATSRC_ROOT}/sofa/helper/testing/NumericTest.h
-	${COMPATSRC_ROOT}/sofa/helper/testing/TestMessageHandler.h
-    ${COMPATSRC_ROOT}/SofaSimulationGraph/testing/BaseSimulationTest.h
-)
-
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType Sofa.Core Sofa.Simulation.Graph gtest SofaGTestMain )
 set(SOFA_TESTING_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 

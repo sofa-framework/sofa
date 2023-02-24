@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/VectorSpringForceField.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/VectorSpringForceField.inl")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using VectorSpringForceField = sofa::component::solidmechanics::spring::VectorSpringForceField<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/VectorSpringForceField.inl")

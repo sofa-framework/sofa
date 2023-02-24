@@ -23,13 +23,4 @@
 
 #include <sofa/component/playback/ReadState.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadState.h")
-
-namespace sofa::component::misc
-{
-    using ReadState = sofa::component::playback::ReadState;
-    using ReadStateCreator = sofa::component::playback::ReadStateCreator;
-    using ReadStateActivator = sofa::component::playback::ReadStateActivator;
-    using ReadStateModifier = sofa::component::playback::ReadStateModifier;
-
-} // namespace sofa::component::misc
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadState.h")

@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/transform/Index2ValuesMapper.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/Index2ValuesMapper.h")
-
-namespace sofa::component::engine
-{
-    template<class DataTypes>
-    using Index2ValuesMapper = sofa::component::engine::transform::Index2ValuesMapper<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/Index2ValuesMapper.h")

@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/TriangularBiquadraticSpringsForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/TriangularBiquadraticSpringsForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using TriangularBiquadraticSpringsForceField = sofa::component::solidmechanics::spring::TriangularBiquadraticSpringsForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/TriangularBiquadraticSpringsForceField.h")

@@ -19,8 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#ifndef MULTITHREADING_CONFIG_H
+#define MULTITHREADING_CONFIG_H
 
 #include <sofa/config.h>
 
-SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/gl/Capture.h")
+#ifdef SOFA_BUILD_MULTITHREADING
+#  define SOFA_TARGET MultiThreading
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#endif
+
+#ifdef SOFA_BUILD_MULTITHREADING
+#define SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME(msg)
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME(msg) \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v23.06", "v23.12", msg)
+#endif

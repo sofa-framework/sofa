@@ -26,7 +26,7 @@
 #if __has_include(<sofa/gl/component/shader/OglAttribute.inl>)
 #include <sofa/gl/component/shader/OglAttribute.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglAttribute.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglAttribute.inl")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglAttribute.inl> instead of this one."

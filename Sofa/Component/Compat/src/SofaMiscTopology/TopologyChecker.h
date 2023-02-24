@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/topology/utility/TopologyChecker.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/utility/TopologyChecker.h")
-
-namespace sofa::component::misc
-{
-
-    using TopologyChecker = sofa::component::topology::utility::TopologyChecker;
-
-} // namespace sofa::component::misc
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/utility/TopologyChecker.h")

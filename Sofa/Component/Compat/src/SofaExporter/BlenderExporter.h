@@ -23,18 +23,4 @@
 
 #include <sofa/component/io/mesh/BlenderExporter.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/BlenderExporter.h")
-
-namespace sofa::component::_blenderexporter_
-{
-    template<class T>
-    using BlenderExporter = sofa::component::io::mesh::BlenderExporter<T>;
-
-} // namespace sofa::component::_blenderexporter_
-
-namespace sofa::component::exporter
-{
-    template<class T>
-    using BlenderExporter = sofa::component::io::mesh::BlenderExporter<T>;
-
-} // namespace sofa::component::exporter
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/BlenderExporter.h")

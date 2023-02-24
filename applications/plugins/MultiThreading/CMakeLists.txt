@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(MultiThreading VERSION 0.1)
 
 set(HEADER_FILES
-    src/MultiThreading/config.h
+    src/MultiThreading/config.h.in
     src/MultiThreading/initMultiThreading.h
     src/MultiThreading/DataExchange.h
     src/MultiThreading/DataExchange.inl
@@ -75,9 +75,6 @@ target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.FEM.Elastic)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.Mapping.Linear)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.StateContainer)
 target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.Spring)
-
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
-
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(

@@ -23,10 +23,4 @@
 
 #include <sofa/component/io/mesh/MeshXspLoader.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshXspLoader.h")
-
-namespace sofa::component::loader
-{
-    using MeshXspLoader = sofa::component::io::mesh::MeshXspLoader;
-
-} // namespace sofa::component::loader
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/io/mesh/MeshXspLoader.h")
