@@ -196,7 +196,21 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
 template<class DataTypes>
 const typename PolynomialRestShapeSpringsForceField<DataTypes>::DataVecCoord* PolynomialRestShapeSpringsForceField<DataTypes>::getExtPosition() const
 {
-    return (m_useRestMState ? d_restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    if(m_useRestMState)
+    {
+        if (d_restMState)
+        {
+            return d_restMState->read(core::VecCoordId::position());
+        }
+    }
+    else
+    {
+        if (this->mstate)
+        {
+            return this->mstate->read(core::VecCoordId::restPosition());
+        }
+    }
+    return nullptr;
 }
 
 
@@ -209,7 +223,14 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
 
     helper::WriteAccessor<DataVecDeriv> f1 = f;
     helper::ReadAccessor<DataVecCoord> p1 = x;
-    helper::ReadAccessor<DataVecCoord> p0 = *getExtPosition();
+
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
+    {
+        return;
+    }
+
+    helper::ReadAccessor< DataVecCoord > p0 = *extPosition;
 
     msg_info() << "P1 = " << p1.ref();
     msg_info() << "P0 = " << p0.ref();
@@ -372,7 +393,13 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;
 
-    helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
+    {
+        return;
+    }
+
+    helper::ReadAccessor< DataVecCoord > p0 = *extPosition;
     helper::ReadAccessor< DataVecCoord > p  = this->mstate->read(core::VecCoordId::position());
 
     const VecIndex& indices = m_indices;
