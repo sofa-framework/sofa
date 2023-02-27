@@ -202,17 +202,25 @@ auto StiffSpringForceField<DataTypes>::computeSpringForce(
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, SReal kFactor, SReal /*bFactor*/)
+void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, SReal kFactor, SReal bFactor)
 {
+    typename DataTypes::DPos dforce = computeSpringDForce(df1, dx1, df2, dx2, i, spring, kFactor, bFactor);
+
     const sofa::Index a = spring.m1;
     const sofa::Index b = spring.m2;
-    const typename DataTypes::CPos d = DataTypes::getDPos(dx2[b]) - DataTypes::getDPos(dx1[a]);
-    typename DataTypes::DPos dforce = this->dfdx[i]*d;
-
-    dforce *= kFactor;
 
     DataTypes::setDPos( df1[a], DataTypes::getDPos(df1[a]) + dforce ) ;
     DataTypes::setDPos( df2[b], DataTypes::getDPos(df2[b]) - dforce ) ;
+}
+
+template <class DataTypes>
+typename DataTypes::DPos StiffSpringForceField<DataTypes>::computeSpringDForce(VecDeriv& df1,
+    const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, sofa::Index i, const Spring& spring,
+    SReal kFactor, SReal bFactor)
+{
+    SOFA_UNUSED(bFactor);
+    const typename DataTypes::CPos d = DataTypes::getDPos(dx2[spring.m2]) - DataTypes::getDPos(dx1[spring.m1]);
+    return this->dfdx[i] * d * kFactor;
 }
 
 template<class DataTypes>
@@ -227,8 +235,8 @@ void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* mp
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
-    VecDeriv&        df1 = *data_df1.beginEdit();
-    VecDeriv&        df2 = *data_df2.beginEdit();
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv>> df1 = sofa::helper::getWriteOnlyAccessor(data_df1);
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv>> df2 = sofa::helper::getWriteOnlyAccessor(data_df2);
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
     Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
@@ -240,11 +248,8 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 
     for (sofa::Index i=0; i<springs.size(); i++)
     {
-        this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i], kFactor, bFactor);
+        this->addSpringDForce(df1.wref(), dx1,df2.wref(),dx2, i, springs[i], kFactor, bFactor);
     }
-
-    data_df1.endEdit();
-    data_df2.endEdit();
 }
 
 

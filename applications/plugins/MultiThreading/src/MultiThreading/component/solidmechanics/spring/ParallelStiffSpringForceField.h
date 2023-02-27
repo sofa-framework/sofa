@@ -22,6 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
+#include <MultiThreading/TaskSchedulerUser.h>
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 
 namespace sofa::simulation
@@ -36,7 +37,7 @@ template <class DataTypes>
 using StiffSpringForceField = sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes>;
 
 template <class DataTypes>
-class ParallelStiffSpringForceField : public virtual StiffSpringForceField<DataTypes>
+class ParallelStiffSpringForceField : public virtual StiffSpringForceField<DataTypes>, public TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelStiffSpringForceField, DataTypes),
@@ -46,6 +47,7 @@ public:
     using VecDeriv = typename DataTypes::VecDeriv;
     using DataVecCoord = sofa::core::objectmodel::Data<VecCoord>;
     using DataVecDeriv = sofa::core::objectmodel::Data<VecDeriv>;
+    using Real = typename Inherit1::Real;
 
     using Spring = typename Inherit1::Spring;
     using SpringForce = typename Inherit1::SpringForce;
@@ -54,10 +56,7 @@ public:
     void init() override;
 
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
-
-protected:
-    sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
-    void initTaskScheduler();
+    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 };
 
 }
