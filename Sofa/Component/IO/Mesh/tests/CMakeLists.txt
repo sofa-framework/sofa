@@ -8,6 +8,7 @@ set(SOURCE_FILES
     MeshOBJLoader_test.cpp
     MeshVTKLoader_test.cpp
     MeshXspLoader_test.cpp
+    OffSequenceLoader_test.cpp
     STLExporter_test.cpp
     VisualModelOBJExporter_test.cpp
 )
