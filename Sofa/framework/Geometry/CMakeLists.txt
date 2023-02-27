@@ -6,16 +6,20 @@ set(SOFAGEOMETRYSRC_ROOT "src/sofa/geometry")
 set(HEADER_FILES
     ${SOFAGEOMETRYSRC_ROOT}/config.h.in
     ${SOFAGEOMETRYSRC_ROOT}/init.h
-    ${SOFAGEOMETRYSRC_ROOT}/ElementType.h
-    ${SOFAGEOMETRYSRC_ROOT}/ElementInfo.h
-    ${SOFAGEOMETRYSRC_ROOT}/Point.h
     ${SOFAGEOMETRYSRC_ROOT}/Edge.h
-    ${SOFAGEOMETRYSRC_ROOT}/Triangle.h
+    ${SOFAGEOMETRYSRC_ROOT}/ElementInfo.h
+    ${SOFAGEOMETRYSRC_ROOT}/ElementType.h
+    ${SOFAGEOMETRYSRC_ROOT}/Hexahedron.h
+    ${SOFAGEOMETRYSRC_ROOT}/Pentahedron.h
+    ${SOFAGEOMETRYSRC_ROOT}/Point.h
+    ${SOFAGEOMETRYSRC_ROOT}/Pyramid.h
     ${SOFAGEOMETRYSRC_ROOT}/Quad.h
     ${SOFAGEOMETRYSRC_ROOT}/Tetrahedron.h
-    ${SOFAGEOMETRYSRC_ROOT}/Pentahedron.h
-    ${SOFAGEOMETRYSRC_ROOT}/Pyramid.h
-    ${SOFAGEOMETRYSRC_ROOT}/Hexahedron.h
+    ${SOFAGEOMETRYSRC_ROOT}/Triangle.h
+
+    ${SOFAGEOMETRYSRC_ROOT}/proximity/PointTriangle.h
+    ${SOFAGEOMETRYSRC_ROOT}/proximity/SegmentTriangle.h
+    ${SOFAGEOMETRYSRC_ROOT}/proximity/TriangleTriangle.h
 )
 
 set(SOURCE_FILES

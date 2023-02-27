@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,37 +21,57 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <sofa/geometry/config.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Mat_solve_LCP.h>
 
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_THREAD
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_FILESYSTEM
+#include <utility>
 
-// DEPRECATED since v21.06
-// will be removed at v21.12
-#define SOFAHELPER_HAVE_BOOST = @SOFA_HELPER_HAVE_BOOST@;
-#define SOFAHELPER_HAVE_BOOST_THREAD = @SOFA_HELPER_HAVE_BOOST_THREAD@;
-#define SOFAHELPER_HAVE_BOOST_FILESYSTEM = @SOFA_HELPER_HAVE_BOOST_FILESYSTEM@;
+namespace sofa::geometry::proximity
+{
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+template<typename Node,
+     typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+     typename = std::enable_if_t<std::is_scalar_v<T>>
+>
+[[nodiscard]]
+constexpr bool computeClosestPointOnTriangleToPoint(
+    const Node& triangleP_0, const Node& triangleP_1, const Node& triangleP_2,
+    const Node& pointQ,
+    Node &closestPointInP)
+{
+    type::MatNoInit<3, 3, T> A;
+    type::VecNoInit<3, T> b;
+    type::VecNoInit<6, T> result;
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_WRITEACCESSOR_RESIZE_DEPRECATED()
-#else
-#define SOFA_WRITEACCESSOR_RESIZE_DEPRECATED() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.12", "v23.06", "")
-#endif // SOFA_BUILD_SOFA_HELPER
+    const Node P0P1 = triangleP_1 - triangleP_0;
+    const Node P0P2 = triangleP_2 - triangleP_0;
+    const Node P0Q = pointQ - triangleP_0;
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_PROXIMITY_CLASSES_DEPRECATED()
-#else
-#define SOFA_PROXIMITY_CLASSES_DEPRECATED() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.06", "v23.12", "Use free functions in sofa::geometry::proximity instead")
-#endif // SOFA_BUILD_SOFA_HELPER
+    constexpr T zero = static_cast<T>(0);
+    constexpr T one = static_cast<T>(1);
+
+    A[0][2] = one;
+    A[1][2] = one;
+    A[2][0] = -one; A[2][1] = -one; A[2][2] = zero;
+    A[0][0] = dot(P0P1,P0P1);   A[0][1] = dot(P0P2,P0P1);
+    A[1][0] = dot(P0P1,P0P2);   A[1][1] = dot(P0P2,P0P2);
+
+    b[2] = one;
+    b[0] = -dot(P0Q,P0P1);
+    b[1] = -dot(P0Q,P0P2);
+
+    if (type::solveLCP(b, A, result))
+    {
+        const T alpha = result[3];
+        const T beta = result[4];
+
+        closestPointInP = triangleP_0 + P0P1*alpha + P0P2*beta;
+        return true;
+    }
+
+    closestPointInP = triangleP_0;
+    return false;
+}
+
+}
