@@ -91,10 +91,8 @@ public:
 
         if(arg)
         {
-
-            fromPath = arg->getAttribute(std::string("from"), NULL );
-            toPath = arg->getAttribute(std::string("to"), NULL );
-
+            fromPath = arg->getAttribute(std::string("from"), "" );
+            toPath = arg->getAttribute(std::string("to"), "" );
         }
 
         //context->findLinkDest(stout, fromPath, NULL);
