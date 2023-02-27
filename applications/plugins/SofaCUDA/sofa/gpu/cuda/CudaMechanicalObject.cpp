@@ -37,6 +37,7 @@ template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3f1Types>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec6fTypes>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API MechanicalObject<CudaRigid2fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec1dTypes>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec2dTypes>;
@@ -44,6 +45,7 @@ template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec3d1Types>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaVec6dTypes>;
 template class SOFA_GPU_CUDA_API MechanicalObject<CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API MechanicalObject<CudaRigid2dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace sofa::component::statecontainer
@@ -58,6 +60,7 @@ int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computat
         .add< component::statecontainer::MechanicalObject<CudaVec3f1Types> >()
         .add< component::statecontainer::MechanicalObject<CudaVec6fTypes> >()
         .add< component::statecontainer::MechanicalObject<CudaRigid3fTypes> >()
+        .add< component::statecontainer::MechanicalObject<CudaRigid2fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::statecontainer::MechanicalObject<CudaVec1dTypes> >()
         .add< component::statecontainer::MechanicalObject<CudaVec2dTypes> >()
@@ -65,6 +68,7 @@ int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computat
         .add< component::statecontainer::MechanicalObject<CudaVec3d1Types> >()
         .add< component::statecontainer::MechanicalObject<CudaVec6dTypes> >()
         .add< component::statecontainer::MechanicalObject<CudaRigid3dTypes> >()
+        .add< component::statecontainer::MechanicalObject<CudaRigid2dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
@@ -75,6 +79,7 @@ int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations
         .add< component::statecontainer::MappedObject<CudaVec3f1Types> >()
         .add< component::statecontainer::MappedObject<CudaVec6fTypes> >()
         .add< component::statecontainer::MappedObject<CudaRigid3fTypes> >()
+        .add< component::statecontainer::MappedObject<CudaRigid2fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::statecontainer::MappedObject<CudaVec1dTypes> >()
         .add< component::statecontainer::MappedObject<CudaVec2dTypes> >()
@@ -82,6 +87,7 @@ int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations
         .add< component::statecontainer::MappedObject<CudaVec3d1Types> >()
         .add< component::statecontainer::MappedObject<CudaVec6dTypes> >()
         .add< component::statecontainer::MappedObject<CudaRigid3dTypes> >()
+        .add< component::statecontainer::MappedObject<CudaRigid2dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
