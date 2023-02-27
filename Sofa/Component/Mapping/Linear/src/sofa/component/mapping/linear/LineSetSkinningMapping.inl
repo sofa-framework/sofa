@@ -115,6 +115,9 @@ void LineSetSkinningMapping<TIn, TOut>::init()
         }
     }
 
+    if (m_topology->getNbLines() == 0)
+        return;
+
     for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
         double	sumWeights = 0.0;
