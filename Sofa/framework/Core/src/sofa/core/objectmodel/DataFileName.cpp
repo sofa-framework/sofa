@@ -145,7 +145,7 @@ void DataFileName::updatePath()
             {
                 if( m_fullpath.find(path) == 0 )
                 {
-                    m_relativepath = DataRepository.relativeToPath(m_fullpath, path);
+                    m_relativepath = sofa::helper::system::FileRepository::relativeToPath(m_fullpath, path);
                     break;
                 }
             }

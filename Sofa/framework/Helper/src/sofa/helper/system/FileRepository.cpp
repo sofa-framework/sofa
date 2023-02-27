@@ -320,36 +320,26 @@ const std::string FileRepository::getPathsJoined()
     return implodedStr;
 }
 
-/*static*/
 std::string FileRepository::relativeToPath(std::string path, std::string refPath)
 {
-    /// This condition replace the #ifdef in the code.
-    /// The advantage is that the code is compiled and is
-    /// removed by the optimization pass.
-    if( ! ON_WIN32 )
-    {
-        /// Case sensitive OS.
-        std::string::size_type loc = path.find( refPath, 0 );
-        if (loc==0)
-            path = path.substr(refPath.size()+1);
-
-        return path;
-    }
-
-    /// WIN32 is a pain here because of mixed case formatting with randomly
-    /// picked slash and backslash to separate dirs.
-    std::string tmppath;
     std::replace(path.begin(),path.end(),'\\' , '/' );
     std::replace(refPath.begin(),refPath.end(),'\\' , '/' );
 
     std::transform(refPath.begin(), refPath.end(), refPath.begin(), ::tolower );
 
-    tmppath = path ;
+    std::string tmppath=path;
     std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
 
     std::string::size_type loc = tmppath.find( refPath, 0 );
-    if (loc==0)
-        path = path.substr(refPath.size()+1);
+    if (loc != std::string::npos)
+    {
+        path = path.substr(refPath.size());
+
+        while(!path.empty() && (path.front() == '/' || path.front() == '\\' ))
+        {
+            path = path.substr(1);
+        }
+    }
 
     return path;
 }
