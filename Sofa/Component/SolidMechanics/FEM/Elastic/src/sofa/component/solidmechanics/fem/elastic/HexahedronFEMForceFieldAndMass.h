@@ -35,10 +35,12 @@ template<class DataTypes>
 class HexahedronFEMForceFieldAndMass : virtual public core::behavior::Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,DataTypes), SOFA_TEMPLATE(HexahedronFEMForceField,DataTypes));
-
     typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
     typedef sofa::core::behavior::Mass<DataTypes> MassT;
+    typedef typename HexahedronFEMForceFieldT::DataTypes HexaFEMDataTypes;
+    typedef typename MassT::DataTypes MassDataTypes;
+
+    SOFA_CLASS2(SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,MassDataTypes), SOFA_TEMPLATE(HexahedronFEMForceField,HexaFEMDataTypes));
 
     typedef typename DataTypes::Real        Real        ;
     typedef typename DataTypes::Coord       Coord       ;
