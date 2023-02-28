@@ -33,23 +33,23 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
 */
-template<class DataTypes>
-class HexahedralFEMForceFieldAndMass : virtual public sofa::core::behavior::Mass<DataTypes>, virtual public HexahedralFEMForceField<DataTypes>
+template<class TDataTypes>
+class HexahedralFEMForceFieldAndMass : virtual public sofa::core::behavior::Mass<TDataTypes>, virtual public HexahedralFEMForceField<TDataTypes>
 {
 public:
 
-    typedef HexahedralFEMForceField<DataTypes> HexahedralFEMForceFieldT;
-    typedef sofa::core::behavior::Mass<DataTypes> MassT;
-    typedef typename HexahedralFEMForceFieldT::DataTypes HexaFEMDataTypes;
-    typedef typename MassT::DataTypes MassDataTypes;
+    typedef HexahedralFEMForceField<TDataTypes> HexahedralFEMForceFieldT;
+    typedef sofa::core::behavior::Mass<TDataTypes> MassT;
+    typedef typename HexahedralFEMForceFieldT::DataTypes HexaFEMTDataTypes;
+    typedef typename MassT::DataTypes MassTDataTypes;
 
-    SOFA_CLASS2(SOFA_TEMPLATE(HexahedralFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,MassDataTypes), SOFA_TEMPLATE(HexahedralFEMForceField,HexaFEMDataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(HexahedralFEMForceFieldAndMass,TDataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,MassTDataTypes), SOFA_TEMPLATE(HexahedralFEMForceField,HexaFEMTDataTypes));
 
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename TDataTypes::VecCoord VecCoord;
+    typedef typename TDataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
+    typedef typename TDataTypes::Coord Coord;
+    typedef typename TDataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
@@ -100,7 +100,7 @@ public:
 
     SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const override ///< vMv/2 using dof->getV() override
     {
-        msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"; 
+        msg_error() << "HexahedralFEMForceFieldAndMass<TDataTypes>::getKineticEnergy not yet implemented";
         return 0;
     }
 

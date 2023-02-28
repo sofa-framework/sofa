@@ -31,23 +31,23 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
 */
-template<class DataTypes>
-class HexahedronFEMForceFieldAndMass : virtual public core::behavior::Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
+template<class TDataTypes>
+class HexahedronFEMForceFieldAndMass : virtual public core::behavior::Mass<TDataTypes>, virtual public HexahedronFEMForceField<TDataTypes>
 {
 public:
-    typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
-    typedef sofa::core::behavior::Mass<DataTypes> MassT;
-    typedef typename HexahedronFEMForceFieldT::DataTypes HexaFEMDataTypes;
-    typedef typename MassT::DataTypes MassDataTypes;
+    typedef HexahedronFEMForceField<TDataTypes> HexahedronFEMForceFieldT;
+    typedef sofa::core::behavior::Mass<TDataTypes> MassT;
+    typedef typename HexahedronFEMForceFieldT::DataTypes HexaFEMTDataTypes;
+    typedef typename MassT::DataTypes MassTDataTypes;
 
-    SOFA_CLASS2(SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,MassDataTypes), SOFA_TEMPLATE(HexahedronFEMForceField,HexaFEMDataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,TDataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,MassTDataTypes), SOFA_TEMPLATE(HexahedronFEMForceField,HexaFEMTDataTypes));
 
-    typedef typename DataTypes::Real        Real        ;
-    typedef typename DataTypes::Coord       Coord       ;
-    typedef typename DataTypes::Deriv       Deriv       ;
-    typedef typename DataTypes::VecCoord    VecCoord    ;
-    typedef typename DataTypes::VecDeriv    VecDeriv    ;
-    typedef typename DataTypes::VecReal     VecReal     ;
+    typedef typename TDataTypes::Real        Real        ;
+    typedef typename TDataTypes::Coord       Coord       ;
+    typedef typename TDataTypes::Deriv       Deriv       ;
+    typedef typename TDataTypes::VecCoord    VecCoord    ;
+    typedef typename TDataTypes::VecDeriv    VecDeriv    ;
+    typedef typename TDataTypes::VecReal     VecReal     ;
     typedef VecCoord Vector;
 
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
