@@ -42,8 +42,8 @@ extern "C"
     void DiagonalMassCuda_accFromFf(unsigned int size, const void * mass, const void* f, void* a);
     void DiagonalMassCuda_accFromFd(unsigned int size, const void * mass, const void* f, void* a);
 
-    void DiagonalMassCuda_addForcef(unsigned int size, const void * mass,const void * g, const void* f);
-    void DiagonalMassCuda_addForced(unsigned int size, const void * mass,const void * g, const void* f);
+    void DiagonalMassCuda_addGravitationalForcef(unsigned int size, const void * mass,const void * g, const void* f);
+    void DiagonalMassCuda_addGravitationalForced(unsigned int size, const void * mass,const void * g, const void* f);
 }
 
 
@@ -88,24 +88,12 @@ void DiagonalMass<CudaVec3fTypes>::accFromF(const core::MechanicalParams* /*mpar
 }
 
 template <>
-void DiagonalMass<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void DiagonalMass<CudaVec3fTypes>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const Deriv& gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
-    //const VecCoord& x = d_x.getValue();
-    //const VecDeriv& v = d_v.getValue();
 
-    type::Vec3d g ( this->getContext()->getGravity() );
     const MassVector &masses= d_vertexMass.getValue();
-    DiagonalMassCuda_addForcef(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
-
-//     // gravity
-//     Vec3d g ( this->getContext()->getGravity() );
-//     Deriv theGravity;
-//     DataTypes::set ( theGravity, g[0], g[1], g[2]);
-//
-//     for (unsigned int i=0;i<masses.size();i++) {
-//         f[i] += theGravity*masses[i];
-//     }
+    DiagonalMassCuda_addGravitationalForcef(masses.size(),masses.deviceRead(),gravity.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }
@@ -137,15 +125,12 @@ void DiagonalMass<CudaVec3dTypes>::accFromF(const core::MechanicalParams* /*mpar
 }
 
 template<>
-void DiagonalMass<CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void DiagonalMass<CudaVec3dTypes>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const Deriv& gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
-    //const VecCoord& x = d_x.getValue();
-    //const VecDeriv& v = d_v.getValue();
 
-    Vec3d g ( this->getContext()->getGravity() );
     const MassVector &masses= d_vertexMass.getValue();
-    DiagonalMassCuda_addForced(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
+    DiagonalMassCuda_addGravitationalForced(masses.size(),masses.deviceRead(),gravity.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }

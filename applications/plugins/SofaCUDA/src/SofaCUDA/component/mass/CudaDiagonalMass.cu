@@ -40,8 +40,8 @@ extern "C"
     void DiagonalMassCuda_accFromFf(unsigned int size, const void * mass, const void* f, void* a);
     void DiagonalMassCuda_accFromFd(unsigned int size, const void * mass, const void* f, void* a);
 
-    void DiagonalMassCuda_addForcef(unsigned int size, const void * mass,const double * g, const void* f);
-    void DiagonalMassCuda_addForced(unsigned int size, const void * mass,const double * g, const void* f);
+    void DiagonalMassCuda_addGravitationalForcef(unsigned int size, const void * mass,const double * g, const void* f);
+    void DiagonalMassCuda_addGravitationalForced(unsigned int size, const void * mass,const double * g, const void* f);
 }
 
 
@@ -72,7 +72,7 @@ __global__ void DiagonalMassCuda_accFromF_kernel(int size, const real * inv_mass
 }
 
 template<class real>
-__global__ void DiagonalMassCuda_addForce_kernel(int size, const real * mass, real g_x, real g_y, real g_z, real* f)
+__global__ void DiagonalMassCuda_addGravitationalForce_kernel(int size, const real * mass, real g_x, real g_y, real g_z, real* f)
 {
     int index = blockIdx.x * BSIZE+threadIdx.x;
     int index3 = index * 3;
@@ -102,11 +102,11 @@ void DiagonalMassCuda_accFromFf(unsigned int size, const void * mass, const void
     {DiagonalMassCuda_accFromF_kernel<float><<< grid, threads >>>(size, (const float *) mass, (const float*)f, (float*)a); mycudaDebugError("DiagonalMassCuda_accFromF_kernel<float>");}
 }
 
-void DiagonalMassCuda_addForcef(unsigned int size, const void * mass,const double * g, const void* f)
+void DiagonalMassCuda_addGravitationalForcef(unsigned int size, const void * mass,const double * g, const void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    {DiagonalMassCuda_addForce_kernel<float><<< grid, threads >>>(size,(const float *) mass, g[0],g[1],g[2], (float*)f); mycudaDebugError("DiagonalMassCuda_addForce_kernel<float>");}
+    {DiagonalMassCuda_addGravitationalForce_kernel<float><<< grid, threads >>>(size,(const float *) mass, g[0],g[1],g[2], (float*)f); mycudaDebugError("DiagonalMassCuda_addGravitationalForce_kernel<float>");}
 }
 
 
@@ -126,11 +126,11 @@ void DiagonalMassCuda_accFromFd(unsigned int size, const void * mass, const void
     {DiagonalMassCuda_accFromF_kernel<double><<< grid, threads >>>(size, (const double *) mass, (const double*)f, (double*)a); mycudaDebugError("DiagonalMassCuda_accFromF_kernel<double>");}
 }
 
-void DiagonalMassCuda_addForced(unsigned int size, const void * mass,const double * g, const void* f)
+void DiagonalMassCuda_addGravitationalForced(unsigned int size, const void * mass,const double * g, const void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    {DiagonalMassCuda_addForce_kernel<double><<< grid, threads >>>(size,(const double *) mass, g[0],g[1],g[2], (double*)f); mycudaDebugError("DiagonalMassCuda_addForce_kernel<double>");}
+    {DiagonalMassCuda_addGravitationalForce_kernel<double><<< grid, threads >>>(size,(const double *) mass, g[0],g[1],g[2], (double*)f); mycudaDebugError("DiagonalMassCuda_addGravitationalForce_kernel<double>");}
 }
 #endif
 

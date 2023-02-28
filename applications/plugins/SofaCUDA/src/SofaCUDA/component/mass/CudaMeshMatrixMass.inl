@@ -38,15 +38,15 @@ using namespace sofa::gpu::cuda;
 extern "C"
 {
     void MeshMatrixMassCuda_addMDx3f(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
-    void MeshMatrixMassCuda_addForce3f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
+    void MeshMatrixMassCuda_addGravitationalForce3f(int dim, void * f, const void * vertexMass, const float * gravity, float massLumpingCoeff);
     void MeshMatrixMassCuda_accFromF3f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
 
     void MeshMatrixMassCuda_addMDx2f(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
-    void MeshMatrixMassCuda_addForce2f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
+    void MeshMatrixMassCuda_addGravitationalForce2f(int dim, void * f, const void * vertexMass, const float * gravity, float massLumpingCoeff);
     void MeshMatrixMassCuda_accFromF2f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
 
-    void MeshMatrixMassCuda_addMDx1f(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
-    void MeshMatrixMassCuda_addForce1f(int dim, void * f, const void * vertexMass, const double * gravity, float massLumpingCoeff);
+    void MeshMatrixMassCuda_addMDx1fc(unsigned int size, float factor, float massLumpingCoeff,const void * vertexMass, const void* dx, void* res);
+    void MeshMatrixMassCuda_addGravitationalForce1f(int dim, void * f, const void * vertexMass, const float * gravity, float massLumpingCoeff);
     void MeshMatrixMassCuda_accFromF1f(int dim, void * acc, const void * f,  const void * vertexMass, float massLumpingCoeff);
 }
 }// cuda
@@ -85,13 +85,12 @@ void MeshMatrixMass<CudaVec3fTypes>::addMDx(const core::MechanicalParams* /*mpar
 }
 
 template<>
-void MeshMatrixMass<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec3fTypes>::addGravitationalForce(const core::MechanicalParams* d_f, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */, const Deriv& gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    type::Vec3d g ( this->getContext()->getGravity() );
 
-    MeshMatrixMassCuda_addForce3f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
+    MeshMatrixMassCuda_addGravitationalForce3f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), gravity.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
 }
 
@@ -134,13 +133,12 @@ void MeshMatrixMass<CudaVec2fTypes>::addMDx(const core::MechanicalParams* /*mpar
 }
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec2fTypes>::addGravitationalForce(const core::MechanicalParams*, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */, const Deriv& gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    type::Vec3d g ( this->getContext()->getGravity() );
 
-    MeshMatrixMassCuda_addForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
+    MeshMatrixMassCuda_addGravitationalForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), gravity.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
 }
 
@@ -183,13 +181,12 @@ void MeshMatrixMass<CudaVec1fTypes>::addMDx(const core::MechanicalParams* /*mpar
 }
 
 template<>
-void MeshMatrixMass<CudaVec1fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec1fTypes>::addGravitationalForce(const core::MechanicalParams*, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */, const Deriv& gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
-    type::Vec3d g ( this->getContext()->getGravity() );
 
-    MeshMatrixMassCuda_addForce1f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
+    MeshMatrixMassCuda_addGravitationalForce1f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), gravity.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
 }
 

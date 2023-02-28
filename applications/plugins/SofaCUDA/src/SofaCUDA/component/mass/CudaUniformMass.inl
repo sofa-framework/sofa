@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -39,25 +39,25 @@ extern "C"
 {
     void UniformMassCuda3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
     void UniformMassCuda3f_accFromF(unsigned int size, float mass, void* a, const void* f);
-    void UniformMassCuda3f_addForce(unsigned int size, const float *mg, void* f);
+    void UniformMassCuda3f_addGravitationalForce(unsigned int size, const float *mg, void* f);
 
     void UniformMassCuda3f1_addMDx(unsigned int size, float mass, void* res, const void* dx);
     void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const void* f);
-    void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f);
+    void UniformMassCuda3f1_addGravitationalForce(unsigned int size, const float *mg, void* f);
 
-        void UniformMassCudaRigid3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
-        void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, const void* dx);
-        void UniformMassCudaRigid3f_addForce(unsigned int size, const float* mg, void* f);
+    void UniformMassCudaRigid3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
+    void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, const void* dx);
+    void UniformMassCudaRigid3f_addGravitationalForce(unsigned int size, const float* mg, void* f);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void UniformMassCuda3d_addMDx(unsigned int size, double mass, void* res, const void* dx);
     void UniformMassCuda3d_accFromF(unsigned int size, double mass, void* a, const void* f);
-    void UniformMassCuda3d_addForce(unsigned int size, const double *mg, void* f);
+    void UniformMassCuda3d_addGravitationalForce(unsigned int size, const double *mg, void* f);
 
     void UniformMassCuda3d1_addMDx(unsigned int size, double mass, void* res, const void* dx);
     void UniformMassCuda3d1_accFromF(unsigned int size, double mass, void* a, const void* f);
-    void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f);
+    void UniformMassCuda3d1_addGravitationalForce(unsigned int size, const double *mg, void* f);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
@@ -98,18 +98,13 @@ void UniformMass<CudaVec3fTypes>::accFromF(const core::MechanicalParams* /*mpara
 }
 
 template <>
-void UniformMass<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3fTypes>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const Deriv& gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
-    //const VecCoord& x = d_x.getValue();
-    //const VecDeriv& v = d_v.getValue();
 
     // weight
-    type::Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_vertexMass.getValue();
-    UniformMassCuda3f_addForce(f.size(), mg.ptr(), f.deviceWrite());
+    Deriv mg = gravity * d_vertexMass.getValue();
+    UniformMassCuda3f_addGravitationalForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }
@@ -137,18 +132,13 @@ void UniformMass<CudaVec3f1Types>::accFromF(const core::MechanicalParams* /*mpar
 }
 
 template <>
-void UniformMass<CudaVec3f1Types>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3f1Types>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const Deriv& gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
-    //const VecCoord& x = d_x.getValue();
-    //const VecDeriv& v = d_v.getValue();
 
     // weight
-    type::Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_vertexMass.getValue();
-    UniformMassCuda3f1_addForce(f.size(), mg.ptr(), f.deviceWrite());
+    Deriv mg = gravity * d_vertexMass.getValue();
+    UniformMassCuda3f1_addGravitationalForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }
@@ -180,18 +170,15 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::accFromF(const core::MechanicalPa
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes>::addForce(const core::MechanicalParams * /*mparams*/, DataVecDeriv &f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+void UniformMass<gpu::cuda::CudaRigid3fTypes>::addGravitationalForce(const core::MechanicalParams * /*mparams*/, DataVecDeriv &f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/, const Deriv& gravity)
 {
-
         VecDeriv& _f = *f.beginEdit();
-        type::Vec3d g(this->getContext()->getGravity());
 
         float m = d_vertexMass.getValue().mass;
-        const float mg[] = { (float)(m*g(0)), (float)(m*g(1)), (float)(m*g(2)) };
-        UniformMassCudaRigid3f_addForce(_f.size(), mg, _f.deviceWrite());
+        const float mg[] = { (float)(m*gravity(0)), (float)(m*gravity(1)), (float)(m*gravity(2)) };
+        UniformMassCudaRigid3f_addGravitationalForce(_f.size(), mg, _f.deviceWrite());
 
         f.endEdit();
-
 }
 
 
@@ -273,18 +260,13 @@ void UniformMass<CudaVec3dTypes>::accFromF(const core::MechanicalParams* /*mpara
 }
 
 template <>
-void UniformMass<CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3dTypes>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const Deriv gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
-    //const VecCoord& x = d_x.getValue();
-    //const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_vertexMass.getValue();
-    UniformMassCuda3d_addForce(f.size(), mg.ptr(), f.deviceWrite());
+    Deriv mg = gravity * d_vertexMass.getValue();
+    UniformMassCuda3d_addGravitationalForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }
@@ -330,18 +312,13 @@ void UniformMass<CudaVec3d1Types>::accFromF(const core::MechanicalParams* /*mpar
 }
 
 template <>
-void UniformMass<CudaVec3d1Types>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3d1Types>::addGravitationalForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/, const Deriv gravity)
 {
     VecDeriv& f = *d_f.beginEdit();
-    //const VecCoord& x = d_x.getValue();
-    //const VecDeriv& v = d_v.getValue();
 
     // weight
-    Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * d_vertexMass.getValue();
-    UniformMassCuda3d1_addForce(f.size(), mg.ptr(), f.deviceWrite());
+    Deriv mg = gravity * d_vertexMass.getValue();
+    UniformMassCuda3d1_addGravitationalForce(f.size(), mg.ptr(), f.deviceWrite());
 
     d_f.endEdit();
 }

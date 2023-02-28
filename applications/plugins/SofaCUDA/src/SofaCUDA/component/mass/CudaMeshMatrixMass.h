@@ -50,7 +50,7 @@ template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::addGravitationalForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */, const Deriv& /* */);
 
 template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
@@ -73,7 +73,7 @@ template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::addGravitationalForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */, const Deriv& /* */);
 
 template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
@@ -96,7 +96,7 @@ template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::addGravitationalForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */, const Deriv& /* */);
 
 template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);

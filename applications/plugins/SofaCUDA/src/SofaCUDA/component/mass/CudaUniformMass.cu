@@ -39,25 +39,25 @@ extern "C"
 {
     void UniformMassCuda3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
     void UniformMassCuda3f_accFromF(unsigned int size, float mass, void* a, const void* f);
-    void UniformMassCuda3f_addForce(unsigned int size, const float *mg, void* f);
+    void UniformMassCuda3f_addGravitationalForce(unsigned int size, const float *mg, void* f);
 
     void UniformMassCuda3f1_addMDx(unsigned int size, float mass, void* res, const void* dx);
     void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const void* f);
-    void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f);
+    void UniformMassCuda3f1_addGravitationalForce(unsigned int size, const float *mg, void* f);
 	
 	void UniformMassCudaRigid3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
 	void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, const void* dx);
-	void UniformMassCudaRigid3f_addForce(unsigned int size, const float* mg, void* f);
+    void UniformMassCudaRigid3f_addGravitationalForce(unsigned int size, const float* mg, void* f);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void UniformMassCuda3d_addMDx(unsigned int size, double mass, void* res, const void* dx);
     void UniformMassCuda3d_accFromF(unsigned int size, double mass, void* a, const void* f);
-    void UniformMassCuda3d_addForce(unsigned int size, const double *mg, void* f);
+    void UniformMassCuda3d_addGravitationalForce(unsigned int size, const double *mg, void* f);
 
     void UniformMassCuda3d1_addMDx(unsigned int size, double mass, void* res, const void* dx);
     void UniformMassCuda3d1_accFromF(unsigned int size, double mass, void* a, const void* f);
-    void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f);
+    void UniformMassCuda3d1_addGravitationalForce(unsigned int size, const double *mg, void* f);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
@@ -402,21 +402,21 @@ void UniformMassCudaRigid3f_accFromF(unsigned int size, float mass, void* a, con
 	mycudaDebugError("UniformMassCudaRigid3f_accFromF");
 }
 
-void UniformMassCuda3f_addForce(unsigned int size, const float *mg, void* f)
+void UniformMassCuda3f_addGravitationalForce(unsigned int size, const float *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {UniformMassCuda3t_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (float*)f); mycudaDebugError("UniformMassCuda3t_addForce_kernel<float>");}
 }
 
-void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f)
+void UniformMassCuda3f1_addGravitationalForce(unsigned int size, const float *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {UniformMassCuda3t1_addForce_kernel<float><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (CudaVec4<float>*)f); mycudaDebugError("UniformMassCuda3t1_addForce_kernel<float>");}
 }
 
-void UniformMassCudaRigid3f_addForce(unsigned int size, const float* mg, void* f)
+void UniformMassCudaRigid3f_addGravitationalForce(unsigned int size, const float* mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
@@ -464,14 +464,14 @@ void UniformMassCuda3d1_accFromF(unsigned int size, double mass, void* a, const 
     //UniformMassCuda1t_accFromF_kernel<double><<< grid, threads >>>(4*size, 1.0f/mass, (double*)a, (const double*)f);
 }
 
-void UniformMassCuda3d_addForce(unsigned int size, const double *mg, void* f)
+void UniformMassCuda3d_addGravitationalForce(unsigned int size, const double *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {UniformMassCuda3t_addForce_kernel<double><<< grid, threads >>>(size, mg[0], mg[1], mg[2], (double*)f); mycudaDebugError("UniformMassCuda3t_addForce_kernel<double>");}
 }
 
-void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f)
+void UniformMassCuda3d1_addGravitationalForce(unsigned int size, const double *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
