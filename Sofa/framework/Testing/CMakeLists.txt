@@ -39,10 +39,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType Sofa.Core Sofa.Simulation.Graph gtest SofaGTestMain )
 set(SOFA_TESTING_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/Sofa.Testing/Sofa.Testing/compat>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES} )
-
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(
