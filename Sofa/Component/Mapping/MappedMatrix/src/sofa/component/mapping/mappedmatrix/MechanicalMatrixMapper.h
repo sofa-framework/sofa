@@ -114,6 +114,7 @@ protected:
     Data <bool> d_fastMatrixProduct; ///< If true, an accelerated method to compute matrix products based on the pre-computation of the matrices intersection is used. Regular matrix product otherwise.
     Data <bool> d_parallelTasks; ///< Execute some tasks in parallel for better performances
     Data <bool> d_forceFieldAndMass; ///< If true, allows forceField and mass to be in the same component.
+    Data <bool> d_callbackForMSLinkChanges;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
     MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;

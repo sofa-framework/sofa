@@ -105,10 +105,21 @@ MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
       d_fastMatrixProduct(initData(&d_fastMatrixProduct, true, "fastMatrixProduct", "If true, an accelerated method to compute matrix products based on the pre-computation of the matrices intersection is used. Regular matrix product otherwise.")),
       d_parallelTasks(initData(&d_parallelTasks, true, "parallelTasks", "Execute some tasks in parallel for better performances")),
       d_forceFieldAndMass(initData(&d_forceFieldAndMass, false, "forceFieldAndMass", "If true, allows forceField and mass to be in the same component.")),
+      d_callbackForMSLinkChanges(initData(&d_callbackForMSLinkChanges, false, "callbackForMSLinkChanges", "Experimental.")),
       l_mechanicalState(initLink("mechanicalState","The mechanicalState with which the component will work on (filled automatically during init)")),
       l_mappedMass(initLink("mass","mass with which the component will work on (filled automatically during init)")),
       l_forceField(initLink("forceField","The ForceField(s) attached to this node (filled automatically during init)"))
 {
+    this->addUpdateCallback("reinitCallback", {&d_callbackForMSLinkChanges}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        auto ms1 = this->getMState1();
+        auto ms2 = this->getMState2();
+        m_nbColsJ1 = ms1->getSize()*DerivSize1;
+        m_nbColsJ2 = ms2->getSize()*DerivSize2;
+        this->bwdInit();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 template<class DataTypes1, class DataTypes2>
