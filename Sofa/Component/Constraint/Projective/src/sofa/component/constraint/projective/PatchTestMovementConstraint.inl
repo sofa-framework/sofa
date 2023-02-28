@@ -136,7 +136,7 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
 
     if (!constrainedPoints.empty())
     {
-        Coord point = constrainedPoints[0];
+        const Coord& point = constrainedPoints[0];
 
         // Search if the constrained points are in the same plane
         for(Size i = 0; i < constrainedPoints.size() ; i++)
