@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,63 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaTypes.h"
-#include <sofa/component/mapping/nonlinear/RigidMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa::component::mapping::nonlinear
-{
-
-template <>
-class RigidMappingInternalData<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>
-{
-public:
-    gpu::cuda::CudaVec3fTypes::VecDeriv tmp;
-};
-
-template <>
-void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
-
-template <>
-void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
-
-template <>
-void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
-
-//////// Rigid3d ////////
-template <>
-class RigidMappingInternalData<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>
-{
-public:
-    gpu::cuda::CudaVec3Types::VecDeriv tmp;
-};
-
-template <>
-void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::apply( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
-
-template <>
-void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
-
-template <>
-void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJT( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
-
-
-//////// Rigid3f ////////
-
-template <>
-class RigidMappingInternalData<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>
-{
-public:
-    gpu::cuda::CudaVec3fTypes::VecDeriv tmp;
-};
-
-template <>
-void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
-
-template <>
-void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
-
-template <>
-void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
-
-} // namespace sofa::component::mapping::nonlinear
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h")
+#include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>

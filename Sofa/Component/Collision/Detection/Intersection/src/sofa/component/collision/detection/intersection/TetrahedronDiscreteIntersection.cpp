@@ -23,7 +23,6 @@
 
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
 #include <sofa/core/collision/IntersectorFactory.h>
 
 namespace sofa::component::collision::detection::intersection

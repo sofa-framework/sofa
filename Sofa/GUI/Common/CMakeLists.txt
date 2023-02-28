@@ -53,7 +53,6 @@ set(SOURCE_FILES
 # Compatibility files
 set (COMPATSOFAGUICOMMON_ROOT "compat/")
 set (COMPAT_HEADER_FILES
-    ${COMPATSOFAGUICOMMON_ROOT}/sofa/helper/ArgumentParser.h
     ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ArgumentParser.h
     ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BaseGUI.h
     ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BatchGUI.h

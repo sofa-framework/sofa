@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/FrameSpringForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/FrameSpringForceField.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using FrameSpringForceField = sofa::component::solidmechanics::spring::FrameSpringForceField<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/FrameSpringForceField.h")

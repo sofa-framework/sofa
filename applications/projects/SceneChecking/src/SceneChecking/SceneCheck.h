@@ -22,36 +22,14 @@
 #pragma once
 
 #include <SceneChecking/config.h>
-
-#include <iostream>
-#include <string>
-#include <map>
-#include <memory>
-
-namespace sofa::simulation
-{
-    class Node;
-} // namespace sofa::simulation
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/simulation/SceneCheck.h")
+#include <sofa/simulation/SceneCheck.h>
 
 namespace sofa::_scenechecking_
 {
-
-class SOFA_SCENECHECKING_API SceneCheck
-{
-public:
-    virtual ~SceneCheck() {}
-
-    typedef std::shared_ptr<SceneCheck> SPtr;
-    virtual const std::string getName() = 0;
-    virtual const std::string getDesc() = 0;
-    virtual void doInit(sofa::simulation::Node* node) { SOFA_UNUSED(node); }
-    virtual void doCheckOn(sofa::simulation::Node* node) = 0;
-    virtual void doPrintSummary() {}
-};
-
-} // namespace sofa::_scenechecking_
-
+    using sofa::simulation::SceneCheck;
+}
 namespace sofa::scenechecking
 {
-    using _scenechecking_::SceneCheck;
+    using sofa::simulation::SceneCheck;
 } // namespace sofa::scenechecking

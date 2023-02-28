@@ -72,16 +72,11 @@ template<std::size_t N, typename T>
 typename BlockFullMatrix<N,T>::Block  BlockFullMatrix<N, T>::Block::i() const
 {
     Block r;
-    r.invert(*this);
+    [[maybe_unused]] bool res = r.invert(*this);
+    assert(res);
+
     return r;
 }
-
-template<std::size_t N, typename T>
-typename BlockFullMatrix<N,T>::Index  BlockFullMatrix<N, T>::getSubMatrixDim(Index)
-{
-    return BSIZE;
-}
-
 
 template<std::size_t N, typename T>
 BlockFullMatrix<N, T>::BlockFullMatrix()

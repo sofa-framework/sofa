@@ -26,8 +26,7 @@
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <sofa/simulation/Visitor.h>
 
-#include <SceneChecking/SceneCheckerVisitor.h>
-using sofa::scenechecking::SceneCheckerVisitor;
+
 
 
 namespace sofa::_scenechecking_
@@ -50,8 +49,7 @@ public:
     }
 
 private:
-    SceneCheckerListener();
-    SceneCheckerVisitor m_sceneChecker;
+    SceneCheckerListener() = default;
 };
 
 } // namespace sofa::_scenechecking_

@@ -1,0 +1,17 @@
+<Node name="root" gravity="0 -9.81 0">
+<DefaultAnimationLoop/>    
+    <Node name="node">
+      <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+      <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+      <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+      <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+      <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+      <RequiredPlugin name="SofaValidation"/> <!-- Needed to use components [Monitor] -->
+      <EulerImplicitSolver rayleighStiffness="0" printLog="false" />
+      <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
+      <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" createSubelements="true" />
+      <MechanicalObject template="Rigid3" src="@loader" name="MO" showObject="1"/>
+      <Monitor template="Rigid3" name="monitor" listening="1" indices="0" ExportPositions="true" ExportVelocities="true" ExportForces="true" />
+      <UniformMass totalMass="1" />
+    </Node>
+</Node>

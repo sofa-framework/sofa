@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.h")
-
-namespace sofa::component::constraintset
-{
-    template<class TDataTypes>
-    using UncoupledConstraintCorrection = sofa::component::constraint::lagrangian::correction::UncoupledConstraintCorrection<TDataTypes>;
-    
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.h")

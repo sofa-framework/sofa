@@ -3,7 +3,7 @@
     <VisualStyle displayFlags="hideCollisionModels showBehaviorModels" />
     
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -24,8 +24,8 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver unbuilt="false" tolerance="1e-3" maxIt="200" printLog="0" multithreading="true"/>
-    <DefaultPipeline verbose="0" depth="10" draw="0" />
+    <GenericConstraintSolver resolutionMethod="false" tolerance="1e-3" maxIt="200" printLog="0" multithreading="true"/>
+    <CollisionPipeline verbose="0" depth="10" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="1.2" contactDistance="0.1" />
@@ -37,7 +37,7 @@
 
     <Node name="Number1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 6 3" fileTopology="mesh/n1.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
@@ -52,7 +52,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />
@@ -68,7 +68,7 @@
 
     <Node name="Number01">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         <MechanicalObject name="Torus1" scale3d="15 15 15" translation="-22 20 -22"/>
@@ -82,7 +82,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />
@@ -97,7 +97,7 @@
 
     <Node name="Number02">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
@@ -111,7 +111,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />
@@ -126,7 +126,7 @@
 
     <Node name="Number03">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
@@ -140,7 +140,7 @@
             <Node name="Q">
                 <QuadSetTopologyContainer  name="Container" />
                 <QuadSetTopologyModifier   name="Modifier" />
-                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+                <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
                 <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
 
                 <TriangleCollisionModel />
@@ -155,7 +155,7 @@
 
     <Node name="Sofa">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
-        <SparseLDLSolver  template="CompressedRowSparseMatrixd" name="Torus1_SparseLDLSolver" printLog="false" />
+        <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="2 2 2" fileTopology="mesh/sofa_logo.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
         

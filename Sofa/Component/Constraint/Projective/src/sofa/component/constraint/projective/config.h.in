@@ -36,17 +36,3 @@ namespace sofa::component::constraint::projective
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::constraint::projective
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_PROJECTIVE
-#define SOFA_ATTRIBUTE_DEPRECATED__POINTCONSTRAINT()
-#define SOFA_ATTRIBUTE_DISABLED__POINTCONSTRAINT()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__POINTCONSTRAINT() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.12", "v22.06", \
-        "As an alternative, use FixedConstraint.")
-#define SOFA_ATTRIBUTE_DISABLED__POINTCONSTRAINT() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.12", "v22.06", \
-        "As an alternative, use FixedConstraint.")
-#endif

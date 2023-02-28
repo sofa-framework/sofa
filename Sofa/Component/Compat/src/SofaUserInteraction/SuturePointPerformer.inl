@@ -26,7 +26,7 @@
 #if __has_include(<sofa/gui/component/performer/SuturePointPerformer.inl>)
 #include <sofa/gui/component/performer/SuturePointPerformer.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/SuturePointPerformer.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/SuturePointPerformer.inl")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/SuturePointPerformer.inl> instead of this one."

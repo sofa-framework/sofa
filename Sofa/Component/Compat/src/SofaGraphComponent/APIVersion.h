@@ -22,18 +22,4 @@
 #pragma once
 #include <sofa/component/sceneutility/APIVersion.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/APIVersion.h")
-
-namespace sofa::component::_apiversion_
-{
-
-    using APIVersion = sofa::component::sceneutility::APIVersion;
-
-} // namespace sofa::component::_apiversion_
-
-namespace sofa::component
-{
-
-    using APIVersion = sofa::component::sceneutility::APIVersion;
-
-} // namespace sofa::component
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/APIVersion.h")

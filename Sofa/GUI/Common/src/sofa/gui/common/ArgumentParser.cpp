@@ -62,11 +62,27 @@ void ArgumentParser::showHelp()
 
 void ArgumentParser::parse()
 {
+    // cxxopts::parse() actually clears value in argv and argc (before v3)
+    // so if we want to be able to call it multiple times, we need to save
+    // the original argv and argc
+    // TODO: upgrade cxxopts to v3 and remove this copy
+
+    // copy argv into a temporary
+    char** copyArgv = new char* [m_argc + 1];
+    for (int i = 0; i < m_argc; i++) {
+        int len = strlen(m_argv[i]) + 1;
+        copyArgv[i] = new char[len];
+        strcpy(copyArgv[i], m_argv[i]);
+    }
+    copyArgv[m_argc] = nullptr;
+
+    int copyArgc = m_argc;
+
     std::vector<cxxopts::KeyValue> vecArg;
     try
     {
         m_options.parse_positional("input-file");
-        auto temp = m_options.parse(m_argc, m_argv);
+        auto temp = m_options.parse(copyArgc, copyArgv);
         vecArg = temp.arguments();
     }
     catch (const cxxopts::OptionException& e)
@@ -78,7 +94,7 @@ void ArgumentParser::parse()
     // copy result
     for (const auto& arg : vecArg)
     {
-        m_parseResult.insert({ arg.key(), arg.value() });
+        m_parseResult[arg.key()] = arg.value();
         if(arg.key() == "argv")
             extra.push_back(arg.value());
 
@@ -92,6 +108,12 @@ void ArgumentParser::parse()
             }
         }
     }
+
+    // delete argv copy
+    for (int i = 0; i < m_argc; i++) {
+        delete[] copyArgv[i];
+    }
+    delete[] copyArgv;
 }
 
 void ArgumentParser::showArgs()

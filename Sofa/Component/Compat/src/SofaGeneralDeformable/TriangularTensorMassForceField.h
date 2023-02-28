@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using TriangularTensorMassForceField = sofa::component::solidmechanics::tensormass::TriangularTensorMassForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h")

@@ -5,7 +5,7 @@
     <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
     <VisualStyle displayFlags="" />
-    <DefaultPipeline verbose="0" />
+    <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />

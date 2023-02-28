@@ -26,7 +26,7 @@
 	  <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 	  <MeshTopology  src="@../sampler" />
 	  <MechanicalObject  />
-	  <UniformMass totalmass="100.0" />
+	  <UniformMass totalMass="100.0" />
 
 	  <MeshSpringForceField stiffness="3000.0" />
 

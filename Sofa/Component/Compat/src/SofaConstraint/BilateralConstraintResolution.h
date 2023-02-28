@@ -23,20 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h")
-
-namespace sofa::component::constraintset::bilateralconstraintresolution
-{
-    using BilateralConstraintResolution = sofa::component::constraint::lagrangian::model::BilateralConstraintResolution;
-    using BilateralConstraintResolution3Dof = sofa::component::constraint::lagrangian::model::BilateralConstraintResolution3Dof;
-    using BilateralConstraintResolutionNDof = sofa::component::constraint::lagrangian::model::BilateralConstraintResolutionNDof;
-    
-} // namespace sofa::component::constraintset::bilateralconstraintresolution
-
-namespace sofa::component::constraintset
-{
-    using bilateralconstraintresolution::BilateralConstraintResolution;
-    using bilateralconstraintresolution::BilateralConstraintResolution3Dof;
-    using bilateralconstraintresolution::BilateralConstraintResolutionNDof;
-
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h")

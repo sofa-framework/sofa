@@ -2,7 +2,25 @@
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [InfoComponent] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms, TriangleSetTopologyContainer, TriangleSetTopologyModifier] --> 
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] --> 
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Tetra2TriangleTopologicalMapping] --> 
+
+    <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showBehavior" />
-    <MeshVTKLoader name="vtkloader" filename="mesh/Armadillo_Tetra_4406.vtu" />
-    <OglModel name="bunny" src="@vtkloader" />
+    <Node name="1">
+        <MeshVTKLoader name="vtkloader" filename="mesh/Armadillo_Tetra_4406.vtu" />
+        <MechanicalObject src="@vtkloader" name="Volume" />
+        <include href="Objects/TetrahedronSetTopology.xml" src="@vtkloader" tags=" " />
+        <Node name="2">
+            <include href="Objects/TriangleSetTopology.xml" src="@../vtkloader" tags=" " />
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="blue" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
 </Node>

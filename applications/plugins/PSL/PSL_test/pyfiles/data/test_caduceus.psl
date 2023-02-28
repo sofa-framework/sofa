@@ -107,7 +107,7 @@ Node : {
             position : "@grid.position"
         } 
         UniformMass : {
-            totalmass : "1"
+            totalMass : "1"
         } 
         HexahedronFEMForceField : {
             name : "FEM"

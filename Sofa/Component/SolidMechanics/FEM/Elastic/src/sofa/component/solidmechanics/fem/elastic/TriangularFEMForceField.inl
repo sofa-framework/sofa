@@ -620,6 +620,8 @@ void TriangularFEMForceField<DataTypes>::computeStiffness(Stiffness& K, const St
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, TriangleInformation& triangleInfo)
 {
+    SOFA_UNUSED(elementIndex);
+
     Eigen::Matrix<Real, -1, -1> e;
     e.resize(2, 2);
 
@@ -649,6 +651,8 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, TriangleInformation& triangleInfo)
 {
+    SOFA_UNUSED(elementIndex);
+
     Eigen::Matrix<Real, -1, -1> e;
     e.resize(2, 2);
 
@@ -822,7 +826,6 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressPerVertex()
 {
-    const auto& triangles = m_topology->getTriangles();
     auto vertexInf = sofa::helper::getWriteOnlyAccessor(vertexInfo);
     const auto& triangleInf = sofa::helper::getReadAccessor(triangleInfo);
 

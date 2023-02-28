@@ -23,11 +23,4 @@
 
 #include <sofa/component/mechanicalload/OscillatingTorsionPressureForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/OscillatingTorsionPressureForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using OscillatingTorsionPressureForceField = sofa::component::mechanicalload::OscillatingTorsionPressureForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/OscillatingTorsionPressureForceField.h")

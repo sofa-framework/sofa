@@ -9,7 +9,7 @@
   <FreeMotionAnimationLoop />
     <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
 
-    <DefaultPipeline depth="8" />
+    <CollisionPipeline depth="8" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />

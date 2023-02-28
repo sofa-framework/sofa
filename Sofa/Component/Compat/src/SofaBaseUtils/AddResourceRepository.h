@@ -22,13 +22,4 @@
 #pragma once
 #include <sofa/component/sceneutility/AddResourceRepository.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/AddResourceRepository.h")
-
-namespace sofa::component::misc
-{
-
-    using BaseAddResourceRepository = sofa::component::sceneutility::BaseAddResourceRepository;
-    using AddDataRepository = sofa::component::sceneutility::AddDataRepository;
-    using AddPluginRepository = sofa::component::sceneutility::AddPluginRepository;
-
-} // namespace sofa::component::misc
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/AddResourceRepository.h")

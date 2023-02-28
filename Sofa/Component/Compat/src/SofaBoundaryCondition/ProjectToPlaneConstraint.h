@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/projective/ProjectToPlaneConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/ProjectToPlaneConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using ProjectToPlaneConstraint = sofa::component::constraint::projective::ProjectToPlaneConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/ProjectToPlaneConstraint.h")

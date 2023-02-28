@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!-- See https://wiki.sofa-framework.org/wiki/TutorialTopologyVolumeMesh -->
 <Node name="root" gravity="0 -9.86 0" dt="0.05">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TetrahedronCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -22,22 +22,24 @@
 
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe" />
-    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" />
+    <CollisionPipeline name="DefaultCollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
+    <DefaultAnimationLoop/>
+    
     <Node name="Cylinder Static Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
-        <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 0" rotation="0 90 0" scale="10" />
-        <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0" />
-        <UniformMass name="Mass" template="Vec3d" totalMass="50" />
+        <MechanicalObject src="@loader" name="DOFs" template="Vec3" translation="0 0 0" rotation="0 90 0" scale="10" />
+        <FixedConstraint name="FixedConstraint" template="Vec3" indices="0" />
+        <UniformMass name="Mass" template="Vec3" totalMass="50" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader0" filename="mesh/cylinder.msh" />
         <MeshTopology name="Static Mesh" src="@meshLoader0" />
-        <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
-        <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
+        <MeshSpringForceField name="FEM-Bend" template="Vec3" stiffness="100" damping="1" />
+        <TetrahedronFEMForceField name="FEM" template="Vec3" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <TetrahedronCollisionModel name="Models" />
         <Node >
           <OglModel name="Visual" color="red" />
@@ -45,14 +47,14 @@
         </Node>
     </Node>
     <Node name="Cylinder Regular Mesh">
-        <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 -10" rotation="0 0 -90" />
-        <FixedConstraint name="FixedConstraint" template="Vec3d" indices="54 44 45 55" drawSize="0" />
-        <UniformMass name="Mass" template="Vec3d" totalMass="500" />
+        <MechanicalObject name="DOFs" template="Vec3" translation="0 0 -10" rotation="0 0 -90" />
+        <FixedConstraint name="FixedConstraint" template="Vec3" indices="54 44 45 55" drawSize="0" />
+        <UniformMass name="Mass" template="Vec3" totalMass="500" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <CylinderGridTopology name="Regular Mesh" n="10 10 10" axis="0 1 0" radius="2" length="10" />
-        <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
-        <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
+        <MeshSpringForceField name="FEM-Bend" template="Vec3" stiffness="100" damping="1" />
+        <TetrahedronFEMForceField name="FEM" template="Vec3" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <Node >
           <OglModel name="Visual" color="blue" />
           <IdentityMapping input="@.." output="@Visual" />
@@ -60,17 +62,17 @@
     </Node>
     <Node name="Cylinder Dynamic Mesh">
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
-        <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 10" rotation="0 90 0" scale="10" />
-        <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0" />
-        <UniformMass name="Mass" template="Vec3d" totalMass="50" />
+        <MechanicalObject src="@loader" name="DOFs" template="Vec3" translation="0 0 10" rotation="0 90 0" scale="10" />
+        <FixedConstraint name="FixedConstraint" template="Vec3" indices="0" />
+        <UniformMass name="Mass" template="Vec3" totalMass="50" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader1" filename="mesh/cylinder.msh" />
         <TetrahedronSetTopologyContainer name="Topology Container" src="@meshLoader1" />
         <TetrahedronSetTopologyModifier name="Topology Modifier" />
-        <TetrahedronSetGeometryAlgorithms name="Geometry Algorithms" template="Vec3d" />
-        <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
-        <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
+        <TetrahedronSetGeometryAlgorithms name="Geometry Algorithms" template="Vec3" />
+        <MeshSpringForceField name="FEM-Bend" template="Vec3" stiffness="100" damping="1" />
+        <TetrahedronFEMForceField name="FEM" template="Vec3" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <TetrahedronCollisionModel name="Models" />
         <Node >
           <OglModel name="Visual" color="green" />

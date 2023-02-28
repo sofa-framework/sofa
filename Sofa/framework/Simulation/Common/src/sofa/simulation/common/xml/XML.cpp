@@ -246,12 +246,6 @@ BaseElement* loadFromMemory(const char* filename, const char* data)
     return processXMLLoading(filename, doc, true);
 }
 
-BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size )
-{
-    SOFA_UNUSED(size);
-    return loadFromMemory(filename, data);
-}
-
 BaseElement* loadFromFile(const char *filename)
 {
     // Temporarily set the numeric formatting locale to ensure that

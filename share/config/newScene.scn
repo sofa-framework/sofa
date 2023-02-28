@@ -1,7 +1,7 @@
 <!-- This file is used when creating a new scene, e.g. in the Modeler. -->
 <Node name="Root" dt="0.02">
     <VisualStyle displayFlags="showAll"/>
-    <DefaultPipeline  name="DefaultCollisionPipeline" depth="6" verbose="0" draw="0"/>
+    <CollisionPipeline  name="DefaultCollisionPipeline" depth="6" verbose="0" draw="0"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2"/>

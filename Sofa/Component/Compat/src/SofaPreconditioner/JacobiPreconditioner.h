@@ -23,11 +23,4 @@
 
 #include <sofa/component/linearsolver/preconditioner/JacobiPreconditioner.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/JacobiPreconditioner.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector>
-    using JacobiPreconditioner = sofa::component::linearsolver::preconditioner::JacobiPreconditioner<TMatrix, TVector>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/JacobiPreconditioner.h")

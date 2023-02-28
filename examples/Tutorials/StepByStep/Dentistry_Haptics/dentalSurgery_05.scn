@@ -1,6 +1,6 @@
 <Node name="root" dt="0.005">
     <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -19,7 +19,7 @@
     
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <Gravity name="G" gravity="0 -9.81 0" />
-    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
+    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="response" response="FrictionContactConstraint" />
@@ -38,9 +38,9 @@
             <Node name="CollisionModel">
                 <MeshTopology src="@../loader" name="ToothCollisionModel" />
                 <MechanicalObject src="@../loader" name="toothState" />
-                <TriangleCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <LineCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
-                <PointCollisionModel name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <TriangleCollisionModel name="tooth_triangle" contactStiffness="5" simulated="0" moving="0" />
+                <LineCollisionModel name="tooth_line" contactStiffness="5" simulated="0" moving="0" />
+                <PointCollisionModel name="tooth_point" contactStiffness="5" simulated="0" moving="0" />
             </Node>
             <Node name="VisualModel">
                 <MeshOBJLoader name="meshLoader_0" filename="data/mesh/teeth.obj" handleSeams="1" />
@@ -51,8 +51,8 @@
     <Node name="Instrument">
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-        <MechanicalObject name="instrumentState" template="Rigid3d" />
-        <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+        <MechanicalObject name="instrumentState" template="Rigid3" />
+        <UniformMass name="mass" filename="BehaviorModels/dental_instrument.rigid" />
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
             <MeshOBJLoader name="meshLoader_2" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
@@ -63,8 +63,8 @@
             <MeshOBJLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
             <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10" />
-            <LineCollisionModel name="instrument" contactStiffness="10" />
-            <PointCollisionModel name="instrument" contactStiffness="10" />
+            <LineCollisionModel name="instrument_line" contactStiffness="5" />
+            <PointCollisionModel name="instrument_point" contactStiffness="5" />
             <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>
     </Node>

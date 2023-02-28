@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/projective/OscillatorConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/OscillatorConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using OscillatorConstraint = sofa::component::constraint::projective::OscillatorConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/OscillatorConstraint.h")

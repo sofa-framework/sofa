@@ -22,12 +22,5 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h")
 
-namespace sofa::component::topology
-{
-
-    template < class DataTypes >
-    using EdgeSetGeometryAlgorithms = sofa::component::topology::container::dynamic::EdgeSetGeometryAlgorithms<DataTypes>;
-
-} // namespace sofa::component::topology

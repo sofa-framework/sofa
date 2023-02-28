@@ -23,16 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/UnilateralInteractionConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/UnilateralInteractionConstraint.h")
-
-namespace sofa::component::constraintset
-{
-    using UnilateralConstraintResolution = sofa::component::constraint::lagrangian::model::UnilateralConstraintResolution;
-    using PreviousForcesContainer = sofa::component::constraint::lagrangian::model::PreviousForcesContainer;
-    using UnilateralConstraintResolutionWithFriction = sofa::component::constraint::lagrangian::model::UnilateralConstraintResolutionWithFriction;
-    
-    template<class DataTypes>
-    using UnilateralInteractionConstraint = sofa::component::constraint::lagrangian::model::UnilateralInteractionConstraint<DataTypes>;
-
-    
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/UnilateralInteractionConstraint.h")

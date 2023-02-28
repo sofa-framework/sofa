@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.h")
-
-namespace sofa::component::interactionforcefield
-{
-    template<typename TDataTypes1, typename TDataTypes2>
-    using MechanicalMatrixMapper = sofa::component::mapping::mappedmatrix::MechanicalMatrixMapper<TDataTypes1, TDataTypes2>;
-    
-} // namespace sofa::component::interactionforcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.h")

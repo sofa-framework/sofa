@@ -27,18 +27,8 @@
 #include <sofa/gl/component/rendering3d/OglSceneFrame.h>
 #define SOFAGL_COMPONENT_OGLSCENEFRAME
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglSceneFrame.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglSceneFrame.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglSceneFrame.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLSCENEFRAME
-
-namespace sofa::component::visualmodel
-{
-    using OglSceneFrame = sofa::gl::component::rendering3d::OglSceneFrame;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLSCENEFRAME

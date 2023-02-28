@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/generate/GenerateGrid.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateGrid.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using GenerateGrid = sofa::component::engine::generate::GenerateGrid<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateGrid.h")

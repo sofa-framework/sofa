@@ -23,13 +23,4 @@
 
 #include <sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TDataTypes>
-    	using PrecomputedWarpPreconditioner = sofa::component::linearsolver::preconditioner::PrecomputedWarpPreconditioner<TDataTypes>;
-	template<class TDataTypes>
-	using PrecomputedWarpPreconditionerInternalData = sofa::component::linearsolver::preconditioner::PrecomputedWarpPreconditionerInternalData<TDataTypes>;
-	
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.h")

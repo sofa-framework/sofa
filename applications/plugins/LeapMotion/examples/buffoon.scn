@@ -9,7 +9,7 @@
     <VisualStyle displayFlags="showVisualModels hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 
 
-    <DefaultPipeline name="pipeline" depth="6" />
+    <CollisionPipeline name="pipeline" depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<DiscreteIntersection />
@@ -37,7 +37,7 @@
 	        <Gravity name="Gravity" gravity="0 0 0" />
 			<MechanicalObject name="palmState" template="Rigid3d" rest_position="@../../leapMotionDriver.handPalmCoordinate" showObject="false" showObjectScale="0.02" />
 			<RestShapeSpringsForceField  name="RSFF" stiffness="1e6" angularStiffness="1e3" external_rest_shape="@../../TrackedHand/TrackedPalm/movingDOFs" recompute_indices="false" />
-			<UniformMass name="uniformMass" template="Rigid3d"  totalmass="0.1" />
+			<UniformMass name="uniformMass" template="Rigid3d"  totalMass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../../../leapMotionDriver.handPalmCoordinate" />
 				<SphereCollisionModel name="colliSphere" contactStiffness="100" group="1" radius="0.07"/>
@@ -48,7 +48,7 @@
 			<Gravity name="Gravity" gravity="0 0 0" />
 			<MechanicalObject name="handDOFs" template="Rigid3d" rest_position="@../../leapMotionDriver.fingersCoordinates" showObject="false" showObjectScale="0.02" />
 			<RestShapeSpringsForceField  name="RSFF" stiffness="1e3" angularStiffness="1e3" external_rest_shape="@../../TrackedHand/TrackedFingers/movingDOFs" recompute_indices="false" />
-			<UniformMass name="uniformMass" template="Rigid3d"  totalmass="0.5" />
+			<UniformMass name="uniformMass" template="Rigid3d"  totalMass="0.5" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="lineCollisDOFs" template="Vec3d" position="@../../../leapMotionDriver.fingersCoordinates" />	
 				<EdgeSetTopologyContainer name="EdgeContainer" nbPoints="15" edges="0 2 2 1   3 5 5 4   6 8 8 7   9 11 11 10   12 14 14 13 " position="@../../../leapMotionDriver.fingersCoordinates" />	
@@ -83,7 +83,7 @@
                                 -0.17 -0.17 0.5 -0.113333 -0.17 0.5 -0.0566667 -0.17 0.5 0 -0.17 0.5 0.0566667 -0.17 0.5 0.113333 -0.17 0.5 0.17 -0.17 0.5 -0.17 -0.113333 0.5 -0.113333 -0.113333 0.5 -0.0566667 -0.113333 0.5 0 -0.113333 0.5 0.0566667 -0.113333 0.5 0.113333 -0.113333 0.5 0.17 -0.113333 0.5 -0.17 -0.0566667 0.5 -0.113333 -0.0566667 0.5 -0.0566667 -0.0566667 0.5 0 -0.0566667 0.5 0.0566667 -0.0566667 0.5 0.113333 -0.0566667 0.5 0.17 -0.0566667 0.5 -0.17 0 0.5 -0.113333 0 0.5 -0.0566667 0 0.5 0 0 0.5 0.0566667 0 0.5 0.113333 0 0.5 0.17 0 0.5 -0.17 0.0566667 0.5 -0.113333 0.0566667 0.5 -0.0566667 0.0566667 0.5 0 0.0566667 0.5 0.0566667 0.0566667 0.5 0.113333 0.0566667 0.5 0.17 0.0566667 0.5 -0.17 0.113333 0.5 -0.113333 0.113333 0.5 -0.0566667 0.113333 0.5 0 0.113333 0.5 0.0566667 0.113333 0.5 0.113333 0.113333 0.5 0.17 0.113333 0.5 -0.17 0.17 0.5 -0.113333 0.17 0.5 -0.0566667 0.17 0.5 0 0.17 0.5 0.0566667 0.17 0.5 0.113333 0.17 0.5 0.17 0.17 0.5"
                         />
         <RegularGridTopology nx="7" ny="7" nz="14" xmin="-0.17" xmax="0.17" ymin="-0.17" ymax="0.17" zmin=" 0.0" zmax="0.7" />
-		<UniformMass totalmass="2"/>
+		<UniformMass totalMass="2"/>
 		<BoxROI name="ROI" box="-0.2 -0.2 -0.01 0.2 0.2 0.11" />
         <FixedConstraint indices="@ROI.indices" />
         <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" localStiffnessFactor="0.5 0.5 0.5 0.5 0.5 0.6 0.4 0.4 0.4 1 1 0.3 0.3" />

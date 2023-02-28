@@ -23,4 +23,4 @@
 
 #include <sofa/component/constraint/projective/LinearMovementConstraint.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/LinearMovementConstraint.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/LinearMovementConstraint.inl")

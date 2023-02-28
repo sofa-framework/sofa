@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/linear/IdentityMultiMapping.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/IdentityMultiMapping.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/IdentityMultiMapping.inl")

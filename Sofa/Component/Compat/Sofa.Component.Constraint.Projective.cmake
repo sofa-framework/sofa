@@ -30,8 +30,6 @@ list(APPEND HEADER_FILES
     ${SOFABOUNDARYCONDITION_SRC}/PartialLinearMovementConstraint.inl
     ${SOFABOUNDARYCONDITION_SRC}/PatchTestMovementConstraint.h
     ${SOFABOUNDARYCONDITION_SRC}/PatchTestMovementConstraint.inl
-    ${SOFABOUNDARYCONDITION_SRC}/PointConstraint.h
-    ${SOFABOUNDARYCONDITION_SRC}/PointConstraint.inl
     ${SOFABOUNDARYCONDITION_SRC}/PositionBasedDynamicsConstraint.h
     ${SOFABOUNDARYCONDITION_SRC}/PositionBasedDynamicsConstraint.inl
     ${SOFABOUNDARYCONDITION_SRC}/SkeletalMotionConstraint.h

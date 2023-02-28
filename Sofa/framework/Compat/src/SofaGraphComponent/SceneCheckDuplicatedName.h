@@ -27,26 +27,8 @@
 #include <SceneChecking/SceneCheckDuplicatedName.h>
 #define SCENECHECKING_SCENECHECKDUPLICATEDNAME
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckDuplicatedName.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckDuplicatedName.h")
 
 #else
 #error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckDuplicatedName.h> instead of this file."
 #endif
-
-#ifdef SCENECHECKING_SCENECHECKDUPLICATEDNAME
-
-namespace sofa::simulation::_scenechecking_
-{
-    using SceneCheckDuplicatedName = sofa::_scenechecking_::SceneCheckDuplicatedName;
-
-} // namespace sofa::simulation::_scenechecking_
-
-namespace sofa::simulation::scenechecking
-{
-    using SceneCheckDuplicatedName = sofa::scenechecking::SceneCheckDuplicatedName;
-
-} // namespace sofa::simulation::_scenechecking_
-
-#endif // SCENECHECKING_SCENECHECKDUPLICATEDNAME
-
-#undef SCENECHECKING_SCENECHECKDUPLICATEDNAME

@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/TriangleBendingSprings.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/TriangleBendingSprings.inl")
-
-namespace sofa::component::interactionforcefield
-{
-    template<class DataTypes>
-    using TriangleBendingSprings = sofa::component::solidmechanics::spring::TriangleBendingSprings<DataTypes>;
-
-} // namespace sofa::component::interactionforcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/TriangleBendingSprings.inl")

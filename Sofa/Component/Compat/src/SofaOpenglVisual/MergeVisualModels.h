@@ -27,18 +27,8 @@
 #include <sofa/gl/component/rendering3d/MergeVisualModels.h>
 #define SOFAGL_COMPONENT_MERGEVISUALMODELS
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/MergeVisualModels.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/MergeVisualModels.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/MergeVisualModels.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_MERGEVISUALMODELS
-
-namespace sofa::component::visualmodel
-{
-    using MergeVisualModels = sofa::gl::component::rendering3d::MergeVisualModels;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_MERGEVISUALMODELS

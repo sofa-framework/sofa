@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/projective/AffineMovementConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/AffineMovementConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-    template<class DataTypes>
-    using AffineMovementConstraint = sofa::component::constraint::projective::AffineMovementConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/AffineMovementConstraint.h")

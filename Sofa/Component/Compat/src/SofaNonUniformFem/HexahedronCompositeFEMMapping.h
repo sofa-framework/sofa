@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/fem/nonuniform/HexahedronCompositeFEMMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/nonuniform/HexahedronCompositeFEMMapping.h")
-
-namespace sofa::component::mapping
-{
-    template <class BasicMapping>
-    using HexahedronCompositeFEMMapping = sofa::component::solidmechanics::fem::nonuniform::HexahedronCompositeFEMMapping<BasicMapping>;
-
-} // namespace sofa::component::mapping
+// SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/nonuniform/HexahedronCompositeFEMMapping.h")

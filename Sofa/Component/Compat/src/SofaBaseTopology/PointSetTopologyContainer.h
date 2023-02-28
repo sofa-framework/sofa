@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/PointSetTopologyContainer.h")
-
-namespace sofa::component::topology
-{
-
-    using PointSetTopologyContainer = sofa::component::topology::container::dynamic::PointSetTopologyContainer;
-
-} // namespace sofa::component::topology
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/PointSetTopologyContainer.h")

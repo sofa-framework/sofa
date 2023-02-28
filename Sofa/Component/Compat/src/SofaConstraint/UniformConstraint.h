@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/UniformConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/UniformConstraint.h")
-
-namespace sofa::constraint
-{
-    template<class DataTypes>
-    using UniformConstraint = sofa::component::constraint::lagrangian::model::UniformConstraint<DataTypes>;
-    
-} // namespace sofa::constraint
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/UniformConstraint.h")

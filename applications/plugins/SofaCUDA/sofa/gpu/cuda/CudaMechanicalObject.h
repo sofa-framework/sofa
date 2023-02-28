@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/gpu/cuda/CudaBaseVector.h>
 

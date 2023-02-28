@@ -39,7 +39,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/gui/common/GUIManager.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/common/init.h>
 #include <sofa/helper/init.h>
 
 #include <sofa/gui/common/BaseGUI.h>
@@ -311,7 +311,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         }
         else
         {
-          sofa::gui::initSofaGui();
+          sofa::gui::common::init();
 
           char* argv[]= { const_cast<char*>("a") };
 
@@ -456,7 +456,7 @@ int SofaPhysicsSimulation::loadPlugin(const char* pluginPath)
 void SofaPhysicsSimulation::createScene()
 {
     m_RootNode = sofa::simulation::getSimulation()->createNewGraph("root");
-    sofa::simpleapi::createObject(m_RootNode, "DefaultPipeline", { {"name","Collision Pipeline"} });
+    sofa::simpleapi::createObject(m_RootNode, "CollisionPipeline", { {"name","Collision Pipeline"} });
     sofa::simpleapi::createObject(m_RootNode, "BruteForceBroadPhase", { {"name","Broad Phase Detection"} });
     sofa::simpleapi::createObject(m_RootNode, "BVHNarrowPhase", { {"name","Narrow Phase Detection"} });
     sofa::simpleapi::createObject(m_RootNode, "MinProximityIntersection", { {"name","Proximity"},

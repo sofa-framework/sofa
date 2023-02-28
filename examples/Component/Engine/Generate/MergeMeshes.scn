@@ -1,0 +1,30 @@
+<Node name="Scene" gravity="0 0 0" dt="0.1" >
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MergeMeshes] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <DefaultAnimationLoop/>
+	<VisualStyle displayFlags="showBehavior" />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
+    <Node>
+        <MeshOBJLoader name="frog" filename="mesh/frog.obj" />
+        <MeshOBJLoader name="dragon" filename="mesh/dragon.obj" />
+
+        <MergeMeshes name="basis" nbMeshes="2" 
+                     position1="@frog.position" 
+                     triangles1="@frog.triangles"
+                     position2="@dragon.position"
+                     triangles2="@dragon.triangles"
+                     />
+    	  
+        <MeshTopology src="@basis" drawTriangles="1"/>
+        <MechanicalObject showObject="1"/>
+        <UniformMass />
+    </Node>
+</Node>

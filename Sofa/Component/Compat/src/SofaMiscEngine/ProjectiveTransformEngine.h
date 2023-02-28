@@ -23,13 +23,4 @@
 
 #include <sofa/component/engine/transform/ProjectiveTransformEngine.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/ProjectiveTransformEngine.h")
-
-namespace sofa::component::engine
-{
-    template < class DataTypes >
-    using ProjectiveTransformEngine = sofa::component::engine::transform::ProjectiveTransformEngine<DataTypes>;
-    
-{
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/ProjectiveTransformEngine.h")

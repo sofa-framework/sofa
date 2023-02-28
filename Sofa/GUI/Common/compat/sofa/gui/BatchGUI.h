@@ -27,20 +27,8 @@
 #include <sofa/gui/batch/BatchGUI.h>
 #define SOFA_GUI_BATCH_BATCHGUI
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/batch/BatchGUI.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/batch/BatchGUI.h")
 
 #else
 #error "BatchGUI contents has been moved to Sofa.GUI.Batch. Include <sofa/gui/batch/BatchGUI.h> instead of this one."
 #endif
-
-#ifdef SOFA_GUI_BATCH_BATCHGUI
-
-namespace sofa::gui
-{
-    using BatchGUI = sofa::gui::batch::BatchGUI;
-
-} // namespace sofa::gui
-
-#endif // SOFA_GUI_BATCH_BATCHGUI
-
-#undef SOFA_GUI_BATCH_BATCHGUI

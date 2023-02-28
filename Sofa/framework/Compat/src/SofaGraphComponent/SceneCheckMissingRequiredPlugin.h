@@ -27,26 +27,8 @@
 #include <SceneChecking/SceneCheckMissingRequiredPlugin.h>
 #define SCENECHECKING_SCENECHECKMISSINGREQUIREDPLUGIN
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckMissingRequiredPlugin.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckMissingRequiredPlugin.h")
 
 #else
 #error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckMissingRequiredPlugin.h> instead of this file."
 #endif
-
-#ifdef SCENECHECKING_SCENECHECKMISSINGREQUIREDPLUGIN
-
-namespace sofa::simulation::_scenechecking_
-{
-    using SceneCheckMissingRequiredPlugin = sofa::_scenechecking_::SceneCheckMissingRequiredPlugin;
-
-} // namespace sofa::simulation::_scenechecking_
-
-namespace sofa::simulation::scenechecking
-{
-    using SceneCheckMissingRequiredPlugin = sofa::scenechecking::SceneCheckMissingRequiredPlugin;
-
-} // namespace sofa::simulation::_scenechecking_
-
-#endif // SCENECHECKING_SCENECHECKMISSINGREQUIREDPLUGIN
-
-#undef SCENECHECKING_SCENECHECKMISSINGREQUIREDPLUGIN

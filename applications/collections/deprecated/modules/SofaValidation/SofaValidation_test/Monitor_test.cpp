@@ -178,12 +178,11 @@ struct Monitor_test : public BaseSimulationTest
                 "<MechanicalObject template='Rigid3d' src='@loader' name='MO' />"
                 "<Monitor template='Rigid3d' name='monitor' listening='1' indices='0' "
                 "ExportPositions='true' ExportVelocities='true' ExportForces='true' />"
-                "<UniformMass totalmass='1' />"
+                "<UniformMass totalMass='1' />"
                 "</Node>"
                 "</Node>";
 
-        root = SceneLoaderXML::loadFromMemory("MonitorTest", scene.c_str(),
-                                              scene.size());
+        root = SceneLoaderXML::loadFromMemory("MonitorTest", scene.c_str());
         root->init(sofa::core::execparams::defaultInstance());
 
         std::string s = "/node/monitor";

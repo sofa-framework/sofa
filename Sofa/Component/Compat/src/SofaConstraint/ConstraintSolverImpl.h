@@ -23,12 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h")
-
-namespace sofa::component::constraintset
-{
-    using ConstraintProblem = sofa::component::constraint::lagrangian::solver::ConstraintProblem;
-    using ConstraintSolverImpl = sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl;
-    using MechanicalGetConstraintViolationVisitor = sofa::component::constraint::lagrangian::solver::MechanicalGetConstraintViolationVisitor;
-    
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h")

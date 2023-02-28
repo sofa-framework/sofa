@@ -23,11 +23,4 @@
 
 #include <sofa/component/mechanicalload/TaitSurfacePressureForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/TaitSurfacePressureForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using TaitSurfacePressureForceField = sofa::component::mechanicalload::TaitSurfacePressureForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/TaitSurfacePressureForceField.h")

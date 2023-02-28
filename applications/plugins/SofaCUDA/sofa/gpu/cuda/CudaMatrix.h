@@ -23,7 +23,7 @@
 #define SOFA_GPU_CUDA_CUDAMATRIX_H
 
 //#include "host_runtime.h" // CUDA
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <iostream>
 
 //#define DEBUG_OUT_MATRIX

@@ -155,12 +155,6 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
     return false;
 
     std::string cmd;
-    int npoints = 0;
-    int nlines = 0;
-    int ntris = 0;
-    int nquads = 0;
-    int ntetrahedra = 0;
-    int ncubes = 0;
 
     while (!file.eof())
     {
@@ -170,49 +164,42 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
             int p1,p2;
             file >> p1 >> p2;
             addLine(p1, p2);
-            ++nlines;
         }
         else if (cmd=="triangle")
         {
             int p1,p2,p3;
             file >> p1 >> p2 >> p3;
             addTriangle(p1, p2, p3);
-            ++ntris;
         }
         else if (cmd=="quad")
         {
             int p1,p2,p3,p4;
             file >> p1 >> p2 >> p3 >> p4;
             addQuad(p1, p2, p3, p4);
-            ++nquads;
         }
         else if (cmd=="tetra")
         {
             int p1,p2,p3,p4;
             file >> p1 >> p2 >> p3 >> p4;
             addTetra(p1, p2, p3, p4);
-            ++ntetrahedra;
         }
         else if (cmd=="cube")
         {
             int p1,p2,p3,p4,p5,p6,p7,p8;
             file >> p1 >> p2 >> p3 >> p4 >> p5 >> p6 >> p7 >> p8;
             addCube(p1, p2, p3, p4, p5, p6, p7, p8);
-            ++ncubes;
         }
         else if (cmd=="point")
         {
             double px,py,pz;
             file >> px >> py >> pz;
             addPoint(px, py, pz);
-            ++npoints;
         }
         else if (cmd=="v")
         {
             double px,py,pz;
             file >> px >> py >> pz;
             addPoint(px, py, pz);
-            ++npoints;
         }
         else if (cmd=="f")
         {
@@ -221,12 +208,10 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
             if (p4)
             {
                 addQuad(p1-1, p2-1, p3-1, p4-1);
-                ++nquads;
             }
             else
             {
                 addTriangle(p1-1, p2-1, p3-1);
-                ++ntris;
             }
         }
         else if (cmd=="mass")
@@ -236,7 +221,6 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
             addPoint(px, py, pz);
-            ++npoints;
         }
         else if (cmd=="lspg")
         {
@@ -247,7 +231,6 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
             --m1;
             --m2;
             addLine(m1,m2);
-            ++nlines;
         }
         else if (cmd[0] == '#')	// it's a comment
         {
@@ -278,7 +261,7 @@ bool MeshTopologyLoader::load(const char *filename)
 		return false;
 	}
 
-	bool fileLoaded;
+    bool fileLoaded = false;
 
 	// check the extension of the filename
 	if ((strlen(filename) > 4 && !strcmp(filename + strlen(filename) - 4, ".obj"))
@@ -299,9 +282,18 @@ bool MeshTopologyLoader::load(const char *filename)
 		file.close();
 	}
        
-    if(!fileLoaded)
-        msg_error() << "Unable to load mesh file '" << fname << "'" ;
+    if(fileLoaded)
+    {
+        // topology has been filled, so the Mesh is not needed anymore
+        assert(m_mesh);
 
+        delete m_mesh;
+        m_mesh = nullptr;
+    }
+    else
+    {
+        msg_error() << "Unable to load mesh file '" << fname << "'" ;
+    }
     return fileLoaded;
 }
 

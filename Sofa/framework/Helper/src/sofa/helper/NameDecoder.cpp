@@ -31,6 +31,8 @@
 namespace sofa::helper
 {
 
+
+
 std::string NameDecoder::shortName( const std::string& src )
 {
     if( src.empty() )

@@ -28,7 +28,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/init.h>
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/common/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>

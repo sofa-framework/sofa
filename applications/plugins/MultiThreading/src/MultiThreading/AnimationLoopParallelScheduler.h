@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -22,66 +22,10 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
 
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/helper/AdvancedTimer.h>
-
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h")
+#include <MultiThreading/component/animationloop/AnimationLoopParallelScheduler.h>
 namespace sofa::simulation
 {
-
-class TaskScheduler;
-
-class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler : public sofa::core::behavior::BaseAnimationLoop
-{
-public:
-
-    typedef sofa::core::behavior::BaseAnimationLoop Inherit;
-    SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
-
-    Data<std::string> schedulerName; ///< scheduler name type
-
-    Data<unsigned int> threadNumber; ///< number of thread
-
-
-protected:
-    AnimationLoopParallelScheduler(simulation::Node* gnode = NULL);
-
-    ~AnimationLoopParallelScheduler() override;
-
-public:
-    void init() override;
-
-    /// Initialization method called at graph creation and modification, during bottom-up traversal.
-    void bwdInit() override;
-
-    /// Update method called when variables used in precomputation are modified.
-    void reinit() override;
-
-    void cleanup() override;
-
-    void step(const core::ExecParams* params, SReal dt) override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
-
-private :
-
-    unsigned int mNbThread;
-
-    simulation::Node* gnode;
-
-    TaskScheduler* _taskScheduler;
-
-};
-} // namespace sofa::simulation
+    using AnimationLoopParallelScheduler = multithreading::component::animationloop::AnimationLoopParallelScheduler;
+}
