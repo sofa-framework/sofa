@@ -27,13 +27,13 @@
 
 #include <sofa/helper/RandomGenerator.h>
 
-template<typename TBlock, typename TVecBlock, typename TVecIndex>
-void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecBlock, TVecIndex>& matrix,
+template<typename TBlock, typename TPolicy>
+void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TPolicy>& matrix,
     sofa::SignedIndex nbRows, sofa::SignedIndex nbCols,
-    typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecBlock, TVecIndex>::Real sparsity,
+    typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TPolicy>::Real sparsity,
     long seed)
 {
-    using Real = typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecBlock, TVecIndex>::Real;
+    using Real = typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TPolicy>::Real;
     const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * static_cast<Real>(nbRows*nbCols));
 
     sofa::helper::RandomGenerator randomGenerator;

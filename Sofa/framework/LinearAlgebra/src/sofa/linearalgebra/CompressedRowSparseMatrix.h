@@ -30,6 +30,7 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
+#include <sofa/linearalgebra/MatrixExpr.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixTraceLogger.h>
@@ -142,6 +143,11 @@ public:
     typedef matrix_bloc_traits<Block, BaseMatrix::Index> traits;
     typedef typename traits::BlockTranspose BlockTranspose;
     typedef typename traits::Real Real;
+
+    typedef Matrix Expr;
+    typedef CompressedRowSparseMatrix<Real> matrix_type;
+    enum { category = MATRIX_SPARSE };
+    enum { operand = 1 };
 
     static constexpr Index NL = traits::NL;  ///< Number of rows of a block
     static constexpr Index NC = traits::NC;  ///< Number of columns of a block
@@ -1563,6 +1569,19 @@ public:
         }
     }
 
+    /** @returns this + m
+      @warning The block must be the same (same type and same size)
+      @warning The matrices must have the same mathematical size
+      @warning matrices this and m must be compressed
+      */
+    CompressedRowSparseMatrix<TBlock,TPolicy> operator+( const CompressedRowSparseMatrix<TBlock,TPolicy>& m ) const
+    {
+        CompressedRowSparseMatrix<TBlock,TPolicy> res = *this;
+        res += m;
+        return res;
+    }
+    /// @}
+
     /** Compute res = this * m
       @warning The block sizes must be compatible, i.e. this::NC==m::NR and res::NR==this::NR and res::NC==m::NC.
       The basic algorithm consists in accumulating rows of m to rows of res: foreach row { foreach col { res[row] += this[row,col] * m[col] } }
@@ -1956,6 +1975,113 @@ public:
         }
     }
 
+
+    /** Product of the matrix with a templated vector res += this * vec*/
+    template<class Real2, class V1, class V2>
+    void taddMul(V1& res, const V2& vec) const
+    {
+        assert( vec.size()%bColSize() == 0 ); // vec.size() must be a multiple of block size.
+
+        ((Matrix*)this)->compress();
+        vresize( res, rowBSize(), rowSize() );
+        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
+        {
+            type::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+
+            // multiply the non-null blocks with the corresponding chunks of the large vector
+            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            {
+                // transfer a chunk of large vector to a local block-sized vector
+                type::Vec<NC,Real2> v;
+                //Index jN = colsIndex[xj] * NC;    // scalar column index
+                for (Index bj = 0; bj < NC; ++bj)
+                    v[bj] = vget(vec,colsIndex[xj],NC,bj);
+
+                // multiply the block with the local vector
+                const Block& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                for (Index bi = 0; bi < NL; ++bi)
+                    for (Index bj = 0; bj < NC; ++bj)
+                        r[bi] += traits::v(b, bi, bj) * v[bj];
+            }
+
+            // transfer the local result  to the large result vector
+            //Index iN = rowIndex[xi] * NL;                      // scalar row index
+            for (Index bi = 0; bi < NL; ++bi)
+                vadd(res, rowIndex[xi], NL, bi, r[bi]);
+        }
+    }
+
+
+    /** Product of the matrix with a templated vector that have the size of the block res += this * [vec,...,vec]^T */
+    template<class Real2, class V1, class V2>
+    void taddMul_by_line(V1& res, const V2& vec) const
+    {
+        assert( vec.size() == NC ); // vec.size() must have the block size.
+
+        ((Matrix*)this)->compress();
+        vresize( res, rowBSize(), rowSize() );
+        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
+        {
+            type::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
+
+            // multiply the non-null blocks with the corresponding chunks of the large vector
+            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            {
+                // multiply the block with the local vector
+                const Block& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                for (Index bi = 0; bi < NL; ++bi)
+                    for (Index bj = 0; bj < NC; ++bj)
+                        r[bi] += traits::v(b, bi, bj) * vec[bj];
+            }
+
+            // transfer the local result  to the large result vector
+            //Index iN = rowIndex[xi] * NL;                      // scalar row index
+            for (Index bi = 0; bi < NL; ++bi)
+                vadd(res, rowIndex[xi], NL, bi, r[bi]);
+        }
+    }
+
+    /** Product of the transpose with a templated vector and add it to res   res += this^T * vec */
+    template<class Real2, class V1, class V2>
+    void taddMulTranspose(V1& res, const V2& vec) const
+    {
+        assert( vec.size()%bRowSize() == 0 ); // vec.size() must be a multiple of block size.
+
+        ((Matrix*)this)->compress();
+        vresize( res, colBSize(), colSize() );
+        for (Index xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
+        {
+            // copy the corresponding chunk of the input to a local vector
+            type::Vec<NL,Real2> v;
+            //Index iN = rowIndex[xi] * NL;    // index of the row in the vector
+            for (Index bi = 0; bi < NL; ++bi)
+                v[bi] = vget(vec, rowIndex[xi], NL, bi);
+
+            // accumulate the product of the column with the local vector
+            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-empty block in the row
+            {
+                const Block& b = colsValue[xj]; // non-empty block
+
+                type::Vec<NC,Real2> r;  // local vector to store the product
+                //Index jN = colsIndex[xj] * NC;
+
+                // columnwise block-vector product
+                for (Index bj = 0; bj < NC; ++bj)
+                    r[bj] = traits::v(b, 0, bj) * v[0];
+                for (Index bi = 1; bi < NL; ++bi)
+                    for (Index bj = 0; bj < NC; ++bj)
+                        r[bj] += traits::v(b, bi, bj) * v[bi];
+
+                // accumulate the product to the result
+                for (Index bj = 0; bj < NC; ++bj)
+                    vadd(res, colsIndex[xj], NC, bj, r[bj]);
+            }
+        }
+    }
+
     /// @name specialization of product methods on a few vector types
     /// @{
 
@@ -1975,6 +2101,178 @@ public:
         Vec res;
         mul(res, v);
         return res;
+    }
+
+    /// result += this * (v,...,v)^T
+    /// v has the size of one block
+    template< typename V, typename Real2 >
+    void addMul_by_line( V& res, const type::Vec<NC,Real2>& v ) const
+    {
+        taddMul_by_line< Real2,V,type::Vec<NC,Real2> >( res, v );
+    }
+    template< typename Real, typename V, typename V2 >
+    void addMul_by_line( V& res, const V2& v ) const
+    {
+        taddMul_by_line< Real,V,V2 >( res, v );
+    }
+
+
+    /// result += this * v
+    template< typename V1, typename V2 >
+    void addMul( V1& res, const V2& v ) const
+    {
+        taddMul< Real,V1,V2 >( res, v );
+    }
+
+
+
+    /// @}
+
+
+    // methods for MatrixExpr support
+
+    template<class M2>
+    bool hasRef(const M2* m) const
+    {
+        return (const void*)this == (const void*)m;
+    }
+
+    std::string expr() const
+    {
+        return std::string(Name());
+    }
+
+    bool valid() const
+    {
+        return true;
+    }
+
+
+    /// dest += this
+    /// different block types possible
+    /// @todo how to optimize when same block types
+    template<class Dest>
+    void addTo(Dest* dest) const
+    {
+        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)
+        {
+            Index iN = rowIndex[xi] * NL;
+            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            {
+                Index jN = colsIndex[xj] * NC;
+                const Block& b = colsValue[xj];
+                for (Index bi = 0; bi < NL; ++bi)
+                    for (Index bj = 0; bj < NC; ++bj)
+                        dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
+            }
+        }
+        if (!btemp.empty())
+        {
+            for (typename VecIndexedBlock::const_iterator it = btemp.begin(), itend = btemp.end(); it != itend; ++it)
+            {
+                Index iN = it->l * NL;
+                Index jN = it->c * NC;
+                const Block& b = it->value;
+                for (Index bi = 0; bi < NL; ++bi)
+                    for (Index bj = 0; bj < NC; ++bj)
+                        dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
+            }
+        }
+    }
+
+protected:
+
+    /// add ? this += m : this = m
+    /// m can be the same as this
+    template<class M>
+    void equal( const M& m, bool add = false )
+    {
+        if (m.hasRef(this))
+        {
+            Matrix tmp;
+            tmp.resize(m.rowSize(), m.colSize());
+            m.addTo(&tmp);
+            if (add)
+                tmp.addTo(this);
+            else
+                swap(tmp);
+        }
+        else
+        {
+            if (!add)
+                resize(m.rowSize(), m.colSize());
+            m.addTo(this);
+        }
+    }
+
+    /// this += m
+    template<class M>
+    inline void addEqual( const M& m )
+    {
+        equal( m, true );
+    }
+
+
+
+public:
+
+    template<class TBlock2, class TPolicy2>
+    void operator=(const CompressedRowSparseMatrix<TBlock2, TPolicy2>& m)
+    {
+        if (&m == this) return;
+        resize(m.rowSize(), m.colSize());
+        m.addTo(this);
+    }
+
+    template<class TBlock2, class TPolicy2>
+    void operator+=(const CompressedRowSparseMatrix<TBlock2, TPolicy2>& m)
+    {
+        addEqual(m);
+    }
+
+    template<class TBlock2, class TPolicy2>
+    void operator-=(const CompressedRowSparseMatrix<TBlock2, TPolicy2>& m)
+    {
+        equal(MatrixExpr< MatrixNegative< CompressedRowSparseMatrix<TBlock2, TPolicy2> > >(MatrixNegative< CompressedRowSparseMatrix<TBlock2, TPolicy2> >(m)), true);
+    }
+
+    template<class Expr2>
+    void operator=(const MatrixExpr< Expr2 >& m)
+    {
+        equal(m, false);
+    }
+
+    template<class Expr2>
+    void operator+=(const MatrixExpr< Expr2 >& m)
+    {
+        addEqual(m);
+    }
+
+    template<class Expr2>
+    void operator-=(const MatrixExpr< Expr2 >& m)
+    {
+        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
+    }
+
+    MatrixExpr< MatrixTranspose< Matrix > > t() const
+    {
+        return MatrixExpr< MatrixTranspose< Matrix > >(MatrixTranspose< Matrix >(*this));
+    }
+
+    MatrixExpr< MatrixInverse< Matrix > > i() const
+    {
+        return MatrixExpr< MatrixInverse< Matrix > >(MatrixInverse< Matrix >(*this));
+    }
+
+    MatrixExpr< MatrixNegative< Matrix > > operator-() const
+    {
+        return MatrixExpr< MatrixNegative< Matrix > >(MatrixNegative< Matrix >(*this));
+    }
+
+    MatrixExpr< MatrixScale< Matrix, double > > operator*(const double& r) const
+    {
+        return MatrixExpr< MatrixScale< Matrix, double > >(MatrixScale< Matrix, double >(*this, r));
     }
 
     typedef bool filter_fn(Index   i, Index   j, Block& val, const Block& ref);
