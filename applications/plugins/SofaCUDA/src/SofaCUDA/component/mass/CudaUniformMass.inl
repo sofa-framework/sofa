@@ -175,7 +175,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::addGravitationalForce(const core:
         VecDeriv& _f = *f.beginEdit();
 
         float m = d_vertexMass.getValue().mass;
-        const float mg[] = { (float)(m*gravity(0)), (float)(m*gravity(1)), (float)(m*gravity(2)) };
+        const float mg[] = { (float)(m*gravity[0]), (float)(m*gravity[1])), (float)(m*gravity[2]) };
         UniformMassCudaRigid3f_addGravitationalForce(_f.size(), mg, _f.deviceWrite());
 
         f.endEdit();
@@ -183,16 +183,15 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::addGravitationalForce(const core:
 
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x) const
+SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::getGravitationalPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x, const Deriv& gravity) const
 {
     const VecCoord& x = d_x.getValue();
 
     SReal e = 0;
     // gravity
-    type::Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*d_vertexMass.getValue().mass*x[i].getCenter();
+        e += gravity*d_vertexMass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
