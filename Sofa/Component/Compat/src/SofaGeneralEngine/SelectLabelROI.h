@@ -23,7 +23,7 @@
 
 #include <sofa/component/engine/select/SelectLabelROI.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SelectLabelROI.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/SelectLabelROI.h")
 
 namespace sofa::component::engine
 {

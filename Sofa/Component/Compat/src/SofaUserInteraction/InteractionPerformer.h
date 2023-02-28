@@ -27,24 +27,9 @@
 #include <sofa/gui/component/performer/InteractionPerformer.h>
 #define SOFA_GUI_COMPONENT_INTERACTIONPERFORMER
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/InteractionPerformer.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/InteractionPerformer.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/InteractionPerformer.h> instead of this one."
 #endif
 
-
-#ifdef SOFA_GUI_COMPONENT_INTERACTIONPERFORMER
-
-namespace sofa::component::collision
-{
-    using InteractionPerformer = sofa::gui::component::performer::InteractionPerformer;
-
-    template <class DataTypes>
-    using TInteractionPerformer = sofa::gui::component::performer::TInteractionPerformer<DataTypes>;
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_INTERACTIONPERFORMER
-
-#undef SOFA_GUI_COMPONENT_INTERACTIONPERFORMER

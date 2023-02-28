@@ -23,11 +23,4 @@
 
 #include <sofa/component/mechanicalload/DiagonalVelocityDampingForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/DiagonalVelocityDampingForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using DiagonalVelocityDampingForceField = sofa::component::mechanicalload::DiagonalVelocityDampingForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/DiagonalVelocityDampingForceField.h")

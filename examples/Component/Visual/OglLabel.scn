@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+
+<Node name="root" dt="0.01" gravity="0 0 -9.81">
+    <RequiredPlugin name="Sofa.Component.Engine.Analyze"/> <!-- Needed to use components [AverageCoord] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualGrid VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
+    <DefaultAnimationLoop/>
+    
+	<VisualStyle displayFlags="showForceFields"/>
+	<BackgroundSetting color="0.8 0.4 0.6"/>
+
+	<VisualGrid size="16" plane="y"/>
+
+	<EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+	<CGLinearSolver name="CG Solver" iterations="100" tolerance="1e-5" threshold="1e-5" />
+
+	<MechanicalObject name="Particles" template="Vec3"
+		    position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />
+
+	<MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
+
+	<UniformMass name="Mass" totalMass="1" />
+	<MeshSpringForceField name="Springs" stiffness="100" damping="1" />
+
+	<PlaneForceField name="Floor" normal="-0.2 0 1" stiffness="100" damping="1"/>
+	<!-- <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="0.4 0.4 0.4" /> -->
+
+	<AverageCoord name="center" template="Vec3" listening="true"/>
+
+	<OglLabel label="Sofa framework" fontsize="30"/>
+	<OglLabel label="Falling cube on an inclined plane" fontsize="20" y="50"/>
+	<OglLabel label="@center.average" fontsize="20" selectContrastingColor='true' prefix="Cube position: " updateLabelEveryNbSteps="30" y="75"/>
+
+</Node>

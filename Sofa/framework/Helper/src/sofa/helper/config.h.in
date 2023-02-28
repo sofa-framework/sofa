@@ -47,3 +47,11 @@
     SOFA_ATTRIBUTE_DEPRECATED( \
         "v22.12", "v23.06", "")
 #endif // SOFA_BUILD_SOFA_HELPER
+
+#ifdef SOFA_BUILD_SOFA_HELPER
+#define SOFA_PROXIMITY_CLASSES_DEPRECATED()
+#else
+#define SOFA_PROXIMITY_CLASSES_DEPRECATED() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v23.06", "v23.12", "Use free functions in sofa::geometry::proximity instead")
+#endif // SOFA_BUILD_SOFA_HELPER

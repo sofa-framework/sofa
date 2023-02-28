@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [DiscreteIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -18,7 +18,8 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="Sofa.GUI.Component"/> <!-- Needed to use components [AttachBodyButtonSetting FixPickedParticleButtonSetting] -->
     
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <CollisionPipeline name="CollisionPipeline" verbose="0" />
+    <DefaultAnimationLoop/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="PenalityContactForceField" />
@@ -44,15 +45,15 @@
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
-        <MechanicalObject template="Vec3d" name="dofs"  position="0 0 0" velocity="0 0 0" force="0 0 0" externalForce="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
-        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-        <DiagonalMass template="Vec3d,Vec3d" name="computed using mass density" massDensity="1" />
-        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
-        <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
+        <MechanicalObject template="Vec3" name="dofs"  position="0 0 0" velocity="0 0 0" force="0 0 0" externalForce="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+        <DiagonalMass template="Vec3,Vec3" name="computed using mass density" massDensity="1" />
+        <TetrahedralCorotationalFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+        <FixedConstraint template="Vec3" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_0" />
-            <BarycentricMapping template="Vec3d,Vec3d" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
+            <BarycentricMapping template="Vec3,Vec3" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
             <SphereLoader filename="mesh/liver.sph" />

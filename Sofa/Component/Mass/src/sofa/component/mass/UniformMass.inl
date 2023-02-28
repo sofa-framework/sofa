@@ -407,8 +407,8 @@ void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
     if ( factor != 1.0 )
         m *= typename DataTypes::Real(factor);
 
-    for ( unsigned int i=0; i<indices.size(); i++ )
-        res[indices[i]] += dx[indices[i]] * m;
+    for (const auto i : indices)
+        res[i] += dx[i] * m;
 }
 
 
@@ -423,8 +423,8 @@ void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     MassType m = d_vertexMass.getValue();
-    for ( unsigned int i=0; i<indices.size(); i++ )
-        a[indices[i]] = f[indices[i]] / m;
+    for (const auto i : indices)
+        a[i] = f[i] / m;
 }
 
 
@@ -484,17 +484,12 @@ void UniformMass<DataTypes>::addForce ( const core::MechanicalParams*, DataVecDe
 
     dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
-
-
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     // add weight and inertia force
-    if (this->m_separateGravity.getValue()) for ( unsigned int i=0; i<indices.size(); i++ )
+    for (const auto i : indices)
     {
-    }
-    else for ( unsigned int i=0; i<indices.size(); i++ )
-    {
-        f[indices[i]] += mg;
+        f[i] += mg;
     }
 }
 
@@ -510,8 +505,8 @@ SReal UniformMass<DataTypes>::getKineticEnergy ( const MechanicalParams* params,
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
 
-    for ( unsigned int i=0; i<indices.size(); i++ )
-        e+= v[indices[i]]*m*v[indices[i]];
+    for (const auto i : indices)
+        e += v[i] * m * v[i];
 
     return e/2;
 }
@@ -533,8 +528,8 @@ SReal UniformMass<DataTypes>::getPotentialEnergy ( const MechanicalParams* param
 
     Deriv mg = gravity * m;
 
-    for ( unsigned int i=0; i<indices.size(); i++ )
-        e -= mg*x[indices[i]];
+    for (const auto i : indices)
+        e -= mg * x[i];
 
     return e;
 }
@@ -619,13 +614,13 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
 
     Coord gravityCenter;
     std::vector<  sofa::type::Vec3 > points;
-    for ( unsigned int i=0; i<indices.size(); i++ )
+    for (const auto i : indices)
     {
         sofa::type::Vec3 p;
-        p = DataTypes::getCPos(x[indices[i]]);
+        p = DataTypes::getCPos(x[i]);
 
-        points.push_back ( p );        
-        gravityCenter += x[indices[i]];
+        points.push_back ( p );
+        gravityCenter += x[i];
     }
     vparams->drawTool()->drawSpheres(points, 0.01f, sofa::type::RGBAColor::yellow());
     

@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<MasterContactSolver />
 	<LCPConstraintSolver initial_guess="true" displayTime="0" mu="0.7" tolerance="0.0000000001" printLog="0" maxIt="3000" build_lcp="true"/>
-	<DefaultPipeline depth="6" verbose="0" draw="0"/>
+	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="6.0" contactDistance="1.5" coneFactor="0.5" angleCone="-0.001"/>

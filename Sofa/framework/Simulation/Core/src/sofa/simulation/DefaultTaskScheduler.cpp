@@ -74,13 +74,6 @@ DefaultTaskScheduler::~DefaultTaskScheduler()
     }
 }
         
-        
-unsigned DefaultTaskScheduler::GetHardwareThreadsCount()
-{
-    return std::thread::hardware_concurrency() / 2;
-}
-        
-        
 WorkerThread* DefaultTaskScheduler::getWorkerThread(const std::thread::id id)
 {
     auto thread =_threads.find(id);

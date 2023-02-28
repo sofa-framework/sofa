@@ -295,23 +295,42 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
 template<class DataTypes>
 void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring)
 {
+    const auto springForce = this->computeSpringForce(p1, v1, p2, v2, spring);
+
+    if (springForce)
+    {
+        sofa::Index a = spring.m1;
+        sofa::Index b = spring.m2;
+
+        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + std::get<0>(springForce->force)) ;
+        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) + std::get<1>(springForce->force)) ;
+
+        ener += springForce->energy;
+    }
+}
+
+template <class DataTypes>
+auto SpringForceField<DataTypes>::computeSpringForce(const VecCoord& p1, const VecDeriv& v1, const VecCoord& p2, const VecDeriv& v2, const Spring& spring)
+-> std::unique_ptr<SpringForce>
+{
     sofa::Index a = spring.m1;
     sofa::Index b = spring.m2;
     typename DataTypes::CPos u = DataTypes::getCPos(p2[b])-DataTypes::getCPos(p1[a]);
     Real d = u.norm();
     if( spring.enabled && d<1.0e-4 ) // null length => no force
-        return;
+        return {};
+    std::unique_ptr<SpringForce> springForce = std::make_unique<SpringForce>();
+
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
     Real elongation = d - spring.initpos;
-    ener += elongation * elongation * spring.ks /2;
+    springForce->energy = elongation * elongation * spring.ks /2;
     typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
     Real elongationVelocity = dot(u,relativeVelocity);
     Real forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
     typename DataTypes::DPos force = u*forceIntensity;
-
-    DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
-    DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
+    springForce->force = std::make_pair(force, -force);
+    return springForce;
 }
 
 template<class DataTypes>
@@ -320,26 +339,23 @@ void SpringForceField<DataTypes>::addForce(
     const DataVecCoord& data_x1, const DataVecCoord& data_x2,
     const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
-
-    VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 = data_x1.getValue();
     const VecDeriv& v1 = data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
+
     const VecCoord& x2 = data_x2.getValue();
     const VecDeriv& v2 = data_v2.getValue();
 
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f1 = sofa::helper::getWriteOnlyAccessor(data_f1);
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f2 = sofa::helper::getWriteOnlyAccessor(data_f2);
 
     const type::vector<Spring>& springs= this->springs.getValue();
-
     f1.resize(x1.size());
     f2.resize(x2.size());
     this->m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
+    for (unsigned int i=0; i < springs.size(); i++)
     {
-        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
+        this->addSpringForce(this->m_potentialEnergy,f1.wref(),x1,v1,f2.wref(),x2,v2, i, springs[i]);
     }
-    data_f1.endEdit();
-    data_f2.endEdit();
 }
 
 template<class DataTypes>

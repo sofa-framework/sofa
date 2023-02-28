@@ -23,12 +23,4 @@
 
 #include <sofa/component/playback/WriteTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/WriteTopology.h")
-
-namespace sofa::component::misc
-{
-    using WriteTopology = sofa::component::playback::WriteTopology;
-    using WriteTopologyCreator = sofa::component::playback::WriteTopologyCreator;
-    using WriteTopologyActivator = sofa::component::playback::WriteTopologyActivator;
-
-} // namespace sofa::component::misc
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/playback/WriteTopology.h")

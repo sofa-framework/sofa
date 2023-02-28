@@ -23,11 +23,4 @@
 
 #include <sofa/component/linearsolver/direct/PrecomputedLinearSolver.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/PrecomputedLinearSolver.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector>
-    using PrecomputedLinearSolver = sofa::component::linearsolver::direct::PrecomputedLinearSolver<TMatrix, TVector>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/PrecomputedLinearSolver.h")

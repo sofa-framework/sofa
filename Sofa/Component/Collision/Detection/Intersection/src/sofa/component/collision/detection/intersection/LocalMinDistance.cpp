@@ -22,9 +22,9 @@
 #define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP
 #include <sofa/component/collision/detection/intersection/LocalMinDistance.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/geometry/proximity/SegmentTriangle.h>
 #include <sofa/simulation/Node.h>
 
 #define EMIT_EXTRA_DEBUG_MESSAGE false
@@ -1072,7 +1072,6 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
 {
     type::Vec3 P,Q;
-    static DistanceSegTri proximitySolver;
 
     const SReal alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
@@ -1082,7 +1081,10 @@ bool LocalMinDistance::testIntersection(Ray &t1,Triangle &t2)
     Vec3 A = t1.origin();
     Vec3 B = A + t1.direction() * t1.l();
 
-    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
+    const auto r = sofa::geometry::proximity::computeClosestPointsSegmentAndTriangle(t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
+    msg_warning_when(!r, "RayNewProximityIntersection") << "Failed to compute distance between ray ["
+        << A << "," << B <<"] and triangle [" << t2.p1() << ", " << t2.p2() << ", " << t2.p3() << "]";
+
     auto PQ=Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -1105,9 +1107,11 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
     Vec3 B = A + t1.direction() * t1.l();
 
     Vec3 P,Q;
-    static DistanceSegTri proximitySolver;
 
-    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A,B,P,Q);
+    const auto r = sofa::geometry::proximity::computeClosestPointsSegmentAndTriangle(t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
+    msg_warning_when(!r, "RayNewProximityIntersection") << "Failed to compute distance between ray ["
+        << A << "," << B <<"] and triangle [" << t2.p1() << ", " << t2.p2() << ", " << t2.p3() << "]";
+
     Vec3 PQ=Q-P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)

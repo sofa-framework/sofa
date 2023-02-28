@@ -216,6 +216,10 @@ class DeprecatedAndRemoved {};
         "v21.06 (PR#1753)", "v22.12 (PR#3279)", \
         "Data API has changed. " msg)
 
+#define SOFA_ATTRIBUTE_DISABLED__BASECLASS_FEATURES_IN_NAMEDECODER() \
+    SOFA_ATTRIBUTE_DISABLED( \
+        "v22.12 (PR#1808)", "v23.12", \
+        "The feature has been move to BaseClassNameHelper. To update your code, replace sofa::helper::NameDecoder with sofa::core::objectmodel::BaseClassNameDecoder")
 
 #define SOFA_ATTRIBUTE_DISABLED__TYPEMEMBER(type) \
     SOFA_ATTRIBUTE_DISABLED( \

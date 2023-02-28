@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
 <Node 	name="Root" dt="0.02"  >
+	<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->  
+	<RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->  
+	<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+	<RequiredPlugin name="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->  
+	<RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [RungeKutta4Solver] -->  
+	<RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->  
+	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+	<RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->  
+	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] --> 
 	<RungeKutta4Solver />
+	<DefaultAnimationLoop/>
 	<VisualStyle displayFlags="showBehavior" />
 	<Node >
 		<RegularGridTopology min="0 0 0"  max="1 1 1"  p0="0 0 0" />

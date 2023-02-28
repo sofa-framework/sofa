@@ -7,7 +7,7 @@
 
 <Node name="root" gravity="0 -100 0" dt="0.01">
   <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
-  <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+  <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
   <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
   <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel TriangleCollisionModel] -->
   <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -31,7 +31,7 @@
 
   <FreeMotionAnimationLoop name="animationLoop" solveVelocityConstraintFirst="true" parallelCollisionDetectionAndFreeMotion="true" parallelODESolving="true"/>
   <GenericConstraintSolver name="constraintSolver" maxIterations="100" tolerance="1.0e-9" multithreading="1"/>
-  <DefaultPipeline name="Pipeline" />
+  <CollisionPipeline name="Pipeline" />
   <BruteForceBroadPhase name="BroadPhase" />
   <BVHNarrowPhase name="NarrowPhase" />
   <DefaultContactManager name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0" />
@@ -49,18 +49,18 @@
   <Node name="Simulation">
     <Node name="Torus0" activated="1">
       <EulerImplicitSolver name="ODE0" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear0"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear0"  />
       <TransformEngine name="Torus0VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-17.800790396426 30 18.046774108916" rotation="35.624275834125 79.418789031645 -15.634653477759" />
       <TetrahedronSetTopologyContainer name="Torus0Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus0Mod" />
-      <MechanicalObject name="Torus0State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus0VXForm.output_position" />
+      <MechanicalObject name="Torus0State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus0VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus0Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus0CC" linearSolver="@Linear0" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus0CMT" proximity="0.2" contactStiffness="20" color="0.18039215686275 0.12156862745098 0.086274509803922" />
       </Node>
@@ -71,18 +71,18 @@
     </Node>
     <Node name="Torus1" activated="1">
       <EulerImplicitSolver name="ODE1" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear1"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear1"  />
       <TransformEngine name="Torus1VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="31.203746381776 46 -3.9584052767411" rotation="-81.407505530588 -41.699467018107 65.027568971285" />
       <TetrahedronSetTopologyContainer name="Torus1Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus1Mod" />
-      <MechanicalObject name="Torus1State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus1VXForm.output_position" />
+      <MechanicalObject name="Torus1State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus1VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus1Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus1CC" linearSolver="@Linear1" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus1CMT" proximity="0.2" contactStiffness="20" color="0.18039215686275 0.12156862745098 0.086274509803922" />
       </Node>
@@ -93,18 +93,18 @@
     </Node>
     <Node name="Torus2" activated="1">
       <EulerImplicitSolver name="ODE2" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear2"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear2"  />
       <TransformEngine name="Torus2VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-22.646083078648 62 -29.076289417723" rotation="-48.524586576281 9.6813763210929 49.716395474838" />
       <TetrahedronSetTopologyContainer name="Torus2Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus2Mod" />
-      <MechanicalObject name="Torus2State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus2VXForm.output_position" />
+      <MechanicalObject name="Torus2State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus2VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus2Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus2CC" linearSolver="@Linear2" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus2CMT" proximity="0.2" contactStiffness="20" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
@@ -115,18 +115,18 @@
     </Node>
     <Node name="Torus3" activated="1">
       <EulerImplicitSolver name="ODE3" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear3"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear3"  />
       <TransformEngine name="Torus3VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-0.36212878318602 78 39.681506827325" rotation="58.536139097314 -42.029633536949 -32.440462048371" />
       <TetrahedronSetTopologyContainer name="Torus3Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus3Mod" />
-      <MechanicalObject name="Torus3State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus3VXForm.output_position" />
+      <MechanicalObject name="Torus3State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus3VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus3Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus3CC" linearSolver="@Linear3" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus3CMT" proximity="0.2" contactStiffness="20" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
@@ -137,18 +137,18 @@
     </Node>
     <Node name="Torus4" activated="1">
       <EulerImplicitSolver name="ODE4" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear4"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear4"  />
       <TransformEngine name="Torus4VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="23.392304286078 94 -30.079806740433" rotation="39.709873269177 15.292576442143 7.9574386952247" />
       <TetrahedronSetTopologyContainer name="Torus4Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus4Mod" />
-      <MechanicalObject name="Torus4State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus4VXForm.output_position" />
+      <MechanicalObject name="Torus4State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus4VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus4Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus4CC" linearSolver="@Linear4"/>
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus4CMT" proximity="0.2" contactStiffness="20" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
@@ -159,18 +159,18 @@
     </Node>
     <Node name="Torus5" activated="0">
       <EulerImplicitSolver name="ODE5" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear5"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear5"  />
       <TransformEngine name="Torus5VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-39.61300034058 110 0.86055988485951" rotation="45.193954620135 -42.616531463627 77.409719260135" />
       <TetrahedronSetTopologyContainer name="Torus5Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus5Mod" />
-      <MechanicalObject name="Torus5State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus5VXForm.output_position" />
+      <MechanicalObject name="Torus5State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus5VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus5Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus5CC" linearSolver="@Linear5"/>
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus5CMT" proximity="0.2" contactStiffness="20" color="0.7921568627451 0.50196078431373 0.2156862745098" />
       </Node>
@@ -181,18 +181,18 @@
     </Node>
     <Node name="Torus6" activated="0">
       <EulerImplicitSolver name="ODE6" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear6"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear6"  />
       <TransformEngine name="Torus6VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="17.130322557469 126 17.800171588454" rotation="72.186179143463 59.053434119119 88.31836399544" />
       <TetrahedronSetTopologyContainer name="Torus6Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus6Mod" />
-      <MechanicalObject name="Torus6State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus6VXForm.output_position" />
+      <MechanicalObject name="Torus6State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus6VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus6Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus6CC" linearSolver="@Linear6"/>
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus6CMT" proximity="0.2" contactStiffness="20" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
@@ -203,18 +203,18 @@
     </Node>
     <Node name="Torus7" activated="0">
       <EulerImplicitSolver name="ODE7" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear7"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear7"  />
       <TransformEngine name="Torus7VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-10.390362092476 142 -33.168565888502" rotation="-89.649008726538 -67.300238701189 -9.8223450965352" />
       <TetrahedronSetTopologyContainer name="Torus7Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus7Mod" />
-      <MechanicalObject name="Torus7State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus7VXForm.output_position" />
+      <MechanicalObject name="Torus7State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus7VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus7Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus7CC" linearSolver="@Linear7" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus7CMT" proximity="0.2" contactStiffness="20" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
@@ -225,18 +225,18 @@
     </Node>
     <Node name="Torus8" activated="0">
       <EulerImplicitSolver name="ODE8" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear8"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear8"  />
       <TransformEngine name="Torus8VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="-26.521328197104 158 28.966597611535" rotation="14.924939379527 81.74878913525 -44.199652361777" />
       <TetrahedronSetTopologyContainer name="Torus8Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus8Mod" />
-      <MechanicalObject name="Torus8State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus8VXForm.output_position" />
+      <MechanicalObject name="Torus8State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus8VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus8Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus8CC" linearSolver="@Linear8" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus8CMT" proximity="0.2" contactStiffness="20" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
@@ -247,18 +247,18 @@
     </Node>
     <Node name="Torus9" activated="0">
       <EulerImplicitSolver name="ODE9" rayleighMass="0.1" rayleighStiffness="0.1" />
-      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d" name="Linear9"  />
+      <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3" name="Linear9"  />
       <TransformEngine name="Torus9VXForm" input_position="@/Mesh/stuffing.outputPoints" translation="35.093469803731 174 -3.1191041148822" rotation="-5.1181413303679 82.199841808621 -51.436056066973" />
       <TetrahedronSetTopologyContainer name="Torus9Topo" position="@/Mesh/stuffing.outputPoints" tetrahedra="@/Mesh/stuffing.outputTetrahedra"/>
       <TetrahedronSetTopologyModifier name="Torus9Mod" />
-      <MechanicalObject name="Torus9State" template="Vec3d" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus9VXForm.output_position" />
+      <MechanicalObject name="Torus9State" template="Vec3" velocity="@/Mesh/TorusVVel.output_position" rest_position="@/Mesh/stuffing.outputPoints" position="@Torus9VXForm.output_position" />
       <TetrahedronSetGeometryAlgorithms name="Torus9Algo" />
       <UniformMass totalMass="20" />
       <TetrahedronFEMForceField name="FEM" youngModulus="50" poissonRatio="0.45" />
       <GenericConstraintCorrection name="Torus9CC" linearSolver="@Linear9" />
       <Node name="Surface">
         <TriangleSetTopologyContainer position="@/Mesh/MeshTorus1C.position" triangles="@/Mesh/MeshTorus1C.triangles" />
-        <MechanicalObject template="Vec3d" />
+        <MechanicalObject template="Vec3" />
         <BarycentricMapping useRestPosition="true" mapForces="false" mapMasses="false" mapConstraints="true" />
         <TriangleCollisionModel name="Torus9CMT" proximity="0.2" contactStiffness="20" color="0.94117647058824 0.93725490196078 0.89411764705882" />
       </Node>
@@ -271,7 +271,7 @@
   <Node name="Obstacles">
     <Node name="CylA_0">
       <EdgeSetTopologyContainer name="Cyl0LineTopo" position="100 0 0  100 61.75 0" edges="0 1" />
-      <MechanicalObject name="Cyl0LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl0LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl0LineAlgo" />
       <LineCollisionModel name="Cyl0CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -281,7 +281,7 @@
     </Node>
     <Node name="CylA_1">
       <EdgeSetTopologyContainer name="Cyl1LineTopo" position="92.387953251129 0 38.268343236509  92.387953251129 61.75 38.268343236509" edges="0 1" />
-      <MechanicalObject name="Cyl1LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl1LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl1LineAlgo" />
       <LineCollisionModel name="Cyl1CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -291,7 +291,7 @@
     </Node>
     <Node name="CylA_2">
       <EdgeSetTopologyContainer name="Cyl2LineTopo" position="70.710678118655 0 70.710678118655  70.710678118655 61.75 70.710678118655" edges="0 1" />
-      <MechanicalObject name="Cyl2LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl2LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl2LineAlgo" />
       <LineCollisionModel name="Cyl2CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -301,7 +301,7 @@
     </Node>
     <Node name="CylA_3">
       <EdgeSetTopologyContainer name="Cyl3LineTopo" position="38.268343236509 0 92.387953251129  38.268343236509 61.75 92.387953251129" edges="0 1" />
-      <MechanicalObject name="Cyl3LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl3LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl3LineAlgo" />
       <LineCollisionModel name="Cyl3CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -311,7 +311,7 @@
     </Node>
     <Node name="CylA_4">
       <EdgeSetTopologyContainer name="Cyl4LineTopo" position="6.1232339957368E-15 0 100  6.1232339957368E-15 61.75 100" edges="0 1" />
-      <MechanicalObject name="Cyl4LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl4LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl4LineAlgo" />
       <LineCollisionModel name="Cyl4CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -321,7 +321,7 @@
     </Node>
     <Node name="CylA_5">
       <EdgeSetTopologyContainer name="Cyl5LineTopo" position="-38.268343236509 0 92.387953251129  -38.268343236509 61.75 92.387953251129" edges="0 1" />
-      <MechanicalObject name="Cyl5LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl5LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl5LineAlgo" />
       <LineCollisionModel name="Cyl5CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -331,7 +331,7 @@
     </Node>
     <Node name="CylA_6">
       <EdgeSetTopologyContainer name="Cyl6LineTopo" position="-70.710678118655 0 70.710678118655  -70.710678118655 61.75 70.710678118655" edges="0 1" />
-      <MechanicalObject name="Cyl6LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl6LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl6LineAlgo" />
       <LineCollisionModel name="Cyl6CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -341,7 +341,7 @@
     </Node>
     <Node name="CylA_7">
       <EdgeSetTopologyContainer name="Cyl7LineTopo" position="-92.387953251129 0 38.268343236509  -92.387953251129 61.75 38.268343236509" edges="0 1" />
-      <MechanicalObject name="Cyl7LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl7LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl7LineAlgo" />
       <LineCollisionModel name="Cyl7CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -351,7 +351,7 @@
     </Node>
     <Node name="CylA_8">
       <EdgeSetTopologyContainer name="Cyl8LineTopo" position="-100 0 1.2246467991474E-14  -100 61.75 1.2246467991474E-14" edges="0 1" />
-      <MechanicalObject name="Cyl8LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl8LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl8LineAlgo" />
       <LineCollisionModel name="Cyl8CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -361,7 +361,7 @@
     </Node>
     <Node name="CylA_9">
       <EdgeSetTopologyContainer name="Cyl9LineTopo" position="-92.387953251129 0 -38.268343236509  -92.387953251129 61.75 -38.268343236509" edges="0 1" />
-      <MechanicalObject name="Cyl9LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl9LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl9LineAlgo" />
       <LineCollisionModel name="Cyl9CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -371,7 +371,7 @@
     </Node>
     <Node name="CylA_10">
       <EdgeSetTopologyContainer name="Cyl10LineTopo" position="-70.710678118655 0 -70.710678118655  -70.710678118655 61.75 -70.710678118655" edges="0 1" />
-      <MechanicalObject name="Cyl10LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl10LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl10LineAlgo" />
       <LineCollisionModel name="Cyl10CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -381,7 +381,7 @@
     </Node>
     <Node name="CylA_11">
       <EdgeSetTopologyContainer name="Cyl11LineTopo" position="-38.268343236509 0 -92.387953251129  -38.268343236509 61.75 -92.387953251129" edges="0 1" />
-      <MechanicalObject name="Cyl11LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl11LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl11LineAlgo" />
       <LineCollisionModel name="Cyl11CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -391,7 +391,7 @@
     </Node>
     <Node name="CylA_12">
       <EdgeSetTopologyContainer name="Cyl12LineTopo" position="-1.836970198721E-14 0 -100  -1.836970198721E-14 61.75 -100" edges="0 1" />
-      <MechanicalObject name="Cyl12LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl12LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl12LineAlgo" />
       <LineCollisionModel name="Cyl12CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -401,7 +401,7 @@
     </Node>
     <Node name="CylA_13">
       <EdgeSetTopologyContainer name="Cyl13LineTopo" position="38.268343236509 0 -92.387953251129  38.268343236509 61.75 -92.387953251129" edges="0 1" />
-      <MechanicalObject name="Cyl13LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl13LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl13LineAlgo" />
       <LineCollisionModel name="Cyl13CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -411,7 +411,7 @@
     </Node>
     <Node name="CylA_14">
       <EdgeSetTopologyContainer name="Cyl14LineTopo" position="70.710678118655 0 -70.710678118655  70.710678118655 61.75 -70.710678118655" edges="0 1" />
-      <MechanicalObject name="Cyl14LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl14LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl14LineAlgo" />
       <LineCollisionModel name="Cyl14CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -421,7 +421,7 @@
     </Node>
     <Node name="CylA_15">
       <EdgeSetTopologyContainer name="Cyl15LineTopo" position="92.387953251129 0 -38.268343236509  92.387953251129 61.75 -38.268343236509" edges="0 1" />
-      <MechanicalObject name="Cyl15LineState" template="Vec3d" />
+      <MechanicalObject name="Cyl15LineState" template="Vec3" />
       <EdgeSetGeometryAlgorithms name="Cyl15LineAlgo" />
       <LineCollisionModel name="Cyl15CML" proximity="6.5" contactStiffness="40" moving="0" simulated="0" />
       <Node name="Visual">
@@ -432,7 +432,7 @@
 
     <Node name="Floor" tags="NoBBox" >
       <TriangleSetTopologyContainer name="FloorTopo" position="-1000 -5 -1000  1000 -5 -1000  1000 -5 1000  -1000 -5 1000" triangles="0 2 1  3 2 0" />
-      <MechanicalObject template="Vec3d"/>
+      <MechanicalObject template="Vec3"/>
       <TriangleCollisionModel name="FloorCM" proximity="5" contactStiffness="60" moving="0" simulated="0" />
       <Node name="Visu">
         <RegularGridTopology name="FloorTopo" nx="20" ny="1" nz="20" min="1000 0 -1000" max="-1000 0 1000" />

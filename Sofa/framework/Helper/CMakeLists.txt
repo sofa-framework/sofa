@@ -90,7 +90,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/PipeProcess.h
     ${SRC_ROOT}/system/PluginManager.h
     ${SRC_ROOT}/system/SetDirectory.h
-    ${SRC_ROOT}/system/SofaOStream.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
     ${SRC_ROOT}/system/thread/CTime.h

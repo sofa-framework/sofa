@@ -60,7 +60,7 @@ public:
     typedef Base* Ptr;
 
     using SPtr = sptr<Base>;
-    
+
     using MyClass = TClass< Base, void >;
     static const BaseClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
@@ -354,7 +354,7 @@ public:
     static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )
     {
         SOFA_UNUSED(ptr);
-        return sofa::helper::NameDecoder::shortName(sofa::helper::NameDecoder::getClassName<T>());
+        return sofa::helper::NameDecoder::shortName(BaseClassNameHelper::getClassName<T>());
     }
 
     /// @name componentstate

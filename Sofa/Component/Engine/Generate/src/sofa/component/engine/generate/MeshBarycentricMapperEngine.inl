@@ -115,10 +115,6 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         linearInterpolValues.resize(out.size());
     }
 
-
-
-    int outside = 0;
-
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = l_topology->getTetrahedra();
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = l_topology->getHexahedra();
 
@@ -219,10 +215,6 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                     if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
                 }
-                if ( distance>0 )
-                {
-                    ++outside;
-                }
                 if ( index < c0 )
                 {
                     addPointInTriangle ( index, coefs.ptr(),i );
@@ -282,10 +274,6 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                 SReal d = std::max ( std::max (SReal(-v[0]), SReal(-v[1]) ),std::max ( std::max (SReal(-v[2]), SReal(v[0]-1) ),std::max (SReal(v[1]-1), SReal(v[2]-1 )) ) );
                 if ( d>0 ) d = ( pos-centers[c0+c] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = c0+c; }
-            }
-            if ( distance>0 )
-            {
-                ++outside;
             }
             if ( index < c0 )
                 addPointInTetra ( index, coefs.ptr() , i);

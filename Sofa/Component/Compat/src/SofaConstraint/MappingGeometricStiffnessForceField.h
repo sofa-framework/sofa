@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/mapping/mappedmatrix/MappingGeometricStiffnessForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/mappedmatrix/MappingGeometricStiffnessForceField.h")
-
-namespace sofa::constraint
-{
-    template<class DataTypes> 
-    using MappingGeometricStiffnessForceField = sofa::component::mapping::mappedmatrix::MappingGeometricStiffnessForceField<DataTypes>;
-    
-} // namespace sofa::constraint
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/mapping/mappedmatrix/MappingGeometricStiffnessForceField.h")

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node name="Root">
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [InvertTransformMatrixEngine RotateTransformMatrixEngine ScaleTransformMatrixEngine TranslateTransformMatrixEngine] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showVisual" />
+    <DefaultAnimationLoop/>
+    
+    <Node name="Transformation">
+        <TranslateTransformMatrixEngine name="T1" translation="10 11 12"/>
+        <ScaleTransformMatrixEngine name="T2" inT="@T1.outT" scale="1.2 1.5 0.8"/>
+        <RotateTransformMatrixEngine name="T3" inT="@T2.outT" rotation="15 20 40"/>
+        <InvertTransformMatrixEngine name="T4" inT="@T2.outT"/>
+    </Node>
+    <Node name="Visu">
+        <Node name="Armadillo0">
+            <MeshOBJLoader name="loader0" filename="mesh/Armadillo_verysimplified.obj"/>
+            <OglModel name="visual0" src="@loader0" color="cyan"/>
+        </Node>
+        <Node name="Armadillo1">
+            <MeshOBJLoader name="loader1" filename="mesh/Armadillo_verysimplified.obj" transformation="@/Transformation/T3.outT"/>
+            <OglModel name="visual1" src="@loader1" color="yellow"/>
+        </Node>
+    </Node>
+</Node>

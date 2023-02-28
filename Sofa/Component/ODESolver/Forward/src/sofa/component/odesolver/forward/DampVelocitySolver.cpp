@@ -36,8 +36,8 @@ int DampVelocitySolverClass = core::RegisterObject("Reduce the velocities")
         ;
 
 DampVelocitySolver::DampVelocitySolver()
-    : rate( initData( &rate, 0.99, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
-    , threshold( initData( &threshold, 0.0, "threshold", "Threshold under which the velocities are canceled.") )
+    : rate( initData( &rate, 0.99_sreal, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
+    , threshold( initData( &threshold, 0.0_sreal, "threshold", "Threshold under which the velocities are canceled.") )
 {}
 
 void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)

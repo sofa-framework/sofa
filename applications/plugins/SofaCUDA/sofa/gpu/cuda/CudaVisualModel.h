@@ -26,7 +26,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/State.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa
 {

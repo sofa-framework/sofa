@@ -118,15 +118,6 @@ public:
 
         return obj;
     }
-
-    //TODO(dmarchal: 20/04/2020): Have a carefull look that we really want this customize pattern and it is not
-    // a bug.
-    /// Overriding this function is needed otherwise the template returned would be of type DataTypes1::Name()+","+DataType2::Name().
-    static std::string GetCustomTemplateName()
-    {
-        return DataTypes1::Name();
-    }
-
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)

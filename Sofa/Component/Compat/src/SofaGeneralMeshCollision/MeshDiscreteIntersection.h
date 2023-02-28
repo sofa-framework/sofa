@@ -23,10 +23,4 @@
 
 #include <sofa/component/collision/detection/intersection/MeshDiscreteIntersection.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/MeshDiscreteIntersection.h")
-
-namespace sofa::component::collision
-{
-    using MeshDiscreteIntersection = sofa::component::collision::detection::intersection::MeshDiscreteIntersection;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/MeshDiscreteIntersection.h")

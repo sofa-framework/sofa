@@ -2,37 +2,53 @@
 <!-- See https://wiki.sofa-framework.org/wiki/TutorialTopologyLinearMesh -->
 <Node name="Root" gravity="0 -9.81 0" dt="0.02">
     <!-- Basic Components to perform the collision detection -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline] -->  
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->  
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->  
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->  
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->  
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->  
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->  
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField, RegularGridSpringForceField] -->  
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetTopologyContainer] -->  
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->  
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] --> 
+    
     <VisualStyle displayFlags="showVisual showBehavior" />
-    <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
+    <CollisionPipeline name="DefaultCollisionPipeline" depth="6" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <DefaultContactManager name="Response" />
+    <DefaultAnimationLoop/>
+
     <Node name="Pendulum Static Mesh">
-        <MechanicalObject template="Vec3d" name="DOF" position="0 0 -2 1 0 -2 2 0 -2 3 0 -2 4 0 -2 5 0 -2" />
-        <UniformMass template="Vec3d" name="Mass" totalMass="1" />
+        <MechanicalObject template="Vec3" name="DOF" position="0 0 -2 1 0 -2 2 0 -2 3 0 -2 4 0 -2 5 0 -2" />
+        <UniformMass template="Vec3" name="Mass" totalMass="1" />
         <CGLinearSolver template="GraphScattered" name="CG solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <FixedConstraint template="Vec3d" name="Fixed dof" indices="0" />
+        <FixedConstraint template="Vec3" name="Fixed dof" indices="0" />
         <MeshTopology name="Static Mesh" edges="0 1  1 2  2 3  3 4  4 5 " />
-        <MeshSpringForceField template="Vec3d" name="springs" stiffness="100" damping="1" />
+        <MeshSpringForceField template="Vec3" name="springs" stiffness="100" damping="1" />
     </Node>
     <Node name="Pendulum Regular Mesh">
-        <MechanicalObject template="Vec3d" name="DOF" position="0 0 6" />
-        <UniformMass template="Vec3d" name="Mass" totalMass="1" />
+        <MechanicalObject template="Vec3" name="DOF" position="0 0 6" />
+        <UniformMass template="Vec3" name="Mass" totalMass="1" />
         <CGLinearSolver template="GraphScattered" name="CG solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <EulerImplicitSolver name="EulerImplicit" />
-        <FixedConstraint template="Vec3d" name="Fixed dof" indices="0" />
+        <FixedConstraint template="Vec3" name="Fixed dof" indices="0" />
         <RegularGridTopology name="Regular Mesh" n="6 1 1" min="0 0 6" max="5 1 6" />
-        <RegularGridSpringForceField template="Vec3d" name="springs" />
+        <RegularGridSpringForceField template="Vec3" name="springs" />
     </Node>
     <Node name="Pendulum Dynamic Mesh">
-        <MechanicalObject template="Vec3d" name="DOF" position="0 0 2 1 0 2 2 0 2 3 0 2 4 0 2 5 0 2" />
-        <UniformMass template="Vec3d" name="Mass" totalMass="1" />
+        <MechanicalObject template="Vec3" name="DOF" position="0 0 2 1 0 2 2 0 2 3 0 2 4 0 2 5 0 2" />
+        <UniformMass template="Vec3" name="Mass" totalMass="1" />
         <CGLinearSolver template="GraphScattered" name="CG solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <EulerImplicitSolver name="EulerImplicit" />
-        <FixedConstraint template="Vec3d" name="Fixed dof" indices="0" />
+        <FixedConstraint template="Vec3" name="Fixed dof" indices="0" />
         <EdgeSetTopologyContainer name="Dynamic Mesh" edges="0 1  1 2  2 3  3 4  4 5 " />
-        <MeshSpringForceField template="Vec3d" name="springs" stiffness="100" damping="1" />
+        <MeshSpringForceField template="Vec3" name="springs" stiffness="100" damping="1" />
     </Node>
 </Node>

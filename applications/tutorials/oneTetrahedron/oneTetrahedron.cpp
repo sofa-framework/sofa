@@ -29,7 +29,7 @@ using sofa::defaulttype::Vec3Types;
 using Coord3 = sofa::type::Vec3;
 using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/gui/common/GUIManager.h>
-#include <SofaGui/initSofaGui.h>
+#include <sofa/gui/init.h>
 #include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
     //force load all components
     sofa::component::init();
     //force load SofaGui (registering guis)
-    sofa::gui::initSofaGui();
+    sofa::gui::init();
 
     sofa::gui::common::GUIManager::Init(argv[0]);
 

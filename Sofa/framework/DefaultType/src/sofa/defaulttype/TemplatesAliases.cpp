@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 namespace sofa::defaulttype
 {
@@ -42,17 +43,18 @@ TemplateAliasesMap& getTemplateAliasesMap()
 
 bool TemplateAliases::addAlias(const std::string& name, const std::string& result, const bool doWarnUser)
 {
-	TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
-	if (templateAliases.find(name) != templateAliases.end())
+    TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
+    if (templateAliases.find(name) != templateAliases.end())
     {
-        msg_warning("ObjectFactory") << "cannot create template alias " << name << " as it already exists";
-		return false;
-	}
-	else
-	{
+        msg_warning("ObjectFactory") << "cannot create template alias " << name <<
+            " as it already exists";
+        return false;
+    }
+    else
+    {
         templateAliases[name] = std::make_pair(result, doWarnUser);
-		return true;
-	}
+        return true;
+    }
 }
 
 const TemplateAlias* TemplateAliases::getTemplateAlias(const std::string &name)
@@ -98,7 +100,7 @@ std::string TemplateAliases::resolveAlias(const std::string& name)
 	else
 		return name;
 }
-	
+
 RegisterTemplateAlias::RegisterTemplateAlias(const std::string& alias, const std::string& result, const bool doWarnUser)
 {
     TemplateAliases::addAlias(alias, result, doWarnUser);
@@ -112,6 +114,12 @@ static RegisterTemplateAlias Vec3Alias("Vec3", sofa::defaulttype::Vec3Types::Nam
 static RegisterTemplateAlias Vec6Alias("Vec6", sofa::defaulttype::Vec6Types::Name());
 static RegisterTemplateAlias Rigid2Alias("Rigid2", sofa::defaulttype::Rigid2Types::Name());
 static RegisterTemplateAlias Rigid3Alias("Rigid3", sofa::defaulttype::Rigid3Types::Name());
+static RegisterTemplateAlias CompressedRowSparseMatrixAlias("CompressedRowSparseMatrix", sofa::linearalgebra::CompressedRowSparseMatrix<SReal>::Name());
+static RegisterTemplateAlias CompressedRowSparseMatrixMat3x3Alias("CompressedRowSparseMatrixMat3x3", sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>::Name());
+static RegisterTemplateAlias Mat2x2Alias("Mat2x2", sofa::defaulttype::DataTypeName<type::Mat<2, 2, SReal>>::name());
+static RegisterTemplateAlias Mat3x3Alias("Mat3x3", sofa::defaulttype::DataTypeName<type::Mat<3, 3, SReal>>::name());
+static RegisterTemplateAlias Mat4x4Alias("Mat4x4", sofa::defaulttype::DataTypeName<type::Mat<4, 4, SReal>>::name());
+static RegisterTemplateAlias Mat6x6Alias("Mat6x6", sofa::defaulttype::DataTypeName<type::Mat<6, 6, SReal>>::name());
 
 /// Compatibility aliases for niceness.
 static RegisterTemplateAlias RigidAlias("Rigid", sofa::defaulttype::Rigid3Types::Name(), true);
@@ -137,5 +145,19 @@ static RegisterTemplateAlias vector_intAlias("vector<int>", sofa::defaulttype::D
 static RegisterTemplateAlias vector_uintAlias("vector<unsigned_int>", sofa::defaulttype::DataTypeName<sofa::type::vector<unsigned int> >::name(), true);
 static RegisterTemplateAlias vector_floatAlias("vector<float>", sofa::defaulttype::DataTypeName<sofa::type::vector<float> >::name(), true);
 static RegisterTemplateAlias vector_doubleAlias("vector<double>", sofa::defaulttype::DataTypeName<sofa::type::vector<double> >::name(), true);
+
+// Compatibility aliases used previously (see PR#3465)
+static RegisterTemplateAlias intAlias("int", sofa::defaulttype::DataTypeName<int>::name(), true);
+static RegisterTemplateAlias dataIntAlias("Data<int>", sofa::defaulttype::DataTypeName<sofa::type::vector<int>>::name(), true);
+static RegisterTemplateAlias dataDoubleAlias("Data<double>", sofa::defaulttype::DataTypeName<sofa::type::vector<double>>::name(), true);
+static RegisterTemplateAlias dataBoolAlias("Data<bool>", sofa::defaulttype::DataTypeName<sofa::type::vector<bool>>::name(), true);
+static RegisterTemplateAlias dataVec2uAlias("Data<Vec<2u,unsigned int>>", sofa::defaulttype::DataTypeName<type::vector<type::Vec2u>>::name(), true);
+static RegisterTemplateAlias dataVec2dAlias("Data<Vec<2u,double>>", sofa::defaulttype::DataTypeName<sofa::type::vector<type::Vec2d>>::name(), true);
+static RegisterTemplateAlias dataVec3dAlias("Data<Vec<3u,double>>", sofa::defaulttype::DataTypeName<sofa::type::vector<type::Vec3d>>::name(), true);
+static RegisterTemplateAlias dataVec4dAlias("Data<Vec<4u,double>>", sofa::defaulttype::DataTypeName<sofa::type::vector<type::Vec4d>>::name(), true);
+static RegisterTemplateAlias dataRigidCoord2dAlias("Data<RigidCoord<2u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid2Types::VecCoord>::name(), true);
+static RegisterTemplateAlias dataRigidDeriv2dAlias("Data<RigidDeriv<2u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid2Types::VecDeriv>::name(), true);
+static RegisterTemplateAlias dataRigidCoord3dAlias("Data<RigidCoord<3u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid3Types::VecCoord>::name(), true);
+static RegisterTemplateAlias dataRigidDeriv3dAlias("Data<RigidDeriv<3u,double>>", sofa::defaulttype::DataTypeName<defaulttype::Rigid3Types::VecDeriv>::name(), true);
 
 } // namespace sofa::defaulttype

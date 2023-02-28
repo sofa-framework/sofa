@@ -111,11 +111,11 @@ protected:
 
     std::vector<Vec3d> prevForces;
 
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data 'activateAtIteration' has been deprecated, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'activateAtIteration' has been deprecated, please use the Data d_activate instead and an engine or a script to change the behavior at the right step (see PR #3327).")
     Data<int> activateAtIteration; ///< activate constraint at specified interation (0 = always enabled, -1=disabled)
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data 'merge' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'merge' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
     Data<bool> merge; ///< TEST: merge the bilateral constraints in a unique constraint
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "Data 'derivative' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
+    SOFA_ATTRIBUTE_DEPRECATED__BILATERALINTERACTIONCONSTRAINTDATA("Data 'derivative' has been deprecated. Its behavior was unused, undocumented, untested, and unclear (see PR #3328).")
     Data<bool> derivative; ///< TEST: derivative
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2) ;

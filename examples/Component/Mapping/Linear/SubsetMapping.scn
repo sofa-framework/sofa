@@ -1,0 +1,146 @@
+<!-- Mechanical SubsetMapping Group Basic Example -->
+<Node name="root" dt="0.01" gravity="0 -9.6 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping SubsetMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping Tetra2TriangleTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [DefaultAnimationLoop] -->  
+
+
+    <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe" />
+    <CollisionPipeline depth="6" verbose="0" draw="0"/>
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+	<LocalMinDistance name="Proximity"  alarmDistance="0.006" contactDistance="0.001" coneFactor="0.3" angleCone="0.01" filterIntersection="true"/>
+	<DefaultContactManager name="Response" response="NeedleContact"/>
+	<DefaultAnimationLoop/>
+
+	<Node name="sutureSoftCubes">
+		<EulerImplicitSolver name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<MechanicalObject template="Vec3"/>
+		<UniformMass vertexMass="0.001"/>
+		<RegularGridTopology name="grid"
+				nx="10" ny="4" nz="10"
+				xmin="-0.05" xmax="0.05"
+				ymin="0.0" ymax="0.03"
+				zmin="-0.05" zmax="0.05"
+		/>
+		<!--<TetrahedronFEMForceField name="FEM" youngModulus="1e3" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>-->
+		<BoxROI name="box_roi" box="-0.06 -0.001 -0.06 0.06 0.001 0.06   -0.052 -0.001 -0.06 -0.048 0.011 0.06    0.048 -0.001 -0.06 0.052 0.011 0.06" />
+		<FixedConstraint indices="@box_roi.indices" />
+
+		<Node name="subCube1">
+			<MechanicalObject template="Vec3"/>
+			<RegularGridTopology name="grid"
+				nx="5" ny="2" nz="10"
+				xmin="-0.05" xmax="-0.00555555555555555555555"
+				ymin="0.02" ymax="0.03"
+				zmin="-0.05" zmax="0.05"
+			/>
+			<HexahedronFEMForceField name="FEM" youngModulus="3e5" poissonRatio="0.4" method="large"/>
+			<SubsetMapping />
+			<Node name="Tetra1">
+				<TetrahedronSetTopologyContainer name="Container"/>
+				<TetrahedronSetTopologyModifier name="Modifier"/>
+				<TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo"/>
+				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
+				<Node name="Visu1">
+					<TriangleSetTopologyContainer name="Container"/>
+					<TriangleSetTopologyModifier name="Modifier"/>
+					<TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo"/>
+					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
+<!-- 					<OglModel name="Visual" filename="mesh/suture.obj" putOnlyTexCoords="true"  dx="-0.055" material="texture Ambient 1 0.2 0.2 0.2 0.0 Diffuse 1 1.0 0.8 0.7 1.0 Specular 1 0.1 0.1 0.1 1.0 Emissive 0 0.15 0.05 0.05 0.0 Shininess 1 20" />
+					<OglShadowShader/>
+					<OglShaderDefineMacro id="USE_TEXTURE" />
+					<OglTexture2D id="colorTexture" texture2DFilename="textures/skin2.png" textureUnit="1" repeat="true" />
+					<BarycentricMapping input="@../.." output="@Visual"/>
+-->
+					<OglModel name="Visual1" color="0.3 1 0.3 1"/>
+					<IdentityMapping input="@../.." output="@Visual1"/>
+
+					<TriangleCollisionModel group="2" name="cube1_collis_tri"/>
+					<LineCollisionModel group="2"  name="cube1_collis_line"/>
+					<PointCollisionModel group="2" name="cube2_collis_point"/>
+				</Node>
+			</Node>
+		</Node>
+
+		<Node name="subCube2">
+			<MechanicalObject template="Vec3"/>
+			<RegularGridTopology name="grid"
+				nx="5" ny="2" nz="10"
+				xmin="0.00555555555555555555555" xmax="0.05"
+				ymin="0.02" ymax="0.03"
+				zmin="-0.05" zmax="0.05"
+			/>
+			<HexahedronFEMForceField name="FEM" youngModulus="3e5" poissonRatio="0.4" method="large"/>
+			<SubsetMapping />
+			<Node name="Tetra2">
+				<TetrahedronSetTopologyContainer name="Container"/>
+				<TetrahedronSetTopologyModifier name="Modifier"/>
+				<TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo"/>
+				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
+				<Node name="Visu2">
+					<TriangleSetTopologyContainer name="Container"/>
+					<TriangleSetTopologyModifier name="Modifier"/>
+					<TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo"/>
+					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
+<!-- 					<OglModel name="Visual" filename="mesh/suture.obj" putOnlyTexCoords="true"  dx="0.00" material="texture Ambient 1 0.2 0.2 0.2 0.0 Diffuse 1 1.0 0.8 0.7 1.0 Specular 1 0.1 0.1 0.1 1.0 Emissive 0 0.15 0.05 0.05 0.0 Shininess 1 20" />
+					<OglShadowShader/>
+					<OglShaderDefineMacro id="USE_TEXTURE" />
+					<OglTexture2D id="colorTexture" texture2DFilename="textures/skin2.png" textureUnit="1" repeat="true" />
+					<BarycentricMapping input="@../.." output="@Visual"/>
+ -->
+					<OglModel name="Visual2" color="0.3 0.3 1 1"/>
+					<IdentityMapping input="@../.." output="@Visual2"/>
+
+					<TriangleCollisionModel group="3" name="cube2_collis_tri"/>
+					<LineCollisionModel group="3"  name="cube2_collis_line"/>
+					<PointCollisionModel group="3" name="cube2_collis_point"/>
+				</Node>
+			</Node>
+		</Node>
+
+		<Node name="subCube3">
+			<MechanicalObject template="Vec3"/>
+			<RegularGridTopology name="grid"
+				nx="10" ny="3" nz="10"
+				xmin="-0.05" xmax="0.05"
+				ymin="0.0" ymax="0.02"
+				zmin="-0.05" zmax="0.05"
+			/>
+			<HexahedronFEMForceField name="FEM" youngModulus="2e3" poissonRatio="0.4" method="large"/>
+			<SubsetMapping />
+			<Node name="Tetra3">
+				<TetrahedronSetTopologyContainer name="Container"/>
+				<TetrahedronSetTopologyModifier name="Modifier"/>
+				<TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo"/>
+				<Hexa2TetraTopologicalMapping input="@../grid" output="@Container"/>
+				<Node name="Visu3">
+					<TriangleSetTopologyContainer name="Container"/>
+					<TriangleSetTopologyModifier name="Modifier"/>
+					<TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo"/>
+					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
+					<OglModel name="Visual3" color="1 0.3 0.1 1"/>
+					<IdentityMapping input="@../.." output="@Visual3"/>
+				</Node>
+			</Node>
+		</Node>
+	</Node>
+
+
+</Node>

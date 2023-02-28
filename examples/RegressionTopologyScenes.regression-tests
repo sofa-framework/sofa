@@ -3,29 +3,29 @@
 # USE UNDERSCORES ("_") INSTEAD.
 
 ### Topology scenes ###
-Components/topology/Tetra2TriangleTopologicalMapping.scn 30 1e-4 1
+Component/Topology/Mapping/Tetra2TriangleTopologicalMapping.scn 30 1e-4 1
 
 ### Topology Modifier scenes ###
 # Triangle and Triangle2Edge tests
-Components/topology/TopologicalModifiers/RemovingTrianglesProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/RemovingTriangle2EdgeProcess.scn 30 1e-4 
-Components/topology/TopologicalModifiers/AddingTrianglesProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/AddingTriangle2EdgeProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingTrianglesProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingTriangle2EdgeProcess.scn 30 1e-4 
+Component/Topology/Container/Dynamic/AddingTrianglesProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/AddingTriangle2EdgeProcess.scn 30 1e-4 1
 
 # Tetra and Tetra2Triangle tests
-Components/topology/TopologicalModifiers/RemovingTetraProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/RemovingTetra2Triangle_options1.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/RemovingTetra2Triangle_options2.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/AddingTetraProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/AddingTetra2TriangleProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingTetraProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingTetra2TriangleProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingTetra2Triangle_options1.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingTetra2Triangle_options2.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/AddingTetraProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/AddingTetra2TriangleProcess.scn 30 1e-4 1
 
 # Hexa and Hexa2Quand tests
-Components/topology/TopologicalModifiers/RemovingHexa2QuadProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/RemovingQuad2TriangleProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/AddingHexa2QuadProcess.scn 30 1e-4 1
-Components/topology/TopologicalModifiers/AddingQuad2TriangleProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingHexa2QuadProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/RemovingQuad2TriangleProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/AddingHexa2QuadProcess.scn 30 1e-4 1
+Component/Topology/Container/Dynamic/AddingQuad2TriangleProcess.scn 30 1e-4 1
 
-#never worked: Components/topology/TopologicalModifiers/RemovingHexa2TetraProcess.scn
+#never worked: Component/Topology/Container/Dynamic/RemovingHexa2TetraProcess.scn
 
 

@@ -23,11 +23,4 @@
 
 #include <sofa/component/collision/response/mapper/SubsetContactMapper.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/SubsetContactMapper.h")
-
-namespace sofa::component::collision
-{
-    template<class TCollisionModel, class DataTypes>
-    using SubsetContactMapper = sofa::component::collision::response::mapper::SubsetContactMapper<TCollisionModel, DataTypes>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/mapper/SubsetContactMapper.h")

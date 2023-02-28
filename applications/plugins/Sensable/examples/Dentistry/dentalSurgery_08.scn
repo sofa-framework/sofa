@@ -11,7 +11,7 @@ Using LCP contact detection and resolution:
     <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
 
     <Gravity name="G" gravity="0 -9.8 0" />
-    <DefaultPipeline name="pipeline" depth="6" verbose="0" />
+    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="response" response="FrictionContactConstraint" />

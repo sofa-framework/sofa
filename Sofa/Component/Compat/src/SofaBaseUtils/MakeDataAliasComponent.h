@@ -22,18 +22,4 @@
 #pragma once
 #include <sofa/component/sceneutility/MakeDataAliasComponent.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/MakeDataAliasComponent.h")
-
-namespace sofa::component::makedataaliascomponent
-{
-
-    using MakeDataAliasComponent = sofa::component::sceneutility::MakeDataAliasComponent;
-
-} // namespace sofa::component::makedataaliascomponent
-
-namespace sofa::component
-{
-
-    using MakeDataAliasComponent = sofa::component::sceneutility::MakeDataAliasComponent;
-
-} // namespace sofa::component
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/MakeDataAliasComponent.h")

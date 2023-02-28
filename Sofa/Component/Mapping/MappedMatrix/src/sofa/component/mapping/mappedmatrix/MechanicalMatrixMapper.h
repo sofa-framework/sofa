@@ -64,7 +64,7 @@ using sofa::core::objectmodel::ComponentState ;
  * Without this component, such a scene either crashes or gives unlogical behaviour.
  *
  * The component supports the case of subsetMultiMappings that map from one to two mechanical objects.
- * An example using this component can be found in examples/Components/animationLoop/MechanicalMatrixMapper.pyscn
+ * An example using this component can be found in examples/Component/Mapping/MappedMatrix/MechanicalMatrixMapper.pyscn
 */
 template<typename TDataTypes1, typename TDataTypes2>
 class MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>

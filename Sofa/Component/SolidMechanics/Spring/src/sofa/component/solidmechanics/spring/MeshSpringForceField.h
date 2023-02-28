@@ -29,7 +29,7 @@ namespace sofa::component::solidmechanics::spring
 {
 
 template<class DataTypes>
-class MeshSpringForceField : public StiffSpringForceField<DataTypes>
+class MeshSpringForceField : public virtual StiffSpringForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MeshSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));

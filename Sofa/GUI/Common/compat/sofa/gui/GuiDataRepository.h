@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/gui/common/GuiDataRepository.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/GuiDataRepository.h")
-
-namespace sofa::gui
-{
-    sofa::helper::system::FileRepository& GuiDataRepository = sofa::gui::common::GuiDataRepository;
-
-} // namespace sofa::gui
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/common/GuiDataRepository.h")

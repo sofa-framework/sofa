@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/component/visual/RecordedCamera.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/RecordedCamera.h")
-
-namespace sofa::component::visualmodel
-{
-    using RecordedCamera = sofa::component::visual::RecordedCamera;
-
-} // namespace sofa::component::visual
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/visual/RecordedCamera.h")

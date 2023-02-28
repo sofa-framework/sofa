@@ -9,7 +9,7 @@
 	<FreeMotionAnimationLoop />
 	<GenericConstraintSolver />
 
-	<DefaultPipeline depth="8" />
+	<CollisionPipeline depth="8" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
@@ -38,7 +38,7 @@
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 		
 		<MechanicalObject name="ms" template="Rigid3d"  position="7.13718 -5.81916 23.8066 0.807871 0.160225 -0.1368 0.550416"/>
-		<UniformMass totalmass="0.1" />
+		<UniformMass totalMass="0.1" />
 		<LCPForceFeedback activate="true" forceCoef="0.001" />
 
 		<Node name="Collision">

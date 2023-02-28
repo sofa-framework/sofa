@@ -22,7 +22,7 @@ set(SOURCE_FILES
 
 include(../imagetoolbox/imagetoolbox.cmake)
 
-find_package(SofaGuiQt REQUIRED QUIET)
+find_package(Sofa.GUI.Qt REQUIRED QUIET)
 find_package(Qt5 COMPONENTS Core QUIET)
 if (NOT Qt5Core_FOUND)
     if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
@@ -31,7 +31,7 @@ if (NOT Qt5Core_FOUND)
             qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
             message(FATAL_ERROR "Image_gui is not compatible with Qt6 yet.") # to remove once image_gui has been updated
         endif()
-        # else() should never happened as it would already break in SofaGuiQt
+        # else() should never happened as it would already break in Sofa.GUI.Qt
     endif()
 else()
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
@@ -41,7 +41,7 @@ set(MOC_FILES_GROUP "Generated")
 
 add_definitions("-DSOFA_BUILD_IMAGE_GUI")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} SofaGuiQt)
+target_link_libraries(${PROJECT_NAME} image ${OPENGL_LIBRARIES} Sofa.GUI.Qt)
 
 sofa_add_targets_to_package(
     PACKAGE_NAME image

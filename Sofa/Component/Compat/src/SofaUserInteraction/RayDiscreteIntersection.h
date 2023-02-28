@@ -23,10 +23,4 @@
 
 #include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/RayDiscreteIntersection.h")
-
-namespace sofa::component::collision
-{
-    using RayDiscreteIntersection = sofa::component::collision::detection::intersection::RayDiscreteIntersection;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/RayDiscreteIntersection.h")

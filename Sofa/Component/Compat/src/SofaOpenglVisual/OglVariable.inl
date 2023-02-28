@@ -22,6 +22,5 @@
 #pragma once
 
 #include <sofa/config.h>
-#include "OglVariable.h" // just forward to the compat header
 
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.06", "v23.06")
+SOFA_DISABLED_HEADER_NOT_REPLACED("v22.06", "v23.06")

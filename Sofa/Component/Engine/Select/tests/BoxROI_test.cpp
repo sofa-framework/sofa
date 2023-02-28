@@ -176,9 +176,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   </Node>                                                    "
                 "</Node>                                                       ";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.c_str(),
-                                                          scene.size());
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene.c_str());
         EXPECT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 

@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/generate/ExtrudeSurface.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/ExtrudeSurface.h")
-
-namespace sofa::component::engine
-{
-    template< class DataTypes >
-    using ExtrudeSurface = sofa::component::engine::generate::ExtrudeSurface<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/ExtrudeSurface.h")

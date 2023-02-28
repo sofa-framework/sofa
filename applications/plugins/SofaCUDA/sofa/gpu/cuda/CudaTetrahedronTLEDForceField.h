@@ -62,10 +62,10 @@ Year = {2009}                                                                   
 #ifndef SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 #define SOFA_CUDA_TETRAHEDRON_TLED_FORCEFIELD_H
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
-
+#include "vector_types.h"
 
 namespace sofa
 {
@@ -77,6 +77,9 @@ namespace cuda
 {
 
 using namespace sofa::defaulttype;
+
+template<class T>
+class CudaTextureObject;
 
 class CudaTetrahedronTLEDForceField : public core::behavior::ForceField<CudaVec3fTypes>
 {
@@ -120,6 +123,36 @@ public:
     void ComputeDhDxTetra(const Element& e, const VecCoord& x, float DhDr[4][3], float DhDx[4][3]);
 
 protected:
+
+    /// Device data
+    //@{
+
+    int4* m_device_nodesPerElement { nullptr };
+
+    float4* m_device_DhC0 { nullptr };
+    float4* m_device_DhC1 { nullptr };
+    float4* m_device_DhC2 { nullptr };
+
+    float* m_device_volume { nullptr };
+
+    int2* m_device_forceCoordinates { nullptr };
+
+    float3* m_device_preferredDirection { nullptr };
+
+    // Rate-dependant stress (isochoric part)
+    float4* m_device_Di1 { nullptr };
+    float4* m_device_Di2 { nullptr };
+
+    // Rate-dependant stress (volumetric part)
+    float4* m_device_Dv1 { nullptr };
+    float4* m_device_Dv2 { nullptr };
+
+    float4* m_device_F0 { nullptr };
+    float4* m_device_F1 { nullptr };
+    float4* m_device_F2 { nullptr };
+    float4* m_device_F3 { nullptr };
+
+    //@}
 
 };
 

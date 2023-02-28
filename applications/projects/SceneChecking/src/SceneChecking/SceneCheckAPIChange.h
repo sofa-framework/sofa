@@ -23,13 +23,12 @@
 
 #include <SceneChecking/config.h>
 
-#include <SceneChecking/SceneCheck.h>
-
 #include <sofa/version.h>
 #include <string>
 #include <map>
 #include <vector>
 #include <functional>
+#include <sofa/simulation/SceneCheck.h>
 
 namespace sofa::simulation
 {
@@ -46,7 +45,7 @@ namespace sofa::_scenechecking_
 
 typedef std::function<void(sofa::core::objectmodel::Base*)>     ChangeSetHookFunction;
 
-class SOFA_SCENECHECKING_API SceneCheckAPIChange : public SceneCheck
+class SOFA_SCENECHECKING_API SceneCheckAPIChange : public sofa::simulation::SceneCheck
 {
 public:
     SceneCheckAPIChange();

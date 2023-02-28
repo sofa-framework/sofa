@@ -1,29 +1,25 @@
 # [Slow] This runs very slowly, so compute only a few iterations
-iterations "Components/solver/NewmarkImplicitSolver.scn" "5"
-timeout "Components/solver/NewmarkImplicitSolver.scn" "60"
+iterations "Component/ODESolver/Backward/NewmarkImplicitSolver.scn" "5"
+timeout "Component/ODESolver/Backward/NewmarkImplicitSolver.scn" "60"
 
 # [Slow] Idem
-iterations "Components/forcefield/FastTetrahedronCorotationalForceField_validation.scn" "10"
-timeout "Components/forcefield/FastTetrahedronCorotationalForceField_validation.scn" "90"
+iterations "Component/SolidMechanics/FEM/FastTetrahedronCorotationalForceField_validation.scn" "10"
+timeout "Component/SolidMechanics/FEM/FastTetrahedronCorotationalForceField_validation.scn" "90"
 
 # [Slow] Long compute only a few iterations
-iterations "Components/mapping/BarycentricMapping.scn" "10"
-timeout "Components/mapping/BarycentricMapping.scn" "60"
-
-# [Slow] Long compute only a few iterations
-iterations "Components/linearsolver/MatrixContributions123.scn" "10"
-timeout "Components/linearsolver/MatrixContributions123.scn" "60"
+iterations "Component/Mapping/Linear/BarycentricMapping.scn" "10"
+timeout "Component/Mapping/Linear/BarycentricMapping.scn" "60"
 
 # [Slow] Dense solver: takes too long to compute even a single iteration
-ignore "Components/linearsolver/FEMBAR_SVDLinearSolver.scn"
+ignore "Component/LinearSolver/Direct/FEMBAR_SVDLinearSolver.scn"
 
 # [Slow] Big, long, PrecomputedConstraintCorrection in this scene:
-iterations "Components/animationloop/FreeMotionAnimationLoop.scn" "10"
-timeout "Components/animationloop/FreeMotionAnimationLoop.scn" "180"
+iterations "Component/AnimationLoop/FreeMotionAnimationLoop.scn" "10"
+timeout "Component/AnimationLoop/FreeMotionAnimationLoop.scn" "180"
 
 # [Slow] Long
-iterations "Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_performanceTest.scn" "10"
-timeout "Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_performanceTest.scn" "180"
+iterations "Component/Topology/Container/Dynamic/RemovingTetra2TriangleProcess_performanceTest.scn" "10"
+timeout "Component/Topology/Container/Dynamic/RemovingTetra2TriangleProcess_performanceTest.scn" "180"
 
 # [Warning] Temporarily ignore this scene, because it produces literally
 # millions of warnings:
@@ -35,7 +31,7 @@ ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
 ignore "Benchmark/Accuracy/cylinder_TLEDTetraSolution.scn"
 
 # [Deprecated] EdgeSetController was removed in v18.12 (deprecated since v17.12)
-ignore "Components/controller/MechanicalStateController.scn"
+ignore "Component/Controller/MechanicalStateController.scn"
 
 # [Crash] Those scene are crashing for the moment. See issue https://github.com/sofa-framework/sofa/issues/2189
 # To be removed when scenes are fixed.

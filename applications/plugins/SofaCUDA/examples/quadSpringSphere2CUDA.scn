@@ -7,7 +7,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI CudaVisualModel FixedConstraint MechanicalObject MeshSpringForceField PlaneForceField QuadBendingSprings SphereForceField UniformMass] -->
-<!--	<DefaultPipeline verbose="0" />
+<!--	<CollisionPipeline verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<DefaultContactManager name="Response" />

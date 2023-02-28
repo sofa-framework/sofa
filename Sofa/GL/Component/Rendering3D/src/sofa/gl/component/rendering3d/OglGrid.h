@@ -22,12 +22,4 @@
 #pragma once
 
 #include <sofa/config.h>
-SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/component/visual/VisualGrid.h")
-
-#include <sofa/component/visual/VisualGrid.h>
-
-namespace sofa::gl::component::rendering3d
-{
-    SOFA_ATTRIBUTE_DEPRECATED("v22.12", "v23.06", "sofa::gl::component::rendering3d::OglGrid has been replaced by sofa::component::visual::VisualGrid")
-    using OglGrid = sofa::component::visual::VisualGrid;
-}
+SOFA_DISABLED_HEADER("v22.12", "v23.06", "sofa/component/visual/VisualGrid.h")

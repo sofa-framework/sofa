@@ -23,11 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/correction/PrecomputedConstraintCorrection.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/PrecomputedConstraintCorrection.h")
-
-namespace sofa::component::constraintset
-{
-    template<class TDataTypes>
-    using PrecomputedConstraintCorrection = sofa::component::constraint::lagrangian::correction::PrecomputedConstraintCorrection<TDataTypes>;
-    
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/PrecomputedConstraintCorrection.h")

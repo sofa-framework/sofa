@@ -29,7 +29,7 @@ def createScene(root):
     # scene node
     scene = root.createChild('scene')
 
-    scene.createObject('DefaultPipeline', depth='6')
+    scene.createObject('CollisionPipeline', depth='6')
     scene.createObject('BruteForceBroadPhase', name='N2')
     scene.createObject('BVHNarrowPhase')
     scene.createObject('DefaultContactManager', responseParams='damping=0&amp;compliance=0&amp;restitution=0', response='CompliantContact')

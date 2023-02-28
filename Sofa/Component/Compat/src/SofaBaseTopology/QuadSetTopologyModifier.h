@@ -22,11 +22,5 @@
 #pragma once
 #include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h")
 
-namespace sofa::component::topology
-{
-
-    using QuadSetTopologyModifier = sofa::component::topology::container::dynamic::QuadSetTopologyModifier;
-
-} // namespace sofa::component::topology

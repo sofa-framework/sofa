@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/collision/response/contact/BarycentricPenalityContact.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/BarycentricPenalityContact.h")
-
-namespace sofa::component::collision
-{
-    template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-    using BarycentricPenalityContact = sofa::component::collision::response::contact::BarycentricPenalityContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/BarycentricPenalityContact.h")

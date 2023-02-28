@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name="SofaAssimp" />
     <VisualStyle displayFlags="" />
-    <DefaultPipeline verbose="0" />
+    <CollisionPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager response="PenalityContactForceField" />

@@ -38,7 +38,7 @@ namespace
     template<typename DataTypes>
     void get3DFrameFromDPosNormal(const typename DataTypes::DPos& dposnormal, sofa::type::Vec3& v1, sofa::type::Vec3& v2, sofa::type::Vec3& normal)
     {
-        for (auto i = 0; i < dposnormal.size() && i < 3; i++)
+        for (std::size_t i = 0; i < dposnormal.size() && i < 3u; i++)
             normal[i] = dposnormal[i];
 
         // find a first vector inside the plane

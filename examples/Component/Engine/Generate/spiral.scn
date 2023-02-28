@@ -1,0 +1,21 @@
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [Spiral] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showCollisionModels" />
+    <Node name="Spiral">
+        <RegularGridTopology name="topo" n="201 5 2" min="-5 -0.1 -0.1" max="5 0.1 0.1" />
+        <MechanicalObject name="dofs1" />
+        <Spiral name="spiral" template="Vec3" rest_position="@dofs1.position" />
+        <Node>
+            <MechanicalObject name="dofs" position="@../spiral.position" />
+            <TriangleCollisionModel />
+            <LineCollisionModel />
+            <PointCollisionModel />
+        </Node>
+    </Node>
+</Node>

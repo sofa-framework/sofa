@@ -23,7 +23,7 @@
 #include <sofa/component/visual/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/visual/Data[DisplayFlags].h>
 #include <sofa/simulation/fwd.h>
 
 namespace sofa::component::visual

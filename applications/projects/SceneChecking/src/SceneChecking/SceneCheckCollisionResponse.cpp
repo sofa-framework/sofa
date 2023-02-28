@@ -25,9 +25,12 @@
 #include <sofa/component/collision/response/contact/DefaultContactManager.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
+#include <sofa/simulation/SceneCheckMainRegistry.h>
 
 namespace sofa::_scenechecking_
 {
+
+const bool SceneCheckCollisionResponseRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckCollisionResponse::newSPtr());
 
 using sofa::simulation::Node;
 

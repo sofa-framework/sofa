@@ -28,7 +28,7 @@
 namespace sofa::helper
 {
 
-template class SOFA_HELPER_API kdTree<sofa::type::Vec<2, double>>;
-template class SOFA_HELPER_API kdTree<sofa::type::Vec<3, double>>;
+template class SOFA_HELPER_API kdTree<sofa::type::Vec<2, SReal>>;
+template class SOFA_HELPER_API kdTree<sofa::type::Vec<3, SReal>>;
 
 } // namespace sofa::helper

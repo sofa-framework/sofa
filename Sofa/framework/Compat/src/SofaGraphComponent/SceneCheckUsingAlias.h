@@ -27,26 +27,8 @@
 #include <SceneChecking/SceneCheckUsingAlias.h>
 #define SCENECHECKING_SCENECHECKUSINGALIAS
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckUsingAlias.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "SceneChecking/SceneCheckUsingAlias.h")
 
 #else
 #error "SceneChecking-related contents have been moved to the SceneChecking plugin. Enable it and include <SceneChecking/SceneCheckUsingAlias.h> instead of this file."
 #endif
-
-#ifdef SCENECHECKING_SCENECHECKUSINGALIAS
-
-namespace sofa::simulation::_scenechecking_
-{
-    using SceneCheckUsingAlias = sofa::_scenechecking_::SceneCheckUsingAlias;
-
-} // namespace sofa::simulation::_scenechecking_
-
-namespace sofa::simulation::scenechecking
-{
-    using SceneCheckUsingAlias = sofa::scenechecking::SceneCheckUsingAlias;
-
-} // namespace sofa::simulation::_scenechecking_
-
-#endif // SCENECHECKING_SCENECHECKUSINGALIAS
-
-#undef SCENECHECKING_SCENECHECKUSINGALIAS

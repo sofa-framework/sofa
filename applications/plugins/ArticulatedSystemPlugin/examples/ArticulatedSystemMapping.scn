@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Node dt="0.01" gravity="0 -9.81 0" name="root">
     <RequiredPlugin name="ArticulatedSystemPlugin"/> <!-- Needed to use components [ArticulatedHierarchyContainer ArticulatedSystemMapping Articulation ArticulationCenter] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -18,7 +18,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager />
-    <DefaultPipeline />
+    <CollisionPipeline />
     <MinProximityIntersection alarmDistance="1" contactDistance="0.5"/>
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />

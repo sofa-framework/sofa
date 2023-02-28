@@ -1,0 +1,59 @@
+<!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
+<Node name="root" gravity="0 -9 1" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint FixedPlaneConstraint] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <VisualStyle displayFlags="showBehavior showVisual" />
+    <CollisionPipeline name="default0" verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <DefaultContactManager name="default1" response="PenalityContactForceField" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultAnimationLoop/>
+
+    <Node name="TetrahedralCorotationalFEMForceField1">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-20" />
+        <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
+        <MechanicalObject src="@loader" name="TetrahedralCorotationalFEM" />
+        <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
+
+        <DiagonalMass massDensity="0.5" />
+        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint indices="0" />
+        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
+
+	<TopologicalChangeProcessor listening="1" filename="RemovingTetra2TriangleProcess.txt" />
+    </Node>
+
+    <Node name="TetrahedralCorotationalFEMForceField2">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-20" />
+        <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" translation="0.5 0 0"/>
+        <MechanicalObject src="@loader" name="TetrahedralCorotationalFEM" />
+        <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
+
+        <DiagonalMass massDensity="0.5" />
+        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint indices="0" />
+	<TetrahedronFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
+
+	<TopologicalChangeProcessor listening="1" filename="RemovingTetra2TriangleProcess.txt" />
+    </Node>
+
+
+</Node>

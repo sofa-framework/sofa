@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/generate/GenerateRigidMass.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateRigidMass.h")
-
-namespace sofa::component::engine
-{
-    template <class DataTypes, class MassType>
-    using GenerateRigidMass = sofa::component::engine::generate::GenerateRigidMass<DataTypes, MassType>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/generate/GenerateRigidMass.h")
