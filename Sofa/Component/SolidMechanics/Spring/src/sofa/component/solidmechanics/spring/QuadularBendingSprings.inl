@@ -65,8 +65,6 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
 
     unsigned int u,v;
 
-    unsigned int nb_activated = 0;
-
     const typename DataTypes::VecCoord& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeData = edgeInfo;
@@ -101,9 +99,6 @@ void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vect
                 const auto& shell = this->m_topology->getQuadsAroundEdge(edgeIndex);
                 if (shell.size()==2)
                 {
-
-                    nb_activated+=1;
-
                     EdgesInQuad te1;
                     Quad t1;
 

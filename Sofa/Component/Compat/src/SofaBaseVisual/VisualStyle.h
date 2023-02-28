@@ -23,11 +23,4 @@
 #include <sofa/component/visual/VisualStyle.h>
 #include <sofa/simulation/Node.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualStyle.h")
-
-namespace sofa::component::visualmodel
-{
-    using VisualStyle = sofa::component::visual::VisualStyle;
-
-    using sofa::component::visual::addVisualStyle;
-} // namespace sofa::component::visual
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualStyle.h")

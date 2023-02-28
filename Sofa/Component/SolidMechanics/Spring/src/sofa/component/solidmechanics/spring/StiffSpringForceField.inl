@@ -127,7 +127,36 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         sofa::Index i,
         const Spring& spring)
 {
-    //    this->cpt_addForce++;
+    const std::unique_ptr<SpringForce> springForce = this->computeSpringForce(p1, v1, p2, v2, spring);
+
+    if (springForce)
+    {
+        const StiffSpringForce* stiffSpringForce = static_cast<const StiffSpringForce*>(springForce.get());
+
+        sofa::Index a = spring.m1;
+        sofa::Index b = spring.m2;
+
+        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + std::get<0>(stiffSpringForce->force)) ;
+        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) + std::get<1>(stiffSpringForce->force)) ;
+
+        potentialEnergy += stiffSpringForce->energy;
+
+        this->dfdx[i] = stiffSpringForce->dForce_dX;
+    }
+    else
+    {
+        // set derivative to 0
+        this->dfdx[i].clear();
+    }
+}
+
+template <class DataTypes>
+auto StiffSpringForceField<DataTypes>::computeSpringForce(
+    const VecCoord& p1, const VecDeriv& v1,
+    const VecCoord& p2, const VecDeriv& v2,
+    const Spring& spring)
+-> std::unique_ptr<SpringForce>
+{
     sofa::Index a = spring.m1;
     sofa::Index b = spring.m2;
 
@@ -136,18 +165,17 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     Real d = u.norm();
     if( spring.enabled && d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
+        std::unique_ptr<StiffSpringForce> springForce = std::make_unique<StiffSpringForce>();
+
         // F =   k_s.(l-l_0 ).U + k_d((V_b - V_a).U).U = f.U   where f is the intensity and U the direction
         Real inverseLength = 1.0f/d;
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
-        potentialEnergy += elongation * elongation * spring.ks / 2;
+        springForce->energy = elongation * elongation * spring.ks / 2;
         typename DataTypes::DPos relativeVelocity = DataTypes::getDPos(v2[b])-DataTypes::getDPos(v1[a]);
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
         typename DataTypes::DPos force = u*forceIntensity;
-
-        DataTypes::setDPos( f1[a], DataTypes::getDPos(f1[a]) + force ) ;
-        DataTypes::setDPos( f2[b], DataTypes::getDPos(f2[b]) - force ) ;
 
         // Compute stiffness dF/dX
         // The force change dF comes from length change dl and unit vector change dU:
@@ -155,7 +183,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         // dU = 1/l.(I-U.U^T).dX   where dX = dX_1 - dX_0  and I is the identity matrix
         // dl = U^T.dX
         // dF = k_s.U.U^T.dX + f/l.(I-U.U^T).dX = ((k_s-f/l).U.U^T + f/l.I).dX
-        Mat& m = this->dfdx[i];
+        auto& m = springForce->dForce_dX;
         Real tgt = forceIntensity * inverseLength;
         for(sofa::Index j=0; j<N; ++j )
         {
@@ -165,62 +193,50 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
             }
             m[j][j] += tgt;
         }
+
+        springForce->force = std::make_pair(force, -force);
+        return springForce;
     }
-    else // null length, no force and no stiffness
-    {
-        Mat& m = this->dfdx[i];
-        for(sofa::Index j=0; j<N; ++j )
-        {
-            for(sofa::Index k=0; k<N; ++k )
-            {
-                m[j][k] = 0;
-            }
-        }
-    }
+
+    return {};
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, SReal kFactor, SReal /*bFactor*/)
+void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, SReal kFactor, SReal bFactor)
 {
+    typename DataTypes::DPos dforce = computeSpringDForce(df1, dx1, df2, dx2, i, spring, kFactor, bFactor);
+
     const sofa::Index a = spring.m1;
     const sofa::Index b = spring.m2;
-    const typename DataTypes::CPos d = DataTypes::getDPos(dx2[b]) - DataTypes::getDPos(dx1[a]);
-    typename DataTypes::DPos dforce = this->dfdx[i]*d;
-
-    dforce *= kFactor;
 
     DataTypes::setDPos( df1[a], DataTypes::getDPos(df1[a]) + dforce ) ;
     DataTypes::setDPos( df2[b], DataTypes::getDPos(df2[b]) - dforce ) ;
 }
 
-template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+template <class DataTypes>
+typename DataTypes::DPos StiffSpringForceField<DataTypes>::computeSpringDForce(VecDeriv& df1,
+    const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, sofa::Index i, const Spring& spring,
+    SReal kFactor, SReal bFactor)
 {
-    VecDeriv&       f1 = *data_f1.beginEdit();
-    const VecCoord& x1 =  data_x1.getValue();
-    const VecDeriv& v1 =  data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
-    const VecCoord& x2 =  data_x2.getValue();
-    const VecDeriv& v2 =  data_v2.getValue();
+    SOFA_UNUSED(bFactor);
+    const typename DataTypes::CPos d = DataTypes::getDPos(dx2[spring.m2]) - DataTypes::getDPos(dx1[spring.m1]);
+    return this->dfdx[i] * d * kFactor;
+}
 
-    const type::vector<Spring>& springs= this->springs.getValue();
+template<class DataTypes>
+void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+{
+    const type::vector<Spring>& springs = this->springs.getValue();
     this->dfdx.resize(springs.size());
-    f1.resize(x1.size());
-    f2.resize(x2.size());
-    this->m_potentialEnergy = 0;
-    for (sofa::Index i=0; i<springs.size(); i++)
-    {
-        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
-    }
-    data_f1.endEdit();
-    data_f2.endEdit();
+
+    Inherit::addForce(mparams, data_f1, data_f2, data_x1, data_x2, data_v1, data_v2);
 }
 
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
-    VecDeriv&        df1 = *data_df1.beginEdit();
-    VecDeriv&        df2 = *data_df2.beginEdit();
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv>> df1 = sofa::helper::getWriteOnlyAccessor(data_df1);
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv>> df2 = sofa::helper::getWriteOnlyAccessor(data_df2);
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
     Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
@@ -232,11 +248,8 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 
     for (sofa::Index i=0; i<springs.size(); i++)
     {
-        this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i], kFactor, bFactor);
+        this->addSpringDForce(df1.wref(), dx1,df2.wref(),dx2, i, springs[i], kFactor, bFactor);
     }
-
-    data_df1.endEdit();
-    data_df2.endEdit();
 }
 
 

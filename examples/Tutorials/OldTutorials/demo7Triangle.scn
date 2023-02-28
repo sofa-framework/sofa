@@ -1,6 +1,6 @@
 <!-- Hierarchical Group Basic Test -->
 <Node name="root" dt="0.01">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -17,7 +17,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showForceFields" />
-    <DefaultPipeline verbose="0" draw="0" />
+    <CollisionPipeline verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
@@ -46,10 +46,10 @@
             </Node>
         </Node>
         <Node name="M2">
-            <MechanicalObject template="Rigid3d" dz="-10.5" />
+            <MechanicalObject template="Rigid3" dz="-10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../meshLoader" />
+                <MechanicalObject template="Vec3" src="@../../meshLoader" />
                 <RigidMapping />
             </Node>
             <Node name="Surf">
@@ -85,10 +85,10 @@
             </Node>
         </Node>
         <Node name="M4">
-            <MechanicalObject template="Rigid3d" dz="10.5" />
+            <MechanicalObject template="Rigid3" dz="10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../meshLoader" />
+                <MechanicalObject template="Vec3" src="@../../meshLoader" />
                 <RigidMapping />
                 <Node name="Visu">
                     <OglModel name="Visual" filename="mesh/smCube27.obj" />
@@ -124,10 +124,10 @@
             </Node>
         </Node>
         <Node name="M6">
-            <MechanicalObject template="Rigid3d" dz="31.5" />
+            <MechanicalObject template="Rigid3" dz="31.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" src="@../../meshLoader"/>
+                <MechanicalObject template="Vec3" src="@../../meshLoader"/>
                 <RigidMapping />
             </Node>
             <Node name="Visu">

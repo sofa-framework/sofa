@@ -27,24 +27,9 @@
 #include <sofa/gui/component/performer/ComponentMouseInteraction.h>
 #define SOFA_GUI_COMPONENT_COMPONENTMOUSEINTERACTOR
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/ComponentMouseInteraction.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/ComponentMouseInteraction.h")
 
 #else
 #error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/ComponentMouseInteraction.h> instead of this one."
 #endif
 
-
-#ifdef SOFA_GUI_COMPONENT_COMPONENTMOUSEINTERACTOR
-
-namespace sofa::component::collision
-{
-    using ComponentMouseInteraction = sofa::gui::component::performer::ComponentMouseInteraction;
-    template <class DataTypes>
-    using TComponentMouseInteraction = sofa::gui::component::performer::TComponentMouseInteraction<DataTypes>;
-
-} // namespace sofa::component::collision
-
-
-#endif // SOFA_GUI_COMPONENT_COMPONENTMOUSEINTERACTOR
-
-#undef SOFA_GUI_COMPONENT_COMPONENTMOUSEINTERACTOR

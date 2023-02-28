@@ -68,11 +68,6 @@ public:
     void init() override;   // compute the inverse matrices
     void doUpdate() override; // compute the displacements wrt original positions
 
-    static std::string GetCustomTemplateName()
-    {
-        return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name();
-    }
-
 protected:
     type::vector<OutputType> inverses;  ///< inverse initial positions
 
@@ -122,11 +117,6 @@ public:
     // inputs
     Data< type::vector< sofa::type::Vec<3,Real> > > d_scales; ///< scale matrices
     type::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
-
-    static std::string GetCustomTemplateName()
-    {
-        return DataTypes::Name();
-    }
 };
 
 } // namespace sofa::component::engine::transform

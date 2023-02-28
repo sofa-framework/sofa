@@ -29,28 +29,11 @@
 namespace sofa::component::visual
 {
 
-constexpr const char * lineAxisDeprecatedName = "OglLineAxis";
-
 int LineAxisClass = core::RegisterObject("Display scene axis")
         .add< LineAxis >()
-        .addAlias(lineAxisDeprecatedName)
         ;
 
 using namespace sofa::defaulttype;
-
-void LineAxis::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    if (std::string(arg->getAttribute("type")) == lineAxisDeprecatedName)
-    {
-        msg_warning(lineAxisDeprecatedName) << lineAxisDeprecatedName << " is deprecated since SOFA v22.12, and has"
-            " been replaced by " << this->getClassName() << ". Please modify your scene. Note that the new component "
-            << this->getClassName() << " is located in another module (Sofa.Component.Visual). It means that you "
-            "probably need to update also the appropriate RequiredPlugin in your scene. For example, in XML, "
-            "consider removing the line <RequiredPlugin name=\"Sofa.GL.Component.Rendering3D\"> to replace it by "
-            "<RequiredPlugin name=\"Sofa.Component.Visual\">.";
-    }
-    Inherit1::parse(arg);
-}
 
 LineAxis::LineAxis()
     : d_axis(initData(&d_axis, std::string("xyz"),  "axis", "Axis to draw"))
@@ -112,9 +95,6 @@ void LineAxis::drawVisual(const core::visual::VisualParams* vparams)
             helper::visual::DrawTool::Vec3(0.0, 0.0, s*0.5),
             helper::visual::DrawTool::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f));
     }
-
-
-
 }
 
 

@@ -23,13 +23,4 @@
 
 #include <sofa/component/playback/ReadTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadTopology.h")
-
-namespace sofa::component::misc
-{
-    using ReadTopology = sofa::component::playback::ReadTopology;
-    using ReadTopologyCreator = sofa::component::playback::ReadTopologyCreator;
-    using ReadTopologyActivator = sofa::component::playback::ReadTopologyActivator;
-    using ReadTopologyModifier = sofa::component::playback::ReadTopologyModifier;
-
-} // namespace sofa::component::misc
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadTopology.h")

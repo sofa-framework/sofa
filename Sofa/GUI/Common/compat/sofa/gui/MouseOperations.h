@@ -22,20 +22,4 @@
 #pragma once
 #include <sofa/gui/common/MouseOperations.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/MouseOperations.h")
-
-namespace sofa::gui
-{
-    using MousePosition = sofa::gui::common::MousePosition;
-    using Operation = sofa::gui::common::Operation;
-    using AttachOperation = sofa::gui::common::AttachOperation;
-    using ConstraintAttachOperation = sofa::gui::common::ConstraintAttachOperation;
-    using FixOperation = sofa::gui::common::FixOperation;
-    using AddFrameOperation = sofa::gui::common::AddFrameOperation;
-    using AddRecordedCameraOperation = sofa::gui::common::AddRecordedCameraOperation;
-    using StartNavigationOperation = sofa::gui::common::StartNavigationOperation;
-    using InciseOperation = sofa::gui::common::InciseOperation;
-    using TopologyOperation = sofa::gui::common::TopologyOperation;
-    using AddSutureOperation = sofa::gui::common::AddSutureOperation;
-
-} // namespace sofa::gui
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/common/MouseOperations.h")

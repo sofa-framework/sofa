@@ -33,6 +33,13 @@ namespace sofa::gpu::cuda
         .add< SubsetMultiMapping< CudaVec1Types, CudaVec1Types > >()
         .add< SubsetMultiMapping< CudaRigid3Types, CudaRigid3Types > >()
         .add< SubsetMultiMapping< CudaRigid3Types, CudaVec3Types > >()
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< SubsetMultiMapping< CudaVec3dTypes, CudaVec3dTypes > >()
+        .add< SubsetMultiMapping< CudaVec1dTypes, CudaVec1dTypes > >()
+        .add< SubsetMultiMapping< CudaRigid3dTypes, CudaRigid3dTypes > >()
+        .add< SubsetMultiMapping< CudaRigid3dTypes, CudaVec3dTypes > >()
+#endif
     ;
 }
 
@@ -44,6 +51,13 @@ namespace sofa::component::mapping::linear
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec1Types, CudaVec1Types >;
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaRigid3Types >;
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec3dTypes, CudaVec3dTypes >;
+    template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec1dTypes, CudaVec1dTypes >;
+    template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3dTypes, CudaRigid3dTypes >;
+    template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3dTypes, CudaVec3dTypes >;
+#endif
 
 
 } // namespace sofa::component::mapping::linear

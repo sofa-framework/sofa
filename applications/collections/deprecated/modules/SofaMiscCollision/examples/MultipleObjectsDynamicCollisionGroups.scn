@@ -3,7 +3,7 @@
 <Node name="root" dt="0.01" gravity="0 0 -9.81">
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
-    <DefaultPipeline />
+    <CollisionPipeline />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager />

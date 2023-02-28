@@ -22,10 +22,11 @@
 #include <sofa/component/collision/detection/intersection/RayNewProximityIntersection.h>
 
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
 #include <iostream>
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
+#include <sofa/geometry/proximity/PointTriangle.h>
+#include <sofa/geometry/proximity/SegmentTriangle.h>
 #include <sofa/type/Mat.h>
 
 namespace sofa::component::collision::detection::intersection
@@ -35,7 +36,6 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using namespace sofa::component::collision::geometry;
-using sofa::helper::DistanceSegTri;
 
 IntersectorCreator<NewProximityIntersection, RayNewProximityIntersection> RayNewProximityIntersectors("Ray");
 
@@ -57,7 +57,6 @@ RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersectio
 bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 {
     Vec3 P,Q,PQ;
-    static DistanceSegTri proximitySolver;
     const SReal alarmDist = intersection->getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
@@ -66,7 +65,10 @@ bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
     Vec3 A = t1.origin();
     Vec3 B = A + t1.direction() * t1.l();
 
-    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
+    const auto r = sofa::geometry::proximity::computeClosestPointsSegmentAndTriangle(t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
+    msg_warning_when(!r, "RayNewProximityIntersection") << "Failed to compute distance between ray ["
+        << A << "," << B <<"] and triangle [" << t2.p1() << ", " << t2.p2() << ", " << t2.p3() << "]";
+
     PQ = Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -89,9 +91,11 @@ int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
     Vec3 B = A + t1.direction() * t1.l();
 
     Vec3 P,Q,PQ;
-    static DistanceSegTri proximitySolver;
 
-    proximitySolver.NewComputation( t2.p1(), t2.p2(), t2.p3(), A,B,P,Q);
+    const auto r = sofa::geometry::proximity::computeClosestPointsSegmentAndTriangle(t2.p1(), t2.p2(), t2.p3(), A, B,P,Q);
+    msg_warning_when(!r, "RayNewProximityIntersection") << "Failed to compute distance between ray ["
+        << A << "," << B <<"] and triangle [" << t2.p1() << ", " << t2.p2() << ", " << t2.p3() << "]";
+
     PQ = Q-P;
 
     if (PQ.norm2() >= alarmDist*alarmDist)

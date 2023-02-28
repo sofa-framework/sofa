@@ -71,8 +71,8 @@ protected:
     class QuadPressureInformation
     {
     public:
-        Real area;
-        Deriv force;
+        Real area{};
+        Deriv force{};
 
         QuadPressureInformation() {}
         QuadPressureInformation(const QuadPressureInformation &e)

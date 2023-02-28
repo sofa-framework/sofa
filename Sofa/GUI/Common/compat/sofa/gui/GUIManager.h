@@ -22,10 +22,4 @@
 #pragma once
 #include <sofa/gui/common/GUIManager.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/GUIManager.h")
-
-namespace sofa::gui
-{
-    using GUIManager = sofa::gui::common::GUIManager;
-
-} // namespace sofa::gui
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gui/common/GUIManager.h")

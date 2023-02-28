@@ -102,8 +102,6 @@ BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInTetra
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-
-    int outside = 0;
     const auto& tetrahedra = this->m_fromTopology->getTetrahedra();
 
     sofa::type::vector<sofa::type::Matrix3> bases;
@@ -144,7 +142,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
                 coefs = v; distance = d; index = t;
             }
         }
-        if ( distance>0 ) ++outside;
 
         //convert the orientation to basis given by closest tetrahedron
         sofa::type::Quat<SReal> quatA = out[i].getOrientation();

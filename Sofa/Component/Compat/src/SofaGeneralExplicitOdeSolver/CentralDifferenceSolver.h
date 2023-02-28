@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/odesolver/forward/CentralDifferenceSolver.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/forward/CentralDifferenceSolver.h")
-
-namespace sofa::component::odesolver
-{
-    
-using CentralDifferenceSolver = sofa::component::odesolver::forward::CentralDifferenceSolver;
-
-} //namespace sofa::component::odesolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/odesolver/forward/CentralDifferenceSolver.h")

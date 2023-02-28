@@ -23,4 +23,4 @@
 
 #include <sofa/component/collision/geometry/CylinderModel.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/CylinderModel.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/CylinderModel.inl")

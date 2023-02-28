@@ -11,9 +11,11 @@
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <VisualStyle displayFlags="showVisual showBehavior" />
+    <DefaultAnimationLoop/>
+    
     <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-    <MechanicalObject name="RigidDOF" template="Rigid3d" dz="1" rotation="90 0 -90" />
+    <MechanicalObject name="RigidDOF" template="Rigid3" dz="1" rotation="90 0 -90" />
     <UniformMass name="Mass" filename="BehaviorModels/dragon.rigid" />
     <Node name="DragonVisual">
         <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" scale="0.1" handleSeams="1" />
@@ -23,8 +25,8 @@
     <Node name="Dragon">
         <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
         <MechanicalObject src="@loader" name="DragonParticles" scale="0.1" />
-        <PlaneForceField name="Floor" normal="0 0.2 1" stiffness="100" damping="1" draw="1" />
-        <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />
+        <PlaneForceField name="Floor" normal="0 0.2 1" stiffness="100" damping="1" showPlane= "1"/>
+        <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" showPlane= "1"/>
         <RigidMapping name="RigidMapping2" input="@../RigidDOF" output="@DragonParticles" />
     </Node>
 </Node>

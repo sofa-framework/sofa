@@ -28,11 +28,8 @@
 namespace sofa::component::visual
 {
 
-constexpr const char * visualGridDeprecatedName = "OglGrid";
-
 int VisualGridClass = core::RegisterObject("Display a simple grid")
         .add< VisualGrid>()
-        .addAlias(visualGridDeprecatedName)
         ;
 
 using namespace sofa::defaulttype;
@@ -54,21 +51,6 @@ VisualGrid::VisualGrid()
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
 }
-
-void VisualGrid::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
-{
-    if (std::string(arg->getAttribute("type")) == visualGridDeprecatedName)
-    {
-        msg_warning(visualGridDeprecatedName) << visualGridDeprecatedName << " is deprecated since SOFA v22.12, and has"
-            " been replaced by " << this->getClassName() << ". Please modify your scene. Note that the new component "
-            << this->getClassName() << " is located in another module (Sofa.Component.Visual). It means that you "
-            "probably need to update also the appropriate RequiredPlugin in your scene. For example, in XML, "
-            "consider removing the line <RequiredPlugin name=\"Sofa.GL.Component.Rendering3D\"> to replace it by "
-            "<RequiredPlugin name=\"Sofa.Component.Visual\">.";
-    }
-    Inherit1::parse(arg);
-}
-
 
 void VisualGrid::init()
 {

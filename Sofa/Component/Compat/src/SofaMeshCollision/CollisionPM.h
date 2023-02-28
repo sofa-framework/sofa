@@ -23,12 +23,4 @@
 
 #include <sofa/component/collision/detection/algorithm/CollisionPM.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/CollisionPM.h")
-
-namespace sofa::component::collision
-{
-    using CollidingPair = sofa::component::collision::detection::algorithm::CollidingPair;
-    using CollidingPM = sofa::component::collision::detection::algorithm::CollidingPM;
-
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/CollisionPM.h")

@@ -1,5 +1,5 @@
 <Node dt="0.01" name="root">
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel PointCollisionModel TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -16,7 +16,8 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     
-    <DefaultPipeline depth="6" draw="0" verbose="0" />
+    <CollisionPipeline depth="6" draw="0" verbose="0" />
+    <DefaultAnimationLoop/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection alarmDistance="0.3" contactDistance="0.2" name="Proximity" />
@@ -100,7 +101,7 @@
     <Node name="TorusRigid">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
-        <MechanicalObject dx="14.4679" dy="0.0000" dz="4.7604" rx="25.0000" ry="-35.0000" rz="0.0000" template="Rigid3d" />
+        <MechanicalObject dx="14.4679" dy="0.0000" dz="4.7604" rx="25.0000" ry="-35.0000" rz="0.0000" template="Rigid3" />
         <UniformMass totalMass="10"/>
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" src="@../../loader_torus2" name="Visual" />
@@ -367,7 +368,7 @@
     <Node name="CRigid_Torus_1">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
-        <MechanicalObject dx="2.5428" dy="0.0000" dz="23.9805" rx="-0.0000" ry="5.0000" rz="-0.0000" template="Rigid3d" />
+        <MechanicalObject dx="2.5428" dy="0.0000" dz="23.9805" rx="-0.0000" ry="5.0000" rz="-0.0000" template="Rigid3" />
         <UniformMass totalMass="10" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" src="@../../loader_torus" name="Visual" />
@@ -385,7 +386,7 @@
     <Node name="CRigid_Torus_2">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
-        <MechanicalObject dx="5.1472" dy="0.0000" dz="23.6275" rx="-5.0000" ry="10.0000" rz="0.0000" template="Rigid3d" />
+        <MechanicalObject dx="5.1472" dy="0.0000" dz="23.6275" rx="-5.0000" ry="10.0000" rz="0.0000" template="Rigid3" />
         <UniformMass totalMass="10" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" src="@../../loader_torus2" name="Visual" />
@@ -403,7 +404,7 @@
     <Node name="CRigid_Torus_3">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
-        <MechanicalObject dx="7.5617" dy="0.0000" dz="23.1296" rx="-10.0000" ry="15.0000" rz="0.0000" template="Rigid3d" />
+        <MechanicalObject dx="7.5617" dy="0.0000" dz="23.1296" rx="-10.0000" ry="15.0000" rz="0.0000" template="Rigid3" />
         <UniformMass totalMass="10" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" src="@../../loader_torus" name="Visual" />
@@ -421,7 +422,7 @@
     <Node name="CRigid_Torus_4">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05"/>
-        <MechanicalObject dx="9.9491" dy="0.0000" dz="22.1146" rx="-15.0000" ry="25.0000" rz="0.0000" template="Rigid3d" />
+        <MechanicalObject dx="9.9491" dy="0.0000" dz="22.1146" rx="-15.0000" ry="25.0000" rz="0.0000" template="Rigid3" />
         <UniformMass totalMass="10" />
         <Node name="Visu">
             <OglModel color="0.500 0.500 0.500" src="@../../loader_torus2" name="Visual" />

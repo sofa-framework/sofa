@@ -1,3 +1,5 @@
+<!-- TODO: error on shaders -->
+
 <Node name="root" gravity="0 0 -9.81">
     <Node name="plugins">
         <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
@@ -16,7 +18,7 @@
         <RequiredPlugin name="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglShader OglShaderVisualModel OglTexture] -->
     </Node>
 
-
+    <DefaultAnimationLoop/>
     <Node bbox="-100 -100 -100 100 100 100">
         <OglShader fileVertexShaders='["shaders/skybox.vert"]' fileFragmentShaders='["shaders/skybox.frag"]' printLog="true"/>
     
@@ -27,7 +29,7 @@
         <OglTexture textureFilename="textures/skybox_top.jpg"    indexShader="0" id="skybox_top"    repeat="false" textureUnit="4"/>
         <OglTexture textureFilename="textures/skybox_bottom.jpg" indexShader="0" id="skybox_bottom" repeat="false" textureUnit="5"/>
         
-        <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" cullFace="2"/>
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1"/>
         <OglShaderVisualModel src="@meshLoader_0" material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 1 1 1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "/>
     </Node>
     
@@ -35,12 +37,12 @@
 
         <MeshOBJLoader name="loader" filename="mesh/Teodule_LowRes.obj" translation="20 16 3" rotation="90 0 0"/>
         <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver template="GraphScattered"/>
+        <CGLinearSolver template="GraphScattered" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         
         <TriangleSetTopologyContainer src="@loader"/>
         <MechanicalObject name="dof"/>
-        <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
-        <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
+        <TriangularFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.3" youngModulus="60" />
+        <TriangularBendingSprings template="Vec3" name="FEM-Bend" stiffness="300" damping="1" />
         <UniformMass totalMass="100"/>
         
         <BoxROI name="box" box="-10 -10 10 15 10 50"/>
@@ -50,7 +52,7 @@
         
         <Node name="visu">
             <MeshOBJLoader name="meshLoader_1" filename="mesh/Teodule_Smoothed2.obj" translation="20 16 3" rotation="90 0 0" handleSeams="1" />
-            <OglModel template="Vec3d" name="VisualModel" src="@meshLoader_1" material="Default Diffuse 1 1 1 1 1 Ambient 1 0 0.2 0 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+            <OglModel template="Vec3" name="VisualModel" src="@meshLoader_1" material="Default Diffuse 1 1 1 1 1 Ambient 1 0 0.2 0 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
             <BarycentricMapping input="@../dof" output="@VisualModel"/>
         </Node>
     </Node>

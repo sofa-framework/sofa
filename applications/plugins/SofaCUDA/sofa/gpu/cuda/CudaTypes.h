@@ -22,7 +22,7 @@
 #ifndef SOFA_GPU_CUDA_CUDATYPES_H
 #define SOFA_GPU_CUDA_CUDATYPES_H
 
-#include "CudaCommon.h"
+#include <sofa/gpu/cuda/CudaCommon.h>
 #include "mycuda.h"
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/gl/gl.h>

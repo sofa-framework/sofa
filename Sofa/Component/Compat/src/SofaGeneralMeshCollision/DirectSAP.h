@@ -23,10 +23,4 @@
 
 #include <sofa/component/collision/detection/algorithm/DirectSAP.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/DirectSAP.h")
-
-namespace sofa::component::collision
-{
-    using DirectSAP = sofa::component::collision::detection::algorithm::DirectSAP;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/algorithm/DirectSAP.h")

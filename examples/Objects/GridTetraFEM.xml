@@ -4,7 +4,7 @@
 
 	<SparseGridTopology n="6 6 6" filename="file"/>
 	<MechanicalObject translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0" />
-	<UniformMass totalmass="5" />
+	<UniformMass totalMass="5" />
 	<TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3"  method="polar"/>
     <VisualNode/>
     <CollisionNode/>

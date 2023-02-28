@@ -7,11 +7,12 @@
     
 	<VisualStyle name="visualStyle1"  displayFlags="hideVisual 	hideBehaviorModels showCollisionModels" />
 	<BackgroundSetting color="0.5 0.5 0.5" />
+    	<DefaultAnimationLoop/>
 
 	<Node name="Example">
 		<RegularGridTopology n="50 50 50"  min="0 0 0" max="10 10 10" />
-        <MechanicalObject name="DOFs" template="Vec3d" />
-        <SphereCollisionModel radius="0.1" />
+        	<MechanicalObject name="DOFs" template="Vec3" />
+        	<SphereCollisionModel radius="0.1" />
     </Node >
 		
 </Node>

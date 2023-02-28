@@ -24,18 +24,39 @@
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/headlessrecorder/HeadlessRecorder.h>
 
-int HeadlessRecorderClass = sofa::gui::common::GUIManager::RegisterGUI("hRecorder", &sofa::gui::hrecorder::HeadlessRecorder::CreateGUI, &sofa::gui::hrecorder::HeadlessRecorder::RegisterGUIParameters, 2);
-
 namespace sofa::gui::headlessrecorder
 {
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+    extern "C" {
+        SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+        SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
     }
-}
+
+    void initExternalModule()
+    {
+        init();
+    }
+
+    const char* getModuleName()
+    {
+        return MODULE_NAME;
+    }
+
+    const char* getModuleVersion()
+    {
+        return MODULE_VERSION;
+    }
+
+    void init()
+    {
+        static bool first = true;
+        if (first)
+        {
+            sofa::gui::common::GUIManager::RegisterGUI("hRecorder", &sofa::gui::hrecorder::HeadlessRecorder::CreateGUI, &sofa::gui::hrecorder::HeadlessRecorder::RegisterGUIParameters, 2);
+
+            first = false;
+        }
+    }
 
 } // namespace sofa::gui::headlessrecorder

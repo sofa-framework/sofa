@@ -23,15 +23,4 @@
 
 #include <sofa/component/constraint/projective/SkeletalMotionConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/SkeletalMotionConstraint.h")
-
-namespace sofa::component::projectiveconstraintset
-{
-
-    template<class DataTypes>
-    using SkeletonJoint = sofa::component::constraint::projective::SkeletonJoint<DataTypes>;
-    using SkeletonBone = sofa::component::constraint::projective::SkeletonBone;
-    template<class DataTypes>
-    using SkeletalMotionConstraint = sofa::component::constraint::projective::SkeletalMotionConstraint<DataTypes>;
-
-} // namespace sofa::component::projectiveconstraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/projective/SkeletalMotionConstraint.h")

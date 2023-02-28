@@ -26,7 +26,7 @@
 #if __has_include(<CollisionOBBCapsule/model/OBBModel.inl>)
 #include <CollisionOBBCapsule/model/OBBModel.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/model/OBBModel.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/model/OBBModel.inl")
 
 #else
 #error "OBB and OBB-related contents has been moved to CollisionOBBOBB. Include <CollisionOBBCapsule/model/OBBModel.inl> instead of this one."

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin name="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [MeshClosingEngine] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <DefaultAnimationLoop/>
+    <BackgroundSetting color="1 1 1" />
+    <MeshOBJLoader name="mesh" filename="mesh/c_open.obj" triangulate="0"/>
+    <MeshClosingEngine name="closer" inputPosition="@mesh.position" inputTriangles="@mesh.triangles" inputQuads="@mesh.quads"/>
+
+    <Node name="plain visu of closing area (red)" >
+        <OglModel name="closingVisual"  position="@../closer.closingPosition" triangles="@../closer.closingTriangles" color="1 0.1 0.1 1"/>
+    </Node>
+
+    <Node name="visu of closed mesh (green)" >
+        <OglModel name="closedMesh"  position="@../closer.position" vertices="@../closer.position" triangles="@../closer.triangles" quads="@../closer.quads" color="0.5 1 0.5 1" translation="0 0 4"/>
+    </Node>
+
+    <Node name="visu of original open mesh (wireframe)" >
+        <VisualStyle displayFlags="showVisual showWireframe" />
+        <OglModel name="visual"  src="@../mesh" color="0.5 0.5 1 1" />
+    </Node>
+</Node>

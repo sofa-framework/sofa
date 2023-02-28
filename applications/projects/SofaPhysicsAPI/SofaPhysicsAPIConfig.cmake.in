@@ -6,7 +6,7 @@ set(SOFAPHYSICSAPI_HAVE_SOFAVALIDATION @SOFAPHYSICSAPI_HAVE_SOFAVALIDATION@)
 
 find_package(Sofa.Simulation.Graph QUIET REQUIRED)
 find_package(Sofa.Component QUIET REQUIRED)
-find_package(SofaGui QUIET REQUIRED)
+find_package(Sofa.GUI.Common QUIET REQUIRED)
 
 if(SOFAPHYSICSAPI_HAVE_SOFAVALIDATION)
 	find_package(SofaValidation QUIET REQUIRED)

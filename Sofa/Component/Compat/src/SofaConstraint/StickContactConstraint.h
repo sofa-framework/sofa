@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/collision/response/contact/StickContactConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/StickContactConstraint.h")
-
-namespace sofa::component::collision
-{
-    template <class TCollisionModel1, class TCollisionModel2>
-    using StickContactConstraint = sofa::component::collision::response::contact::StickContactConstraint<TCollisionModel1, TCollisionModel2>;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/StickContactConstraint.h")

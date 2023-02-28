@@ -23,11 +23,4 @@
 
 #include <sofa/component/linearsolver/preconditioner/SSORPreconditioner.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/SSORPreconditioner.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class TMatrix, class TVector, class TThreadManager>
-    using SSORPreconditioner = sofa::component::linearsolver::preconditioner::SSORPreconditioner<TMatrix, TVector, TThreadManager>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/preconditioner/SSORPreconditioner.h")

@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/transform/TransformPosition.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/TransformPosition.h")
-
-namespace sofa::component::engine
-{
-    template < class DataTypes >
-    using TransformPosition = sofa::component::engine::transform::TransformPosition<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/TransformPosition.h")

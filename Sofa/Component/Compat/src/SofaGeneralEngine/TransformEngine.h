@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/transform/TransformEngine.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/TransformEngine.h")
-
-namespace sofa::component::engine
-{
-    template < class DataTypes >
-    using TransformEngine = sofa::component::engine::transform::TransformEngine<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/transform/TransformEngine.h")

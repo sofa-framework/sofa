@@ -1,7 +1,7 @@
 <Node name="Group"> 
   <TriangleSetTopologyContainer  name="Container" src="@" fileTopology="" tags=" " />
   <TriangleSetTopologyModifier   name="Modifier" />
-  <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+  <TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3" />
 </Node>
 <!-- 
      Template List 
@@ -14,5 +14,5 @@
        - Vec1f
 
      Example of use:
-     <include href="Objects/TriangleSetTopology.xml" template="Vec1d" />
+     <include href="Objects/TriangleSetTopology.xml" template="Vec1" />
 -->

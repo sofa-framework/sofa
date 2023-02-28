@@ -60,8 +60,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
-extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<type::Vec1d>;
-extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<type::Vec3d>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<type::Vec1>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API DifferenceEngine<type::Vec3>;
 
 #endif
 

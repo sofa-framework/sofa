@@ -2,7 +2,7 @@
 <Node 	name="Root" dt="0.02"  >
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<LCPConstraintSolver name="lCPConstraintSolver1"  printLog="0"  displayTime="0"  initial_guess="1"  build_lcp="1"  tolerance="1e-010"  maxIt="3000"  mu="0.7"  group="0" />
-	<DefaultPipeline name="defaultPipeline1"  verbose="0"  draw="0"  depth="6" />
+	<CollisionPipeline name="defaultPipeline1"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="Proximity"  alarmDistance="6"  contactDistance="1.5"  angleCone="-0.001"  coneFactor="0.5" />
@@ -14,7 +14,7 @@
 		<EulerImplicitSolver name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />
 		<MechanicalObject template="Rigid3d" name="tool"  position="0 0 0 -0.707107 0 0 0.707107 0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
-		<UniformMass template="Rigid3d" name="uniformMass3"  totalmass="0.01" />
+		<UniformMass template="Rigid3d" name="uniformMass3"  totalMass="0.01" />
 		<RestShapeSpringsForceField template="Rigid3d" name="restShapeSpringsForceField1"  points="0 1"  stiffness="1000 1000"  angularStiffness="10000 10000" />
 		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback7" listening="1" />
 		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection2"  compliance="1e-005 1e-009 0 0 1e-009 0 1e-009" />

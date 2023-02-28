@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/gl/component/engine/TextureInterpolation.inl>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/engine/TextureInterpolation.inl")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/engine/TextureInterpolation.inl")

@@ -27,18 +27,8 @@
 #include <sofa/gl/component/shader/OglRenderingSRGB.h>
 #define SOFAGL_COMPONENT_OGLRENDERINGSRGB
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglRenderingSRGB.h")
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglRenderingSRGB.h")
 
 #else
 #error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglRenderingSRGB.h> instead of this one."
 #endif
-
-#ifdef SOFAGL_COMPONENT_OGLRENDERINGSRGB
-
-namespace sofa::component::visualmodel
-{
-    using OglRenderingSRGB = sofa::gl::component::shader::OglRenderingSRGB;
-
-} // namespace sofa::component::visualmodel
-
-#endif // SOFAGL_COMPONENT_OGLRENDERINGSRGB

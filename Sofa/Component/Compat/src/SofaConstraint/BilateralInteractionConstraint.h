@@ -23,20 +23,4 @@
 
 #include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h")
-
-namespace sofa::component::constraintset::bilateralinteractionconstraint
-{
-    template<class T>
-    using BilateralInteractionConstraintSpecialization = sofa::component::constraint::lagrangian::model::BilateralInteractionConstraintSpecialization<T>;
-    template<class DataTypes>
-    using BilateralInteractionConstraint = sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint<DataTypes>;
-    
-} // namespace sofa::component::constraintset::bilateralinteractionconstraint
-
-namespace sofa::component::constraintset
-{
-    using bilateralinteractionconstraint::BilateralInteractionConstraintSpecialization;
-    using bilateralinteractionconstraint::BilateralInteractionConstraint;
-
-} // namespace sofa::component::constraintset
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h")

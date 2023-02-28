@@ -135,8 +135,6 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
 
     cid.resize(minp);
 
-    const VecDeriv& restVector = this->restVector.getValue();
-
     for (unsigned pid=0; pid<minp; pid++)
     {
         int tm1 = m1Indices[pid];
@@ -221,8 +219,9 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
     const SubsetIndices& m1Indices = m1.getValue();
     const SubsetIndices& m2Indices = m2.getValue();
 
-    const VecCoord &x1 = d_x1.getValue();
-    const VecCoord &x2 = d_x2.getValue();
+    SOFA_UNUSED(d_x1);
+    SOFA_UNUSED(d_x2);
+
     const VecCoord &v1 = d_v1.getValue();
     const VecCoord &v2 = d_v2.getValue();
 
@@ -319,7 +318,7 @@ void BilateralInteractionConstraint<DataTypes>::removeContact(int objectId, Subs
     const SubsetIndices& cIndices1 = m1.getValue();
     const SubsetIndices& cIndices2 = m2.getValue();
 
-    for (int i = 0; i < indices.size(); ++i)
+    for (sofa::Size i = 0; i < indices.size(); ++i)
     {
         const Index elemId = indices[i];
         Index posId = sofa::InvalidID;

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+    <DefaultAnimationLoop/>
+    <Node name="plugins">
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [TrailRenderer, VisualGrid] -->
+    </Node>
+
+    <VisualGrid size="20"/>
+
+    <DefaultAnimationLoop/>
+
+    <EulerExplicitSolver/>
+    <MechanicalObject template="Vec3" name="particle"
+                      position="0 0 0  0 0 0  0 0 0  0 0 0"
+                      velocity="5 5 0  -5 5 0  7 7 0  -7 7 0" showObject="true" showObjectScale="10"/>
+    <UniformMass/>
+    <TrailRenderer template="Vec3" position="@particle.position" nbSteps="200"/>
+</Node>

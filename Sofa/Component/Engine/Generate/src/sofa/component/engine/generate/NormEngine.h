@@ -1,4 +1,4 @@
- 
+
 /******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
@@ -51,15 +51,6 @@ public:
 
     void doUpdate() override;
 
-    /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
-    /// so we need to override that by implementing GetCustomTemplateName() function
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static const std::string GetCustomTemplateName()
-    {
-        return defaulttype::DataTypeInfo<TDataType>::name();
-    }
-
-
 protected:
 
     Data<VecData> d_input; ///< input array of 3d points
@@ -69,7 +60,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
-extern template class SOFA_COMPONENT_ENGINE_GENERATE_API NormEngine<type::Vec3d>;
+extern template class SOFA_COMPONENT_ENGINE_GENERATE_API NormEngine<type::Vec3>;
 
 #endif
 

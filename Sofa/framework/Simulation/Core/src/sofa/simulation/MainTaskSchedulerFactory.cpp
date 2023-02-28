@@ -62,7 +62,12 @@ TaskScheduler* MainTaskSchedulerFactory::createInRegistry(const std::string& nam
 
 TaskScheduler* MainTaskSchedulerFactory::createInRegistry()
 {
-    return createInRegistry(DefaultTaskScheduler::name());
+    return createInRegistry(defaultTaskSchedulerType());
+}
+
+std::string MainTaskSchedulerFactory::defaultTaskSchedulerType()
+{
+    return DefaultTaskScheduler::name();
 }
 
 TaskScheduler* MainTaskSchedulerFactory::instantiate(const std::string& name)

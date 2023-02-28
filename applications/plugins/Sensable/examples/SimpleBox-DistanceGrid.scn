@@ -6,7 +6,7 @@
   <RequiredPlugin name="Sensable Plugin" pluginName="Sensable" />
 
 
-    <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
+    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
   <BruteForceBroadPhase/>
   <BVHNarrowPhase/>
   <DefaultContactManager name="response" response="PenalityContactForceField" />

@@ -11,6 +11,8 @@
     
     <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
     <Gravity name="G" gravity="0.0 -9.81 0" />
+    <DefaultAnimationLoop/>
+
     <Node name="Head">
         <MeshOBJLoader name="meshLoader_2" filename="data/mesh/head.obj" handleSeams="1" />
         <OglModel name="HeadVisualModel" src="@meshLoader_2" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
@@ -26,8 +28,8 @@
     <Node name="Instrument">
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
-        <MechanicalObject name="instrumentState" template="Rigid3d" />
-        <UniformMass name="mass" totalMass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+        <MechanicalObject name="instrumentState" template="Rigid3" />
+        <UniformMass name="mass" filename="BehaviorModels/dental_instrument.rigid" />
         <Node name="VisualModel">
             <MeshOBJLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" handleSeams="1" />
             <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="0.8 0.8 0.8 1.0" dz="-10" />

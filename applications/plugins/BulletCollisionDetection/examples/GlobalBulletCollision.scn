@@ -3,7 +3,7 @@
 	<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
 	<BulletCollisionDetection name="bulletCollisionDetection0" />
 	<VisualStyle name="displayFlags"  displayFlags="showAll" />
-	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
+	<CollisionPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
 	<!-- <DefaultContactManager name="Response"  response="distanceLMConstraint" /> -->
 	<DefaultContactManager name="Response"/>
 	<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>

@@ -4,8 +4,8 @@ project(Sofa) # Cannot use VERSION with patch like "00"
 include(CMakeDependentOption)
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 22)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 23)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -174,9 +174,6 @@ sofa_add_subdirectory(library Sofa/Component/Compat Sofa.Component.Compat ON WHE
 
 ### SOFA (framework and components)
 add_subdirectory(Sofa)
-
-# SofaGui is still used by runSofa, and therefore needs to be compiled in any case.
-sofa_add_subdirectory(collection applications/collections/deprecated/SofaGui SofaGui ON)
 
 ### Compatibility
 # Deprecated (hollow) framework and component modules.

@@ -23,11 +23,4 @@
 
 #include <sofa/component/engine/select/MeshROI.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/MeshROI.h")
-
-namespace sofa::component::engine
-{
-    template<class DataTypes>
-    using MeshROI = sofa::component::engine::select::MeshROI<DataTypes>;
-
-} // namespace sofa::component::engine
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/engine/select/MeshROI.h")

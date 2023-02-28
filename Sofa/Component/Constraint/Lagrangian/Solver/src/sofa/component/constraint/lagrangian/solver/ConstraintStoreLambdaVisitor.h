@@ -22,4 +22,4 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 
-SOFA_DEPRECATED_HEADER("v22.12", "v23.06", "sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h")
+SOFA_DISABLED_HEADER("v22.12", "v23.06", "sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h")

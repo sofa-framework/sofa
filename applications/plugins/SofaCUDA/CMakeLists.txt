@@ -10,6 +10,8 @@ if(NOT WIN32)
     set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 endif()
 
+set(SOFACUDA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/SofaCUDA")
+
 set(HEADER_FILES
     config.h.in
     
@@ -24,6 +26,7 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMemoryManager.h
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
+    sofa/gpu/cuda/CudaTexture.h
     sofa/gpu/cuda/CudaTypes.h
     sofa/gpu/cuda/mycuda.h
 
@@ -34,39 +37,39 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaParticleSource.inl
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping.h
-    sofa/gpu/cuda/CudaBarycentricMapping.inl
-    sofa/gpu/cuda/CudaBarycentricMappingRigid.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.h
     sofa/gpu/cuda/CudaIdentityMapping.h
     sofa/gpu/cuda/CudaIdentityMapping.inl
-    sofa/gpu/cuda/CudaRigidMapping.h
-    sofa/gpu/cuda/CudaRigidMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
     sofa/gpu/cuda/CudaSubsetMapping.h
     sofa/gpu/cuda/CudaSubsetMapping.inl
 
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.h
-    sofa/gpu/cuda/CudaDiagonalMass.inl
-    sofa/gpu/cuda/CudaMeshMatrixMass.h
-    sofa/gpu/cuda/CudaMeshMatrixMass.inl
-    sofa/gpu/cuda/CudaUniformMass.h
-    sofa/gpu/cuda/CudaUniformMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.h
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.inl
     
 
     ### FEM
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.h
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.inl
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl
 
     ### ForceFields
     sofa/gpu/cuda/CudaEllipsoidForceField.h
@@ -110,33 +113,33 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSetTopology.cpp
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-d.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping.cpp
-    sofa/gpu/cuda/CudaBarycentricMappingRigid.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-3f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-d.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1-f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f1.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-f.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.cpp
     sofa/gpu/cuda/CudaIdentityMapping.cpp
     sofa/gpu/cuda/CudaMultiMapping.cpp
-    sofa/gpu/cuda/CudaRigidMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
     sofa/gpu/cuda/CudaSubsetMapping.cpp
     sofa/gpu/cuda/CudaSubsetMultiMapping.cpp
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.cpp
-    sofa/gpu/cuda/CudaMeshMatrixMass.cpp
-    sofa/gpu/cuda/CudaUniformMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cpp
 
     ### FEM
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cpp
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
     sofa/gpu/cuda/CudaConstantForceField.cpp
@@ -163,7 +166,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaLinearMovementConstraint.cpp
     sofa/gpu/cuda/CudaLinearVelocityConstraint.cpp
 
-    sofa/gpu/cuda/CudaBeamLinearMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.cpp
     sofa/gpu/cuda/CudaBoxROI.cpp
     sofa/gpu/cuda/CudaNearestPointROI.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
@@ -187,23 +190,23 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaMechanicalObject.cu
 
     ### Mappings
-    sofa/gpu/cuda/CudaBarycentricMapping.cu
-    sofa/gpu/cuda/CudaRigidMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cu
     sofa/gpu/cuda/CudaSubsetMapping.cu
 
     ### Mass
-    sofa/gpu/cuda/CudaDiagonalMass.cu
-    sofa/gpu/cuda/CudaMeshMatrixMass.cu
-    sofa/gpu/cuda/CudaUniformMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaMeshMatrixMass.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mass/CudaUniformMass.cu
 
     ### FEM
-    sofa/gpu/cuda/CudaHexahedronFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cu
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.cu
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cu
 
     ### ForceFields
     sofa/gpu/cuda/CudaEllipsoidForceField.cu
@@ -236,6 +239,37 @@ else()
     )
     list(APPEND CUDA_SOURCES
         sofa/gpu/cuda/CudaVisualModel.cu
+    )
+endif()
+
+#Compatibility
+if(SOFA_ENABLE_LEGACY_HEADERS)
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaBarycentricMapping.h
+        sofa/gpu/cuda/CudaBarycentricMapping.inl
+        sofa/gpu/cuda/CudaBarycentricMappingRigid.h
+        sofa/gpu/cuda/CudaRigidMapping.h
+        sofa/gpu/cuda/CudaRigidMapping.inl
+
+        sofa/gpu/cuda/CudaDiagonalMass.h
+        sofa/gpu/cuda/CudaDiagonalMass.inl
+
+        sofa/gpu/cuda/CudaMeshMatrixMass.h
+        sofa/gpu/cuda/CudaMeshMatrixMass.inl
+
+        sofa/gpu/cuda/CudaUniformMass.h
+        sofa/gpu/cuda/CudaUniformMass.inl
+
+        sofa/gpu/cuda/CudaHexahedronFEMForceField.h
+        sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
+        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
+        sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
+        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
+        sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
+        sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
+        sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
+        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
+        sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
     )
 endif()
 
@@ -397,11 +431,12 @@ add_definitions("-DSOFA_BUILD_SOFACUDA")
 # Give include directories to nvcc compiler.
 # Note: keep cuda_include_directories() before cuda_add_library().
 cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/src>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
 target_link_libraries(${PROJECT_NAME}
     Sofa.Component.Mass

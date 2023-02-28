@@ -23,11 +23,4 @@
 
 #include <sofa/component/linearsolver/direct/SparseLDLSolverImpl.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseLDLSolverImpl.h")
-
-namespace sofa::component::linearsolver
-{
-	template<class VecInt,class VecReal>
-    using SparseLDLImplInvertData = sofa::component::linearsolver::direct::SparseLDLImplInvertData<VecInt, VecReal>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SparseLDLSolverImpl.h")

@@ -23,10 +23,4 @@
 
 #include <sofa/component/collision/detection/intersection/TetrahedronDiscreteIntersection.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/TetrahedronDiscreteIntersection.h")
-
-namespace sofa::component::collision
-{
-    using TetrahedronDiscreteIntersection = sofa::component::collision::detection::intersection::TetrahedronDiscreteIntersection;
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/collision/detection/intersection/TetrahedronDiscreteIntersection.h")

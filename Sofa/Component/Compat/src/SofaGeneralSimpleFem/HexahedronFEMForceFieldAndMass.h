@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using HexahedronFEMForceFieldAndMass = sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceFieldAndMass<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.h")

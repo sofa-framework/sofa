@@ -44,7 +44,7 @@ using sofa::type::vector;
 template < sofa::Size N, typename ValueType>
 void resetVecTypeVec(vector<Vec<N, ValueType> >& vec)
 {
-    std::memset(vec.data(), 0, sizeof(ValueType) * N * vec.size());
+    std::memset(static_cast<void*>(vec.data()), 0, sizeof(ValueType) * N * vec.size());
 }
 
 template <>

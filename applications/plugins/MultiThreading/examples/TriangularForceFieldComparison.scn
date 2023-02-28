@@ -1,7 +1,7 @@
 <!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
 <Node name="root" gravity="0 -9 1" dt="0.01">
     <RequiredPlugin name="MultiThreading"/> <!-- Needed to use components [DataExchange] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase DefaultPipeline] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BVHNarrowPhase BruteForceBroadPhase CollisionPipeline] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [MinProximityIntersection] -->
     <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
@@ -17,21 +17,19 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
 
-  <AnimationLoopParallelScheduler name="mainLoop" threadNumber="0" />
+  <AnimationLoopParallelScheduler name="mainLoop" nbThreads="0" />
 
 
   <Node name="TriangularBendingSpringsScene">
     <DefaultAnimationLoop name="TriangularBendingSpringsScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <DefaultPipeline name="default1" verbose="0" />
+    <CollisionPipeline name="default1" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager  name="default2" />
 
     <Node name="TriangularBendingSprings">
       <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -57,12 +55,12 @@
   <Node name="TriangularBiquadraticScene">
     <DefaultAnimationLoop name="TriangularBiquadraticScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <DefaultPipeline name="default2" verbose="0" />
+    <CollisionPipeline name="default2" verbose="0" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager  name="default2" />
     
     <Node name="TriangularBiquadratic">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
@@ -86,12 +84,12 @@
   <Node name="TriangularQuadraticScene">
     <DefaultAnimationLoop name="TriangularQuadraticScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <DefaultPipeline name="default3" verbose="0" />
+    <CollisionPipeline name="default3" verbose="0" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager  name="default2" />
 
     <Node name="TriangularQuadratic">
       <EulerImplicitSolver name="cg_odesolver" printLog="false" />
@@ -115,12 +113,12 @@
   <Node name="TriangularFEMScene">
     <DefaultAnimationLoop name="TriangularFEMScene" />
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
-    <DefaultPipeline name="default4" verbose="0" />
+    <CollisionPipeline name="default4" verbose="0" />
+    <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DefaultContactManager name="default1" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <DefaultCollisionGroupManager  name="default2" />
     
     <Node name="TriangularFEM">
         <EulerImplicitSolver name="cg_odesolver" printLog="false" />
@@ -141,9 +139,9 @@
       </Node>
   </Node>
 
-  <DataExchange name="exchangeData1" template="vector<int>" from="@TriangularBendingSpringsScene/TriangularBendingSprings/fixedContraints.indices" to="@TriangularFEMScene/TriangularFEM/fixedContraints.indices" />
-  <DataExchange name="exchangeData2" template="vector<int>" from="@TriangularFEMScene/TriangularFEM/fixedContraints.indices" to="@TriangularBiquadraticScene/TriangularBiquadratic/fixedContraints.indices" />
-  <DataExchange name="exchangeData3" template="vector<int>" from="@TriangularBiquadraticScene/TriangularBiquadratic/fixedContraints.indices" to="@TriangularQuadraticScene/TriangularQuadratic/fixedContraints.indices" />
+  <DataExchange name="exchangeData1" template="vector<i>" from="@TriangularBendingSpringsScene/TriangularBendingSprings/fixedContraints.indices" to="@TriangularFEMScene/TriangularFEM/fixedContraints.indices" />
+  <DataExchange name="exchangeData2" template="vector<i>" from="@TriangularFEMScene/TriangularFEM/fixedContraints.indices" to="@TriangularBiquadraticScene/TriangularBiquadratic/fixedContraints.indices" />
+  <DataExchange name="exchangeData3" template="vector<i>" from="@TriangularBiquadraticScene/TriangularBiquadratic/fixedContraints.indices" to="@TriangularQuadraticScene/TriangularQuadratic/fixedContraints.indices" />
 
 
 

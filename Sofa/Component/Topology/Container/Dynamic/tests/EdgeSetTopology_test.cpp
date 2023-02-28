@@ -239,12 +239,12 @@ bool EdgeSetTopology_test::testRemovingVertices()
     // Check edge around point to be removed
     sofa::type::vector< EdgeID > vIds = { 0, 1, 2 };
     const EdgesAroundVertex& edgeAVertex = m_topoCon->getEdgesAroundVertex(0);
-    auto nbrE = edgeAVertex.size();
 
     edgeModifier->removePoints(vIds);
 
     EXPECT_EQ(m_topoCon->getNbPoints(), nbrVertex - vIds.size());
     // TODO epernod 2022-08-24: Edge are not deleted when removing vertices. This might create errors.
+    //auto nbrE = edgeAVertex.size();
     //EXPECT_EQ(m_topoCon->getNbEdges(), nbrEdge - nbrE); 
 
     return true;

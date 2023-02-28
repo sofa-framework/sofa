@@ -22,11 +22,4 @@
 #pragma once
 #include <sofa/component/visual/VisualModelImpl.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualModelImpl.h")
-
-namespace sofa::component::visualmodel
-{
-    using Vec3State = sofa::component::visual::Vec3State;
-    using VisualModelImpl = sofa::component::visual::VisualModelImpl;
-
-} // namespace sofa::component::visual
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualModelImpl.h")

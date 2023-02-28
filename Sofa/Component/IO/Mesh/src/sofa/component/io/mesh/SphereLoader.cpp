@@ -129,8 +129,6 @@ bool SphereLoader::load()
         return false;
     }
 
-    int totalNumSpheres=0;
-
     // Check first line
     if (fgets(cmd, 7, file) == nullptr || !strcmp(cmd,SPH_FORMAT))
     {
@@ -159,7 +157,6 @@ bool SphereLoader::load()
                 msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
             my_positions.push_back(Vec3((SReal)cx,(SReal)cy,(SReal)cz));
             my_radius.push_back((SReal)r);
-            ++totalNumSpheres;
         }
         else if (cmd[0]=='#')
         {

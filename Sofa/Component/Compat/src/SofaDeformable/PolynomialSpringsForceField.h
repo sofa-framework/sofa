@@ -23,11 +23,4 @@
 
 #include <sofa/component/solidmechanics/spring/PolynomialSpringsForceField.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/PolynomialSpringsForceField.h")
-
-namespace sofa::component::forcefield
-{
-    template<class DataTypes>
-    using PolynomialSpringsForceField = sofa::component::solidmechanics::spring::PolynomialSpringsForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+SOFA_DISABLED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/PolynomialSpringsForceField.h")
