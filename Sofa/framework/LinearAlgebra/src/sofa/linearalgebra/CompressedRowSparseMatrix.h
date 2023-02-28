@@ -23,7 +23,6 @@
 * Contributors:
 *   - InSimo
 *******************************************************************************/
-
 #pragma once
 
 #include <sofa/linearalgebra/config.h>
@@ -36,33 +35,8 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrixTraceLogger.h>
 #include <algorithm>
 
-namespace // anonymous
-{
-    // Boiler-plate code to test if a type implements a method
-    // explanation https://stackoverflow.com/a/30848101
-
-    template <typename...>
-    using void_t = void;
-
-    // Primary template handles all types not supporting the operation.
-    template <typename, template <typename> class, typename = void_t<>>
-    struct detectMatrix : std::false_type {};
-
-    // Specialization recognizes/validates only types supporting the archetype.
-    template <typename T, template <typename> class Op>
-    struct detectMatrix<T, Op, void_t<Op<T>>> : std::true_type {};
-
-    // Actual test if T implements transposed() (hence is a type::Mat)
-    template <typename T>
-    using isMatrix_t = decltype(std::declval<T>().transposed());
-
-    template <typename T>
-    using isMatrix = detectMatrix<T, isMatrix_t>;
-} // anonymous
-
 namespace sofa::linearalgebra
 {
-
 #ifdef SOFA_CRS_POLICY_CHECK
 #define SOFA_CRS_POLICY_CHECK_FLAG true
 #else
@@ -95,7 +69,7 @@ template<class Block>
 struct CRSBlockTraits
 {
     using VecBlock  = sofa::type::vector<Block>;
-    using VecIndex = sofa::type::vector<BaseMatrix::Index>;
+    using VecIndex = sofa::type::vector<sofa::SignedIndex>;
     using VecFlag  = sofa::type::vector<bool>;
 };
 
@@ -133,14 +107,14 @@ public:
 };
 
 template<typename TBlock, typename TPolicy = CRSDefaultPolicy>
-class CompressedRowSparseMatrix : public TPolicy, public BaseMatrix
+class CompressedRowSparseMatrix : public TPolicy
 {
 public:
     typedef CompressedRowSparseMatrix<TBlock,TPolicy> Matrix;
 
     typedef TBlock Block;
     typedef TPolicy Policy;
-    typedef matrix_bloc_traits<Block, BaseMatrix::Index> traits;
+    typedef matrix_bloc_traits<Block, sofa::SignedIndex> traits;
     typedef typename traits::BlockTranspose BlockTranspose;
     typedef typename traits::Real Real;
 
@@ -155,7 +129,7 @@ public:
     using VecBlock  = typename CRSBlockTraits<Block>::VecBlock;
     using VecIndex = typename CRSBlockTraits<Block>::VecIndex;
     using VecFlag  = typename CRSBlockTraits<Block>::VecFlag;
-    typedef BaseMatrix::Index Index;
+    typedef typename VecIndex::value_type Index;
 
     typedef sofa::type::Vec<NC,Real> DBlock;
 
@@ -240,7 +214,7 @@ public:
 
     static bool sortedFind(const VecIndex& v, Index val, Index& result)
     {
-        return sortedFind(v, Range(0, Index(v.size())), val, result);
+        return sortedFind(v, Range(0, v.size()), val, result);
     }
 
 public :
@@ -265,15 +239,15 @@ public :
     VecIndex oldRowIndex;
     VecIndex oldRowBegin;
     VecIndex oldColsIndex;
-    VecBlock oldColsValue;
+    VecBlock  oldColsValue;
 
     CompressedRowSparseMatrix()
         : nBlockRow(0), nBlockCol(0), skipCompressZero(true)
     {
     }
 
-    CompressedRowSparseMatrix(Index nbBlocRow, Index nbBlocCol)
-        : nBlockRow(nbBlocRow), nBlockCol(nbBlocCol)
+    CompressedRowSparseMatrix(Index nbBlockRow, Index nbBlockCol)
+        : nBlockRow(nbBlockRow), nBlockCol(nbBlockCol)
         , skipCompressZero(true)
     {
     }
@@ -317,17 +291,9 @@ public :
             colsValue.clear();
             skipCompressZero = true;
             btemp.clear();
-            this->compress();
             if constexpr (Policy::StoreTouchFlags) touchedBlock.clear();
-            if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << ": resizeBlock(" << nbBRow << "," << nbBCol << ")";
+            if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name()  << ": resizeBlock("<<nbBRow<<","<<nbBCol<<")";
         }
-    }
-
-
-    SOFA_ATTRIBUTE_DEPRECATED__CRS_BLOCK_RENAMING()
-    void resizeBloc(Index nbBRow, Index nbBCol)
-    {
-        resizeBlock(nbBRow, nbBCol);
     }
 
 protected:
@@ -501,7 +467,7 @@ protected:
             {
                 if constexpr(Policy::AutoSize)
                 {
-                    // scan again each row to update nbBlocCol
+                    // scan again each row to update nbBlockCol
                     nBlockCol = getMaxColIndex()+1;
                 }
             }
@@ -511,7 +477,7 @@ protected:
 
 public:
 
-    void compress() override
+    void compress()
     {
         if (skipCompressZero && btemp.empty())
         {
@@ -543,11 +509,11 @@ protected:
     **/
     void compressBtemp()
     {
-        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): sort " << btemp.size() << " temp blocks.";
+        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): sort "<<btemp.size()<<" temp blocks.";
 
         std::sort(btemp.begin(), btemp.end());
 
-        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): blocks sorted.";
+        if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): blocks sorted.";
 
         /// In This case, matrix is empty, as btemp is sorted just need to fill triplet arrays with btemp
         if (rowIndex.empty())
@@ -583,18 +549,18 @@ protected:
         /// Info about old matrix
         Index oldRowIndexCount = 0;
         Index curentOldRowID = oldRowIndex[oldRowIndexCount];
-        Index oldNbRow  = Index(oldRowIndex.size());
+        Index oldNbRow  = oldRowIndex.size();
         Index oldMaxRowID = oldRowIndex.back();
 
         Index rowBeginCount = 0;
-        constexpr Index maxRowID = std::numeric_limits<Index>::max();
-        constexpr Index maxColID = std::numeric_limits<Index>::max();
+        Index maxRowID = std::numeric_limits<Index>::max();
+        Index maxColID = std::numeric_limits<Index>::max();
 
         Index maxRegisteredColID = 0;
 
         while (itbtemp != endbtemp || curentOldRowID <= oldMaxRowID)
         {
-            if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): oldMaxRowID = " << oldMaxRowID << " , curentBtempRowID = " << curentBtempRowID;
+            if constexpr (Policy::Verbose) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "("<<rowBSize()<<","<<colBSize()<<"): oldMaxRowID = "<<oldMaxRowID<<" , curentBtempRowID = "<<curentBtempRowID<<"";
 
             if (curentOldRowID < curentBtempRowID) /// In this case, we only add old line
             {
@@ -854,11 +820,11 @@ public:
     /// to call again with -1 as base to undo it.
     void shiftIndices(Index base)
     {
-        for (Index i=0; i< Index(rowIndex.size()); ++i)
+        for (Index i=0; i<(Index)rowIndex.size(); ++i)
             rowIndex[i] += base;
-        for (Index i=0; i< Index(rowBegin.size()); ++i)
+        for (Index i=0; i<(Index)rowBegin.size(); ++i)
             rowBegin[i] += base;
-        for (Index i=0; i< Index(colsIndex.size()); ++i)
+        for (Index i=0; i<(Index)colsIndex.size(); ++i)
             colsIndex[i] += base;
     }
 
@@ -876,7 +842,7 @@ protected:
         {
             if (i >= rowBSize() || j >= colBSize())
             {
-                msg_error("CompressedRowSparseMatrix") << "invalid read access to block(" << i << ", " << j << ") in " << this->Name() << " of block size(" << rowBSize() << ", " << colBSize() << ")";
+                msg_error("CompressedRowSparseMatrix") << "invalid read access to block ("<<i<<","<<j<<") in "<< this->Name() <<" of block size ("<<rowBSize()<<","<<colBSize()<<")";
                 return empty;
             }
         }
@@ -889,11 +855,11 @@ protected:
         if constexpr (Policy::AutoSize) if (j > nBlockCol) return empty; /// Matrix is auto sized so requested column could not exist
 
         Index rowId = 0;
-        if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1); /// Optimization to avoid do a find when looking for the last line registred
+        if (i == rowIndex.back()) rowId = rowIndex.size() - 1; /// Optimization to avoid do a find when looking for the last line registred
         else if (i == rowIndex.front()) rowId = 0;             /// Optimization to avoid do a find when looking for the first line registred
         else
         {
-            rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
+            rowId = (nBlockRow == 0) ? 0 : i * rowIndex.size() / nBlockRow;
             if (!sortedFind(rowIndex, i, rowId)) return empty;
         }
 
@@ -910,7 +876,6 @@ protected:
         return colsValue[colId];
     }
 
-public:
     /**
     * \brief Write block method
     * @param Line index i and column index j
@@ -923,7 +888,7 @@ public:
         {
             if (!create && (i >= rowBSize() || j >= colBSize()))
             {
-                msg_error("CompressedRowSparseMatrix") << "invalid write access to block(" << i << ", " << j << ") in " << this->Name() << " of block size(" << rowBSize() << ", " << colBSize() << ")";
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to block ("<<i<<","<<j<<") in "<< this->Name() <<" of block size ("<<rowBSize()<<","<<colBSize()<<")";
                 return nullptr;
             }
         }
@@ -1005,7 +970,7 @@ public:
         }
         else
         {
-            Index rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
+            Index rowId = (nBlockRow == 0) ? 0 : i * rowIndex.size() / nBlockRow;
             if (sortedFind(rowIndex, i, rowId))
             {
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -1029,12 +994,6 @@ public:
         }
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__CRS_BLOCK_RENAMING()
-    Block* wbloc(Index i, Index j, bool create = false)
-    {
-        return wblock(i, j, create);
-    }
-
     /**
     * \brief Write block method when rowId and colId are known, this is an optimized wblock specification
     * @param Line index i and column index j
@@ -1049,7 +1008,7 @@ public:
         {
             if (!create && (i >= rowBSize() || j >= colBSize()))
             {
-                msg_error("CompressedRowSparseMatrix") << "invalid write access to block(" << i << ", " << j << ") in " << this->Name() << " of block size(" << rowBSize() << ", " << colBSize() << ")";
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to block ("<<i<<","<<j<<") in "<< this->Name() <<" of block size ("<<rowBSize()<<","<<colBSize()<<")";
                 return nullptr;
             }
         }
@@ -1057,7 +1016,7 @@ public:
         bool rowFound = true;
         if (rowId < 0 || rowId >= static_cast<Index>(rowIndex.size()) || rowIndex[rowId] != i)
         {
-            rowId = Index(i * rowIndex.size() / nBlockRow);
+            rowId = i * rowIndex.size() / nBlockRow;
             rowFound = sortedFind(rowIndex, i, rowId);
         }
         if (rowFound)
@@ -1086,6 +1045,8 @@ public:
         }
         return nullptr;
     }
+
+public:
 
     const Block& getBlock(Index i, Index j) const
     {
@@ -1141,8 +1102,8 @@ public:
         if constexpr (Policy::LogTrace) logCall(FnEnum::clearRowBlock, i);
         if constexpr (Policy::Verbose)
         {
-            if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): row(" << i << ") = 0";
-            else dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): row(" << i << ") cleared";
+            if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): row("<<i<<") = 0";
+            else dmsg_info("CompressedRowSparseMatrix") << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): row("<<i<<") cleared";
         }
         if constexpr (Policy::Check)
         {
@@ -1160,11 +1121,11 @@ public:
         }
 
         Index rowId = 0;
-        if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1);      /// Optimization to avoid do a find when looking for the last line registred
+        if (i == rowIndex.back()) rowId = rowIndex.size() - 1;      /// Optimization to avoid do a find when looking for the last line registred
         else if (i == rowIndex.front()) rowId = 0;                  /// Optimization to avoid do a find when looking for the first line registred
         else
         {
-            rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
+            rowId = (nBlockRow == 0) ? 0 : i * rowIndex.size() / nBlockRow;
             if (!sortedFind(rowIndex, i, rowId)) return;
         }
 
@@ -1183,14 +1144,14 @@ public:
         if constexpr (Policy::LogTrace) logCall(FnEnum::clearColBlock, j);
         if constexpr (Policy::Verbose)
         {
-            if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): col(" << j << ") = 0";
-            else dmsg_info("CompressedRowSparseMatrix") << this->Name() << "(" << rowBSize() << "," << colBSize() << "): col(" << j << ") cleared";
+            if constexpr (Policy::ClearByZeros) dmsg_info("CompressedRowSparseMatrix") << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): col("<<j<<") = 0";
+            else dmsg_info("CompressedRowSparseMatrix") << this->Name()  << "("<<rowBSize()<<","<<colBSize()<<"): col("<<j<<") cleared";
         }
         if constexpr (Policy::Check)
         {
             if (j >= colBSize())
             {
-                msg_error("CompressedRowSparseMatrix") << "invalid write access to col " << j << " in " << this->Name() << " of size(" << rowBSize() << ", " << colBSize() << ")";
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to col "<<j<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")";
                 return;
             }
         }
@@ -1273,7 +1234,7 @@ public:
         {
             if (i >= rowBSize() || i >= colBSize())
             {
-                msg_error("CompressedRowSparseMatrix") << "invalid write access to row and column " << i << " in " << this->Name() << " of size (" << rowBSize() << "," << colBSize() << ")";
+                msg_error("CompressedRowSparseMatrix") << "invalid write access to row and column "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")";
                 return;
             }
         }
@@ -1303,7 +1264,7 @@ public:
 
         if (!foundRowId && !foundColId)
         {
-            msg_error("CompressedRowSparseMatrix") << "invalid write access to row and column " << i << " in " << this->Name() << " of size (" << rowBSize() << "," << colBSize() << ")";
+            msg_error("CompressedRowSparseMatrix") << "invalid write access to row and column "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")";
             return;
         }
 
@@ -1315,7 +1276,7 @@ public:
     * \brief Completely clear the matrix
     * \warning if ClearByZeros Policy is activated all value in colsValue will be set to zero using default constructor
     **/
-    void clear() override
+    void clear()
     {
         if constexpr (Policy::LogTrace) logCall(FnEnum::clear);
         if constexpr (Policy::ClearByZeros)
@@ -1337,12 +1298,23 @@ public:
         }
 
         btemp.clear();
-        compress();
     }
 
 
-/// @name BlocMatrixWriter operators
+/// @name BlockMatrixWriter operators
 /// @{
+
+    void add(unsigned int bi, unsigned int bj, const Block& b)
+    {
+        if constexpr (Policy::LogTrace) logCall(FnEnum::add, bi, bj, b);
+        addBlock(bi, bj, b);
+    }
+
+    void add(unsigned int bi, unsigned int bj, int& rowId, int& colId, const Block& b)
+    {
+        if constexpr (Policy::LogTrace) logCall(FnEnum::addId, bi, bj, rowId, colId, b);
+        addBlock(bi, bj, rowId, colId, b);
+    }
 
     void addDBlock(unsigned int bi, unsigned int bj, const DBlock& b)
     {
@@ -1480,8 +1452,8 @@ public:
 /// @{
 
     /// Transpose the matrix into res, works only for 3 array variant ("full rows") matrices, ie which can be expressed using the rowBegin, colsIndex and colsValue arrays solely
-    template<typename TBloc2, typename TPolicy2>
-    void transposeFullRows(CompressedRowSparseMatrix<TBloc2, TPolicy2>& res) const
+    template<typename TBlock2, typename TPolicy2>
+    void transposeFullRows(CompressedRowSparseMatrix<TBlock2, TPolicy2>& res) const
     {
         res.nBlockCol = nBlockRow;
         res.nBlockRow = nBlockCol;
@@ -1538,19 +1510,6 @@ public:
         }
     }
 
-    /** @returns this + m
-      @warning The block must be the same (same type and same size)
-      @warning The matrices must have the same mathematical size
-      @warning matrices this and m must be compressed
-      */
-    CompressedRowSparseMatrix<TBlock,TPolicy> operator+( const CompressedRowSparseMatrix<TBlock,TPolicy>& m ) const
-    {
-        CompressedRowSparseMatrix<TBlock,TPolicy> res = *this;
-        res += m;
-        return res;
-    }
-    /// @}
-
     /** Compute res = this * m
       @warning The block sizes must be compatible, i.e. this::NC==m::NR and res::NR==this::NR and res::NC==m::NC.
       The basic algorithm consists in accumulating rows of m to rows of res: foreach row { foreach col { res[row] += this[row,col] * m[col] } }
@@ -1559,12 +1518,9 @@ public:
     template<typename RB, typename RP, typename MB, typename MP >
     void mul( CompressedRowSparseMatrix<RB,RP>& res, const CompressedRowSparseMatrix<MB,MP>& m ) const
     {
-        if constexpr (!std::is_arithmetic_v<Block> && !std::is_arithmetic_v<RB> && !std::is_arithmetic_v<MB>)
-        {
-            assert(Block::nbCols == MB::nbLines);
-            assert(RB::nbLines == Block::nbLines);
-            assert(MB::nbCols == RB::nbCols);
-        }
+        assert( Block::nbCols == MB::nbLines );
+        assert( RB::nbLines == Block::nbLines );
+        assert( MB::nbCols == RB::nbCols );
 
         assert( colBSize() == m.rowBSize() );
 
@@ -1578,7 +1534,7 @@ public:
 
         if( m.rowIndex.empty() ) return; // if m is null
 
-        for( Index xi = 0; xi < Index(rowIndex.size()); ++xi )  // for each non-null block row
+        for( Index xi = 0; xi < rowIndex.size(); ++xi )  // for each non-null block row
         {
             unsigned mr = 0; // block row index in m
 
@@ -1605,18 +1561,7 @@ public:
         }
         res.compress();
     }
-    
-    static auto blocMultTranspose(const Block& blockA, const Block& blockB)
-    {
-        if constexpr(isMatrix<Block>())
-        {
-            return blockA.multTranspose(blockB);
-        }
-        else
-        {
-            return blockA * blockB;
-        }
-    }
+
 
     /** Compute res = this.transpose * m
       @warning The block sizes must be compatible, i.e. this::NR==m::NR and res::NR==this::NC and res::NC==m::NC
@@ -1626,12 +1571,9 @@ public:
     template<typename RB, typename RP, typename MB, typename MP >
     void mulTranspose( CompressedRowSparseMatrix<RB,RP>& res, const CompressedRowSparseMatrix<MB,MP>& m ) const
     {
-        if constexpr (!std::is_arithmetic_v<Block> && !std::is_arithmetic_v<RB> && !std::is_arithmetic_v<MB>)
-        {
-            assert(Block::nbLines == MB::nbLines);
-            assert(RB::nbLines == Block::nbCols);
-            assert(MB::nbCols == RB::nbCols);
-        }
+        assert( Block::nbLines == MB::nbLines );
+        assert( RB::nbLines == Block::nbCols );
+        assert( MB::nbCols == RB::nbCols );
 
         assert( rowBSize() == m.rowBSize() );
 
@@ -1667,8 +1609,7 @@ public:
                 for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
                 {
                     Index mcol = m.colsIndex[mj];     // column index of the non-null block
-                    //*res.wblock(row,mcol,true) += b.multTranspose( m.colsValue[mj] );  // find the matching block in res, and accumulate the block product
-                    *res.wblock(row, mcol, true) += blocMultTranspose(b, m.colsValue[mj]);  // find the matching block in res, and accumulate the block product
+                    *res.wblock(row,mcol,true) += b.multTranspose( m.colsValue[mj] );  // find the matching block in res, and accumulate the block product
                 }
             }
         }
@@ -1686,7 +1627,7 @@ public:
     bool check_matrix()
     {
         return check_matrix(
-                Index(this->getColsValue().size()),
+                this->getColsValue().size(),
                 this->rowBSize(),
                 this->colBSize(),
                 static_cast<Index*> (&(rowBegin[0])),
@@ -1715,7 +1656,7 @@ public:
         {
             if (a_p[i]<=a_p[i-1])
             {
-                msg_error("CompressedRowSparseMatrix") << "Row (a_p) indices are not sorted index " << i - 1 << " : " << a_p[i - 1] << " , " << i << " : " << a_p[i];
+                msg_error("CompressedRowSparseMatrix") << "Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i];
                 return false;
             }
         }
@@ -1738,7 +1679,7 @@ public:
             {
                 if (a_i[i] <= a_i[i-1])
                 {
-                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not sorted index " << i - 1 << " : " << a_i[i - 1] << " , " << i << " : " << a_p[i];
+                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i];
                     return false;
                 }
                 if (a_i[i]<0 || a_i[i]>=n)
@@ -1754,7 +1695,7 @@ public:
         {
             if (traits::empty(a_x[i]))
             {
-                msg_warning("CompressedRowSparseMatrix") << "Warning, matrix contains empty block at index " << i;
+                msg_error("CompressedRowSparseMatrix") << "Warning, matrix contains empty block at index " << i;
                 return false;
             }
         }
@@ -1765,13 +1706,13 @@ public:
             return false;
         }
 
-        msg_info("CompressedRowSparseMatrix") << "Check_matrix passed successfully";
+        msg_error("CompressedRowSparseMatrix") << "Check_matrix passed successfully";
         return true;
     }
 
     void setTraceWriter(CRSTraceWriter<Matrix>* matrixTraceWriter)
     {
-        if constexpr (!Policy::LogTrace) msg_error("CompressedRowSparseMatrix") << "You need to activate LogTrace Policy to be able to trace matrix.";
+        if constexpr (!Policy::LogTrace) msg_error("CompressedRowSparseMatrix") << " : You need to activate LogTrace Policy to be able to trace matrix.";
         else
         {
             m_traceWriter = matrixTraceWriter;
@@ -1785,10 +1726,10 @@ public:
 
     std::ostream& write(std::ostream& os) const
     {
-        os << rowIndex << "\n";
-        os << rowBegin << "\n";
-        os << colsIndex << "\n";
-        os << colsValue << "\n";
+        os << rowIndex;
+        os << rowBegin;
+        os << colsIndex;
+        os << colsValue;
 
         return os;
     }
@@ -1835,7 +1776,7 @@ protected:
     {
         for (auto& v : vec)
             os <<v<<";";
-        os<<"\n";
+        os;
     }
 
     template<typename TVec>
@@ -1847,484 +1788,6 @@ protected:
             vec.push_back(std::stoi(temp));
         }
     }
-
-    static void split_row_index(BaseMatrix::Index& index, BaseMatrix::Index& modulo) { bloc_index_func<NL, BaseMatrix::Index>::split(index, modulo); }
-    static void split_col_index(BaseMatrix::Index& index, BaseMatrix::Index& modulo) { bloc_index_func<NC, BaseMatrix::Index>::split(index, modulo); }
-public:
-    BaseMatrix::Index rowSize(void) const override { return nBlockRow * NL; }
-    BaseMatrix::Index colSize(void) const override { return nBlockCol * NC; }
-    SReal element(BaseMatrix::Index i, BaseMatrix::Index j) const override
-    {
-        BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
-        ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
-        return (SReal)traits::v(block(i, j), bi, bj);
-    }
-    void resize(BaseMatrix::Index nbRow, BaseMatrix::Index nbCol) override
-    {
-        resizeBlock((nbRow + NL - 1) / NL, (nbCol + NC - 1) / NC);
-        //nBlockRow = nbRow;
-        //nBlockCol = nbCol;
-    }
-
-    /*resizeBlock((nbRow + NL - 1) / NL, (nbCol + NC - 1) / NC);
-    nBlockRow = nbRow;
-    nBlockCol = nbCol;*/
-
-    // Theses functions were called add() in the original version from ISSOFA
-    // but to avoid confusions with indices (block indices), 
-    // they are disabled; use addBlock() insead
-    //template <typename T = Block, typename std::enable_if_t<
-    //    !std::is_same_v<T, double>, int > = 0 >
-    //void add(BaseMatrix::Index bi, BaseMatrix::Index bj, const Block& b)
-    //{
-    //    if constexpr (Policy::LogTrace) logCall(FnEnum::add, bi, bj, b);
-    //    addBlock(bi, bj, b);
-    //}
-
-    //void add(BaseMatrix::Index bi, BaseMatrix::Index bj, int& rowId, int& colId, const Block& b)
-    //{
-    //    if constexpr (Policy::LogTrace) logCall(FnEnum::addId, bi, bj, rowId, colId, b);
-    //    addBlock(bi, bj, rowId, colId, b);
-    //}
-
-    // Mandatory implementations from BaseMatrix API
-    // Warning, contrary to all the other functions
-    // Indices indexes on the singular values, not on blocks
-    void set(BaseMatrix::Index i, BaseMatrix::Index j, double v) override
-    {
-        BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
-        traits::v(*wblock(i, j, true), bi, bj) = (Real)v;
-    }
-
-    void add(BaseMatrix::Index i, BaseMatrix::Index j, double v) override
-    {
-        BaseMatrix::Index bi = 0, bj = 0; split_row_index(i, bi); split_col_index(j, bj);
-        traits::v(*wblock(i, j, true), bi, bj) += (Real)v;
-    }
-
-    void add(BaseMatrix::Index i, BaseMatrix::Index j, const type::Mat3x3d& _M) override
-    {
-        BaseMatrix::add(i, j, _M);
-    }
-
-    void add(BaseMatrix::Index i, BaseMatrix::Index j, const type::Mat3x3f& _M) override
-    {
-        BaseMatrix::add(i, j, _M);
-    }
-
-    /// @name setter/getter & product methods on template vector types
-    /// @{
-
-    template<class Vec> static Real vget(const Vec& vec, Index i, Index j, Index k) { return vget(vec, i * j + k); }
-    template<class Vec> static Real vget(const type::vector<Vec>& vec, Index i, Index /*j*/, Index k) { return vec[i][k]; }
-
-    static auto  vget(const linearalgebra::BaseVector& vec, Index i) { return vec.element(i); }
-    template<class Real2> static Real2 vget(const FullVector<Real2>& vec, Index i) { return vec[i]; }
-
-
-    template<class Vec> static void vset(Vec& vec, Index i, Index j, Index k, Real v) { vset(vec, i * j + k, v); }
-    template<class Vec> static void vset(type::vector<Vec>& vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] = v; }
-
-    static void vset(linearalgebra::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
-    template<class Real2> static void vset(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] = v; }
-
-
-    template<class Vec> static void vadd(Vec& vec, Index i, Index j, Index k, Real v) { vadd(vec, i * j + k, v); }
-    template<class Vec> static void vadd(type::vector<Vec>& vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] += v; }
-
-    static void vadd(linearalgebra::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
-    template<class Real2> static void vadd(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] += v; }
-
-    template<class Vec> static void vresize(Vec& vec, Index /*blockSize*/, Index totalSize) { vec.resize(totalSize); }
-    template<class Vec> static void vresize(type::vector<Vec>& vec, Index blockSize, Index /*totalSize*/) { vec.resize(blockSize); }
-
-    /** Product of the matrix with a templated vector res = this * vec*/
-    template<class Real2, class V1, class V2>
-    void tmul(V1& res, const V2& vec) const
-    {
-        assert(vec.size() % bColSize() == 0); // vec.size() must be a multiple of block size.
-
-        ((Matrix*)this)->compress();
-        vresize(res, rowBSize(), rowSize());
-        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
-        {
-            type::Vec<NL, Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
-
-            // multiply the non-null blocks with the corresponding chunks of the large vector
-            Range rowRange(rowBegin[xi], rowBegin[xi + 1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                // transfer a chunk of large vector to a local block-sized vector
-                type::Vec<NC, Real2> v;
-                //Index jN = colsIndex[xj] * NC;    // scalar column index
-                for (Index bj = 0; bj < NC; ++bj)
-                    v[bj] = vget(vec, colsIndex[xj], NC, bj);
-
-                // multiply the block with the local vector
-                const auto& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
-                        r[bi] += traits::v(b, bi, bj) * v[bj];
-            }
-
-            // transfer the local result  to the large result vector
-            //Index iN = rowIndex[xi] * NL;                      // scalar row index
-            for (Index bi = 0; bi < NL; ++bi)
-                vset(res, rowIndex[xi], NL, bi, r[bi]);
-        }
-    }
-
-
-    /** Product of the matrix with a templated vector res += this * vec*/
-    template<class Real2, class V1, class V2>
-    void taddMul(V1& res, const V2& vec) const
-    {
-        assert( vec.size()%bColSize() == 0 ); // vec.size() must be a multiple of block size.
-
-        ((Matrix*)this)->compress();
-        vresize( res, rowBSize(), rowSize() );
-        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
-        {
-            type::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
-
-            // multiply the non-null blocks with the corresponding chunks of the large vector
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                // transfer a chunk of large vector to a local block-sized vector
-                type::Vec<NC,Real2> v;
-                //Index jN = colsIndex[xj] * NC;    // scalar column index
-                for (Index bj = 0; bj < NC; ++bj)
-                    v[bj] = vget(vec,colsIndex[xj],NC,bj);
-
-                // multiply the block with the local vector
-                const Block& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
-                        r[bi] += traits::v(b, bi, bj) * v[bj];
-            }
-
-            // transfer the local result  to the large result vector
-            //Index iN = rowIndex[xi] * NL;                      // scalar row index
-            for (Index bi = 0; bi < NL; ++bi)
-                vadd(res, rowIndex[xi], NL, bi, r[bi]);
-        }
-    }
-
-
-    /** Product of the matrix with a templated vector that have the size of the block res += this * [vec,...,vec]^T */
-    template<class Real2, class V1, class V2>
-    void taddMul_by_line(V1& res, const V2& vec) const
-    {
-        assert( vec.size() == NC ); // vec.size() must have the block size.
-
-        ((Matrix*)this)->compress();
-        vresize( res, rowBSize(), rowSize() );
-        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
-        {
-            type::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
-
-            // multiply the non-null blocks with the corresponding chunks of the large vector
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                // multiply the block with the local vector
-                const Block& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
-                        r[bi] += traits::v(b, bi, bj) * vec[bj];
-            }
-
-            // transfer the local result  to the large result vector
-            //Index iN = rowIndex[xi] * NL;                      // scalar row index
-            for (Index bi = 0; bi < NL; ++bi)
-                vadd(res, rowIndex[xi], NL, bi, r[bi]);
-        }
-    }
-
-    /** Product of the transpose with a templated vector and add it to res   res += this^T * vec */
-    template<class Real2, class V1, class V2>
-    void taddMulTranspose(V1& res, const V2& vec) const
-    {
-        assert( vec.size()%bRowSize() == 0 ); // vec.size() must be a multiple of block size.
-
-        ((Matrix*)this)->compress();
-        vresize( res, colBSize(), colSize() );
-        for (Index xi = 0; xi < rowIndex.size(); ++xi) // for each non-empty block row (i.e. column of the transpose)
-        {
-            // copy the corresponding chunk of the input to a local vector
-            type::Vec<NL,Real2> v;
-            //Index iN = rowIndex[xi] * NL;    // index of the row in the vector
-            for (Index bi = 0; bi < NL; ++bi)
-                v[bi] = vget(vec, rowIndex[xi], NL, bi);
-
-            // accumulate the product of the column with the local vector
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-empty block in the row
-            {
-                const Block& b = colsValue[xj]; // non-empty block
-
-                type::Vec<NC,Real2> r;  // local vector to store the product
-                //Index jN = colsIndex[xj] * NC;
-
-                // columnwise block-vector product
-                for (Index bj = 0; bj < NC; ++bj)
-                    r[bj] = traits::v(b, 0, bj) * v[0];
-                for (Index bi = 1; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
-                        r[bj] += traits::v(b, bi, bj) * v[bi];
-
-                // accumulate the product to the result
-                for (Index bj = 0; bj < NC; ++bj)
-                    vadd(res, colsIndex[xj], NC, bj, r[bj]);
-            }
-        }
-    }
-
-    /// @name specialization of product methods on a few vector types
-    /// @{
-
-    /// equal result = this * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template< typename V1, typename V2 >
-    void mul(V2& result, const V1& v) const
-    {
-        tmul< Real, V2, V1 >(result, v);
-    }
-
-    /// @returns this * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Vec>
-    Vec operator*(const Vec& v) const
-    {
-        Vec res;
-        mul(res, v);
-        return res;
-    }
-
-    /// result += this * (v,...,v)^T
-    /// v has the size of one block
-    template< typename V, typename Real2 >
-    void addMul_by_line( V& res, const type::Vec<NC,Real2>& v ) const
-    {
-        taddMul_by_line< Real2,V,type::Vec<NC,Real2> >( res, v );
-    }
-    template< typename Real, typename V, typename V2 >
-    void addMul_by_line( V& res, const V2& v ) const
-    {
-        taddMul_by_line< Real,V,V2 >( res, v );
-    }
-
-
-    /// result += this * v
-    template< typename V1, typename V2 >
-    void addMul( V1& res, const V2& v ) const
-    {
-        taddMul< Real,V1,V2 >( res, v );
-    }
-
-
-
-    /// @}
-
-
-    // methods for MatrixExpr support
-
-    template<class M2>
-    bool hasRef(const M2* m) const
-    {
-        return (const void*)this == (const void*)m;
-    }
-
-    std::string expr() const
-    {
-        return std::string(Name());
-    }
-
-    bool valid() const
-    {
-        return true;
-    }
-
-
-    /// dest += this
-    /// different block types possible
-    /// @todo how to optimize when same block types
-    template<class Dest>
-    void addTo(Dest* dest) const
-    {
-        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)
-        {
-            Index iN = rowIndex[xi] * NL;
-            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                Index jN = colsIndex[xj] * NC;
-                const Block& b = colsValue[xj];
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
-                        dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
-            }
-        }
-        if (!btemp.empty())
-        {
-            for (typename VecIndexedBlock::const_iterator it = btemp.begin(), itend = btemp.end(); it != itend; ++it)
-            {
-                Index iN = it->l * NL;
-                Index jN = it->c * NC;
-                const Block& b = it->value;
-                for (Index bi = 0; bi < NL; ++bi)
-                    for (Index bj = 0; bj < NC; ++bj)
-                        dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
-            }
-        }
-    }
-
-protected:
-
-    /// add ? this += m : this = m
-    /// m can be the same as this
-    template<class M>
-    void equal( const M& m, bool add = false )
-    {
-        if (m.hasRef(this))
-        {
-            Matrix tmp;
-            tmp.resize(m.rowSize(), m.colSize());
-            m.addTo(&tmp);
-            if (add)
-                tmp.addTo(this);
-            else
-                swap(tmp);
-        }
-        else
-        {
-            if (!add)
-                resize(m.rowSize(), m.colSize());
-            m.addTo(this);
-        }
-    }
-
-    /// this += m
-    template<class M>
-    inline void addEqual( const M& m )
-    {
-        equal( m, true );
-    }
-
-
-
-public:
-
-    template<class TBlock2, class TPolicy2>
-    void operator=(const CompressedRowSparseMatrix<TBlock2, TPolicy2>& m)
-    {
-        if (&m == this) return;
-        resize(m.rowSize(), m.colSize());
-        m.addTo(this);
-    }
-
-    template<class TBlock2, class TPolicy2>
-    void operator+=(const CompressedRowSparseMatrix<TBlock2, TPolicy2>& m)
-    {
-        addEqual(m);
-    }
-
-    template<class TBlock2, class TPolicy2>
-    void operator-=(const CompressedRowSparseMatrix<TBlock2, TPolicy2>& m)
-    {
-        equal(MatrixExpr< MatrixNegative< CompressedRowSparseMatrix<TBlock2, TPolicy2> > >(MatrixNegative< CompressedRowSparseMatrix<TBlock2, TPolicy2> >(m)), true);
-    }
-
-    template<class Expr2>
-    void operator=(const MatrixExpr< Expr2 >& m)
-    {
-        equal(m, false);
-    }
-
-    template<class Expr2>
-    void operator+=(const MatrixExpr< Expr2 >& m)
-    {
-        addEqual(m);
-    }
-
-    template<class Expr2>
-    void operator-=(const MatrixExpr< Expr2 >& m)
-    {
-        addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
-    }
-
-    MatrixExpr< MatrixTranspose< Matrix > > t() const
-    {
-        return MatrixExpr< MatrixTranspose< Matrix > >(MatrixTranspose< Matrix >(*this));
-    }
-
-    MatrixExpr< MatrixInverse< Matrix > > i() const
-    {
-        return MatrixExpr< MatrixInverse< Matrix > >(MatrixInverse< Matrix >(*this));
-    }
-
-    MatrixExpr< MatrixNegative< Matrix > > operator-() const
-    {
-        return MatrixExpr< MatrixNegative< Matrix > >(MatrixNegative< Matrix >(*this));
-    }
-
-    MatrixExpr< MatrixScale< Matrix, double > > operator*(const double& r) const
-    {
-        return MatrixExpr< MatrixScale< Matrix, double > >(MatrixScale< Matrix, double >(*this, r));
-    }
-
-    typedef bool filter_fn(Index   i, Index   j, Block& val, const Block& ref);
-    static bool       nonzeros(Index /*i*/, Index /*j*/, Block& val, const Block& /*ref*/) { return (!traits::empty(val)); }
-
-    template<class TMatrix>
-    void filterValues(TMatrix& M, filter_fn* filter = &nonzeros, const Block& ref = Block())
-    {
-        M.compress();
-        nBlockRow = M.rowBSize();
-        nBlockCol = M.colBSize();
-        rowIndex.clear();
-        rowBegin.clear();
-        colsIndex.clear();
-        colsValue.clear();
-        btemp.clear();
-        rowIndex.reserve(M.rowIndex.size());
-        rowBegin.reserve(M.rowBegin.size());
-        colsIndex.reserve(M.colsIndex.size());
-        colsValue.reserve(M.colsValue.size());
-
-        Index vid = 0;
-        for (Index rowId = 0; rowId < (Index)M.rowIndex.size(); ++rowId)
-        {
-            Index i = M.rowIndex[rowId];
-            rowIndex.push_back(i);
-            rowBegin.push_back(vid);
-            Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                Index j = M.colsIndex[xj];
-                Block& b = M.colsValue[xj];
-                if ((*filter)(i, j, b, ref))
-                {
-                    colsIndex.push_back(j);
-                    colsValue.push_back(b);
-                    ++vid;
-                }
-            }
-            if ((decltype(vid))rowBegin.back() == vid) // row was empty
-            {
-                rowIndex.pop_back();
-                rowBegin.pop_back();
-            }
-        }
-        rowBegin.push_back(vid); // end of last row
-    }
-
-    template <class TMatrix>
-    void copyNonZeros(TMatrix& M)
-    {
-        filterValues(M, nonzeros, Block());
-    }
 };
 
 //#ifdef SPARSEMATRIX_CHECK
@@ -2335,31 +1798,11 @@ public:
 //#endif
 
 
-template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3d& _M);
-template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, double> >::add(Index row, Index col, const type::Mat3x3f& _M);
-template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3d& _M);
-template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, float> >::add(Index row, Index col, const type::Mat3x3f& _M);
-
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3, 3, double> > >(CompressedRowSparseMatrix<type::Mat<3, 3, double> >& M, filter_fn* filter, const Block& ref);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3, 3, float> > >(CompressedRowSparseMatrix<type::Mat<3, 3, float> >& M, filter_fn* filter, const Block& ref);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3, 3, float> > >(CompressedRowSparseMatrix<type::Mat<3, 3, float> >& M, filter_fn* filter, const Block& ref);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3, 3, double> > >(CompressedRowSparseMatrix<type::Mat<3, 3, double> >& M, filter_fn* filter, const Block& ref);
-
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP) 
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<1, 1, float> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<1, 1, double> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2, 2, float> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2, 2, double> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, float> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3, 3, double> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4, 4, float> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4, 4, double> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6, 6, float> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6, 6, double> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8, 8, float> >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8, 8, double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat1x1d>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat3x3d>;
 #endif
+
 
 } // namespace sofa::linearalgebra
