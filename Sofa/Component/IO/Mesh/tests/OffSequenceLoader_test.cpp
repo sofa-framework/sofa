@@ -19,44 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <MultiThreading/config.h>
-#include <MultiThreading/TaskSchedulerUser.h>
-#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/io/mesh/OffSequenceLoader.h>
+#include <gtest/gtest.h>
 
-namespace sofa::simulation
+namespace sofa
 {
-class TaskScheduler;
+
+TEST(OffSequenceLoader_test, emptyFilename)
+{
+    auto object = core::objectmodel::New<sofa::component::io::mesh::OffSequenceLoader>();
+    EXPECT_NE(object, nullptr);
+
+    EXPECT_NO_THROW(object->init());
 }
 
-namespace multithreading::component::solidmechanics::spring
+TEST(OffSequenceLoader_test, noNumberInFilename)
 {
+    auto object = core::objectmodel::New<sofa::component::io::mesh::OffSequenceLoader>();
+    EXPECT_NE(object, nullptr);
+    object->d_filename.setValue("jfdsofhfisaf");
 
-template <class DataTypes>
-using StiffSpringForceField = sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes>;
-
-template <class DataTypes>
-class ParallelStiffSpringForceField : public virtual StiffSpringForceField<DataTypes>, public TaskSchedulerUser
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(ParallelStiffSpringForceField, DataTypes),
-               SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
-
-    using VecCoord = typename DataTypes::VecCoord;
-    using VecDeriv = typename DataTypes::VecDeriv;
-    using DataVecCoord = sofa::core::objectmodel::Data<VecCoord>;
-    using DataVecDeriv = sofa::core::objectmodel::Data<VecDeriv>;
-    using Real = typename Inherit1::Real;
-
-    using Spring = typename Inherit1::Spring;
-    using SpringForce = typename Inherit1::SpringForce;
-    using StiffSpringForce = typename Inherit1::StiffSpringForce;
-
-    void init() override;
-
-    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
-    void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
-};
+    EXPECT_NO_THROW(object->init());
+}
 
 }

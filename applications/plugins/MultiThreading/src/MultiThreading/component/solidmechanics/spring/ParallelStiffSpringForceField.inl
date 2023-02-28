@@ -97,18 +97,51 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
 }
 
 template <class DataTypes>
-void ParallelStiffSpringForceField<DataTypes>::initTaskScheduler()
+void ParallelStiffSpringForceField<DataTypes>::addDForce(
+    const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2,
+    const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
-    m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(m_taskScheduler != nullptr);
-    if (m_taskScheduler->getThreadCount() < 1)
-    {
-        m_taskScheduler->init(0);
-        msg_info() << "Task scheduler initialized on " << m_taskScheduler->getThreadCount() << " threads";
-    }
-    else
-    {
-        msg_info() << "Task scheduler already initialized on " << m_taskScheduler->getThreadCount() << " threads";
-    }
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv>> df1 = sofa::helper::getWriteOnlyAccessor(data_df1);
+    sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv>> df2 = sofa::helper::getWriteOnlyAccessor(data_df2);
+
+    const VecDeriv& dx1 =  data_dx1.getValue();
+    const VecDeriv& dx2 =  data_dx2.getValue();
+
+    df1.resize(dx1.size());
+    df2.resize(dx2.size());
+
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
+    const Real bFactor = (Real)sofa::core::mechanicalparams::bFactor(mparams);
+
+    const sofa::type::vector<Spring>& springs= this->springs.getValue();
+
+    std::mutex mutex;
+
+    sofa::simulation::parallelForEachRange(*m_taskScheduler, static_cast<std::size_t>(0), springs.size(),
+        [this, &springs, &df1, &df2, &dx1, &dx2, kFactor, bFactor, &mutex](const auto& range)
+        {
+            sofa::type::vector<typename DataTypes::DPos> dforces;
+            dforces.reserve(range.end - range.start);
+            for (auto i = range.start; i < range.end; ++i)
+            {
+                dforces.push_back(
+                    this->computeSpringDForce(df1.wref(), dx1, df2.wref(), dx2, i, springs[i], kFactor, bFactor));
+            }
+
+            std::lock_guard lock(mutex);
+
+            auto dforceIt = dforces.begin();
+            for (auto i = range.start; i < range.end; ++i)
+            {
+                const auto& dforce = *dforceIt++;
+
+                const sofa::Index a = springs[i].m1;
+                const sofa::Index b = springs[i].m2;
+
+                DataTypes::setDPos( df1[a], DataTypes::getDPos(df1[a]) + dforce ) ;
+                DataTypes::setDPos( df2[b], DataTypes::getDPos(df2[b]) - dforce ) ;
+            }
+        }
+    );
 }
 }

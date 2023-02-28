@@ -19,6 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/geometry/proximity/PointTriangle.h>
+#include <sofa/geometry/proximity/SegmentTriangle.h>
+#include <sofa/geometry/proximity/TriangleTriangle.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/type/Mat_solve_LCP.h>
 
@@ -68,56 +71,12 @@ DistanceTriTri::
 void DistanceTriTri::
 NewComputation(const Vec3& P1, const Vec3& P2, const Vec3& P3, const Vec3& Q1, const Vec3& Q2, const Vec3& Q3, Vec3 &Presult, Vec3 &Qresult)
 {
-    double alphaP, betaP, alphaQ, betaQ;
-    Vec3 P1P2, P1P3, Q1Q2, Q1Q3, P1Q1;
-    type::Mat<6, 6, SReal> A;
-    type::Vec<6, SReal> b;
-    type::Vec<12, SReal> result;
+    const auto r = sofa::geometry::proximity::computeClosestPointsInTwoTriangles(P1, P2, P3, Q1, Q2, Q3, Presult, Qresult);
 
-    P1P2=P2 - P1;
-    P1P3=P3 - P1;
-    Q1Q2=Q2 - Q1;
-    Q1Q3=Q3 - Q1;
-    P1Q1=Q1 - P1;
-
-    A[0][4] = 1.0; A[4][0] = -1.0;
-    A[1][4] = 1.0; A[4][1] = -1.0;
-    A[2][4] = 0.0; A[4][2] = 0.0;
-    A[3][4] = 0.0; A[4][3] = 0.0;
-
-    A[0][5] = 0.0; A[5][0] = 0.0;
-    A[1][5] = 0.0; A[5][1] = 0.0;
-    A[2][5] = 1.0; A[5][2] = -1.0;
-    A[3][5] = 1.0; A[5][3] = -1.0;
-
-    A[4][4] = 0.0; A[5][5] = 0.0;
-    A[4][5] = 0.0; A[5][4] = 0.0;
-
-    A[0][0] = dot(P1P2,P1P2);   A[0][1] = dot(P1P3,P1P2);   A[0][2] =-dot(Q1Q2,P1P2);  A[0][3] =-dot(Q1Q3,P1P2);
-    A[1][0] = dot(P1P2,P1P3);   A[1][1] = dot(P1P3,P1P3);   A[1][2] =-dot(Q1Q2,P1P3);  A[1][3] =-dot(Q1Q3,P1P3);
-    A[2][0] = -dot(P1P2,Q1Q2);  A[2][1] = -dot(P1P3,Q1Q2);  A[2][2] = dot(Q1Q2,Q1Q2);  A[2][3] = dot(Q1Q3,Q1Q2);
-    A[3][0] = -dot(P1P2,Q1Q3);  A[3][1] = -dot(P1P3,Q1Q3);  A[3][2] = dot(Q1Q2,Q1Q3);  A[3][3] = dot(Q1Q3,Q1Q3);
-
-    b[0]=-dot(P1Q1,P1P2);  b[1]=-dot(P1Q1,P1P3);  b[2]= dot(P1Q1,Q1Q2); b[3]= dot(P1Q1,Q1Q3);
-    b[4]=1.0;  b[5]=1.0;
-
-    if(type::solveLCP(b, A, result) == true)
-    {
-        alphaP=result[6];
-        betaP=result[7];
-        alphaQ=result[8];
-        betaQ=result[9];
-        Presult = P1 + P1P2*alphaP + P1P3*betaP;
-        Qresult = Q1 + Q1Q2*alphaQ + Q1Q3*betaQ;
-    }
-    else
+    if (!r)
     {
         printf(" no result from LCP !\n");
-        Presult = P1;
-        Qresult = Q1;
     }
-
-
 }
 
 
@@ -138,52 +97,12 @@ DistanceSegTri::
 void DistanceSegTri::
 NewComputation(const Vec3 &P1, const Vec3 &P2, const Vec3 &P3, const Vec3 &Q1, const Vec3 &Q2, Vec3 &Presult, Vec3 &Qresult)
 {
-    double alpha, beta, gamma;
-    Vec3 P1P2, P1P3, Q1Q2, P1Q1;
-    type::Mat<5, 5, SReal> A;
-    type::Vec<5, SReal> b;
-    type::Vec<10, SReal> result;
+    const bool r = geometry::proximity::computeClosestPointsSegmentAndTriangle(P1, P2, P3, Q1, Q2, Presult, Qresult);
 
-    Q1Q2 = Q2 - Q1;
-    P1P2 = P2 - P1;
-    P1P3 = P3 - P1;
-    P1Q1 = Q1 - P1;
-
-
-    // initialize A
-    A[0][3] = 1.0; A[0][4] = 0.0;
-    A[1][3] = 1.0; A[1][4] = 0.0;
-    A[2][3] = 0.0; A[2][4] = 1.0;
-    A[3][0] = -1.0; A[3][1] = -1.0; A[3][2] = 0.0;	A[3][3] = 0.0; A[3][4] = 0.0;
-    A[4][0] = 0.0; A[4][1] = 0.0;	A[4][2] = -1.0;	A[4][3] = 0.0; A[4][4] = 0.0;
-
-    A[0][0] = dot(P1P2,P1P2);   A[0][1] = dot(P1P3,P1P2);   A[0][2] = -dot(Q1Q2,P1P2);
-    A[1][0] = dot(P1P2,P1P3);   A[1][1] = dot(P1P3,P1P3);   A[1][2] = -dot(Q1Q2,P1P3);
-    A[2][0] = -dot(P1P2,Q1Q2);  A[2][1] = -dot(P1P3,Q1Q2);  A[2][2] = dot(Q1Q2,Q1Q2);
-
-    // initialize b
-    b[3]=1.0;  b[4]=1.0;
-    b[0]=-dot(P1Q1,P1P2);  b[1]=-dot(P1Q1,P1P3);  b[2]=dot(P1Q1,Q1Q2);
-
-    if(type::solveLCP(b, A, result))
-    {
-        alpha=result[5];
-        beta=result[6];
-        gamma=result[7];
-
-        Presult = P1 + P1P2*alpha + P1P3*beta;
-        Qresult = Q1 + Q1Q2*gamma;
-    }
-    else
+    if (!r)
     {
         printf(" no result from LCP !\n");
-//        alpha=0;
-//        beta=0;
-//        gamma=0;
-        Presult = P1;
-        Qresult = Q1;
     }
-
 }
 
 //------------------------------------------------------------------------------------------------------ //
@@ -204,40 +123,11 @@ DistancePointTri::
 void DistancePointTri::
 NewComputation(const Vec3 &P1, const Vec3 &P2, const Vec3 &P3, const Vec3 &Q, Vec3 &Presult)
 {
-    double alpha, beta;
-    Vec3 P1P2, P1P3, P1Q;
-    type::Mat<3, 3, SReal> A;
-    type::Vec3 b;
-    type::Vec<6, SReal> result;
+    const bool r = geometry::proximity::computeClosestPointOnTriangleToPoint(P1, P2, P3, Q, Presult);
 
-    P1P2 = P2 - P1;
-    P1P3 = P3 - P1;
-    P1Q = Q - P1;
-
-    // initialize A
-    A[0][2] = 1.0;
-    A[1][2] = 1.0;
-    A[2][0] = -1.0; A[2][1] = -1.0; A[2][2] = 0.0;
-    A[0][0] = dot(P1P2,P1P2);   A[0][1] = dot(P1P3,P1P2);
-    A[1][0] = dot(P1P2,P1P3);   A[1][1] = dot(P1P3,P1P3);
-
-    // initialize b
-    b[2]=1.0;
-    b[0]=-dot(P1Q,P1P2);  b[1]=-dot(P1Q,P1P3);
-
-    if(type::solveLCP(b, A, result))
-    {
-        alpha=result[3];
-        beta=result[4];
-
-        Presult = P1 + P1P2*alpha + P1P3*beta;
-    }
-    else
+    if (!r)
     {
         printf(" no result from LCP !\n");
-//        alpha=0;
-//        beta=0;
-        Presult = P1;
     }
 }
 

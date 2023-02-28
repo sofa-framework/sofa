@@ -261,7 +261,7 @@ bool MeshTopologyLoader::load(const char *filename)
 		return false;
 	}
 
-	bool fileLoaded;
+    bool fileLoaded = false;
 
 	// check the extension of the filename
 	if ((strlen(filename) > 4 && !strcmp(filename + strlen(filename) - 4, ".obj"))
@@ -282,9 +282,18 @@ bool MeshTopologyLoader::load(const char *filename)
 		file.close();
 	}
        
-    if(!fileLoaded)
-        msg_error() << "Unable to load mesh file '" << fname << "'" ;
+    if(fileLoaded)
+    {
+        // topology has been filled, so the Mesh is not needed anymore
+        assert(m_mesh);
 
+        delete m_mesh;
+        m_mesh = nullptr;
+    }
+    else
+    {
+        msg_error() << "Unable to load mesh file '" << fname << "'" ;
+    }
     return fileLoaded;
 }
 

@@ -143,11 +143,8 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
 /// Helper method used by initData()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
 {
-    // Questionnable optimization: test a single 'uint32_t' rather that four 'char'
-    static const char *draw_str = "draw";
-    static const char *show_str = "show";
-    static uint32_t draw_prefix = *reinterpret_cast<const uint32_t*>(draw_str);
-    static uint32_t show_prefix = *reinterpret_cast<const uint32_t*>(show_str);
+    static constexpr std::string_view draw_prefix = "draw";
+    static constexpr std::string_view show_prefix = "show";
 
     res.owner = this;
     res.data = field;
@@ -155,9 +152,9 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-    if (strlen(name) >= 3)
+    if (strlen(name) >= 4)
     {
-        uint32_t prefix = *reinterpret_cast<const uint32_t*>(name);
+        std::string_view prefix = std::string_view(name).substr(0, 4);
 
         if (prefix == draw_prefix || prefix == show_prefix)
             res.group = "Visualization";

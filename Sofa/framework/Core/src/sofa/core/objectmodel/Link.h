@@ -27,6 +27,8 @@
 #include <sofa/core/sptr.h>
 #include <sofa/core/fwd.h>
 
+#include <functional>
+
 namespace sofa
 {
 namespace core::objectmodel
@@ -564,7 +566,7 @@ public:
     typedef typename Inherit::TraitsContainer TraitsContainer;
     typedef typename Inherit::Container Container;
 
-    typedef void (OwnerType::*ValidatorFn)(DestPtr v, std::size_t index, bool add);
+    using ValidatorFn = std::function<void(DestPtr, std::size_t, bool)>;
 
     MultiLink() : m_validator{nullptr} {}
 
@@ -610,13 +612,13 @@ protected:
     void added(DestPtr val, std::size_t index)
     {
         if (m_validator)
-            (this->m_owner->*m_validator)(val, index, true);
+            m_validator(val, index, true);
     }
 
     void removed(DestPtr val, std::size_t index)
     {
         if (m_validator)
-            (this->m_owner->*m_validator)(val, index, false);
+            m_validator(val, index, false);
     }
 };
 
@@ -641,7 +643,7 @@ public:
     using Inherit::m_value;
     using Inherit::m_owner;
 
-    typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);
+    using ValidatorFn = std::function<void(DestPtr, DestPtr&)>;
 
     SingleLink()
         : m_validator(nullptr)
@@ -745,7 +747,7 @@ protected:
         if (m_validator)
         {
             DestPtr after = val;
-            (m_owner->*m_validator)(nullptr, after);
+            m_validator(nullptr, after);
             if (after != val)
                 TraitsValueType::set(m_value.get(), after);
         }
@@ -756,7 +758,7 @@ protected:
         if (m_validator)
         {
             DestPtr after = nullptr;
-            (m_owner->*m_validator)(val, after);
+            m_validator(val, after);
             if (after)
                 TraitsValueType::set(m_value.get(), after);
         }
@@ -767,7 +769,7 @@ protected:
         if (m_validator)
         {
             DestPtr after = val;
-            (m_owner->*m_validator)(before, after);
+            m_validator(before, after);
             if (after != val)
                 TraitsValueType::set(this->m_value.get(), after);
         }
