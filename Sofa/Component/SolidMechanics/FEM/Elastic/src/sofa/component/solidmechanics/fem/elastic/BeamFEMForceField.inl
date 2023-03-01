@@ -143,7 +143,10 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinit()
 {
     if (!m_indexedElements)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
+    }
 
     unsigned int n = m_indexedElements->size();
     m_forces.resize( this->mstate->getSize() );
