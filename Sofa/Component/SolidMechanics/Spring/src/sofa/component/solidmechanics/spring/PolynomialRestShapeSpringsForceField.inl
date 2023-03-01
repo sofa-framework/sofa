@@ -170,9 +170,17 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
         if (m_useRestMState)
         {
-            for (sofa::Index i = 0; i < getExtPosition()->getValue().size(); i++)
+            if (const DataVecCoord* extPosition = getExtPosition())
             {
-                m_ext_indices.push_back(i);
+                const auto& extPositionValue = extPosition->getValue();
+                for (sofa::Index i = 0; i < extPositionValue.size(); i++)
+                {
+                    m_ext_indices.push_back(i);
+                }
+            }
+            else
+            {
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             }
         }
         else
@@ -186,7 +194,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_indices.size() > m_ext_indices.size())
     {
-        msg_error() << "Error : the dimention of the source and the targeted points are different ";
+        msg_error() << "Error : the dimension of the source and the targeted points are different ";
         m_indices.clear();
         m_ext_indices.clear();
     }
@@ -227,6 +235,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
     const DataVecCoord* extPosition = getExtPosition();
     if (!extPosition)
     {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -396,6 +405,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     const DataVecCoord* extPosition = getExtPosition();
     if (!extPosition)
     {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 

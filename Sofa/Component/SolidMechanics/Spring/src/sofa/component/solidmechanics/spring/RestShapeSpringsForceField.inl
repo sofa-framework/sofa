@@ -248,9 +248,17 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
     {
         if (useRestMState)
         {
-            for (sofa::Index i = 0; i < getExtPosition()->getValue().size(); i++)
+            if (const DataVecCoord* extPosition = getExtPosition())
             {
-                m_ext_indices.push_back(i);
+                const auto& extPositionValue = extPosition->getValue();
+                for (sofa::Index i = 0; i < extPositionValue.size(); i++)
+                {
+                    m_ext_indices.push_back(i);
+                }
+            }
+            else
+            {
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             }
         }
         else
@@ -281,10 +289,17 @@ bool RestShapeSpringsForceField<DataTypes>::checkOutOfBoundsIndices()
         msg_error() << "Out of Bounds m_indices detected. ForceField is not activated.";
         return false;
     }
-    if (!checkOutOfBoundsIndices(m_ext_indices, sofa::Size(getExtPosition()->getValue().size())))
+    if (const DataVecCoord* extPosition = getExtPosition())
     {
-        msg_error() << "Out of Bounds m_ext_indices detected. ForceField is not activated.";
-        return false;
+        if (!checkOutOfBoundsIndices(m_ext_indices, sofa::Size(extPosition->getValue().size())))
+        {
+            msg_error() << "Out of Bounds m_ext_indices detected. ForceField is not activated.";
+            return false;
+        }
+    }
+    else
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
     if (m_indices.size() != m_ext_indices.size())
     {
@@ -339,6 +354,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     const DataVecCoord* extPosition = getExtPosition();
     if (!extPosition)
     {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -452,6 +468,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     const DataVecCoord* extPosition = getExtPosition();
     if (!extPosition)
     {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
