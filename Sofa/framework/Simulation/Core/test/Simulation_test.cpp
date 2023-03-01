@@ -19,23 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <gtest/gtest.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/testing/TestMessageHandler.h>
 
-namespace sofa::simulation
+namespace sofa
 {
 
-template <class RealObject>
-Node::SPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg)
+TEST(simulationLoad, existingFilename)
 {
-    if (Simulation* simulation = getSimulation())
-    {
-        Node::SPtr obj = simulation->createNewNode(arg->getName());
-        obj->parse(arg);
-        return obj;
-    }
-    return nullptr;
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+    EXPECT_MSG_NOEMIT(Error);
+
+    constexpr std::string_view filename { "Demos/caduceus.scn" };
+    const std::string path = helper::system::DataRepository.getFile(std::string{filename});
+
+    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    ASSERT_NE(simulation, nullptr);
+    const simulation::Node::SPtr groot = simulation->load(path, false, {});
+    EXPECT_NE(groot, nullptr);
+    simulation->unload(groot);
+}
+
+
+TEST(simulationLoad, nonExistingFilename)
+{
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+    EXPECT_MSG_EMIT(Error);
+
+    constexpr std::string_view filename { "aFileThatDoesNotExist.scn" };
+
+    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    ASSERT_NE(simulation, nullptr);
+    const simulation::Node::SPtr groot = simulation->load(std::string{filename}, false, {});
+    EXPECT_EQ(groot, nullptr);
+    simulation->unload(groot);
 }
 
 }
