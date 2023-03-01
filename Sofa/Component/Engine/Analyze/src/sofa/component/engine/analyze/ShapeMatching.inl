@@ -82,7 +82,7 @@ ShapeMatching<DataTypes>::ShapeMatching()
 template <class DataTypes>
 void ShapeMatching<DataTypes>::init()
 {
-    mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    core::behavior::SingleStateAccessor<DataTypes>::init();
 
     setDirtyValue();
 
@@ -101,7 +101,17 @@ void ShapeMatching<DataTypes>::reinit()
 template <class DataTypes>
 void ShapeMatching<DataTypes>::doUpdate()
 {
-    const VecCoord& restPositions = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    if (!this->mstate)
+        return;
+
+    const auto* restPositionsData = this->mstate->read(core::ConstVecCoordId::restPosition());
+    if (!restPositionsData)
+    {
+        msg_error() << "Rest position cannot be found in mechanical object '" << this->mstate->getPathName() << "'";
+        return;
+    }
+
+    const VecCoord& restPositions = restPositionsData->getValue();
     helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->fixedPosition0;
     helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     helper::ReadAccessor<Data< VecCoord > > currentPositions = position;

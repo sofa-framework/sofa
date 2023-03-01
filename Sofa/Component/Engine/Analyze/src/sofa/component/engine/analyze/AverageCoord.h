@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -37,7 +38,7 @@ namespace sofa::component::engine::analyze
  * This class computes the average of a set of Coordinates
  */
 template <class DataTypes>
-class AverageCoord : public core::DataEngine
+class AverageCoord : public core::DataEngine, public core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(AverageCoord,DataTypes),core::DataEngine);
@@ -64,9 +65,6 @@ public:
 
     void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
-
-protected:
-    sofa::core::behavior::MechanicalState<DataTypes> *mstate;
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
