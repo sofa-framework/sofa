@@ -269,7 +269,7 @@ class DeprecatedAndRemoved {};
 // The SOFA_EXTERN_TEMPLATE macro was used to control the use of extern templates in Sofa.
 // It has been cleaned out in 41e0ab98bbb6e22b053b24e7bbdd31c8636336c9 "[ALL] Remove SOFA_EXTERN_TEMPLATE".
 // Macro definition is kept to avoid breaking all external plugins.
-#define SOFA_EXTERN_TEMPLATE
+#define SOFA_EXTERN_TEMPLATE SOFA_PRAGMA_ERROR("The usage of SOFA_EXTERN_TEMPLATE is now disabled. See commit 41e0ab9 for more information")
 
 namespace sofa
 {
