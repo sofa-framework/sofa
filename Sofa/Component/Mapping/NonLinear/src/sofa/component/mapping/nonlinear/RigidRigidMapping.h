@@ -58,9 +58,9 @@ public:
     typedef type::Vec<N,Real> Vector ;
 
 protected:
-    Data < OutVecCoord > points; ///< Initial position of the points
-    OutVecCoord pointsR0;
-    Mat rotation;
+    Data < OutVecCoord > d_points; ///< Initial position of the points
+    OutVecCoord m_pointsR0;
+    Mat m_rotation;
     class Loader;
     void load(const char* filename);
     /// number of child frames per parent frame.
@@ -68,16 +68,16 @@ protected:
     /// given in the "index" attribute. If one value, each parent frame drives
     /// the given number of children frames. Otherwise, the values are the number
     /// of child frames driven by each parent frame.
-    Data< sofa::type::vector<sofa::Size> >  repartition;
+    Data< sofa::type::vector<sofa::Size> >  d_repartition;
 
 public:
-    Data<sofa::Index> index; ///< input frame index
-    sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
+    Data<sofa::Index> d_index; ///< input frame index
+    sofa::core::objectmodel::DataFileName d_fileRigidRigidMapping; ///< Filename
 
     /// axis length for display
-    Data<double> axisLength; ///< axis length for display
-    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
-    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+    Data<double> d_axisLength; ///< axis length for display
+    Data< bool > d_indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data< bool > d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
 protected:
     RigidRigidMapping() ;
@@ -107,7 +107,8 @@ public:
 
     void clear();
 
-    sofa::type::vector<sofa::Size> getRepartition() {return repartition.getValue(); }
+    void globalToLocalCoords(OutCoord& result, const OutCoord& xfrom, const InCoord& x);
+    sofa::type::vector<sofa::Size> getRepartition() {return d_repartition.getValue(); }
 
     void setRepartition(sofa::Size value);
     void setRepartition(sofa::type::vector<sofa::Size> values);
