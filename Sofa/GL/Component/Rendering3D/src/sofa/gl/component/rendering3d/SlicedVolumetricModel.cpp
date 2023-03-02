@@ -113,6 +113,13 @@ void SlicedVolumetricModel::init()
 
     _nbPlanesOld = _nbPlanes.getValue();
 
+    if (_topology->getHexahedra().empty())
+    {
+        msg_error() << "No hexahedra found in the topology '" << _topology << "'";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     const Coord& p0 = GETCOORD(_topology->getHexahedron(0)[0]);
     const Coord& p7 = GETCOORD(_topology->getHexahedron(0)[6]);
     _radius = (p7-p0).norm() / 2;

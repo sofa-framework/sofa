@@ -384,7 +384,15 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::init()
     TriangleSetGeometryAlgorithms<DataTypes>::init();
     this->getContext()->get(m_container);
     this->getContext()->get(m_modifier);
-    m_intialNbPoints = m_container->getNbPoints();
+    if (m_container)
+    {
+        m_intialNbPoints = m_container->getNbPoints();
+    }
+    else
+    {
+        msg_error() << "No " << TetrahedronSetTopologyContainer::GetClass()->className << " can be found in the current context.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 template< class DataTypes>

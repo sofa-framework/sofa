@@ -60,8 +60,9 @@ void DynamicSparseGridTopologyContainer::init()
     this->getContext()->get(VoxelLoader);
     if ( !VoxelLoader )
     {
-        msg_error() << "DynamicSparseGridTopologyContainer::init(): No VoxelLoader found! Aborting...";
-        exit(EXIT_FAILURE);
+        msg_error() << "No VoxelLoader found! Aborting...";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
     const type::vector<BaseMeshTopology::HexaID>& iirg = idxInRegularGrid.getValue();
@@ -76,7 +77,22 @@ void DynamicSparseGridTopologyContainer::init()
 
     // Init values
     int dataSize = VoxelLoader->getDataSize();
+
+    if ( !dataSize )
+    {
+        msg_error() << "Empty data size in VoxelLoader";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     const unsigned char* data = VoxelLoader->getData();
+
+    if ( !data )
+    {
+        msg_error() << "Empty data in VoxelLoader";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // init values in regular grid. (dense).
     viirg.resize( dataSize);

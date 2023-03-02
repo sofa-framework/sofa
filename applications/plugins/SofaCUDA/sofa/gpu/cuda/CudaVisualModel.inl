@@ -462,6 +462,9 @@ void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, 
 {
     SOFA_UNUSED(params);
 
+    if (!state)
+        return;
+
     const VecCoord& x = state->write(core::VecCoordId::position())->getValue();
 
     SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};

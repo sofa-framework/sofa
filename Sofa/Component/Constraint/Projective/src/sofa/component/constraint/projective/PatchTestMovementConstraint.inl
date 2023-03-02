@@ -128,19 +128,23 @@ void PatchTestMovementConstraint<DataTypes>::init()
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
 {
-    Coord corner0, corner1, corner2, corner3,corner4,corner5,corner6,corner7, point;
+    Coord corner0, corner1, corner2, corner3,corner4,corner5,corner6,corner7;
     // Write accessor
     helper::WriteAccessor< Data<VecCoord > > cornerPositions = d_cornerPoints;
     helper::WriteAccessor< Data<VecCoord > > constrainedPoints = d_constrainedPoints;
     bool isMeshin3D = false;
-    point = constrainedPoints[0];
 
-    // Search if the constrained points are in the same plane
-    for(Size i = 0; i < constrainedPoints.size() ; i++)
+    if (!constrainedPoints.empty())
     {
-        if(CoordSize > 2 && constrainedPoints[i][2]!=point[2])
+        const Coord& point = constrainedPoints[0];
+
+        // Search if the constrained points are in the same plane
+        for(Size i = 0; i < constrainedPoints.size() ; i++)
         {
-            isMeshin3D = true;
+            if(CoordSize > 2 && constrainedPoints[i][2]!=point[2])
+            {
+                isMeshin3D = true;
+            }
         }
     }
 

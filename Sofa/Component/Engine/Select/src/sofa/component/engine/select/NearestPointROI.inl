@@ -62,15 +62,17 @@ void NearestPointROI<DataTypes>::init()
         return;
     }
 
-    if (d_useRestPosition.getValue())
+    const std::string dataString = d_useRestPosition.getValue() ? "rest_position" : "position";
+
+    for (const core::behavior::BaseMechanicalState* mstate : {this->mstate1.get(), this->mstate2.get()})
     {
-        addInput(this->mstate1->findData("rest_position"));
-        addInput(this->mstate2->findData("rest_position"));
-    }
-    else
-    {
-        addInput(this->mstate1->findData("position"));
-        addInput(this->mstate2->findData("position"));
+        if (mstate)
+        {
+            if (auto* mstateData = mstate->findData(dataString))
+            {
+                addInput(mstateData);
+            }
+        }
     }
 }
 
@@ -97,14 +99,17 @@ void NearestPointROI<DataTypes>::reinit()
 template <class DataTypes>
 void NearestPointROI<DataTypes>::doUpdate()
 {
-    const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-    const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
-    const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
+    if (this->mstate1 && this->mstate2)
+    {
+        const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+        const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
+        const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
 
-    if (x1.empty() || x2.empty())
-        return;
+        if (x1.empty() || x2.empty())
+            return;
 
-    computeNearestPointMaps(x1, x2);
+        computeNearestPointMaps(x1, x2);
+    }
 }
 
 

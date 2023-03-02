@@ -361,7 +361,11 @@ int VoxelGridLoader::getActiveDataValue(const unsigned int idx) const
 
 unsigned char * VoxelGridLoader::getData()
 {
-    return image->getPixels();
+    if (image)
+    {
+        return image->getPixels();
+    }
+    return nullptr;
 }
 
 
