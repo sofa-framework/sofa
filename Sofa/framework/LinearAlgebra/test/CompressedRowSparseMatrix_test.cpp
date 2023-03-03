@@ -184,3 +184,37 @@ TEST(CompressedRowSparseMatrix, transposeProduct)
         }
     }
 }
+
+TEST(CompressedRowSparseMatrix, fullRowsNoEntries)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> A;
+    A.resize(1321, 3556);
+    EXPECT_TRUE(A.getRowIndex().empty());
+    EXPECT_NO_THROW(A.fullRows());
+    EXPECT_EQ(A.getRowIndex().size(), 1321);
+
+    //make sure that we can iterate, but the content is empty
+
+    std::vector<std::tuple<int, int, SReal> > triplets_CRS;
+    for (unsigned int it_rows_k=0; it_rows_k < A.rowIndex.size() ; it_rows_k ++)
+    {
+        const auto row = A.rowIndex[it_rows_k];
+        decltype(A)::Range rowRange( A.rowBegin[it_rows_k], A.rowBegin[it_rows_k+1] );
+        for(auto xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )
+        {
+            const auto col = A.colsIndex[xj];
+            const auto k = A.colsValue[xj];
+            triplets_CRS.emplace_back(row, col, k);
+        }
+    }
+    EXPECT_TRUE(triplets_CRS.empty());
+}
+
+TEST(CompressedRowSparseMatrix, fullRowsWithEntries)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> A;
+    generateMatrix(A, 1321, 3556, 0.0003, 12);
+    EXPECT_FALSE(A.getRowIndex().empty());
+    EXPECT_NO_THROW(A.fullRows());
+    EXPECT_EQ(A.getRowIndex().size(), 1321);
+}
