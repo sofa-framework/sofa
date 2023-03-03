@@ -282,22 +282,36 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
                 {
                     // Only split cells with more than 4 childs
                     // Find the biggest dimension
-                    int splitAxis;
                     Vec3 l = cell.maxVect()-cell.minVect();
                     sofa::Index middle = subcells.first.getIndex()+(ncells+1)/2;
-                    if(l[0]>l[1])
-                        if (l[0]>l[2])
-                            splitAxis = 0;
-                        else
-                            splitAxis = 2;
-                    else if (l[1]>l[2])
-                        splitAxis = 1;
-                    else
-                        splitAxis = 2;
+
+                    sofa::type::fixed_array<sofa::Size, 3> sortedAxis { 0, 1, 2};
+                    std::sort(sortedAxis.begin(), sortedAxis.end(), [&l](const sofa::Size i, const sofa::Size j)
+                    {
+                        return l[i] > l[j];
+                    });
+
+                    const auto splitAxis = sortedAxis.front();
+
+                    static const auto centerOnAxis = [](const CubeData& cubeData, const sofa::Size axis)
+                    {
+                        return cubeData.minBBox[axis] + cubeData.maxBBox[axis];
+                    };
+
+                    const auto compareCube = [&sortedAxis](const CubeData& c1,const CubeData& c2)
+                    {
+                        for (const sofa::Size axis : sortedAxis)
+                        {
+                            const SReal v1 = centerOnAxis(c1, axis);
+                            const SReal v2 = centerOnAxis(c2, axis);
+                            if (v1 != v2)
+                                return v1 < v2;
+                        }
+                        return false;
+                    };
 
                     // Separate cells on each side of the median cell
-                    CubeSortPredicate sortpred(splitAxis);
-                    std::sort(elems.begin() + subcells.first.getIndex(), elems.begin() + subcells.second.getIndex(), sortpred);
+                    std::sort(elems.begin() + subcells.first.getIndex(), elems.begin() + subcells.second.getIndex(), compareCube);
 
                     // Create the two new subcells
                     Cube cmiddle(this, middle);
