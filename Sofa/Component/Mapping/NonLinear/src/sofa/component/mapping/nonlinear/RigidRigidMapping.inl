@@ -215,13 +215,25 @@ void RigidRigidMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 {
-    d_repartition.setValue(type::vector<sofa::Size>(value));
+    type::vector<sofa::Size>& rep = *d_repartition.beginEdit();
+    rep.clear();
+    rep.push_back(value);
+    d_repartition.endEdit();
 }
 
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::setRepartition(type::vector<sofa::Size> values)
 {
-    d_repartition.setValue(values);
+    type::vector<sofa::Size>& rep = *d_repartition.beginEdit();
+    rep.clear();
+    rep.reserve(values.size());
+    auto it = values.begin();
+    while (it != values.end())
+    {
+        rep.push_back(*it);
+        it++;
+    }
+    d_repartition.endEdit();
 }
 
 template <class TIn, class TOut>
