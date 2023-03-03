@@ -270,6 +270,11 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
         sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
         sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
+
+        sofa/gpu/cuda/CudaFixedConstraint.h
+        sofa/gpu/cuda/CudaFixedConstraint.inl
+        sofa/gpu/cuda/CudaLinearMovementConstraint.h
+        sofa/gpu/cuda/CudaLinearMovementConstraint.inl
     )
 endif()
 
