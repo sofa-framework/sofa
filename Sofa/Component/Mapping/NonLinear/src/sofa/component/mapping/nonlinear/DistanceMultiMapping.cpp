@@ -19,24 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
+#define SOFA_COMPONENT_MAPPING_DistanceMultiMapping_CPP
 
-#include <sofa/component/mapping/nonlinear/DistanceMapping.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/mapping/nonlinear/DistanceMultiMapping.inl>
 
 namespace sofa::component::mapping::nonlinear
 {
 
-using namespace defaulttype;
+using defaulttype::Vec3Types;
+using defaulttype::Vec1Types;
+using defaulttype::Rigid3Types;
 
-
-// Register in the Factory
-int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
-        .add< DistanceMapping< Vec3Types, Vec1Types > >()
-        .add< DistanceMapping< Rigid3Types, Vec1Types > >()
+int DistanceMultiMappingClass = core::RegisterObject("Compute edge extensions")
+        .add< DistanceMultiMapping< Vec3Types, Vec1Types > >()
+        .add< DistanceMultiMapping< Rigid3Types, Vec1Types > >()
         ;
 
-template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Vec3Types, Vec1Types >;
-template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Rigid3Types, Vec1Types >;
-
-} // namespace sofa::component::mapping::nonlinear
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Vec3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
+}
