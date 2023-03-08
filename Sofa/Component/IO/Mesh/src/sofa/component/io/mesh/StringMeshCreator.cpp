@@ -54,7 +54,8 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
 
 void StringMeshCreator::doClearBuffers()
 {
-
+    sofa::helper::getWriteOnlyAccessor(d_positions).clear();
+    sofa::helper::getWriteOnlyAccessor(d_edges).clear();
 }
 
 
@@ -64,9 +65,6 @@ bool StringMeshCreator::doLoad()
     auto my_edges = sofa::helper::getWriteOnlyAccessor(d_edges);
 
     const unsigned numX = resolution.getValue();
-
-    my_positions.clear();
-    my_edges.clear();
 
     // Warning: Vertex creation order must be consistent with method vert.
     for(unsigned x=0; x<numX; x++)
