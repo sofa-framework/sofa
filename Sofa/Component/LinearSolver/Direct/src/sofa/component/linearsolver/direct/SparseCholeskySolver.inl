@@ -65,7 +65,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& x, Vec
         }
         else
         {
-            msg_error() << "Cannot solve system";
+            msg_error() << "Cannot solve system due to invalid factorization";
         }
         break;
 
