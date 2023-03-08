@@ -48,9 +48,6 @@ using sofa::helper::logging::Message;
 #include <QApplication>
 #include <QScreen>
 
-// uncomment to show traces of GUI operations in this file
-// #define DEBUG_GUI
-
 namespace sofa::gui::qt
 {
 
@@ -85,16 +82,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     {
         return;
     }
-#ifdef DEBUG_GUI
-    std::cout << "GUI: (base) createDialog(" << base->getClassName() << " " << base->getName() << ")" << std::endl;
-#endif
-#ifdef DEBUG_GUI
-    std::cout << "GUI>emit beginObjectModification(" << base->getName() << ")" << std::endl;
-#endif
     emit beginObjectModification(base);
-#ifdef DEBUG_GUI
-    std::cout << "GUI<emit beginObjectModification(" << base->getName() << ")" << std::endl;
-#endif
     basenode = base;
     data_ = nullptr;
 
@@ -171,9 +159,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             if (currentGroup == "Infos")
                 continue;
 
-#ifdef DEBUG_GUI
-            std::cout << "GUI: add Data " << data->getName() << " in " << currentGroup << std::endl;
-#endif
             QTabulationModifyObject* currentTab=nullptr;
 
             std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
@@ -202,14 +187,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
                 connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
             }
-
-#ifdef DEBUG_GUI
-            std::cout << "GUI: added Data " << data->getName() << " in " << currentGroup << std::endl;
-#endif
         }
-#ifdef DEBUG_GUI
-        std::cout << "GUI: end Data" << std::endl;
-#endif
 
         for( sofa::core::objectmodel::Base::VecLink::const_iterator it = links.begin(); it!=links.end(); ++it)
         {
@@ -221,10 +199,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             //For each Link of the current Object
             //We determine where it belongs:
             std::string currentGroup="Links";
-
-#ifdef DEBUG_GUI
-            std::cout << "GUI: add Link " << link->getName() << " in " << currentGroup << std::endl;
-#endif
 
             QTabulationModifyObject* currentTab=nullptr;
 
@@ -245,9 +219,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
             connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
         }
-#ifdef DEBUG_GUI
-        std::cout << "GUI: end Link" << std::endl;
-#endif
 
         for (std::vector<std::string>::const_iterator it = tabNames.begin(), itend = tabNames.end(); it != itend; ++it)
         {
@@ -259,9 +230,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 QString nameTab;
                 if (tabs.size() == 1) nameTab=groupName.c_str();
                 else                  nameTab=QString(groupName.c_str())+ " " + QString::number(tabs[i]->getIndex()) + "/" + QString::number(tabs.size());
-#ifdef DEBUG_GUI
-                std::cout << "GUI: add Tab " << nameTab.toStdString() << std::endl;
-#endif
                 dialogTab->addTab(tabs[i],nameTab);
                 tabs[i]->addStretch();
             }
@@ -353,17 +321,7 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     data_ = data;
     basenode = nullptr;
 
-#ifdef DEBUG_GUI
-    std::cout << "GUI>emit beginDataModification("<<data->getName()<<")" << std::endl;
-#endif
     emit beginDataModification(data);
-#ifdef DEBUG_GUI
-    std::cout << "GUI<emit beginDataModification("<<data->getName()<<")" << std::endl;
-#endif
-
-#ifdef DEBUG_GUI
-    std::cout << "GUI: createDialog( Data<" << data->getValueTypeString() << "> " << data->getName() << ")" << std::endl;
-#endif
 
     QVBoxLayout *generalLayout = new QVBoxLayout(this);
     generalLayout->setContentsMargins(0, 0, 0, 0);
@@ -529,30 +487,12 @@ void ModifyObject::updateValues()
 
         }
 
-#ifdef DEBUG_GUI
-        std::cout << "GUI>emit objectUpdated()" << std::endl;
-#endif
         emit (objectUpdated());
-#ifdef DEBUG_GUI
-        std::cout << "GUI<emit objectUpdated()" << std::endl;
-#endif
 
         if (basenode)
         {
-#ifdef DEBUG_GUI
-            std::cout << "GUI>emit endObjectModification("<<node->getName()<<")" << std::endl;
-#endif
             emit endObjectModification(basenode);
-#ifdef DEBUG_GUI
-            std::cout << "GUI<emit endObjectModification("<<node->getName()<<")" << std::endl;
-#endif
-#ifdef DEBUG_GUI
-            std::cout << "GUI>emit beginObjectModification("<<node->getName()<<")" << std::endl;
-#endif
             emit beginObjectModification(basenode);
-#ifdef DEBUG_GUI
-            std::cout << "GUI<emit beginObjectModification("<<node->getName()<<")" << std::endl;
-#endif
         }
 
         buttonUpdate->setEnabled(false);
@@ -563,13 +503,7 @@ void ModifyObject::updateValues()
 //Called each time a new step of the simulation if computed
 void ModifyObject::updateTables()
 {
-#ifdef DEBUG_GUI
-    std::cout << "GUI>emit updateDataWidgets()" << std::endl;
-#endif
     emit updateDataWidgets();
-#ifdef DEBUG_GUI
-    std::cout << "GUI<emit updateDataWidgets()" << std::endl;
-#endif
 #if SOFA_GUI_QT_HAVE_QT_CHARTS
     if (energy)
     {
@@ -592,13 +526,7 @@ void ModifyObject::reject   ()
 {
     if (basenode)
     {
-#ifdef DEBUG_GUI
-        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
         emit endObjectModification(basenode);
-#ifdef DEBUG_GUI
-        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
     }
 
     const QString dataModifiedString = parseDataModified();
@@ -624,13 +552,7 @@ void ModifyObject::accept   ()
 
     if (basenode)
     {
-#ifdef DEBUG_GUI
-        std::cout << "GUI>emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
         emit endObjectModification(basenode);
-#ifdef DEBUG_GUI
-        std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
-#endif
     }
     emit(dialogClosed(Id_));
     deleteLater();
