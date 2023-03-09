@@ -551,7 +551,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
 
                 for (sofa::Index r = 0; r < val && colIt != colItEnd; r++, cpt++)
                 {
-                    if (colIt.index() != cpt)
+                    if (sofa::Index(colIt.index()) != cpt)
                         continue;
 
                     needToInsert = true;
@@ -596,7 +596,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
                 for (sofa::Index r = 0; r < repartition.getValue()[ito] && colIt
                         != colItEnd; r++, cpt++)
                 {
-                    if (colIt.index() != cpt)
+                    if (sofa::Index(colIt.index()) != cpt)
                         continue;
 
                     needToInsert = true;

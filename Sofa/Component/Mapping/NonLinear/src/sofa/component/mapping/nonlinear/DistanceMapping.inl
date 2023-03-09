@@ -34,7 +34,7 @@
 namespace sofa::component::mapping::nonlinear
 {
 
-static const SReal s_null_distance_epsilon = std::numeric_limits<SReal>::epsilon();
+static constexpr SReal s_null_distance_epsilon = std::numeric_limits<SReal>::epsilon();
 
 
 template <class TIn, class TOut>
