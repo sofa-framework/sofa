@@ -64,8 +64,7 @@ ModifyObject::ModifyObject(void *Id,
       data_(nullptr),
       dialogFlags_(dialogFlags),
       messageTab(nullptr),
-      messageEdit(nullptr),
-      transformation(nullptr)
+      messageEdit(nullptr)
     #if SOFA_GUI_QT_HAVE_QT_CHARTS
     ,energy(nullptr)
     ,momentum(nullptr)
@@ -460,17 +459,6 @@ void ModifyObject::updateValues()
     // if the selected object is a node
     if (node)
     {
-        // and there is a transformation widget associated
-        if(transformation)
-        {
-            // then do some dirty hack to change the value
-            if (!transformation->isDefaultValues())
-            {
-                transformation->applyTransformation(node);
-            }
-            transformation->setDefaultValues();
-        }
-        // call the reinit function on the node to take the into account the applied transformation
         node->reinit(sofa::core::execparams::defaultInstance());
     }
     else if (object)                 //< if the selected is an object

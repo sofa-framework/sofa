@@ -172,9 +172,6 @@ protected:
     QPushButton *buttonUpdate;
     int m_numMessages;
 
-    //Widget specific to Node:
-    //Transformation widget: translation, rotation, scale ( only experimental and deactivated)
-    QTransformationWidget* transformation;
 #if SOFA_GUI_QT_HAVE_QT_CHARTS
     //Energy widget: plot the kinetic & potential energy
     QEnergyStatWidget* energy;
