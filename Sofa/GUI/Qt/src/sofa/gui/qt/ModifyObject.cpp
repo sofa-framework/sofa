@@ -447,52 +447,49 @@ void ModifyObject::updateConsole()
 //*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
-    if (buttonUpdate == nullptr) return;
+    if (buttonUpdate == nullptr)
+        return;
 
-    //Make the update of all the values
-    if (basenode)
+    if (basenode == nullptr)
+        return;
+
+    simulation::Node* node = sofa::core::castTo<sofa::simulation::Node*>(basenode);
+    core::objectmodel::BaseObject* object = sofa::core::castTo<core::objectmodel::BaseObject*>(basenode);
+    if(dialogFlags_.REINIT_FLAG)
     {
-        simulation::Node* node = sofa::core::castTo<sofa::simulation::Node*>(basenode);
-        core::objectmodel::BaseObject* object = sofa::core::castTo<core::objectmodel::BaseObject*>(basenode);
-        if(dialogFlags_.REINIT_FLAG)
+        // if the selected object is a node
+        if (node)
         {
-            // if the selected object is a node
-            if (node)
+            // and there is a transformation widget associated
+            if(transformation)
             {
-                // and there is a transformation widget associated
-                if(transformation)
+                // then do some dirty hack to change the value
+                if (!transformation->isDefaultValues())
                 {
-                    // then do some dirty hack to change the value
-                    if (!transformation->isDefaultValues())
-                    {
-                        transformation->applyTransformation(node);
-                    }
-                    transformation->setDefaultValues();
+                    transformation->applyTransformation(node);
                 }
-                // call the reinit function on the node
-                node->reinit(sofa::core::execparams::defaultInstance());
+                transformation->setDefaultValues();
             }
-            else if (object)                 //< if the selected is an object
-            {
-                object->reinit();            //< we need to fully re-initialize the object to be sure it is ok.
-            }
-            else
-            {
-                throw std::runtime_error("Invalid type, only Node and BaseObject are supported. "
-                                         "This is a BUG, please report to https://github.com/sofa-framework/sofa/issues");
-            }
+            // call the reinit function on the node
+            node->reinit(sofa::core::execparams::defaultInstance());
         }
-
-        emit (objectUpdated());
-
-        if (basenode)
+        else if (object)                 //< if the selected is an object
         {
-            emit endObjectModification(basenode);
-            emit beginObjectModification(basenode);
+            object->reinit();            //< we need to fully re-initialize the object to be sure it is ok.
         }
-
-        buttonUpdate->setEnabled(false);
+        else
+        {
+            throw std::runtime_error("Invalid type, only Node and BaseObject are supported. "
+                                     "This is a BUG, please report to https://github.com/sofa-framework/sofa/issues");
+        }
     }
+
+    emit (objectUpdated());
+
+    emit endObjectModification(basenode);
+    emit beginObjectModification(basenode);
+
+    buttonUpdate->setEnabled(false);
 }
 
 //**************************************************************************************************************************************
