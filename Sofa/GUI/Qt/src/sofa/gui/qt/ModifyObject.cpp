@@ -447,7 +447,7 @@ void ModifyObject::updateConsole()
 void ModifyObject::updateValues()
 {
     // this is controlling if we need to re-init (eg: not in the Modeller)
-    if(dialogFlags_.REINIT_FLAG)
+    if(!dialogFlags_.REINIT_FLAG)
         return;
 
     if (basenode == nullptr)
