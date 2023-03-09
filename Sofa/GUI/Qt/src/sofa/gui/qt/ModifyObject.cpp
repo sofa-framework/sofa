@@ -471,8 +471,10 @@ void ModifyObject::updateValues()
                                  "This is a BUG, please report to https://github.com/sofa-framework/sofa/issues");
     }
 
-    emit (objectUpdated());
+    // trigger the internal updates (eg: updateDataCallback),
+    basenode->d_componentState.updateIfDirty();
 
+    emit objectUpdated();
     emit endObjectModification(basenode);
     emit beginObjectModification(basenode);
 
