@@ -518,7 +518,7 @@ void ModifyObject::reject   ()
         emit  dataModified( dataModifiedString  );
     }
 
-    emit(dialogClosed(Id_));
+    emit dialogClosed(Id_);
     deleteLater();
     QDialog::reject();
 } //When closing a window, inform the parent.
@@ -537,7 +537,7 @@ void ModifyObject::accept   ()
     {
         emit endObjectModification(basenode);
     }
-    emit(dialogClosed(Id_));
+    emit dialogClosed(Id_);
     deleteLater();
     QDialog::accept();
 } //if closing by using Ok button, update the values
