@@ -299,11 +299,15 @@ public:
     typedef TOwnerType OwnerType;
     typedef TDestType DestType;
     static constexpr unsigned ActiveFlags = TFlags;
-    typedef LinkTraitsDestPtr<DestType, ActiveFlags & FLAG_STRONGLINK> TraitsDestPtr;
+    static constexpr bool IsStrongLink = ActiveFlags & FLAG_STRONGLINK;
+    static constexpr bool IsMultiLink = ActiveFlags & FLAG_MULTILINK;
+    static constexpr bool StorePath = ActiveFlags & FLAG_STOREPATH;
+
+    typedef LinkTraitsDestPtr<DestType, IsStrongLink> TraitsDestPtr;
     typedef typename TraitsDestPtr::T DestPtr;
-    typedef LinkTraitsValueType<DestType, DestPtr, ActiveFlags & FLAG_STRONGLINK, ActiveFlags & FLAG_STOREPATH> TraitsValueType;
+    typedef LinkTraitsValueType<DestType, DestPtr, IsStrongLink, StorePath> TraitsValueType;
     typedef typename TraitsValueType::T ValueType;
-    typedef LinkTraitsContainer<DestType, DestPtr, ValueType, ActiveFlags & FLAG_MULTILINK> TraitsContainer;
+    typedef LinkTraitsContainer<DestType, DestPtr, ValueType, IsMultiLink> TraitsContainer;
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
