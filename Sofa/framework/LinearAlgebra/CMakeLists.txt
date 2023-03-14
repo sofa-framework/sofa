@@ -20,6 +20,7 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/BlockVector.h
     ${SOFALINEARALGEBRASRC_ROOT}/BlockVector.inl
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixTraceLogger.h
     ${SOFALINEARALGEBRASRC_ROOT}/DiagonalMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenSparseMatrix.h
