@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaBarycentricMapping.h"
+#include <SofaCUDA/component/mapping/linear/CudaBarycentricMapping.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/component/mapping/linear/BarycentricMapping.inl>
 #include <sofa/component/mapping/linear/BarycentricMappers/TopologyBarycentricMapper.inl>

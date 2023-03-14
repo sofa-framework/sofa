@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl>
+#include <SofaCUDA/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
