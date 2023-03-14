@@ -29,6 +29,8 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>
+
+// The following header is included just for compatibility (see #3707). To remove in v23.12
 #include <sofa/component/mapping/nonlinear/DistanceMultiMapping.h>
 
 
