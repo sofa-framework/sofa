@@ -170,9 +170,17 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
         if (m_useRestMState)
         {
-            for (sofa::Index i = 0; i < getExtPosition()->getValue().size(); i++)
+            if (const DataVecCoord* extPosition = getExtPosition())
             {
-                m_ext_indices.push_back(i);
+                const auto& extPositionValue = extPosition->getValue();
+                for (sofa::Index i = 0; i < extPositionValue.size(); i++)
+                {
+                    m_ext_indices.push_back(i);
+                }
+            }
+            else
+            {
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             }
         }
         else
@@ -186,7 +194,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_indices.size() > m_ext_indices.size())
     {
-        msg_error() << "Error : the dimention of the source and the targeted points are different ";
+        msg_error() << "Error : the dimension of the source and the targeted points are different ";
         m_indices.clear();
         m_ext_indices.clear();
     }
@@ -196,7 +204,21 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::recomputeIndices()
 template<class DataTypes>
 const typename PolynomialRestShapeSpringsForceField<DataTypes>::DataVecCoord* PolynomialRestShapeSpringsForceField<DataTypes>::getExtPosition() const
 {
-    return (m_useRestMState ? d_restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    if(m_useRestMState)
+    {
+        if (d_restMState)
+        {
+            return d_restMState->read(core::VecCoordId::position());
+        }
+    }
+    else
+    {
+        if (this->mstate)
+        {
+            return this->mstate->read(core::VecCoordId::restPosition());
+        }
+    }
+    return nullptr;
 }
 
 
@@ -209,7 +231,15 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addForce(const core::Mecha
 
     helper::WriteAccessor<DataVecDeriv> f1 = f;
     helper::ReadAccessor<DataVecCoord> p1 = x;
-    helper::ReadAccessor<DataVecCoord> p0 = *getExtPosition();
+
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    helper::ReadAccessor< DataVecCoord > p0 = *extPosition;
 
     msg_info() << "P1 = " << p1.ref();
     msg_info() << "P0 = " << p0.ref();
@@ -372,7 +402,14 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;
 
-    helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+    const DataVecCoord* extPosition = getExtPosition();
+    if (!extPosition)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+    helper::ReadAccessor< DataVecCoord > p0 = *extPosition;
     helper::ReadAccessor< DataVecCoord > p  = this->mstate->read(core::VecCoordId::position());
 
     const VecIndex& indices = m_indices;
