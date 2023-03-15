@@ -33,6 +33,9 @@
 #include <sofa/core/MechanicalParams.h>
 #include <cstring>
 
+// This component has been DEPRECATED since SOFA v22.12 and will be removed in SOFA v23.12.
+// Please use RigidMapping with template='Rigid3,Rigid3' instead.
+// If this component is crucial to you please report that to sofa-dev@ so we can reconsider this component for future re-integration.
 namespace sofa::component::mapping::nonlinear
 {
 
@@ -199,7 +202,7 @@ void RigidRigidMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::globalToLocalCoords(OutCoord& result, const OutCoord& xfrom, const InCoord& x)
+void RigidRigidMapping<TIn, TOut>::globalToLocalCoords(OutCoord& result, const InCoord& xfrom, const OutCoord& x)
 {
     result.getCenter() = xfrom.getOrientation().inverse().rotate( x.getCenter() - xfrom.getCenter() ) ;
     result.getOrientation() = xfrom.getOrientation().inverse() * x.getOrientation() ;

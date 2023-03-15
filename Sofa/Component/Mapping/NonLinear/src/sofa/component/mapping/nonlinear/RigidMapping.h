@@ -52,23 +52,24 @@ public:
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
-    typedef Out OutDataTypes;
-    typedef typename Out::VecCoord VecCoord;
-    typedef typename Out::VecDeriv VecDeriv;
-    typedef typename Out::Coord Coord;
-    typedef typename Out::Deriv Deriv;
+
+    typedef typename Out::Real OutReal;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
+
     typedef typename In::Real InReal;
+    typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
-    typedef typename InDeriv::Pos DPos;
-    typedef typename InDeriv::Rot DRot;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
-    typedef typename Coord::value_type Real;
+
     enum
     {
-        N = OutDataTypes::spatial_dimensions
+        N = Out::spatial_dimensions
     };
     enum
     {
@@ -76,25 +77,25 @@ public:
     };
     enum
     {
-        NOut = sofa::defaulttype::DataTypeInfo<Deriv>::Size
+        NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size
     };
-    typedef type::Mat<N, N, Real> Mat;
-    typedef type::Vec<N, Real> Vector;
-    typedef type::Mat<NOut, NIn, Real> MBloc;
+    typedef type::Mat<N, N, OutReal> Mat;
+    typedef type::Vec<N, OutReal> Vector;
+    typedef type::Mat<NOut, NIn, OutReal> MBloc;
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    Data<VecCoord> points;    ///< mapped points in local coordinates
-    VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
-    RigidMappingInternalData<In, Out> data;
-    Data<sofa::Index> index; ///< input DOF index
-    sofa::core::objectmodel::DataFileName fileRigidMapping; ///< Filename
-    Data<bool> useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
-    Data<bool> indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data<OutVecCoord> d_points;    ///< mapped points in local coordinates
+    OutVecCoord m_rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
+    RigidMappingInternalData<In, Out> m_data;
+    Data<sofa::Index> d_index; ///< input DOF index
+    sofa::core::objectmodel::DataFileName d_fileRigidMapping; ///< Filename
+    Data<bool> d_useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
+    Data<bool> d_indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
 
-    Data< type::vector<unsigned int> > rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
-    Data<bool> globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+    Data< type::vector<unsigned int> > d_rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
+    Data<bool> d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data<int> geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
+    Data<int> d_geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
 
 protected:
     RigidMapping();
@@ -103,19 +104,19 @@ protected:
     unsigned int getRigidIndex( unsigned int pointIndex ) const;
 
 public:
-    sofa::Size addPoint(const Coord& c);
-    sofa::Size addPoint(const Coord& c, sofa::Index indexFrom);
+    sofa::Size addPoint(const OutCoord& c);
+    sofa::Size addPoint(const OutCoord& c, sofa::Index indexFrom);
 
     void init() override;
 
     /// Compute the local coordinates based on the current output coordinates.
     void reinit() override;
 
-    void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in) override;
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
-    void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv>& out, const Data<InVecDeriv>& in) override;
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<VecDeriv>& in) override;
+    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
 
     void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
@@ -141,22 +142,25 @@ public:
 
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
+    void globalToLocalCoords(OutCoord& result, const InCoord& xfrom, const OutCoord& xto);
+    void updateOmega(typename InDeriv::Rot& omega, const OutDeriv& out, const OutCoord& rotatedpoint);
+
 protected:
     class Loader;
 
     void load(const char* filename);
-    const VecCoord& getPoints();
+    const OutVecCoord& getPoints();
     void setJMatrixBlock(sofa::Index outIdx, sofa::Index inIdx);
 
-    std::unique_ptr<MatrixType> matrixJ;
-    bool updateJ;
+    std::unique_ptr<MatrixType> m_matrixJ;
+    bool m_updateJ;
 
     typedef linearalgebra::EigenSparseMatrix<In,Out> SparseMatrixEigen;
-    SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
-    type::vector<sofa::linearalgebra::BaseMatrix*> eigenJacobians; /// used by getJs
+    SparseMatrixEigen m_eigenJacobian;                      ///< Jacobian of the mapping used by getJs
+    type::vector<sofa::linearalgebra::BaseMatrix*> m_eigenJacobians; /// used by getJs
 
     typedef linearalgebra::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
-    StiffnessSparseMatrixEigen geometricStiffnessMatrix;
+    StiffnessSparseMatrixEigen m_geometricStiffnessMatrix;
 };
 
 template <std::size_t N, class Real>
@@ -169,6 +173,7 @@ const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, s
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 #endif
 
