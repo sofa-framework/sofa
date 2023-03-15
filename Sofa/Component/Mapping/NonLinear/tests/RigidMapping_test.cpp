@@ -138,12 +138,6 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
         return this->runTest(xin,xout,xin,expectedChildCoords);
     }
 
-    void getExpectedChildCoord(OutCoord& result, const InCoord& xin, const OutCoord& xout)
-    {
-        result.getCenter() = xin.getOrientation().inverse().rotate( xout.getCenter() - xin.getCenter() ) ;
-        result.getOrientation() = xin.getOrientation().inverse() * xout.getOrientation() ;
-    }
-
     /** One frame, with particles given in world coordinates.
      * This requires the mapping from world to local coordinates.
     */
@@ -180,7 +174,6 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
         OutCoord localCoord;
         for(unsigned i=0; i<xout.size(); i++ )
         {
-            // transformation from initial to final parent position: Tfinal.Rfinal.Rinit^{-1}.Tinit^{-1}
             globalToLocalCoords(localCoord, xin_init[0], xout[i]);
             expectedChildCoords[i] = xin[0].mult(localCoord);
         }
