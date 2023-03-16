@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaBarycentricMapping.inl"
+#include <SofaCUDA/component/mapping/linear/CudaBarycentricMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 

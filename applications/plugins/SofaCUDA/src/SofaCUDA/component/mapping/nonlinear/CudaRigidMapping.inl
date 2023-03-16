@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaRigidMapping.h"
+#include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.inl>
 #include <sofa/helper/accessor.h>
 

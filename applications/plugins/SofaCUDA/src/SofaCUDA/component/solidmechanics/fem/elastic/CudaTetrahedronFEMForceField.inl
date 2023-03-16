@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaTetrahedronFEMForceField.h"
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.inl>
 #include <sofa/core/MechanicalParams.h>
 

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaUniformMass.inl"
+#include <SofaCUDA/component/mass/CudaUniformMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
