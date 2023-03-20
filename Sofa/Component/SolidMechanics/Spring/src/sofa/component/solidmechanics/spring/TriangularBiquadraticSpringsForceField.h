@@ -77,9 +77,7 @@ protected:
         Real  deltaL2;  // the current unit direction
         Real stiffness;
 
-        EdgeRestInformation()
-        {
-        }
+        EdgeRestInformation() = default;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
@@ -109,9 +107,8 @@ protected:
         Deriv dp[3];
         Real J;
 
-        TriangleRestInformation()
-        {
-        }
+        TriangleRestInformation() = default;
+
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& /*tri*/ )
         {

@@ -77,9 +77,7 @@ protected:
         Real  dl;  // the current unit direction
         Real stiffness;
 
-        EdgeRestInformation()
-        {
-        }
+        EdgeRestInformation() = default;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
@@ -101,9 +99,8 @@ protected:
         Real stiffness[3]; // the elongation stiffness
         Mat3 DfDx[3]; /// the edge stiffness matrix
 
-        TriangleRestInformation()
-        {
-        }
+        TriangleRestInformation()= default;
+
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& /*tri*/ )
         {
