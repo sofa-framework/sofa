@@ -25,9 +25,9 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/OptionsGroup.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>
@@ -53,7 +53,7 @@ namespace sofa::component::mapping::nonlinear
 // If the rest lengths are not defined, they are set using the initial values.
 // If computeDistance is set to true, the rest lengths are set to 0.
 template <class TIn, class TOut>
-class SquareDistanceMapping : public core::Mapping<TIn, TOut>
+class SquareDistanceMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<true>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(SquareDistanceMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -87,7 +87,6 @@ public:
 
     Data<Real> d_showObjectScale;        ///< drawing size
     Data<sofa::type::RGBAColor> d_color; ///< drawing color
-    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method used to compute the geometric stiffness
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<SquareDistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

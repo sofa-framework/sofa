@@ -43,14 +43,6 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color,sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
-    , d_geometricStiffness(initData(&d_geometricStiffness,
-        helper::OptionsGroup{{"None", "Exact", "Stabilized"}}.setSelectedItem(0),
-        "geometricStiffness",
-        "Method used to compute the geometric stiffness:\n"
-            "-None: geometric stiffness is not computed\n"
-            "-Exact: the exact geometric stiffness is computed\n"
-            "-Stabilized: the exact geometric stiffness is approximated in order to improve stability")
-    )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }

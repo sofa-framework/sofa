@@ -37,14 +37,6 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
-    , d_geometricStiffness(initData(&d_geometricStiffness,
-        helper::OptionsGroup{{"None", "Exact", "Stabilized"}}.setSelectedItem(0),
-        "geometricStiffness",
-        "Method used to compute the geometric stiffness:\n"
-            "-None: geometric stiffness is not computed\n"
-            "-Exact: the exact geometric stiffness is computed\n"
-            "-Stabilized: the exact geometric stiffness is approximated in order to improve stability")
-    )
     , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
 {

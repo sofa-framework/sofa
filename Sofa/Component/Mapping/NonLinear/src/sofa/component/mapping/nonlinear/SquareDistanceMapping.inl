@@ -35,18 +35,8 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 SquareDistanceMapping<TIn, TOut>::SquareDistanceMapping()
     : Inherit()
-//    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if no restLengths are given and if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-//    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
-    , d_geometricStiffness(initData(&d_geometricStiffness,
-        helper::OptionsGroup{{"None", "Exact", "Stabilized"}}.setSelectedItem(0),
-        "geometricStiffness",
-        "Method used to compute the geometric stiffness:\n"
-            "-None: geometric stiffness is not computed\n"
-            "-Exact: the exact geometric stiffness is computed\n"
-            "-Stabilized: the exact geometric stiffness is approximated in order to improve stability")
-    )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }

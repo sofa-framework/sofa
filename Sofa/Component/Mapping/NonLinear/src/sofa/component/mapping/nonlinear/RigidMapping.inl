@@ -123,18 +123,11 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , rigidIndexPerPoint(initData(&rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
     , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
-    , d_geometricStiffness(initData(&d_geometricStiffness,
-        helper::OptionsGroup{{"None", "Exact", "Stabilized"}}.setSelectedItem(0),
-        "geometricStiffness",
-        "Method used to compute the geometric stiffness:\n"
-            "-None: geometric stiffness is not computed\n"
-            "-Exact: the exact geometric stiffness is computed\n"
-            "-Stabilized: the exact geometric stiffness is approximated in order to improve stability")
-    )
     , matrixJ()
     , updateJ(false)
 {
     this->addAlias(&fileRigidMapping, "fileRigidMapping");
+    sofa::helper::getWriteAccessor(this->d_geometricStiffness)->setSelectedItem(0);
 }
 
 template <class TIn, class TOut>

@@ -24,12 +24,12 @@
 #include <sofa/component/mapping/nonlinear/config.h>
 
 #include <sofa/core/Mapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -59,7 +59,7 @@ struct BaseDistanceFromTargetMapping
  * @author Francois Faure
   */
 template <class TIn, class TOut>
-class DistanceFromTargetMapping : public core::Mapping<TIn, TOut>, public BaseDistanceFromTargetMapping
+class DistanceFromTargetMapping : public core::Mapping<TIn, TOut>, public BaseDistanceFromTargetMapping, public NonLinearMappingData<true>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DistanceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -86,7 +86,6 @@ public:
     Data<type::vector<unsigned>> f_indices;          ///< Indices of the parent points
     Data<InVecCoord> f_targetPositions;              ///< Positions to compute the distances from
     Data<type::vector<Real>> f_restDistances;        ///< Rest lengths of the connections
-    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method used to compute the geometric stiffness
 
     /// Add a target with a desired distance
     void createTarget( unsigned index, const InCoord& position, Real distance);

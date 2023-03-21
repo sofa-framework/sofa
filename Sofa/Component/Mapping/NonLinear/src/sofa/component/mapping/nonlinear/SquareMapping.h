@@ -24,9 +24,8 @@
 #include <sofa/component/mapping/nonlinear/config.h>
 
 #include <sofa/core/Mapping.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -39,7 +38,7 @@ namespace sofa::component::mapping::nonlinear
 
 */
 template <class TIn, class TOut>
-class SquareMapping : public core::Mapping<TIn, TOut>
+class SquareMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<false>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(SquareMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -68,9 +67,6 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
-
-    Data< helper::OptionsGroup > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
-
     void init() override;
 
     using Inherit::apply;
@@ -93,7 +89,7 @@ public:
 
 protected:
     SquareMapping();
-    virtual ~SquareMapping();
+    ~SquareMapping() override;
 
     SparseMatrixEigen jacobian;                             ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector

@@ -23,8 +23,8 @@
 
 #include <sofa/component/mapping/nonlinear/config.h>
 #include <sofa/core/MultiMapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/OptionsGroup.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 namespace sofa::component::mapping::nonlinear
@@ -41,7 +41,7 @@ namespace sofa::component::mapping::nonlinear
  * @author Matthieu Nesme
  */
 template <class TIn, class TOut>
-class DistanceMultiMapping : public core::MultiMapping<TIn, TOut>
+class DistanceMultiMapping : public core::MultiMapping<TIn, TOut>, public NonLinearMappingData<true>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DistanceMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
@@ -80,7 +80,6 @@ public:
     Data<Real> d_showObjectScale;                    ///< Scale for object display
     Data<sofa::type::RGBAColor> d_color;             ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
     Data<type::vector<type::Vec2i>> d_indexPairs;    ///< list of couples (parent index + index in the parent)
-    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method to compute the geometric stiffness
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<DistanceMultiMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

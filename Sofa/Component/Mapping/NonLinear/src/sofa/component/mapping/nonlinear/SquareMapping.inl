@@ -33,13 +33,6 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 SquareMapping<TIn, TOut>::SquareMapping()
     : Inherit()
-    , d_geometricStiffness(initData(&d_geometricStiffness,
-        helper::OptionsGroup{{"None", "Exact"}}.setSelectedItem(0),
-        "geometricStiffness",
-        "Method used to compute the geometric stiffness:\n"
-            "-None: geometric stiffness is not computed\n"
-            "-Exact: the exact geometric stiffness is computed")
-    )
 {
 }
 
