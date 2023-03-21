@@ -24,6 +24,7 @@
 #include <sofa/component/mapping/nonlinear/config.h>
 
 #include <sofa/core/Mapping.h>
+#include <sofa/helper/OptionsGroup.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
@@ -68,7 +69,7 @@ public:
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
-    Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
+    Data< helper::OptionsGroup > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
 
     void init() override;
 

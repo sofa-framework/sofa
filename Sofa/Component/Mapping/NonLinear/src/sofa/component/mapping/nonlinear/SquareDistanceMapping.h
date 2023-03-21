@@ -27,6 +27,7 @@
 #include <sofa/core/MultiMapping.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/helper/OptionsGroup.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>
@@ -84,11 +85,9 @@ public:
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
-//    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-//    Data< type::vector< Real > > f_restLengths;		///< rest length of each link
-    Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< sofa::type::RGBAColor > d_color;         ///< drawing color
-    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data<Real> d_showObjectScale;        ///< drawing size
+    Data<sofa::type::RGBAColor> d_color; ///< drawing color
+    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method used to compute the geometric stiffness
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<SquareDistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -133,8 +132,6 @@ protected:
 #if  !defined(SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareDistanceMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
-
-
 #endif
 
 } // namespace sofa::component::mapping::nonlinear

@@ -36,9 +36,16 @@ DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
-    , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , d_geometricStiffness(initData(&d_geometricStiffness,
+        helper::OptionsGroup{{"None", "Exact", "Stabilized"}}.setSelectedItem(0),
+        "geometricStiffness",
+        "Method used to compute the geometric stiffness:\n"
+            "-None: geometric stiffness is not computed\n"
+            "-Exact: the exact geometric stiffness is computed\n"
+            "-Stabilized: the exact geometric stiffness is approximated in order to improve stability")
+    )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }
@@ -49,11 +56,9 @@ DistanceMultiMapping<TIn, TOut>::~DistanceMultiMapping()
     release();
 }
 
-
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int index)
 {
-
     // find the index of the parent state
     unsigned i;
     for(i=0; i<this->fromModels.size(); i++)
@@ -72,11 +77,8 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from<this->fromModels.size());
-    type::vector<type::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
-    indexPairsVector.push_back(type::Vec2i(from,index));
-    d_indexPairs.endEdit();
+    sofa::helper::getWriteAccessor(d_indexPairs).emplace_back(from, index);
 }
-
 
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::init()
@@ -85,7 +87,6 @@ void DistanceMultiMapping<TIn, TOut>::init()
     {
         msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
-
     }
 
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
@@ -203,9 +204,8 @@ void DistanceMultiMapping<TIn, TOut>::apply(const type::vector<OutVecCoord*>& ou
             invlengths[i] = 0;
 
             // arbritary vector mapping all directions
-            Real p = 1.0f/std::sqrt((Real)In::spatial_dimensions);
-            for( unsigned i=0;i<In::spatial_dimensions;++i)
-                gap[i]=p;
+            static const Real p = static_cast<Real>(1) / std::sqrt(static_cast<Real>(In::spatial_dimensions));
+            gap.fill(p);
         }
 
         SparseMatrixEigen* J0 = static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]]);
@@ -266,11 +266,12 @@ void DistanceMultiMapping<TIn, TOut>::applyJT(const type::vector< InVecDeriv*>& 
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId)
+void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce)
 {
+    SOFA_UNUSED(outForce);
     // NOT OPTIMIZED AT ALL, but will do the job for now
 
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) return;
 
     const SReal kfactor = mparams->kFactor();
@@ -285,7 +286,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     for( unsigned i=0; i< size ; i++ )
     {
         core::State<In>* fromModel = this->getFromModels()[i];
-        parentForce[i] = parentDfId[fromModel].write()->beginEdit();
+        parentForce[i] = inForce[fromModel].write()->beginEdit();
         parentDisplacement[i] = &mparams->readDx(fromModel)->getValue();
     }
 
@@ -312,10 +313,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    if( j==k )
-                        b[j][k] = 1.f - directions[i][j]*directions[i][k];
-                    else
-                        b[j][k] =     - directions[i][j]*directions[i][k];
+                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             // (I - uu^T)*f/l*kfactor  --  do not forget kfactor !
@@ -340,7 +338,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     for( unsigned i=0; i< size ; i++ )
     {
         core::State<In>* fromModel = this->getFromModels()[i];
-        parentDfId[fromModel].write()->endEdit();
+        inForce[fromModel].write()->endEdit();
     }
 }
 
@@ -356,7 +354,7 @@ const type::vector<sofa::linearalgebra::BaseMatrix*>* DistanceMultiMapping<TIn, 
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForceId )
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
@@ -376,10 +374,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    if( j==k )
-                        b[j][k] = 1.f - directions[i][j] * directions[i][k];
-                    else
-                        b[j][k] =     - directions[i][j] * directions[i][k];
+                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
@@ -390,17 +385,17 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
 
             // TODO optimize (precompute base Index per mechanicalobject)
             size_t globalIndex0 = 0;
-            for( int i=0 ; i<pair0[0] ; ++i )
+            for( int p=0 ; p<pair0[0] ; ++p )
             {
-                size_t insize = this->getFromModels()[i]->getSize();
+                const size_t insize = this->getFromModels()[p]->getSize();
                 globalIndex0 += insize;
             }
             globalIndex0 += pair0[1];
 
             size_t globalIndex1 = 0;
-            for( int i=0 ; i<pair1[0] ; ++i )
+            for( int p=0 ; p<pair1[0] ; ++p )
             {
-                size_t insize = this->getFromModels()[i]->getSize();
+                size_t insize = this->getFromModels()[p]->getSize();
                 globalIndex1 += insize;
             }
             globalIndex1 += pair1[1];

@@ -33,7 +33,13 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 SquareMapping<TIn, TOut>::SquareMapping()
     : Inherit()
-    , d_geometricStiffness(initData(&d_geometricStiffness, 1u, "geometricStiffness", "0 -> no GS, 1 -> exact GS (default)"))
+    , d_geometricStiffness(initData(&d_geometricStiffness,
+        helper::OptionsGroup{{"None", "Exact"}}.setSelectedItem(0),
+        "geometricStiffness",
+        "Method used to compute the geometric stiffness:\n"
+            "-None: geometric stiffness is not computed\n"
+            "-Exact: the exact geometric stiffness is computed")
+    )
 {
 }
 
@@ -102,7 +108,7 @@ void SquareMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*
 template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
@@ -151,7 +157,7 @@ template <class TIn, class TOut>
 void SquareMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );

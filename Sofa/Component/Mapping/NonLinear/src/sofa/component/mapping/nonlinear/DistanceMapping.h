@@ -39,19 +39,15 @@ namespace sofa::component::mapping::nonlinear
 
 
 /** Maps point positions to distances (in distance unit).
-  Type TOut corresponds to a scalar value.
-  The pairs are given in an EdgeSetTopologyContainer in the same node.
-  If the rest lengths are not defined, they are set using the initial values.
-  If computeDistance is set to true, the rest lengths are set to 0.
+ * @tparam TIn parent point positions
+ * @tparam TOut corresponds to a scalar value: distance between point pairs, minus a rest distance.
+ * The pairs are given in an EdgeSetTopologyContainer in the same node.
+ * If the rest lengths are not defined, they are set using the initial values.
+ * If computeDistance is set to true, the rest lengths are set to 0.
+ * (Changed class name on Feb. 4, 2014, previous name was ExtensionMapping)
 
-  (Changed class name on Feb. 4, 2014, previous name was ExtensionMapping)
-
-    In: parent point positions
-
-    Out: distance between point pairs, minus a rest distance.
-
-@author Francois Faure
-  */
+ * @author Francois Faure
+ */
 template <class TIn, class TOut>
 class DistanceMapping : public core::Mapping<TIn, TOut>
 {
@@ -85,11 +81,11 @@ public:
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
-    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< type::vector< Real > > f_restLengths;		///< rest length of each link
-    Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< sofa::type::RGBAColor > d_color;         ///< drawing color
-    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data<bool> f_computeDistance;                    ///< if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them
+    Data<type::vector<Real>> f_restLengths;          ///< Rest lengths of the connections
+    Data<Real> d_showObjectScale;                    ///< Scale for object display
+    Data<sofa::type::RGBAColor> d_color;             ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
+    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method to compute the geometric stiffness
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<DistanceMapping<TIn, TOut>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -120,7 +116,7 @@ public:
 
 protected:
     DistanceMapping();
-    virtual ~DistanceMapping();
+    ~DistanceMapping() override;
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector

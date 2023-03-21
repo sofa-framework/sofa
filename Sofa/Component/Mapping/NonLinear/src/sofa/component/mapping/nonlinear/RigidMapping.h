@@ -30,6 +30,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/type/vector.h>
 
@@ -94,7 +95,8 @@ public:
     Data< type::vector<unsigned int> > rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
     Data<bool> globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data<int> geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
+    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method used to compute the geometric stiffness
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_geometricStiffness instead") DeprecatedAndRemoved geometricStiffness;
 
 protected:
     RigidMapping();

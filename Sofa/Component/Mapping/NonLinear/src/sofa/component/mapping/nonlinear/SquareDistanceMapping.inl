@@ -39,7 +39,14 @@ SquareDistanceMapping<TIn, TOut>::SquareDistanceMapping()
 //    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
-    , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , d_geometricStiffness(initData(&d_geometricStiffness,
+        helper::OptionsGroup{{"None", "Exact", "Stabilized"}}.setSelectedItem(0),
+        "geometricStiffness",
+        "Method used to compute the geometric stiffness:\n"
+            "-None: geometric stiffness is not computed\n"
+            "-Exact: the exact geometric stiffness is computed\n"
+            "-Stabilized: the exact geometric stiffness is approximated in order to improve stability")
+    )
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }
@@ -171,7 +178,7 @@ void SquareDistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
@@ -231,7 +238,7 @@ template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
