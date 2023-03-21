@@ -32,7 +32,7 @@ template<bool HasStabilizedGeometricStiffness>
 class SOFA_COMPONENT_MAPPING_NONLINEAR_API NonLinearMappingData : public virtual sofa::core::objectmodel::Base
 {
 public:
-    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method to compute the geometric stiffness
+    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method used to compute the geometric stiffness
 
     NonLinearMappingData();
 };
