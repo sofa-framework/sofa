@@ -30,8 +30,8 @@ using sofa::helper::OptionsGroup;
 TEST(OptionsGroup, constructors)
 {
     const OptionsGroup opt0{};
-    const OptionsGroup opt1(std::vector{"optionA", "optionB"});
-    const OptionsGroup opt2(std::set{"optionA", "optionB"});
+    const OptionsGroup opt1(std::vector<std::string>{"optionA", "optionB"});
+    const OptionsGroup opt2(std::set<std::string>{"optionA", "optionB"});
     const OptionsGroup opt3 = OptionsGroup{{"optionA", "optionB"}}.setSelectedItem(1);
     const OptionsGroup opt4 = OptionsGroup{{"optionA", "optionB"}}.setSelectedItem(10);
     const OptionsGroup opt5 = OptionsGroup{2, "optionA", "optionB"}.setSelectedItem(1);
