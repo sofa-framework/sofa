@@ -28,6 +28,7 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/helper/config.h>
+#include <sofa/type/trait/is_container.h>
 
 namespace sofa::helper
 {
@@ -54,10 +55,11 @@ public :
 
     ///Constructor by given the number of argument following by the variable arguments
     ///Example OptionsGroup m_options(4,"button0","button1","button2","button3");
-    OptionsGroup(int nbofRadioButton,...);
+    explicit OptionsGroup(int nbofRadioButton,...);
 
     ///generic constructor taking other string container like list<string>, set<string>, vector<string>
-    template <class T> OptionsGroup(const T& list);
+    template <class T, typename = std::enable_if_t<type::trait::is_container<T>::value> >
+    explicit OptionsGroup(const T& list);
 
     template <class T> OptionsGroup(const std::initializer_list<T>& list);
 
@@ -131,9 +133,8 @@ inline std::istream & operator >>(std::istream& in, OptionsGroup& m_trick)
     return in;
 }
 
-
-template <class T>
-inline OptionsGroup::OptionsGroup(const T& list)
+template <class T, typename>
+OptionsGroup::OptionsGroup(const T& list)
 {
     buildFromContainer(list);
     selectedItem=0;
