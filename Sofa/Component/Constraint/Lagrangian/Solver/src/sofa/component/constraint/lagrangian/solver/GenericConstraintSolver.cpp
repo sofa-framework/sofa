@@ -94,7 +94,7 @@ GenericConstraintSolver::GenericConstraintSolver()
     , current_cp(&m_cpBuffer[0])
     , last_cp(nullptr)
 {
-    sofa::helper::OptionsGroup m_newoptiongroup(3,"ProjectedGaussSeidel","UnbuiltGaussSeidel", "NonsmoothNonlinearConjugateGradient");
+    sofa::helper::OptionsGroup m_newoptiongroup{"ProjectedGaussSeidel","UnbuiltGaussSeidel", "NonsmoothNonlinearConjugateGradient"};
     m_newoptiongroup.setSelectedItem("ProjectedGaussSeidel");
     d_resolutionMethod.setValue(m_newoptiongroup);
 

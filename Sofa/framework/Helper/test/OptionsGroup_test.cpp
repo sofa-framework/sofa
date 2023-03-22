@@ -34,7 +34,7 @@ TEST(OptionsGroup, constructors)
     const OptionsGroup opt2(std::set<std::string>{"optionA", "optionB"});
     const OptionsGroup opt3 = OptionsGroup{{"optionA", "optionB"}}.setSelectedItem(1);
     const OptionsGroup opt4 = OptionsGroup{{"optionA", "optionB"}}.setSelectedItem(10);
-    const OptionsGroup opt5 = OptionsGroup{2, "optionA", "optionB"}.setSelectedItem(1);
+    const OptionsGroup opt5 = OptionsGroup{"optionA", "optionB"}.setSelectedItem(1);
 
     EXPECT_EQ(opt0.getSelectedId(), 0);
     EXPECT_EQ(opt1.getSelectedId(), 0);

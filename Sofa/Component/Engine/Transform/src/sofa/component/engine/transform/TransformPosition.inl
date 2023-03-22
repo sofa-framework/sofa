@@ -57,7 +57,7 @@ TransformPosition<DataTypes>::TransformPosition()
 
     f_pointSize.setGroup("Visualization");
 
-    f_method.beginEdit()->setNames(9,
+    f_method.setValue({
         "projectOnPlane",
         "translation",
         "rotation",
@@ -66,8 +66,7 @@ TransformPosition<DataTypes>::TransformPosition()
         "scaleTranslation",
         "scaleRotationTranslation",
         "affine",
-        "fromFile");
-    f_method.endEdit();
+        "fromFile"});
 
     addInput(&f_inputX);
     addInput(&f_origin);

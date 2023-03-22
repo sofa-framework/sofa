@@ -66,26 +66,10 @@ OglModel::OglModel()
 
     textures.clear();
 
-    sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
-    blendEquationOptions->setNames(4,"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"); // .. add other options
-    blendEquationOptions->setSelectedItem(0);
-    blendEquation.endEdit();
-
-    // alpha blend values
-    sofa::helper::OptionsGroup* sourceFactorOptions = sourceFactor.beginEdit();
-    sourceFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
-    sourceFactorOptions->setSelectedItem(2);
-    sourceFactor.endEdit();
-
-    sofa::helper::OptionsGroup* destFactorOptions = destFactor.beginEdit();
-    destFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
-    destFactorOptions->setSelectedItem(3);
-    destFactor.endEdit();
-
-    sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
-    primitiveTypeOptions->setNames(4, "DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS");
-    primitiveTypeOptions->setSelectedItem(0);
-    primitiveType.endEdit();
+    blendEquation.setValue({"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"});
+    sourceFactor.setValue(helper::OptionsGroup{"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"}.setSelectedItem(2));
+    destFactor.setValue(helper::OptionsGroup{"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"}.setSelectedItem(3));
+    primitiveType.setValue(helper::OptionsGroup{"DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS"}.setSelectedItem(0));
 }
 
 void OglModel::deleteTextures()
