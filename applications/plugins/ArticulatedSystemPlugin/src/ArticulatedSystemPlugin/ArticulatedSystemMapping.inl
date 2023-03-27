@@ -46,7 +46,6 @@ ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
 {
-
     if(this->getFromModels1().empty())
     {
         msg_error() << "While iniatilizing ; input Model not found.";
@@ -76,6 +75,17 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     {
         m_fromRootModel = this->getFromModels2()[0];
         msg_info() << "Root Model found : Name = " << m_fromRootModel->getName();
+
+        sofa::Size rootSize = m_fromRootModel->getSize();
+        if(d_indexFromRoot.isSet()) {
+            if(d_indexFromRoot.getValue() >= rootSize)
+            {
+                msg_warning() << d_indexFromRoot.getName() << ", " << d_indexFromRoot.getValue() << ", is larger than input2's size, " << rootSize << ". Using default value instead.";
+                d_indexFromRoot.setValue(rootSize - 1);
+            }
+        } else {
+            d_indexFromRoot.setValue(rootSize - 1); // default is last index
+        }
     }
 
     CoordinateBuf.clear();
@@ -156,8 +166,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     // Copy the root position if a rigid root model is present
     if (m_fromRootModel && inroot)
     {
-        int index = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
-        out[0] = (*inroot)[index];
+        out[0] = (*inroot)[d_indexFromRoot.getValue()];
     }
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
@@ -342,8 +351,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
 
     // Copy the root position if a rigid root model is present
     if (m_fromRootModel && inroot){
-        int index = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
-        out[0] = (*inroot)[index];
+        out[0] = (*inroot)[d_indexFromRoot.getValue()];
     } else
         out[0] = OutDeriv();
 
@@ -443,8 +451,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
 
     if (outroot && m_fromRootModel)
     {
-        int index = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
-        (*outroot)[index] += fObjects6DBuf[0];
+        (*outroot)[d_indexFromRoot.getValue()] += fObjects6DBuf[0];
     }
 }
 
@@ -453,6 +460,7 @@ template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outRoot )
 {
     const OutVecCoord& xto = m_toModel->read(core::ConstVecCoordId::position())->getValue();
+    const OutVecCoord& xfromRoot = m_fromRootModel->read(core::ConstVecCoordId::position())->getValue();
 
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -523,8 +531,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 
                 if(m_fromRootModel && outRoot)
                 {
-                    unsigned int indexT = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
-                    sofa::type::Vec<3,OutReal> posRoot = xto[indexT].getCenter();
+                    sofa::type::Vec<3,OutReal> posRoot = xfromRoot[d_indexFromRoot.getValue()].getCenter();
 
                     OutDeriv T;
                     getVCenter(T) = getVCenter(valueConst);
@@ -533,7 +540,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                     if (rootRowIt == rootRowItEnd)
                         rootRowIt = (*outRoot).writeLine(rowIt.index());
 
-                    rootRowIt.addCol(indexT, T);
+                    rootRowIt.addCol(d_indexFromRoot.getValue(), T);
                 }
 
                 ++colIt;
