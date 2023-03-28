@@ -337,12 +337,10 @@ struct PlaneForceField_test : public BaseSimulationTest
 using ::testing::Types;
 typedef Types<
               TypeTuple<Rigid3Types, Rigid3Mass>
-              ,TypeTuple<Vec1dTypes, double>
-              ,TypeTuple<Vec2dTypes, double>
-              ,TypeTuple<Vec3dTypes, double>
-              ,TypeTuple<Vec6dTypes, double>
-              ,TypeTuple<Rigid3dTypes, Rigid3dMass>
-
+              ,TypeTuple<Vec1Types, SReal>
+              ,TypeTuple<Vec2Types, SReal>
+              ,TypeTuple<Vec3Types, SReal>
+              ,TypeTuple<Vec6Types, SReal>
 > DataTypes;
 
 // Test suite for all the instanciations

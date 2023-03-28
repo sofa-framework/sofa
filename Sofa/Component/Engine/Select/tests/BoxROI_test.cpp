@@ -329,15 +329,15 @@ struct BoxROITest :  public sofa::testing::BaseTest
         m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.   1. 1. 1.  2. 2. 2.");
         m_boxroi->computeBBox(nullptr, false);
 
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,2));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3(-1,-1,-1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3(2,2,2));
 
         m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.");
         m_boxroi->findData("orientedBox")->read("0 0 0  2 0 0  2 2 0 2");
         m_boxroi->computeBBox(nullptr, false);
 
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
-        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3(-1,-1,-1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3(2,2,1));
     }
 
 };
@@ -347,7 +347,6 @@ struct BoxROITest :  public sofa::testing::BaseTest
 //Please fix this either the tests or the BoxROI implementation
 typedef Types<
     Vec3Types
-    ,Vec3dTypes
     //,Rigid3dTypes
 
 > DataTypes;
