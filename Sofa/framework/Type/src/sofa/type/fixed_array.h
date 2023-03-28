@@ -140,6 +140,35 @@ public:
         return elems[i];
     }
 
+    template< std::size_t I >
+    [[nodiscard]] constexpr T& get() noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const T& get() noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr T&& get() noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return std::move(elems[I]);
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const T&& get() noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return std::move(elems[I]);
+    }
+
+
     // at() with range check
     constexpr reference at(size_type i)
     {
@@ -313,33 +342,4 @@ struct tuple_element<I, ::sofa::type::fixed_array<T, N> >
 {
     using type = T;
 };
-}
-
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr T& get( ::sofa::type::fixed_array<T, N>& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return a[I];
-}
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr const T& get( const ::sofa::type::fixed_array<T, N>& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return a[I];
-}
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr T&& get( ::sofa::type::fixed_array<T, N>&& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return std::move(a[I]);
-}
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr const T&& get( const ::sofa::type::fixed_array<T, N>&& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return std::move(a[I]);
 }
