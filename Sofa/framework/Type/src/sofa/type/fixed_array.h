@@ -57,6 +57,7 @@
 #include <iostream>
 #include <type_traits>
 #include <algorithm>
+#include <utility>
 
 
 namespace sofa::type
@@ -301,3 +302,43 @@ extern template class SOFA_TYPE_API fixed_array<double, 7>;
 #endif //FIXED_ARRAY_CPP
 
 } // namespace sofa::type
+
+namespace std
+{
+template<typename T, sofa::Size N>
+struct tuple_size<::sofa::type::fixed_array<T, N> > : integral_constant<size_t, N> {};
+
+template<std::size_t I, typename T, sofa::Size N>
+struct tuple_element<I, ::sofa::type::fixed_array<T, N> >
+{
+    using type = T;
+};
+
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr T& get( ::sofa::type::fixed_array<T, N>& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return a[I];
+}
+
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr const T& get( const ::sofa::type::fixed_array<T, N>& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return a[I];
+}
+
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr T&& get( ::sofa::type::fixed_array<T, N>&& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return std::move(a[I]);
+}
+
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr const T&& get( const ::sofa::type::fixed_array<T, N>&& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return std::move(a[I]);
+}
+}
