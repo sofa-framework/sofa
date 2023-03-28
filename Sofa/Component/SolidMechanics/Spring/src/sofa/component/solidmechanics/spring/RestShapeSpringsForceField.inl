@@ -417,9 +417,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         }
         else // non-rigid implementation
         {
-            const sofa::Index index = m_indices[i];
-            const sofa::Index ext_index = m_ext_indices[i];
-
             Deriv dx = p1[index] - p0[ext_index];
             f1[index] -= dx * stiffness;
         }
