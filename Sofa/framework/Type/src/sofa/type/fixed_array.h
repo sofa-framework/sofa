@@ -281,6 +281,34 @@ operator>(const fixed_array<T, N>& v1, const fixed_array<T, N>& v2 ) noexcept
     return v2 < v1;
 }
 
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr T& get( ::sofa::type::fixed_array<T, N>& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return a[I];
+}
+
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr const T& get( const ::sofa::type::fixed_array<T, N>& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return a[I];
+}
+
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr T&& get( ::sofa::type::fixed_array<T, N>&& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return std::move(a[I]);
+}
+
+template< std::size_t I, class T, std::size_t N >
+[[nodiscard]] constexpr const T&& get( const ::sofa::type::fixed_array<T, N>&& a ) noexcept
+{
+    static_assert(I < N, "array index out of bounds");
+    return std::move(a[I]);
+}
+
 #ifndef FIXED_ARRAY_CPP
 extern template class SOFA_TYPE_API fixed_array<float, 2>;
 extern template class SOFA_TYPE_API fixed_array<double, 2>;
@@ -313,32 +341,4 @@ struct tuple_element<I, ::sofa::type::fixed_array<T, N> >
 {
     using type = T;
 };
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr T& get( ::sofa::type::fixed_array<T, N>& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return a[I];
-}
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr const T& get( const ::sofa::type::fixed_array<T, N>& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return a[I];
-}
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr T&& get( ::sofa::type::fixed_array<T, N>&& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return std::move(a[I]);
-}
-
-template< std::size_t I, class T, std::size_t N >
-[[nodiscard]] constexpr const T&& get( const ::sofa::type::fixed_array<T, N>&& a ) noexcept
-{
-    static_assert(I < N, "array index out of bounds");
-    return std::move(a[I]);
-}
 }
