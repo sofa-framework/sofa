@@ -125,7 +125,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaMultiMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
     sofa/gpu/cuda/CudaSubsetMapping.cpp
-    sofa/gpu/cuda/CudaSubsetMultiMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMultiMapping.cpp
 
     ### Mass
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cpp
