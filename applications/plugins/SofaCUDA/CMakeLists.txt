@@ -160,7 +160,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaTriangleModel.cpp
 
     ### Constraints  
-    sofa/gpu/cuda/CudaBilateralInteractionConstraint.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralInteractionConstraint.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedTranslationConstraint.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.cpp
@@ -174,9 +174,9 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaIndexValueMapper.cpp
     
     ### ConstraintCorrection
-    sofa/gpu/cuda/CudaLinearSolverConstraintCorrection.cpp
-    sofa/gpu/cuda/CudaPrecomputedConstraintCorrection.cpp
-    sofa/gpu/cuda/CudaUncoupledConstraintCorrection.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaLinearSolverConstraintCorrection.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaPrecomputedConstraintCorrection.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaUncoupledConstraintCorrection.cpp
 )
 
 set(CUDA_SOURCES
