@@ -132,10 +132,11 @@ public:
         Real maxStress;
         Coord principalStrainDirection;
         Real maxStrain;
+        Real differenceToCriteria;
 
         type::vector<Coord> lastNStressDirection;
 
-        TriangleInformation() { }
+        TriangleInformation() = default;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInformation& /*ti*/ )
@@ -148,8 +149,6 @@ public:
         {
             return in;
         }
-
-        Real differenceToCriteria;
     };
 
 

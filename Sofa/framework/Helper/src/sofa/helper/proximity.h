@@ -25,7 +25,9 @@
 #include <sofa/type/Vec.h>
 #include <sofa/helper/config.h>
 
+#ifndef SOFA_BUILD_SOFA_HELPER
 SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "sofa/geometry/proximity/PointTriangle.h, sofa/geometry/proximity/SegmentTriangle.h or sofa/geometry/proximity/TriangleTriangle.h")
+#endif
 
 namespace sofa
 {
