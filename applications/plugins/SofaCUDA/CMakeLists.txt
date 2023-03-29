@@ -167,12 +167,12 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearVelocityConstraint.cpp
 
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBeamLinearMapping.cpp
-    sofa/gpu/cuda/CudaBoxROI.cpp
-    sofa/gpu/cuda/CudaNearestPointROI.cpp
-    sofa/gpu/cuda/CudaSphereROI.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaBoxROI.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaNearestPointROI.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaSphereROI.cpp
 
     sofa/gpu/cuda/CudaIndexValueMapper.cpp
-    
+
     ### ConstraintCorrection
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaLinearSolverConstraintCorrection.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaPrecomputedConstraintCorrection.cpp
