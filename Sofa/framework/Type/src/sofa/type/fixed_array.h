@@ -57,6 +57,7 @@
 #include <iostream>
 #include <type_traits>
 #include <algorithm>
+#include <utility>
 
 
 namespace sofa::type
@@ -138,6 +139,35 @@ public:
 #endif
         return elems[i];
     }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr T& get() & noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const T& get() const& noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return elems[I];
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr T&& get() && noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return std::move(elems[I]);
+    }
+
+    template< std::size_t I >
+    [[nodiscard]] constexpr const T&& get() const&& noexcept
+    {
+        static_assert(I < N, "array index out of bounds");
+        return std::move(elems[I]);
+    }
+
 
     // at() with range check
     constexpr reference at(size_type i)
@@ -301,3 +331,15 @@ extern template class SOFA_TYPE_API fixed_array<double, 7>;
 #endif //FIXED_ARRAY_CPP
 
 } // namespace sofa::type
+
+namespace std
+{
+template<typename T, sofa::Size N>
+struct tuple_size<::sofa::type::fixed_array<T, N> > : integral_constant<size_t, N> {};
+
+template<std::size_t I, typename T, sofa::Size N>
+struct tuple_element<I, ::sofa::type::fixed_array<T, N> >
+{
+    using type = T;
+};
+}
