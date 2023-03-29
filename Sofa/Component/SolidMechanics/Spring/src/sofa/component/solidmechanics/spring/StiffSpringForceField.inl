@@ -218,6 +218,8 @@ typename DataTypes::DPos StiffSpringForceField<DataTypes>::computeSpringDForce(V
     const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, sofa::Index i, const Spring& spring,
     SReal kFactor, SReal bFactor)
 {
+    SOFA_UNUSED(df1);
+    SOFA_UNUSED(df2);
     SOFA_UNUSED(bFactor);
     const typename DataTypes::CPos d = DataTypes::getDPos(dx2[spring.m2]) - DataTypes::getDPos(dx1[spring.m1]);
     return this->dfdx[i] * d * kFactor;

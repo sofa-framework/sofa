@@ -326,14 +326,18 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
     const SetIndexArray & indices = d_indices.getValue();
     for (unsigned int i=0 ; i<keyVelocities.size()-1 ; i++)
     {
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        for(const auto index : indices)
         {
-            const typename DataTypes::CPos& cpos0 = DataTypes::getCPos(x0[*it]+keyVelocities[i]);
-            const typename DataTypes::CPos& cpos1 = DataTypes::getCPos(x0[*it]+keyVelocities[i+1]);
+            const auto p0 = x0[index]+keyVelocities[i];
+            const auto p1 = x0[index]+keyVelocities[i+1];
+
+            const typename DataTypes::CPos& cpos0 = DataTypes::getCPos(p0);
+            const typename DataTypes::CPos& cpos1 = DataTypes::getCPos(p1);
 
             vertices.push_back(sofa::type::Vec3(cpos0));
             vertices.push_back(sofa::type::Vec3(cpos1));
         }
+
     }
 
     vparams->drawTool()->drawLines(vertices, 1.0, color);
