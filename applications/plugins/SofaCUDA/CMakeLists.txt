@@ -142,7 +142,7 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
-    sofa/gpu/cuda/CudaConstantForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaConstantForceField.cpp
     sofa/gpu/cuda/CudaEllipsoidForceField.cpp
     sofa/gpu/cuda/CudaLinearForceField.cpp
     sofa/gpu/cuda/CudaPenalityContactForceField.cpp
