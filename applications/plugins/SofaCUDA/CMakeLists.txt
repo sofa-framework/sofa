@@ -147,7 +147,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaLinearForceField.cpp
     sofa/gpu/cuda/CudaPenalityContactForceField.cpp
     sofa/gpu/cuda/CudaPlaneForceField.cpp
-    sofa/gpu/cuda/CudaRestShapeSpringsForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaRestShapeSpringsForceField.cpp
     sofa/gpu/cuda/CudaSphereForceField.cpp
     sofa/gpu/cuda/CudaSpringForceField.cpp
     
@@ -171,7 +171,7 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaNearestPointROI.cpp
     ${SOFACUDA_SOURCE_DIR}/component/engine/select/CudaSphereROI.cpp
 
-    sofa/gpu/cuda/CudaIndexValueMapper.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/engine/transform/CudaIndexValueMapper.cpp
 
     ### ConstraintCorrection
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaLinearSolverConstraintCorrection.cpp
