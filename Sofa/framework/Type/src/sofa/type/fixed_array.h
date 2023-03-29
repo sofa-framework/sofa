@@ -141,28 +141,28 @@ public:
     }
 
     template< std::size_t I >
-    [[nodiscard]] constexpr T& get() noexcept
+    [[nodiscard]] constexpr T& get() & noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return elems[I];
     }
 
     template< std::size_t I >
-    [[nodiscard]] constexpr const T& get() noexcept
+    [[nodiscard]] constexpr const T& get() const& noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return elems[I];
     }
 
     template< std::size_t I >
-    [[nodiscard]] constexpr T&& get() noexcept
+    [[nodiscard]] constexpr T&& get() && noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return std::move(elems[I]);
     }
 
     template< std::size_t I >
-    [[nodiscard]] constexpr const T&& get() noexcept
+    [[nodiscard]] constexpr const T&& get() const&& noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return std::move(elems[I]);
