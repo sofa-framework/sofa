@@ -481,7 +481,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
         return;
 
     const OutVecCoord& xto = m_toModel->read(core::ConstVecCoordId::position())->getValue();
-    const OutVecCoord& xfromRoot = m_fromRootModel->read(core::ConstVecCoordId::position())->getValue();
 
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -552,6 +551,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 
                 if(m_fromRootModel && outRoot)
                 {
+                    const OutVecCoord& xfromRoot = m_fromRootModel->read(core::ConstVecCoordId::position())->getValue();
                     sofa::type::Vec<3,OutReal> posRoot = xfromRoot[d_indexFromRoot.getValue()].getCenter();
 
                     OutDeriv T;
