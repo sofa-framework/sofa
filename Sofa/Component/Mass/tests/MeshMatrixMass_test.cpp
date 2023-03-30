@@ -329,10 +329,10 @@ public:
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
             EXPECT_EQ(mass->getVertexMass()[0], 1.0);
 
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], 1.0);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], 1.0);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], 0.0);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], 0.0);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], 0.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], 0.0_sreal);
         }
 
         return ;
@@ -366,9 +366,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0 ); 
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0); // 8 hexa
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0)); // 8 hexa
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
         }
 
         return ;
@@ -399,9 +399,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], mass->getTotalMass() / 8.0);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], mass->getMassDensity()[0] / 20);
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0));
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
         }
 
         return ;
@@ -432,9 +432,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05_sreal);
         }
 
         return ;
@@ -466,9 +466,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -497,9 +497,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625);
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -528,9 +528,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -560,9 +560,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -591,9 +591,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -626,9 +626,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
         }
 
         return ;
@@ -659,9 +659,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 27 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.0125 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.0125_sreal);
         }
 
         return ;
@@ -709,10 +709,10 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[7], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[7], SReal(0.25/3.0) );
         }
         return ;
     }
@@ -746,10 +746,10 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[1], 0.1 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[1], 0.1_sreal);
         }
 
         return ;
@@ -784,9 +784,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(2.0/3.0) );
         }
 
         return ;
@@ -822,9 +822,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 1.0 );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 1.0_sreal);
         }
 
         return ;
@@ -864,9 +864,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
         }
 
         return ;
@@ -902,9 +902,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
         }
 
         return ;
@@ -940,9 +940,9 @@ public:
         if(mass!=nullptr){
             EXPECT_EQ( mass->isLumped(), true );
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (2.0/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(2.0/3.0) );
         }
 
         return ;
@@ -980,9 +980,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1017,9 +1017,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1054,9 +1054,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1091,9 +1091,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1127,9 +1127,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1168,9 +1168,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.25/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25/3.0) );
         }
 
         return ;
@@ -1207,9 +1207,9 @@ public:
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0 );
-            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25 );
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], (0.5/3.0) );
+            EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.5/3.0) );
         }
 
         return ;
@@ -1289,8 +1289,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0._sreal);
         }
         
         // -- remove hexahedron id: 0 -- 
@@ -1298,7 +1298,7 @@ public:
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 26);
         EXPECT_EQ(eMasses.size(), 87);
-        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 7.0);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 7.0_sreal);
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1311,15 +1311,15 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove hexahedron id: 0 --
         modifier->removeHexahedra(hexaIds);
         EXPECT_EQ(vMasses.size(), 25);
         EXPECT_EQ(eMasses.size(), 84);
-        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 6.0);
+        EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 6.0_sreal);
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1332,8 +1332,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
         
         // -- remove hexahedron id: 0, 1 --
@@ -1354,8 +1354,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[20], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[20], 0._sreal);
         }
 
         // -- remove hexahedron id: 0, 1, 2, 3 --
@@ -1447,8 +1447,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
         // -- remove tetrahedron id: 0 -- 
@@ -1469,8 +1469,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
 
@@ -1491,8 +1491,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
 
@@ -1514,8 +1514,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
         // -- remove tetrahedron id: 0, 1 --
@@ -1600,8 +1600,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[2], 0._sreal);
         }
 
         // -- remove quad id: 0 -- 
@@ -1622,8 +1622,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove quad id: 0 --
@@ -1643,8 +1643,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove quad id: 0, 1 --
@@ -1731,8 +1731,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[1], 0._sreal);
         }
 
 
@@ -1754,8 +1754,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove triangle id: 0 --
@@ -1775,8 +1775,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove triangle id: 0, 1 --
@@ -1797,8 +1797,8 @@ public:
         }
         else
         {
-            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0.);
-            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0.);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[0], 0._sreal);
+            EXPECT_FLOATINGPOINT_EQ(eMasses[3], 0._sreal);
         }
 
         // -- remove triangle id: 0, 1, 2, 3 --

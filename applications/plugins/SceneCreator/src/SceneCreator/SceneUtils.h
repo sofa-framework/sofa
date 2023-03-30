@@ -31,7 +31,7 @@ namespace sofa
 namespace modeling
 {
 
-typedef Eigen::VectorXd Vector;
+typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
 
 typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
 typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SparseMatrix;
