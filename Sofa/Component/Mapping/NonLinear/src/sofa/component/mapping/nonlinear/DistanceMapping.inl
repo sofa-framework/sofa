@@ -42,8 +42,7 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color,sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
-    , d_geometricStiffness(initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , d_color(initData(&d_color,sofa::type::RGBAColor::yellow(), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
 }
@@ -158,9 +157,8 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
             invlengths[i] = 0;
 
             // arbritary vector mapping all directions
-            Real p = 1.0f/std::sqrt((Real)In::spatial_dimensions);
-            for( unsigned i=0;i<In::spatial_dimensions;++i)
-                gap[i]=p;
+            static const Real p = static_cast<Real>(1) / std::sqrt(static_cast<Real>(In::spatial_dimensions));
+            gap.fill(p);
         }
 
         // insert in increasing column order
@@ -195,31 +193,31 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void DistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& out, const Data<InVecDeriv>& in)
 {
     if( jacobian.rowSize() )
     {
-        auto dOutWa = sofa::helper::getWriteOnlyAccessor(dOut);
-        auto dInRa = sofa::helper::getReadAccessor(dIn);
+        auto dOutWa = sofa::helper::getWriteOnlyAccessor(out);
+        auto dInRa = sofa::helper::getReadAccessor(in);
         jacobian.mult(dOutWa.wref(),dInRa.ref());
     }
 }
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
+void DistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& out, const Data<OutVecDeriv>& in)
 {
     if( jacobian.rowSize() )
     {
-        auto dOutRa = sofa::helper::getReadAccessor(dOut);
-        auto dInWa = sofa::helper::getWriteOnlyAccessor(dIn);
+        auto dOutRa = sofa::helper::getReadAccessor(in);
+        auto dInWa = sofa::helper::getWriteOnlyAccessor(out);
         jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
     }
 }
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId)
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) return;
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get()].write());
@@ -247,10 +245,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
                 {
                     for(unsigned k=0; k<In::spatial_dimensions; k++)
                     {
-                        if( j==k )
-                            b[j][k] = 1.f - directions[i][j]*directions[i][k];
-                        else
-                            b[j][k] =    - directions[i][j]*directions[i][k];
+                        b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                     }
                 }
                 // (I - uu^T)*f/l*kfactor  --  do not forget kfactor !
@@ -275,11 +270,11 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& in, const Data<OutMatrixDeriv>& out)
+void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
     SOFA_UNUSED(cparams);
-    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(out).ref();
-    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(in).wref();
+    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
     addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
@@ -302,7 +297,7 @@ template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
 
@@ -324,10 +319,7 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    if( j==k )
-                        b[j][k] = 1.f - directions[i][j]*directions[i][k];
-                    else
-                        b[j][k] =     - directions[i][j]*directions[i][k];
+                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l

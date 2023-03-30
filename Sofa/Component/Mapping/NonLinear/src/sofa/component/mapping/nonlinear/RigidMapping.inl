@@ -123,11 +123,11 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , rigidIndexPerPoint(initData(&rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
     , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
-    , geometricStiffness(initData(&geometricStiffness, 0, "geometricStiffness", "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)"))
     , matrixJ()
     , updateJ(false)
 {
     this->addAlias(&fileRigidMapping, "fileRigidMapping");
+    sofa::helper::getWriteAccessor(this->d_geometricStiffness)->setSelectedItem(0);
 }
 
 template <class TIn, class TOut>
@@ -350,7 +350,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId childForceId)
 {
-    if( !geometricStiffness.getValue() ) return;
+    if( !d_geometricStiffness.getValue().getSelectedId() ) return;
 
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
@@ -361,7 +361,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
     else
     {
         // if symmetrized version, force local assembly
-        if( geometricStiffness.getValue() == 2 )
+        if( d_geometricStiffness.getValue().getSelectedId() == 2 )
         {
             updateK( mparams, childForceId );
             auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
@@ -546,7 +546,7 @@ template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
-    unsigned geomStiff = geometricStiffness.getValue();
+    const unsigned geomStiff = d_geometricStiffness.getValue().getSelectedId();
 
     if( !geomStiff ) { geometricStiffnessMatrix.resize(0,0); return; }
 

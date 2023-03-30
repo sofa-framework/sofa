@@ -23,6 +23,7 @@
 #include <sofa/component/mapping/nonlinear/config.h>
 
 #include <sofa/core/Mapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -44,7 +45,7 @@ public:
 };
 
 template <class TIn, class TOut>
-class RigidMapping : public core::Mapping<TIn, TOut>
+class RigidMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<true>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(RigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -94,7 +95,7 @@ public:
     Data< type::vector<unsigned int> > rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
     Data<bool> globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data<int> geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_geometricStiffness instead") DeprecatedAndRemoved geometricStiffness;
 
 protected:
     RigidMapping();

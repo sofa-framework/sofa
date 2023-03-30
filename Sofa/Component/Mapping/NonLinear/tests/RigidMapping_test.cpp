@@ -110,7 +110,7 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 
         // child positions
         rigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
-        rigidMapping->geometricStiffness.setValue(1); // full unsymmetrized geometric stiffness
+        sofa::helper::getWriteAccessor(rigidMapping->d_geometricStiffness)->setSelectedItem(1); // full unsymmetrized geometric stiffness
         OutVecCoord xout(Nout);
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);
@@ -151,7 +151,7 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 
         // child positions
         rigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
-        rigidMapping->geometricStiffness.setValue(1); // full unsymmetrized geometric stiffness
+        sofa::helper::getWriteAccessor(rigidMapping->d_geometricStiffness)->setSelectedItem(1); // full unsymmetrized geometric stiffness
         OutVecCoord xout(Nout);
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);

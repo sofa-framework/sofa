@@ -19,23 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_SquareMapping_CPP
+#pragma once
 
-#include <sofa/component/mapping/nonlinear/SquareMapping.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/mapping/nonlinear/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::mapping::nonlinear
 {
 
-using namespace defaulttype;
+template<bool HasStabilizedGeometricStiffness>
+class NonLinearMappingData : public virtual sofa::core::objectmodel::Base
+{
+public:
+    Data<helper::OptionsGroup> d_geometricStiffness; ///< Method used to compute the geometric stiffness
 
+    NonLinearMappingData();
+};
 
-// Register in the Factory
-int SquareMappingClass = core::RegisterObject("Compute the square")
-        .add< SquareMapping< Vec1Types, Vec1Types > >()
-        ;
+template <bool HasStabilizedGeometricStiffness>
+NonLinearMappingData<HasStabilizedGeometricStiffness>::NonLinearMappingData()
+: d_geometricStiffness(initData(&d_geometricStiffness,
+    helper::OptionsGroup{{"None", "Exact", "Stabilized"}}.setSelectedItem(2),
+    "geometricStiffness",
+    "Method used to compute the geometric stiffness:\n"
+        "-None: geometric stiffness is not computed\n"
+        "-Exact: the exact geometric stiffness is computed\n"
+        "-Stabilized: the exact geometric stiffness is approximated in order to improve stability")
+)
+{}
 
-template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareMapping< Vec1Types, Vec1Types >;
+template <>
+inline NonLinearMappingData<false>::NonLinearMappingData()
+: d_geometricStiffness(initData(&d_geometricStiffness,
+    helper::OptionsGroup{{"None", "Exact"}}.setSelectedItem(1),
+    "geometricStiffness",
+    "Method used to compute the geometric stiffness:\n"
+        "-None: geometric stiffness is not computed\n"
+        "-Exact: the exact geometric stiffness is computed")
+)
+{}
 
-
-} // namespace sofa::component::mapping::nonlinear
+}
