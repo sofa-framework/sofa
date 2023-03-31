@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_GPU_CUDA_CUDALINEMODEL_CPP
 
-#include <sofa/gpu/cuda/CudaLineModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaLineModel.h>
 #include <sofa/component/collision/geometry/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 

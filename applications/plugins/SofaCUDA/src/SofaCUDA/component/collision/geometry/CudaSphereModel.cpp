@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_GPU_CUDA_CUDASPHEREMODEL_CPP
 
-#include <sofa/gpu/cuda/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
 #include <sofa/component/collision/geometry/SphereModel.inl>
 #include <sofa/core/ObjectFactory.h>
 

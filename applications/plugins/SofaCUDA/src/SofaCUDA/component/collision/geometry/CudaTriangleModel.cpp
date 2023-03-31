@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_CPP
 
-#include <sofa/gpu/cuda/CudaTriangleModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaTriangleModel.h>
 #include <sofa/component/collision/geometry/TriangleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
