@@ -33,6 +33,10 @@ namespace sofa::component::mapping::nonlinear
 template <class TIn, class TOut>
 SquareMapping<TIn, TOut>::SquareMapping()
     : Inherit()
+    , d_useGeometricStiffnessMatrix(initData(&d_useGeometricStiffnessMatrix, true, "useGeometricStiffnessMatrix",
+        "If available (cached), the geometric stiffness matrix is used in order to compute the "
+        "product with the parent displacement. Otherwise, the product is computed directly using "
+        "the available vectors (matrix-free method)."))
 {
 }
 
@@ -109,7 +113,7 @@ void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, c
     SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel.get()));
 
-    if( K.compressedMatrix.nonZeros() )
+    if(d_useGeometricStiffnessMatrix.getValue() && K.compressedMatrix.nonZeros() )
     {
         K.addMult( parentForce.wref(), parentDisplacement.ref(), (typename In::Real)kfactor );
     }
@@ -120,7 +124,7 @@ void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, c
 
         for(unsigned i=0; i<size; i++ )
         {
-            parentForce[i][0] += childForce[i][0]*kfactor;
+            parentForce[i][0] += parentDisplacement[i][0] * childForce[i][0]*kfactor;
         }
     }
 }

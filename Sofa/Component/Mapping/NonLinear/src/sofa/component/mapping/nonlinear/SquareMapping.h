@@ -87,6 +87,8 @@ public:
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const linearalgebra::BaseMatrix* getK() override;
 
+    Data < bool > d_useGeometricStiffnessMatrix; ///< If available (cached), the geometric stiffness matrix is used in order to compute the product with the parent displacement. Otherwise, the product is computed directly using the available vectors (matrix-free method).
+
 protected:
     SquareMapping();
     ~SquareMapping() override;
@@ -94,7 +96,6 @@ protected:
     SparseMatrixEigen jacobian;                             ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                                   ///< Assembled geometric stiffness matrix
-
 };
 
 
