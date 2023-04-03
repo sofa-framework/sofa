@@ -32,7 +32,7 @@ template <class DataTypes>
 FillReducingOrdering<DataTypes>::FillReducingOrdering()
     : l_mstate(initLink("mstate", "Mechanical state to reorder"))
     , l_topology(initLink("topology", "Topology to reorder"))
-    , d_orderingMethod(initData(&d_orderingMethod, sofa::helper::OptionsGroup(2, "nestedDissection", "approximateMinimumDegree"),
+    , d_orderingMethod(initData(&d_orderingMethod, {"nestedDissection", "approximateMinimumDegree"},
         "orderingMethod", "Ordering method.\n"
         "nestedDissection is the multilevel nested dissection algorithm implemented in the METIS library.\n"
         "approximateMinimumDegree is the approximate minimum degree algorithm implemented in the Eigen library."))

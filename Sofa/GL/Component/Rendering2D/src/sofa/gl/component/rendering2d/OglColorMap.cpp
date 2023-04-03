@@ -50,28 +50,28 @@ OglColorMap::OglColorMap()
 , d_legendRangeScale(initData(&d_legendRangeScale,1.f,"legendRangeScale","to change the unit of the min/max value of the legend"))
 , texture(0)
 {
-   d_colorScheme.beginEdit()->setNames(19,
+   d_colorScheme.setValue({
         "Red to Blue",  // HSV space
         "Blue to Red",  // HSV space
         "HSV",          // HSV space
         "Red",          // RGB space
         "Green",        // RGB space
         "Blue",         // RGB space
-		"Yellow to Cyan",// HSV space
-		"Cyan to Yellow",// HSV space
-		"Red to Yellow",// RGB space
-		"Yellow to Red",// RGB space
-		"Yellow to Green",// RGB space
-		"Green to Yellow",// RGB space
-		"Green to Cyan",// RGB space
-		"Cyan to Green",// RGB space
-		"Cyan to Blue",// RGB space
-		"Blue to Cyan",// RGB space
-		"BlueInv",// HSV space
-		"GreenInv",// HSV space
-		"RedInv",// HSV space
+        "Yellow to Cyan",// HSV space
+        "Cyan to Yellow",// HSV space
+        "Red to Yellow",// RGB space
+        "Yellow to Red",// RGB space
+        "Yellow to Green",// RGB space
+        "Green to Yellow",// RGB space
+        "Green to Cyan",// RGB space
+        "Cyan to Green",// RGB space
+        "Cyan to Blue",// RGB space
+        "Blue to Cyan",// RGB space
+        "BlueInv",// HSV space
+        "GreenInv",// HSV space
+        "RedInv",// HSV space
         "Custom"// TODO: Custom colors
-        );
+        });
     d_colorScheme.beginEdit()->setSelectedItem("HSV");
     d_colorScheme.endEdit();
 

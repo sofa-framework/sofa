@@ -33,7 +33,7 @@ SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     , S(nullptr), N(nullptr)
     , d_typePermutation(initData(&d_typePermutation, "permutation", "Type of fill reducing permutation"))
 {   
-    sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
+    sofa::helper::OptionsGroup d_typePermutationOptions{"None", "SuiteSparse", "METIS"};
     d_typePermutationOptions.setSelectedItem(0); // default None
     d_typePermutation.setValue(d_typePermutationOptions);
 }

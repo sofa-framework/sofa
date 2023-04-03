@@ -38,11 +38,11 @@ OglSceneFrame::OglSceneFrame()
     , d_alignment(initData(&d_alignment, "alignment", "Alignment of the frame in the view"))
     , d_viewportSize(initData(&d_viewportSize, 150, "viewportSize", "Size of the viewport where the frame is rendered"))
 {
-    sofa::helper::OptionsGroup styleOptions(3,"Arrows", "Cylinders", "CubeCones");
+    sofa::helper::OptionsGroup styleOptions{"Arrows", "Cylinders", "CubeCones"};
     styleOptions.setSelectedItem(1);
     d_style.setValue(styleOptions);
 
-    sofa::helper::OptionsGroup alignmentOptions(4,"BottomLeft", "BottomRight", "TopRight", "TopLeft");
+    sofa::helper::OptionsGroup alignmentOptions{"BottomLeft", "BottomRight", "TopRight", "TopLeft"};
     alignmentOptions.setSelectedItem(1);
     d_alignment.setValue(alignmentOptions);
 }

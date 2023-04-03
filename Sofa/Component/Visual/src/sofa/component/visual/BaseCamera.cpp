@@ -71,7 +71,7 @@ BaseCamera::BaseCamera()
     this->p_minBBox.setReadOnly(true);
     this->p_maxBBox.setReadOnly(true);
 
-    sofa::helper::OptionsGroup type(2, "Perspective", "Orthographic");
+    sofa::helper::OptionsGroup type{"Perspective", "Orthographic"};
     type.setSelectedItem(sofa::core::visual::VisualParams::PERSPECTIVE_TYPE);
     p_type.setValue(type);
 

@@ -48,7 +48,7 @@ int MeshExporterClass = core::RegisterObject("Export topology and positions into
         .add< MeshExporter >();
 
 MeshExporter::MeshExporter()
-    : d_fileFormat( initData(&d_fileFormat, sofa::helper::OptionsGroup(7,"ALL","vtkxml","vtk","netgen","tetgen","gmsh","obj"), "format", "File format to use"))
+    : d_fileFormat( initData(&d_fileFormat, {"ALL","vtkxml","vtk","netgen","tetgen","gmsh","obj"}, "format", "File format to use"))
     , d_position( initData(&d_position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
     , d_writeEdges( initData(&d_writeEdges, true, "edges", "write edge topology"))
     , d_writeTriangles( initData(&d_writeTriangles, true, "triangles", "write triangle topology"))
