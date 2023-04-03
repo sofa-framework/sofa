@@ -37,12 +37,10 @@ using namespace core::behavior;
 // Register in the Factory
 int BeamLinearMappingCudaClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
-        .add< BeamLinearMapping<Rigid3fTypes, CudaVec3fTypes> >()
         .add< BeamLinearMapping<Rigid3Types, CudaVec3Types> >()
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< BeamLinearMapping<Rigid3fTypes, CudaVec3dTypes> >()
-        .add< BeamLinearMapping<Rigid3dTypes, CudaVec3dTypes> >()
+        .add< BeamLinearMapping<Rigid3Types, CudaVec3dTypes> >()
 #endif
         ;
 
@@ -55,13 +53,11 @@ using namespace defaulttype;
 using namespace core;
 using namespace core::behavior;
 
-template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3fTypes, sofa::gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3dTypes, sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
 

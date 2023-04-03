@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h>
+#include <SofaCUDA/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.h>
 #include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.inl>
 
 namespace sofa::gpu::cuda

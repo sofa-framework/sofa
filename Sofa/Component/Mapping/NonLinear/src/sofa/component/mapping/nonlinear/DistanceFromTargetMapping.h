@@ -24,6 +24,7 @@
 #include <sofa/component/mapping/nonlinear/config.h>
 
 #include <sofa/core/Mapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
@@ -49,20 +50,16 @@ struct BaseDistanceFromTargetMapping
 
 
 /** Maps point positions to distances from target points.
-    Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
+ *   Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
 
-    In: parent point positions
+ *   @tparam TIn: parent point positions
+ *   @tparam TOut: distance from each point to a target position, minus a rest distance.
 
-    Out: distance from each point to a target position, minus a rest distance.
-
-    (changed class name on Feb. 4, 2014, previous name was DistanceMapping)
-
-
-
-  @author Francois Faure
+ *   (changed class name on Feb. 4, 2014, previous name was DistanceMapping)
+ * @author Francois Faure
   */
 template <class TIn, class TOut>
-class DistanceFromTargetMapping : public core::Mapping<TIn, TOut>, public BaseDistanceFromTargetMapping
+class DistanceFromTargetMapping : public core::Mapping<TIn, TOut>, public BaseDistanceFromTargetMapping, public NonLinearMappingData<true>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DistanceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -86,10 +83,9 @@ public:
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef type::Vec<In::deriv_total_size> Direction;
 
-    Data< type::vector<unsigned> > f_indices;         ///< indices of the parent points
-    Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
-    Data< type::vector< Real > >   f_restDistances;   ///< rest distance from each position
-    Data< unsigned >         d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data<type::vector<unsigned>> f_indices;          ///< Indices of the parent points
+    Data<InVecCoord> f_targetPositions;              ///< Positions to compute the distances from
+    Data<type::vector<Real>> f_restDistances;        ///< Rest lengths of the connections
 
     /// Add a target with a desired distance
     void createTarget( unsigned index, const InCoord& position, Real distance);
@@ -125,7 +121,7 @@ public:
 
 protected:
     DistanceFromTargetMapping();
-    virtual ~DistanceFromTargetMapping();
+    ~DistanceFromTargetMapping() override;
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector

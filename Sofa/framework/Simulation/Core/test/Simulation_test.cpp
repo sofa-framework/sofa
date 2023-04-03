@@ -19,39 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaLinearMovementConstraint.inl"
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <gtest/gtest.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/fwd.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/testing/TestMessageHandler.h>
 
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::core::behavior
-{
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6fTypes>;
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3fTypes>;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6dTypes>;
-    template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3dTypes>;
-#endif
-} // namespace sofa::core::behavior
-
-namespace sofa::gpu::cuda
+namespace sofa
 {
 
+TEST(simulationLoad, existingFilename)
+{
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+    EXPECT_MSG_NOEMIT(Error);
 
-int LinearMovementConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3fTypes> >()
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3f1Types> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaVec6fTypes> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaRigid3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3dTypes> >()
-// .add< component::constraint::projective::LinearMovementConstraint<CudaVec3d1Types> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaVec6dTypes> >()
-        .add< component::constraint::projective::LinearMovementConstraint<CudaRigid3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+    constexpr std::string_view filename { "Demos/caduceus.scn" };
+    const std::string path = helper::system::DataRepository.getFile(std::string{filename});
 
-} // namespace sofa::gpu::cuda
+    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    ASSERT_NE(simulation, nullptr);
+    const simulation::Node::SPtr groot = simulation->load(path, false, {});
+    EXPECT_NE(groot, nullptr);
+    simulation->unload(groot);
+}
+
+
+TEST(simulationLoad, nonExistingFilename)
+{
+    // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
+    EXPECT_MSG_EMIT(Error);
+
+    constexpr std::string_view filename { "aFileThatDoesNotExist.scn" };
+
+    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    ASSERT_NE(simulation, nullptr);
+    const simulation::Node::SPtr groot = simulation->load(std::string{filename}, false, {});
+    EXPECT_EQ(groot, nullptr);
+    simulation->unload(groot);
+}
+
+}

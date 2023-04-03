@@ -61,7 +61,7 @@ Distances< DataTypes >::Distances ( sofa::component::topology::container::dynami
     this->addAlias(&fileDistance, "fileDistance");
     zonesFramePair.setDisplayed( false); // GUI can not display map.
 
-    sofa::helper::OptionsGroup distanceTypeOptions(5,"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness");
+    sofa::helper::OptionsGroup distanceTypeOptions{"Geodesic","Harmonic","Stiffness Diffusion", "Vorono\xEF", "Harmonic with Stiffness"};
     distanceTypeOptions.setSelectedItem(TYPE_GEODESIC);
     distanceType.setValue(distanceTypeOptions);
 

@@ -190,9 +190,12 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::bwdInit()
 {
-    m_fullMatrixSize = l_mechanicalState.get()->getMatrixSize();
-    m_J1eig.resize(m_fullMatrixSize, m_nbColsJ1);
-    m_J2eig.resize(m_fullMatrixSize, m_nbColsJ2);
+    m_fullMatrixSize = l_mechanicalState ? l_mechanicalState->getMatrixSize() : 0;
+    if (m_fullMatrixSize > 0)
+    {
+        m_J1eig.resize(m_fullMatrixSize, m_nbColsJ1);
+        m_J2eig.resize(m_fullMatrixSize, m_nbColsJ2);
+    }
 }
 
 template<class DataTypes1, class DataTypes2>

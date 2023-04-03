@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Vec.h>
@@ -41,7 +42,7 @@ namespace sofa::component::engine::analyze
  * This class computes target positions using shape matching deformation [Muller05][Muller11]
  */
 template <class DataTypes>
-class ShapeMatching : public core::DataEngine
+class ShapeMatching : public core::DataEngine, public core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ShapeMatching,DataTypes),core::DataEngine);
@@ -79,7 +80,6 @@ public:
     Data< VecCoord > targetPosition;       ///< result
 
 private:
-    sofa::core::behavior::MechanicalState<DataTypes>* mstate;
     sofa::core::topology::BaseMeshTopology* topo;
 
     //rest data

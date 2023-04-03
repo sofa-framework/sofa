@@ -23,6 +23,7 @@
 #include <sofa/component/mapping/nonlinear/config.h>
 
 #include <sofa/core/Mapping.h>
+#include <sofa/component/mapping/nonlinear/NonLinearMappingData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -44,7 +45,7 @@ public:
 };
 
 template <class TIn, class TOut>
-class RigidMapping : public core::Mapping<TIn, TOut>
+class RigidMapping : public core::Mapping<TIn, TOut>, public NonLinearMappingData<true>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(RigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -85,9 +86,14 @@ public:
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     Data<OutVecCoord> d_points;    ///< mapped points in local coordinates
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_points instead") DeprecatedAndRemoved points;
+
     OutVecCoord m_rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> m_data;
+
     Data<sofa::Index> d_index; ///< input DOF index
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_index instead") DeprecatedAndRemoved index;
+
     sofa::core::objectmodel::DataFileName d_fileRigidMapping; ///< Filename
     Data<bool> d_useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
     Data<bool> d_indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
@@ -95,7 +101,7 @@ public:
     Data< type::vector<unsigned int> > d_rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
     Data<bool> d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data<int> d_geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_geometricStiffness instead") DeprecatedAndRemoved geometricStiffness;
 
 protected:
     RigidMapping();

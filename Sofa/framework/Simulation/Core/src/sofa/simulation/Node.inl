@@ -19,24 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 template <class RealObject>
 Node::SPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    Node::SPtr obj=getSimulation()->createNewNode(arg->getName());
-    obj->parse(arg);
-    return obj;
-}
-
-
+    if (Simulation* simulation = getSimulation())
+    {
+        Node::SPtr obj = simulation->createNewNode(arg->getName());
+        obj->parse(arg);
+        return obj;
+    }
+    return nullptr;
 }
 
 }

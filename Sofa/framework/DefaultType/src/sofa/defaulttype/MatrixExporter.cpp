@@ -33,7 +33,7 @@ std::unordered_map<std::string, MatrixExportFunction> matrixExporterMap
     {"txt", writeMatrixTxt},
     {"csv", writeMatrixCsv},
 };
-sofa::helper::OptionsGroup matrixExporterOptionsGroup(2, "txt", "csv");
+sofa::helper::OptionsGroup matrixExporterOptionsGroup{"txt", "csv"};
     
 bool writeMatrixTxt(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix, int precision)
 {

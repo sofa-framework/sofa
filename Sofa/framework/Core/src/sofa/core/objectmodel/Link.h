@@ -298,17 +298,19 @@ class TLink : public BaseLink
 public:
     typedef TOwnerType OwnerType;
     typedef TDestType DestType;
-    enum { ActiveFlags = TFlags };
-#define ACTIVEFLAG(f) ((ActiveFlags & (f)) != 0)
-    typedef LinkTraitsDestPtr<DestType, ACTIVEFLAG(FLAG_STRONGLINK)> TraitsDestPtr;
+    static constexpr unsigned ActiveFlags = TFlags;
+    static constexpr bool IsStrongLink = ActiveFlags & FLAG_STRONGLINK;
+    static constexpr bool IsMultiLink = ActiveFlags & FLAG_MULTILINK;
+    static constexpr bool StorePath = ActiveFlags & FLAG_STOREPATH;
+
+    typedef LinkTraitsDestPtr<DestType, IsStrongLink> TraitsDestPtr;
     typedef typename TraitsDestPtr::T DestPtr;
-    typedef LinkTraitsValueType<DestType, DestPtr, ACTIVEFLAG(FLAG_STRONGLINK), ACTIVEFLAG(FLAG_STOREPATH)> TraitsValueType;
+    typedef LinkTraitsValueType<DestType, DestPtr, IsStrongLink, StorePath> TraitsValueType;
     typedef typename TraitsValueType::T ValueType;
-    typedef LinkTraitsContainer<DestType, DestPtr, ValueType, ACTIVEFLAG(FLAG_MULTILINK)> TraitsContainer;
+    typedef LinkTraitsContainer<DestType, DestPtr, ValueType, IsMultiLink> TraitsContainer;
     typedef typename TraitsContainer::T Container;
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
-#undef ACTIVEFLAG
 
     TLink()
         : BaseLink(ActiveFlags)

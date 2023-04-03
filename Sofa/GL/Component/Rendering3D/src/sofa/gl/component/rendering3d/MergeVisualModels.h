@@ -69,12 +69,18 @@ protected:
         size_t nbpos = 0, nbvert = 0, nbedges = 0, nbtris = 0, nbquads = 0, nbrTexC = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
-            nbpos += (*vl_input[i])->m_positions.getValue().size();
-            nbvert += (*vl_input[i])->m_vertices2.getValue().size();
-            nbrTexC += (*vl_input[i])->m_vtexcoords.getValue().size();
-            nbedges += (*vl_input[i])->m_edges.getValue().size();
-            nbtris += (*vl_input[i])->m_triangles.getValue().size();
-            nbquads += (*vl_input[i])->m_quads.getValue().size();
+            if (i < vl_input.size())
+            {
+                if (auto vl_input_i = *vl_input[i])
+                {
+                    nbpos += vl_input_i->m_positions.getValue().size();
+                    nbvert += vl_input_i->m_vertices2.getValue().size();
+                    nbrTexC += vl_input_i->m_vtexcoords.getValue().size();
+                    nbedges += vl_input_i->m_edges.getValue().size();
+                    nbtris += vl_input_i->m_triangles.getValue().size();
+                    nbquads += vl_input_i->m_quads.getValue().size();
+                }
+            }
         }
 
 
@@ -85,9 +91,15 @@ protected:
             size_t offset = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
-                const VecCoord& in = (*vl_input[i])->m_positions.getValue();
-                std::copy( in.begin(), in.end(), pos.begin()+offset );
-                offset += in.size();
+                if (i < vl_input.size())
+                {
+                    if (auto vl_input_i = *vl_input[i])
+                    {
+                        const VecCoord& in = vl_input_i->m_positions.getValue();
+                        std::copy( in.begin(), in.end(), pos.begin()+offset );
+                        offset += in.size();
+                    }
+                }
             }
             this->m_positions.endEdit();
         }
@@ -102,9 +114,15 @@ protected:
             size_t offset = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
-                const VecCoord& in = (*vl_input[i])->m_vertices2.getValue();
-                std::copy( in.begin(), in.end(), vert.begin()+offset );
-                offset += in.size();
+                if (i < vl_input.size())
+                {
+                    if (auto vl_input_i = *vl_input[i])
+                    {
+                        const VecCoord& in = vl_input_i->m_vertices2.getValue();
+                        std::copy( in.begin(), in.end(), vert.begin()+offset );
+                        offset += in.size();
+                    }
+                }
             }
             this->m_vertices2.endEdit();
         }
@@ -119,17 +137,23 @@ protected:
             size_t offsetIdx = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
-                const auto& in = (*vl_input[i])->m_vertPosIdx.getValue();
-
-                for( size_t j=0;j<in.size();++j)
+                if (i < vl_input.size())
                 {
-                    auto& e = vertIdx[offset+j];
-                    e = in[j];
-                    e += offsetIdx;
-                }
+                    if (auto vl_input_i = *vl_input[i])
+                    {
+                        const auto& in = vl_input_i->m_vertPosIdx.getValue();
 
-                offset += in.size();
-                offsetIdx += (*vl_input[i])->m_positions.getValue().size();
+                        for( size_t j=0;j<in.size();++j)
+                        {
+                            auto& e = vertIdx[offset+j];
+                            e = in[j];
+                            e += offsetIdx;
+                        }
+
+                        offset += in.size();
+                        offsetIdx += (*vl_input[i])->m_positions.getValue().size();
+                    }
+                }
             }
             this->m_vertPosIdx.endEdit();
         }
@@ -142,17 +166,23 @@ protected:
             size_t offsetIdx = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
-                const auto& in = (*vl_input[i])->m_vertNormIdx.getValue();
-
-                for( size_t j=0;j<in.size();++j)
+                if (i < vl_input.size())
                 {
-                    auto& e = vertIdx[offset+j];
-                    e = in[j];
-                    e += offsetIdx;
-                }
+                    if (auto vl_input_i = *vl_input[i])
+                    {
+                        const auto& in = vl_input_i->m_vertNormIdx.getValue();
 
-                offset += in.size();
-                offsetIdx += (*vl_input[i])->m_positions.getValue().size();
+                        for( size_t j=0;j<in.size();++j)
+                        {
+                            auto& e = vertIdx[offset+j];
+                            e = in[j];
+                            e += offsetIdx;
+                        }
+
+                        offset += in.size();
+                        offsetIdx += vl_input_i->m_positions.getValue().size();
+                    }
+                }
             }
             this->m_vertNormIdx.endEdit();
         }
@@ -166,9 +196,15 @@ protected:
             size_t offset = 0;
             for (unsigned int i=0; i<nb; ++i)
             {
-                const VecTexCoord& in = (*vl_input[i])->m_vtexcoords.getValue();
-                std::copy( in.begin(), in.end(), vert.begin()+offset );
-                offset += in.size();
+                if (i < vl_input.size())
+                {
+                    if (auto vl_input_i = *vl_input[i])
+                    {
+                        const VecTexCoord& in = vl_input_i->m_vtexcoords.getValue();
+                        std::copy( in.begin(), in.end(), vert.begin()+offset );
+                        offset += in.size();
+                    }
+                }
             }
             this->m_vtexcoords.endEdit();
         }
@@ -186,18 +222,24 @@ protected:
         size_t offsetEdge = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
-            const Inherit::VecVisualEdge& in = (*vl_input[i])->m_edges.getValue();
-
-            for( size_t j=0;j<in.size();++j)
+            if (i < vl_input.size())
             {
-                VisualEdge& e = edges[offsetEdge+j];
-                e = in[j];
-                e[0] += offsetPoint;
-                e[1] += offsetPoint;
-            }
+                if (auto vl_input_i = *vl_input[i])
+                {
+                    const Inherit::VecVisualEdge& in = vl_input_i->m_edges.getValue();
 
-            offsetEdge += in.size();
-            offsetPoint += (unsigned int)((*vl_input[i])->m_vertices2.getValue().size());
+                    for( size_t j=0;j<in.size();++j)
+                    {
+                        VisualEdge& e = edges[offsetEdge+j];
+                        e = in[j];
+                        e[0] += offsetPoint;
+                        e[1] += offsetPoint;
+                    }
+
+                    offsetEdge += in.size();
+                    offsetPoint += (unsigned int)(vl_input_i->m_vertices2.getValue().size());
+                }
+            }
         }
         this->m_edges.endEdit();
 
@@ -212,19 +254,25 @@ protected:
         size_t offsetTri = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
-            const Inherit::VecVisualTriangle& in = (*vl_input[i])->m_triangles.getValue();
-
-            for( size_t j=0;j<in.size();++j)
+            if (i < vl_input.size())
             {
-                VisualTriangle& t = tris[offsetTri+j];
-                t = in[j];
-                t[0] += offsetPoint;
-                t[1] += offsetPoint;
-                t[2] += offsetPoint;
-            }
+                if (auto vl_input_i = *vl_input[i])
+                {
+                    const Inherit::VecVisualTriangle& in = vl_input_i->m_triangles.getValue();
 
-            offsetTri += in.size();
-            offsetPoint += (unsigned int)((*vl_input[i])->m_vertices2.getValue().size());
+                    for( size_t j=0;j<in.size();++j)
+                    {
+                        VisualTriangle& t = tris[offsetTri+j];
+                        t = in[j];
+                        t[0] += offsetPoint;
+                        t[1] += offsetPoint;
+                        t[2] += offsetPoint;
+                    }
+
+                    offsetTri += in.size();
+                    offsetPoint += (unsigned int)(vl_input_i->m_vertices2.getValue().size());
+                }
+            }
         }
         this->m_triangles.endEdit();
 
@@ -237,20 +285,26 @@ protected:
         size_t offsetQuad = 0;
         for (unsigned int i=0; i<nb; ++i)
         {
-            const Inherit::VecVisualQuad& in = (*vl_input[i])->m_quads.getValue();
-
-            for( size_t j=0;j<in.size();++j)
+            if (i < vl_input.size())
             {
-                VisualQuad& q = quads[offsetQuad+j];
-                q = in[j];
-                q[0] += offsetPoint;
-                q[1] += offsetPoint;
-                q[2] += offsetPoint;
-                q[3] += offsetPoint;
-            }
+                if (auto vl_input_i = *vl_input[i])
+                {
+                    const Inherit::VecVisualQuad& in = vl_input_i->m_quads.getValue();
 
-            offsetQuad += in.size();
-            offsetPoint += (unsigned int)((*vl_input[i])->m_vertices2.getValue().size());
+                    for( size_t j=0;j<in.size();++j)
+                    {
+                        VisualQuad& q = quads[offsetQuad+j];
+                        q = in[j];
+                        q[0] += offsetPoint;
+                        q[1] += offsetPoint;
+                        q[2] += offsetPoint;
+                        q[3] += offsetPoint;
+                    }
+
+                    offsetQuad += in.size();
+                    offsetPoint += (unsigned int)(vl_input_i->m_vertices2.getValue().size());
+                }
+            }
         }
         this->m_quads.endEdit();
     }

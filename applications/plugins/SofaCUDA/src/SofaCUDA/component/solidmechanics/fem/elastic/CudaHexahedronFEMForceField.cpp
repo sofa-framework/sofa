@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gpu/cuda/CudaHexahedronFEMForceField.inl>
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 

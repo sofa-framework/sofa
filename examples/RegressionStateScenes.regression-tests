@@ -37,6 +37,7 @@ Component/LinearSolver/Preconditioner/FEMBAR_PCG_NoPreconditioner.scn 100 1e-8 0
 Component/LinearSolver/Preconditioner/FEMBAR_PCG_PrecomputedWarpPreconditioner.scn 100 1e-8 0 1
 Component/LinearSolver/Preconditioner/FEMBAR_PCG_SSORPreconditioner.scn 100 1e-8 0 1
 Component/LinearSolver/Preconditioner/FEMBAR_PCG_WarpPreconditioner.scn 100 1e-8 0 1
+Component/Mapping/NonLinear/DistanceMultiMapping.scn 100 1e-8 0 1
 Component/Mass/UniformMass.scn 100 1e-4 0 1
 Component/Mass/DiagonalMass.scn 100 1e-4 0 1
 Component/Mass/MeshMatrixMass.scn 100 1e-4 0 1

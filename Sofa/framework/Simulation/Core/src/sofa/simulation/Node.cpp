@@ -1014,7 +1014,11 @@ void Node::printComponents()
 
 Node::SPtr Node::create( const std::string& name )
 {
-    return getSimulation()->createNewNode(name);
+    if (Simulation* simulation = getSimulation())
+    {
+        return simulation->createNewNode(name);
+    }
+    return nullptr;
 }
 
 void Node::setSleeping(bool val)

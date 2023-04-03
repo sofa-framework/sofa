@@ -50,7 +50,7 @@ ValuesFromPositions<DataTypes>::ValuesFromPositions()
     , p_drawVectors(initData(&p_drawVectors, false, "drawVectors", "draw vectors line"))
     , p_vectorLength (initData(&p_vectorLength, (float)10, "drawVectorLength", "vector length visualisation. "))
 {
-    sofa::helper::OptionsGroup m_newoptiongroup(2,"Scalar","Vector");
+    sofa::helper::OptionsGroup m_newoptiongroup{"Scalar","Vector"};
     m_newoptiongroup.setSelectedItem("Scalar");
     p_fieldType.setValue(m_newoptiongroup);
 

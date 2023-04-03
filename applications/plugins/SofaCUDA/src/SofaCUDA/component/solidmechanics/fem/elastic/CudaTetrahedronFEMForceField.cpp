@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTetrahedronFEMForceField.inl"
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaTetrahedronFEMForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 

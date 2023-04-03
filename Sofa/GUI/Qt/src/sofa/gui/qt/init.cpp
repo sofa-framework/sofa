@@ -23,30 +23,7 @@
 
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/qt/RealGUI.h>
-
-void redirectQtMessages(QtMsgType type, const QMessageLogContext& context, const QString& msg)
-{
-    SOFA_UNUSED(context);
-    const QByteArray localMsg = msg.toLocal8Bit();
-    switch (type)
-    {
-    case QtDebugMsg:
-        msg_info("Qt") << localMsg.constData();
-        break;
-    case QtInfoMsg:
-        msg_info("Qt") << localMsg.constData();
-        break;
-    case QtWarningMsg:
-        msg_warning("Qt") << localMsg.constData();
-        break;
-    case QtCriticalMsg:
-        msg_error("Qt") << localMsg.constData();
-        break;
-    case QtFatalMsg:
-        msg_fatal("Qt") << localMsg.constData();
-        break;
-    }
-}
+#include <sofa/gui/qt/QtMessageRedirection.h>
 
 namespace sofa::gui::qt
 {
@@ -84,6 +61,14 @@ namespace sofa::gui::qt
 #if SOFA_GUI_QT_ENABLE_QTVIEWER
             sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
 #endif
+
+            // if ObjectStateListener is triggered (either by changing the message number, or by
+            // changing the component name) in a thread different than the main thread (=UI thread),
+            // a Qt event is launched through the queued connection system. For that, the event
+            // parameters must be known to Qt's meta-object system. This is what qRegisterMetaType
+            // does in the following instruction.
+            qRegisterMetaType<QVector<int> >("QVector<int>");
+
             qInstallMessageHandler(redirectQtMessages);
 
             first = false;

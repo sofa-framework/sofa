@@ -297,7 +297,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
 
                     // Separate cells on each side of the median cell
                     CubeSortPredicate sortpred(splitAxis);
-                    std::sort(elems.begin() + subcells.first.getIndex(), elems.begin() + subcells.second.getIndex(), sortpred);
+                    std::stable_sort(elems.begin() + subcells.first.getIndex(), elems.begin() + subcells.second.getIndex(), sortpred);
 
                     // Create the two new subcells
                     Cube cmiddle(this, middle);

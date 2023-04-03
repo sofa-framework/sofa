@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h>
+#include <SofaCUDA/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #define EDGEDEBUG 100

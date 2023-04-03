@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_OPTIONSGROUP_H
-#define SOFA_HELPER_OPTIONSGROUP_H
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -29,11 +28,9 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/helper/config.h>
+#include <sofa/type/trait/is_container.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -58,10 +55,14 @@ public :
 
     ///Constructor by given the number of argument following by the variable arguments
     ///Example OptionsGroup m_options(4,"button0","button1","button2","button3");
-    OptionsGroup(int nbofRadioButton,...);
+    SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "This constructor is error-prone. Use another constructor.")
+    explicit OptionsGroup(int nbofRadioButton,...);
 
     ///generic constructor taking other string container like list<string>, set<string>, vector<string>
-    template <class T> OptionsGroup(const T& list);
+    template <class T, typename = std::enable_if_t<type::trait::is_container<T>::value> >
+    explicit OptionsGroup(const T& list);
+
+    template <class T> OptionsGroup(const std::initializer_list<T>& list);
 
     ///Copy constructor
     OptionsGroup(const OptionsGroup& m_radiotrick);
@@ -79,13 +80,17 @@ public :
 
     ///Reinitializing options by a pre-constructed optionsgroup objected
     ///Example m_options.setNames(4,"button0","button1","button2","button3");
+    SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "This method is error-prone. Use another setNames method.")
     void setNames(int nbofRadioButton,...);
 
+    template <class T>
+    void setNames(const std::initializer_list<T>& list);
+
     ///Setting the activated item by its id
-    void setSelectedItem(unsigned int id_item);
+    OptionsGroup& setSelectedItem(unsigned int id_item);
 
     ///Setting the activated item by its value (string)
-    void setSelectedItem(const std::string& );
+    OptionsGroup& setSelectedItem(const std::string& );
 
     ///Setting the activated item by a input-stream.
     ///the istream is converted to string.
@@ -97,12 +102,12 @@ public :
 
     /// @name getting informations operators
     /// @{
-    unsigned int       getSelectedId()                      const;
-    const std::string& getSelectedItem()                    const;
-    const std::string& operator[](const unsigned int i)     const {return textItems[i];}
-    size_t             size()                               const {return textItems.size();}
-    void               writeToStream(std::ostream& stream)  const;
-    OptionsGroup&      operator=(const OptionsGroup& m_radiotrick);
+    [[nodiscard]] unsigned int       getSelectedId()                      const;
+    [[nodiscard]] const std::string& getSelectedItem()                    const;
+    [[nodiscard]] const std::string& operator[](const unsigned int i)     const {return textItems[i];}
+    [[nodiscard]] size_t             size()                               const {return textItems.size();}
+    void          writeToStream(std::ostream& stream)  const;
+    OptionsGroup& operator=(const OptionsGroup& m_radiotrick) = default;
     /// @}
 
 protected:
@@ -110,40 +115,63 @@ protected:
     type::vector<std::string> textItems    ;
     unsigned int                selectedItem ;
 
+    template <class T> void buildFromContainer(const T& list);
+
 public:
 
     ///return the id_item of the string if found in string list button
     ///             -1    if not found
-    int isInOptionsList(const std::string & m_string) const;
+    [[nodiscard]] int isInOptionsList(const std::string & tempostring) const;
 
 };
 
 
 inline std::ostream & operator <<(std::ostream& on, const OptionsGroup& m_trick)
-{m_trick.writeToStream(on); return on;}
+{
+    m_trick.writeToStream(on);
+    return on;
+}
 
 inline std::istream & operator >>(std::istream& in, OptionsGroup& m_trick)
-{m_trick.readFromStream(in); return in;}
+{
+    m_trick.readFromStream(in);
+    return in;
+}
 
+template <class T, typename>
+OptionsGroup::OptionsGroup(const T& list)
+{
+    buildFromContainer(list);
+    selectedItem=0;
+}
 
 template <class T>
-inline OptionsGroup::OptionsGroup(const T& list)
+OptionsGroup::OptionsGroup(const std::initializer_list<T>& list)
 {
-    for (typename T::const_iterator it=list.begin(); it!=list.end(); ++it)
+    buildFromContainer(list);
+    selectedItem=0;
+}
+
+template <class T>
+void OptionsGroup::setNames(const std::initializer_list<T>& list)
+{
+    textItems.clear();
+    buildFromContainer(list);
+    selectedItem=0;
+}
+
+template <class T>
+void OptionsGroup::buildFromContainer(const T& list)
+{
+    textItems.reserve(list.size());
+    for (const auto& item : list)
     {
         std::ostringstream oss;
-        oss << (*it);
+        oss << item;
         textItems.push_back( oss.str() );
     }
-    selectedItem=0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
-
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_HELPER_OPTIONSGROUP_H */
+} // namespace sofa::helper

@@ -33,4 +33,14 @@ TEST(fixed_array, operatorLess)
     EXPECT_GT(edge2, edge1);
 }
 
+
+TEST(fixed_array, structuredBindings)
+{
+    static constexpr sofa::type::fixed_array<std::size_t, 4> sofaArray { 8, -7, 4, -1};
+    const auto& [a, b, c, d] = sofaArray;
+    EXPECT_EQ(a, 8);
+    EXPECT_EQ(b,-7);
+    EXPECT_EQ(c, 4);
+    EXPECT_EQ(d,-1);
+}
 }

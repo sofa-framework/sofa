@@ -142,6 +142,12 @@ void BeamFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinit()
 {
+    if (!m_indexedElements)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     unsigned int n = m_indexedElements->size();
     m_forces.resize( this->mstate->getSize() );
 
@@ -154,6 +160,9 @@ void BeamFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
 {
+    if (!m_indexedElements)
+        return;
+
     SReal stiffness, length, radius, poisson, radiusInner;
     Index a = (*m_indexedElements)[i][0];
     Index b = (*m_indexedElements)[i][1];
@@ -201,6 +210,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(dataV);
 
+    if (!m_indexedElements)
+        return;
+
     VecDeriv& f = *(dataF.beginEdit());
     const VecCoord& p=dataX.getValue();
     f.resize(p.size());
@@ -241,6 +253,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams, DataVecDeriv& datadF , const DataVecDeriv& datadX)
 {
+    if (!m_indexedElements)
+        return;
+
     VecDeriv& df = *(datadF.beginEdit());
     const VecDeriv& dx=datadX.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -512,6 +527,9 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
     Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     linearalgebra::BaseMatrix* mat = r.matrix;
 
+    if (!m_indexedElements)
+        return;
+
     if (r)
     {
         unsigned int i=0;
@@ -636,6 +654,8 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
+    if (!m_indexedElements)
+        return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 

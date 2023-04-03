@@ -135,10 +135,15 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "EulerImplicitSolver");
+        createObject(m_root, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" }, {"tolerance", "1e-5"} });
         createObject(m_root, "MechanicalObject", { {"template", rigidTypeName}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "BeamFEMForceField", { {"Name","Beam"}, {"template", rigidTypeName} });
 
         sofa::simulation::getSimulation()->init(m_root.get());
+
+        m_simulation->animate(m_root.get(), 0.01);
     }
 
 

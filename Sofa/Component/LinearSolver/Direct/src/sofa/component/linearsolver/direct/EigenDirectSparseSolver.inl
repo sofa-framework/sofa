@@ -139,7 +139,7 @@ EigenDirectSparseSolver<TBlockType, EigenSolver>::EigenDirectSparseSolver()
     : Inherit1()
     , d_orderingMethod(initData(&d_orderingMethod, "ordering", "Ordering method"))
 {
-    sofa::helper::OptionsGroup d_orderingMethodOptions(4,"Natural", "AMD", "COLAMD", "Metis");
+    sofa::helper::OptionsGroup d_orderingMethodOptions{"Natural", "AMD", "COLAMD", "Metis"};
 
     d_orderingMethodOptions.setSelectedItem(s_defaultOrderingMethod);
     d_orderingMethod.setValue(d_orderingMethodOptions);

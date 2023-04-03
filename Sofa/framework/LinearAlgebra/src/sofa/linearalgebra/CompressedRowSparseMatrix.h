@@ -390,9 +390,12 @@ public:
             for (; j<=(decltype(j))oldRowIndex[i]; ++j)
                 rowBegin[j] = b;
         }
-        b = oldRowBegin[oldRowBegin.size()-1];
-        for (; j<=nRow; ++j)
-            rowBegin[j] = b;
+        if (!oldRowBegin.empty())
+        {
+            b = oldRowBegin.back();
+            for (; j<=nRow; ++j)
+                rowBegin[j] = b;
+        }
     }
 
     /// Make sure all diagonal entries are present even if they are zero
