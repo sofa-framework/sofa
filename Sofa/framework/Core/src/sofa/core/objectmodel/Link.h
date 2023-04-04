@@ -299,9 +299,9 @@ public:
     typedef TOwnerType OwnerType;
     typedef TDestType DestType;
     static constexpr unsigned ActiveFlags = TFlags;
-    static constexpr bool IsStrongLink = ActiveFlags & FLAG_STRONGLINK;
-    static constexpr bool IsMultiLink = ActiveFlags & FLAG_MULTILINK;
-    static constexpr bool StorePath = ActiveFlags & FLAG_STOREPATH;
+    static constexpr bool IsStrongLink = (ActiveFlags & FLAG_STRONGLINK) != 0;
+    static constexpr bool IsMultiLink = (ActiveFlags & FLAG_MULTILINK) != 0;
+    static constexpr bool StorePath = (ActiveFlags & FLAG_STOREPATH) != 0;
 
     typedef LinkTraitsDestPtr<DestType, IsStrongLink> TraitsDestPtr;
     typedef typename TraitsDestPtr::T DestPtr;
