@@ -30,7 +30,7 @@
     <DiagonalMass  name="mass" totalMass="1e-2"/>
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1" name="extensionsDOF" />
-        <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="2" applyRestPosition="true"/>
+        <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="2" applyRestPosition="true" computeDistance="true"/>
         <RestShapeSpringsForceField template="Vec1" stiffness="10000"/>
     </Node>
 
