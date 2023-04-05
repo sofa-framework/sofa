@@ -191,7 +191,7 @@ void RigidMapping<TIn, TOut>::reinit()
             for (i = 0; i < toModelSize; i++)
             {
                 unsigned int rigidIndex = getRigidIndex(i);
-                globalToLocalCoords(points[i], xFrom[rigidIndex], xTo[i]);
+                getGlobalToLocalCoords(points[i], xFrom[rigidIndex], xTo[i]);
             }
         }
         else
@@ -206,7 +206,7 @@ void RigidMapping<TIn, TOut>::reinit()
 
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::globalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
+void RigidMapping<TIn, TOut>::getGlobalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
 {
     result = xFrom.inverseRotate(Out::getCPos(xTo) - In::getCPos(xFrom));
 }

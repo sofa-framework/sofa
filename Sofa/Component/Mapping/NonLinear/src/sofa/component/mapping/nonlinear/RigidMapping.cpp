@@ -29,7 +29,7 @@ namespace sofa::component::mapping::nonlinear
 using namespace defaulttype;
 
 template <>
-void RigidMapping<Rigid3Types, Rigid3Types>::globalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
+void RigidMapping<Rigid3Types, Rigid3Types>::getGlobalToLocalCoords(OutCoord& result, const InCoord& xFrom, const OutCoord& xTo)
 {
     result.getCenter() = xFrom.getOrientation().inverse().rotate( xTo.getCenter() - xFrom.getCenter() ) ;
     result.getOrientation() = xFrom.getOrientation().inverse() * xTo.getOrientation() ;

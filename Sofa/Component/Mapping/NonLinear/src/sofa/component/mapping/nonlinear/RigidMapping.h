@@ -86,20 +86,31 @@ public:
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     Data<OutVecCoord> d_points;    ///< mapped points in local coordinates
-    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_points instead") DeprecatedAndRemoved points;
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_points instead") DeprecatedAndRemoved points;
 
     OutVecCoord m_rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use m_rotatedPoints instead") DeprecatedAndRemoved rotatedPoints;
+
     RigidMappingInternalData<In, Out> m_data;
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use m_data instead") DeprecatedAndRemoved data;
 
     Data<sofa::Index> d_index; ///< input DOF index
-    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_index instead") DeprecatedAndRemoved index;
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_index instead") DeprecatedAndRemoved index;
 
     sofa::core::objectmodel::DataFileName d_fileRigidMapping; ///< Filename
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_fileRigidMapping instead") DeprecatedAndRemoved fileRigidMapping;
+
     Data<bool> d_useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_useX0 instead") DeprecatedAndRemoved useX0;
+
     Data<bool> d_indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_indexFromEnd instead") DeprecatedAndRemoved indexFromEnd;
 
     Data< type::vector<unsigned int> > d_rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_rigidIndexPerPoint instead") DeprecatedAndRemoved rigidIndexPerPoint;
+
     Data<bool> d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use d_globalToLocalCoords instead") DeprecatedAndRemoved globalToLocalCoords;
 
     SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.06", "Use d_geometricStiffness instead") DeprecatedAndRemoved geometricStiffness;
 
@@ -148,7 +159,7 @@ public:
 
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
-    void globalToLocalCoords(OutCoord& result, const InCoord& xfrom, const OutCoord& xto);
+    void getGlobalToLocalCoords(OutCoord& result, const InCoord& xfrom, const OutCoord& xto);
     void updateOmega(typename InDeriv::Rot& omega, const OutDeriv& out, const OutCoord& rotatedpoint);
 
 protected:
@@ -159,14 +170,19 @@ protected:
     void setJMatrixBlock(sofa::Index outIdx, sofa::Index inIdx);
 
     std::unique_ptr<MatrixType> m_matrixJ;
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use m_matrixJ instead") DeprecatedAndRemoved matrixJ;
     bool m_updateJ;
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use m_updateJ instead") DeprecatedAndRemoved updateJ;
 
     typedef linearalgebra::EigenSparseMatrix<In,Out> SparseMatrixEigen;
     SparseMatrixEigen m_eigenJacobian;                      ///< Jacobian of the mapping used by getJs
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use m_eigenJacobian instead") DeprecatedAndRemoved eigenJacobian;
     type::vector<sofa::linearalgebra::BaseMatrix*> m_eigenJacobians; /// used by getJs
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use m_eigenJacobians instead") DeprecatedAndRemoved eigenJacobians;
 
     typedef linearalgebra::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
     StiffnessSparseMatrixEigen m_geometricStiffnessMatrix;
+    SOFA_ATTRIBUTE_DISABLED("v23.06", "v23.12", "Use m_geometricStiffnessMatrix instead") DeprecatedAndRemoved geometricStiffnessMatrix;
 };
 
 template <std::size_t N, class Real>
