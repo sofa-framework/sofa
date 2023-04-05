@@ -213,9 +213,9 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     // Mapped particles. The RigidMapping requires to cluster the particles based on their parent frame.
     mappedParticles_dof->resize(numMapped);
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions(); // parent positions
-    mappedParticles_mapping->globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
+    mappedParticles_mapping->d_globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
 
-    vector<unsigned>& rigidIndexPerPoint = *mappedParticles_mapping->rigidIndexPerPoint.beginEdit(); // to set to which rigid frame is attached each mapped particle
+    vector<unsigned>& rigidIndexPerPoint = *mappedParticles_mapping->d_rigidIndexPerPoint.beginEdit(); // to set to which rigid frame is attached each mapped particle
     rigidIndexPerPoint.clear();
     rigidIndexPerPoint.reserve( numMapped );
     unsigned mappedIndex=0;
@@ -230,7 +230,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
             mappedIndex++;
         }
     }
-    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
+    mappedParticles_mapping->d_rigidIndexPerPoint.endEdit();
 
     // Declare all the particles to the multimapping
     for( unsigned i=0; i<xgrid.size(); i++ )
