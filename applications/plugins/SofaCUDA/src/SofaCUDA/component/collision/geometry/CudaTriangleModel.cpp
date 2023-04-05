@@ -19,9 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_CPP
 
-#include <SofaCUDA/config.h>
+#include <SofaCUDA/component/collision/geometry/CudaTriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/collision/geometry/CudaLineModel.h")
-#include <SofaCUDA/component/collision/geometry/CudaLineModel.h>
+namespace sofa::component::collision::geometry
+{
+
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace sofa::component::collision::geometry
+
+namespace sofa::gpu::cuda
+{
+
+const int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        ;
+
+} // namespace sofa::gpu::cuda

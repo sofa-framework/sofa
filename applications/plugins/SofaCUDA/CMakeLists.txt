@@ -83,13 +83,11 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaSpringForceField.h
     sofa/gpu/cuda/CudaSpringForceField.inl
 
-    
-
     ### Collisions
-    sofa/gpu/cuda/CudaLineModel.h
-    sofa/gpu/cuda/CudaPointModel.h
-    sofa/gpu/cuda/CudaSphereModel.h
-    sofa/gpu/cuda/CudaTriangleModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaLineModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaPointModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaSphereModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.h
 
     ### Constraints
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.h
@@ -154,10 +152,10 @@ set(SOURCE_FILES
 
     ### Collisions
     sofa/gpu/cuda/CudaCollision.cpp
-    sofa/gpu/cuda/CudaLineModel.cpp
-    sofa/gpu/cuda/CudaPointModel.cpp
-    sofa/gpu/cuda/CudaSphereModel.cpp
-    sofa/gpu/cuda/CudaTriangleModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaLineModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaPointModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaSphereModel.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.cpp
 
     ### Constraints  
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralInteractionConstraint.cpp
@@ -275,6 +273,11 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaFixedConstraint.inl
         sofa/gpu/cuda/CudaLinearMovementConstraint.h
         sofa/gpu/cuda/CudaLinearMovementConstraint.inl
+
+        sofa/gpu/cuda/CudaLineModel.h
+        sofa/gpu/cuda/CudaPointModel.h
+        sofa/gpu/cuda/CudaSphereModel.h
+        sofa/gpu/cuda/CudaTriangleModel.h
     )
 endif()
 

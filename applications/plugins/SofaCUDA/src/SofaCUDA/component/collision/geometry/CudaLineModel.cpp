@@ -19,33 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_CPP
+#define SOFA_GPU_CUDA_CUDALINEMODEL_CPP
 
-#include <sofa/gpu/cuda/CudaTriangleModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.inl>
+#include <SofaCUDA/component/collision/geometry/CudaLineModel.h>
+#include <sofa/component/collision/geometry/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry
 {
+template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 
-template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace sofa::component::collision::geometry
 
+
 namespace sofa::gpu::cuda
 {
 
-const int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3fTypes> >()
-        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3f1Types> >()
+const int LineModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3dTypes> >()
-        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3d1Types> >()
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::geometry::LineCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
