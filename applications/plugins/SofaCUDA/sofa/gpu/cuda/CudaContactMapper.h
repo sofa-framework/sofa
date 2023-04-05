@@ -107,9 +107,9 @@ public:
             this->outmodel->resize(n);
         if (this->mapping)
         {
-            this->mapping->points.beginEdit()->fastResize(n);
-            this->mapping->rotatedPoints.fastResize(n);
-            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->points.beginEdit()->deviceWrite());
+            this->mapping->d_points.beginEdit()->fastResize(n);
+            this->mapping->m_rotatedPoints.fastResize(n);
+            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->d_points.beginEdit()->deviceWrite());
         }
         else
         {
