@@ -25,7 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-// This component has been DEPRECATED since SOFA v22.12 and will be removed in SOFA v23.12.
+// This component has been DEPRECATED since SOFA v23.06 and will be removed in SOFA v23.12.
 // Please use RigidMapping with template='Rigid3,Rigid3' instead.
 // If this component is crucial to you please report that to sofa-dev@ so we can reconsider this component for future re-integration.
 namespace sofa::component::mapping::nonlinear
