@@ -36,7 +36,7 @@
         <UniformVelocityDampingForceField template="Vec3" name="uniformVelocityDampingFF0" implicit="true" dampingCoefficient="0.005"/>
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
-            <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0"/>
+            <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
             <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
         </Node>
     </Node>
@@ -52,7 +52,7 @@
         <UniformVelocityDampingForceField template="Vec3" name="uniformVelocityDampingFF0" implicit="true" dampingCoefficient="0.005"/>
         <Node name="extensionsNode" >
             <MechanicalObject template="Vec1" name="extensionsDOF" />
-            <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0"/>
+            <DistanceMapping name="distanceMapping" topology="@../topology" input="@../defoDOF" output="@extensionsDOF" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
             <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
         </Node>
     </Node>
@@ -60,7 +60,7 @@
     <Node name="connection">
         <MechanicalObject template="Vec1" name="connectionDOF" />
         <EdgeSetTopologyContainer edges="0 1"/>
-        <DistanceMultiMapping template="Vec3,Vec1" input="@../springs0 @../springs1" output="@connectionDOF" indexPairs="0 19 1 0" restLengths="1" geometricStiffness="0"/>
+        <DistanceMultiMapping template="Vec3,Vec1" input="@../springs0 @../springs1" output="@connectionDOF" indexPairs="0 19 1 0" restLengths="1" geometricStiffness="0" applyRestPosition="true" computeDistance="true"/>
         <RestShapeSpringsForceField template="Vec1" stiffness="1"/>
     </Node>
 
