@@ -79,7 +79,7 @@ For newcomers in the community, we regularly identify issues easy to tackle and 
 - **Unit Tests** are required for each new component or if an issue is fixed.
 - **Examples** (at least one) must be provided showing the new feature.
 
-### PR management
+### Management of pull requests
 
 Standard pull-requests are reviewed and approved by the "Reviewers" team.  
 Major pull-requests (BREAKING, major features) are reviewed by the "Reviewers" team and approved by the "STC members" team through a vote within a maximum period of 2 weeks.
