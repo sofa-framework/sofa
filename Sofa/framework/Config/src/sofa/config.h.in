@@ -41,10 +41,6 @@
 
 #cmakedefine SOFA_WITH_DEVTOOLS
 
-#ifdef _MSC_VER
-#define EIGEN_DONT_ALIGN
-#endif // _MSC_VER
-
 #ifdef WIN32
 #define UNICODE
 #endif // WIN32
