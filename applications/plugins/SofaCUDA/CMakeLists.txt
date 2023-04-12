@@ -33,8 +33,6 @@ set(HEADER_FILES
     ### Mechanical
     sofa/gpu/cuda/CudaMechanicalObject.h
     sofa/gpu/cuda/CudaMechanicalObject.inl
-    sofa/gpu/cuda/CudaParticleSource.h
-    sofa/gpu/cuda/CudaParticleSource.inl
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
