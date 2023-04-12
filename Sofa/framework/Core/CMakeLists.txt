@@ -175,6 +175,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/visual/VisualManager.h
     ${SRC_ROOT}/visual/VisualModel.h
     ${SRC_ROOT}/visual/VisualParams.h
+    ${SRC_ROOT}/visual/VisualState.h
+    ${SRC_ROOT}/visual/VisualState.inl
 )
 
 set(SOURCE_FILES
@@ -293,6 +295,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/visual/VisualManager.cpp
     ${SRC_ROOT}/visual/VisualModel.cpp
     ${SRC_ROOT}/visual/VisualParams.cpp
+    ${SRC_ROOT}/visual/VisualState.cpp
 )
 
 sofa_find_package(Sofa.Topology REQUIRED)

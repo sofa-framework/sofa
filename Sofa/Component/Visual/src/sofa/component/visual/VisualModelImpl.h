@@ -22,44 +22,20 @@
 #pragma once
 #include <sofa/component/visual/config.h>
 
-#include <sofa/core/State.h>
+#include <sofa/type/Vec.h>
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualState.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/core/topology/TopologyData.inl>
+
 #include <string>
 
 namespace sofa::component::visual
 {
 
-using sofa::core::objectmodel::Data ;
-
-class SOFA_COMPONENT_VISUAL_API Vec3State : public core::State< sofa::defaulttype::Vec3Types >
-{
-public:
-    core::topology::PointData< VecCoord > m_positions; ///< Vertices coordinates
-    core::topology::PointData< VecCoord > m_restPositions; ///< Vertices rest coordinates
-    core::topology::PointData< VecDeriv > m_vnormals; ///< Normals of the model
-    bool modified; ///< True if input vertices modified since last rendering
-
-    Vec3State() ;
-
-    virtual void resize(Size vsize) ;
-    virtual Size getSize() const ;
-
-    //State API
-    virtual       Data<VecCoord>* write(core::VecCoordId  v ) ;
-    virtual const Data<VecCoord>* read(core::ConstVecCoordId  v )  const ;
-    virtual Data<VecDeriv>*	write(core::VecDerivId v ) ;
-    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const ;
-
-    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return nullptr; }
-    virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return nullptr; }
-};
+using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
 
 /**
  *  \brief Abstract class which implements partially VisualModel.
