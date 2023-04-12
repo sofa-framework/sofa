@@ -42,8 +42,8 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
-    sofa/gpu/cuda/CudaSubsetMapping.h
-    sofa/gpu/cuda/CudaSubsetMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.inl
 
 
     ### Mass
@@ -120,7 +120,7 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.cpp
     sofa/gpu/cuda/CudaMultiMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
-    sofa/gpu/cuda/CudaSubsetMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMultiMapping.cpp
 
     ### Mass
@@ -188,7 +188,7 @@ set(CUDA_SOURCES
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cu
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cu
-    sofa/gpu/cuda/CudaSubsetMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cu
 
     ### Mass
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cu

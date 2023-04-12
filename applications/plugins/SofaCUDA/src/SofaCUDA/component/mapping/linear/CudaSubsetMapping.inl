@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaSubsetMapping.h>
+#include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.h>
 #include <sofa/component/mapping/linear/SubsetMapping.inl>
 #include <sofa/core/topology/TopologySubsetData.inl>
 

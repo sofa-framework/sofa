@@ -29,7 +29,7 @@
 #include <sofa/gpu/cuda/CudaSphereModel.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 #include <SofaCUDA/component/mapping/nonlinear/CudaRigidMapping.h>
-#include <sofa/gpu/cuda/CudaSubsetMapping.h>
+#include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.h>
 
 
 

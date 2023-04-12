@@ -23,7 +23,7 @@
 #define SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gpu/cuda/CudaSubsetMapping.inl>
+#include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping::linear
