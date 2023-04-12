@@ -35,7 +35,9 @@
 namespace sofa::component::visual
 {
 
-using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
+SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE() 
+typedef sofa::core::visual::VisualState<defaulttype::Vec3Types> Vec3State;
+
 
 /**
  *  \brief Abstract class which implements partially VisualModel.
@@ -46,10 +48,10 @@ using Vec3State = sofa::core::visual::VisualState<defaulttype::Vec3Types>;
  *  At the moment, it is only implemented by OglModel for OpenGL systems.
  *
  */
-class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public Vec3State //, public RigidState
+class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, Vec3State);
+    SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, sofa::core::visual::VisualState<defaulttype::Vec3Types>);
 
     typedef sofa::type::Vec<2, float> TexCoord;
     typedef type::vector<TexCoord> VecTexCoord;
