@@ -24,7 +24,7 @@
 #include "CudaMechanicalObject.inl"
 #include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
 #include "CudaContactMapper.h"
-#include "CudaPenalityContactForceField.h"
+#include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
 #include "CudaSpringForceField.h"
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/gpu/cuda/CudaSphereModel.h>
