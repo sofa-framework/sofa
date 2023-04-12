@@ -94,4 +94,5 @@ auto VisualState<DataTypes>::read(core::ConstVecDerivId v) const -> const Data<V
 
     return nullptr;
 }
-}
+
+} // namespace sofa::core::visual

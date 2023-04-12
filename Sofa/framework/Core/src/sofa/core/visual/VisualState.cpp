@@ -23,8 +23,6 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/topology/TopologyData.inl>
-
 namespace sofa::core::visual
 {
 

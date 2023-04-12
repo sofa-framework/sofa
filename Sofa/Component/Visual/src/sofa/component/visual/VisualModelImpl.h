@@ -68,7 +68,7 @@ public:
     typedef type::vector<VisualTriangle> VecVisualTriangle;
     typedef type::vector<VisualQuad> VecVisualQuad;
 
-    typedef Vec3State::DataTypes DataTypes;
+    typedef sofa::core::visual::VisualState<defaulttype::Vec3Types>::DataTypes DataTypes;
     typedef DataTypes::Real Real;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::VecCoord VecCoord;

@@ -24,7 +24,7 @@
 #include <sofa/core/config.h>
 
 #include <sofa/core/State.h>
-#include <sofa/core/topology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::core::visual
 {
@@ -46,17 +46,17 @@ public:
 
     VisualState();
 
-    virtual void resize(Size vsize);
-    virtual Size getSize() const { return Size(m_positions.getValue().size()); }
+    virtual void resize(Size vsize) override;
+    virtual Size getSize() const override { return Size(m_positions.getValue().size()); }
 
     //State API
-    virtual       Data<VecCoord>* write(core::VecCoordId  v);
-    virtual const Data<VecCoord>* read(core::ConstVecCoordId  v)  const;
-    virtual Data<VecDeriv>* write(core::VecDerivId v);
-    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v) const;
+    virtual       Data<VecCoord>* write(core::VecCoordId  v) override;
+    virtual const Data<VecCoord>* read(core::ConstVecCoordId  v)  const override;
+    virtual Data<VecDeriv>* write(core::VecDerivId v) override;
+    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v) const override;
 
-    virtual       Data<MatrixDeriv>* write(core::MatrixDerivId /* v */) { return nullptr; }
-    virtual const Data<MatrixDeriv>* read(core::ConstMatrixDerivId /* v */) const { return nullptr; }
+    virtual       Data<MatrixDeriv>* write(core::MatrixDerivId /* v */) override { return nullptr; }
+    virtual const Data<MatrixDeriv>* read(core::ConstMatrixDerivId /* v */) const override { return nullptr; }
 };
 
-}
+} // namespace sofa::core::visual
