@@ -33,6 +33,12 @@ template< typename DataTypes >
 class SOFA_CORE_API VisualState : public core::State< DataTypes >
 {
 public:
+    SOFA_CLASS(VisualState, SOFA_TEMPLATE(core::State, defaulttype::Vec3Types));
+
+    using VecCoord = typename DataTypes::VecCoord;
+    using VecDeriv = typename DataTypes::VecCoord;
+    using MatrixDeriv = typename DataTypes::MatrixDeriv;
+
     core::topology::PointData< VecCoord > m_positions; ///< Vertices coordinates
     core::topology::PointData< VecCoord > m_restPositions; ///< Vertices rest coordinates
     core::topology::PointData< VecDeriv > m_vnormals; ///< Normals of the model
