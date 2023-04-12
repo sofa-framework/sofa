@@ -23,7 +23,7 @@
 
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/gpu/cuda/CudaIdentityMapping.inl>
+#include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping::linear

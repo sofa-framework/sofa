@@ -22,7 +22,7 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaSpringForceField.inl"
 #include "CudaMechanicalObject.inl"
-#include "CudaIdentityMapping.inl"
+#include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
 #include "CudaContactMapper.h"
 #include "CudaPenalityContactForceField.h"
 #include "CudaSpringForceField.h"

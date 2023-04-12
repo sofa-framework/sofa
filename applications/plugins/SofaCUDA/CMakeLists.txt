@@ -38,8 +38,8 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.h
-    sofa/gpu/cuda/CudaIdentityMapping.h
-    sofa/gpu/cuda/CudaIdentityMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
     sofa/gpu/cuda/CudaSubsetMapping.h
@@ -117,7 +117,7 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-f.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.cpp
-    sofa/gpu/cuda/CudaIdentityMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.cpp
     sofa/gpu/cuda/CudaMultiMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
     sofa/gpu/cuda/CudaSubsetMapping.cpp
@@ -246,6 +246,8 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaBarycentricMappingRigid.h
         sofa/gpu/cuda/CudaRigidMapping.h
         sofa/gpu/cuda/CudaRigidMapping.inl
+        sofa/gpu/cuda/CudaIdentityMapping.h
+        sofa/gpu/cuda/CudaIdentityMapping.inl
 
         sofa/gpu/cuda/CudaDiagonalMass.h
         sofa/gpu/cuda/CudaDiagonalMass.inl
