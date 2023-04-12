@@ -26,6 +26,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
+#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 
 namespace sofa::component::mapping::nonlinear
 {
@@ -130,9 +131,12 @@ void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, c
 }
 
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void SquareMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
-
+    SOFA_UNUSED(cparams);
+    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 

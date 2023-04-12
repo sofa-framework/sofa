@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/type/RGBAColor.h>
+#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 #include <iostream>
 
 namespace sofa::component::mapping::nonlinear
@@ -200,8 +201,12 @@ void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::MechanicalParams 
 }
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in)
 {
+    SOFA_UNUSED(cparams);
+    const OutMatrixDeriv& childMat  = sofa::helper::getReadAccessor(in).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::getWriteAccessor(out).wref();
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 
