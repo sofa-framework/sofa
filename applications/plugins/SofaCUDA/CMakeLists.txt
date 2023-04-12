@@ -248,6 +248,8 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaRigidMapping.inl
         sofa/gpu/cuda/CudaIdentityMapping.h
         sofa/gpu/cuda/CudaIdentityMapping.inl
+        sofa/gpu/cuda/CudaSubsetMapping.h
+        sofa/gpu/cuda/CudaSubsetMapping.inl
 
         sofa/gpu/cuda/CudaDiagonalMass.h
         sofa/gpu/cuda/CudaDiagonalMass.inl
