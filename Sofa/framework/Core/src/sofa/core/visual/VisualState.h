@@ -59,4 +59,9 @@ public:
     virtual const Data<MatrixDeriv>* read(core::ConstMatrixDerivId /* v */) const override { return nullptr; }
 };
 
+#if !defined(SOFA_CORE_VISUAL_VISUALSTATE_CPP)
+extern template class SOFA_CORE_API VisualState< defaulttype::Vec3Types >;
+#endif
+
+
 } // namespace sofa::core::visual

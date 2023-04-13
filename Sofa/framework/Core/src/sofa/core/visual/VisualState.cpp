@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_VISUAL_VISUALSTATE_CPP
+
 #include <sofa/core/visual/VisualState.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
