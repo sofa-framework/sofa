@@ -321,7 +321,16 @@ constexpr const typename RigidDeriv<N,T>::Rot& getVOrientation(const RigidDeriv<
 template<typename T, typename R>
 constexpr type::Vec<3,T> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const type::Vec<3,T>& p)
 {
-    return getLinear(v) + cross( getAngular(v),p );
+    return getLinear(v) + cross( getAngular(v), p );
+}
+
+template<typename T, typename R>
+constexpr RigidDeriv<3,R> velocityAtRotatedPoint(const RigidDeriv<3,R>& v, const RigidCoord<3,T>& p)
+{
+    RigidDeriv<3,R> r;
+    r.getLinear() = getLinear(v) + cross( getAngular(v), p.getCenter() );
+    r.getAngular() = getAngular(v);
+    return r;
 }
 
 template<typename real>
@@ -552,6 +561,15 @@ template<typename R, typename T>
 constexpr type::Vec<2,R> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const type::Vec<2,R>& p)
 {
     return getVCenter(v) + type::Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
+}
+
+template<typename R, typename T>
+constexpr RigidDeriv<2,T> velocityAtRotatedPoint(const RigidDeriv<2,T>& v, const RigidCoord<2,R>& p)
+{
+    RigidDeriv<2,T> r;
+    r.getLinear() = getLinear(v) + type::Vec<2,R>(-p[1], p[0]) * getVOrientation(v);
+    r.getAngular() = getAngular(v);
+    return r;
 }
 
 } // namespace sofa::defaulttype

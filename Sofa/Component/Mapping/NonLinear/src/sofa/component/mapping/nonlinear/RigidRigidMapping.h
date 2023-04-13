@@ -29,11 +29,20 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 
+#ifndef SOFA_BUILD_SOFA_COMPONENT_MAPPING_NONLINEAR
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#endif
+
+// This component has been DEPRECATED since SOFA v23.06 and will be removed in SOFA v23.12.
+// Please use RigidMapping with template='Rigid3,Rigid3' instead.
+// If this component is crucial to you please report that to sofa-dev@ so we can reconsider this component for future re-integration.
+
 namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut>
-class RigidRigidMapping : public core::Mapping<TIn, TOut>
+class SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "Please use RigidMapping with template='Rigid3,Rigid3' instead. If this component is crucial to you please report that to sofa-dev@ so we can reconsider this component for future re-integration.")
+RigidRigidMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(RigidRigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -58,9 +67,9 @@ public:
     typedef type::Vec<N,Real> Vector ;
 
 protected:
-    Data < OutVecCoord > points; ///< Initial position of the points
-    OutVecCoord pointsR0;
-    Mat rotation;
+    Data < OutVecCoord > d_points; ///< Initial position of the points
+    OutVecCoord m_pointsR0;
+    Mat m_rotation;
     class Loader;
     void load(const char* filename);
     /// number of child frames per parent frame.
@@ -68,16 +77,16 @@ protected:
     /// given in the "index" attribute. If one value, each parent frame drives
     /// the given number of children frames. Otherwise, the values are the number
     /// of child frames driven by each parent frame.
-    Data< sofa::type::vector<sofa::Size> >  repartition;
+    Data< sofa::type::vector<sofa::Size> >  d_repartition;
 
 public:
-    Data<sofa::Index> index; ///< input frame index
-    sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
+    Data<sofa::Index> d_index; ///< input frame index
+    sofa::core::objectmodel::DataFileName d_fileRigidRigidMapping; ///< Filename
 
     /// axis length for display
-    Data<double> axisLength; ///< axis length for display
-    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
-    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
+    Data<double> d_axisLength; ///< axis length for display
+    Data< bool > d_indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data< bool > d_globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
 protected:
     RigidRigidMapping() ;
@@ -107,7 +116,8 @@ public:
 
     void clear();
 
-    sofa::type::vector<sofa::Size> getRepartition() {return repartition.getValue(); }
+    void globalToLocalCoords(OutCoord& result, const InCoord &xfrom, const OutCoord &x);
+    sofa::type::vector<sofa::Size> getRepartition() {return d_repartition.getValue(); }
 
     void setRepartition(sofa::Size value);
     void setRepartition(sofa::type::vector<sofa::Size> values);

@@ -52,12 +52,13 @@ public:
 class SOFA_HELPER_API Deprecated : public ComponentChange
 {
 public:
-    explicit Deprecated(const std::string& sinceVersion, const std::string& untilVersion)
+    explicit Deprecated(const std::string& sinceVersion, const std::string& untilVersion, const std::string& instruction="\b")
     {
         std::stringstream output;
         output << "This component has been DEPRECATED since SOFA " << sinceVersion << " "
                   "and will be removed in SOFA " << untilVersion << ". "
-                  "Please consider updating your scene as using "
+               << instruction <<
+                  " Please consider updating your scene as using "
                   "deprecated component may result in poor performance and undefined behavior. "
                   "If this component is crucial to you please report that to sofa-dev@ so we can "
                   "reconsider this component for future re-integration.";

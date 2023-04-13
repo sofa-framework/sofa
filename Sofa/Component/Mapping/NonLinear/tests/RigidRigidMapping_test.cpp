@@ -104,6 +104,19 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         return xout;
     }
 
+    OutVecCoord create_childCoords()
+    {
+        const int Nout=10;
+        OutVecCoord xout(Nout);
+        Rot rot = Rot( OutCoordPos(0,0,1), M_PI/2 );
+        for( int i=0; i<Nout; i++ )
+        {
+            Out::set( xout[i] ,10.*1,0.,0.);
+            Out::setCRot( xout[i], rot );
+        }
+        return xout;
+    }
+
     InVecCoord create_initial_parentCoord()
     {
         const int Nin=5;
@@ -147,7 +160,7 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         Rot rot2 = Rot( OutCoordPos(0,0,1), 0 );
         Out::setCRot( xout[0], rot2 );
 
-        rigidRigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
+        rigidRigidMapping->d_globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
 
         // Translate parent
         InVecCoord xin(1);
@@ -178,7 +191,7 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 
-        rigidRigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidRigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
 
         InVecCoord xin=xin_init;
         OutVecCoord expectedChildCoords = xout;
@@ -194,8 +207,42 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 
-        rigidRigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
-        rigidRigidMapping->index.setValue( 1 );
+        rigidRigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidRigidMapping->d_index.setValue( 1 );
+
+        InVecCoord xin=xin_init;
+        OutVecCoord expectedChildCoords = xout;
+        return this->runTest(xin_init,xout,xin,expectedChildCoords);
+    }
+
+    bool test_with_repartition_singlevalue_no_movement_worldCoords()
+    {
+        OutVecCoord xout = create_childCoords();
+        InVecCoord xin_init = create_initial_parentCoord();
+
+        size_t Nin=xin_init.size(), Nout=xout.size();
+        this->inDofs->resize(Nin);
+        this->outDofs->resize(Nout);
+
+        rigidRigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidRigidMapping->setRepartition(2);
+
+        InVecCoord xin=xin_init;
+        OutVecCoord expectedChildCoords = xout;
+        return this->runTest(xin_init,xout,xin,expectedChildCoords);
+    }
+
+    bool test_with_repartition_list_no_movement_worldCoords()
+    {
+        OutVecCoord xout = create_childCoord();
+        InVecCoord xin_init = create_initial_parentCoord();
+
+        size_t Nin=xin_init.size(), Nout=xout.size();
+        this->inDofs->resize(Nin);
+        this->outDofs->resize(Nout);
+
+        rigidRigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidRigidMapping->setRepartition(type::vector<sofa::Size>{0,0,1,0,0});
 
         InVecCoord xin=xin_init;
         OutVecCoord expectedChildCoords = xout;
@@ -211,7 +258,7 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         this->inDofs->resize(Nin);
         this->outDofs->resize(Nout);
 
-        rigidRigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidRigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
 
         InVecCoord xin=create_final_parentCoord();
 
@@ -237,8 +284,8 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         this->outDofs->resize(Nout);
 
         int index = 0;
-        rigidRigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
-        rigidRigidMapping->index.setValue(index);
+        rigidRigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidRigidMapping->d_index.setValue(index);
 
         InVecCoord xin=create_final_parentCoord();
 
@@ -264,8 +311,8 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
         this->outDofs->resize(Nout);
 
         int index = 2;
-        rigidRigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
-        rigidRigidMapping->index.setValue(index);
+        rigidRigidMapping->d_globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidRigidMapping->d_index.setValue(index);
 
         InVecCoord xin=create_final_parentCoord();
 
@@ -312,6 +359,20 @@ TYPED_TEST( RigidRigidMappingTest , with_index_no_movement_worldCoords )
     this->errorMax = 200;
     this->deltaRange.second = this->errorMax*100;
     ASSERT_TRUE(this->test_with_index_no_movement_worldCoords());
+}
+
+TYPED_TEST( RigidRigidMappingTest , with_repartition_singlevalue_no_movement_worldCoords )
+{
+    this->errorMax = 200;
+    this->deltaRange.second = this->errorMax*100;
+    ASSERT_TRUE(this->test_with_repartition_singlevalue_no_movement_worldCoords());
+}
+
+TYPED_TEST( RigidRigidMappingTest , with_repartition_list_no_movement_worldCoords )
+{
+    this->errorMax = 200;
+    this->deltaRange.second = this->errorMax*100;
+    ASSERT_TRUE(this->test_with_repartition_list_no_movement_worldCoords());
 }
 
 TYPED_TEST( RigidRigidMappingTest , no_index_worldCoords )
