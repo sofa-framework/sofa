@@ -62,25 +62,33 @@ public:
 
    virtual ~HyperelasticMaterial(){}
 
-	
-	/** returns the strain energy of the current configuration */
-	virtual Real getStrainEnergy(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &) {
-			return 0;
-	}
+
+  /** returns the strain energy of the current configuration */
+  virtual Real getStrainEnergy(StrainInformation<DataTypes>*, const MaterialParameters<DataTypes>&)
+  {
+      return 0;
+  }
 
 
-	/** computes the second Piola Kirchhoff stress tensor of the current configuration */
-    virtual void deriveSPKTensor(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &,MatrixSym &)  {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+  /** computes the second Piola Kirchhoff stress tensor of the current configuration */
+  virtual void deriveSPKTensor(StrainInformation<DataTypes>*, const MaterialParameters<DataTypes>&,
+                               MatrixSym&)
+  {
+  }
 
-	}
-	/** computes the Elasticity Tensor of the current configuration */
+  /** computes the Elasticity Tensor of the current configuration */
 
-    virtual void applyElasticityTensor(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &,const MatrixSym& , MatrixSym &)  {
-		
-	}
+  virtual void applyElasticityTensor(StrainInformation<DataTypes>*,
+                                     const MaterialParameters<DataTypes>&, const MatrixSym&,
+                                     MatrixSym&)
+  {
+  }
 
-	virtual void ElasticityTensor(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &, Matrix6&) {}
-			
+  virtual void ElasticityTensor(StrainInformation<DataTypes>*, const MaterialParameters<DataTypes>&,
+                                Matrix6&)
+  {
+  }
+
 
 };
 
@@ -107,31 +115,30 @@ class StrainInformation
 {
 public:
 
+    typedef typename DataTypes::Coord Coord;
+    typedef typename Coord::value_type Real;
+    typedef type::MatSym<3,Real> MatrixSym;
+    typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
+    typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
+    /// Trace of C = I1
+    Real trC;
+    Real J;
+    Real lambda;
+    /// Trace of C^2 : I2 = (trCSquare - trC^2)/2
+    Real trCsquare;
 
-  typedef typename DataTypes::Coord Coord;
-  typedef typename Coord::value_type Real;
-  typedef type::MatSym<3,Real> MatrixSym;
-  typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
-  typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
-  /// Trace of C = I1
-  Real trC;
-  Real J;
-  Real lambda;
-  /// Trace of C^2 : I2 = (trCSquare - trC^2)/2
-  Real trCsquare;
-
-  /// boolean indicating whether the invariants have been computed
-  bool hasBeenInitialized;
-  /// right Cauchy-Green deformation tensor C (gradPhi^T gradPhi)
-  MatrixSym deformationTensor;
-  EigenMatrix Evect;
-  CoordEigen Evalue;
-  Real logJ;
-  MatrixSym E;
+    /// boolean indicating whether the invariants have been computed
+    bool hasBeenInitialized;
+    /// right Cauchy-Green deformation tensor C (gradPhi^T gradPhi)
+    MatrixSym deformationTensor;
+    EigenMatrix Evect;
+    CoordEigen Evalue;
+    Real logJ;
+    MatrixSym E;
 
 
-  StrainInformation() : trC(0), J(0), lambda(0), trCsquare(0), hasBeenInitialized(false), deformationTensor(), Evect(), Evalue(), logJ(0), E() {}
-  virtual ~StrainInformation() {}
+    StrainInformation() : trC(0), J(0), lambda(0), trCsquare(0), hasBeenInitialized(false), deformationTensor(), Evect(), Evalue(), logJ(0), E() {}
+    virtual ~StrainInformation() {}
 };
 
 } // namespace sofa::component::solidmechanics::fem::hyperelastic::material

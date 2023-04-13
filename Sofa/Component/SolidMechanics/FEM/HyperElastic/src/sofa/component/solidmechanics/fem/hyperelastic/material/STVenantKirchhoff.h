@@ -31,80 +31,74 @@
 
 namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
-
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
 The material is described based on continuum mechanics and the description is independent
-to any discretization method like the finite element method. 
+to any discretization method like the finite element method.
 A material is generically described by a strain energy function and its first and second derivatives.
 In practice the energy is the sum of several energy terms which depends on 2 quantities :
 the determinant of the deformation gradient J and the right Cauchy Green deformation tensor */
-
-
-
-template<class DataTypes>
-class STVenantKirchhoff : public HyperelasticMaterial<DataTypes>{
-
-  typedef typename DataTypes::Coord::value_type Real;
-  typedef type::Mat<3,3,Real> Matrix3;
-  typedef type::Mat<6,6,Real> Matrix6;
-  typedef type::MatSym<3,Real> MatrixSym;
+template <class DataTypes>
+class STVenantKirchhoff : public HyperelasticMaterial<DataTypes>
+{
+    typedef typename DataTypes::Coord::value_type Real;
+    typedef type::Mat<3, 3, Real> Matrix3;
+    typedef type::Mat<6, 6, Real> Matrix6;
+    typedef type::MatSym<3, Real> MatrixSym;
 
 public:
+    Real getStrainEnergy(StrainInformation<DataTypes>* sinfo,
+                         const MaterialParameters<DataTypes>& param) override
+    {
+        Real I1 = sinfo->trC;
+        MatrixSym C = sinfo->deformationTensor;
+        Real I1square = (Real)(C[0]*C[0]+C[2]*C[2]+C[5]*C[5]+2*(C[1]*C[1]+C[3]*C[3]+C[4]*C[4]));
+        Real I2 = (Real)((pow(I1, (Real)2)-I1square)/2);
+        Real mu = param.parameterArray[0];
+        Real lambda = param.parameterArray[1];
+        return (Real)(-mu*I2/2+(mu/4+lambda/8)*pow(I1, (Real)2)-I1*(3*lambda/4+mu/2));
+    }
 
-	virtual Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) {
-		Real I1=sinfo->trC;
-			MatrixSym C=sinfo->deformationTensor;
-			Real I1square=(Real)(C[0]*C[0] + C[2]*C[2]+ C[5]*C[5]+2*(C[1]*C[1] + C[3]*C[3] + C[4]*C[4]));
-			Real I2=(Real)((pow(I1,(Real)2)- I1square)/2);
-			Real mu=param.parameterArray[0];
-			Real lambda=param.parameterArray[1];
-			return (Real)(-mu*I2/2+(mu/4+lambda/8)*pow(I1,(Real)2)-I1*(3*lambda/4+mu/2));
+    void deriveSPKTensor(StrainInformation<DataTypes>* sinfo,
+                         const MaterialParameters<DataTypes>& param, MatrixSym& SPKTensorGeneral) override
+    {
+        MatrixSym C = sinfo->deformationTensor;
+        Real I1 = sinfo->trC;
+        Real mu = param.parameterArray[0];
+        Real lambda = param.parameterArray[1];
+        MatrixSym ID;
+        ID.identity();
+        SPKTensorGeneral = (C-ID)*mu+ID*lambda/(Real)2.0*(I1-(Real)3.0);
+    }
 
+    void applyElasticityTensor(StrainInformation<DataTypes>*,
+                               const MaterialParameters<DataTypes>& param,
+                               const MatrixSym& inputTensor, MatrixSym& outputTensor) override
+    {
+        Real mu = param.parameterArray[0];
+        Real lambda = param.parameterArray[1];
+        MatrixSym ID;
+        ID.identity();
+        Real trH = inputTensor[0]+inputTensor[2]+inputTensor[5];
+        outputTensor = ID*trH*lambda/2.0+inputTensor*mu;
+    }
 
-	}
-	void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral){
-		MatrixSym C=sinfo->deformationTensor;
-		Real I1=sinfo->trC;
-		Real mu=param.parameterArray[0];
-        Real lambda=param.parameterArray[1];
-		MatrixSym ID;
-		ID.identity();
-        SPKTensorGeneral=(C-ID)*mu+ID*lambda/(Real)2.0*(I1-(Real)3.0);
-	}
-
-   void applyElasticityTensor(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &param,const MatrixSym& inputTensor, MatrixSym &outputTensor)  {
-		Real mu=param.parameterArray[0];
-        Real lambda=param.parameterArray[1];
-		MatrixSym ID;
-		ID.identity();
-		Real trH=inputTensor[0]+inputTensor[2]+inputTensor[5];
-        outputTensor=ID*trH*lambda/2.0+inputTensor*mu;
-	
-	}
-   virtual void ElasticityTensor(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &param,Matrix6 &outputTensor)  {
-		Real mu=param.parameterArray[0];
-        Real lambda=param.parameterArray[1];
-		MatrixSym ID;
-		ID.identity();
-		Matrix6 IDHID;
-		IDHID.identity();
-		Matrix6 trIDHID;
-		trIDHID[0]=ID[0]*ID;
-		trIDHID[1]=ID[1]*ID;
-		trIDHID[2]=ID[2]*ID;
-		trIDHID[3]=ID[3]*ID;
-		trIDHID[4]=ID[4]*ID;
-		trIDHID[5]=ID[5]*ID;
-        outputTensor=(IDHID*mu+trIDHID*lambda/(Real)2.0)*2.0;
-	
-	}
-
-	
-
-	
-
-
+    void ElasticityTensor(StrainInformation<DataTypes>*,
+                          const MaterialParameters<DataTypes>& param, Matrix6& outputTensor) override
+    {
+        Real mu = param.parameterArray[0];
+        Real lambda = param.parameterArray[1];
+        MatrixSym ID;
+        ID.identity();
+        Matrix6 IDHID;
+        IDHID.identity();
+        Matrix6 trIDHID;
+        trIDHID[0] = ID[0]*ID;
+        trIDHID[1] = ID[1]*ID;
+        trIDHID[2] = ID[2]*ID;
+        trIDHID[3] = ID[3]*ID;
+        trIDHID[4] = ID[4]*ID;
+        trIDHID[5] = ID[5]*ID;
+        outputTensor = (IDHID*mu+trIDHID*lambda/(Real)2.0)*2.0;
+    }
 };
-
-
 } // namespace sofa::component::solidmechanics::fem::hyperelastic::material
