@@ -30,7 +30,7 @@ namespace sofa::core::visual
 {
 
 template< typename DataTypes >
-class SOFA_CORE_API VisualState : public core::State< DataTypes >
+class VisualState : public core::State< DataTypes >
 {
 public:
     SOFA_CLASS(VisualState, SOFA_TEMPLATE(core::State, defaulttype::Vec3Types));
