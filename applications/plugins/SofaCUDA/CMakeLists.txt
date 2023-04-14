@@ -283,6 +283,9 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
 
         sofa/gpu/cuda/CudaPenalityContactForceField.h
         sofa/gpu/cuda/CudaPenalityContactForceField.inl
+
+        sofa/gpu/cuda/CudaSpringForceField.h
+        sofa/gpu/cuda/CudaSpringForceField.inl
     )
 endif()
 
