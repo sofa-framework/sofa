@@ -78,8 +78,8 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaPlaneForceField.inl
     sofa/gpu/cuda/CudaSphereForceField.h
     sofa/gpu/cuda/CudaSphereForceField.inl
-    sofa/gpu/cuda/CudaSpringForceField.h
-    sofa/gpu/cuda/CudaSpringForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.inl
 
     ### Collisions
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaLineModel.h
@@ -145,7 +145,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaPlaneForceField.cpp
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaRestShapeSpringsForceField.cpp
     sofa/gpu/cuda/CudaSphereForceField.cpp
-    sofa/gpu/cuda/CudaSpringForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.cpp
     
 
     ### Collisions
@@ -210,7 +210,7 @@ set(CUDA_SOURCES
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cu
     sofa/gpu/cuda/CudaPlaneForceField.cu
     sofa/gpu/cuda/CudaSphereForceField.cu
-    sofa/gpu/cuda/CudaSpringForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.cu
 
     ### Collisions
     
