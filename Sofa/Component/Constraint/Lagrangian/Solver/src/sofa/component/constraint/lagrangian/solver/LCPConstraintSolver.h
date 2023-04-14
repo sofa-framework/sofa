@@ -91,6 +91,8 @@ public:
     Data<int> merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
     Data<int> merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
     Data<int> merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
+    Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: The Data constraintForces is used to provide the intensities of constraint forces in the simulation. The user can easily check the constraint forces from the GenericConstraint component interface
+    Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field
 
     Data < std::set<int> > constraintGroups; ///< list of ID of groups of constraints to be handled by this solver.
 
