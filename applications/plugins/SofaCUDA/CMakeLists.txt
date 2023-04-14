@@ -295,6 +295,9 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
 
         sofa/gpu/cuda/CudaLinearForceField.h
         sofa/gpu/cuda/CudaLinearForceField.inl
+
+        sofa/gpu/cuda/CudaEllipsoidForceField.h
+        sofa/gpu/cuda/CudaEllipsoidForceField.inl
     )
 endif()
 
