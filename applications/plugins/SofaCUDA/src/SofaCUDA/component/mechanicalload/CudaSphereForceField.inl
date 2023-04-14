@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaSphereForceField.h"
+#include <SofaCUDA/component/mechanicalload/CudaSphereForceField.h>
 #include <sofa/component/mechanicalload/SphereForceField.inl>
 
 namespace sofa::gpu::cuda

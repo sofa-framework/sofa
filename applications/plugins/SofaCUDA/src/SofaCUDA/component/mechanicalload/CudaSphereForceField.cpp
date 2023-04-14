@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaSphereForceField.inl"
+#include <SofaCUDA/component/mechanicalload/CudaSphereForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
