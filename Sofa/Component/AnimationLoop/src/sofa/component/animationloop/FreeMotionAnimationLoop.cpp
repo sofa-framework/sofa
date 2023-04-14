@@ -98,6 +98,8 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 
 void FreeMotionAnimationLoop::init()
 {
+    Inherit::init();
+
     simulation::common::VectorOperations vop(core::execparams::defaultInstance(), getContext());
 
     MultiVecDeriv dx(&vop, core::VecDerivId::dx());
