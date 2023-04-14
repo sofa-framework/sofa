@@ -292,6 +292,9 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
 
         sofa/gpu/cuda/CudaPlaneForceField.h
         sofa/gpu/cuda/CudaPlaneForceField.inl
+
+        sofa/gpu/cuda/CudaLinearForceField.h
+        sofa/gpu/cuda/CudaLinearForceField.inl
     )
 endif()
 
