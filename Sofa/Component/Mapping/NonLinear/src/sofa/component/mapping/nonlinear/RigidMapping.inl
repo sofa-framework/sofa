@@ -667,7 +667,7 @@ void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         const auto childForces = this->toModel->readForces();
 
         std::map<unsigned, sofa::type::vector<unsigned> > in_out;
-        for(sofa::Index i = 0; i < rotatedPoints.size(); ++i)
+        for(sofa::Index i = 0; i < m_rotatedPoints.size(); ++i)
         {
             in_out[ getRigidIndex(i) ].push_back(i);
         }
@@ -678,17 +678,18 @@ void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 
             static constexpr unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
 
-            type::Mat<rotation_dimension,rotation_dimension,Real> block;
+            type::Mat<rotation_dimension,rotation_dimension,OutReal> block;
 
             for (const auto pointIdx : snd)
             {
-                block += type::crossProductMatrix<Real>( childForces[pointIdx] ) * type::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
+                block += type::crossProductMatrix<OutReal>( Out::getDPos(childForces[pointIdx]) )
+                        * type::crossProductMatrix<OutReal>( Out::getCPos(m_rotatedPoints[pointIdx]) );
             }
 
             if( geomStiff == 2 )
             {
                 block.symmetrize(); // symmetrization
-                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+                helper::Decompose<OutReal>::NSDProjection( block ); // negative, semi-definite projection
             }
 
             const auto matrixIndex = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions;
