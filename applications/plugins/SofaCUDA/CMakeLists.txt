@@ -33,19 +33,17 @@ set(HEADER_FILES
     ### Mechanical
     sofa/gpu/cuda/CudaMechanicalObject.h
     sofa/gpu/cuda/CudaMechanicalObject.inl
-    sofa/gpu/cuda/CudaParticleSource.h
-    sofa/gpu/cuda/CudaParticleSource.inl
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.h
-    sofa/gpu/cuda/CudaIdentityMapping.h
-    sofa/gpu/cuda/CudaIdentityMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.inl
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.h
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.inl
-    sofa/gpu/cuda/CudaSubsetMapping.h
-    sofa/gpu/cuda/CudaSubsetMapping.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.h
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.inl
 
 
     ### Mass
@@ -94,8 +92,8 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedConstraint.inl
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.h
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementConstraint.inl
-    sofa/gpu/cuda/CudaPenalityContactForceField.h
-    sofa/gpu/cuda/CudaPenalityContactForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.inl
   
 )
 
@@ -119,10 +117,10 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-f.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.cpp
-    sofa/gpu/cuda/CudaIdentityMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.cpp
     sofa/gpu/cuda/CudaMultiMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
-    sofa/gpu/cuda/CudaSubsetMapping.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMultiMapping.cpp
 
     ### Mass
@@ -143,7 +141,7 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaConstantForceField.cpp
     sofa/gpu/cuda/CudaEllipsoidForceField.cpp
     sofa/gpu/cuda/CudaLinearForceField.cpp
-    sofa/gpu/cuda/CudaPenalityContactForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cpp
     sofa/gpu/cuda/CudaPlaneForceField.cpp
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaRestShapeSpringsForceField.cpp
     sofa/gpu/cuda/CudaSphereForceField.cpp
@@ -190,7 +188,7 @@ set(CUDA_SOURCES
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cu
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cu
-    sofa/gpu/cuda/CudaSubsetMapping.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cu
 
     ### Mass
     ${SOFACUDA_SOURCE_DIR}/component/mass/CudaDiagonalMass.cu
@@ -209,7 +207,7 @@ set(CUDA_SOURCES
     ### ForceFields
     sofa/gpu/cuda/CudaEllipsoidForceField.cu
     sofa/gpu/cuda/CudaLinearForceField.cu
-    sofa/gpu/cuda/CudaPenalityContactForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cu
     sofa/gpu/cuda/CudaPlaneForceField.cu
     sofa/gpu/cuda/CudaSphereForceField.cu
     sofa/gpu/cuda/CudaSpringForceField.cu
@@ -248,6 +246,10 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaBarycentricMappingRigid.h
         sofa/gpu/cuda/CudaRigidMapping.h
         sofa/gpu/cuda/CudaRigidMapping.inl
+        sofa/gpu/cuda/CudaIdentityMapping.h
+        sofa/gpu/cuda/CudaIdentityMapping.inl
+        sofa/gpu/cuda/CudaSubsetMapping.h
+        sofa/gpu/cuda/CudaSubsetMapping.inl
 
         sofa/gpu/cuda/CudaDiagonalMass.h
         sofa/gpu/cuda/CudaDiagonalMass.inl
@@ -278,6 +280,9 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaPointModel.h
         sofa/gpu/cuda/CudaSphereModel.h
         sofa/gpu/cuda/CudaTriangleModel.h
+
+        sofa/gpu/cuda/CudaPenalityContactForceField.h
+        sofa/gpu/cuda/CudaPenalityContactForceField.inl
     )
 endif()
 

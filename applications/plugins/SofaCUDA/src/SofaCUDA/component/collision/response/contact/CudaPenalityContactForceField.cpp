@@ -19,35 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
-#define SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
-
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gpu/cuda/CudaSubsetMapping.inl>
+#include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping::linear
+namespace sofa::component::collision::response::contact
 {
 using namespace sofa::gpu::cuda;
+template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3f1Types>;
 
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3f1Types >;
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3f1Types >;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API PenalityContactForceField< CudaVec3d1Types>;
+#endif
 
-} // namespace sofa::component::mapping::linear
-
+} // sofa::component::collision::response::contact
 namespace sofa::gpu::cuda
 {
-using namespace sofa::component::mapping::linear;
 
-int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
-        .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()
-        .add< SubsetMapping< CudaVec3f1Types, CudaVec3fTypes > >()
-        .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >()
+int PenalityContactForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3fTypes> >()
+        .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3dTypes> >()
+        .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3d1Types> >()
+#endif
         ;
 
 } // namespace sofa::gpu::cuda
-
-#endif // SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
