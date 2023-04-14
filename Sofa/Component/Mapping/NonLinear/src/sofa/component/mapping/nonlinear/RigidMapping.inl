@@ -578,13 +578,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 
     if( !geomStiff ) { m_geometricStiffnessMatrix.resize(0,0); return; }
 
-    typedef typename StiffnessSparseMatrixEigen::CompressedMatrix matrix_type;
-    matrix_type& dJ = m_geometricStiffnessMatrix.compressedMatrix;
-
-    size_t insize = TIn::deriv_total_size*this->fromModel->getSize();
-
-    dJ.resize( insize, insize );
-    dJ.setZero(); // necessary ?
+    m_geometricStiffnessMatrix.resizeBlocks( this->fromModel->getSize(), this->fromModel->getSize() );
 
     const OutVecDeriv& childForces = childForceId[this->toModel.get()].read()->getValue();
 
@@ -601,9 +595,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
         const unsigned rigidIdx = it->first;
 
         static const unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
-
         type::Mat<rotation_dimension,rotation_dimension,OutReal> block;
-
 
         for( unsigned int w=0 ; w<it->second.size() ; ++w )
         {
@@ -622,17 +614,19 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 
             const unsigned row = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + j;
 
-            dJ.startVec( row );
-
-            for(unsigned k = 0; k < rotation_dimension; ++k) {
+            for(unsigned k = 0; k < rotation_dimension; ++k)
+            {
                 const unsigned col = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + k;
 
-                if( block(j, k) ) dJ.insertBack(row, col) += (InReal)block[j][k];
+                if( block(j, k) != static_cast<OutReal>(0))
+                {
+                    m_geometricStiffnessMatrix.add(row, col, (InReal)block[j][k]);
+                }
             }
         }
     }
 
-    dJ.finalize();
+    m_geometricStiffnessMatrix.compress();
 }
 
 
