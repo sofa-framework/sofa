@@ -31,8 +31,8 @@ set(HEADER_FILES
     sofa/gpu/cuda/mycuda.h
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.h
-    sofa/gpu/cuda/CudaMechanicalObject.inl
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.h
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.inl
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
@@ -105,7 +105,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/mycuda.cpp
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cpp
     sofa/gpu/cuda/CudaSetTopology.cpp
 
     ### Mappings
@@ -183,7 +183,7 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSort.cu
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.cu
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cu
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cu
