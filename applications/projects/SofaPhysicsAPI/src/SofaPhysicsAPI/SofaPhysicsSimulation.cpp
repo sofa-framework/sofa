@@ -395,14 +395,14 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     std::string filename = cfilename;
     sofa::helper::BackTrace::autodump();
 
-    //bool wasAnimated = isAnimated();
     sofa::helper::system::DataRepository.findFile(filename);
     m_RootNode = m_Simulation->load(filename.c_str());
+    int result = API_SUCCESS;
     if (m_RootNode.get())
     {
         sceneFileName = filename;
         m_Simulation->init(m_RootNode.get());
-        return updateOutputMeshes();
+        result = updateOutputMeshes();
 
         if ( useGUI ) {
           sofa::gui::common::GUIManager::SetScene(m_RootNode.get(),cfilename);
@@ -418,9 +418,7 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     lastH = 0;
     lastRedrawTime = sofa::helper::system::thread::CTime::getRefTime();
 
-//    if (isAnimated() != wasAnimated)
-//        animatedChanged();
-    return API_SUCCESS;
+    return result;
 }
 
 int SofaPhysicsSimulation::unload()
