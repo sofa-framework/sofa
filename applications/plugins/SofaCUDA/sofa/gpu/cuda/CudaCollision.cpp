@@ -20,14 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaSpringForceField.inl"
+#include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
 #include "CudaMechanicalObject.inl"
 #include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
 #include "CudaContactMapper.h"
 #include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
-#include "CudaSpringForceField.h"
-#include "CudaSphereModel.h"
-#include "CudaPointModel.h"
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 
 #include <sofa/gui/component/performer/MouseInteractor.inl>
 #include <sofa/gui/component/performer/ComponentMouseInteraction.inl>

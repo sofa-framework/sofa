@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaSpringForceField.h"
+#include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.inl>
