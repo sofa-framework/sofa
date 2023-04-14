@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaMechanicalObject.h"
+#include <SofaCUDA/component/statecontainer/CudaMechanicalObject.h>
 #include <sofa/component/statecontainer/MechanicalObject.inl>
 
 namespace sofa::gpu::cuda

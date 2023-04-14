@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
-#include "CudaMechanicalObject.inl"
+#include <SofaCUDA/component/statecontainer/CudaMechanicalObject.inl>
 #include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
 #include "CudaContactMapper.h"
 #include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
