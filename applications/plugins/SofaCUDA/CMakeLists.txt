@@ -287,8 +287,11 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
         sofa/gpu/cuda/CudaSpringForceField.h
         sofa/gpu/cuda/CudaSpringForceField.inl
 
-        ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.h
-        ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.inl
+        sofa/gpu/cuda/CudaSphereForceField.h
+        sofa/gpu/cuda/CudaSphereForceField.inl
+
+        sofa/gpu/cuda/CudaPlaneForceField.h
+        sofa/gpu/cuda/CudaPlaneForceField.inl
     )
 endif()
 
