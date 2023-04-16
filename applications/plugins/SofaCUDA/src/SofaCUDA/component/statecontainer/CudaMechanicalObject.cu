@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
-#include "CudaMathRigid.h"
-#include "mycuda.h"
+#include <sofa/gpu/cuda/CudaMathRigid.h>
+#include <sofa/gpu/cuda/mycuda.h>
 #include "cuda.h"
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

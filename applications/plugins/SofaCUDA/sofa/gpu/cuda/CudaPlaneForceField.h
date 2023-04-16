@@ -21,66 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/mechanicalload/PlaneForceField.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa::gpu::cuda
-{
-
-template<class real>
-struct GPUPlane
-{
-    type::Vec<3,real> normal;
-    real d;
-    real stiffness;
-    real damping;
-};
-
-} // namespace sofa::gpu::cuda
-
-namespace sofa::component::mechanicalload
-{
-
-template<class TCoord, class TDeriv, class TReal>
-class PlaneForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
-{
-public:
-    typedef TReal Real;
-
-    gpu::cuda::GPUPlane<Real> plane;
-    gpu::cuda::CudaVector<Real> penetration;
-
-    PlaneForceFieldInternalData()
-    {}
-};
-
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-} // namespace sofa::component::mechanicalload
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaPlaneForceField.h")
+#include <SofaCUDA/component/mechanicalload/CudaPlaneForceField.h>

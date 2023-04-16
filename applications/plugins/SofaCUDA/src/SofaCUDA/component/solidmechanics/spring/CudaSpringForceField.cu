@@ -22,7 +22,7 @@
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
-#include "CudaTexture.h"
+#include <sofa/gpu/cuda/CudaTexture.h>
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa

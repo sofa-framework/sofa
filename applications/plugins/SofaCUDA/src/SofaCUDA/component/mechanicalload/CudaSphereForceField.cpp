@@ -19,9 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mechanicalload/CudaSphereForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaCUDA/config.h>
+namespace sofa::component::mechanicalload
+{
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3f1Types >;
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaLinearForceField.h")
-#include <SofaCUDA/component/mechanicalload/CudaLinearForceField.h>
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3d1Types >;
+#endif
+}
+
+namespace sofa::gpu::cuda
+{
+
+int SphereForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::mechanicalload::SphereForceField<CudaVec3fTypes> >()
+        .add< component::mechanicalload::SphereForceField<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::mechanicalload::SphereForceField<CudaVec3dTypes> >()
+        .add< component::mechanicalload::SphereForceField<CudaVec3d1Types> >()
+#endif
+        ;
+
+} // namespace sofa::gpu::cuda

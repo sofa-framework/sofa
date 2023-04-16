@@ -31,8 +31,8 @@ set(HEADER_FILES
     sofa/gpu/cuda/mycuda.h
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.h
-    sofa/gpu/cuda/CudaMechanicalObject.inl
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.h
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.inl
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.h
@@ -70,16 +70,16 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl
 
     ### ForceFields
-    sofa/gpu/cuda/CudaEllipsoidForceField.h
-    sofa/gpu/cuda/CudaEllipsoidForceField.inl
-    sofa/gpu/cuda/CudaLinearForceField.h
-    sofa/gpu/cuda/CudaLinearForceField.inl
-    sofa/gpu/cuda/CudaPlaneForceField.h
-    sofa/gpu/cuda/CudaPlaneForceField.inl
-    sofa/gpu/cuda/CudaSphereForceField.h
-    sofa/gpu/cuda/CudaSphereForceField.inl
-    sofa/gpu/cuda/CudaSpringForceField.h
-    sofa/gpu/cuda/CudaSpringForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.inl
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.h
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.inl
 
     ### Collisions
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaLineModel.h
@@ -105,7 +105,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/mycuda.cpp
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cpp
     sofa/gpu/cuda/CudaSetTopology.cpp
 
     ### Mappings
@@ -139,13 +139,13 @@ set(SOURCE_FILES
 
     ### ForceFields
     ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaConstantForceField.cpp
-    sofa/gpu/cuda/CudaEllipsoidForceField.cpp
-    sofa/gpu/cuda/CudaLinearForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.cpp
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cpp
-    sofa/gpu/cuda/CudaPlaneForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.cpp
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaRestShapeSpringsForceField.cpp
-    sofa/gpu/cuda/CudaSphereForceField.cpp
-    sofa/gpu/cuda/CudaSpringForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.cpp
     
 
     ### Collisions
@@ -183,7 +183,7 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSort.cu
 
     ### Mechanical
-    sofa/gpu/cuda/CudaMechanicalObject.cu
+    ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cu
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cu
@@ -205,12 +205,12 @@ set(CUDA_SOURCES
     ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.cu
 
     ### ForceFields
-    sofa/gpu/cuda/CudaEllipsoidForceField.cu
-    sofa/gpu/cuda/CudaLinearForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaEllipsoidForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaLinearForceField.cu
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cu
-    sofa/gpu/cuda/CudaPlaneForceField.cu
-    sofa/gpu/cuda/CudaSphereForceField.cu
-    sofa/gpu/cuda/CudaSpringForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaPlaneForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/mechanicalload/CudaSphereForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/solidmechanics/spring/CudaSpringForceField.cu
 
     ### Collisions
     
@@ -283,6 +283,24 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
 
         sofa/gpu/cuda/CudaPenalityContactForceField.h
         sofa/gpu/cuda/CudaPenalityContactForceField.inl
+
+        sofa/gpu/cuda/CudaSpringForceField.h
+        sofa/gpu/cuda/CudaSpringForceField.inl
+
+        sofa/gpu/cuda/CudaSphereForceField.h
+        sofa/gpu/cuda/CudaSphereForceField.inl
+
+        sofa/gpu/cuda/CudaPlaneForceField.h
+        sofa/gpu/cuda/CudaPlaneForceField.inl
+
+        sofa/gpu/cuda/CudaLinearForceField.h
+        sofa/gpu/cuda/CudaLinearForceField.inl
+
+        sofa/gpu/cuda/CudaEllipsoidForceField.h
+        sofa/gpu/cuda/CudaEllipsoidForceField.inl
+
+        sofa/gpu/cuda/CudaMechanicalObject.h
+        sofa/gpu/cuda/CudaMechanicalObject.inl
     )
 endif()
 

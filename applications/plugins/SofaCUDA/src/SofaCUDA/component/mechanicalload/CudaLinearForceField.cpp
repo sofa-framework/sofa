@@ -19,9 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mechanicalload/CudaLinearForceField.inl>
 
-#include <SofaCUDA/config.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaLinearForceField.h")
-#include <SofaCUDA/component/mechanicalload/CudaLinearForceField.h>
+namespace sofa::component::mechanicalload
+{
+
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+}// namespace sofa::component::mechanicalload
+
+namespace sofa::gpu::cuda
+{
+
+int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
+        .add< component::mechanicalload::LinearForceField<CudaVec6fTypes> >()
+		.add< component::mechanicalload::LinearForceField<CudaVec3fTypes> >()
+		.add< component::mechanicalload::LinearForceField<CudaRigid3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::mechanicalload::LinearForceField<CudaVec6dTypes> >()
+		.add< component::mechanicalload::LinearForceField<CudaRigid3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        ;
+
+}// namespace sofa::gpu::cuda

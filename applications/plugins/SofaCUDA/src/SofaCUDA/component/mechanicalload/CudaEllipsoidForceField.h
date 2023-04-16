@@ -19,36 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include "CudaLinearForceField.inl"
-
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::component::mechanicalload
-{
-
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-}// namespace sofa::component::mechanicalload
+#include <sofa/component/mechanicalload/EllipsoidForceField.h>
 
 namespace sofa::gpu::cuda
 {
 
-int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
-        .add< component::mechanicalload::LinearForceField<CudaVec6fTypes> >()
-		.add< component::mechanicalload::LinearForceField<CudaVec3fTypes> >()
-		.add< component::mechanicalload::LinearForceField<CudaRigid3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mechanicalload::LinearForceField<CudaVec6dTypes> >()
-		.add< component::mechanicalload::LinearForceField<CudaRigid3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+struct GPUEllipsoid
+{
+    type::Vec3f center;
+    type::Vec3f inv_r2;
+    float stiffness;
+    float damping;
+};
 
-}// namespace sofa::gpu::cuda
+} // namespace sofa::gpu::cuda
+
+namespace sofa::component::mechanicalload
+{
+
+template <>
+class EllipsoidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
+{
+public:
+    gpu::cuda::GPUEllipsoid ellipsoid;
+    gpu::cuda::CudaVector<float> tmp;
+};
+
+template <>
+void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+
+template <>
+void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+
+template <>
+class EllipsoidForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
+{
+public:
+    gpu::cuda::GPUEllipsoid ellipsoid;
+    gpu::cuda::CudaVector<float> tmp;
+};
+
+template <>
+void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+
+template <>
+void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+
+} // namespace sofa::component::mechanicalload

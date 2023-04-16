@@ -21,51 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/mechanicalload/SphereForceField.h>
+#include <SofaCUDA/config.h>
 
-namespace sofa::gpu::cuda
-{
-
-struct GPUSphere
-{
-    type::Vec3f center;
-    float r;
-    float stiffness;
-    float damping;
-};
-
-} // namespace sofa::gpu::cuda
-
-namespace sofa::component::mechanicalload
-{
-
-template <>
-class SphereForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
-{
-public:
-    gpu::cuda::GPUSphere sphere;
-    gpu::cuda::CudaVector<type::Vec4f> penetration;
-};
-
-template <>
-void SphereForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void SphereForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-template <>
-class SphereForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
-{
-public:
-    gpu::cuda::GPUSphere sphere;
-    gpu::cuda::CudaVector<type::Vec4f> penetration;
-};
-
-template <>
-void SphereForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-
-template <>
-void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-
-} // namespace sofa::component::mechanicalload
+SOFA_DEPRECATED_HEADER("v23.06", "v23.12", "SofaCUDA/component/mechanicalload/CudaSphereForceField.h")
+#include <SofaCUDA/component/mechanicalload/CudaSphereForceField.h>
