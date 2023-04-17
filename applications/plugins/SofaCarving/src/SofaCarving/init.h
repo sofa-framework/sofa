@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFACARVING_CONFIG_H
-#define SOFACARVING_CONFIG_H
+#include <SofaCarving/config.h>
 
-#include <sofa/config.h>
+namespace sofa::component
+{
+    SOFA_SOFACARVING_API void init();
+} // namespace sofa::component
 
-#ifdef SOFA_BUILD_SOFACARVING
-#  define SOFA_TARGET SofaCarving
-#  define SOFA_SOFACARVING_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFACARVING_API  SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#endif
