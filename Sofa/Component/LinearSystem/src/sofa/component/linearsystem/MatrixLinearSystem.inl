@@ -24,6 +24,7 @@
 #include <unordered_set>
 #include <mutex>
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
+#include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
