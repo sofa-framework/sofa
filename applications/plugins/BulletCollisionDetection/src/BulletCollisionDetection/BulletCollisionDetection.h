@@ -30,7 +30,6 @@
 
 #include "BulletCollisionModel.h"
 #include "BulletTriangleModel.h"
-#include <boost/unordered_map.hpp>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wignored-qualifiers"
@@ -42,8 +41,7 @@
 
 
 #include <iostream>
-//#include <sofa/gl/gl.h>
-//#include <sofa/helper/system/glut.h>
+#include <unordered_map>
 
 #include "BulletSphereModel.h"
 #include "BulletOBBModel.h"
@@ -194,7 +192,7 @@ protected:
     btDefaultCollisionConfiguration * _bt_collision_configuration;
     btCollisionDispatcher * _bt_dispatcher;
 
-    boost::unordered_map<const btCollisionObject*,sofa::core::CollisionModel*> _bt2sofa_cm;
+    std::unordered_map<const btCollisionObject*,sofa::core::CollisionModel*> _bt2sofa_cm;
 
     BulletIntersection * _bt_inter_method;
 public:

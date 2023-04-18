@@ -56,7 +56,16 @@ include_directories(${BULLET_INCLUDE_DIRS})
 link_directories(${BULLET_LIBRARY_DIRS})
 
 message("BULLET_INCLUDE_DIRS: ${BULLET_INCLUDE_DIRS}")
-message("BULLET_LIBRARY_DIRS: ${BULLET_LIBRARY_DIRS}")
+message("BULLET_LIBRARIES: ${BULLET_LIBRARIES}")
+
+# HACD (present in the lib dir of bullet) is not set by FindBullet
+set(HACD_LIB "")
+if(BULLET_LIBRARIES)
+    list(GET BULLET_LIBRARIES 0 first_bullet_lib_path)
+    get_filename_component(bullet_lib_dir "${first_bullet_lib_path}" DIRECTORY)
+    set(HACD_LIB "${bullet_lib_dir}/HACD.lib")
+    message("find bullet lib: ${bullet_lib_dir} and ${HACD_LIB}")
+endif()
 
 if(Compliant_FOUND)
     list(APPEND SOURCE_FILES ${BULLETCOLLISIONDETECTION_SRC}/BulletConvexHullCompliantContacts.cpp)
@@ -72,12 +81,11 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Component.Collision ${BULLET_LIBRARIES} CollisionOBBCapsule Sofa.GL)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.Collision ${BULLET_LIBRARIES} ${HACD_LIB} CollisionOBBCapsule Sofa.GL)
 
 if(Compliant_FOUND)
     target_link_libraries(${PROJECT_NAME} Compliant)
 endif()
-target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES} HACD)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

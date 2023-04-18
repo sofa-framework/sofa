@@ -68,7 +68,8 @@ void BulletCollisionDetection::addCollisionModel (core::CollisionModel *cm){
     BulletCollisionModel * btcm = dynamic_cast<BulletCollisionModel*>(cm);
     if(btcm && !(btcm->handled())){
         btcm->setHandled(true);
-        btRigidBody * rb = dynamic_cast<btRigidBody*>(btcm->getBtCollisionObject());
+        auto* bcmptr = btcm->getBtCollisionObject();
+        btRigidBody * rb = static_cast<btRigidBody*>(bcmptr); // dont know why dynamic_cast crashes here; and I dont know if static_cast will always be relevant
         if(rb){
             _bt_world->addRigidBody(rb);
             _bt2sofa_cm[btcm->getBtCollisionObject()] = cm;

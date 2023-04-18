@@ -50,7 +50,7 @@ public:
     inline void setHandled(bool h){_handled = h;}
 
 protected:
-    btCollisionObject * _bt_collision_object;//the collision object in the bullet scene
-    bool _handled;//true if the bullet collision model has been added to the bullet scene
+    btCollisionObject* _bt_collision_object{nullptr};//the collision object in the bullet scene
+    bool _handled{false};//true if the bullet collision model has been added to the bullet scene
 };
 #endif
