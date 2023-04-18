@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckMissingRequiredPlugin.h"
+#include <SceneChecking/SceneCheckMissingRequiredPlugin.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Visitor.h>
@@ -79,28 +79,58 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(sofa::simulation::Node* node)
     }
 }
 
-void SceneCheckMissingRequiredPlugin::doPrintSummary()
+void SceneCheckMissingRequiredPlugin::printSummary(simulation::SceneLoader* sceneLoader)
 {
     if(!m_requiredPlugins.empty())
     {
         const std::string indent { "  "};
         std::stringstream tmp;
-        for(const auto& kv : m_requiredPlugins)
+        bool hasSyntax = true;
+        for(const auto& [pluginName, listComponents] : m_requiredPlugins)
         {
-            tmp << indent << "<RequiredPlugin name=\""<<kv.first<<"\"/> <!-- Needed to use components [";
-            if (!kv.second.empty())
-            {
-                std::copy(kv.second.begin(), kv.second.end() - 1, std::ostream_iterator<std::string>(tmp, ", "));
-                tmp << kv.second.back();
-            }
-            tmp <<"] -->" << msgendl;
+            tmp << indent;
+            hasSyntax &= formatRequiredPlugin(pluginName, listComponents, sceneLoader, tmp);
+        }
+        if (!hasSyntax)
+        {
+            tmp << "Note that XML syntax is assumed in the suggested lines to add.";
         }
         msg_warning(this->getName())
                 << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl
                 << indent << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
-                << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the beginning of your scene (if it is a .scn): " << msgendl
+                << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the beginning of your scene: " << msgendl
                 << tmp.str();
     }
+}
+
+bool SceneCheckMissingRequiredPlugin::formatRequiredPlugin(
+    const std::string& pluginName,
+    const std::vector<std::string>& listComponents,
+    simulation::SceneLoader* sceneLoader,
+    std::ostream& ss) const
+{
+    bool hasSyntax = (sceneLoader != nullptr);
+    if (sceneLoader)
+    {
+        hasSyntax = sceneLoader->syntaxForAddingRequiredPlugin(pluginName, listComponents, ss, m_checkedRootNode);
+    }
+
+    if (!hasSyntax)
+    {
+        formatRequiredPluginInXMLSyntax(pluginName, listComponents, ss);
+    }
+
+    return hasSyntax;
+}
+
+void SceneCheckMissingRequiredPlugin::formatRequiredPluginInXMLSyntax(const std::string& pluginName, const std::vector<std::string>& listComponents, std::ostream& ss)
+{
+    ss << "<RequiredPlugin name=\"" << pluginName << "\"/> <!-- Needed to use components [";
+    if (!listComponents.empty())
+    {
+        ss << sofa::helper::join(listComponents, ',');
+    }
+    ss << "] -->" << msgendl;
 }
 
 void SceneCheckMissingRequiredPlugin::doInit(sofa::simulation::Node* node)
@@ -118,6 +148,8 @@ void SceneCheckMissingRequiredPlugin::doInit(sofa::simulation::Node* node)
             m_loadedPlugins[pluginName] = true;
         }
     }
+
+    m_checkedRootNode = node;
 }
 
 } // namespace sofa::_scenechecking_

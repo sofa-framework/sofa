@@ -51,7 +51,7 @@ void SceneCheckerVisitor::removeCheck(sofa::simulation::SceneCheck::SPtr check)
     m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
 }
 
-void SceneCheckerVisitor::validate(sofa::simulation::Node* node)
+void SceneCheckerVisitor::validate(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader)
 {
     std::stringstream tmp;
     bool first = true;
@@ -64,14 +64,14 @@ void SceneCheckerVisitor::validate(sofa::simulation::Node* node)
 
     for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
-        check->doInit(node) ;
+        check->init(node, sceneLoader) ;
     }
 
     execute(node) ;
 
     for(sofa::simulation::SceneCheck::SPtr& check : m_checkset)
     {
-        check->doPrintSummary() ;
+        check->printSummary(sceneLoader) ;
     }
     msg_info("SceneCheckerVisitor") << "Finished validating node \""<< node->getName() << "\".";
 }

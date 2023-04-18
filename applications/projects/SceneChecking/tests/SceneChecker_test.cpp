@@ -92,7 +92,8 @@ struct SceneChecker_test : public BaseSimulationTest
               << "      <EulerExplicitSolver />               \n"
               << "</Node>                                                           \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        SceneLoaderXML sceneLoader;
+        Node::SPtr root = sceneLoader.doLoadFromMemory ("testscene",
                                                           scene.str().c_str());
         EXPECT_MSG_NOEMIT(Error);
 
@@ -105,12 +106,12 @@ struct SceneChecker_test : public BaseSimulationTest
         if(missing)
         {
             EXPECT_MSG_EMIT(Warning); // [SceneCheckMissingRequiredPlugin]
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
         else
         {
             EXPECT_MSG_NOEMIT(Warning);
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
     }
 
@@ -138,7 +139,8 @@ struct SceneChecker_test : public BaseSimulationTest
               << "    </Node>                                                     \n"
               << "</Node>                                                         \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        SceneLoaderXML sceneLoader;
+        Node::SPtr root = sceneLoader.doLoadFromMemory ("testscene",
                                                           scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr);
@@ -153,14 +155,14 @@ struct SceneChecker_test : public BaseSimulationTest
             EXPECT_MSG_NOEMIT(Error);
             EXPECT_MSG_EMIT(Warning);
             ASSERT_NE(root->getChild(nodename), nullptr);
-            checker.validate(root->getChild(nodename));
+            checker.validate(root->getChild(nodename), &sceneLoader);
         }
 
         {
             EXPECT_MSG_NOEMIT(Error);
             EXPECT_MSG_NOEMIT(Warning);
             ASSERT_NE(root->getChild("nothingCheck"), nullptr);
-            checker.validate(root->getChild("nothingCheck"));
+            checker.validate(root->getChild("nothingCheck"), &sceneLoader);
         }
 
     }
@@ -180,7 +182,8 @@ struct SceneChecker_test : public BaseSimulationTest
               << "      <ComponentDeprecated />                                   \n"
               << "</Node>                                                         \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        SceneLoaderXML sceneLoader;
+        Node::SPtr root = sceneLoader.doLoadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
@@ -197,10 +200,10 @@ struct SceneChecker_test : public BaseSimulationTest
         if(shouldWarn){
             /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
             EXPECT_MSG_EMIT(Warning);
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
         else {
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
     }
 
@@ -223,19 +226,20 @@ struct SceneChecker_test : public BaseSimulationTest
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckUsingAlias::newSPtr() );
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        SceneLoaderXML sceneLoader;
+        Node::SPtr root = sceneLoader.doLoadFromMemory("testscene", scene.str().c_str());
         ASSERT_NE(root.get(), nullptr);
         root->init(sofa::core::execparams::defaultInstance());
 
         if(sceneWithAlias)
         {
             EXPECT_MSG_EMIT(Warning); // [SceneCheckUsingAlias]
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
         else
         {
             EXPECT_MSG_NOEMIT(Warning);
-            checker.validate(root.get());
+            checker.validate(root.get(), &sceneLoader);
         }
     }
 };

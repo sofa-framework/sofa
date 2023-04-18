@@ -25,6 +25,7 @@
 
 #include <string>
 #include <memory>
+#include <sofa/simulation/SceneLoaderFactory.h>
 
 namespace sofa::simulation
 {
@@ -38,6 +39,11 @@ public:
     typedef std::shared_ptr<SceneCheck> SPtr;
     virtual const std::string getName() = 0;
     virtual const std::string getDesc() = 0;
+
+    virtual void init(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader);
+    virtual void checkOn(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader);
+    virtual void printSummary(simulation::SceneLoader* sceneLoader);
+
     virtual void doInit(sofa::simulation::Node* node);
     virtual void doCheckOn(sofa::simulation::Node* node) = 0;
     virtual void doPrintSummary();
