@@ -55,16 +55,29 @@ find_package(Bullet REQUIRED)
 include_directories(${BULLET_INCLUDE_DIRS})
 link_directories(${BULLET_LIBRARY_DIRS})
 
-message("BULLET_INCLUDE_DIRS: ${BULLET_INCLUDE_DIRS}")
-message("BULLET_LIBRARIES: ${BULLET_LIBRARIES}")
+message(STATUS "BULLET_INCLUDE_DIRS: ${BULLET_INCLUDE_DIRS}")
+message(STATUS "BULLET_LIBRARIES: ${BULLET_LIBRARIES}")
 
 # HACD (present in the lib dir of bullet) is not set by FindBullet
+# this should set the correct path
 set(HACD_LIB "")
 if(BULLET_LIBRARIES)
     list(GET BULLET_LIBRARIES 0 first_bullet_lib_path)
     get_filename_component(bullet_lib_dir "${first_bullet_lib_path}" DIRECTORY)
-    set(HACD_LIB "${bullet_lib_dir}/HACD.lib")
-    message("find bullet lib: ${bullet_lib_dir} and ${HACD_LIB}")
+    if(WIN32)
+        set(HACD_LIB "${bullet_lib_dir}/HACD.lib")
+    elseif(LINUX)
+        # on Ubuntu, this is installed with libbullet-extras-dev
+        set(HACD_LIB "${bullet_lib_dir}/libHACD.so")
+    else()
+        # MacOS ? todo
+    endif()
+endif()
+
+if(EXISTS "${HACD_LIB}")
+    message(STATUS "HACD_LIB: ${HACD_LIB}")
+else()
+    message(SEND_ERROR "Could not find HACD, necessary to build ConvexHull." )
 endif()
 
 if(Compliant_FOUND)
