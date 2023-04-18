@@ -1,7 +1,7 @@
 #ifndef BULLET_OBB_MODEL
 #define BULLET_OBB_MODEL
 
-#include <SofaMiscCollision/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>
@@ -26,11 +26,13 @@ namespace collision
 //};
 
 template<class TDataTypes>
-class TBulletOBBModel : public sofa::component::collision::TOBBModel<TDataTypes>,public BulletCollisionModel
+class TBulletOBBModel : public collisionobbcapsule::geometry::OBBCollisionModel<TDataTypes>,public BulletCollisionModel
 {
 public:
     //SOFA_CLASS2(SOFA_TEMPLATE(TBulletOBBModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
-    SOFA_CLASS(SOFA_TEMPLATE(TBulletOBBModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TOBBModel, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TBulletOBBModel, TDataTypes),SOFA_TEMPLATE(collisionobbcapsule::geometry::OBBCollisionModel, TDataTypes));
+
+    using Inherit = collisionobbcapsule::geometry::OBBCollisionModel<TDataTypes>;
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;

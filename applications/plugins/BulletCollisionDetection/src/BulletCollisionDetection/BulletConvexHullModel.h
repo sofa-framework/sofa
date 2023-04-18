@@ -114,16 +114,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const TBulletConvexHullModel<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
     // -- Bullet interface
 
     virtual void initBullet();

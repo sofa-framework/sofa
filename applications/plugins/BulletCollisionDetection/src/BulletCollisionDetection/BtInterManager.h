@@ -7,7 +7,8 @@
 #include "BulletConvexHullModel.h"
 #include "BulletCapsuleModel.h"
 #include <sofa/type/Vec.h>
-#include <SofaMiscCollision/IntrUtility3.h>
+
+#include <CollisionOBBCapsule/detection/intersection/IntrUtility3.h>
 
 namespace sofa{namespace component{namespace collision{
 
@@ -54,15 +55,15 @@ void correctContactPoint1(SReal margin,sofa::core::collision::DetectionOutput & 
 }
 
 template <>
-void correctContactPoint0<BulletOBBModel>(SReal,sofa::core::collision::DetectionOutput & dec_out,OBB & e0){
-    OBB obb(e0);
-    IntrUtil<OBB>::project(dec_out.point[0],obb);
+void correctContactPoint0<BulletOBBModel>(SReal,sofa::core::collision::DetectionOutput & dec_out, collisionobbcapsule::geometry::OBB & e0){
+    collisionobbcapsule::geometry::OBB obb(e0);
+    collisionobbcapsule::detection::intersection::IntrUtil<collisionobbcapsule::geometry::OBB>::project(dec_out.point[0],obb);
 }
 
 template <>
-void correctContactPoint1<BulletOBBModel>(SReal,sofa::core::collision::DetectionOutput & dec_out,OBB & e1){
-    OBB obb(e1);
-    IntrUtil<OBB>::project(dec_out.point[1],obb);
+void correctContactPoint1<BulletOBBModel>(SReal,sofa::core::collision::DetectionOutput & dec_out, collisionobbcapsule::geometry::OBB & e1){
+    collisionobbcapsule::geometry::OBB obb(e1);
+    collisionobbcapsule::detection::intersection::IntrUtil<collisionobbcapsule::geometry::OBB>::project(dec_out.point[1],obb);
 }
 
 

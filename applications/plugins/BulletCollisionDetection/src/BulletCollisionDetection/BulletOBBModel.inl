@@ -13,14 +13,14 @@ namespace collision
 
 template <class DataTypes>
 TBulletOBBModel<DataTypes>::TBulletOBBModel()
-    : TOBBModel<DataTypes>()
+    : Inherit()
     , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
     , _bt_cshape(0x0)
 {}
 
 template<class DataTypes>
 TBulletOBBModel<DataTypes>::TBulletOBBModel(core::behavior::MechanicalState<DataTypes>* _mstate )
-    : TOBBModel<DataTypes>(_mstate)
+    : Inherit(_mstate)
     , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
     , _bt_cshape(0x0)
 {}
@@ -122,7 +122,7 @@ TBulletOBBModel<DataTypes>::~TBulletOBBModel(){
 
 template <class DataTypes>
 void TBulletOBBModel<DataTypes>::init(){
-    TOBBModel<DataTypes>::init();
+    Inherit::init();
     initBullet();
 }
 
