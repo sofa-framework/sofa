@@ -23,6 +23,8 @@ public:
     //SOFA_CLASS2(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
     SOFA_CLASS(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::geometry::SphereCollisionModel, TDataTypes));
 
+    using Inherit = sofa::component::collision::geometry::SphereCollisionModel<TDataTypes>;
+
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

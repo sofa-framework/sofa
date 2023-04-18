@@ -66,7 +66,7 @@ if(BULLET_LIBRARIES)
     get_filename_component(bullet_lib_dir "${first_bullet_lib_path}" DIRECTORY)
     if(WIN32)
         set(HACD_LIB "${bullet_lib_dir}/HACD.lib")
-    elseif(LINUX)
+    elseif(UNIX AND NOT APPLE)
         # on Ubuntu, this is installed with libbullet-extras-dev
         set(HACD_LIB "${bullet_lib_dir}/libHACD.so")
     else()
