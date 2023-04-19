@@ -51,6 +51,7 @@ void MappingGeometricStiffnessForceField<DataTypes>::init()
 
     if (!d_yesIKnowMatrixMappingIsSupportedAutomatically.getValue())
     {
+        msg_error() << "This component is deprecated and deactivated because geometric stiffness is now supported automatically";
         this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
     }
 }
@@ -102,6 +103,11 @@ template <class DataTypes>
 void MappingGeometricStiffnessForceField<DataTypes>::buildStiffnessMatrix(
     core::behavior::StiffnessMatrix* matrix)
 {
+    if(this->d_componentState.getValue() !=core::objectmodel::ComponentState::Valid)
+    {
+        return ;
+    }
+
     const sofa::linearalgebra::BaseMatrix* mappingK = l_mapping->getK();
 
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)

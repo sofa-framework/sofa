@@ -133,6 +133,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 {
     if (!d_yesIKnowMatrixMappingIsSupportedAutomatically.getValue())
     {
+        msg_error() << "This component is deprecated and deactivated because matrix mapping is now supported automatically";
         this->d_componentState.setValue(ComponentState::Invalid);
         return;
     }
