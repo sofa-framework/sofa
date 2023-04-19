@@ -72,14 +72,21 @@ public:
     /// get the list of file extensions
     virtual void getExtensionList(ExtensionList* list) = 0;
 
+    /// Write into a ostream the syntax to add a RequiredPlugin component in the scene file. The
+    /// syntax depends on the file format, hence the SceneLoader. The function returns true if the
+    /// derived SceneLoader implements this function, false otherwise.
+    virtual bool syntaxForAddingRequiredPlugin(const std::string& pluginName,
+                                               const std::vector<std::string>& listComponents,
+                                               std::ostream& ss, sofa::simulation::Node* nodeWhereAdded);
+
     /// to be able to inform when a scene is loaded
     struct SOFA_SIMULATION_CORE_API Listener
     {
-        virtual void rightBeforeLoadingScene();  ///< callback called just before loading the scene file
-        virtual void rightAfterLoadingScene(sofa::simulation::NodeSPtr); ///< callback called just after loading the scene file
+        virtual void rightBeforeLoadingScene(SceneLoader* sceneLoader);  ///< callback called just before loading the scene file
+        virtual void rightAfterLoadingScene(sofa::simulation::NodeSPtr, SceneLoader* sceneLoader); ///< callback called just after loading the scene file
 
-        virtual void rightBeforeReloadingScene();  ///< callback called just before reloading the scene file
-        virtual void rightAfterReloadingScene(sofa::simulation::NodeSPtr root); ///< callback called just after reloading the scene file
+        virtual void rightBeforeReloadingScene(SceneLoader* sceneLoader);  ///< callback called just before reloading the scene file
+        virtual void rightAfterReloadingScene(sofa::simulation::NodeSPtr root, SceneLoader* sceneLoader); ///< callback called just after reloading the scene file
     };
 
     /// adding a listener
@@ -92,10 +99,10 @@ protected:
     /// the list of listeners
     typedef std::set<Listener*> Listeners;
     static Listeners s_listeners;
-    static void notifyLoadingSceneBefore();
-    static void notifyReloadingSceneBefore();
-    static void notifyLoadingSceneAfter(sofa::simulation::NodeSPtr node);
-    static void notifyReloadingSceneAfter(sofa::simulation::NodeSPtr node);
+    static void notifyLoadingSceneBefore(SceneLoader* sceneLoader);
+    static void notifyReloadingSceneBefore(SceneLoader* sceneLoader);
+    static void notifyLoadingSceneAfter(sofa::simulation::NodeSPtr node, SceneLoader* sceneLoader);
+    static void notifyReloadingSceneAfter(sofa::simulation::NodeSPtr node, SceneLoader* sceneLoader);
 };
 
 

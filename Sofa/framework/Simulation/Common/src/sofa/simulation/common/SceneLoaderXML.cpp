@@ -63,6 +63,18 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
     list->push_back("scn");
 }
 
+bool SceneLoaderXML::syntaxForAddingRequiredPlugin(const std::string& pluginName,
+                                                   const std::vector<std::string>& listComponents, std::ostream& ss, sofa::simulation::Node* nodeWhereAdded)
+{
+    ss << "<RequiredPlugin name=\"" << pluginName << "\"/> <!-- Needed to use components [";
+    if (!listComponents.empty())
+    {
+        ss << sofa::helper::join(listComponents, ',');
+    }
+    ss << "] -->" << msgendl;
+    return true;
+}
+
 sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     SOFA_UNUSED(sceneArgs);
@@ -135,18 +147,24 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     return root;
 }
 
-/// Load from a string in memory
-Node::SPtr SceneLoaderXML::loadFromMemory(const char* filename, const char* data)
+NodeSPtr SceneLoaderXML::doLoadFromMemory(const char* filename, const char* data)
 {
-    notifyLoadingSceneBefore();
+    notifyLoadingSceneBefore(this);
 
     xml::BaseElement* xml = xml::loadFromMemory(filename, data);
 
     Node::SPtr root = processXML(xml, filename);
 
     delete xml;
-    notifyLoadingSceneAfter(root);
+    notifyLoadingSceneAfter(root, this);
     return root;
+}
+
+/// Load from a string in memory
+Node::SPtr SceneLoaderXML::loadFromMemory(const char* filename, const char* data)
+{
+    SceneLoaderXML sceneLoader;
+    return sceneLoader.doLoadFromMemory(filename, data);
 }
 
 

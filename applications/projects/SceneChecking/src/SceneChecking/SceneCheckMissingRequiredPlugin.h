@@ -45,11 +45,21 @@ public:
     virtual const std::string getDesc() override;
     void doInit(sofa::simulation::Node* node) override;
     void doCheckOn(sofa::simulation::Node* node) override;
-    void doPrintSummary() override;
+    void printSummary(simulation::SceneLoader* sceneLoader) override;
 
-private:    
+private:
     std::map<std::string, bool > m_loadedPlugins;
     std::map<std::string, std::vector<std::string> > m_requiredPlugins;
+    sofa::simulation::Node* m_checkedRootNode { nullptr };
+
+    bool formatRequiredPlugin(const std::string& pluginName,
+                              const std::vector<std::string>& listComponents,
+                              simulation::SceneLoader* sceneLoader,
+                              std::ostream& ss) const;
+
+    static void formatRequiredPluginInXMLSyntax(const std::string& pluginName,
+                                                const std::vector<std::string>& listComponents,
+                                                std::ostream& ss);
 };
 
 } // namespace sofa::_scenechecking_

@@ -24,6 +24,8 @@
 #include <SceneChecking/config.h>
 #include <sofa/simulation/SceneCheck.h>
 #include <sofa/core/ExecParams.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
+
 #include <functional>
 #include <map>
 
@@ -38,7 +40,7 @@ public:
     SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance()) ;
     ~SceneCheckerVisitor() override;
 
-    void validate(sofa::simulation::Node* node) ;
+    void validate(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader) ;
     Result processNodeTopDown(sofa::simulation::Node* node) override ;
 
     void addCheck(sofa::simulation::SceneCheck::SPtr check) ;
