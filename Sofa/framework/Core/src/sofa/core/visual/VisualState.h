@@ -21,27 +21,47 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/core/config.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_VISUAL
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/core/State.h>
+#include <sofa/core/topology/TopologyData.inl>
 
-namespace sofa::component::visual
+namespace sofa::core::visual
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::visual
 
-#ifdef SOFA_BUILD__COMPONENT__VISUAL
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.06", "v23.12", \
-        "Vec3State is now an alias of sofa::core::visual::VisualState<defaulttype::Vec3Types>.")
+template< typename DataTypes >
+class VisualState : public core::State< DataTypes >
+{
+public:
+    SOFA_CLASS(VisualState, SOFA_TEMPLATE(core::State, defaulttype::Vec3Types));
+
+    using VecCoord = typename DataTypes::VecCoord;
+    using VecDeriv = typename DataTypes::VecCoord;
+    using MatrixDeriv = typename DataTypes::MatrixDeriv;
+
+    core::topology::PointData< VecCoord > m_positions; ///< Vertices coordinates
+    core::topology::PointData< VecCoord > m_restPositions; ///< Vertices rest coordinates
+    core::topology::PointData< VecDeriv > m_vnormals; ///< Normals of the model
+    bool modified; ///< True if input vertices modified since last rendering
+
+    VisualState();
+
+    virtual void resize(Size vsize) override;
+    virtual Size getSize() const override { return Size(m_positions.getValue().size()); }
+
+    //State API
+    virtual       Data<VecCoord>* write(core::VecCoordId  v) override;
+    virtual const Data<VecCoord>* read(core::ConstVecCoordId  v)  const override;
+    virtual Data<VecDeriv>* write(core::VecDerivId v) override;
+    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v) const override;
+
+    virtual       Data<MatrixDeriv>* write(core::MatrixDerivId /* v */) override { return nullptr; }
+    virtual const Data<MatrixDeriv>* read(core::ConstMatrixDerivId /* v */) const override { return nullptr; }
+};
+
+#if !defined(SOFA_CORE_VISUAL_VISUALSTATE_CPP)
+extern template class SOFA_CORE_API VisualState< defaulttype::Vec3Types >;
 #endif
+
+
+} // namespace sofa::core::visual

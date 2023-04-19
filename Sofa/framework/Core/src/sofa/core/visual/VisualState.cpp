@@ -19,29 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_CORE_VISUAL_VISUALSTATE_CPP
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/core/visual/VisualState.inl>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_VISUAL
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::visual
+namespace sofa::core::visual
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::visual
 
-#ifdef SOFA_BUILD__COMPONENT__VISUAL
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__VEC3STATE_AS_VISUALSTATE() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.06", "v23.12", \
-        "Vec3State is now an alias of sofa::core::visual::VisualState<defaulttype::Vec3Types>.")
-#endif
+using namespace sofa::defaulttype;
+
+template class SOFA_CORE_API VisualState< Vec3Types >;
+
+} // namespace sofa::core::visual

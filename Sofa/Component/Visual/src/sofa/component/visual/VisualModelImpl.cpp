@@ -21,21 +21,21 @@
 ******************************************************************************/
 #include <sofa/component/visual/VisualModelImpl.h>
 
+#include <sofa/type/Quat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Material.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/topology/TopologyData.inl>
-#include <sofa/component/topology/container/grid/SparseGridTopology.h>
-
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/type/Quat.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/rmath.h>
-#include <sofa/helper/accessor.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/type/Material.h>
-#include <sofa/helper/AdvancedTimer.h>
+
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
 #include <sstream>
 #include <map>
@@ -50,72 +50,6 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using type::vector;
-
-Vec3State::Vec3State()
-    : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-    , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
-    , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
-    , modified(false)
-{
-    m_positions.setGroup("Vector");
-    m_restPositions.setGroup("Vector");
-    m_vnormals.setGroup("Vector");
-}
-
-void Vec3State::resize(Size vsize)
-{
-    helper::WriteOnlyAccessor< Data<VecCoord > > positions = m_positions;
-    if( positions.size() == vsize ) return;
-    helper::WriteOnlyAccessor< Data<VecCoord > > restPositions = m_restPositions;
-    helper::WriteOnlyAccessor< Data<VecDeriv > > normals = m_vnormals;
-
-    positions.resize(vsize);
-    restPositions.resize(vsize); // todo allocate restpos only when it is necessary
-    normals.resize(vsize);
-
-    modified = true;
-}
-
-Size Vec3State::getSize() const { return Size(m_positions.getValue().size()); }
-
-Data<Vec3State::VecCoord>* Vec3State::write(     core::VecCoordId  v )
-{
-    modified = true;
-
-    if( v == core::VecCoordId::position() )
-        return &m_positions;
-    if( v == core::VecCoordId::restPosition() )
-        return &m_restPositions;
-
-    return nullptr;
-}
-
-const Data<Vec3State::VecCoord>* Vec3State::read(core::ConstVecCoordId  v )  const
-{
-    if( v == core::VecCoordId::position() )
-        return &m_positions;
-    if( v == core::VecCoordId::restPosition() )
-        return &m_restPositions;
-
-    return nullptr;
-}
-
-Data<Vec3State::VecDeriv>*	Vec3State::write(core::VecDerivId v )
-{
-    if( v == core::VecDerivId::normal() )
-        return &m_vnormals;
-
-    return nullptr;
-}
-
-const Data<Vec3State::VecDeriv>* Vec3State::read(core::ConstVecDerivId v ) const
-{
-    if( v == core::VecDerivId::normal() )
-        return &m_vnormals;
-
-    return nullptr;
-}
-
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
