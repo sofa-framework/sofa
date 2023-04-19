@@ -57,7 +57,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
 
-    virtual Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param)
+    Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) override
     {
         MatrixSym C=sinfo->deformationTensor;
         Real k0=param.parameterArray[0];
@@ -74,7 +74,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
         return (Real)fj*val*mu1/(alpha1*alpha1)+k0*log(sinfo->J)*log(sinfo->J)/(Real)2.0-(Real)3.0*mu1/(alpha1*alpha1);
     }
 
-    virtual void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral)
+    void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral) override
     {
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
@@ -102,8 +102,8 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     }
 
 
-    virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
-            const MatrixSym& inputTensor, MatrixSym& outputTensor)
+    void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
+                               const MatrixSym& inputTensor, MatrixSym& outputTensor) override
     {
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
@@ -145,7 +145,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 
     }
 
-    virtual void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor)
+    void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor) override
     {
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
