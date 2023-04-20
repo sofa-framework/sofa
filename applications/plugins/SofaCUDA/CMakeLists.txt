@@ -18,6 +18,7 @@ set(HEADER_FILES
     ### Common
     sofa/gpu/cuda/CudaBaseVector.h
     sofa/gpu/cuda/CudaCommon.h
+    sofa/gpu/cuda/CudaForceField.h
     sofa/gpu/cuda/CudaMath.h
     sofa/gpu/cuda/CudaMath.inl
     sofa/gpu/cuda/CudaMathRigid.h
@@ -101,6 +102,7 @@ set(SOURCE_FILES
     ### Common
     main.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
+    sofa/gpu/cuda/CudaForceField.cpp
     sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/mycuda.cpp
 
