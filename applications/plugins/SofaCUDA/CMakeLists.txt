@@ -101,7 +101,6 @@ set(SOURCE_FILES
     ### Common
     main.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
-    sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/mycuda.cpp
 
     ### Mechanical
