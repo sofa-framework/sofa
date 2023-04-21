@@ -1,6 +1,7 @@
 #include "BulletConvexHullModel.h"
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
+#include <sofa/gl/gl.h>
 
 namespace sofa
 {
@@ -99,8 +100,8 @@ void TBulletConvexHullModel<DataTypes>::initBullet(){
 
         _mstate->resize(1);
 
-        Data<typename sofa::component::container::MechanicalObject<DataTypes>::VecCoord>* dpositions = _mstate->write( sofa::core::VecId::position() );
-        typename sofa::component::container::MechanicalObject<DataTypes>::VecCoord & positions = *dpositions->beginEdit();
+        Data<typename sofa::component::statecontainer::MechanicalObject<DataTypes>::VecCoord>* dpositions = _mstate->write( sofa::core::VecId::position() );
+        typename sofa::component::statecontainer::MechanicalObject<DataTypes>::VecCoord & positions = *dpositions->beginEdit();
 
         typename DataTypes::Coord one_position(_bary,Quaternion(0,0,0,1));
         positions[0] = one_position;
@@ -246,9 +247,9 @@ void TBulletConvexHullModel<DataTypes>::initBullet(){
                     _ch_deco_tri[i][j][1] = deco_tri[j].Y();
                     _ch_deco_tri[i][j][2] = deco_tri[j].Z();
 
-                    const Vector3 & pt1 = _ch_deco_pts[i][_ch_deco_tri[i][j][0]];
-                    const Vector3 & pt2 = _ch_deco_pts[i][_ch_deco_tri[i][j][1]];
-                    const Vector3 & pt3 = _ch_deco_pts[i][_ch_deco_tri[i][j][2]];
+                    const auto& pt1 = _ch_deco_pts[i][_ch_deco_tri[i][j][0]];
+                    const auto& pt2 = _ch_deco_pts[i][_ch_deco_tri[i][j][1]];
+                    const auto& pt3 = _ch_deco_pts[i][_ch_deco_tri[i][j][2]];
 
                     _ch_deco_norms[i][j] = cross(pt2-pt1,pt3-pt1);
                 }
@@ -296,9 +297,9 @@ void TBulletConvexHullModel<DataTypes>::draw_without_decomposition(const core::v
         vparams->drawTool()->setPolygonMode(2,true);
         vparams->drawTool()->setPolygonMode(1,false);
 
-        std::vector< Vector3 > points;
+        std::vector< type::Vec3 > points;
         std::vector< sofa::type::Vec<3,int> > indices;
-        std::vector< Vector3 > normals;
+        std::vector< type::Vec3 > normals;
 
         int index=0;
         for (unsigned int i=0; i<tri.size(); i++)
@@ -318,7 +319,7 @@ void TBulletConvexHullModel<DataTypes>::draw_without_decomposition(const core::v
         }
 
         vparams->drawTool()->setLightingEnabled(true);
-        vparams->drawTool()->drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawTriangles(points, indices, normals, type::Vec<4,float>(getColor4f()));
         vparams->drawTool()->setLightingEnabled(false);
         vparams->drawTool()->setPolygonMode(0,false);
     }
@@ -351,7 +352,7 @@ void TBulletConvexHullModel<DataTypes>::draw(const core::visual::VisualParams* v
     const Quaternion & ori = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getOrientation();
     const Coord & center = _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getCenter();
 
-    Matrix3 sofa_mat;
+    type::Matrix3 sofa_mat;
     ori.toMatrix(sofa_mat);
     sofa_mat.transpose();
 

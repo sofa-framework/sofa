@@ -5,16 +5,16 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Data.h>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#pragma GCC diagnostic ignored "-Woverloaded-virtual"
-#include "btBulletCollisionCommon.h"
+//#pragma GCC diagnostic push
+//#pragma GCC diagnostic ignored "-Wunused-variable"
+//#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+#include <btBulletCollisionCommon.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include <BulletCollision/CollisionShapes/btTriangleMesh.h>
 //#include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <BulletCollision/Gimpact/btGImpactShape.h>
-#pragma GCC diagnostic pop
+//#pragma GCC diagnostic pop
 
 
 
@@ -50,7 +50,7 @@ public:
     inline void setHandled(bool h){_handled = h;}
 
 protected:
-    btCollisionObject * _bt_collision_object;//the collision object in the bullet scene
-    bool _handled;//true if the bullet collision model has been added to the bullet scene
+    btCollisionObject* _bt_collision_object{nullptr};//the collision object in the bullet scene
+    bool _handled{false};//true if the bullet collision model has been added to the bullet scene
 };
 #endif

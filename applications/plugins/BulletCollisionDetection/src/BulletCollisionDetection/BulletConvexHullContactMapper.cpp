@@ -1,16 +1,10 @@
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP
 #include "BulletConvexHullContactMapper.h"
 #include <sofa/helper/Factory.inl>
-#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::response::mapper
 {
 
 using namespace defaulttype;
@@ -19,10 +13,4 @@ ContactMapperCreator< ContactMapper<BulletConvexHullModel,Vec3Types> > BulletCon
 
 template class SOFA_BULLETCOLLISIONDETECTION_API ContactMapper<BulletConvexHullModel,Vec3Types>;
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-
+} // namespace sofa::component::collision::response::mapper

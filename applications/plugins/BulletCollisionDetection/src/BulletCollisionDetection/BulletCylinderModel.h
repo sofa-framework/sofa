@@ -1,10 +1,9 @@
 #ifndef BULLET_CYLINDER_MODEL
 #define BULLET_CYLINDER_MODEL
 
-#include <SofaBaseCollision/CylinderModel.h>
+#include <sofa/component/collision/geometry/CylinderModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
-#include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <BulletCollisionDetection/config.h>
 #include <stack>
@@ -22,13 +21,14 @@ namespace collision
 {
 
 template<class TDataTypes>
-class TBulletCylinderModel : public sofa::component::collision::TCylinderModel<TDataTypes>,public BulletCollisionModel
+class TBulletCylinderModel : public sofa::component::collision::geometry::CylinderCollisionModel<TDataTypes>,public BulletCollisionModel
 {
 public:
     //SOFA_CLASS2(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
     //SOFA_CLASS(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(TCylinderModel, TDataTypes));
-	SOFA_CLASS(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TCylinderModel, TDataTypes));
+	SOFA_CLASS(SOFA_TEMPLATE(TBulletCylinderModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::geometry::CylinderCollisionModel, TDataTypes));
 
+    using Inherit = sofa::component::collision::geometry::CylinderCollisionModel<TDataTypes>;
 	
     //typedef typename GCylinderCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes DataTypes;
     typedef TDataTypes DataTypes;

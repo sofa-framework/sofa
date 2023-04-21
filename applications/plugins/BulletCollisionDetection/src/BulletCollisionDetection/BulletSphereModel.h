@@ -1,7 +1,7 @@
 #ifndef BULLET_SPHERE_MODEL
 #define BULLET_SPHERE_MODEL
 
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>
@@ -17,11 +17,13 @@ namespace collision
 {
 
 template<class TDataTypes>
-class TBulletSphereModel : public sofa::component::collision::SphereCollisionModel<TDataTypes>,public BulletCollisionModel
+class TBulletSphereModel : public sofa::component::collision::geometry::SphereCollisionModel<TDataTypes>,public BulletCollisionModel
 {
 public:
     //SOFA_CLASS2(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
-    SOFA_CLASS(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::SphereCollisionModel, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TBulletSphereModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::geometry::SphereCollisionModel, TDataTypes));
+
+    using Inherit = sofa::component::collision::geometry::SphereCollisionModel<TDataTypes>;
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;

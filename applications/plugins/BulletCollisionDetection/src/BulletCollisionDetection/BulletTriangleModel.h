@@ -1,7 +1,7 @@
 #ifndef BULLET_TRIANGLE_MODEL
 #define BULLET_TRIANGLE_MODEL
 
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>
@@ -16,11 +16,13 @@ namespace collision
 {
 
 template<class TDataTypes>
-class TBulletTriangleModel : public sofa::component::collision::TriangleCollisionModel<TDataTypes>,public BulletCollisionModel
+class TBulletTriangleModel : public sofa::component::collision::geometry::TriangleCollisionModel<TDataTypes>,public BulletCollisionModel
 {
 public:
     //SOFA_CLASS2(SOFA_TEMPLATE(TBulletTriangleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
-    SOFA_CLASS(SOFA_TEMPLATE(TBulletTriangleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TBulletTriangleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::geometry::TriangleCollisionModel, TDataTypes));
+
+    using Inherit = sofa::component::collision::geometry::TriangleCollisionModel<TDataTypes>;
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -87,8 +89,8 @@ protected:
 
     TBulletTriangleModel();
 private:
-    using sofa::component::collision::TriangleCollisionModel<TDataTypes>::mstate;
-    using sofa::component::collision::TriangleCollisionModel<TDataTypes>::_topology;
+    using sofa::component::collision::geometry::TriangleCollisionModel<TDataTypes>::m_mstate;
+    using sofa::component::collision::geometry::TriangleCollisionModel<TDataTypes>::m_topology;
 
     //SOFA_CLASS(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes), core::CollisionModel);
 

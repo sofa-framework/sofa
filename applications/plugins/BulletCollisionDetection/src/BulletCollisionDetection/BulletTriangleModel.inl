@@ -12,7 +12,7 @@ namespace collision
 
 template <class DataTypes>
 TBulletTriangleModel<DataTypes>::TBulletTriangleModel()
-    : TriangleCollisionModel<DataTypes>()
+    : Inherit()
     , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
     , _bt_mesh(0x0)
     , _bt_gmesh(0x0)
@@ -45,10 +45,10 @@ void TBulletTriangleModel<DataTypes>::initBullet(){
     sofa::core::objectmodel::BaseObject::f_listening.setValue(true);
     _bt_mesh = new btTriangleMesh();
 
-    const SeqTriangles & tri = *(this->triangles);//this->_topology->getTriangles();
-    const VecCoord & pos = mstate->read(core::ConstVecCoordId::position())->getValue();
-    int npoints = mstate->getSize();
-    int nTri = _topology->getNbTriangles();
+    const SeqTriangles & tri = m_topology->getTriangles();
+    const VecCoord & pos = m_mstate->read(core::ConstVecCoordId::position())->getValue();
+    int npoints = m_mstate->getSize();
+    int nTri = m_topology->getNbTriangles();
 
     _bt_mesh->preallocateIndices(nTri * 3);
     _bt_mesh->preallocateVertices(npoints);
@@ -80,7 +80,7 @@ void TBulletTriangleModel<DataTypes>::initBullet(){
 
 template <class DataTypes>
 void TBulletTriangleModel<DataTypes>::init(){
-    TriangleCollisionModel<DataTypes>::init();
+    Inherit::init();
     initBullet();
 }
 
@@ -171,8 +171,8 @@ void TBulletTriangleModel<DataTypes>::updateBullet(){
 
     _bt_mesh->getLockedVertexIndexBase(&vertexbase,numverts,type,vertexStride,&indexbase,indexstride,numfaces,indicestype);
 
-    const VecCoord & pos = mstate->read(core::ConstVecCoordId::position())->getValue();
-    assert(mstate->getSize() == (size_t)numverts);
+    const VecCoord & pos = m_mstate->read(core::ConstVecCoordId::position())->getValue();
+    assert(m_mstate->getSize() == (size_t)numverts);
 
     if(type == PHY_FLOAT){
         myFillFunc<float>(pos,numverts,vertexbase,vertexStride);
@@ -250,7 +250,7 @@ bool TBulletTriangleModel<DataTypes>::goodSofaBulletLink()const{
 
     const int * b_indices = (int*)indexbase;
 
-    const sofa::core::topology::BaseMeshTopology::SeqTriangles & triz = *(this->triangles);
+    const auto& triz = m_topology->getTriangles();
 
     for(unsigned int i = 0 ; i < triz.size() ; ++i){
         for(int j = 0 ; j < 3 ; ++j){

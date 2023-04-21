@@ -12,14 +12,14 @@ namespace collision
 
 template <class TDataTypes>
 TBulletCylinderModel<TDataTypes>::TBulletCylinderModel()
-    : TCylinderModel<TDataTypes>()
+    : Inherit()
     , margin(initData(&margin, (SReal)0.05, "margin","Margin used for collision detection within bullet"))
     ,_bt_cshape(0x0)
 {}
 
 template<class DataTypes>
 TBulletCylinderModel<DataTypes>::TBulletCylinderModel(core::behavior::MechanicalState<DataTypes>* _mstate )
-    : TCylinderModel<DataTypes>(_mstate)
+    : Inherit(_mstate)
     , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
     , _bt_cshape(0x0)
 {}
@@ -125,7 +125,7 @@ TBulletCylinderModel<TDataTypes>::~TBulletCylinderModel(){
 
 template <class DataTypes>
 void TBulletCylinderModel<DataTypes>::init(){
-    TCylinderModel<DataTypes>::init();
+    Inherit::init();
     initBullet();
 }
 

@@ -1,13 +1,13 @@
 #ifndef BULLET_CAPSULE_MODEL
 #define BULLET_CAPSULE_MODEL
 
-#include <SofaBaseCollision/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 
 
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
-#include <SofaMiscCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/RigidCapsuleModel.h>
 #include <BulletCollisionDetection/config.h>
 #include <stack>
 
@@ -31,11 +31,13 @@ public:
 };
 
 template<class TDataTypes>
-class TBulletCapsuleModel : public TCapsuleModel<TDataTypes>,public BulletCollisionModel
+class TBulletCapsuleModel : public collisionobbcapsule::geometry::CapsuleCollisionModel<TDataTypes>,public BulletCollisionModel
 {
 public:
     //SOFA_CLASS2(SOFA_TEMPLATE(TBulletCapsuleModel, TDataTypes),SOFA_TEMPLATE(sofa::component::collision::TriangleCollisionModel, TDataTypes),BulletCollisionModel);
-    SOFA_CLASS(SOFA_TEMPLATE(TBulletCapsuleModel, TDataTypes),SOFA_TEMPLATE(TCapsuleModel, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(TBulletCapsuleModel, TDataTypes),SOFA_TEMPLATE(collisionobbcapsule::geometry::CapsuleCollisionModel, TDataTypes));
+
+    using Inherit = collisionobbcapsule::geometry::CapsuleCollisionModel<TDataTypes>;
 
     //typedef typename GCapsuleCollisionModel<sofa::defaulttype::Vec3Types>::DataTypes DataTypes;
     typedef TDataTypes DataTypes;
