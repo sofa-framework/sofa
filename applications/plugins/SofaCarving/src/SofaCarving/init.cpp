@@ -19,14 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCarving/config.h>
+#include <SofaCarving/init.h>
 
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
@@ -74,8 +70,9 @@ const char* getModuleComponentList()
 }
 
 
-
+void init()
+{
+    initExternalModule();
 }
 
-}
-
+} // namespace sofa::component
