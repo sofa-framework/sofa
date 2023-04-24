@@ -62,6 +62,7 @@ OglModel::OglModel()
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
+    , edgesRevision(-1), trianglesRevision(-1), quadsRevision(-1)
 {
 
     textures.clear();
@@ -882,7 +883,7 @@ void OglModel::updateVertexBuffer()
         GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
     );
     assert(normal_vbo_ptr);
-    memcpy(&normal_vbo_ptr[0], normalBuffer, normalsBufferSize);
+    memcpy(normal_vbo_ptr, normalBuffer, normalsBufferSize);
     glUnmapBuffer(GL_ARRAY_BUFFER);
 
     ////Texture coords
@@ -895,7 +896,7 @@ void OglModel::updateVertexBuffer()
             GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
         );
         assert(tex_vbo_ptr);
-        memcpy(&tex_vbo_ptr[0], vtexcoords.data(), textureCoordsBufferSize);
+        memcpy(tex_vbo_ptr, vtexcoords.data(), textureCoordsBufferSize);
         glUnmapBuffer(GL_ARRAY_BUFFER);
 
         if (hasTangents)
@@ -907,7 +908,7 @@ void OglModel::updateVertexBuffer()
                 GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
             );
             assert(tan_vbo_ptr);
-            memcpy(&tan_vbo_ptr[0], vtangents.data(), tangentsBufferSize);
+            memcpy(tan_vbo_ptr, vtangents.data(), tangentsBufferSize);
             glUnmapBuffer(GL_ARRAY_BUFFER);
 
             float* bitan_vbo_ptr = (float*)glMapBufferRange(
@@ -917,7 +918,7 @@ void OglModel::updateVertexBuffer()
                 GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
             );
             assert(bitan_vbo_ptr);
-            memcpy(&bitan_vbo_ptr[0], vbitangents.data(), bitangentsBufferSize);
+            memcpy(bitan_vbo_ptr, vbitangents.data(), bitangentsBufferSize);
             glUnmapBuffer(GL_ARRAY_BUFFER);
         }
     }
@@ -940,7 +941,7 @@ void OglModel::updateEdgesIndicesBuffer()
     );
 
     assert(ibo_ptr);
-    memcpy(&ibo_ptr[0], &edges[0], sizeBuffer);
+    memcpy(ibo_ptr, &edges[0], sizeBuffer);
 
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
@@ -961,7 +962,7 @@ void OglModel::updateTrianglesIndicesBuffer()
     );
 
     assert(ibo_ptr);
-    memcpy(&ibo_ptr[0], triangles.data(), sizeBuffer);
+    memcpy(ibo_ptr, triangles.data(), sizeBuffer);
 
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
@@ -982,7 +983,7 @@ void OglModel::updateQuadsIndicesBuffer()
     );
 
     assert(ibo_ptr);
-    memcpy(&ibo_ptr[0], &quads[0], sizeBuffer);
+    memcpy(ibo_ptr, &quads[0], sizeBuffer);
 
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
@@ -1019,44 +1020,65 @@ void OglModel::updateBuffers()
         //Update VBO & IBO
         else
         {
-            if(oldVerticesSize != vertices.size() ||
-                    oldNormalsSize != normals.size() ||
-                    oldTexCoordsSize != texCoords.size() ||
-                    oldTangentsSize != tangents.size() ||
-                    oldBitangentsSize != bitangents.size())
+            // if any topology change then resize buffer
+            if (oldVerticesSize != vertices.size() ||
+                oldNormalsSize != normals.size() ||
+                oldTexCoordsSize != texCoords.size() ||
+                oldTangentsSize != tangents.size() ||
+                oldBitangentsSize != bitangents.size())
+            {
                 initVertexBuffer();
+            }
             else
-                updateVertexBuffer();
+            {
+                // if no topology change but vertices changes then update buffer
+                if (this->modified)
+                {
+                    updateVertexBuffer();
+                }
+            }
 
 
             //Indices
             //Edges
-            if(useEdges && !edges.empty())
+            if (useEdges && !edges.empty())
+            {
+
                 if(oldEdgesSize != edges.size())
                     initEdgesIndicesBuffer();
                 else
-                    updateEdgesIndicesBuffer();
+                    if(edgesRevision < m_edges.getCounter())
+                        updateEdgesIndicesBuffer();
+
+            }
             else if (edges.size() > 0)
                 createEdgesIndicesBuffer();
 
             //Triangles
-            if(useTriangles && !triangles.empty())
-                if(oldTrianglesSize != triangles.size())
+            if (useTriangles && !triangles.empty())
+            {
+                if (oldTrianglesSize != triangles.size())
                     initTrianglesIndicesBuffer();
                 else
-                    updateTrianglesIndicesBuffer();
+                    if (trianglesRevision < m_triangles.getCounter())
+                        updateTrianglesIndicesBuffer();
+            }
             else if (triangles.size() > 0)
                 createTrianglesIndicesBuffer();
 
             //Quads
             if (useQuads && !quads.empty())
+            {
                 if(oldQuadsSize != quads.size())
                     initQuadsIndicesBuffer();
                 else
-                    updateQuadsIndicesBuffer();
+                    if (quadsRevision < m_quads.getCounter())
+                        updateQuadsIndicesBuffer();
+            }
             else if (quads.size() > 0)
                 createQuadsIndicesBuffer();
         }
+
         oldVerticesSize = vertices.size();
         oldNormalsSize = normals.size();
         oldTexCoordsSize = texCoords.size();
@@ -1065,6 +1087,10 @@ void OglModel::updateBuffers()
         oldEdgesSize = edges.size();
         oldTrianglesSize = triangles.size();
         oldQuadsSize = quads.size();
+
+        edgesRevision = m_edges.getCounter();
+        trianglesRevision = m_triangles.getCounter();
+        quadsRevision = m_quads.getCounter();
     }
 }
 
