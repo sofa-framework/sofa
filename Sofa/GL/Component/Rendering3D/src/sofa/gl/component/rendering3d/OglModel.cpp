@@ -863,65 +863,41 @@ void OglModel::updateVertexBuffer()
         }
     }
 
+    std::size_t vboBufferSizeInBytes = positionsBufferSize + normalsBufferSize 
+        + textureCoordsBufferSize + tangentsBufferSize + bitangentsBufferSize;
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     float* vertex_vbo_ptr = (float*)glMapBufferRange(
         GL_ARRAY_BUFFER,
         0,
-        positionsBufferSize,
+        vboBufferSizeInBytes,
         GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
     );
     assert(vertex_vbo_ptr);
+
     memcpy(vertex_vbo_ptr, positionBuffer, positionsBufferSize);
 
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-
-    float* normal_vbo_ptr = (float*)glMapBufferRange(
-        GL_ARRAY_BUFFER,
-        positionsBufferSize,
-        normalsBufferSize,
-        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-    );
-    assert(normal_vbo_ptr);
+    float* normal_vbo_ptr = vertex_vbo_ptr + vertices.size() * 3;
     memcpy(normal_vbo_ptr, normalBuffer, normalsBufferSize);
-    glUnmapBuffer(GL_ARRAY_BUFFER);
 
     ////Texture coords
     if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
     {
-        float* tex_vbo_ptr = (float*)glMapBufferRange(
-            GL_ARRAY_BUFFER,
-            positionsBufferSize + normalsBufferSize,
-            textureCoordsBufferSize,
-            GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-        );
-        assert(tex_vbo_ptr);
-        memcpy(tex_vbo_ptr, vtexcoords.data(), textureCoordsBufferSize);
-        glUnmapBuffer(GL_ARRAY_BUFFER);
+        float* texcoords_vbo_ptr = normal_vbo_ptr + vnormals.size() * 3;
+        memcpy(texcoords_vbo_ptr, vtexcoords.data(), textureCoordsBufferSize);
 
         if (hasTangents)
         {
-            float* tan_vbo_ptr = (float*)glMapBufferRange(
-                GL_ARRAY_BUFFER,
-                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
-                tangentsBufferSize,
-                GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-            );
-            assert(tan_vbo_ptr);
+            float* tan_vbo_ptr = texcoords_vbo_ptr + vtexcoords.size() * 2;
             memcpy(tan_vbo_ptr, vtangents.data(), tangentsBufferSize);
-            glUnmapBuffer(GL_ARRAY_BUFFER);
 
-            float* bitan_vbo_ptr = (float*)glMapBufferRange(
-                GL_ARRAY_BUFFER,
-                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
-                bitangentsBufferSize,
-                GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-            );
-            assert(bitan_vbo_ptr);
+            float* bitan_vbo_ptr = tan_vbo_ptr + vtangents.size() * 3;
             memcpy(bitan_vbo_ptr, vbitangents.data(), bitangentsBufferSize);
-            glUnmapBuffer(GL_ARRAY_BUFFER);
         }
     }
+
+    glUnmapBuffer(GL_ARRAY_BUFFER);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
