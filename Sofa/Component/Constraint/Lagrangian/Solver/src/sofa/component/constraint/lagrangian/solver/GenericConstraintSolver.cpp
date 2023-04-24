@@ -416,7 +416,7 @@ void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool p
     file.precision(9);
     // affichage de la matrice du LCP
     if (printMatrix) {
-        file << msgendl << " M = [";
+        file << msgendl << " W = [";
         for(int compteur=0;compteur<dim;compteur++) {
             for(int compteur2=0;compteur2<dim;compteur2++) {
                 file << "\t" << M[compteur][compteur2];
@@ -427,14 +427,14 @@ void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool p
     }
 
     // affichage de q
-    file << " q = [";
+    file << " delta = [";
     for(int compteur=0;compteur<dim;compteur++) {
         file << "\t" << q[compteur];
     }
     file << "      ];" << msgendl << msgendl;
 
     // affichage de f
-    file << " f = [";
+    file << " lambda = [";
     for(int compteur=0;compteur<dim;compteur++) {
         file << "\t" << f[compteur];
     }
