@@ -56,7 +56,7 @@ class TetrahedronFEMForceField;
 template<class DataTypes>
 class TetrahedronFEMForceFieldInternalData
 {
-public:
+   public:
     typedef TetrahedronFEMForceField<DataTypes> Main;
     void initPtrData(Main * m)
     {
@@ -71,11 +71,11 @@ public:
 
 /** Compute Finite Element forces based on tetrahedral elements.
 *   Corotational methods are based on a rotation from world-space to material-space.
-*/
+ */
 template<class DataTypes>
 class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
 {
-public:
+   public:
     SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
@@ -96,12 +96,12 @@ public:
     using TetrahedronID = core::topology::BaseMeshTopology::TetrahedronID;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
-           LARGE = 1,   ///< Symbol of corotational large displacements tetrahedron solver based on a QR decomposition    -> Nesme et al 2005 "Efficient, Physically Plausible Finite Elements"
-           POLAR = 2,   ///< Symbol of corotational large displacements tetrahedron solver based on a polar decomposition -> Muller et al 2004 "Interactive Virtual Materials"
-           SVD = 3      ///< Symbol of corotational large displacements tetrahedron solver based on a SVD decomposition   -> inspired from Irving et al 2004 "Invertible Finite Element for Robust Simulation of Large Deformation"
-         };
+        LARGE = 1,   ///< Symbol of corotational large displacements tetrahedron solver based on a QR decomposition    -> Nesme et al 2005 "Efficient, Physically Plausible Finite Elements"
+        POLAR = 2,   ///< Symbol of corotational large displacements tetrahedron solver based on a polar decomposition -> Muller et al 2004 "Interactive Virtual Materials"
+        SVD = 3      ///< Symbol of corotational large displacements tetrahedron solver based on a SVD decomposition   -> inspired from Irving et al 2004 "Invertible Finite Element for Robust Simulation of Large Deformation"
+    };
 
-protected:
+   protected:
 
     /// @name Per element (tetrahedron) data
     /// @{
@@ -173,14 +173,14 @@ protected:
     std::vector< sofa::type::Vec3 > m_renderedPoints;
     std::vector< sofa::type::RGBAColor > m_renderedColors;
 
-public:
+   public:
     // get the volume of the mesh
     Real getRestVolume() {return m_restVolume;}
 
     //For a faster contact handling with simplified compliance
     void getRotation(Mat33& R, Index nodeIdx);
     void getRotations(VecReal& vecR) ;
-    
+
     // BaseRotationFinder API
     void getRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override;
     // RotationFinder<T> API
@@ -225,26 +225,35 @@ public:
     Data<type::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
     Data<type::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
     Data<type::vector<type::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
-    
+
+    Real _minVMN;
+    Real _maxVMN;
+
+
+    Data<bool> _showForceField; ///< draw the force field for the current object
+
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
     Data<bool> _showVonMisesStressPerNode; ///< draw points showing vonMises stress interpolated in nodes
+    Data<bool> _showVonMisesStressPerNodeColorMap; ///< draw triangles showing vonMises stress interpolated in nodes
     Data<bool> _showVonMisesStressPerElement; ///< draw triangles showing vonMises stress interpolated in elements
+
+    Data<bool> _showGapBetweenElements; ///< draw gap between elements (when showWireFrame is disabled)
 
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
-    /// Link to be set to the topology container in the component graph. 
+    /// Link to be set to the topology container in the component graph.
     SingleLink<TetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
     type::vector<type::Vec<6,Real> > elemDisplacements;
 
     bool updateVonMisesStress;
 
-protected:
+   protected:
     TetrahedronFEMForceField() ;
     ~TetrahedronFEMForceField() override;
 
-public:
+   public:
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
     void setYoungModulus(Real val) ;
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
@@ -290,7 +299,7 @@ public:
     void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
     virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
-protected:
+   protected:
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M );
 
@@ -333,18 +342,18 @@ protected:
     bool isComputeVonMisesStressMethodSet();
     void computeMinMaxFromYoungsModulus();
     virtual void drawTrianglesFromTetrahedra(const core::visual::VisualParams* vparams,
-                                     bool showVonMisesStressPerElement,
-                                     bool drawVonMisesStress, const VecCoord& x,
-                                     const VecReal& youngModulus,
-                                     bool heterogeneous, Real minVM, Real maxVM,
-                                     helper::ReadAccessor<Data<type::vector<Real>>> vM);
+                                             bool showVonMisesStressPerElement,
+                                             bool drawVonMisesStress, const VecCoord& x,
+                                             const VecReal& youngModulus,
+                                             bool heterogeneous, Real minVM, Real maxVM,
+                                             helper::ReadAccessor<Data<type::vector<Real>>> vM);
     virtual void drawTrianglesFromRangeOfTetrahedra(const simulation::Range<VecElement::const_iterator>& range,
-                                 const core::visual::VisualParams* vparams,
-                                 bool showVonMisesStressPerElement,
-                                 bool drawVonMisesStress, bool showWireFrame, const VecCoord& x,
-                                 const VecReal& youngModulus,
-                                 bool heterogeneous, Real minVM, Real maxVM,
-                                 helper::ReadAccessor<Data<type::vector<Real>>> vM);
+                                                    const core::visual::VisualParams* vparams,
+                                                    bool showVonMisesStressPerElement,
+                                                    bool drawVonMisesStress, bool showWireFrame, const VecCoord& x,
+                                                    const VecReal& youngModulus,
+                                                    bool heterogeneous, Real minVM, Real maxVM,
+                                                    helper::ReadAccessor<Data<type::vector<Real>>> vM);
     void handleEvent(core::objectmodel::Event *event) override;
 };
 
