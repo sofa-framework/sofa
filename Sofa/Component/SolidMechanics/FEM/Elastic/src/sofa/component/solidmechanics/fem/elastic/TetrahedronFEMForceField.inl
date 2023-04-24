@@ -58,9 +58,12 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
+    , _showForceField(initData(&_showForceField, true, "showForceField", "draw the force field for the current object"))
+    , _showGapBetweenElements(initData(&_showGapBetweenElements, true, "showGapBetweenElements", "draw gap between elements (when showWireFrame is disabled)"))
     , _showStressColorMap(initData(&_showStressColorMap, std::string("Blue to Red"),"showStressColorMap", "Color map used to show stress values"))
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points showing vonMises stress interpolated in nodes"))
+    , _showVonMisesStressPerNodeColorMap(initData(&_showVonMisesStressPerNodeColorMap,false,"showVonMisesStressPerNodeColorMap","draw elements showing vonMises stress interpolated in nodes"))
     , _showVonMisesStressPerElement(initData(&_showVonMisesStressPerElement, false, "showVonMisesStressPerElement", "draw triangles showing vonMises stress interpolated in elements"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     , l_topology(initLink("topology", "link to the tetrahedron topology container"))
@@ -1834,7 +1837,7 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
 
         const Coord center = (p[0] + p[1] + p[2] + p[3]) * 0.125;
 
-        if ( !showWireFrame )
+        if ( !showWireFrame && _showGapBetweenElements.getValue() )
         {
             for (auto& pi : p)
             {
@@ -1865,6 +1868,15 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
                 color[3] = col;
             }
         }
+        else if(drawVonMisesStress && _showVonMisesStressPerNodeColorMap.getValue())
+        {
+            helper::ReadAccessor<Data<type::vector<Real> > > vMN =  _vonMisesPerNode;
+            helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(_minVMN, _maxVMN);
+            color[0] = evalColor(vMN[(*it)[0]]);
+            color[1] = evalColor(vMN[(*it)[1]]);
+            color[2] = evalColor(vMN[(*it)[2]]);
+            color[3] = evalColor(vMN[(*it)[3]]);
+        }
         else if (!drawVonMisesStress)
         {
             color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
@@ -1878,10 +1890,18 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
         *pointsIt++ = p[2];  *pointsIt++ = p[3];  *pointsIt++ = p[0];
         *pointsIt++ = p[3];  *pointsIt++ = p[0];  *pointsIt++ = p[1];
 
-        *colorsIt++ = color[0];  *colorsIt++ = color[0];  *colorsIt++ = color[0];
-        *colorsIt++ = color[1];  *colorsIt++ = color[1];  *colorsIt++ = color[1];
-        *colorsIt++ = color[2];  *colorsIt++ = color[2];  *colorsIt++ = color[2];
-        *colorsIt++ = color[3];  *colorsIt++ = color[3];  *colorsIt++ = color[3];
+        if(!_showVonMisesStressPerNodeColorMap.getValue()){
+            *colorsIt++ = color[0];  *colorsIt++ = color[0];  *colorsIt++ = color[0];
+            *colorsIt++ = color[1];  *colorsIt++ = color[1];  *colorsIt++ = color[1];
+            *colorsIt++ = color[2];  *colorsIt++ = color[2];  *colorsIt++ = color[2];
+            *colorsIt++ = color[3];  *colorsIt++ = color[3];  *colorsIt++ = color[3];
+        }
+        else{
+            *colorsIt++ = color[0];  *colorsIt++ = color[1];  *colorsIt++ = color[2];
+            *colorsIt++ = color[1];  *colorsIt++ = color[2];  *colorsIt++ = color[3];
+            *colorsIt++ = color[2];  *colorsIt++ = color[3];  *colorsIt++ = color[0];
+            *colorsIt++ = color[3];  *colorsIt++ = color[0];  *colorsIt++ = color[1];
+        }
 
         ++elementId;
     }
@@ -1890,6 +1910,8 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(!_showForceField.getValue()) return;
+
     if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;
 
@@ -1904,7 +1926,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     const bool showVonMisesStressPerElement = _showVonMisesStressPerElement.getValue();
 
-    const bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || showVonMisesStressPerElement) && isComputeVonMisesStressMethodSet();
+    const bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || showVonMisesStressPerElement || _showVonMisesStressPerNodeColorMap.getValue()) && isComputeVonMisesStressMethodSet();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
@@ -1954,6 +1976,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         maxVM *= _showStressAlpha.getValue();
         maxVMN *= _showStressAlpha.getValue();
 
+        _minVMN = minVMN;
+        _maxVMN = maxVMN;
 
         if (_showVonMisesStressPerNode.getValue())
         {
