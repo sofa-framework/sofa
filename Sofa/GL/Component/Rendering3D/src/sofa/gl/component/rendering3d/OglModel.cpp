@@ -794,9 +794,9 @@ void OglModel::initEdgesIndicesBuffer()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(edges.size()*sizeof(edges[0])), nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     updateEdgesIndicesBuffer();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::initTrianglesIndicesBuffer()
@@ -805,9 +805,9 @@ void OglModel::initTrianglesIndicesBuffer()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(triangles.size()*sizeof(triangles[0])), nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     updateTrianglesIndicesBuffer();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::initQuadsIndicesBuffer()
@@ -816,9 +816,9 @@ void OglModel::initQuadsIndicesBuffer()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, long(quads.size()*sizeof(quads[0])), nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     updateQuadsIndicesBuffer();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateVertexBuffer()
@@ -863,37 +863,62 @@ void OglModel::updateVertexBuffer()
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    //Positions
-    glBufferSubData(GL_ARRAY_BUFFER,
-                    0,
-                    positionsBufferSize,
-                    positionBuffer);
 
-    //Normals
-    glBufferSubData(GL_ARRAY_BUFFER,
-                    positionsBufferSize,
-                    normalsBufferSize,
-                    normalBuffer);
+    float* vertex_vbo_ptr = (float*)glMapBufferRange(
+        GL_ARRAY_BUFFER,
+        0,
+        positionsBufferSize,
+        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+    );
+    assert(vertex_vbo_ptr);
+    memcpy(vertex_vbo_ptr, positionBuffer, positionsBufferSize);
 
-    //Texture coords
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+
+    float* normal_vbo_ptr = (float*)glMapBufferRange(
+        GL_ARRAY_BUFFER,
+        positionsBufferSize,
+        normalsBufferSize,
+        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+    );
+    assert(normal_vbo_ptr);
+    memcpy(&normal_vbo_ptr[0], normalBuffer, normalsBufferSize);
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+
+    ////Texture coords
     if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
     {
-        glBufferSubData(GL_ARRAY_BUFFER,
-                        positionsBufferSize + normalsBufferSize,
-                        textureCoordsBufferSize,
-                        vtexcoords.data());
+        float* tex_vbo_ptr = (float*)glMapBufferRange(
+            GL_ARRAY_BUFFER,
+            positionsBufferSize + normalsBufferSize,
+            textureCoordsBufferSize,
+            GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+        );
+        assert(tex_vbo_ptr);
+        memcpy(&tex_vbo_ptr[0], vtexcoords.data(), textureCoordsBufferSize);
+        glUnmapBuffer(GL_ARRAY_BUFFER);
 
         if (hasTangents)
         {
-            glBufferSubData(GL_ARRAY_BUFFER,
-                            positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
-                            tangentsBufferSize,
-                            vtangents.data());
+            float* tan_vbo_ptr = (float*)glMapBufferRange(
+                GL_ARRAY_BUFFER,
+                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
+                tangentsBufferSize,
+                GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+            );
+            assert(tan_vbo_ptr);
+            memcpy(&tan_vbo_ptr[0], vtangents.data(), tangentsBufferSize);
+            glUnmapBuffer(GL_ARRAY_BUFFER);
 
-            glBufferSubData(GL_ARRAY_BUFFER,
-                            positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
-                            bitangentsBufferSize,
-                            vbitangents.data());
+            float* bitan_vbo_ptr = (float*)glMapBufferRange(
+                GL_ARRAY_BUFFER,
+                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
+                bitangentsBufferSize,
+                GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+            );
+            assert(bitan_vbo_ptr);
+            memcpy(&bitan_vbo_ptr[0], vbitangents.data(), bitangentsBufferSize);
+            glUnmapBuffer(GL_ARRAY_BUFFER);
         }
     }
 
@@ -903,8 +928,22 @@ void OglModel::updateVertexBuffer()
 void OglModel::updateEdgesIndicesBuffer()
 {
     const VecVisualEdge& edges = this->getEdges();
+    const std::size_t sizeBuffer = edges.size() * sizeof(edges[0]);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
+
+    visual_index_type* ibo_ptr = (visual_index_type*)glMapBufferRange(
+        GL_ELEMENT_ARRAY_BUFFER,
+        0,
+        sizeBuffer,
+        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+    );
+
+    assert(ibo_ptr);
+    memcpy(&ibo_ptr[0], &edges[0], sizeBuffer);
+
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -912,7 +951,20 @@ void OglModel::updateTrianglesIndicesBuffer()
 {
     const VecVisualTriangle& triangles = this->getTriangles();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size()*sizeof(triangles[0])), &triangles[0]);
+    const std::size_t sizeBuffer = triangles.size() * sizeof(triangles[0]);
+
+    visual_index_type* ibo_ptr = (visual_index_type*)glMapBufferRange(
+        GL_ELEMENT_ARRAY_BUFFER,
+        0,
+        sizeBuffer,
+        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+    );
+
+    assert(ibo_ptr);
+    memcpy(&ibo_ptr[0], triangles.data(), sizeBuffer);
+
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -920,7 +972,20 @@ void OglModel::updateQuadsIndicesBuffer()
 {
     const VecVisualQuad& quads = this->getQuads();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size()*sizeof(quads[0])), &quads[0]);
+    const std::size_t sizeBuffer = quads.size() * sizeof(quads[0]);
+
+    visual_index_type* ibo_ptr = (visual_index_type*)glMapBufferRange(
+        GL_ELEMENT_ARRAY_BUFFER,
+        0,
+        sizeBuffer,
+        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
+    );
+
+    assert(ibo_ptr);
+    memcpy(&ibo_ptr[0], &quads[0], sizeBuffer);
+
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 void OglModel::updateBuffers()
