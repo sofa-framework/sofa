@@ -1005,15 +1005,8 @@ void VisualModelImpl::computeNormals()
     }
     else
     {
-        vector<Coord> normals;
-        std::size_t nbn = 0;
-        for (std::size_t i = 0; i < vertNormIdx.size(); i++)
-        {
-            if (vertNormIdx[i] >= nbn)
-                nbn = vertNormIdx[i]+1;
-        }
-
-        normals.resize(nbn); // resize() will call the default ctor, which initializes with zeros
+        const std::size_t nbn = static_cast<std::size_t>(*std::max_element(vertNormIdx.begin(), vertNormIdx.end())) + 1;
+        sofa::type::vector<Coord> normals(nbn); // will call the default ctor, which initializes with zeros
 
         for (const auto& triangle : triangles)
         {
