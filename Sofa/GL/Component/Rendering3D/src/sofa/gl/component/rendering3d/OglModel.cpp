@@ -840,17 +840,21 @@ void OglModel::updateVertexBuffer()
     const void* positionBuffer = vertices.data();
     const void* normalBuffer = vnormals.data();
 
+    // use only temporary float buffers if vertices/normals are using double
+    if constexpr(std::is_same_v<Coord, sofa::type::Vec3d>)
+    {
+        verticesTmpBuffer.resize( vertices.size() );
+        normalsTmpBuffer.resize( vnormals.size() );
 
-    verticesTmpBuffer.resize( vertices.size() );
-    normalsTmpBuffer.resize( vnormals.size() );
+        copyVector(vertices, verticesTmpBuffer);
+        copyVector(vnormals, normalsTmpBuffer);
 
-    copyVector(vertices, verticesTmpBuffer);
-    copyVector(vnormals, normalsTmpBuffer);
+        positionBuffer = verticesTmpBuffer.data();
+        normalBuffer = normalsTmpBuffer.data();
+    }
 
     positionsBufferSize = (vertices.size()*sizeof(Vec3f));
     normalsBufferSize = (vnormals.size()*sizeof(Vec3f));
-    positionBuffer = verticesTmpBuffer.data();
-    normalBuffer = normalsTmpBuffer.data();
 
     if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
