@@ -26,7 +26,7 @@
 #include <sofa/type/Material.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -1316,28 +1316,30 @@ void VisualModelImpl::updateVisual()
             }
         }
 
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computePositions");
-        computePositions();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computePositions");
-
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::updateBuffers");
-        updateBuffers();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::updateBuffers");
-
-        sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeNormals");
-        computeNormals();
-        sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeNormals");
-
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computePositions");
+            computePositions();
+        }
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeNormals");
+            computeNormals();
+        }
         if (m_updateTangents.getValue())
         {
-            sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computeTangents");
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeTangents");
             computeTangents();
-            sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computeTangents");
         }
-        modified = false;
-
         if (m_vtexcoords.getValue().size() == 0)
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::computeUVSphereProjection");
             computeUVSphereProjection();
+        }
+        {
+            sofa::helper::ScopedAdvancedTimer t("VisualModelImpl::updateBuffers");
+            updateBuffers();
+        }
+
+        modified = false;
 
     }
 
