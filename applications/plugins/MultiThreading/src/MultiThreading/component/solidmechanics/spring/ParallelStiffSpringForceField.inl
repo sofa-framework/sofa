@@ -39,6 +39,7 @@ void ParallelStiffSpringForceField<DataTypes>::addForce(const sofa::core::Mechan
     DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1,
     const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
+    SOFA_UNUSED(mparams);
     sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f1 = sofa::helper::getWriteOnlyAccessor(data_f1);
     sofa::helper::WriteOnlyAccessor<sofa::Data<VecDeriv> > f2 = sofa::helper::getWriteOnlyAccessor(data_f2);
 
