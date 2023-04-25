@@ -66,6 +66,8 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
 bool SceneLoaderXML::syntaxForAddingRequiredPlugin(const std::string& pluginName,
                                                    const std::vector<std::string>& listComponents, std::ostream& ss, sofa::simulation::Node* nodeWhereAdded)
 {
+    SOFA_UNUSED(nodeWhereAdded);
+
     ss << "<RequiredPlugin name=\"" << pluginName << "\"/> <!-- Needed to use components [";
     if (!listComponents.empty())
     {

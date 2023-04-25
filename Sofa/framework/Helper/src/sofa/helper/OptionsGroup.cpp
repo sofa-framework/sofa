@@ -84,7 +84,7 @@ void OptionsGroup::setNames(int nbofRadioButton,...)
 ///////////////////////////////////////
 int OptionsGroup::isInOptionsList(const std::string & tempostring) const
 {
-    for(int i=0; i<textItems.size(); i++)
+    for(std::size_t i=0; i<textItems.size(); i++)
     {
         if (textItems[i]==tempostring) return i;
     }

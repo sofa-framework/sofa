@@ -29,8 +29,14 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 
-#ifndef SOFA_BUILD_SOFA_COMPONENT_MAPPING_NONLINEAR
+#ifdef SOFA_BUILD_SOFA_COMPONENT_MAPPING_NONLINEAR
+#define SOFA_ATTRIBUTE_DEPRECATED__RIGIDRIGIDMAPPING()
+#else
 SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#define SOFA_ATTRIBUTE_DEPRECATED__RIGIDRIGIDMAPPING() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+    "v23.06", "v23.12", "Please use RigidMapping with template='Rigid3,Rigid3' instead. If this component is crucial to you please report that to sofa-dev@ so we can reconsider this component for future re-integration.")
+
 #endif
 
 // This component has been DEPRECATED since SOFA v23.06 and will be removed in SOFA v23.12.
@@ -41,7 +47,7 @@ namespace sofa::component::mapping::nonlinear
 {
 
 template <class TIn, class TOut>
-class SOFA_ATTRIBUTE_DEPRECATED("v23.06", "v23.12", "Please use RigidMapping with template='Rigid3,Rigid3' instead. If this component is crucial to you please report that to sofa-dev@ so we can reconsider this component for future re-integration.")
+class SOFA_ATTRIBUTE_DEPRECATED__RIGIDRIGIDMAPPING()
 RigidRigidMapping : public core::Mapping<TIn, TOut>
 {
 public:
