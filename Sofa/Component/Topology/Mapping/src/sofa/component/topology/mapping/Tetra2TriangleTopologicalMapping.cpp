@@ -370,10 +370,10 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                     int posInTetra = fromModel->getTriangleIndexInTetrahedron(triInOtherTetra, triangleId);
 
-                    for (int i=0; i<3; i++)
+                    for (int ii = 0; ii < 3; ++ii)
                     {
-                        unsigned int vIdInTetra = trianglesOrientationInTetrahedronArray[posInTetra][i];
-                        tri[i] = otherTetra[vIdInTetra];
+                        unsigned int vIdInTetra = trianglesOrientationInTetrahedronArray[posInTetra][ii];
+                        tri[ii] = otherTetra[vIdInTetra];
                     }
 
                     if(flipN)
