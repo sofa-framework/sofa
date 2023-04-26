@@ -1,0 +1,15 @@
+# CMake package configuration file for the plugin @PROJECT_NAME@
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+find_package(Sofa.Component.Collision REQUIRED)
+find_package(CollisionOBBCapsule REQUIRED)
+find_package(Sofa.GL REQUIRED)
+find_package(Bullet REQUIRED)
+
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
+
+check_required_components(@PROJECT_NAME@)
