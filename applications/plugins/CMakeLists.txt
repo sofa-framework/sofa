@@ -29,7 +29,7 @@ sofa_add_subdirectory(plugin CGALPlugin CGALPlugin EXTERNAL)     # Depends on im
 sofa_add_subdirectory(plugin Flexible Flexible EXTERNAL)         # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
 sofa_add_subdirectory(plugin Registration Registration EXTERNAL) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_subdirectory(plugin BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
-sofa_add_subdirectory(plugin PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
+sofa_add_subdirectory(plugin PreassembledMass PreassembledMass EXTERNAL) # Depends on Flexible and Compliant
 sofa_add_subdirectory(plugin ExternalBehaviorModel ExternalBehaviorModel OFF WHEN_TO_SHOW "SOFA_ENABLE_LEGACY_HEADERS" VALUE_IF_HIDDEN OFF)
 sofa_add_subdirectory(plugin InvertibleFVM InvertibleFVM EXTERNAL)
 sofa_add_subdirectory(plugin MeshSTEPLoader MeshSTEPLoader)
