@@ -954,7 +954,7 @@ void VisualModelImpl::initFromTopology()
 void VisualModelImpl::computeNormals()
 {
     const VecCoord& vertices = getVertices();
-    //const VecCoord& vertices = m_vertices2.getValue();
+
     if (vertices.empty() || (!m_updateNormals.getValue() && (m_vnormals.getValue()).size() == (vertices).size())) return;
 
     const VecVisualTriangle& triangles = m_triangles.getValue();
@@ -963,38 +963,34 @@ void VisualModelImpl::computeNormals()
 
     if (vertNormIdx.empty())
     {
-        std::size_t nbn = vertices.size();
-
-        VecDeriv& normals = *(m_vnormals.beginEdit());
+        const std::size_t nbn = vertices.size();
+        auto normals = sofa::helper::getWriteOnlyAccessor(m_vnormals);
 
         normals.resize(nbn);
-        for (std::size_t i = 0; i < nbn; i++)
-            normals[i].clear();
+        std::memset(&normals[0], 0, sizeof(normals[0]) * nbn); // bulk reset with zeros
 
-        for (std::size_t i = 0; i < triangles.size(); i++)
+        for (const auto& triangle : triangles)
         {
-            const VisualTriangle& triangle = triangles[i];
             const Coord& v1 = vertices[ triangle[0] ];
             const Coord& v2 = vertices[ triangle[1] ];
             const Coord& v3 = vertices[ triangle[2] ];
-            Coord n = cross(v2-v1, v3-v1);
+            const Coord n = cross(v2-v1, v3-v1);
 
             normals[ triangle[0] ] += n;
             normals[ triangle[1] ] += n;
             normals[ triangle[2] ] += n;
         }
 
-        for (std::size_t i = 0; i < quads.size(); i++)
+        for (const auto& quad : quads)
         {
-            const VisualQuad& quad = quads[i];
             const Coord & v1 = vertices[ quad[0] ];
             const Coord & v2 = vertices[ quad[1] ];
             const Coord & v3 = vertices[ quad[2] ];
             const Coord & v4 = vertices[ quad[3] ];
-            Coord n1 = cross(v2-v1, v4-v1);
-            Coord n2 = cross(v3-v2, v1-v2);
-            Coord n3 = cross(v4-v3, v2-v3);
-            Coord n4 = cross(v1-v4, v3-v4);
+            const Coord n1 = cross(v2-v1, v4-v1);
+            const Coord n2 = cross(v3-v2, v1-v2);
+            const Coord n3 = cross(v4-v3, v2-v3);
+            const Coord n4 = cross(v1-v4, v3-v4);
 
             normals[ quad[0] ] += n1;
             normals[ quad[1] ] += n2;
@@ -1002,49 +998,38 @@ void VisualModelImpl::computeNormals()
             normals[ quad[3] ] += n4;
         }
 
-        for (std::size_t i = 0; i < normals.size(); i++)
-            normals[i].normalize();
-
-        m_vnormals.endEdit();
+        for (auto& normal : normals)
+        {
+            normal.normalize();
+        }
     }
     else
     {
-        vector<Coord> normals;
-        std::size_t nbn = 0;
-        for (std::size_t i = 0; i < vertNormIdx.size(); i++)
-        {
-            if (vertNormIdx[i] >= nbn)
-                nbn = vertNormIdx[i]+1;
-        }
+        const std::size_t nbn = static_cast<std::size_t>(*std::max_element(vertNormIdx.begin(), vertNormIdx.end())) + 1;
+        sofa::type::vector<Coord> normals(nbn); // will call the default ctor, which initializes with zeros
 
-        normals.resize(nbn);
-        for (std::size_t i = 0; i < nbn; i++)
-            normals[i].clear();
-
-        for (std::size_t i = 0; i < triangles.size() ; i++)
+        for (const auto& triangle : triangles)
         {
-            const VisualTriangle& triangle = triangles[i];
             const Coord & v1 = vertices[ triangle[0] ];
             const Coord & v2 = vertices[ triangle[1] ];
             const Coord & v3 = vertices[ triangle[2] ];
-            Coord n = cross(v2-v1, v3-v1);
+            const Coord n = cross(v2-v1, v3-v1);
 
             normals[vertNormIdx[ triangle[0] ]] += n;
             normals[vertNormIdx[ triangle[1] ]] += n;
             normals[vertNormIdx[ triangle[2] ]] += n;
         }
 
-        for (std::size_t i = 0; i < quads.size() ; i++)
+        for (const auto& quad : quads)
         {
-            const VisualQuad& quad = quads[i];
             const Coord & v1 = vertices[ quad[0] ];
             const Coord & v2 = vertices[ quad[1] ];
             const Coord & v3 = vertices[ quad[2] ];
             const Coord & v4 = vertices[ quad[3] ];
-            Coord n1 = cross(v2-v1, v4-v1);
-            Coord n2 = cross(v3-v2, v1-v2);
-            Coord n3 = cross(v4-v3, v2-v3);
-            Coord n4 = cross(v1-v4, v3-v4);
+            const Coord n1 = cross(v2-v1, v4-v1);
+            const Coord n2 = cross(v3-v2, v1-v2);
+            const Coord n3 = cross(v4-v3, v2-v3);
+            const Coord n4 = cross(v1-v4, v3-v4);
 
             normals[vertNormIdx[ quad[0] ]] += n1;
             normals[vertNormIdx[ quad[1] ]] += n2;
@@ -1052,18 +1037,17 @@ void VisualModelImpl::computeNormals()
             normals[vertNormIdx[ quad[3] ]] += n4;
         }
 
-        for (std::size_t i = 0; i < normals.size(); i++)
+        for (auto& normal : normals)
         {
-            normals[i].normalize();
+            normal.normalize();
         }
 
-        VecDeriv& vnormals = *(m_vnormals.beginEdit());
+        auto vnormals = sofa::helper::getWriteOnlyAccessor(m_vnormals);
         vnormals.resize(vertices.size());
         for (std::size_t i = 0; i < vertices.size(); i++)
         {
             vnormals[i] = normals[vertNormIdx[i]];
         }
-        m_vnormals.endEdit();
     }
 }
 
