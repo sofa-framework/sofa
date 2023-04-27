@@ -58,7 +58,7 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
-    , _showForceField(initData(&_showForceField, true, "showForceField", "draw the force field for the current object"))
+    , _showCurrentForceField(initData(&_showCurrentForceField, true, "showCurrentForceField", "draw the force field for the current object"))
     , _showGapBetweenElements(initData(&_showGapBetweenElements, true, "showGapBetweenElements", "draw gap between elements (when showWireFrame is disabled)"))
     , _showStressColorMap(initData(&_showStressColorMap, std::string("Blue to Red"),"showStressColorMap", "Color map used to show stress values"))
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
@@ -1846,43 +1846,45 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
         }
 
         // create corresponding colors
-        if (drawVonMisesStress && showVonMisesStressPerElement)
-        {
-            if(heterogeneous)
+        if (drawVonMisesStress){
+            if (showVonMisesStressPerElement)
             {
-                float col = (float)((youngModulus[elementId] - this->minYoung) / (this->maxYoung - this->minYoung));
-                float fac = col * 0.5f;
-                color[0] = sofa::type::RGBAColor(col       , 0.0f - fac, 1.0f - col, 1.0f);
-                color[1] = sofa::type::RGBAColor(col       , 0.5f - fac, 1.0f - col, 1.0f);
-                color[2] = sofa::type::RGBAColor(col       , 1.0f - fac, 1.0f - col, 1.0f);
-                color[3] = sofa::type::RGBAColor(col + 0.5f, 1.0f - fac, 1.0f - col, 1.0f);
+                if(heterogeneous)
+                {
+                    float col = (float)((youngModulus[elementId] - this->minYoung) / (this->maxYoung - this->minYoung));
+                    float fac = col * 0.5f;
+                    color[0] = sofa::type::RGBAColor(col       , 0.0f - fac, 1.0f - col, 1.0f);
+                    color[1] = sofa::type::RGBAColor(col       , 0.5f - fac, 1.0f - col, 1.0f);
+                    color[2] = sofa::type::RGBAColor(col       , 1.0f - fac, 1.0f - col, 1.0f);
+                    color[3] = sofa::type::RGBAColor(col + 0.5f, 1.0f - fac, 1.0f - col, 1.0f);
+                }
+                else
+                {
+                    sofa::helper::ColorMap::evaluator<Real> evalColor = this->m_VonMisesColorMap->getEvaluator(minVM, maxVM);
+                    auto col = sofa::type::RGBAColor::fromVec4(evalColor(vM[elementId]));
+                    col[3] = 1.0f;
+                    color[0] = col;
+                    color[1] = col;
+                    color[2] = col;
+                    color[3] = col;
+                }
+            }
+            else if(_showVonMisesStressPerNodeColorMap.getValue())
+            {
+                helper::ReadAccessor<Data<type::vector<Real> > > vMN =  _vonMisesPerNode;
+                helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(_minVMN, _maxVMN);
+                color[0] = evalColor(vMN[(*it)[0]]);
+                color[1] = evalColor(vMN[(*it)[1]]);
+                color[2] = evalColor(vMN[(*it)[2]]);
+                color[3] = evalColor(vMN[(*it)[3]]);
             }
             else
             {
-                sofa::helper::ColorMap::evaluator<Real> evalColor = this->m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-                auto col = sofa::type::RGBAColor::fromVec4(evalColor(vM[elementId]));
-                col[3] = 1.0f;
-                color[0] = col;
-                color[1] = col;
-                color[2] = col;
-                color[3] = col;
+                color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
+                color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
+                color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
+                color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
             }
-        }
-        else if(drawVonMisesStress && _showVonMisesStressPerNodeColorMap.getValue())
-        {
-            helper::ReadAccessor<Data<type::vector<Real> > > vMN =  _vonMisesPerNode;
-            helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(_minVMN, _maxVMN);
-            color[0] = evalColor(vMN[(*it)[0]]);
-            color[1] = evalColor(vMN[(*it)[1]]);
-            color[2] = evalColor(vMN[(*it)[2]]);
-            color[3] = evalColor(vMN[(*it)[3]]);
-        }
-        else if (!drawVonMisesStress)
-        {
-            color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
-            color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
-            color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
-            color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
         }
 
         *pointsIt++ = p[0];  *pointsIt++ = p[1];  *pointsIt++ = p[2];
@@ -1910,7 +1912,7 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if(!_showForceField.getValue()) return;
+    if(!_showCurrentForceField.getValue()) return;
 
     if(this->d_componentState.getValue() == ComponentState::Invalid)
         return ;

@@ -229,7 +229,7 @@ public:
     Real _minVMN;
     Real _maxVMN;
 
-    Data<bool> _showForceField; ///< draw the force field for the current object
+    Data<bool> _showCurrentForceField; ///< draw the force field for the current object
 
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
