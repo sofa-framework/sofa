@@ -45,11 +45,11 @@ public:
     typedef HexahedronFEMForceField<DataTypes> Main;
     void initPtrData(Main * m)
     {
-        m->_gatherPt.beginEdit()->setNames(1," ");
-        m->_gatherPt.endEdit();
+        auto gatherPt = sofa::helper::getWriteOnlyAccessor(m->_gatherPt);
+        auto gatherBsize = sofa::helper::getWriteOnlyAccessor(m->_gatherBsize);
 
-        m->_gatherBsize.beginEdit()->setNames(1," ");
-        m->_gatherBsize.endEdit();
+        gatherPt.wref().setNames({" "});
+        gatherBsize.wref().setNames({" "});
     }
 };
 

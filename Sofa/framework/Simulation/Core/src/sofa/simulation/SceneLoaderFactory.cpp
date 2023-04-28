@@ -101,15 +101,24 @@ bool SceneLoader::syntaxForAddingRequiredPlugin(const std::string& pluginName,
                                                 std::ostream& ss,
                                                 sofa::simulation::Node* nodeWhereAdded)
 {
+    SOFA_UNUSED(pluginName);
+    SOFA_UNUSED(listComponents);
+    SOFA_UNUSED(ss);
+    SOFA_UNUSED(nodeWhereAdded);
+
     return false;
 }
 
 void SceneLoader::Listener::rightBeforeLoadingScene(SceneLoader* sceneLoader)
-{}
+{
+    SOFA_UNUSED(sceneLoader);
+}
 
 void SceneLoader::Listener::rightAfterLoadingScene(sofa::simulation::NodeSPtr,
                                                    SceneLoader* sceneLoader)
-{}
+{
+    SOFA_UNUSED(sceneLoader);
+}
 
 void SceneLoader::Listener::rightBeforeReloadingScene(SceneLoader* sceneLoader)
 {
