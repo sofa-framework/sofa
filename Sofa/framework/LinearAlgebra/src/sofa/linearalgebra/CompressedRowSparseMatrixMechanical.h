@@ -38,10 +38,10 @@ namespace sofa::linearalgebra
 class CRSMechanicalPolicy : public CRSDefaultPolicy
 {
 public:
-    static constexpr bool CompressZeros = true;
+    static constexpr bool CompressZeros = false; // keep old behavior
     static constexpr bool IsAlwaysSquare = true;
     static constexpr bool IsAlwaysSymmetric = true;
-    static constexpr bool OrderedInsertion = true;
+    static constexpr bool OrderedInsertion = false; // keep old behavior
     static constexpr bool StoreLowerTriangularBlock = true;
 
     static constexpr int matrixType = 1;
