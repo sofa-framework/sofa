@@ -22,6 +22,10 @@
 #pragma once
 
 #include <sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.h>
+#ifndef SOFA_BUILD_SOFA_COMPONENT_MAPPING_MAPPEDMATRIX
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#endif
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -97,6 +101,7 @@ void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::computeMatrixProduct(
 template<class DataTypes1, class DataTypes2>
 MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
     :
+      d_yesIKnowMatrixMappingIsSupportedAutomatically(initData(&d_yesIKnowMatrixMappingIsSupportedAutomatically, false, "yesIKnowMatrixMappingIsSupportedAutomatically", "If true the component is activated, otherwise it is deactivated.\nThis Data is used to explicitly state that the component must be used even though matrix mapping is now supported automatically, without MechanicalMatrixMapper.")),
       d_forceFieldList(initData(&d_forceFieldList,"forceFieldList","List of ForceField Names to work on (by default will take all)")),
       l_nodeToParse(initLink("nodeToParse","link to the node on which the component will work, from this link the mechanicalState/mass/forceField links will be made")),
       d_stopAtNodeToParse(initData(&d_stopAtNodeToParse,false,"stopAtNodeToParse","Boolean to choose whether forceFields in children Nodes of NodeToParse should be considered.")),
@@ -111,9 +116,28 @@ MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
 {
 }
 
+template <typename TDataTypes1, typename TDataTypes2>
+void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::parse(
+    core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+    if (!arg->getAttribute("yesIKnowMatrixMappingIsSupportedAutomatically", nullptr))
+    {
+        msg_warning() << "Matrix mapping is now supported automatically. Therefore, "
+            << this->getClassName() << " is no longer necessary. Remove it from your scene.";
+    }
+}
+
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 {
+    if (!d_yesIKnowMatrixMappingIsSupportedAutomatically.getValue())
+    {
+        msg_error() << "This component is deprecated and deactivated because matrix mapping is now supported automatically";
+        this->d_componentState.setValue(ComponentState::Invalid);
+        return;
+    }
+
     if(this->d_componentState.getValue() == ComponentState::Valid){
         msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
     }

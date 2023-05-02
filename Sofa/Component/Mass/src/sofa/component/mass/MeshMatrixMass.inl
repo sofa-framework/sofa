@@ -33,6 +33,8 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <numeric>
 
+#include <sofa/core/behavior/BaseLocalMassMatrix.h>
+
 namespace sofa::component::mass
 {
 using namespace sofa::core::topology;
@@ -2191,7 +2193,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
     sofa::Index v0,v1;
 
     static constexpr auto N = Deriv::total_size;
-    AddMToMatrixFunctor<Deriv,MassType> calc;
+    AddMToMatrixFunctor<Deriv,MassType, sofa::linearalgebra::BaseMatrix> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = r.matrix;
     const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
@@ -2265,6 +2267,46 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(const core::Mecha
 
 }
 
+template <class DataTypes, class GeometricalTypes>
+void MeshMatrixMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+{
+    const MassVector &vertexMass= d_vertexMass.getValue();
+    const MassVector &edgeMass= d_edgeMass.getValue();
+
+    static constexpr auto N = Deriv::total_size;
+    AddMToMatrixFunctor<Deriv,MassType, sofa::core::behavior::MassMatrixAccumulator> calc;
+
+    if (isLumped())
+    {
+        for (size_t index=0; index < vertexMass.size(); index++)
+        {
+            const auto vm = vertexMass[index] * m_massLumpingCoeff;
+            calc(matrices, vm, N * index, 1.);
+        }
+    }
+    else
+    {
+        for (size_t index=0; index < vertexMass.size(); index++)
+        {
+            const auto& vm = vertexMass[index];
+            calc(matrices, vm, N * index, 1.);
+        }
+
+        const size_t nbEdges = l_topology->getNbEdges();
+        for (size_t j = 0; j < nbEdges; ++j)
+        {
+            const auto e = l_topology->getEdge(j);
+            const sofa::Index v0 = e[0];
+            const sofa::Index v1 = e[1];
+
+            const auto em = edgeMass[j];
+
+            calc(matrices, em, N * v0, N * v1, 1.);
+            calc(matrices, em, N * v1, N * v0, 1.);
+        }
+    }
+}
+
 
 template <class DataTypes, class GeometricalTypes>
 SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getElementMass(Index index) const
@@ -2284,7 +2326,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::getElementMass(Index index, li
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>()(m, d_vertexMass.getValue()[index] * m_massLumpingCoeff, 0, 1);
+    AddMToMatrixFunctor<Deriv,MassType, sofa::linearalgebra::BaseMatrix>()(m, d_vertexMass.getValue()[index] * m_massLumpingCoeff, 0, 1);
 }
 
 

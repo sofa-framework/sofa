@@ -33,55 +33,28 @@
     without the implicit formulation of the constraint force 
     -->
     <StringMeshCreator name="loader" resolution="20" scale3d="1 1 1" />
-    
-    <Node  name="withImplicitConstraintForce" >
-        <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 0" />
-        <EulerImplicitSolver />
-        <SparseCholeskySolver />
-        <GenericConstraintCorrection />
 
-        <EdgeSetTopologyContainer name="topology" position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3" />
-        <EdgeSetGeometryAlgorithms drawEdges="true" />
-        <FixedConstraint indices="0" />
-        <!-- 1 g for the total mass of the wire -->
-        <DiagonalMass  name="mass" totalMass="1e-3"/>
-        <MappingGeometricStiffnessForceField mapping="@./extensionsNode/distanceMapping" />
-        <Node name="extensionsNode" >
-            <MechanicalObject template="Vec1"  name="extensionsDOF" />
-            <DistanceMapping  name="distanceMapping" topology="@../topology"/>
-            <UniformConstraint template="Vec1" iterative="false" />
-        </Node>
-
-        <Node name="visual">
-            <PointsFromIndices name="points" position="@../defoDOF.position" indices="19"/>
-            <TrailRenderer template="Vec3" position="@points.indices_position" nbSteps="50"/>
-        </Node>
+    <TransformEngine name="translate" input_position="@loader.position" translation="0 0 -2" />
+    <EulerImplicitSolver />
+    <SparseCholeskySolver />
+    <GenericConstraintCorrection />
+    <!-- resolution = number of particles (including the fixed one) -->
+    <!-- scale = total length of the pendulum -->
+    <EdgeSetTopologyContainer name="topology" position="@translate.output_position" edges="@loader.edges" />
+    <MechanicalObject name="defoDOF" template="Vec3"  />
+    <EdgeSetGeometryAlgorithms drawEdges="true" />
+    <FixedConstraint indices="0" />
+    <!-- 1 g for the total mass of the wire -->
+    <DiagonalMass  name="mass" totalMass="1e-3"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1"  name="extensionsDOF" />
+        <DistanceMapping  name="distanceMapping" topology="@../topology"/>
+        <UniformConstraint template="Vec1" iterative="false" />
     </Node>
 
-    <Node  name="withoutImplicitConstraintForce" >
-        <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 -2" />
-        <EulerImplicitSolver />
-        <SparseCholeskySolver />
-        <GenericConstraintCorrection />
-        <!-- resolution = number of particles (including the fixed one) -->
-        <!-- scale = total length of the pendulum -->
-        <EdgeSetTopologyContainer name="topology" position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3" />
-        <EdgeSetGeometryAlgorithms drawEdges="true" />
-        <FixedConstraint indices="0" />
-        <!-- 1 g for the total mass of the wire -->
-        <DiagonalMass  name="mass" totalMass="1e-3"/>
-        <Node name="extensionsNode" >
-            <MechanicalObject template="Vec1"  name="extensionsDOF" />
-            <DistanceMapping  name="distanceMapping" topology="@../topology"/>
-            <UniformConstraint template="Vec1" iterative="false" />
-        </Node>
-
-        <Node name="visual">
-            <PointsFromIndices name="points" position="@../defoDOF.position" indices="19"/>
-            <TrailRenderer template="Vec3" position="@points.indices_position" nbSteps="50"/>
-        </Node>
+    <Node name="visual">
+        <PointsFromIndices name="points" position="@../defoDOF.position" indices="19"/>
+        <TrailRenderer template="Vec3" position="@points.indices_position" nbSteps="50"/>
     </Node>
     
 </Node>

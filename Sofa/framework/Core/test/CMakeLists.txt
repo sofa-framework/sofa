@@ -23,9 +23,10 @@ set(SOURCE_FILES
     objectmodel/DataFileNameVector_test.cpp
     DataEngine_test.cpp
     Engine_test.cpp
-    TestEngine.cpp
+    MatrixAccumulator_test.cpp
     ObjectFactory_test.cpp
     PathResolver_test.cpp
+    TestEngine.cpp
     TrackedData_test.cpp
     VecId_test.cpp
     visual/DisplayFlags_test.cpp

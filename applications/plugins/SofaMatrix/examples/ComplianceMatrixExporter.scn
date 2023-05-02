@@ -23,23 +23,20 @@
 
     <StringMeshCreator name="loader" resolution="20" scale3d="1 1 1" />
 
-    <Node  name="withImplicitConstraintForce" >
-        <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 0" />
-        <EulerImplicitSolver />
-        <SparseCholeskySolver />
-        <GenericConstraintCorrection />
+    <TransformEngine name="translate" input_position="@loader.position" translation="0 0 0" />
+    <EulerImplicitSolver />
+    <SparseCholeskySolver />
+    <GenericConstraintCorrection />
 
-        <EdgeSetTopologyContainer position="@translate.output_position" edges="@../loader.edges" />
-        <MechanicalObject name="defoDOF" template="Vec3d" showObject="1" />
-        <EdgeSetGeometryAlgorithms drawEdges="true" />
-        <FixedConstraint indices="0" />
-        <DiagonalMass  name="mass" totalMass="1e-3"/>
-        <MappingGeometricStiffnessForceField mapping="@./extensionsNode/distanceMapping" />
-        <Node name="extensionsNode" >
-            <MechanicalObject template="Vec1d"  name="extensionsDOF" />
-            <DistanceMapping  name="distanceMapping" />
-            <UniformConstraint template="Vec1d" iterative="false" />
-        </Node>
+    <EdgeSetTopologyContainer position="@translate.output_position" edges="@loader.edges" />
+    <MechanicalObject name="defoDOF" template="Vec3d" showObject="1" />
+    <EdgeSetGeometryAlgorithms drawEdges="true" />
+    <FixedConstraint indices="0" />
+    <DiagonalMass  name="mass" totalMass="1e-3"/>
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <DistanceMapping  name="distanceMapping" />
+        <UniformConstraint template="Vec1d" iterative="false" />
     </Node>
 
 </Node>

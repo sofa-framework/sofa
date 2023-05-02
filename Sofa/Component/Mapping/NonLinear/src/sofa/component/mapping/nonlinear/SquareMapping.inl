@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/SquareMapping.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
@@ -180,4 +181,23 @@ const linearalgebra::BaseMatrix* SquareMapping<TIn, TOut>::getK()
     return &K;
 }
 
+template <class TIn, class TOut>
+void SquareMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+    sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    const unsigned geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
+    if( !geometricStiffness )
+    {
+        return;
+    }
+
+    const auto childForce = this->toModel->readForces();
+    unsigned int size = this->fromModel->getSize();
+    const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
+
+    for( size_t i=0 ; i<size ; ++i )
+    {
+        dJdx(i, i) += 2*childForce[i][0];
+    }
+}
 } // namespace sofa::component::mapping::nonlinear

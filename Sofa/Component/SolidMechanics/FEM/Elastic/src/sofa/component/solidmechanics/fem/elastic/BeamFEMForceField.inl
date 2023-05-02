@@ -30,6 +30,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+
 
 namespace sofa::component::solidmechanics::fem::elastic::_beamfemforcefield_
 {
@@ -637,6 +639,112 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
     }
 
+}
+
+template <class DataTypes>
+void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    unsigned int i=0;
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    if (m_partialListSegment)
+    {
+        for (unsigned int j=0; j<d_listSegment.getValue().size(); j++)
+        {
+            i = d_listSegment.getValue()[j];
+            Element edge= (*m_indexedElements)[i];
+            Index a = edge[0];
+            Index b = edge[1];
+
+            type::Quat<SReal>& q = beamQuat(i);
+            q.normalize();
+            Transformation R,Rt;
+            q.toMatrix(R);
+            Rt.transpose(R);
+            const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
+            StiffnessMatrix K;
+            for (int x1=0; x1<12; x1+=3)
+                for (int y1=0; y1<12; y1+=3)
+                {
+                    type::Mat<3,3,Real> m;
+                    K0.getsub(x1,y1, m);
+                    m = R*m*Rt;
+                    K.setsub(x1,y1, m);
+                }
+            int index[12];
+            for (int x1=0; x1<6; x1++)
+                index[x1] = a*6+x1;
+            for (int x1=0; x1<6; x1++)
+                index[6+x1] = b*6+x1;
+            for (int x1=0; x1<12; ++x1)
+                for (int y1=0; y1<12; ++y1)
+                    dfdx(index[x1], index[y1]) += - K(x1,y1);
+
+        }
+
+    }
+    else
+    {
+        typename VecElement::const_iterator it;
+        for(it = m_indexedElements->begin() ; it != m_indexedElements->end() ; ++it, ++i)
+        {
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+
+            type::Quat<SReal>& q = beamQuat(i);
+            q.normalize();
+            Transformation R,Rt;
+            q.toMatrix(R);
+            Rt.transpose(R);
+            const StiffnessMatrix& K0 = m_beamsData.getValue()[i]._k_loc;
+            StiffnessMatrix K;
+            bool exploitSymmetry = d_useSymmetricAssembly.getValue();
+
+            if (exploitSymmetry) {
+                for (int x1=0; x1<12; x1+=3) {
+                    for (int y1=x1; y1<12; y1+=3)
+                    {
+                        type::Mat<3,3,Real> m;
+                        K0.getsub(x1,y1, m);
+                        m = R*m*Rt;
+
+                        for (int i=0; i<3; i++)
+                            for (int j=0; j<3; j++) {
+                                K.elems[i+x1][j+y1] += m[i][j];
+                                K.elems[j+y1][i+x1] += m[i][j];
+                            }
+                        if (x1 == y1)
+                            for (int i=0; i<3; i++)
+                                for (int j=0; j<3; j++)
+                                    K.elems[i+x1][j+y1] *= SReal(0.5);
+
+                    }
+                }
+            } else  {
+                for (int x1=0; x1<12; x1+=3) {
+                    for (int y1=0; y1<12; y1+=3)
+                    {
+                        type::Mat<3,3,Real> m;
+                        K0.getsub(x1,y1, m);
+                        m = R*m*Rt;
+                        K.setsub(x1,y1, m);
+                    }
+                }
+            }
+
+            int index[12];
+            for (int x1=0; x1<6; x1++)
+                index[x1] = a*6+x1;
+            for (int x1=0; x1<6; x1++)
+                index[6+x1] = b*6+x1;
+            for (int x1=0; x1<12; ++x1)
+                for (int y1=0; y1<12; ++y1)
+                    dfdx(index[x1], index[y1]) += - K(x1,y1);
+
+        }
+    }
 }
 
 template<class DataTypes>

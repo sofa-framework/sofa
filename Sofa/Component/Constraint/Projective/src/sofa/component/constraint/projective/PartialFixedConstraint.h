@@ -85,6 +85,8 @@ public:
 
     void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);

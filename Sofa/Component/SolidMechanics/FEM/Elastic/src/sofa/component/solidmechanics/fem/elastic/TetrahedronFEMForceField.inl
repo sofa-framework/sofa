@@ -29,6 +29,7 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -2021,7 +2022,6 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPar
     else dmsg_error() << "The function addKToMatrix found no valid matrix accessor." ;
 }
 
-
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
@@ -2061,6 +2061,53 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::Base
             for (sofa::Index n2=0; n2 < N; n2++)
             {
                 mat->add(offset + (*it)[n1] * S, offset + (*it)[n2] * S, tmpBlock[n1][n2]);
+            }
+        }
+    }
+}
+
+template <class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    int IT = 0;
+    StiffnessMatrix JKJt,tmp;
+
+    Transformation Rot;
+    Rot.identity(); //set the transformation to identity
+
+    constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+    constexpr auto N = Element::size();
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for(auto it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it,++IT)
+    {
+        if (method == SMALL)
+            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
+        else
+            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
+
+        type::Mat<S, S, double> tmpBlock[4][4];
+        for (sofa::Index n1=0; n1 < N; n1++)
+        {
+            for(sofa::Index i=0; i < S; i++)
+            {
+                for (sofa::Index n2=0; n2 < N; n2++)
+                {
+                    for (sofa::Index j=0; j < S; j++)
+                    {
+                        tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j];
+                    }
+                }
+            }
+        }
+
+        for (sofa::Index n1=0; n1 < N; n1++)
+        {
+            for (sofa::Index n2=0; n2 < N; n2++)
+            {
+                dfdx((*it)[n1] * S, (*it)[n2] * S) += tmpBlock[n1][n2];
             }
         }
     }

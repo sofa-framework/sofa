@@ -38,7 +38,7 @@ namespace sofa::core::behavior
 class SOFA_CORE_API BaseInteractionProjectiveConstraintSet : public BaseProjectiveConstraintSet, public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS2(BaseInteractionProjectiveConstraintSet, BaseProjectiveConstraintSet, StateAccessor);
+    SOFA_ABSTRACT_CLASS(BaseInteractionProjectiveConstraintSet, BaseProjectiveConstraintSet);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionProjectiveConstraintSet)
 
     /// Get the first MechanicalState

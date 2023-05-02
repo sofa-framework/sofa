@@ -346,6 +346,33 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 }
 
 template <class DataTypes>
+void FixedConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+
+    if( d_fixAll.getValue() )
+    {
+        const sofa::Size size = this->mstate->getMatrixSize();
+        for(sofa::Index i = 0; i < size; ++i)
+        {
+            matrix->discardRowCol(i, i);
+        }
+    }
+    else
+    {
+        const SetIndexArray & indices = d_indices.getValue();
+
+        for (const auto index : indices)
+        {
+            for (unsigned int c = 0; c < N; ++c)
+            {
+                matrix->discardRowCol(N * index + c, N * index + c);
+            }
+        }
+    }
+}
+
+template <class DataTypes>
 void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (this->d_componentState.getValue() != ComponentState::Valid) return;

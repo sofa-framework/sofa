@@ -219,6 +219,9 @@ public:
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     void copyFromBaseVector(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset) override;
 
+    /// Copy data to a global BaseMatrix from the state stored in a local vector.
+    void copyToBaseMatrix(linearalgebra::BaseMatrix* dest, core::ConstMatrixDerivId src, unsigned int& offset) override;
+
     /// Add data to a global BaseVector from the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
     void addToBaseVector(linearalgebra::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;

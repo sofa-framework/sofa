@@ -22,6 +22,7 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/component/linearsolver/direct/SparseLDLSolver.h>
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
+#include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/graph/SimpleApi.h>
@@ -272,3 +273,23 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     sofa::simulation::getSimulation()->unload(root);
 }
 
+
+
+TEST(SparseLDLSolver, AssociatedLinearSystem)
+{
+    using MatrixType = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
+    using Solver = sofa::component::linearsolver::direct::SparseLDLSolver<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
+    Solver::SPtr solver = sofa::core::objectmodel::New<Solver>();
+
+    solver->init();
+    EXPECT_NE(solver->getContext(), nullptr);
+
+    auto* system = solver->getLinearSystem();
+    EXPECT_NE(system, nullptr);
+
+    using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
+    auto* matrixSystem = dynamic_cast<MatrixSystem*>(system);
+    EXPECT_NE(matrixSystem, nullptr);
+
+    EXPECT_EQ(MatrixSystem::GetCustomTemplateName(), MatrixType::Name());
+}

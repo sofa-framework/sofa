@@ -24,6 +24,7 @@
 #include <sofa/component/mechanicalload/UniformVelocityDampingForceField.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 namespace sofa::component::mechanicalload
 {
@@ -79,6 +80,22 @@ void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgeb
     for( sofa::Size i = 0 ; i < size; ++i )
     {
         mat->add( offset + i, offset + i, dampingContribution );
+    }
+}
+
+template <class DataTypes>
+void UniformVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix* matrix)
+{
+    if( !d_implicit.getValue() ) return;
+
+    auto dfdv = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToVelocityIn(this->mstate);
+
+    const sofa::Size size = this->mstate->getMatrixSize();
+    const auto damping = sofa::helper::ReadAccessor(dampingCoefficient);
+    for( sofa::Size i = 0; i < size; ++i)
+    {
+        dfdv(i, i) += -damping.ref();
     }
 }
 

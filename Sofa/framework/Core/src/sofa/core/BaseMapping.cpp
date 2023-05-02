@@ -22,6 +22,9 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/BaseState.h>
+#include <sofa/core/BaseLocalMappingMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/BaseMatrixAccumulatorComponent.h>
 
 namespace sofa::core
 {
@@ -134,6 +137,11 @@ sofa::linearalgebra::BaseMatrix* BaseMapping::createMappedMatrix(const behavior:
 {
     dmsg_error() << "Calling a virtual method not implemented." ;
     return nullptr;
+}
+
+void BaseMapping::buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    SOFA_UNUSED(matrices);
 }
 
 bool BaseMapping::testMechanicalState(BaseState* state)

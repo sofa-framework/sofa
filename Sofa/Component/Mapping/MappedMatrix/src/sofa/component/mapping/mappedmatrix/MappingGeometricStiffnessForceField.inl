@@ -21,6 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mapping/mappedmatrix/MappingGeometricStiffnessForceField.h>
+#ifndef SOFA_BUILD_SOFA_COMPONENT_MAPPING_MAPPEDMATRIX
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+#endif
 
 #include <sofa/core/behavior/ForceField.inl>
 
@@ -29,7 +32,8 @@ namespace sofa::component::mapping::mappedmatrix
 
 template< class DataTypes> 
 MappingGeometricStiffnessForceField<DataTypes>::MappingGeometricStiffnessForceField()
-:l_mapping(initLink("mapping", "Path to the mapping instance whose geometric stiffness is assembled"))
+: d_yesIKnowMatrixMappingIsSupportedAutomatically(initData(&d_yesIKnowMatrixMappingIsSupportedAutomatically, false, "yesIKnowMatrixMappingIsSupportedAutomatically", "If true the component is activated, otherwise it is deactivated.\nThis Data is used to explicitly state that the component must be used even though matrix mapping is now supported automatically, without MappingGeometricStiffnessForceField."))
+, l_mapping(initLink("mapping", "Path to the mapping instance whose geometric stiffness is assembled"))
 {
 
 }
@@ -38,6 +42,18 @@ template< class DataTypes>
 MappingGeometricStiffnessForceField<DataTypes>::~MappingGeometricStiffnessForceField()
 {
 
+}
+
+template <class DataTypes>
+void MappingGeometricStiffnessForceField<DataTypes>::init()
+{
+    Inherit::init();
+
+    if (!d_yesIKnowMatrixMappingIsSupportedAutomatically.getValue())
+    {
+        msg_error() << "This component is deprecated and deactivated because geometric stiffness is now supported automatically";
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 template< class DataTypes>
@@ -57,6 +73,11 @@ void MappingGeometricStiffnessForceField<DataTypes>::addDForce(const sofa::core:
 template< class DataTypes>
 void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    if(this->d_componentState.getValue() !=core::objectmodel::ComponentState::Valid)
+    {
+        return ;
+    }
+
     SReal kFact = (SReal)mparams->kFactor();
     if (kFact == 0)
     {
@@ -78,4 +99,26 @@ void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::co
     }
 }
 
+template <class DataTypes>
+void MappingGeometricStiffnessForceField<DataTypes>::buildStiffnessMatrix(
+    core::behavior::StiffnessMatrix* matrix)
+{
+    if(this->d_componentState.getValue() !=core::objectmodel::ComponentState::Valid)
+    {
+        return ;
+    }
+
+    const sofa::linearalgebra::BaseMatrix* mappingK = l_mapping->getK();
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (sofa::linearalgebra::BaseMatrix::Index i = 0; i < mappingK->rowSize(); ++i)
+    {
+        for (sofa::linearalgebra::BaseMatrix::Index j = 0; j < mappingK->colSize(); ++j)
+        {
+            dfdx(i, j) += mappingK->element(i, j);
+        }
+    }
+}
 } // namespace sofa::component::mapping::mappedmatrix

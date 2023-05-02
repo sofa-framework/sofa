@@ -65,6 +65,7 @@ public:
 
 protected:
     ShewchukPCGLinearSolver();
+
 public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void init() override;

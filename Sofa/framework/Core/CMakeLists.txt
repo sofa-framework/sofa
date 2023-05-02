@@ -5,6 +5,8 @@ set(SRC_ROOT "src/sofa/core")
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/BaseMatrixAccumulatorComponent.h
+    ${SRC_ROOT}/BaseLocalMappingMatrix.h
     ${SRC_ROOT}/BaseMapping.h
     ${SRC_ROOT}/BaseState.h
     ${SRC_ROOT}/BehaviorModel.h
@@ -18,6 +20,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DataTracker.h
     ${SRC_ROOT}/DataTrackerCallback.h
     ${SRC_ROOT}/DataTrackerFunctor.h
+    ${SRC_ROOT}/DerivativeMatrix.h
     ${SRC_ROOT}/DevBaseMonitor.h
     ${SRC_ROOT}/ExecParams.h
     ${SRC_ROOT}/fwd.h
@@ -25,7 +28,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
     ${SRC_ROOT}/MappingHelper.h
+    ${SRC_ROOT}/MatrixAccumulator.h
     ${SRC_ROOT}/MechanicalParams.h
+    ${SRC_ROOT}/MechanicalStatesMatrixAccumulators.h
     ${SRC_ROOT}/Multi2Mapping.h
     ${SRC_ROOT}/Multi2Mapping.inl
     ${SRC_ROOT}/MultiMapping.h
@@ -48,11 +53,15 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseLinearSolver.h
+    ${SRC_ROOT}/behavior/BaseLocalForceFieldMatrix.h
+    ${SRC_ROOT}/behavior/BaseLocalMassMatrix.h
     ${SRC_ROOT}/behavior/BaseMass.h
+    ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.h
     ${SRC_ROOT}/behavior/BaseMechanicalState.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
+    ${SRC_ROOT}/behavior/BlockType.h
     ${SRC_ROOT}/behavior/BlocMatrixWriter.h
     ${SRC_ROOT}/behavior/Constraint.h
     ${SRC_ROOT}/behavior/Constraint.inl
@@ -64,6 +73,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
+    ${SRC_ROOT}/behavior/MatrixAPICompatibility.h
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
     ${SRC_ROOT}/behavior/MechanicalMatrix.h
@@ -180,6 +190,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    ${SRC_ROOT}/BaseMatrixAccumulatorComponent.cpp
     ${SRC_ROOT}/BaseMapping.cpp
     ${SRC_ROOT}/BaseState.cpp
     ${SRC_ROOT}/BehaviorModel.cpp
@@ -196,6 +207,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/Mapping.cpp
+    ${SRC_ROOT}/MatrixAccumulator.cpp
     ${SRC_ROOT}/MechanicalParams.cpp
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
@@ -212,6 +224,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
     ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
     ${SRC_ROOT}/behavior/BaseMass.cpp
+    ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.cpp
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/Constraint.cpp

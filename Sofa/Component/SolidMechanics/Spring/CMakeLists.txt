@@ -80,10 +80,14 @@ set(SOURCE_FILES
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
+sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
+sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Grid)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Grid Sofa.Component.Mapping.Linear Sofa.Component.StateContainer Sofa.Simulation.Graph Sofa.Component.Topology.Container.Dynamic)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

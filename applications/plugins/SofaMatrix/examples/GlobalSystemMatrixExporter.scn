@@ -14,6 +14,7 @@
 
     <Node name="M1">
         <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <MatrixLinearSystem template="CompressedRowSparseMatrixMat3x3d"/>
         <SparseLDLSolver printLog="false" template="CompressedRowSparseMatrixMat3x3d"/>
         <GlobalSystemMatrixExporter exportEveryNumberOfSteps="1" filename="global_matrix_ldl" printLog="true" format="txt" precision="12"/>
         <MechanicalObject />
@@ -38,6 +39,7 @@
     <!-- Node containing 2 objects under a single linear solver -->
     <Node name="M3">
         <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <MatrixLinearSystem template="CompressedRowSparseMatrixMat3x3d"/>
         <SparseLDLSolver printLog="false" template="CompressedRowSparseMatrixMat3x3d"/>
         <GlobalSystemMatrixExporter exportEveryNumberOfSteps="1" filename="global_matrix_ldl_2objects" printLog="true" format="jpg"/>
 

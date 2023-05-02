@@ -14,6 +14,7 @@
     <!-- Node containing 2 objects under a single linear solver -->
     <Node name="M3">
         <EulerImplicitSolver name="odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <MatrixLinearSystem template="CompressedRowSparseMatrixMat3x3d"/>
         <SparseLDLSolver printLog="false" template="CompressedRowSparseMatrixMat3x3d"/>
         <GlobalSystemMatrixImage/>
 

@@ -137,7 +137,7 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 }
 
 void GenericConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
-{    
+{
     l_linearSolver.get()->rebuildSystem(massFactor, forceFactor);
 }
 
@@ -183,7 +183,7 @@ void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* 
                                                         SReal positionFactor,
                                                         SReal velocityFactor)
 {
-    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, l_linearSolver.get()->getSystemMultiMatrixAccessor());
+    MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId);
     l_linearSolver.get()->getContext()->executeVisitor(&v);
 }
 

@@ -113,6 +113,7 @@ public:
       */
     void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

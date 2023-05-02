@@ -24,6 +24,7 @@
 
 #include <sofa/component/mapping/testing/MappingTestCreation.h>
 #include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/simulation/graph/SimpleApi.h>
 
 namespace sofa {
@@ -203,10 +204,8 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
 
     }
 
-    void compareMechanicalObjects(unsigned int timeStepCount)
+    void compareMechanicalObjects(unsigned int timeStepCount, SReal epsilon)
     {
-        const auto epsilon = 1e-7_sreal;
-
         core::behavior::BaseMechanicalState* mstate0 = oneMapping->getMechanicalState();
         ASSERT_NE(mstate0, nullptr);
 
@@ -251,7 +250,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
     }
 };
 
-TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMapping)
+TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappingCG)
 {
     for (const auto& node : {oneMapping, twoMappings})
     {
@@ -264,9 +263,33 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
     {
         simulation::getSimulation()->animate(root.get(), 0.01_sreal);
 
-        compareMechanicalObjects(i);
+        compareMechanicalObjects(i, 1e-7_sreal);
     }
 }
+
+TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappingLU)
+{
+    for (const auto& node : {oneMapping, twoMappings})
+    {
+        simpleapi::createObject(node, "EigenSparseLU", {{"template", "CompressedRowSparseMatrixMat3x3d"}});
+    }
+
+    simulation::getSimulation()->init(root.get());
+
+    for (unsigned int i = 0 ; i < 100; ++i)
+    {
+        simulation::getSimulation()->animate(root.get(), 0.01_sreal);
+
+        for (const auto& node : {oneMapping, twoMappings})
+        {
+            core::behavior::LinearSolver* s =
+                node->get<core::behavior::LinearSolver>(node->getTags(), core::objectmodel::BaseContext::SearchDown);
+        }
+
+        compareMechanicalObjects(i, 1e-10_sreal);
+    }
+}
+
 
 
 } // namespace sofa
