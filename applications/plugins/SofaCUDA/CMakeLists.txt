@@ -103,7 +103,6 @@ set(SOURCE_FILES
     main.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
     sofa/gpu/cuda/CudaForceField.cpp
-    sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/mycuda.cpp
 
     ### Mechanical
