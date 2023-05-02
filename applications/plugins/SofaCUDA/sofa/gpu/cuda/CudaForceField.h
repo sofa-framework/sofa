@@ -26,25 +26,25 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaCUDA/config.h>
 
-namespace SofaCUDA
+namespace sofa::core::behavior
 {
 
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec1fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec2fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3f1Types>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec6fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid2fTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid3fTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec1fTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec2fTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec6fTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid2fTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid3fTypes>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec1dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec2dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3d1Types>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec6dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid2dTypes>;
-extern template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid3dTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec1dTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec2dTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3d1Types>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec6dTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid2dTypes>;
+extern template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid3dTypes>;
 #endif
 
 }

@@ -24,25 +24,26 @@
 
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaCUDA/config.h>
+#include <sofa/core/behavior/ForceField.inl>
 
-namespace SofaCUDA
+namespace sofa::core::behavior
 {
 
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec1fTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec2fTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3f1Types>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec6fTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid2fTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid3fTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec1fTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec2fTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid2fTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid3fTypes>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec1dTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec2dTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec3d1Types>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaVec6dTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid2dTypes>;
-template class SOFA_GPU_CUDA_API sofa::core::behavior::ForceField<sofa::gpu::cuda::CudaRigid3dTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec1dTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec2dTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid2dTypes>;
+template class SOFA_GPU_CUDA_API ForceField<sofa::gpu::cuda::CudaRigid3dTypes>;
 #endif
 }
