@@ -56,6 +56,9 @@ Rows, columns, or the full matrix can be set to zero using the clear* methods.
 template<class TReal>
 class EigenBaseSparseMatrix : public linearalgebra::BaseMatrix
 {
+
+public:
+
     void set(Index i, Index j, double v) override
     {
         for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
@@ -67,8 +70,6 @@ class EigenBaseSparseMatrix : public linearalgebra::BaseMatrix
         incoming.push_back( Triplet(i,j,(Real)v) );
     }
 
-
-public:
 
     typedef TReal Real;
     typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> CompressedMatrix;
