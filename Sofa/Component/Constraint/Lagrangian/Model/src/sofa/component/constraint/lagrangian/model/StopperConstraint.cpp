@@ -36,7 +36,7 @@ int StopperConstraintClass = core::RegisterObject("TODO-StopperConstraint")
 
         ;
 
-template class StopperConstraint<Vec1Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API StopperConstraint<Vec1Types>;
 
 
 } //namespace sofa::component::constraint::lagrangian::model

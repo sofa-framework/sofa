@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_UNIFORMCONSTRAINT_CPP
 #include <sofa/component/constraint/lagrangian/model/UniformConstraint.inl>
 
 #include <sofa/core/ObjectFactory.h>
@@ -31,7 +32,7 @@ int UniformConstraintClass = sofa::core::RegisterObject("A constraint equation a
 .add< UniformConstraint<sofa::defaulttype::Vec1Types> >()
 ;
 
-template class UniformConstraint<sofa::defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UniformConstraint<sofa::defaulttype::Vec1Types>;
 
 
 } // namespace sofa::component::constraint::lagrangian::model

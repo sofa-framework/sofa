@@ -106,7 +106,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)
-extern template class StopperConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API StopperConstraint<defaulttype::Vec1Types>;
 
 #endif
 
