@@ -1610,8 +1610,11 @@ protected:
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXGENERIC_CPP) 
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<double>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<float>;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<type::Mat1x1d>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<type::Mat1x1f>;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<type::Mat3x3d>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixGeneric<type::Mat3x3f>;
 #endif
 
 
