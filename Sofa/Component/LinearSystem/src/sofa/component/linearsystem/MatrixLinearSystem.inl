@@ -656,14 +656,17 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
             if constexpr (c == Contribution::STIFFNESS)
             {
                 m_stiffness[component].setMatrixAccumulator(mat, mstate0, mstate1);
+                m_stiffness[component].setMechanicalParams(mparams);
             }
             else if constexpr (c == Contribution::DAMPING)
             {
                 m_damping[component].setMatrixAccumulator(mat, mstate0, mstate1);
+                m_damping[component].setMechanicalParams(mparams);
             }
             else if constexpr (c == Contribution::GEOMETRIC_STIFFNESS)
             {
                 m_geometricStiffness[component].setMatrixAccumulator(mat, mstate0, mstate1);
+                m_geometricStiffness[component].setMechanicalParams(mparams);
             }
             else if constexpr (c == Contribution::MASS)
             {
