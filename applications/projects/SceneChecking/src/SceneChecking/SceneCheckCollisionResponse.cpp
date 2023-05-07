@@ -96,6 +96,20 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
                 {
                     m_message <<"A FreeMotionAnimationLoop must be in the scene to solve FrictionContactConstraint" << msgendl;
                 }
+                else
+                {
+                    type::vector<core::CollisionModel*> colModels;
+                    root->get<core::CollisionModel>(&colModels, core::objectmodel::BaseContext::SearchDown);
+                    for (auto model : colModels)
+                    {
+                        if(model->isContactStiffnessSet())
+                        {
+                            m_message <<"The data \"contactStiffness\" is set in the component " << model->getClassName() <<" named " << model->getName() << msgendl;
+                            m_message <<"This data is not used when using a FrictionContactConstraint collision response." << msgendl;
+                            m_message <<"Remove the data \"contactStiffness\" to remove this warning" << msgendl;
+                        }
+                    }
+                }
             }
         }
     }
