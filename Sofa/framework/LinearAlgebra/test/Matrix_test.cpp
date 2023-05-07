@@ -429,7 +429,7 @@ using TestSparseMatricesImplementations = ::testing::Types<
     TestSparseMatricesTraits<SReal, 4, 8, 4, 2>,
     TestSparseMatricesTraits<SReal, 4, 8, 1, 8>,
     TestSparseMatricesTraits<SReal, 4, 8, 2, 8>,
-    TestSparseMatricesTraits<SReal, 4, 8, 2, 3>,
+    TestSparseMatricesTraits<SReal, 4, 8, 2, 4>,
     TestSparseMatricesTraits<SReal, 24, 24, 3, 3>
 >;
 
