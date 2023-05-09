@@ -98,7 +98,6 @@ protected:
 
     GLenum getGLenum(const char* c ) const;
 
-
     OglModel();
 
     ~OglModel() override;

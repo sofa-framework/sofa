@@ -867,41 +867,41 @@ void OglModel::updateVertexBuffer()
         }
     }
 
-    std::size_t vboBufferSizeInBytes = positionsBufferSize + normalsBufferSize 
-        + textureCoordsBufferSize + tangentsBufferSize + bitangentsBufferSize;
-
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    float* vertex_vbo_ptr = (float*)glMapBufferRange(
-        GL_ARRAY_BUFFER,
+    //Positions
+    glBufferSubData(GL_ARRAY_BUFFER,
         0,
-        vboBufferSizeInBytes,
-        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-    );
-    assert(vertex_vbo_ptr);
+        positionsBufferSize,
+        positionBuffer);
 
-    memcpy(vertex_vbo_ptr, positionBuffer, positionsBufferSize);
-
-    float* normal_vbo_ptr = vertex_vbo_ptr + vertices.size() * 3;
-    memcpy(normal_vbo_ptr, normalBuffer, normalsBufferSize);
+    //Normals
+    glBufferSubData(GL_ARRAY_BUFFER,
+        positionsBufferSize,
+        normalsBufferSize,
+        normalBuffer);
 
     ////Texture coords
-    if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
+    if (tex || putOnlyTexCoords.getValue() || !textures.empty())
     {
-        float* texcoords_vbo_ptr = normal_vbo_ptr + vnormals.size() * 3;
-        memcpy(texcoords_vbo_ptr, vtexcoords.data(), textureCoordsBufferSize);
+        glBufferSubData(GL_ARRAY_BUFFER,
+            positionsBufferSize + normalsBufferSize,
+            textureCoordsBufferSize,
+            vtexcoords.data());
 
         if (hasTangents)
         {
-            float* tan_vbo_ptr = texcoords_vbo_ptr + vtexcoords.size() * 2;
-            memcpy(tan_vbo_ptr, vtangents.data(), tangentsBufferSize);
+            glBufferSubData(GL_ARRAY_BUFFER,
+                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
+                tangentsBufferSize,
+                vtangents.data());
 
-            float* bitan_vbo_ptr = tan_vbo_ptr + vtangents.size() * 3;
-            memcpy(bitan_vbo_ptr, vbitangents.data(), bitangentsBufferSize);
+            glBufferSubData(GL_ARRAY_BUFFER,
+                positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
+                bitangentsBufferSize,
+                vbitangents.data());
         }
     }
-
-    glUnmapBuffer(GL_ARRAY_BUFFER);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -909,21 +909,10 @@ void OglModel::updateVertexBuffer()
 void OglModel::updateEdgesIndicesBuffer()
 {
     const VecVisualEdge& edges = this->getEdges();
-    const std::size_t sizeBuffer = edges.size() * sizeof(edges[0]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
 
-    visual_index_type* ibo_ptr = (visual_index_type*)glMapBufferRange(
-        GL_ELEMENT_ARRAY_BUFFER,
-        0,
-        sizeBuffer,
-        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-    );
-
-    assert(ibo_ptr);
-    memcpy(ibo_ptr, &edges[0], sizeBuffer);
-
-    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(edges.size()*sizeof(edges[0])), &edges[0]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
@@ -931,20 +920,10 @@ void OglModel::updateEdgesIndicesBuffer()
 void OglModel::updateTrianglesIndicesBuffer()
 {
     const VecVisualTriangle& triangles = this->getTriangles();
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-    const std::size_t sizeBuffer = triangles.size() * sizeof(triangles[0]);
 
-    visual_index_type* ibo_ptr = (visual_index_type*)glMapBufferRange(
-        GL_ELEMENT_ARRAY_BUFFER,
-        0,
-        sizeBuffer,
-        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-    );
-
-    assert(ibo_ptr);
-    memcpy(ibo_ptr, triangles.data(), sizeBuffer);
-
-    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(triangles.size() * sizeof(triangles[0])), &triangles[0]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
@@ -953,19 +932,8 @@ void OglModel::updateQuadsIndicesBuffer()
 {
     const VecVisualQuad& quads = this->getQuads();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    const std::size_t sizeBuffer = quads.size() * sizeof(quads[0]);
 
-    visual_index_type* ibo_ptr = (visual_index_type*)glMapBufferRange(
-        GL_ELEMENT_ARRAY_BUFFER,
-        0,
-        sizeBuffer,
-        GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT
-    );
-
-    assert(ibo_ptr);
-    memcpy(ibo_ptr, &quads[0], sizeBuffer);
-
-    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, long(quads.size() * sizeof(quads[0])), &quads[0]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
