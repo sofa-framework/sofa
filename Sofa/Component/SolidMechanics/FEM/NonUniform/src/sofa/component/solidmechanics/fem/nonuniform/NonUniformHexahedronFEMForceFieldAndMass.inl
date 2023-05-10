@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/nonuniform/NonUniformHexahedronFEMForceFieldAndMass.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.inl>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::solidmechanics::fem::nonuniform

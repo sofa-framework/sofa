@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mass/UniformMass.h>
-
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>

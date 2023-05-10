@@ -24,7 +24,7 @@
 #include <sofa/component/solidmechanics/spring/config.h>
 
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>

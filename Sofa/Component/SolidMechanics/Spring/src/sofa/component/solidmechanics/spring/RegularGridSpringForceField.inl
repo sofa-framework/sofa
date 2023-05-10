@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/RegularGridSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::solidmechanics::spring
