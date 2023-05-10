@@ -59,4 +59,8 @@ protected:
     UniformConstraint();
 };
 
+#if !defined(SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_UNIFORMCONSTRAINT_CPP)
+    extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API UniformConstraint<sofa::defaulttype::Vec1Types>;
+#endif
+
 } // namespace sofa::component::constraint::lagrangian::model
