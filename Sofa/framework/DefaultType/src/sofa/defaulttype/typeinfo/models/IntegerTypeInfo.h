@@ -47,14 +47,23 @@ struct IntegerTypeInfo
     enum { Text            = 0 };
     enum { CopyOnWrite     = 0 };
     enum { Container       = 0 };
+    enum { UniqueKeyContainer = 0};
 
     enum { Size = 1 };
+
+    static void clear(const DataType&) {}
+
     static sofa::Size size() { return 1; }
     static sofa::Size byteSize() { return sizeof(DataType); }
 
     static sofa::Size size(const DataType& /*data*/) { return 1; }
 
     static bool setSize(DataType& /*data*/, sofa::Size /*size*/) { return false; }
+
+    template <typename T> static void insertValue(DataType &, T&)
+    {
+        throw std::runtime_error("Invalid operation");
+    }
 
     template <typename T>
     static void getValue(const DataType &data, sofa::Size index, T& value)

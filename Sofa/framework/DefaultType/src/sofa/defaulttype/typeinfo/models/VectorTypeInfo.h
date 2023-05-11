@@ -47,9 +47,13 @@ struct VectorTypeInfo
     enum { Text            = BaseTypeInfo::Text            };
     enum { CopyOnWrite     = 1                             };
     enum { Container       = 1                             };
+    enum { UniqueKeyContainer = 0 };
+
     enum { Size = BaseTypeInfo::Size };
     static std::string name() { std::ostringstream o; o << "vector<" << DataTypeInfo<BaseType>::name() << ">"; return o.str(); }
     static std::string GetTypeName() { std::ostringstream o; o << "vector<" << DataTypeInfo<BaseType>::GetTypeName() << ">"; return o.str(); }
+
+    static void clear(const DataType& data) { data.clear(); }
 
     static sofa::Size size()
     {
@@ -83,6 +87,12 @@ struct VectorTypeInfo
             return true;
         }
         return false;
+    }
+
+    template <typename T>
+    static void insertValue(DataType &data, T& value)
+    {
+        data.push_back(value);
     }
 
     template <typename T>

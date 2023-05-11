@@ -47,6 +47,9 @@ struct FixedArrayTypeInfo
     enum { Text            = BaseTypeInfo::Text            };
     enum { CopyOnWrite     = 1                             };
     enum { Container       = 1                             };
+    enum { UniqueKeyContainer = 0                          };
+
+    static void clear(const DataType&) {}
 
     enum { Size = static_size * BaseTypeInfo::Size };
     static sofa::Size size()
@@ -82,6 +85,16 @@ struct FixedArrayTypeInfo
             return true;
         }
         return false;
+    }
+
+    template <typename T> static void insertValue(DataType &, T&)
+    {
+        throw std::runtime_error("Invalid operation");
+    }
+
+    static void insertValueString(DataType&, const std::string&)
+    {
+        throw std::runtime_error("Invalid operation");
     }
 
     template <typename T>

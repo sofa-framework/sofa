@@ -73,6 +73,11 @@ public:
     /// not considered containers.
     bool Container() const override {return false;}
 
+    /// True iff this type is a container fullfilling the "unique key requirement" eg: map, set, unordered_set
+    bool UniqueKeyContainer() const override {return false;}
+
+    void clear(void*) const override {}
+
     /// The size of this type, in number of elements.
     /// For example, the size of a `fixed_array<fixed_array<int, 2>, 3>` is 6,
     /// and those six elements are conceptually numbered from 0 to 5.  This is
@@ -115,6 +120,13 @@ public:
     void setScalarValue (void* /*data*/, Index /*index*/, double /*value*/) const override {}
     /// Set the value at \a index of \a data from a string value.
     void setTextValue(void* /*data*/, Index /*index*/, const std::string& /*value*/) const override {}
+
+    /// Insert a value from an integer value.
+    void insertIntegerValue(void*, long long) const override {}
+    /// Insert a value from an scalar value.
+    void insertScalarValue (void*, double) const override {}
+    /// Insert a value from a string value.
+    void insertTextValue(void*, const std::string&) const override {}
 
     /// Get a read pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout

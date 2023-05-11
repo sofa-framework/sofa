@@ -113,6 +113,10 @@ public:
     /// That is, if it can contain several values. In particular, strings are
     /// not considered containers.
     virtual bool Container() const = 0;
+    virtual bool UniqueKeyContainer() const = 0;
+
+    /// clear the container
+    virtual void clear(void* data) const = 0;
 
     /// The size of this type, in number of elements.
     /// For example, the size of a `fixed_array<fixed_array<int, 2>, 3>` is 6,
@@ -156,6 +160,15 @@ public:
     virtual void setScalarValue (void* data, Index index, double value) const = 0;
     /// Set the value at \a index of \a data from a string value.
     virtual void setTextValue(void* data, Index index, const std::string& value) const = 0;
+
+    /// Insert a value from an integer value.
+    virtual void insertIntegerValue(void* data, long long value) const = 0;
+
+    /// Insert a value from an scalar value.
+    virtual void insertScalarValue (void* data, double value) const = 0;
+
+    /// Insert a value from a string value.
+    virtual void insertTextValue(void* data, const std::string& value) const = 0;
 
     /// Get a read pointer to the underlying memory
     /// Relevant only if this type is SimpleLayout

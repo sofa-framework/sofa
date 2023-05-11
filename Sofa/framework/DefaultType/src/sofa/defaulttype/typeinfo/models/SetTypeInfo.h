@@ -33,6 +33,7 @@ struct SetTypeInfo
     typedef TDataType DataType;
     typedef typename DataType::value_type BaseType;
     typedef DataTypeInfo<BaseType> BaseTypeInfo;
+
     typedef typename BaseTypeInfo::ValueType ValueType;
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
 
@@ -46,6 +47,10 @@ struct SetTypeInfo
     enum { Text            = BaseTypeInfo::Text            };
     enum { CopyOnWrite     = 1                             };
     enum { Container       = 1                             };
+    enum { UniqueKeyContainer = 1                          };
+
+    static std::string name() { std::ostringstream o; o << "set<" << DataTypeInfo<BaseType>::name() << ">"; return o.str(); }
+    static std::string GetTypeName() { std::ostringstream o; o << "set<" << DataTypeInfo<BaseType>::GetTypeName() << ">"; return o.str(); }
 
     enum { Size = BaseTypeInfo::Size };
     static sofa::Size size()
@@ -69,6 +74,17 @@ struct SetTypeInfo
                 s+= BaseTypeInfo::size(*it);
             return s;
         }
+    }
+
+    static void clear(DataType &data)
+    {
+        data.clear();
+    }
+
+    template <typename T>
+    static void insertValue(DataType &data, T& value)
+    {
+        data.insert(value);
     }
 
     static bool setSize(DataType& data, sofa::Size /*size*/)
