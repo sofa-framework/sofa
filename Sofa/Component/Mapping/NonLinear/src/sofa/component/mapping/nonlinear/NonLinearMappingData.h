@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/mapping/nonlinear/config.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -35,6 +36,10 @@ public:
     Data<helper::OptionsGroup> d_geometricStiffness; ///< Method used to compute the geometric stiffness
 
     NonLinearMappingData();
+
+protected:
+
+    void checkLinearSolverSymmetry(const core::MechanicalParams* mparams) const;
 };
 
 template <bool HasStabilizedGeometricStiffness>
@@ -60,4 +65,34 @@ inline NonLinearMappingData<false>::NonLinearMappingData()
 )
 {}
 
+template <bool HasStabilizedGeometricStiffness>
+void NonLinearMappingData<HasStabilizedGeometricStiffness>::checkLinearSolverSymmetry(
+    const core::MechanicalParams* mparams) const
+{
+    if (mparams && mparams->symmetricMatrix())
+    {
+        std::stringstream ss;
+        ss << "The geometric stiffness of this mapping is a non-symmetric matrix. "
+            "It means a linear solver supporting non-symmetric matrices must be used, but it is not"
+            " the case here. ";
+
+        const std::string stabilizedName = "Stabilized";
+        if (d_geometricStiffness.getValue().isInOptionsList(stabilizedName) == -1)
+        {
+            if constexpr (HasStabilizedGeometricStiffness)
+            {
+                dmsg_fatal() << "The option '" << stabilizedName << "' is not available in the Data '"
+                   << d_geometricStiffness.getName() << "'";
+            }
+            ss << "To fix your scene, use a linear solver supporting non-symmetric matrices";
+        }
+        else
+        {
+            ss << "To fix your scene, you have two options: 1) Use a linear solver "
+                  "supporting non-symmetric matrices, 2) stabilize the geometric stiffness with "
+                  "the Data '" + d_geometricStiffness.getName() + "' set to '" + stabilizedName + "'";
+        }
+        msg_error() << ss.str();
+    }
+}
 }

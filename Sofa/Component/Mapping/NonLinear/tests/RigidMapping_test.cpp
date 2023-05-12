@@ -87,7 +87,7 @@ struct RigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidMapping>
 
         rigidMapping = static_cast<RigidMapping*>( this->mapping );
 
-        if( InDataTypes::spatial_dimensions != 3 )
+        if constexpr ( InDataTypes::spatial_dimensions != 3 )
         {
             // RigidMapping::getK is not yet implemented for 2D rigids
             this->flags &= ~Inherit::TEST_getK;

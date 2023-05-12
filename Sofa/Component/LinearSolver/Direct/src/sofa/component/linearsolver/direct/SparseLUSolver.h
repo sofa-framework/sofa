@@ -79,6 +79,8 @@ public:
 
     SparseLUSolver();
 
+    bool supportNonSymmetricSystem() const override { return true; }
+
 protected :
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;

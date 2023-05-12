@@ -382,9 +382,6 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
         }
         else
         {
-            // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
-            assert( !mparams->symmetricMatrix() );
-
             helper::ReadAccessor<Data<OutVecDeriv> > childForces (*mparams->readF(this->toModel.get()));
             helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get()].write());
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel.get()));
@@ -656,6 +653,12 @@ void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     }
     else
     {
+        if (geomStiff == 1)
+        {
+            // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
+            checkLinearSolverSymmetry(matrices->getMechanicalParams());
+        }
+
         const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
         const auto childForces = this->toModel->readForces();

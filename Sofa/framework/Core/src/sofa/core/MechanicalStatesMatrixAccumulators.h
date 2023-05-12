@@ -40,6 +40,10 @@ public:
     void setMatrixAccumulator(MatrixAccumulator* matrixAccumulator,
                               BaseState* mstate1);
 
+    void setMechanicalParams(const core::MechanicalParams* mparams) { m_mparams = mparams; }
+
+    const core::MechanicalParams* getMechanicalParams() const { return m_mparams; }
+
 // protected:
 
     std::map<std::pair<BaseState*, BaseState*>,
@@ -51,6 +55,10 @@ public:
     virtual ~MechanicalStatesMatrixAccumulators() = default;
     MechanicalStatesMatrixAccumulators(const MechanicalStatesMatrixAccumulators&) = delete;
     void operator=(const MechanicalStatesMatrixAccumulators&) = delete;
+
+private:
+
+    const core::MechanicalParams* m_mparams { nullptr };
 };
 
 
