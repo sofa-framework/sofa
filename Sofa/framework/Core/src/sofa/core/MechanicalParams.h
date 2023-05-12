@@ -67,7 +67,7 @@ public:
 
 
     /// Symmetric matrix flag, for solvers specialized on symmetric matrices
-    bool symmetricMatrix() const { return m_symmetricMatrix; }
+    bool supportOnlySymmetricMatrix() const { return m_supportOnlySymmetricMatrix; }
 
     /// Should the kinematic and potential energies be computed ?
     bool energy() const { return m_energy; }
@@ -160,8 +160,8 @@ public:
     /// Set Stiffness matrix contributions factor (for implicit schemes)
     MechanicalParams& setKFactor(SReal v) { m_kFactor = v; return *this; }
 
-    /// Set the symmetric matrix flag (for implicit schemes), for solvers specialized on symmetric matrices
-    MechanicalParams& setSymmetricMatrix(bool b) { m_symmetricMatrix = b; return *this; }
+    /// Set the flag (for implicit schemes) specifying if solvers are only specialized for symmetric matrices
+    MechanicalParams& setSupportOnlySymmetricMatrix(bool b) { m_supportOnlySymmetricMatrix = b; return *this; }
 
 #ifndef NDEBUG
     /// Checks wether or nor kFactor is used in ForceFields. Temporary here for compatiblity reasons
@@ -275,7 +275,7 @@ protected:
     SReal m_kFactor;
 
     /// True if a symmetric matrix is assumed in the left-hand term of the dynamics equations, for solvers specialized on symmetric matrices
-    bool m_symmetricMatrix;
+    bool m_supportOnlySymmetricMatrix;
 
     /// @name Experimental compliance API
     /// @{
