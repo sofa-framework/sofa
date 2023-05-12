@@ -74,7 +74,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
 
     // Create TopologyHandler
     this->m_topologyHandler = std::make_unique<TopologyDataHandler< TopologyElementType, VecT> >(this, _topology);
-    this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
+    this->m_topologyHandler->setNamePrefix("TopologyDataHandler (" + this->getOwner()->getName() + ")");
     this->m_topologyHandler->init();
 
     // Register the TopologyHandler
