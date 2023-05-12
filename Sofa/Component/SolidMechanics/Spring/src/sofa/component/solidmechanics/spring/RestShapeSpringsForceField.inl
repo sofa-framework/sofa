@@ -73,6 +73,11 @@ using type::vector;
 using core::visual::VisualParams;
 
 template<class DataTypes>
+const type::fixed_array<bool, RestShapeSpringsForceField<DataTypes>::spatial_dimensions>
+RestShapeSpringsForceField<DataTypes>::s_defaultActiveDirections =
+    []{type::fixed_array<bool, spatial_dimensions> v; std::fill(v.begin(), v.end(), true); return v; }();
+
+template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : d_points(initData(&d_points, "points", "points controlled by the rest shape springs"))
     , d_stiffness(initData(&d_stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
@@ -82,9 +87,8 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_recompute_indices(initData(&d_recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
-    , d_activeDirections(initData(&d_activeDirections,
-        []{type::fixed_array<bool, spatial_dimensions> v; std::fill(v.begin(), v.end(), true); return v; }(),
-        "activeDirections","Directions in which the spring is active (default=[1, 1, 1, 1, 1, 1])"))
+    , d_activeDirections(initData(&d_activeDirections, s_defaultActiveDirections,
+        "activeDirections", std::string("Directions in which the spring is active (default=[" + sofa::helper::join(s_defaultActiveDirections, ',') + "])").c_str()))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , l_topology(initLink("topology", "Link to be set to the topology container in the component graph"))
 {

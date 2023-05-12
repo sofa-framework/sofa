@@ -86,6 +86,8 @@ public:
 protected:
     RestShapeSpringsForceField();
 
+    static const type::fixed_array<bool, spatial_dimensions> s_defaultActiveDirections;
+
 public:
     /// BaseObject initialization method.
     void bwdInit() override ;
