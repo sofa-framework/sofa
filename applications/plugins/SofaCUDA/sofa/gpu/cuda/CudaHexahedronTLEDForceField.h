@@ -131,6 +131,10 @@ protected:
     // Store the 8 node indices per element. Since the type is int4, two consecutive elements are
     // needed to access the 8 indices.
     int4* m_device_nodesPerElement { nullptr };
+
+    float4* m_device_DhC0 { nullptr };
+    float4* m_device_DhC1 { nullptr };
+    float4* m_device_DhC2 { nullptr };
 };
 
 } // namespace cuda
