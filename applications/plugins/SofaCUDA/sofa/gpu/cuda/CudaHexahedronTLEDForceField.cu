@@ -38,7 +38,7 @@ namespace cuda
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, int2* forceCoordinates, float4* F0, float4* F1, float4* F2, float4* F3, float4* F4, float4* F5, float4* F6, float4* F7);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const float* x, const float* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, int2* forceCoordinates, float4* F0, float4* F1, float4* F2, float4* F3, float4* F4, float4* F5, float4* F6, float4* F7);
     void InitGPU_TLED(int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_Aniso();
@@ -70,76 +70,21 @@ static __constant__ int Eta_gpu;
 // Function to be called from the device to compute forces from stresses (Prototype)
 __device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const float4 Dh0_b, const float4 Dh1_a, const float4 Dh1_b, const float4 Dh2_a, const float4 Dh2_b, const float3 Node1Disp, const float3 Node2Disp, const float3 Node3Disp, const float3 Node4Disp, const float3 Node5Disp, const float3 Node6Disp, const float3 Node7Disp, const float3 Node8Disp, const float * SPK, const int tid, float* hourglassControlArray);
 
-// A few global constants
-static int sizeNodesInt, sizeElsFloat, sizeElsInt;
-
-#define USE_TEXTURE
-
-#ifdef USE_TEXTURE
-
-static texture<float, 1, cudaReadModeElementType> texX;
-static const void* curX = NULL;
-
-static texture<float, 1, cudaReadModeElementType> texX0;
-static const void* curX0 = NULL;
-
-static void setX(const void* x)
-{
-    if (x!=curX)
-    {
-        cudaBindTexture((size_t*)NULL, texX, x);
-        curX = x;
-    }
-}
-
 // Device function returning the position of vertex i as a float3
-static __device__ CudaVec3f getX(int i)
+__device__ CudaVec3f hexaGetX(const float* x, int i)
 {
-    int i3 = i * 3;
-    float x1 = tex1Dfetch(texX, i3);
-    float x2 = tex1Dfetch(texX, i3+1);
-    float x3 = tex1Dfetch(texX, i3+2);
+    const int i3 = i * 3;
+    const float x1 = x[i3];
+    const float x2 = x[i3+1];
+    const float x3 = x[i3+2];
     return CudaVec3f::make(x1,x2,x3);
 }
-
-static void setX0(const void* x0)
-{
-    if (x0!=curX0)
-    {
-        cudaBindTexture((size_t*)NULL, texX0, x0);
-        curX0 = x0;
-    }
-}
-
-// Device function returning the rest position of vertex i as a float3
-static __device__ CudaVec3f getX0(int i)
-{
-    int i3 = i * 3;
-    float x1 = tex1Dfetch(texX0, i3);
-    float x2 = tex1Dfetch(texX0, i3+1);
-    float x3 = tex1Dfetch(texX0, i3+2);
-    return CudaVec3f::make(x1,x2,x3);
-}
-
-#else
-
-static void setX(const void* x)
-{
-}
-
-static void setX0(const void* x0)
-{
-}
-
-#define getX(i) (((const CudaVec3f*)x)[i])
-#define getX0(i) (((const CudaVec3f*)x0)[i])
-
-#endif
 
 /**
  * This version is valid for hexahedral meshes and uses an elastic formulation
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
+    const float* x, const float* x0,
     float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu,
     float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu,
     int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
@@ -160,16 +105,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
         float4 Dh2_b = DhC2[2 * index + 1];
 
         int4 NodesPerElement = nodesPerElement[2 * index];
-        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node1Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node2Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node3Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node4Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         NodesPerElement = nodesPerElement[2 * index + 1];
-        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node5Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node6Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node7Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node8Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -317,6 +262,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
  * This version is valid for hexahedral meshes and uses a transversely isotropic and elastic formulation
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
+    const float* x, const float* x0,
     float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu,
     float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu,
     int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
@@ -338,16 +284,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
         float4 Dh2_b = DhC2[2 * index + 1];
 
         int4 NodesPerElement = nodesPerElement[2 * index];
-        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node1Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node2Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node3Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node4Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         NodesPerElement = nodesPerElement[2 * index + 1];
-        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node5Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node6Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node7Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node8Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -502,6 +448,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
  * This version is valid for hexahedral meshes and uses a viscoelastic formulation based on separated isochoric and volumetric terms. The model is isotropic.
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
+    const float* x, const float* x0,
     float Lambda, float Mu, int nbElem, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2,
     float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu,
     float4* F6_gpu, float4* F7_gpu,
@@ -523,16 +470,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
         float4 Dh2_b = DhC2[2 * index + 1];
 
         int4 NodesPerElement = nodesPerElement[2 * index];
-        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node1Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node2Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node3Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node4Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         NodesPerElement = nodesPerElement[2 * index + 1];
-        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node5Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node6Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node7Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node8Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -725,6 +672,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
  * This version is valid for hexahedral meshes and uses an viscoelastic and anisotropic formulation
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(
+    const float* x, const float* x0,
     float Lambda, float Mu, int nbElem, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2,
     float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu,
     float4* F6_gpu, float4* F7_gpu,
@@ -747,16 +695,16 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(
         float4 Dh2_b = DhC2[2 * index + 1];
 
         int4 NodesPerElement = nodesPerElement[2 * index];
-        CudaVec3f Node1Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node2Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node3Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node4Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node1Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node2Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node3Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node4Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         NodesPerElement = nodesPerElement[2 * index + 1];
-        CudaVec3f Node5Disp = getX(NodesPerElement.x) - getX0(NodesPerElement.x);
-        CudaVec3f Node6Disp = getX(NodesPerElement.y) - getX0(NodesPerElement.y);
-        CudaVec3f Node7Disp = getX(NodesPerElement.z) - getX0(NodesPerElement.z);
-        CudaVec3f Node8Disp = getX(NodesPerElement.w) - getX0(NodesPerElement.w);
+        CudaVec3f Node5Disp = hexaGetX(x, NodesPerElement.x) - hexaGetX(x0, NodesPerElement.x);
+        CudaVec3f Node6Disp = hexaGetX(x, NodesPerElement.y) - hexaGetX(x0, NodesPerElement.y);
+        CudaVec3f Node7Disp = hexaGetX(x, NodesPerElement.z) - hexaGetX(x0, NodesPerElement.z);
+        CudaVec3f Node8Disp = hexaGetX(x, NodesPerElement.w) - hexaGetX(x0, NodesPerElement.w);
 
         /**
         * Computes the transpose of deformation gradient
@@ -1269,7 +1217,7 @@ void ClearGPU_Aniso(void)
 void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem,
                                              unsigned int nbVertex, unsigned int nbElemPerVertex,
                                              unsigned int viscoelasticity, unsigned int anisotropy,
-                                             const void* x, const void* x0, void* f,
+                                             const float* x, const float* x0, void* f,
                                              int4* nodesPerElement,
                                              float4* DhC0, float4* DhC1, float4* DhC2,
                                              float* detJarray, float* hourglassControlArray,
@@ -1278,9 +1226,6 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
                                              int2* forceCoordinates,
                                              float4* F0, float4* F1, float4* F2, float4* F3, float4* F4, float4* F5, float4* F6, float4* F7)
 {
-    setX(x);
-    setX0(x0);
-
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
 
@@ -1293,19 +1238,19 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
     switch(2*viscoelasticity + anisotropy)
     {
     case 0 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel0");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(x, x0, Lambda, Mu, nbElem, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel0");}
     break;
 
     case 1 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray, preferredDirection); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel1");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(x, x0, Lambda, Mu, nbElem, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray, preferredDirection); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel1");}
     break;
 
     case 2 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1, Di2, Dv1, Dv2, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel2");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(x, x0, Lambda, Mu, nbElem, Di1, Di2, Dv1, Dv2, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel2");}
     break;
 
     case 3 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1, Di2, Dv1, Dv2, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray, preferredDirection); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel3");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(x, x0, Lambda, Mu, nbElem, Di1, Di2, Dv1, Dv2, F0, F1, F2, F3, F4, F5, F6, F7, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray, preferredDirection); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel3");}
     break;
     }
 
