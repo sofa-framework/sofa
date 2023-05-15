@@ -62,6 +62,7 @@ Year = {2009}                                                                   
 #ifndef SOFA_CUDA_CUDA_HEXAHEDRON_TLED_FORCEFIELD_H
 #define SOFA_CUDA_CUDA_HEXAHEDRON_TLED_FORCEFIELD_H
 
+#include <vector_types.h>
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
@@ -127,6 +128,9 @@ public:
 
 protected:
 
+    // Store the 8 node indices per element. Since the type is int4, two consecutive elements are
+    // needed to access the 8 indices.
+    int4* m_device_nodesPerElement { nullptr };
 };
 
 } // namespace cuda
