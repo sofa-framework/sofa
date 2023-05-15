@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
-#include "CudaTexture.h"
 #include "cuda.h"
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
