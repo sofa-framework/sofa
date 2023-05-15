@@ -67,9 +67,6 @@ static __constant__ float Av_gpu[2];
 // A material constant used for the transversely isotropy
 static __constant__ int Eta_gpu;
 
-// References on textures - TLED first kernel
-static texture <float4, 1, cudaReadModeElementType> texDisp;
-
 // Hourglass control
 static texture <float4, 1, cudaReadModeElementType> texHG;
 
@@ -109,8 +106,6 @@ static float4* F4_gpu = 0;
 static float4* F5_gpu = 0;
 static float4* F6_gpu = 0;
 static float4* F7_gpu = 0;
-// Displacements
-static float4* Disp = 0;
 
 // Array that contains the preferred direction for each element (transverse isotropy)
 static float4* A_gpu = 0;
@@ -1291,13 +1286,6 @@ void InitGPU_TLED(float* HG, int* FCrds, int valence, int nbVertex, int nbElemen
     mycudaMalloc((void**)&F7_gpu, 4*sizeElsFloat);
     cudaBindTexture(0, texF7, F7_gpu, channelDesc);
 
-
-    /**
-     * Displacements array
-     */
-    mycudaMalloc((void**)&Disp, 4*BSIZE*(int)ceil((float)nbVertex/BSIZE)*sizeof(float));
-    cudaBindTexture(0, texDisp, Disp, channelDesc);
-
     /**
      * Force coordinates array
      */
@@ -1388,8 +1376,6 @@ void ClearGPU_TLED(void)
     mycudaFree(F5_gpu);
     mycudaFree(F6_gpu);
     mycudaFree(F7_gpu);
-
-    mycudaFree(Disp);
 
     mycudaPrintf("GPU memory cleaned for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
