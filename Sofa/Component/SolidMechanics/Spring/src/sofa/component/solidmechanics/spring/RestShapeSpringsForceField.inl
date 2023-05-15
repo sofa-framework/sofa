@@ -117,13 +117,13 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 {
     ForceField<DataTypes>::init();
 
+    // setting component state to valid and it is invalidated later if the initialization goes wrong
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
     if (d_stiffness.getValue().empty())
     {
         msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
-
-        VecReal stiffs;
-        stiffs.push_back(100.0);
-        d_stiffness.setValue(stiffs);
+        d_stiffness.setValue({static_cast<Real>(100)});
     }
 
     if (l_restMState.get() == nullptr)
