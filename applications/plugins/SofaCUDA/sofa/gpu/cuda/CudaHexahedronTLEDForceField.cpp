@@ -43,8 +43,8 @@ int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side TLED 
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2);
-    void InitGPU_TLED(int* FCrds, int valence, int nbVertex, int nbElements);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, int2* forceCoordinates);
+    void InitGPU_TLED(int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_Aniso();
     void ClearGPU_TLED(void);
@@ -121,6 +121,11 @@ CudaHexahedronTLEDForceField::~CudaHexahedronTLEDForceField()
     if (m_device_Dv2)
     {
         mycudaFree(m_device_Dv2);
+    }
+
+    if (m_device_forceCoordinates)
+    {
+        mycudaFree(m_device_forceCoordinates);
     }
 
     if (isViscoelastic.getValue())
@@ -206,9 +211,6 @@ void CudaHexahedronTLEDForceField::reinit()
     DhDr[6][0] = a;  DhDr[6][1] = a;  DhDr[6][2] = a;
     DhDr[7][0] = -a; DhDr[7][1] = a;  DhDr[7][2] = a;
 
-    // Force coordinates (slice number and index) for each node
-    int * FCrds = 0;
-
     // Hourglass control
     sofa::type::vector<float> hourglassControl(64 * nbElems);
 
@@ -223,10 +225,10 @@ void CudaHexahedronTLEDForceField::reinit()
     sofa::type::vector<float> DetJ(nbElems);
 
     // Retrieves force coordinates (slice number and index) for each node
-    FCrds = new int[nbVertex*2*nbElementPerVertex];
-    memset(FCrds, -1, nbVertex*2*nbElementPerVertex*sizeof(int));
+    sofa::type::vector<int2> FCrds(nbVertex * nbElementPerVertex, {-1, -1});
     int * index = new int[nbVertex];
     memset(index, 0, nbVertex*sizeof(int));
+
 
     // Stores list of nodes for each element
     sofa::type::vector<int4> nodesPerElement(2 * nbElems);
@@ -297,11 +299,10 @@ void CudaHexahedronTLEDForceField::reinit()
         DhC2[2 * i + 1].z = DhDx[6][2];
         DhC2[2 * i + 1].w = DhDx[7][2];
 
-        for (unsigned int j=0; j<e.size(); j++)
+        for (int j=0; j<e.size(); j++)
         {
             // Force coordinates (slice number and index) for each node
-            FCrds[ 2*nbElementPerVertex * e[j] + 2*index[e[j]] ] = j;
-            FCrds[ 2*nbElementPerVertex * e[j] + 2*index[e[j]]+1 ] = i;
+            FCrds[ nbElementPerVertex * e[j] + index[e[j]] ] = int2{j, i};
 
             index[e[j]]++;
         }
@@ -325,12 +326,14 @@ void CudaHexahedronTLEDForceField::reinit()
     mycudaMalloc((void**)&m_device_hourglassControl, hourglassControl.size() * sizeof(float));
     mycudaMemcpyHostToDevice(m_device_hourglassControl, hourglassControl.data(), DetJ.size() * sizeof(float));
 
+    mycudaMalloc((void**)&m_device_forceCoordinates, FCrds.size() * sizeof(int2));
+    mycudaMemcpyHostToDevice(m_device_forceCoordinates, FCrds.data(), FCrds.size() * sizeof(int2));
+
     /**
      * Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
-    InitGPU_TLED(FCrds, nbElementPerVertex, nbVertex, nbElems);
+    InitGPU_TLED(nbElementPerVertex, nbVertex, nbElems);
     delete [] index;
-    delete [] FCrds;
 
 
     /**
@@ -443,7 +446,8 @@ void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams*
         m_device_DhC0, m_device_DhC1, m_device_DhC2,
         m_device_detJ, m_device_hourglassControl,
         m_device_preferredDirection,
-        m_device_Di1, m_device_Di2, m_device_Dv1, m_device_Dv2);
+        m_device_Di1, m_device_Di2, m_device_Dv1, m_device_Dv2,
+        m_device_forceCoordinates);
 
     dataF.endEdit();
 }

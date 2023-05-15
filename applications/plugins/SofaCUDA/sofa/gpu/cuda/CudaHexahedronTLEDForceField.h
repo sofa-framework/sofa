@@ -149,6 +149,8 @@ protected:
     // Rate-dependant stress (volumetric part)
     float4* m_device_Dv1 { nullptr };
     float4* m_device_Dv2 { nullptr };
+
+    int2* m_device_forceCoordinates { nullptr };
 };
 
 } // namespace cuda
