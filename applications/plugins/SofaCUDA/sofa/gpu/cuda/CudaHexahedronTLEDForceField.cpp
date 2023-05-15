@@ -43,7 +43,7 @@ int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side TLED 
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2);
     void InitGPU_TLED(int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_Aniso();
@@ -104,6 +104,23 @@ CudaHexahedronTLEDForceField::~CudaHexahedronTLEDForceField()
     if (m_device_preferredDirection)
     {
         mycudaFree(m_device_preferredDirection);
+    }
+
+    if (m_device_Di1)
+    {
+        mycudaFree(m_device_Di1);
+    }
+    if (m_device_Di2)
+    {
+        mycudaFree(m_device_Di2);
+    }
+    if (m_device_Dv1)
+    {
+        mycudaFree(m_device_Dv1);
+    }
+    if (m_device_Dv2)
+    {
+        mycudaFree(m_device_Dv2);
     }
 
     if (isViscoelastic.getValue())
@@ -425,7 +442,8 @@ void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams*
         m_device_nodesPerElement,
         m_device_DhC0, m_device_DhC1, m_device_DhC2,
         m_device_detJ, m_device_hourglassControl,
-        m_device_preferredDirection);
+        m_device_preferredDirection,
+        m_device_Di1, m_device_Di2, m_device_Dv1, m_device_Dv2);
 
     dataF.endEdit();
 }

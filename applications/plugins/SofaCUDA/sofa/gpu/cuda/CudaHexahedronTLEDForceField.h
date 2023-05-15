@@ -141,6 +141,14 @@ protected:
     float* m_device_hourglassControl { nullptr };
 
     float3* m_device_preferredDirection { nullptr };
+
+    // Rate-dependant stress (isochoric part)
+    float4* m_device_Di1 { nullptr };
+    float4* m_device_Di2 { nullptr };
+
+    // Rate-dependant stress (volumetric part)
+    float4* m_device_Dv1 { nullptr };
+    float4* m_device_Dv2 { nullptr };
 };
 
 } // namespace cuda
