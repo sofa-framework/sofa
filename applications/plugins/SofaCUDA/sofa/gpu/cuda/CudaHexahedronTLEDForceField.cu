@@ -38,8 +38,8 @@ namespace cuda
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2);
-    void InitGPU_TLED(float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray);
+    void InitGPU_TLED(float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_Aniso(float* A);
     void ClearGPU_TLED(void);
@@ -68,7 +68,6 @@ static __constant__ float Av_gpu[2];
 static __constant__ int Eta_gpu;
 
 // References on textures - TLED first kernel
-static texture <float, 1, cudaReadModeElementType> texDetJ;
 static texture <float4, 1, cudaReadModeElementType> texDisp;
 
 // Hourglass control
@@ -97,18 +96,10 @@ static texture <float4, 1, cudaReadModeElementType> texF7;
 /**
  * GPU pointers
  */
-// List of nodes for each element
-static int4* NodesPerElement_gpu = 0;
-// Shape function derivatives arrays
-static float4* DhC0_gpu = 0;
-static float4* DhC1_gpu = 0;
-static float4* DhC2_gpu = 0;
 // Hourglass control
 static float4* HG_gpu = 0;
 // Force coordinates for each node
 static int2* FCrds_gpu = 0;
-// Jacobian determinant array
-float* DetJ_gpu;
 // Element nodal force contribution
 static float4* F0_gpu = 0;
 static float4* F1_gpu = 0;
@@ -207,7 +198,8 @@ static void setX0(const void* x0)
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
     float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu,
     float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu,
-    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2)
+    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
+    float* detJarray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -337,7 +329,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
         SPK[5] = SiE13 + SvE13;
 
         // Gets the Jacobian determinant
-        float detJ = tex1Dfetch(texDetJ, index);
+        float detJ = detJarray[index];
         SPK[0] *= 8*detJ;
         SPK[1] *= 8*detJ;
         SPK[2] *= 8*detJ;
@@ -383,7 +375,8 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
     float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu,
     float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu,
-    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2)
+    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
+    float* detJarray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -520,7 +513,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
         SPK[5] = SiE13 + SvE13;
 
         // Gets the Jacobian determinant
-        float detJ = tex1Dfetch(texDetJ, index);
+        float detJ = detJarray[index];
         SPK[0] *= 8*detJ;
         SPK[1] *= 8*detJ;
         SPK[2] *= 8*detJ;
@@ -567,7 +560,8 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
     float Lambda, float Mu, int nbElem, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2,
     float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu,
     float4* F6_gpu, float4* F7_gpu,
-    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2)
+    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
+    float* detJarray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -742,7 +736,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
 #endif
 
         // Gets the Jacobian determinant
-        float detJ = tex1Dfetch(texDetJ, index);
+        float detJ = detJarray[index];
         SPK[0] *= 8*detJ;
         SPK[1] *= 8*detJ;
         SPK[2] *= 8*detJ;
@@ -789,7 +783,8 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(
     float Lambda, float Mu, int nbElem, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2,
     float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu,
     float4* F6_gpu, float4* F7_gpu,
-    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2)
+    int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
+    float* detJarray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -971,7 +966,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(
 #endif
 
         // Gets the Jacobian determinant
-        float detJ = tex1Dfetch(texDetJ, index);
+        float detJ = detJarray[index];
         SPK[0] *= 8*detJ;
         SPK[1] *= 8*detJ;
         SPK[2] *= 8*detJ;
@@ -1254,7 +1249,7 @@ __global__ void CudaHexahedronTLEDForceField3f_addForce_kernel(int nbVertex, uns
 /**
  * Initialises GPU textures with the precomputed arrays for the TLED algorithm
  */
-void InitGPU_TLED(float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements)
+void InitGPU_TLED(float* HG, int* FCrds, int valence, int nbVertex, int nbElements)
 {
     // Sizes in bytes of different arrays
     sizeNodesInt = nbVertex*sizeof(int);
@@ -1267,14 +1262,6 @@ void InitGPU_TLED(float* DetJ, float* HG, int* FCrds, int valence, int nbVertex,
     mycudaMalloc((void**)&HG_gpu, 64*sizeElsFloat);
     mycudaMemcpyHostToDevice(HG_gpu, HG, 64*sizeElsFloat);
     cudaBindTexture(0, texHG, HG_gpu, channelDesc);
-
-
-    // Jacobian determinant array
-    channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-    mycudaMalloc((void**)&DetJ_gpu, sizeElsFloat);
-    mycudaMemcpyHostToDevice(DetJ_gpu, DetJ, sizeElsFloat);
-    cudaBindTexture(0, texDetJ, DetJ_gpu, channelDesc);
-
 
     /**
      * Allocates force arrays and zeros them
@@ -1391,12 +1378,7 @@ void InitGPU_Aniso(float* A)
  */
 void ClearGPU_TLED(void)
 {
-    mycudaFree(NodesPerElement_gpu);
-    mycudaFree(DhC0_gpu);
-    mycudaFree(DhC1_gpu);
-    mycudaFree(DhC2_gpu);
     mycudaFree(HG_gpu);
-    mycudaFree(DetJ_gpu);
     mycudaFree(FCrds_gpu);
     mycudaFree(F0_gpu);
     mycudaFree(F1_gpu);
@@ -1443,7 +1425,8 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
                                              unsigned int viscoelasticity, unsigned int anisotropy,
                                              const void* x, const void* x0, void* f,
                                              int4* nodesPerElement,
-                                             float4* DhC0, float4* DhC1, float4* DhC2)
+                                             float4* DhC0, float4* DhC1, float4* DhC2,
+                                             float* detJarray)
 {
     setX(x);
     setX0(x0);
@@ -1460,19 +1443,19 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
     switch(2*viscoelasticity + anisotropy)
     {
     case 0 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel0");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel0");}
     break;
 
     case 1 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel1");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel1");}
     break;
 
     case 2 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel2");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel2");}
     break;
 
     case 3 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel3");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel3");}
     break;
     }
 

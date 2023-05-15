@@ -43,8 +43,8 @@ int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side TLED 
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2);
-    void InitGPU_TLED(float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray);
+    void InitGPU_TLED(float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_Aniso(float* A);
     void ClearGPU_TLED(void);
@@ -188,7 +188,7 @@ void CudaHexahedronTLEDForceField::reinit()
     // Element volume (useful to compute shape function global derivatives and Hourglass control coefficients)
     float * Volume = new float[nbElems];
     // Allocates the texture data for Jacobian determinants
-    float * DetJ = new float[nbElems];
+    sofa::type::vector<float> DetJ(nbElems);
 
     // Retrieves force coordinates (slice number and index) for each node
     FCrds = new int[nbVertex*2*nbElementPerVertex];
@@ -287,12 +287,15 @@ void CudaHexahedronTLEDForceField::reinit()
     mycudaMalloc((void**)&m_device_DhC2, DhC2.size() * sizeof(float4));
     mycudaMemcpyHostToDevice(m_device_DhC2, DhC2.data(), DhC2.size() * sizeof(float4));
 
+    mycudaMalloc((void**)&m_device_detJ, DetJ.size() * sizeof(float));
+    mycudaMemcpyHostToDevice(m_device_detJ, DetJ.data(), DetJ.size() * sizeof(float));
+
     /**
      * Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
-    InitGPU_TLED(DetJ, HourglassControl, FCrds, nbElementPerVertex, nbVertex, nbElems);
+    InitGPU_TLED(HourglassControl, FCrds, nbElementPerVertex, nbVertex, nbElems);
     delete [] index;
-    delete [] DetJ; delete [] FCrds; delete [] HourglassControl;
+    delete [] FCrds; delete [] HourglassControl;
 
 
     /**
@@ -399,7 +402,8 @@ void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams*
         x0.deviceRead(),
         f.deviceWrite(),
         m_device_nodesPerElement,
-        m_device_DhC0, m_device_DhC1, m_device_DhC2);
+        m_device_DhC0, m_device_DhC1, m_device_DhC2,
+        m_device_detJ);
 
     dataF.endEdit();
 }
