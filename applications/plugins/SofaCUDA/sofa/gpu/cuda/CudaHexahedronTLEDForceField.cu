@@ -38,8 +38,8 @@ namespace cuda
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray);
-    void InitGPU_TLED(float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray);
+    void InitGPU_TLED(int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_Aniso(float* A);
     void ClearGPU_TLED(void);
@@ -66,9 +66,6 @@ static __constant__ float Av_gpu[2];
 
 // A material constant used for the transversely isotropy
 static __constant__ int Eta_gpu;
-
-// Hourglass control
-static texture <float4, 1, cudaReadModeElementType> texHG;
 
 // Constant used with anisotropic formulations
 static texture <float4, 1, cudaReadModeElementType> texA;
@@ -119,7 +116,7 @@ static float4 * Dv2_gpu = 0;
 
 
 // Function to be called from the device to compute forces from stresses (Prototype)
-__device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const float4 Dh0_b, const float4 Dh1_a, const float4 Dh1_b, const float4 Dh2_a, const float4 Dh2_b, const float3 Node1Disp, const float3 Node2Disp, const float3 Node3Disp, const float3 Node4Disp, const float3 Node5Disp, const float3 Node6Disp, const float3 Node7Disp, const float3 Node8Disp, const float * SPK, const int tid);
+__device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const float4 Dh0_b, const float4 Dh1_a, const float4 Dh1_b, const float4 Dh2_a, const float4 Dh2_b, const float3 Node1Disp, const float3 Node2Disp, const float3 Node3Disp, const float3 Node4Disp, const float3 Node5Disp, const float3 Node6Disp, const float3 Node7Disp, const float3 Node8Disp, const float * SPK, const int tid, float* hourglassControlArray);
 
 // A few global constants
 static int sizeNodesInt, sizeElsFloat, sizeElsInt;
@@ -194,7 +191,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
     float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu,
     float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu,
     int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
-    float* detJarray)
+    float* detJarray, float* hourglassControlArray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -336,28 +333,28 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(
         * Computes strain-displacement matrix
         */
         F0_gpu[index] = computeForce_hex(0, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F1_gpu[index] = computeForce_hex(1, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F2_gpu[index] = computeForce_hex(2, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F3_gpu[index] = computeForce_hex(3, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F4_gpu[index] = computeForce_hex(4, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F5_gpu[index] = computeForce_hex(5, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F6_gpu[index] = computeForce_hex(6, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F7_gpu[index] = computeForce_hex(7, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
 
     }
@@ -371,7 +368,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
     float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu,
     float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu,
     int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
-    float* detJarray)
+    float* detJarray, float* hourglassControlArray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -520,28 +517,28 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(
         * Computes strain-displacement matrix
         */
         F0_gpu[index] = computeForce_hex(0, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F1_gpu[index] = computeForce_hex(1, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F2_gpu[index] = computeForce_hex(2, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F3_gpu[index] = computeForce_hex(3, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F4_gpu[index] = computeForce_hex(4, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F5_gpu[index] = computeForce_hex(5, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F6_gpu[index] = computeForce_hex(6, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F7_gpu[index] = computeForce_hex(7, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
 
     }
@@ -556,7 +553,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
     float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu,
     float4* F6_gpu, float4* F7_gpu,
     int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
-    float* detJarray)
+    float* detJarray, float* hourglassControlArray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -743,28 +740,28 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(
         * Computes strain-displacement matrix
         */
         F0_gpu[index] = computeForce_hex(0, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F1_gpu[index] = computeForce_hex(1, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F2_gpu[index] = computeForce_hex(2, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F3_gpu[index] = computeForce_hex(3, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F4_gpu[index] = computeForce_hex(4, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F5_gpu[index] = computeForce_hex(5, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F6_gpu[index] = computeForce_hex(6, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F7_gpu[index] = computeForce_hex(7, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
 
     }
@@ -779,7 +776,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(
     float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu,
     float4* F6_gpu, float4* F7_gpu,
     int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2,
-    float* detJarray)
+    float* detJarray, float* hourglassControlArray)
 {
     int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
@@ -973,28 +970,28 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(
         * Computes strain-displacement matrix
         */
         F0_gpu[index] = computeForce_hex(0, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F1_gpu[index] = computeForce_hex(1, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F2_gpu[index] = computeForce_hex(2, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F3_gpu[index] = computeForce_hex(3, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F4_gpu[index] = computeForce_hex(4, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F5_gpu[index] = computeForce_hex(5, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F6_gpu[index] = computeForce_hex(6, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
         F7_gpu[index] = computeForce_hex(7, Dh0_a, Dh0_b, Dh1_a, Dh1_b, Dh2_a, Dh2_b, Node1Disp, Node2Disp, Node3Disp, Node4Disp,
-                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index);
+                Node5Disp, Node6Disp, Node7Disp, Node8Disp, SPK, index, hourglassControlArray);
 
 
     }
@@ -1009,7 +1006,8 @@ __device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const flo
         const float4 Dh1_b, const float4 Dh2_a, const float4 Dh2_b, const float3 Node1Disp,
         const float3 Node2Disp, const float3 Node3Disp, const float3 Node4Disp,
         const float3 Node5Disp, const float3 Node6Disp, const float3 Node7Disp,
-        const float3 Node8Disp, const float * SPK, const int tid)
+        const float3 Node8Disp, const float * SPK, const int tid,
+        float* hourglassControlArray)
 {
     float XT[3][3];
 
@@ -1127,12 +1125,18 @@ __device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const flo
      * Computes hourglass control force vector for first node (FHG = HG * u)
      */
     // Computes the hourglass force to add
-    HG_read = tex1Dfetch(texHG, 16*tid+2*node);
+    HG_read.x = hourglassControlArray[4*(16*tid+2*node)+0];
+    HG_read.y = hourglassControlArray[4*(16*tid+2*node)+1];
+    HG_read.z = hourglassControlArray[4*(16*tid+2*node)+2];
+    HG_read.w = hourglassControlArray[4*(16*tid+2*node)+3];
     FX += HG_read.x*Node1Disp.x + HG_read.y*Node2Disp.x + HG_read.z*Node3Disp.x + HG_read.w*Node4Disp.x;
     FY += HG_read.x*Node1Disp.y + HG_read.y*Node2Disp.y + HG_read.z*Node3Disp.y + HG_read.w*Node4Disp.y;
     FZ += HG_read.x*Node1Disp.z + HG_read.y*Node2Disp.z + HG_read.z*Node3Disp.z + HG_read.w*Node4Disp.z;
 
-    HG_read = tex1Dfetch(texHG, 16*tid+2*node+1);
+    HG_read.x = hourglassControlArray[4*(16*tid+2*node)+4];
+    HG_read.y = hourglassControlArray[4*(16*tid+2*node)+5];
+    HG_read.z = hourglassControlArray[4*(16*tid+2*node)+6];
+    HG_read.w = hourglassControlArray[4*(16*tid+2*node)+7];
     FX += HG_read.x*Node5Disp.x + HG_read.y*Node6Disp.x + HG_read.z*Node7Disp.x + HG_read.w*Node8Disp.x;
     FY += HG_read.x*Node5Disp.y + HG_read.y*Node6Disp.y + HG_read.z*Node7Disp.y + HG_read.w*Node8Disp.y;
     FZ += HG_read.x*Node5Disp.z + HG_read.y*Node6Disp.z + HG_read.z*Node7Disp.z + HG_read.w*Node8Disp.z;
@@ -1244,7 +1248,7 @@ __global__ void CudaHexahedronTLEDForceField3f_addForce_kernel(int nbVertex, uns
 /**
  * Initialises GPU textures with the precomputed arrays for the TLED algorithm
  */
-void InitGPU_TLED(float* HG, int* FCrds, int valence, int nbVertex, int nbElements)
+void InitGPU_TLED(int* FCrds, int valence, int nbVertex, int nbElements)
 {
     // Sizes in bytes of different arrays
     sizeNodesInt = nbVertex*sizeof(int);
@@ -1252,11 +1256,6 @@ void InitGPU_TLED(float* HG, int* FCrds, int valence, int nbVertex, int nbElemen
     sizeElsInt = nbElements*sizeof(int);
 
     cudaChannelFormatDesc channelDesc;
-
-    // Hourglass control
-    mycudaMalloc((void**)&HG_gpu, 64*sizeElsFloat);
-    mycudaMemcpyHostToDevice(HG_gpu, HG, 64*sizeElsFloat);
-    cudaBindTexture(0, texHG, HG_gpu, channelDesc);
 
     /**
      * Allocates force arrays and zeros them
@@ -1412,7 +1411,7 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
                                              const void* x, const void* x0, void* f,
                                              int4* nodesPerElement,
                                              float4* DhC0, float4* DhC1, float4* DhC2,
-                                             float* detJarray)
+                                             float* detJarray, float* hourglassControlArray)
 {
     setX(x);
     setX0(x0);
@@ -1429,19 +1428,19 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
     switch(2*viscoelasticity + anisotropy)
     {
     case 0 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel0");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel0<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel0");}
     break;
 
     case 1 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel1");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel1<<< grid1, threads1>>>(Lambda, Mu, nbElem, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel1");}
     break;
 
     case 2 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel2");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel2<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel2");}
     break;
 
     case 3 :
-    {CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel3");}
+    {CudaHexahedronTLEDForceField3f_calcForce_kernel3<<< grid1, threads1>>>(Lambda, Mu, nbElem, Di1_gpu, Di2_gpu, Dv1_gpu, Dv2_gpu, F0_gpu, F1_gpu, F2_gpu, F3_gpu, F4_gpu, F5_gpu, F6_gpu, F7_gpu, nodesPerElement, DhC0, DhC1, DhC2, detJarray, hourglassControlArray); mycudaDebugError("CudaHexahedronTLEDForceField3f_calcForce_kernel3");}
     break;
     }
 
