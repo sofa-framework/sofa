@@ -151,6 +151,15 @@ protected:
     float4* m_device_Dv2 { nullptr };
 
     int2* m_device_forceCoordinates { nullptr };
+
+    float4* m_device_F0 { nullptr };
+    float4* m_device_F1 { nullptr };
+    float4* m_device_F2 { nullptr };
+    float4* m_device_F3 { nullptr };
+    float4* m_device_F4 { nullptr };
+    float4* m_device_F5 { nullptr };
+    float4* m_device_F6 { nullptr };
+    float4* m_device_F7 { nullptr };
 };
 
 } // namespace cuda

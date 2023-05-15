@@ -43,7 +43,7 @@ int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side TLED 
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, int2* forceCoordinates);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection, float4* Di1, float4* Di2, float4* Dv1, float4* Dv2, int2* forceCoordinates, float4* F0, float4* F1, float4* F2, float4* F3, float4* F4, float4* F5, float4* F6, float4* F7);
     void InitGPU_TLED(int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
     void InitGPU_Aniso();
@@ -126,6 +126,39 @@ CudaHexahedronTLEDForceField::~CudaHexahedronTLEDForceField()
     if (m_device_forceCoordinates)
     {
         mycudaFree(m_device_forceCoordinates);
+    }
+
+    if (m_device_F0)
+    {
+        mycudaFree(m_device_F0);
+    }
+    if (m_device_F1)
+    {
+        mycudaFree(m_device_F1);
+    }
+    if (m_device_F2)
+    {
+        mycudaFree(m_device_F2);
+    }
+    if (m_device_F3)
+    {
+        mycudaFree(m_device_F3);
+    }
+    if (m_device_F4)
+    {
+        mycudaFree(m_device_F4);
+    }
+    if (m_device_F5)
+    {
+        mycudaFree(m_device_F5);
+    }
+    if (m_device_F6)
+    {
+        mycudaFree(m_device_F6);
+    }
+    if (m_device_F7)
+    {
+        mycudaFree(m_device_F7);
     }
 
     if (isViscoelastic.getValue())
@@ -329,6 +362,15 @@ void CudaHexahedronTLEDForceField::reinit()
     mycudaMalloc((void**)&m_device_forceCoordinates, FCrds.size() * sizeof(int2));
     mycudaMemcpyHostToDevice(m_device_forceCoordinates, FCrds.data(), FCrds.size() * sizeof(int2));
 
+    mycudaMalloc((void**)&m_device_F0, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F1, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F2, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F3, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F4, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F5, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F6, nbElems * sizeof(float4));
+    mycudaMalloc((void**)&m_device_F7, nbElems * sizeof(float4));
+
     /**
      * Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
@@ -447,7 +489,8 @@ void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams*
         m_device_detJ, m_device_hourglassControl,
         m_device_preferredDirection,
         m_device_Di1, m_device_Di2, m_device_Dv1, m_device_Dv2,
-        m_device_forceCoordinates);
+        m_device_forceCoordinates,
+        m_device_F0, m_device_F1, m_device_F2, m_device_F3, m_device_F4, m_device_F5, m_device_F6, m_device_F7);
 
     dataF.endEdit();
 }
