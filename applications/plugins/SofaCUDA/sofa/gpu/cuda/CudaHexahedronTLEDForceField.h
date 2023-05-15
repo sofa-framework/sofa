@@ -139,6 +139,8 @@ protected:
     float* m_device_detJ { nullptr };
 
     float* m_device_hourglassControl { nullptr };
+
+    float3* m_device_preferredDirection { nullptr };
 };
 
 } // namespace cuda

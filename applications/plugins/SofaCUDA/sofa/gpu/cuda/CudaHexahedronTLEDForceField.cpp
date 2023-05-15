@@ -43,10 +43,10 @@ int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side TLED 
 
 extern "C"
 {
-    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray);
+    void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int isViscoelastic, unsigned int isAnisotropic, const void* x, const void* x0, void* f, int4* nodesPerElement, float4* DhC0, float4* DhC1, float4* DhC2, float* detJarray, float* hourglassControlArray, float3* preferredDirection);
     void InitGPU_TLED(int* FCrds, int valence, int nbVertex, int nbElements);
     void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
-    void InitGPU_Aniso(float* A);
+    void InitGPU_Aniso();
     void ClearGPU_TLED(void);
     void ClearGPU_Visco(void);
     void ClearGPU_Aniso(void);
@@ -89,6 +89,21 @@ CudaHexahedronTLEDForceField::~CudaHexahedronTLEDForceField()
     if (m_device_DhC2)
     {
         mycudaFree(m_device_DhC2);
+    }
+
+    if (m_device_detJ)
+    {
+        mycudaFree(m_device_detJ);
+    }
+
+    if (m_device_hourglassControl)
+    {
+        mycudaFree(m_device_hourglassControl);
+    }
+
+    if (m_device_preferredDirection)
+    {
+        mycudaFree(m_device_preferredDirection);
     }
 
     if (isViscoelastic.getValue())
@@ -363,18 +378,21 @@ void CudaHexahedronTLEDForceField::reinit()
     if (isAnisotropic.getValue())
     {
         // Stores the preferred direction for each element (used with transverse isotropic formulation)
-        float* A = new float[3*inputElems.size()];
+        sofa::type::vector<float3> A (inputElems.size());
 
         Vec3f a = preferredDirection.getValue();
         for (unsigned int i = 0; i<inputElems.size(); i++)
         {
-            A[3*i] =   a[0];
-            A[3*i+1] = a[1];
-            A[3*i+2] = a[2];
+            A[3*i].x =   a[0];
+            A[3*i+1].y = a[1];
+            A[3*i+2].z = a[2];
         }
 
         // Stores the precomputed information on GPU
-        InitGPU_Aniso(A);
+        InitGPU_Aniso();
+
+        mycudaMalloc((void**)&m_device_preferredDirection, A.size() * sizeof(float));
+        mycudaMemcpyHostToDevice(m_device_preferredDirection, A.data(), A.size() * sizeof(float));
     }
 
 
@@ -406,7 +424,8 @@ void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams*
         f.deviceWrite(),
         m_device_nodesPerElement,
         m_device_DhC0, m_device_DhC1, m_device_DhC2,
-        m_device_detJ, m_device_hourglassControl);
+        m_device_detJ, m_device_hourglassControl,
+        m_device_preferredDirection);
 
     dataF.endEdit();
 }
