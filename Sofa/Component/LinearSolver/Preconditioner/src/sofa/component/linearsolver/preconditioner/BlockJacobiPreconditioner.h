@@ -52,7 +52,9 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef typename TMatrix::Block SubMatrix;
 
+    SOFA_ATTRIBUTE_DEPRECATED__MATRIXDUMP()
     Data<bool> f_verbose; ///< Dump system state at each iteration
+
 protected:
     BlockJacobiPreconditioner();
 public:

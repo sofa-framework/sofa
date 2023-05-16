@@ -40,7 +40,6 @@ template<class TMatrix, class TVector>
 MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
     : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
     , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");

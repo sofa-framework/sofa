@@ -46,6 +46,7 @@ public:
     typedef typename Vector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
+    SOFA_ATTRIBUTE_DEPRECATED__MATRIXDUMP()
     Data<bool> f_verbose; ///< Dump system state at each iteration
 
     CholeskySolver();

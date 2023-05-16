@@ -51,7 +51,9 @@ public:
     typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
+    SOFA_ATTRIBUTE_DEPRECATED__MATRIXDUMP()
     Data<bool> f_verbose; ///< Dump system state at each iteration
+
     Data<double> f_omega; ///< Omega coefficient
 protected:
     SSORPreconditioner();

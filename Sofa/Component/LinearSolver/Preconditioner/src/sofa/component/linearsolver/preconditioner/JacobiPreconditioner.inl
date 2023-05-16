@@ -36,7 +36,6 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TMatrix, class TVector>
 JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 {
 }
 

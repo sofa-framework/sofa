@@ -45,7 +45,10 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
     Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
+
+    SOFA_ATTRIBUTE_DEPRECATED__MATRIXDUMP()
     Data<bool> f_verbose; ///< Dump system state at each iteration
+
     Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
 
 protected:

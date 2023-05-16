@@ -35,7 +35,6 @@ namespace sofa::component::linearsolver::direct
 
 template<class TMatrix, class TVector>
 CholeskySolver<TMatrix,TVector>::CholeskySolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 {
 }
 

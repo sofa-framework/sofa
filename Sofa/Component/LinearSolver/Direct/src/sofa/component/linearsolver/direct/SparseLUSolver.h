@@ -71,7 +71,9 @@ public:
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
+    SOFA_ATTRIBUTE_DEPRECATED__MATRIXDUMP()
     Data<bool> f_verbose; ///< Dump system state at each iteration
+
     Data<double> f_tol; ///< tolerance of factorization
     
     void solve (Matrix& M, Vector& x, Vector& b) override;
