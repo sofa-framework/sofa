@@ -1660,8 +1660,22 @@ void MechanicalObject<DataTypes>::setVecIdProperties(core::TVecId<vtype, vaccess
 {
     if (!properties.label.empty())
     {
-        vec_d->setName(properties.label + core::VecTypeLabels.at(vtype));
-        vec_d->setHelp("VecId: " + v.getName());
+        std::string newname = properties.label;
+        std::string oldname = properties.label + core::VecTypeLabels.at(vtype);
+        auto base = vec_d->getOwner();
+        if(base && !base->findData(oldname))
+        {
+            base->addAlias(vec_d, oldname.c_str());
+
+            // This allows to find the data field in getData() using its new name eg: constraint_dx
+            if(base->findData(newname))
+                msg_error(base) << "Unable to expose a dynamic data field named '" << newname << "' as that name already exists. Please report this issue to https://github.com/sofa-framework/sofa/issues (for more infos see PR: https://github.com/sofa-framework/sofa/pull/3783)";
+            else
+                base->addAlias(vec_d, newname.c_str());
+
+        }
+        vec_d->setName(newname);
+        vec_d->setHelp("VecId: " + oldname);
     }
     if (!properties.group.empty())
     {
