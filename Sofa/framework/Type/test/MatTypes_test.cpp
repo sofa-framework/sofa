@@ -183,7 +183,7 @@ void test_transformInverse(Matrix4 const& M)
 
 TEST(MatTypesTest, transformInverse)
 {
-    test_transformInverse(Matrix4::s_identity);
+    test_transformInverse(Matrix4::Identity());
     test_transformInverse(Matrix4::transformTranslation(Vec3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformScale(Vec3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformRotation(Quat<SReal>::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
@@ -191,7 +191,7 @@ TEST(MatTypesTest, transformInverse)
 
 TEST(MatTypesTest, setsub_vec)
 {
-    Matrix3 M = Matrix3::s_identity;
+    Matrix3 M = Matrix3::Identity();
     Vec2 v(1.,2.);
     M.setsub(1,2,v);
     double exp[9]={1.,0.,0.,
