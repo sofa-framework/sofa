@@ -122,7 +122,7 @@ void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node
     auto fixedDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
     ASSERT_TRUE( fixedDofs != nullptr );
 
-    auto movingDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
+    auto movingDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("movingObject")->getObject("dofs"));
     ASSERT_TRUE( movingDofs != nullptr );
 
     checkDifference(*fixedDofs, true);
