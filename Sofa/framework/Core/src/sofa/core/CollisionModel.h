@@ -325,6 +325,8 @@ public:
     [[nodiscard]] SReal getContactStiffness(Index /*index*/) const { return contactStiffness.getValue(); }
     /// Set contact stiffness
     void setContactStiffness(SReal stiffness) { contactStiffness.setValue(stiffness); }
+    /// Get contact stiffness
+    [[nodiscard]] bool isContactStiffnessSet() const { return contactStiffness.isSet(); }
 
     /// Get contact friction (damping) coefficient
     [[nodiscard]] SReal getContactFriction(Index /*index*/) const { return contactFriction.getValue(); }
