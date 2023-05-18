@@ -69,7 +69,7 @@ template <bool HasStabilizedGeometricStiffness>
 void NonLinearMappingData<HasStabilizedGeometricStiffness>::checkLinearSolverSymmetry(
     const core::MechanicalParams* mparams) const
 {
-    if (mparams && mparams->symmetricMatrix())
+    if (mparams && mparams->supportOnlySymmetricMatrix())
     {
         std::stringstream ss;
         ss << "The geometric stiffness of this mapping is a non-symmetric matrix. "

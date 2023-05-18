@@ -44,7 +44,7 @@ MechanicalParams::MechanicalParams(const sofa::core::ExecParams& p)
     , m_mFactor(0)
     , m_bFactor(0)
     , m_kFactor(0)
-    , m_symmetricMatrix(true)
+    , m_supportOnlySymmetricMatrix(true)
     , m_implicitVelocity(1)
     , m_implicitPosition(1)
 {
@@ -63,7 +63,7 @@ MechanicalParams::MechanicalParams(const MechanicalParams& p)
     , m_mFactor(p.m_mFactor)
     , m_bFactor(p.m_bFactor)
     , m_kFactor(p.m_kFactor)
-    , m_symmetricMatrix(p.m_symmetricMatrix)
+    , m_supportOnlySymmetricMatrix(p.m_supportOnlySymmetricMatrix)
     , m_implicitVelocity(p.m_implicitVelocity)
     , m_implicitPosition(p.m_implicitPosition)
 {
@@ -89,7 +89,7 @@ MechanicalParams* MechanicalParams::operator= ( const MechanicalParams& mparams 
     m_mFactor = mparams.m_mFactor;
     m_bFactor = mparams.m_bFactor;
     m_kFactor = mparams.m_kFactor;
-    m_symmetricMatrix = mparams.m_symmetricMatrix;
+    m_supportOnlySymmetricMatrix = mparams.m_supportOnlySymmetricMatrix;
     m_implicitVelocity = mparams.m_implicitVelocity;
     m_implicitPosition = mparams.m_implicitPosition;
     return this;

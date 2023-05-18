@@ -451,7 +451,7 @@ void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal 
     mparams.setMFactor(mFact);
     mparams.setBFactor(bFact);
     mparams.setKFactor(kFact);
-    mparams.setSymmetricMatrix(!s->supportNonSymmetricSystem());
+    mparams.setSupportOnlySymmetricMatrix(!s->supportNonSymmetricSystem());
     s->setSystemMBKMatrix(&mparams);
 }
 
