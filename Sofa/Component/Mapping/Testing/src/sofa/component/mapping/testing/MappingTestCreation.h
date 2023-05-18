@@ -223,7 +223,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
-        mparams.setSymmetricMatrix(false);
+        mparams.setSupportOnlySymmetricMatrix(false);
         inDofs->resize(parentInit.size());
         WriteInVecCoord xin = inDofs->writePositions();
         sofa::testing::copyToData(xin,parentInit); // xin = parentInit
