@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceFieldAndMass.h>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.inl>
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>

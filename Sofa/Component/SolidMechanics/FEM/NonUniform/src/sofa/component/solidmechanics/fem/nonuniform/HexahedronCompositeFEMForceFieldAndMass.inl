@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/nonuniform/HexahedronCompositeFEMForceFieldAndMass.h>
+#include <sofa/component/solidmechanics/fem/nonuniform/NonUniformHexahedronFEMForceFieldAndMass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/topology/container/grid/SparseGridRamificationTopology.h>
 #include <iomanip>

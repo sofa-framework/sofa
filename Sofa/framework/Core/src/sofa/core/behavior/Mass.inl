@@ -23,6 +23,7 @@
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
