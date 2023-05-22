@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
-
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/topology/TopologyData.inl>

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/BeamFEMForceField.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

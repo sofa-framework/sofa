@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/GearSpringForceField.h>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/RGBAColor.h>

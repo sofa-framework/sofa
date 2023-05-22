@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/spring/FastTriangularBendingSprings.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <fstream> // for reading the file
