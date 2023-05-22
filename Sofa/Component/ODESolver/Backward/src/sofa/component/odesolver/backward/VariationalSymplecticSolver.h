@@ -93,6 +93,8 @@ public:
         return 0;
     }
 
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+
 protected:
     sofa::core::MultiVecDerivId pID;
     SReal m_incrementalPotentialEnergy;

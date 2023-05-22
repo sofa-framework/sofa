@@ -336,6 +336,17 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     pPrevious.eq(newp);
 }
 
+void VariationalSymplecticSolver::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    OdeSolver::parse(arg);
+}
+
 int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integrator which conserves linear momentum and mechanical energy")
         .add< VariationalSymplecticSolver >()
         .addAlias("VariationalSolver")

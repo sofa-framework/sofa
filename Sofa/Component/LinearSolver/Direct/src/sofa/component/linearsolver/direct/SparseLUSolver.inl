@@ -47,6 +47,19 @@ SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
     d_typePermutation.setValue(d_typePermutationOptions);
 }
 
+template <class TMatrix, class TVector, class TThreadManager>
+void SparseLUSolver<TMatrix, TVector, TThreadManager>::parse(
+    core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
+}
+
 
 template<class TMatrix, class TVector,class TThreadManager>
 void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x, Vector& b)

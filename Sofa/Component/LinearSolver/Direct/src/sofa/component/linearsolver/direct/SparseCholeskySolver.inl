@@ -167,6 +167,18 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
 }
 
 template <class TMatrix, class TVector>
+void SparseCholeskySolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit1::parse(arg);
+}
+
+template <class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix, TVector>::suiteSparseFactorization(bool applyPermutation)
 {
     if( notSameShape )

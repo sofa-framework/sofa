@@ -60,6 +60,8 @@ public:
 
     /// Solve Mx=b
     void solve (Matrix& M, Vector& x, Vector& b) override;
+
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP)

@@ -83,6 +83,8 @@ public:
 
     bool supportNonSymmetricSystem() const override { return true; }
 
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+
 protected :
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;

@@ -108,4 +108,15 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     }
 }
 
+template <class TMatrix, class TVector>
+void CholeskySolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
+}
 } //namespace sofa::component::linearsolver::direct

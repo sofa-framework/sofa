@@ -60,4 +60,16 @@ void JacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
     M.invert();
 }
 
+template <class TMatrix, class TVector>
+void JacobiPreconditioner<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
+}
+
 } // namespace sofa::component::linearsolver::preconditioner

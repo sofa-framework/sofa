@@ -256,5 +256,16 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     vtmp.deleteTempVector(&v);
 }
 
+template <class TMatrix, class TVector>
+void MinResLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
+}
 
 } //namespace sofa::component::linearsolver::iterative

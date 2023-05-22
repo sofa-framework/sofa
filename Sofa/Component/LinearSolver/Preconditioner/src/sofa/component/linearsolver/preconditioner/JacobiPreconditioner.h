@@ -61,6 +61,8 @@ public:
         return TMatrix::Name();
     }
 
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_JACOBIPRECONDITIONER_CPP)

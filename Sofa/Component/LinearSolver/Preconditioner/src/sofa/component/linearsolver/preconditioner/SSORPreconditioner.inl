@@ -86,4 +86,17 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     for (Index j=0; j<n; j++) data->inv_diag[j] = 1.0 / M.element(j,j);
 }
 
+template <class TMatrix, class TVector, class TThreadManager>
+void SSORPreconditioner<TMatrix, TVector, TThreadManager>::parse(
+    core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
+}
+
 } // namespace sofa::component::linearsolver::preconditioner

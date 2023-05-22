@@ -110,6 +110,8 @@ public:
         return &internalData.Minv;
     }
 
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+
 protected :
     template<class JMatrix>
     void ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, SReal fact);

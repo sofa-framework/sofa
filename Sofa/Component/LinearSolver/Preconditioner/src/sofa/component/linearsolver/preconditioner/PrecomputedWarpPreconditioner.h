@@ -126,6 +126,11 @@ public:
         {
             msg_warning() << "String data \"solverName\" is now replaced by explicit data link: \"linearSolver\" (PR #3155)";
         }
+        if (arg->getAttribute("verbose"))
+        {
+            msg_warning() << "Attribute 'verbose' has no use in this component. "
+                             "To disable this warning, remove the attribute from the scene.";
+        }
     }
 
 

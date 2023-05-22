@@ -219,6 +219,18 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
     return true;
 }
 
+template <class TMatrix, class TVector>
+void PrecomputedLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
+}
+
 template<class TMatrix,class TVector> template<class JMatrix>
 void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, SReal fact)
 {

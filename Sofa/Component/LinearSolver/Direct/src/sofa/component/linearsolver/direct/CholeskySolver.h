@@ -57,6 +57,8 @@ public:
     /// Factors the matrix. Must be done before solving
     void invert(Matrix& M) override;
 
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+
 private :
     linearalgebra::FullMatrix<typename Vector::Real> L;
 };
