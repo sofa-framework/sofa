@@ -516,6 +516,8 @@ public:
 
     template <class RealObject>
     static Node::SPtr create(RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg);
+
+    SOFA_ATTRIBUTE_DEPRECATED_NODECREATENODE()
     static Node::SPtr create( const std::string& name );
 
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
