@@ -37,7 +37,7 @@ using namespace sofa::defaulttype;
 
 Simulation* getSimulation()
 {
-    if ( simulation::Simulation::theSimulation.get() == 0 )
+    if ( simulation::getSimulation() == 0 )
     {
         setSimulation( new DAGSimulation );
     }

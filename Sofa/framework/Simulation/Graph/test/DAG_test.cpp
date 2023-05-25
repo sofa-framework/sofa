@@ -152,7 +152,7 @@ Expected output: RAABBR
      */
     void traverse_simple_tree()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
 
         root->setName("R");
         root->createChild("A");
@@ -177,7 +177,7 @@ Expected output: RABCCBAR
      */
     void traverse_simple_diamond()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -205,7 +205,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_complex()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -233,7 +233,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -265,7 +265,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex2()
     {
-        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+        Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -302,7 +302,7 @@ Expected output: RABCDEEDCBAR
 
     void getObject()
     {
-        Node::SPtr A = Simulation::theSimulation->createNewGraph("");
+        Node::SPtr A = sofa::simulation::getSimulation()->createNewGraph("");
         A->setName("A");
 
         Node::SPtr B = A->createChild("B");
