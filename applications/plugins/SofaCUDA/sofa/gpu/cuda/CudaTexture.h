@@ -22,6 +22,9 @@
 #ifndef CUDATEXTURE_H
 #define CUDATEXTURE_H
 
+#include <sofa/config.h>
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v23.06", "v23.12")
+
 #include "CudaMath.h"
 
 /// Accesss to a vector in global memory using either direct access or linear texture
