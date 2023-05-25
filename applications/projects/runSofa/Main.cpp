@@ -96,7 +96,7 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::helper::logging::ExceptionMessageHandler;
 
 #include <sofa/gui/common/ArgumentParser.h>
-
+#include <sofa/simulation/ExportXML.h>
 
 
 void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
@@ -525,7 +525,7 @@ int main(int argc, char** argv)
     {
         string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
+        sofa::simulation::exportXML(groot.get(), xmlname.c_str());
     }
 
     if (groot!=nullptr)

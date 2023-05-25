@@ -28,6 +28,8 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 
+#include <sofa/simulation/ExportXML.h>
+
 namespace sofa::simulation
 {
 
@@ -95,7 +97,7 @@ sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename,
 
 void SceneLoaderXML::write(Node *node, const char *filename)
 {
-    simulation::getSimulation()->exportXML( node, filename );
+    sofa::simulation::exportXML(node, filename);
 }
 
 /// Load a scene from a file

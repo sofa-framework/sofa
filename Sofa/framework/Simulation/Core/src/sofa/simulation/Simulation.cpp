@@ -63,6 +63,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/simulation/ExportXML.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
@@ -118,21 +119,7 @@ void Simulation::print ( Node* root )
 /// Print all object in the graph
 void Simulation::exportXML ( Node* root, const char* fileName )
 {
-    if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    if ( fileName!=nullptr )
-    {
-        std::ofstream out ( fileName );
-        out << "<?xml version=\"1.0\"?>\n";
-
-        XMLPrintVisitor print ( params, out );
-        root->execute ( print );
-    }
-    else
-    {
-        XMLPrintVisitor print ( params, std::cout );
-        root->execute ( print );
-    }
+    sofa::simulation::exportXML(root, fileName);
 }
 
 /// Print all object in the graph

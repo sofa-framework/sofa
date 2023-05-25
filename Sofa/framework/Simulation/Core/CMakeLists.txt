@@ -27,6 +27,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/ExportDotVisitor.h
     ${SRC_ROOT}/ExportGnuplotVisitor.h
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.h
+    ${SRC_ROOT}/ExportXML.h
     ${SRC_ROOT}/InitVisitor.h
     ${SRC_ROOT}/IntegrateBeginEvent.h
     ${SRC_ROOT}/IntegrateEndEvent.h
@@ -165,6 +166,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/ExportDotVisitor.cpp
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.cpp
+    ${SRC_ROOT}/ExportXML.cpp
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
