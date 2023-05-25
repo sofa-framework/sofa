@@ -31,10 +31,10 @@
 namespace sofa::component::collision::response::contact
 {
 
-class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API DefaultContactManager : public core::collision::ContactManager
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API CollisionResponse : public core::collision::ContactManager
 {
 public :
-    SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
+    SOFA_CLASS(CollisionResponse,sofa::core::collision::ContactManager);
 
     Data<sofa::helper::OptionsGroup> response; ///< contact response class
     Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
@@ -74,7 +74,7 @@ public :
 
             if(it != renamingResponseMethod.end())
             {
-                msg_error("DefaultContactManager")
+                msg_error("CollisionResponse")
                     << "Option \"" << it->first << "\" "
                     << "for data \"response\" has been renamed since v21.12 (PR#2522). "
                     << "Use \"" << it->second << "\" instead.";
@@ -106,8 +106,8 @@ protected:
                 /* value */core::collision::Contact::SPtr
             > ContactMap;
 
-    DefaultContactManager();
-    ~DefaultContactManager() override = default;
+    CollisionResponse();
+    ~CollisionResponse() override = default;
 
     static void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2,
                         core::collision::Contact::SPtr contact);
