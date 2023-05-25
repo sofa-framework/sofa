@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_CORE_SIMULATION_H
-#define SOFA_SIMULATION_CORE_SIMULATION_H
+#pragma once
 
 #include <sofa/simulation/config.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -32,10 +31,7 @@ namespace sofa::simulation
     typedef sofa::core::sptr<Node> NodeSPtr;
 }
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /** Main controller of the scene.
@@ -127,18 +123,12 @@ public:
     /// creates and returns a new node.
     virtual NodeSPtr createNewNode(const std::string& name)=0;
 
-    /// @warning this singleton has one limitation: it is easy to create several types of
-    /// simulations at the same time (e.g. DAGSimulation + TreeSimulation)
-    /// but it does not sound like a huge limitation
-    static Simulation::SPtr theSimulation;
-
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() = 0;
 
+private:
+
+    // use sofa::simulation::setSimulation and sofa::simulation::getSimulation instead
+    static DeprecatedAndRemoved theSimulation;
 };
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::simulation

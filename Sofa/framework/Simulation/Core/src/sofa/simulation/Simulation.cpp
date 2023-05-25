@@ -71,10 +71,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityV
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 using namespace sofa::defaulttype;
@@ -95,17 +92,17 @@ Simulation::~Simulation()
 }
 
 /// The (unique) simulation which controls the scene
-Simulation::SPtr Simulation::theSimulation;
+Simulation::SPtr theSimulation;
 
 void setSimulation ( Simulation* s )
 {
-    Simulation::theSimulation.reset(s);
+    theSimulation.reset(s);
 
 }
 
 Simulation* getSimulation()
 {
-    return Simulation::theSimulation.get();
+    return theSimulation.get();
 }
 
 /// Print all object in the graph
@@ -472,7 +469,4 @@ void Simulation::unload(Node::SPtr root)
     root->execute<CleanupVisitor>(params);
     root->execute<DeleteVisitor>(params);
 }
-
-} // namespace simulation
-
-} // namespace sofa
+} // namespace sofa::simulation
