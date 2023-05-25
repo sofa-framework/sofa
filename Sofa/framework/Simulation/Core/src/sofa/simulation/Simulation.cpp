@@ -81,9 +81,7 @@ Simulation::Simulation()
 {
     // Safety check; it could be elsewhere, but here is a good place, I guess.
     if (!sofa::simulation::core::isInitialized())
-        sofa::helper::printUninitializedLibraryWarning("SofaSimulationCommon", "sofa::simulation::common::init()");
-
-    name.setValue("Simulation");
+        sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Core", "sofa::simulation::common::init()");
 }
 
 
@@ -133,7 +131,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
     else
     {
         // unable to write the file
-        msg_error() << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export";
+        msg_error("Simulation") << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export";
     }
 }
 

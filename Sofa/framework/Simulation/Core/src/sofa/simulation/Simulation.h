@@ -38,16 +38,17 @@ namespace sofa::simulation
     Defines how the scene is inited at the beginning, and updated at each time step.
     Derives from Base in order to use smart pointers and model the parameters as Datas, which makes their edition easy in the GUI.
  */
-class SOFA_SIMULATION_CORE_API Simulation: public virtual sofa::core::objectmodel::Base
+class SOFA_SIMULATION_CORE_API Simulation
 {
 public:
-    SOFA_CLASS(Simulation, sofa::core::objectmodel::Base);
+
+    using SPtr = std::shared_ptr<Simulation>;
 
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1730)", "v21.12", "Use sofa::core::visual::DisplayFlags instead.")
     typedef DeprecatedAndRemoved DisplayFlags;
 
     Simulation();
-    ~Simulation() override;
+    virtual ~Simulation();
 	
 private:
 	Simulation(const Simulation& n) = delete;
@@ -132,3 +133,5 @@ private:
     static DeprecatedAndRemoved theSimulation;
 };
 } // namespace sofa::simulation
+
+MSG_REGISTER_CLASS(sofa::simulation::Simulation, "Simulation")
