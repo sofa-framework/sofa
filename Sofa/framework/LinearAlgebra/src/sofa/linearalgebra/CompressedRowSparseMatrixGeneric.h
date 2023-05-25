@@ -1125,7 +1125,6 @@ public:
             nBlockRow = 0;
             nBlockCol = 0;
             skipCompressZero = true;
-            if constexpr (Policy::StoreTouchFlags) touchedBlock.clear();
         }
 
         btemp.clear();
