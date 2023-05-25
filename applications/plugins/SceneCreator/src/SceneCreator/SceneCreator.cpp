@@ -75,7 +75,7 @@ Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
                                                                {"alarmDistance", "0.3"},
                                                                {"contactDistance", "0.2"}}) ;
 
-    simpleapi::createObject(root, "DefaultContactManager", {
+    simpleapi::createObject(root, "CollisionResponse", {
                                 {"name", "Contact Manager"},
                                 {"response", responseType}
                             });

@@ -22,15 +22,15 @@
 #pragma once
 #include <sofa/component/collision/response/contact/config.h>
 
-#include <sofa/component/collision/response/contact/DefaultContactManager.h>
+#include <sofa/component/collision/response/contact/CollisionResponse.h>
 
 namespace sofa::component::collision::response::contact
 {
 
-class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API RuleBasedContactManager : public DefaultContactManager
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API RuleBasedContactManager : public CollisionResponse
 {
 public:
-    SOFA_CLASS(RuleBasedContactManager, DefaultContactManager);
+    SOFA_CLASS(RuleBasedContactManager, CollisionResponse);
 
     class Rule
     {
