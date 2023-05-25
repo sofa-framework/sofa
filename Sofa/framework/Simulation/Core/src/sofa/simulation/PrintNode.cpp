@@ -19,17 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/simulation/config.h>
+#include <sofa/simulation/PrintNode.h>
+#include <sofa/simulation/Node.h>
+
+#include <sofa/simulation/PrintVisitor.h>
 
 namespace sofa::simulation
 {
-class Node;
+
+void printNode(Node* root)
+{
+    if ( !root ) return;
+    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    root->execute<PrintVisitor>(params);
 }
-
-namespace sofa::simulation
-{
-
-void SOFA_SIMULATION_CORE_API exportNodeInXML(Node* root, const char* fileName);
 
 }

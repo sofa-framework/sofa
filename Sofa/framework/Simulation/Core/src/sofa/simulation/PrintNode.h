@@ -30,6 +30,6 @@ class Node;
 namespace sofa::simulation
 {
 
-void SOFA_SIMULATION_CORE_API exportNodeInXML(Node* root, const char* fileName);
+void SOFA_SIMULATION_CORE_API printNode(Node* root);
 
 }

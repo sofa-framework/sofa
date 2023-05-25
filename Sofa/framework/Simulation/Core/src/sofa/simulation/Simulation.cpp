@@ -66,6 +66,8 @@
 #include <sofa/simulation/ExportXML.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+
+#include "PrintNode.h"
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
@@ -90,31 +92,29 @@ Simulation::~Simulation()
 }
 
 /// The (unique) simulation which controls the scene
-Simulation::SPtr theSimulation;
+Simulation::SPtr s_theSimulation;
 
 void setSimulation ( Simulation* s )
 {
-    theSimulation.reset(s);
+    s_theSimulation.reset(s);
 
 }
 
 Simulation* getSimulation()
 {
-    return theSimulation.get();
+    return s_theSimulation.get();
 }
 
 /// Print all object in the graph
 void Simulation::print ( Node* root )
 {
-    if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    root->execute<PrintVisitor>(params);
+    printNode(root);
 }
 
 /// Print all object in the graph
 void Simulation::exportXML ( Node* root, const char* fileName )
 {
-    sofa::simulation::exportXML(root, fileName);
+    sofa::simulation::exportNodeInXML(root, fileName);
 }
 
 /// Print all object in the graph

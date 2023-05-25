@@ -43,6 +43,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/PauseEvent.h
     ${SRC_ROOT}/PipelineImpl.h
     ${SRC_ROOT}/PositionEvent.h
+    ${SRC_ROOT}/PrintNode.h
     ${SRC_ROOT}/PrintVisitor.h
     ${SRC_ROOT}/PropagateEventVisitor.h
     ${SRC_ROOT}/RequiredPlugin.h
@@ -181,6 +182,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PauseEvent.cpp
     ${SRC_ROOT}/PipelineImpl.cpp
     ${SRC_ROOT}/PositionEvent.cpp
+    ${SRC_ROOT}/PrintNode.cpp
     ${SRC_ROOT}/PrintVisitor.cpp
     ${SRC_ROOT}/PropagateEventVisitor.cpp
     ${SRC_ROOT}/RequiredPlugin.cpp

@@ -28,7 +28,7 @@
 namespace sofa::simulation
 {
 
-void exportXML(sofa::simulation::Node* root, const char* fileName)
+void exportNodeInXML(sofa::simulation::Node* root, const char* fileName)
 {
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();

@@ -49,13 +49,12 @@ public:
 
     Simulation();
     virtual ~Simulation();
-	
-private:
-	Simulation(const Simulation& n) = delete;
-	Simulation& operator=(const Simulation& n) = delete;
-	
-public:
+
+    Simulation(const Simulation& n) = delete;
+    Simulation& operator=(const Simulation& n) = delete;
+
     /// Print all object in the graph
+    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_PRINT()
     virtual void print(Node* root);
 
     /// Initialize the objects
@@ -104,6 +103,7 @@ public:
     virtual void exportOBJ(Node* root, const char* filename, bool exportMTL = true);
 
     /// Print all object in the graph in XML format
+    SOFA_ATTRIBUTE_DEPRECATED_SIMULATION_EXPORTXML()
     virtual void exportXML(Node* root, const char* fileName=nullptr);
 
     /// Print all objects in the graph in the given file (format is given by the filename extension)

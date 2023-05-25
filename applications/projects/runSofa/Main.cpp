@@ -525,7 +525,7 @@ int main(int argc, char** argv)
     {
         string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::exportXML(groot.get(), xmlname.c_str());
+        sofa::simulation::exportNodeInXML(groot.get(), xmlname.c_str());
     }
 
     if (groot!=nullptr)
