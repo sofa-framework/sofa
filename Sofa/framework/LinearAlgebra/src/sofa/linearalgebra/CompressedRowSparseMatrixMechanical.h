@@ -47,18 +47,6 @@ public:
     static constexpr int matrixType = 1;
 };
 
-class CRSMechanicalStoreTouchedPolicy : public sofa::linearalgebra::CRSDefaultPolicy
-{
-public:
-    static constexpr bool CompressZeros            = true;
-    static constexpr bool IsAlwaysSquare           = true;
-    static constexpr bool IsAlwaysSymmetric        = true;
-    static constexpr bool OrderedInsertion         = true;
-    static constexpr bool StoreLowerTriangularBlock = true;
-    static constexpr bool StoreTouchFlags          = true;
-    static constexpr int  matrixType               = 1;
-};
-
 template<typename TBlock, typename TPolicy = CRSMechanicalPolicy >
 class CompressedRowSparseMatrixMechanical final // final is used to allow the compiler to inline virtual methods
     : public CompressedRowSparseMatrixGeneric<TBlock, TPolicy>, public sofa::linearalgebra::BaseMatrix
@@ -156,11 +144,7 @@ public:
         this->rowBegin.resize(this->nBlockRow + 1);
         this->colsIndex.resize(this->oldColsIndex.size() + this->nBlockRow-ndiag);
         this->colsValue.resize(this->oldColsValue.size() + this->nBlockRow-ndiag);
-        if constexpr(Policy::StoreTouchFlags)
-        {
-            this->touchedBlock.resize(this->oldColsValue.size() + this->nBlockRow - ndiag);
-            std::fill(this->touchedBlock.begin(), this->touchedBlock.end(), false);
-        }
+
         Index nv = 0;
         for (Index i = 0; i < this->nBlockRow; ++i) this->rowIndex[i] = i;
         Index j = 0;
@@ -360,7 +344,6 @@ public:
                 Block& b = this->colsValue[xj];
                 for (Index bj = 0; bj < NC; ++bj)
                     traits::vset(b, bi, bj, 0);
-                if constexpr (Policy::StoreTouchFlags) this->touchedBlock[xj] = true;
             }
         }
     }
@@ -415,8 +398,6 @@ public:
                     for (Index bj = 0; bj < NC; ++bj)
                         traits::vset(*b, bi, bj, 0);
 
-                    if constexpr(Policy::StoreTouchFlags) this->touchedBlock[xj] = true;
-
                     // then clear (j,i) 
                     Index j = this->colsIndex[xj];
                     
@@ -428,7 +409,6 @@ public:
                         // look for column i
                         if (this->sortedFind(this->colsIndex, jrowRange, i, colId))
                         {
-                            if constexpr(Policy::StoreTouchFlags) this->touchedBlock[colId] = true;
                             b = &this->colsValue[colId];
                         }
                     }
@@ -1405,22 +1385,6 @@ extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat4x4d>;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat<6, 6, double> >;
 extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat<8, 8, double> >;
-
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat1x1f, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat2x2f, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3f, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat4x4f, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat<6, 6, float>, CRSMechanicalStoreTouchedPolicy >;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat<8, 8, float>, CRSMechanicalStoreTouchedPolicy >;
-
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat1x1d, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat2x2d, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat3x3d, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat4x4d, CRSMechanicalStoreTouchedPolicy>;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat<6, 6, double>, CRSMechanicalStoreTouchedPolicy >;
-extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<type::Mat<8, 8, double>, CRSMechanicalStoreTouchedPolicy >;
 
 #endif
 

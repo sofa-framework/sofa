@@ -83,8 +83,6 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     colsIndex.reserve(M.colsIndex.size() * 9);
     colsValue.reserve(M.colsValue.size() * 9);
 
-    if constexpr(Policy::StoreTouchFlags) touchedBlock.clear();
-
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
@@ -105,21 +103,18 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
                 {
                     colsIndex.push_back(j + 0);
                     colsValue.push_back(b[lb][0]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 1, b[lb][1], ref))
                 {
                     colsIndex.push_back(j + 1);
                     colsValue.push_back(b[lb][1]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 2, b[lb][2], ref))
                 {
                     colsIndex.push_back(j + 2);
                     colsValue.push_back(b[lb][2]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
             }
@@ -153,8 +148,6 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     colsIndex.reserve(M.colsIndex.size() * 9);
     colsValue.reserve(M.colsValue.size() * 9);
 
-    if constexpr(Policy::StoreTouchFlags) touchedBlock.clear();
-
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
@@ -175,21 +168,18 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
                 {
                     colsIndex.push_back(j + 0);
                     colsValue.push_back(b[lb][0]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 1, b[lb][1], ref))
                 {
                     colsIndex.push_back(j + 1);
                     colsValue.push_back(b[lb][1]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 2, b[lb][2], ref))
                 {
                     colsIndex.push_back(j + 2);
                     colsValue.push_back(b[lb][2]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
             }
@@ -223,8 +213,6 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
     colsIndex.reserve(M.colsIndex.size() * 9);
     colsValue.reserve(M.colsValue.size() * 9);
 
-    if constexpr(Policy::StoreTouchFlags) touchedBlock.clear();
-
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
@@ -245,21 +233,18 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
                 {
                     colsIndex.push_back(j + 0);
                     colsValue.push_back(b[lb][0]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 1, b[lb][1], ref))
                 {
                     colsIndex.push_back(j + 1);
                     colsValue.push_back(b[lb][1]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 2, b[lb][2], ref))
                 {
                     colsIndex.push_back(j + 2);
                     colsValue.push_back(b[lb][2]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
             }
@@ -293,8 +278,6 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
     colsIndex.reserve(M.colsIndex.size() * 9);
     colsValue.reserve(M.colsValue.size() * 9);
 
-    if constexpr(Policy::StoreTouchFlags) touchedBlock.clear();
-
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
@@ -315,21 +298,17 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
                 {
                     colsIndex.push_back(j + 0);
                     colsValue.push_back(b[lb][0]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 1, b[lb][1], ref))
                 {
                     colsIndex.push_back(j + 1);
-                    colsValue.push_back(b[lb][1]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
                 if ((*filter)(i + lb, j + 2, b[lb][2], ref))
                 {
                     colsIndex.push_back(j + 2);
                     colsValue.push_back(b[lb][2]);
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock.push_back(true);
                     ++vid;
                 }
             }
@@ -361,21 +340,5 @@ template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat3x3
 template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat4x4d>;
 template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat<6, 6, double> >;
 template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat<8, 8, double> >;
-
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<float, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat1x1f, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat2x2f, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat3x3f, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat4x4f, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat<6, 6, float>, CRSMechanicalStoreTouchedPolicy >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat<8, 8, float>, CRSMechanicalStoreTouchedPolicy >;
-
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<double, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat1x1d, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat2x2d, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat3x3d, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat4x4d, CRSMechanicalStoreTouchedPolicy>;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat<6, 6, double>, CRSMechanicalStoreTouchedPolicy >;
-template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrixMechanical<Mat<8, 8, double>, CRSMechanicalStoreTouchedPolicy >;
 
 } // namespace sofa::linearalgebra

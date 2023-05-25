@@ -62,8 +62,6 @@ struct CRSDefaultPolicy
     static constexpr bool ClearByZeros = true;
     /// Set to true if insertion in matrix are in most case at last line index or last col index
     static constexpr bool OrderedInsertion = false;
-    /// Set to true if touch flags should be stored (to remove untouched blocks during compression)
-    static constexpr bool StoreTouchFlags = false;
     /// Set to false to disable storage of blocks on the lower triangular part (IsAlwaysSymmetric must be true)
     static constexpr bool StoreLowerTriangularBlock = true;
 
@@ -254,7 +252,6 @@ public :
             colsValue.clear();
             skipCompressZero = true;
             btemp.clear();
-            if constexpr (Policy::StoreTouchFlags) touchedBlock.clear();
         }
     }
 
@@ -281,7 +278,6 @@ protected:
             {
                 colsIndex.push_back(colId);
                 colsValue.push_back(bvalue);
-                if constexpr (Policy::StoreTouchFlags) touchedBlock.push_back(false);
                 added = true;
             }
         }
@@ -289,7 +285,6 @@ protected:
         {
             colsIndex.push_back(colId);
             colsValue.push_back(bvalue);
-            if constexpr (Policy::StoreTouchFlags) touchedBlock.push_back(false);
             added = true;
         }
         return added;
@@ -334,7 +329,6 @@ protected:
         rowBegin.clear();
         colsIndex.clear();
         colsValue.clear();
-        if constexpr (Policy::StoreTouchFlags) touchedBlock.clear();
 
         colsIndex.reserve(btemp.size());
         colsValue.reserve(btemp.size());
@@ -408,7 +402,6 @@ protected:
             for (Index j = rowRange.begin(); j < rowRange.end(); ++j)
             {
                 colsValue[j] = Block();
-                if constexpr(Policy::StoreTouchFlags) touchedBlock[j] = true;
             }
         }
         else
@@ -459,12 +452,6 @@ public:
         else
         {
             compressCSR();
-        }
-
-        if constexpr(Policy::StoreTouchFlags)
-        {
-            touchedBlock.clear();
-            touchedBlock.resize(colsValue.size(), false);
         }
 
         skipCompressZero = true;
@@ -669,7 +656,6 @@ public:
         colsIndex.swap(m.colsIndex);
         colsValue.swap(m.colsValue);
         btemp.swap(m.btemp);
-        if constexpr (Policy::StoreTouchFlags) touchedBlock.swap(m.touchedBlock);
     }
 
     /// Make sure all rows have an entry even if they are empty
@@ -777,7 +763,6 @@ public:
                 colsValue.push_back(Block());
                 rowBegin.push_back(Index(colsIndex.size()));
 
-                if constexpr (Policy::StoreTouchFlags) touchedBlock.push_back(false);
                 if constexpr (Policy::AutoSize)
                 {
                     nBlockRow = i + 1;
@@ -791,7 +776,6 @@ public:
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
                 if (j == colsIndex[rowRange.second - 1]) /// In this case, we are trying to write on last registered column, directly return ref on it
                 {
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock[rowRange.second - 1] = true;
                     return &colsValue[rowRange.second - 1];
                 }
                 else if (j > colsIndex[rowRange.second - 1]) /// Optimization we are trying to write on last line et upper of last column, directly create it.
@@ -800,7 +784,6 @@ public:
                     colsIndex.push_back(j);
                     colsValue.push_back(Block());
                     rowBegin.back()++;
-                    if constexpr (Policy::StoreTouchFlags) touchedBlock.push_back(false);
                     if constexpr (Policy::AutoSize)
                     {
                         if (j > nBlockCol) nBlockCol = j + 1;
@@ -811,7 +794,6 @@ public:
                 {
                     Index colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
                     if (!sortedFind(colsIndex, rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
-                    if constexpr (Policy::StoreTouchFlags) touchedBlock[colId] = true;
                     return &colsValue[colId];
                 }
             }
@@ -837,7 +819,6 @@ public:
                 if (!sortedFind(colsIndex, rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
             }
 
-            if constexpr(Policy::StoreTouchFlags) touchedBlock[colId] = true;
             return &colsValue[colId];
         }
         else
@@ -849,7 +830,6 @@ public:
                 Index colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
                 if (sortedFind(colsIndex, rowRange, j, colId))
                 {
-                    if constexpr(Policy::StoreTouchFlags) touchedBlock[colId] = true;
                     return &colsValue[colId];
                 }
             }
@@ -1019,7 +999,6 @@ public:
                 if constexpr (Policy::ClearByZeros)
                 {
                     colsValue[colId] = Block();
-                    if constexpr (Policy::StoreTouchFlags) touchedBlock[colId] = true;
                 }
                 else
                 {
