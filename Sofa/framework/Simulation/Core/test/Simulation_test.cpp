@@ -39,7 +39,8 @@ TEST(simulationLoad, existingFilename)
     constexpr std::string_view filename { "Demos/caduceus.scn" };
     const std::string path = helper::system::DataRepository.getFile(std::string{filename});
 
-    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    simulation::Simulation* simulation = new simulation::graph::DAGSimulation();
+    sofa::simulation::setSimulation(simulation);
     ASSERT_NE(simulation, nullptr);
     const simulation::Node::SPtr groot = simulation->load(path, false, {});
     EXPECT_NE(groot, nullptr);
@@ -55,7 +56,8 @@ TEST(simulationLoad, nonExistingFilename)
 
     constexpr std::string_view filename { "aFileThatDoesNotExist.scn" };
 
-    simulation::Simulation* simulation = sofa::simulation::graph::getSimulation();
+    simulation::Simulation* simulation = new simulation::graph::DAGSimulation();
+    sofa::simulation::setSimulation(simulation);
     ASSERT_NE(simulation, nullptr);
     const simulation::Node::SPtr groot = simulation->load(std::string{filename}, false, {});
     EXPECT_EQ(groot, nullptr);

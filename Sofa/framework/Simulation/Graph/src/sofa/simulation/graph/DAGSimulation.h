@@ -55,5 +55,7 @@ public:
 /** Get the (unique) simulation which controls the scene.
 Automatically creates one if no Simulation has been set.
  */
-SOFA_SIMULATION_GRAPH_API Simulation* getSimulation();
+SOFA_SIMULATION_GRAPH_API
+SOFA_ATTRIBUTE_DEPRECATED_DAGSIMULATION_GETSIMULATION()
+Simulation* getSimulation();
 } // namespace sofa::simulation::graph
