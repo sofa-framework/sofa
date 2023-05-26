@@ -41,9 +41,6 @@ namespace sofa::simulation
     SOFA_ATTRIBUTE_DEPRECATED_SETSIMULATIONRAWPOINTER()
     void setSimulation(Simulation* s);
 
-    /// Set the (unique) simulation which controls the scene
-    SOFA_SIMULATION_CORE_API void setSimulation(const std::shared_ptr<Simulation>& s);
-
     /** Get the (unique) simulation which controls the scene.
         Automatically creates one if no Simulation has been set.
      */

@@ -22,6 +22,8 @@
 #include <sofa/simulation/graph/config.h>
 #include <sofa/simulation/common/init.h>
 #include <sofa/helper/init.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 namespace sofa::simulation::graph
 {
@@ -34,6 +36,7 @@ SOFA_SIMULATION_GRAPH_API void init()
     if (!s_initialized)
     {
         sofa::simulation::common::init();
+        sofa::simulation::Simulation::theSimulation = std::make_shared<sofa::simulation::graph::DAGSimulation>();
         s_initialized = true;
     }
 }

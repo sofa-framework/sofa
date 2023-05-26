@@ -78,5 +78,5 @@ SOFA_ATTRIBUTE_DEPRECATED( \
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED_SETSIMULATIONRAWPOINTER() \
 SOFA_ATTRIBUTE_DEPRECATED( \
-"v23.12", "v24.06", "Use the shared pointer version instead")
+"v23.12", "v24.06", "This function is no longer useful if Sofa.Simulation.Graph is loaded. Calling this function may result in a memory leak.")
 #endif // SOFA_BUILD_SOFA_SIMULATION_CORE

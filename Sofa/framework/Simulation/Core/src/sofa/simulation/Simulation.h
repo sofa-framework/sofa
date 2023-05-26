@@ -127,10 +127,7 @@ public:
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() = 0;
 
-private:
-
-    // use sofa::simulation::setSimulation and sofa::simulation::getSimulation instead
-    inline static DeprecatedAndRemoved theSimulation {};
+    inline static Simulation::SPtr theSimulation { nullptr };
 };
 } // namespace sofa::simulation
 

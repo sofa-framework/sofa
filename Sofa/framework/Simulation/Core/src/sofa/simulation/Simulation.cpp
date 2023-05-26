@@ -64,10 +64,9 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/simulation/ExportXML.h>
+#include <sofa/simulation/PrintNode.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
-
-#include "PrintNode.h"
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
@@ -91,24 +90,12 @@ Simulation::~Simulation()
 {
 }
 
-/// The (unique) simulation which controls the scene
-Simulation::SPtr s_theSimulation { nullptr };
-
 void setSimulation ( Simulation* s )
-{
-    dmsg_error("Simulation") << "The free function setSimulation is called on a raw pointer. Use "
-                                "the shared pointer version instead.";
-    s_theSimulation.reset(s);
-}
-
-void setSimulation(const Simulation::SPtr& s)
-{
-    s_theSimulation = s;
-}
+{}
 
 Simulation* getSimulation()
 {
-    return s_theSimulation.get();
+    return Simulation::theSimulation.get();
 }
 
 /// Print all object in the graph
