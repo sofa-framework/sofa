@@ -130,7 +130,7 @@ public:
 private:
 
     // use sofa::simulation::setSimulation and sofa::simulation::getSimulation instead
-    static DeprecatedAndRemoved theSimulation;
+    inline static DeprecatedAndRemoved theSimulation {};
 };
 } // namespace sofa::simulation
 

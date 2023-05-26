@@ -92,12 +92,18 @@ Simulation::~Simulation()
 }
 
 /// The (unique) simulation which controls the scene
-Simulation::SPtr s_theSimulation;
+Simulation::SPtr s_theSimulation { nullptr };
 
 void setSimulation ( Simulation* s )
 {
+    dmsg_error("Simulation") << "The free function setSimulation is called on a raw pointer. Use "
+                                "the shared pointer version instead.";
     s_theSimulation.reset(s);
+}
 
+void setSimulation(const Simulation::SPtr& s)
+{
+    s_theSimulation = s;
 }
 
 Simulation* getSimulation()
