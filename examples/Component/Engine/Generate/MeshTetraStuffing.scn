@@ -20,7 +20,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DiscreteIntersection/>
-    <DefaultContactManager response="PenalityContactForceField" name="collision response"/>
+    <CollisionResponse response="PenalityContactForceField" name="collision response"/>
 -->
     <DefaultAnimationLoop/>    
     <VisualStyle displayFlags="showForceFields" />
