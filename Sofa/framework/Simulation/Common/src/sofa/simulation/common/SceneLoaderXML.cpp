@@ -28,8 +28,6 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 
-#include <sofa/simulation/ExportXML.h>
-
 namespace sofa::simulation
 {
 

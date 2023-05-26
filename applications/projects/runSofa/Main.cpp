@@ -96,7 +96,6 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::helper::logging::ExceptionMessageHandler;
 
 #include <sofa/gui/common/ArgumentParser.h>
-#include <sofa/simulation/ExportXML.h>
 
 
 void addGUIParameters(sofa::gui::common::ArgumentParser* argumentParser)
