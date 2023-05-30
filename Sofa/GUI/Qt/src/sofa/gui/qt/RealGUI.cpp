@@ -2515,7 +2515,7 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    simulation::getSimulation()->exportOBJ ( root, filename.c_str(),exportMTL );
+    sofa::simulation::exportOBJ ( root, filename.c_str(),exportMTL );
 }
 
 //------------------------------------
