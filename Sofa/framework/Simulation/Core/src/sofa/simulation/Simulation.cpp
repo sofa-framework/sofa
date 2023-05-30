@@ -473,7 +473,6 @@ void Simulation::init ( Node* root )
     sofa::simulation::initNode(root);
 }
 
-
 void Simulation::initNode( Node* node)
 {
     sofa::simulation::initNodeNoContextUpdate(node);
@@ -502,7 +501,6 @@ void Simulation::initTextures ( Node* root )
     sofa::simulation::initTextures(root);
 }
 
-
 /// Compute the bounding box of the scene.
 void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
@@ -518,9 +516,7 @@ void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
 /// Update contexts. Required before drawing the scene if root flags are modified.
 void Simulation::updateContext ( Node* root )
 {
-    if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
-    root->execute<UpdateContextVisitor>(params);
+    sofa::simulation::updateContext(root);
 }
 
 /// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
@@ -528,19 +524,11 @@ void Simulation::updateVisualContext (Node* root)
 {
     sofa::simulation::updateVisualContext(root);
 }
+
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
-    sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
-
-    for(auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
-    {
-        if (!vparams) vparams = sofa::core::visual::visualparams::defaultInstance();
-        vparams->update();
-        visualLoop->drawStep(vparams);
-    }
-
-    sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
+    sofa::simulation::drawNode(vparams, root);
 }
 
 /// Export a scene to an OBJ 3D Scene
