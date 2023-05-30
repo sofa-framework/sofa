@@ -140,12 +140,6 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 
     Node::SPtr root = down_cast<Node> ( baseroot );
 
-    // Find the Simulation component in the scene
-    FindByTypeVisitor<Simulation> findSimu(params);
-    findSimu.execute(root.get());
-    if( !findSimu.found.empty() )
-        setSimulation( findSimu.found[0] );
-
     return root;
 }
 
