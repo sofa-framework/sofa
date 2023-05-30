@@ -2304,7 +2304,7 @@ void RealGUI::step()
     sofa::simulation::updateVisual(root);
 
     if ( m_dumpState )
-        simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
+        sofa::simulation::dumpState ( root, *m_dumpStateStream );
     if ( m_exportGnuplot )
         exportGnuplot(root,gnuplotDirectory);
 
