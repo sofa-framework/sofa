@@ -34,23 +34,51 @@ namespace sofa::simulation
 namespace sofa::simulation
 {
 
+/// Initialize the objects
 void SOFA_SIMULATION_CORE_API initNode(Node* root);
+///Init a node without changing the context of the simulation.
 void SOFA_SIMULATION_CORE_API initNodeNoContextUpdate(Node* node);
+/// Print all object in the graph in XML format
 void SOFA_SIMULATION_CORE_API exportNodeInXML(Node* root, const char* fileName);
+/// Print all object in the graph
 void SOFA_SIMULATION_CORE_API printNode(Node* root);
+/// Update contexts. Required before drawing the scene if root flags are modified.
 void SOFA_SIMULATION_CORE_API updateVisualContext(Node* root);
+/// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void SOFA_SIMULATION_CORE_API animateNode(Node* root, SReal dt=0.0);
+/// Update the Visual Models: triggers the Mappings
 void SOFA_SIMULATION_CORE_API updateVisual(Node* root);
+/// Reset to initial state
 void SOFA_SIMULATION_CORE_API resetNode(Node* root);
+/// Initialize the textures
 void SOFA_SIMULATION_CORE_API initTextures(Node* root);
+/// Update contexts. Required before drawing the scene if root flags are modified.
 void SOFA_SIMULATION_CORE_API updateContext(Node* root);
+
+/** Compute the bounding box of the scene.
+ * If init is set to "true", then minBBox and maxBBox will be initialised to a default value
+ * @warning MechanicalObjects with showObject member set to false are ignored
+ * @sa computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
+ */
 void SOFA_SIMULATION_CORE_API computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);
+
+/** Compute the bounding box of the scene.
+ * Includes all objects, may they be displayed or not.
+ * @sa computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true)
+ * @deprecated
+ */
 void SOFA_SIMULATION_CORE_API computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
+/// Render the scene
 void SOFA_SIMULATION_CORE_API drawNode(sofa::core::visual::VisualParams* vparams, Node* root);
+/// Export a scene to an OBJ 3D Scene
 void SOFA_SIMULATION_CORE_API exportOBJ(Node* root, const char* filename, bool exportMTL = true);
+/// Print all objects in the graph in the given file (format is given by the filename extension)
 void SOFA_SIMULATION_CORE_API exportGraph(Node* root, const char* filename=nullptr);
+/// Dump the current state in the given stream
 void SOFA_SIMULATION_CORE_API dumpState( Node* root, std::ofstream& out );
+/// Load a scene from a file
 NodeSPtr SOFA_SIMULATION_CORE_API load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
+/// Unload a scene from a Node.
 void SOFA_SIMULATION_CORE_API unload(NodeSPtr root);
 
 /** Main controller of the scene.
