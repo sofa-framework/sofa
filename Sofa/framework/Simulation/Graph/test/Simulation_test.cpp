@@ -100,7 +100,7 @@ struct Scene_test: public NumericTest<SReal>
         //*********
 
         type::Vec3 sceneMinBBox, sceneMaxBBox;
-        simulation->computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        sofa::simulation::computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if( vectorMaxDiff(sceneMinBBox,expectedMin)>this->epsilon() || vectorMaxDiff(sceneMaxBBox,expectedMax)>this->epsilon() )
         {
