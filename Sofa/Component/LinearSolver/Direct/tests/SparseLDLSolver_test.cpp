@@ -223,7 +223,7 @@ TEST(SparseLDLSolver, EmptyMState)
 
     {
         EXPECT_MSG_EMIT(Warning);
-        sofa::simulation::getSimulation()->animate(root.get(), 0.5_sreal);
+        sofa::simulation::animateNode(root.get(), 0.5_sreal);
     }
 
     sofa::simulation::getSimulation()->unload(root);
@@ -260,12 +260,12 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
 
     {
         EXPECT_MSG_NOEMIT(Warning);
-        sofa::simulation::getSimulation()->animate(root.get(), 0.1_sreal);
+        sofa::simulation::animateNode(root.get(), 0.1_sreal);
     }
 
     {
         EXPECT_MSG_EMIT(Warning);
-        sofa::simulation::getSimulation()->animate(root.get(), 0.1_sreal);
+        sofa::simulation::animateNode(root.get(), 0.1_sreal);
     }
 
     sofa::simulation::getSimulation()->unload(root);

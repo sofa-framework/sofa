@@ -179,7 +179,7 @@ struct Scene_test: public NumericTest<SReal>
             nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         }
 
-        simulation->animate(root.get());
+        sofa::simulation::animateNode(root.get());
         simulation->unload(root);
     }
 

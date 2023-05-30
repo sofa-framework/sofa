@@ -86,7 +86,7 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
     sofa::simulation::initNode(theRoot.get());
     for(unsigned int i=0;i<20;i++)
     {
-        theSimulation->animate(theRoot.get(), 0.01);
+        sofa::simulation::animateNode(theRoot.get(), 0.01_sreal);
     }
     return theRoot;
 }

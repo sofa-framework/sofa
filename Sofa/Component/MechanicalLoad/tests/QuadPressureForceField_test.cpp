@@ -95,7 +95,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         // Do a few animation steps
         for(int k=0;k<10;k++)
         {
-            sofa::simulation::getSimulation()->animate(Inherited::node.get(),0.5);
+            sofa::simulation::animateNode(Inherited::node.get(), 0.5_sreal);
         }
 
         // run the forcefield_test

@@ -52,7 +52,7 @@ struct DefaultAnimationLoop_test : public BaseSimulationTest
         ASSERT_NE(root, nullptr) ;
 
         c.initScene() ;
-        sofa::simulation::getSimulation()->animate ( root, (SReal)0.01 );
+        sofa::simulation::animateNode(root, 0.01_sreal);
     }
 
 };

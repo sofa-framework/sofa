@@ -85,7 +85,7 @@ public:
     auto execute() -> std::pair<std::vector<SReal>, std::vector<SReal>> {
         using namespace std;
         sofa::simulation::initNode(root.get());
-        getSimulation()->animate(root.get(), 1);
+        sofa::simulation::animateNode(root.get(), 1_sreal);
         auto residuals = solver->squared_residual_norms();
         auto corrections = solver->squared_increment_norms();
         transform(begin(residuals), end(residuals), begin(residuals), [](SReal r) {return sqrt(r);});

@@ -150,7 +150,7 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
         do
         {
             hasConverged = true;
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::animateNode(root.get(), 0.5);
             typename MechanicalObject::ReadVecCoord x = patchStruct.dofs->readPositions();
 
             // Compute dx

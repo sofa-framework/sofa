@@ -2300,7 +2300,7 @@ void RealGUI::step()
         m_clockBeforeLastStep = currentClock;
     }
 
-    simulation::getSimulation()->animate ( root, dt );
+    sofa::simulation::animateNode(root, dt);
     simulation::getSimulation()->updateVisual( root );
 
     if ( m_dumpState )

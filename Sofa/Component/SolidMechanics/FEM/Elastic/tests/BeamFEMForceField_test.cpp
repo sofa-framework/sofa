@@ -143,7 +143,7 @@ public:
 
         sofa::simulation::initNode(m_root.get());
 
-        m_simulation->animate(m_root.get(), 0.01);
+        sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
     }
 
 
@@ -231,7 +231,7 @@ public:
         // simulate
         for (int i = 0; i < 10; i++)
         {
-            m_simulation->animate(m_root.get(), 0.01);
+            sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         }
 
         // check positions after simulation
@@ -262,7 +262,7 @@ public:
         sofa::topology::SetIndex indices = { 0 };
         edgeModif->removeEdges(indices, true);
 
-        m_simulation->animate(m_root.get(), 0.01);
+        sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         ASSERT_EQ(EdgeInfos.size(), 2);
     }
 };

@@ -641,7 +641,7 @@ public:
         // perform some steps
         for (int i = 0; i < 100; i++)
         {
-            m_simulation->animate(m_root.get(), 0.01);
+            sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         }
 
         EXPECT_NEAR(positions[159][0], 9.99985, 1e-4);
@@ -833,7 +833,7 @@ public:
             ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
             for (int i = 0; i < nbrStep; i++)
             {
-                m_simulation->animate(m_root.get(), 0.01);
+                sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
             }
 
             ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;

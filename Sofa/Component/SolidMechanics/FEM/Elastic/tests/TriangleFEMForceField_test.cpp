@@ -532,7 +532,7 @@ public:
 
         for (int i = 0; i < nbrStep; i++)
         {
-            m_simulation->animate(m_root.get(), 0.01);
+            sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         }
 
         if (FEMType == 0 || FEMType == 1)
@@ -664,7 +664,7 @@ public:
             ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
             for (int i = 0; i < nbrStep; i++)
             {
-                m_simulation->animate(m_root.get(), 0.01);
+                sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
             }
 
             ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;

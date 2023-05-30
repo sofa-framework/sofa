@@ -57,7 +57,7 @@ public:
         sofa::simulation::initNode(root.get());
         for(int i=0; i<2; i++)
         {
-            simulation->animate(root.get(), dt);
+            sofa::simulation::animateNode(root.get(), dt);
         }
 
         EXPECT_EQ(meca->findData("force")->getValueString(), std::string("-23.1 0 0")); //F = S sigma(L) where L = 1.1 , S=1 and sigma(L) = 10*L + 10*L^2

@@ -216,7 +216,7 @@ bool LCPForceFeedback_test::test_SimpleCollision()
     int pctTru = 0; 
     for (int step = 0; step < 140; step++)
     {
-        simu->animate(m_root.get());
+        sofa::simulation::animateNode(m_root.get());
 
         if (step % 10 == 0) 
         {
@@ -265,7 +265,7 @@ bool LCPForceFeedback_test::test_Collision()
     simulation::Simulation* simu = sofa::simulation::getSimulation();
     for (int step = 0; step < 100; step++)
     {
-        simu->animate(m_root.get());
+        sofa::simulation::animateNode(m_root.get());
     }
 
     const VecCoord& coords = meca->x.getValue();
@@ -371,7 +371,7 @@ bool LCPForceFeedback_test::test_multiThread()
     simulation::Simulation* simu = sofa::simulation::getSimulation();
     for (int step = 0; step < 500; step++)
     {
-        simu->animate(m_root.get());
+        sofa::simulation::animateNode(m_root.get());
         
         const VecCoord& coords = meca->x.getValue();        
         mtxPosition.lock();

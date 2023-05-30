@@ -313,9 +313,9 @@ struct PlaneForceField_test : public BaseSimulationTest
 
     bool testPlaneForceField()
     {
-        for(int i=0; i<100; i++){
-            m_simulation->animate(m_root.get(),(double)0.01);
-
+        for(int i=0; i<100; i++)
+        {
+            sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         }
         Real x = m_mechanicalObj->x.getValue()[0][0];
 

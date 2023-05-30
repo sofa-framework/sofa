@@ -55,7 +55,7 @@ public:
         sofa::simulation::initNode(root.get());
         for(int i=0; i<7; i++)
         {
-            simulation->animate(root.get(), dt);
+            sofa::simulation::animateNode(root.get(), dt);
         }
 
         EXPECT_EQ(meca->findData("position")->getValueString(),

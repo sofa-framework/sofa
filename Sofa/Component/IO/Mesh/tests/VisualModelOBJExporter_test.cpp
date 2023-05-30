@@ -85,7 +85,7 @@ public:
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+        sofa::simulation::animateNode(root.get(), 0.5);
 
         for(auto& pathToCheck : pathes)
         {
@@ -113,7 +113,7 @@ public:
 
         for(unsigned int i=0;i<numstep;i++)
         {
-            sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+            sofa::simulation::animateNode(root.get(), 0.5);
         }
 
         for(auto& pathToCheck : pathes)

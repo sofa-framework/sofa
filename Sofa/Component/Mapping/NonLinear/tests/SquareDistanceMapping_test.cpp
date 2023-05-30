@@ -257,7 +257,7 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        simulation::getSimulation()->animate(root.get(), 0.01_sreal);
+        sofa::simulation::animateNode(root.get(), 0.01_sreal);
 
         compareMechanicalObjects(i, 1e-7_sreal);
     }
@@ -274,7 +274,7 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        simulation::getSimulation()->animate(root.get(), 0.01_sreal);
+        sofa::simulation::animateNode(root.get(), 0.01_sreal);
 
         for (const auto& node : {oneMapping, twoMappings})
         {

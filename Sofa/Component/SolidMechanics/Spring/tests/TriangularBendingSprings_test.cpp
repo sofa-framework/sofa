@@ -264,7 +264,7 @@ public:
 
         for (int i = 0; i < nbrStep; i++)
         {
-            m_simulation->animate(m_root.get(), 0.01);
+            sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         }
 
         EXPECT_NEAR(positions[nbrGrid][0], -0.000132, 1e-4);
@@ -297,12 +297,12 @@ public:
         sofa::topology::SetIndex triIndices = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 
         triModif->removeTriangles(triIndices, true, true); // remove 10 first triangles
 
-        m_simulation->animate(m_root.get(), 0.01);
+        sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         ASSERT_EQ(EdgeInfos.size(), 40);
 
         triModif->removeTriangles(triIndices, true, true); // remove 10 more triangles
         triModif->removeTriangles(triIndices, true, true); // remove 10 more triangles
-        m_simulation->animate(m_root.get(), 0.01);
+        sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
         
         ASSERT_EQ(EdgeInfos.size(), 5); // only one pair of triangle reminding == 1 edge in middle == 1 bending spring
         ASSERT_EQ(EdgeInfos[0].is_activated, false);

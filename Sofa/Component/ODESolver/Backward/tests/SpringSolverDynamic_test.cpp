@@ -108,7 +108,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
             }
 
             //Animate
-            sofa::simulation::getSimulation()->animate(root.get(),0.001);
+            sofa::simulation::animateNode(root.get(), 0.001_sreal);
             time = root->getTime();
         }
         while (time < 2);

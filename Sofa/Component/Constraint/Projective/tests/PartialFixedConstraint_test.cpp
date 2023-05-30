@@ -102,7 +102,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
             constraint->d_fixedDirections.setValue(fixed);
 
             // Perform one time step
-            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            sofa::simulation::animateNode(root.get(), 0.5);
 
             // Check if the particle moved in a fixed direction
             typename MechanicalObject::ReadVecDeriv readV = mstate->readVelocities();

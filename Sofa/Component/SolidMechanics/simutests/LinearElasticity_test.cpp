@@ -251,7 +251,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                     Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
 
                     //  do one step of the static solver
-                    sofa::simulation::getSimulation()->animate(tractionStruct.root.get(),0.5);
+                    sofa::simulation::animateNode(tractionStruct.root.get(), 0.5_sreal);
 
                     // Get the simulated final position of that vertex
                     Coord p1=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];

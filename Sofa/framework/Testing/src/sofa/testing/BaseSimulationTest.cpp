@@ -104,7 +104,7 @@ void BaseSimulationTest::SceneInstance::initScene()
 
 void BaseSimulationTest::SceneInstance::simulate(const double timestep)
 {
-    simulation->animate( root.get(), (SReal)timestep );
+    sofa::simulation::animateNode(root.get(), static_cast<SReal>(timestep) );
 }
 
 BaseSimulationTest::BaseSimulationTest()

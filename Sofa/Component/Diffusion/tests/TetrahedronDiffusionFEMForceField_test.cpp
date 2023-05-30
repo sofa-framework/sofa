@@ -156,7 +156,9 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         unsigned int nbSteps = timeEvaluation/timeStep;
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
-            sofa::simulation::getSimulation()->animate(root.get(),timeStep);
+        {
+            sofa::simulation::animateNode(root.get(), timeStep);
+        }
     }
 
 
