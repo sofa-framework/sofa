@@ -194,8 +194,6 @@ bool LCPForceFeedback_test::test_SimpleCollision()
     // Check meca size and init position
     EXPECT_EQ(meca->getSize(), 1);
 
-    simulation::Simulation* simu = sofa::simulation::getSimulation();
-
     VecCoord truthCoords;
     truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.002498750625, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
     truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.1646431247, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
@@ -262,7 +260,6 @@ bool LCPForceFeedback_test::test_Collision()
     // Check meca size and init position
     EXPECT_EQ(meca->getSize(), 1);
 
-    simulation::Simulation* simu = sofa::simulation::getSimulation();
     for (int step = 0; step < 100; step++)
     {
         sofa::simulation::animateNode(m_root.get());

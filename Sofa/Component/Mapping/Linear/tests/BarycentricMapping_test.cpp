@@ -91,7 +91,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
     }
 
     void scene_test(){
-        Simulation* simu = sofa::simulation::getSimulation();
+        sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         typename BarycentricMapping<In,Out>::SPtr thisObject = New<BarycentricMapping<In,Out>>();
         thisObject->setName("barycentricMapping");
