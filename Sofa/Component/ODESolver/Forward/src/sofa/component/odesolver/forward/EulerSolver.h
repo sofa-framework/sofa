@@ -93,8 +93,8 @@ public:
     SReal getSolutionIntegrationFactor(int outputDerivative) const override ;
 
     void init() override ;
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    
+    void doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
 

@@ -77,13 +77,12 @@ public:
     SingleLink<MeshBarycentricMapperEngine<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology; ///< Name and path of Input mesh Topology
 
     //Temporary function to warn the user when old attribute names are used
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         if (arg->getAttribute("InputMeshName"))
         {
             msg_warning() << "input data 'InputMeshName' changed for 'topology', please update your scene (see PR#1487)";
         }
-        core::DataEngine::parse(arg);
     }
 
 private:

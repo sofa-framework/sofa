@@ -1,24 +1,24 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #pragma once
 #include <sofa/component/visual/config.h>
 
@@ -50,7 +50,7 @@ typedef sofa::core::visual::VisualState<defaulttype::Vec3Types> Vec3State;
  */
 class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public sofa::core::visual::VisualState<defaulttype::Vec3Types>
 {
-public:
+   public:
     SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, sofa::core::visual::VisualState<defaulttype::Vec3Types>);
 
     typedef sofa::type::Vec<2, float> TexCoord;
@@ -58,7 +58,7 @@ public:
 
     SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
 
-    //Indices must be unsigned int for drawing
+            //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
 
     typedef type::fixed_array<visual_index_type, 2> VisualEdge;
@@ -101,25 +101,25 @@ public:
 
     bool m_textureChanged {false};
 
-    /// If vertices have multiple normals/texcoords, then we need to separate them
-    /// This vector store which input position is used for each vertex
-    /// If it is empty then each vertex correspond to one position
+            /// If vertices have multiple normals/texcoords, then we need to separate them
+            /// This vector store which input position is used for each vertex
+            /// If it is empty then each vertex correspond to one position
     Data< type::vector<visual_index_type> > m_vertPosIdx;
 
-    /// Similarly this vector store which input normal is used for each vertex
-    /// If it is empty then each vertex correspond to one normal
+            /// Similarly this vector store which input normal is used for each vertex
+            /// If it is empty then each vertex correspond to one normal
     Data< type::vector<visual_index_type> > m_vertNormIdx;
 
-    /// Rendering method.
+            /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
 
-public:
+   public:
 
     sofa::core::objectmodel::DataFileName fileMesh;
     sofa::core::objectmodel::DataFileName texturename;
 
-    /// @name Initial transformation attributes
-    /// @{
+            /// @name Initial transformation attributes
+            /// @{
     typedef sofa::type::Vec<3,Real> Vec3Real;
     Data< Vec3Real > m_translation; ///< Initial Translation of the object
     Data< Vec3Real > m_rotation; ///< Initial Rotation of the object
@@ -130,7 +130,7 @@ public:
 
     void applyTranslation(const SReal dx, const SReal dy, const SReal dz) override;
 
-    /// Apply Rotation from Euler angles (in degree!)
+            /// Apply Rotation from Euler angles (in degree!)
     void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
 
     void applyRotation(const sofa::type::Quat<SReal> q) override;
@@ -166,17 +166,17 @@ public:
 
     class FaceGroup
     {
-    public:
+       public:
         /// tri0: first triangle index of a group
         /// nbt: number of triangle elements
         visual_index_type tri0, nbt;
 
-        /// quad0: first quad index of a group
-        /// nbq: number of quad elements
+                /// quad0: first quad index of a group
+                /// nbq: number of quad elements
         visual_index_type quad0, nbq;
 
-        /// edge0: first edge index of a group
-        /// nbe: number of edge elements
+                /// edge0: first edge index of a group
+                /// nbe: number of edge elements
         visual_index_type edge0, nbe;
 
         std::string materialName;
@@ -199,18 +199,16 @@ public:
     Data< type::vector<sofa::type::Material> > materials;
     Data< type::vector<FaceGroup> > groups;
 
-    /// Link to be set to the topology container in the component graph.
+            /// Link to be set to the topology container in the component graph.
     SingleLink <VisualModelImpl, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-protected:
+   protected:
     /// Default constructor.
     VisualModelImpl();
 
-    /// Default destructor.
+            /// Default destructor.
     ~VisualModelImpl() override;
 
-public:
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
-
+   public:
     virtual bool hasTransparent();
     bool hasOpaque();
 
@@ -369,27 +367,27 @@ public:
 
     void initVisual() override;
 
-    /// Append this mesh to an OBJ format stream.
-    /// The number of vertices position, normal, and texture coordinates already written is given as parameters
-    /// This method should update them
+            /// Append this mesh to an OBJ format stream.
+            /// The number of vertices position, normal, and texture coordinates already written is given as parameters
+            /// This method should update them
     void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count) override;
 
-    /// Returns the sofa class name. By default the name of the c++ class is exposed...
-    /// More details on the name customization infrastructure is in NameDecoder.h
+            /// Returns the sofa class name. By default the name of the c++ class is exposed...
+            /// More details on the name customization infrastructure is in NameDecoder.h
     static std::string GetCustomTemplateName()
     {
         return sofa::defaulttype::Vec3Types::Name();
     }
 
-    /// Utility method to compute tangent from vertices and texture coordinates.
+            /// Utility method to compute tangent from vertices and texture coordinates.
     static Coord computeTangent(const Coord &v1, const Coord &v2, const Coord &v3,
                                 const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
-    /// Utility method to compute bitangent from vertices and texture coordinates.
+            /// Utility method to compute bitangent from vertices and texture coordinates.
     static Coord computeBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
                                   const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 
-    /// Temporary added here from RigidState deprecated inheritance
+            /// Temporary added here from RigidState deprecated inheritance
     sofa::defaulttype::Rigid3fTypes::VecCoord xforms;
     bool xformsModified;
 
@@ -397,13 +395,17 @@ public:
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
-protected:
+   protected:
     /// Internal buffer to be filled by topology Data @sa m_triangles callback when points are removed. Those dirty triangles will be updated at next updateVisual
     /// This avoid to update the whole mesh.
     std::set< sofa::core::topology::BaseMeshTopology::TriangleID> m_dirtyTriangles;
 
-    /// Internal buffer similar to @sa m_dirtyTriangles but to be used by topolgy Data @sa m_quads callback when points are removed.
+            /// Internal buffer similar to @sa m_dirtyTriangles but to be used by topolgy Data @sa m_quads callback when points are removed.
     std::set< sofa::core::topology::BaseMeshTopology::QuadID> m_dirtyQuads;
+
+   private:
+    void doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg) final;
+    virtual void doVisualModelParse(core::objectmodel::BaseObjectDescription* arg) {}
 };
 
 

@@ -37,10 +37,8 @@ SceneLoader::SceneLoader() : BaseLoader()
 
 }
 
-void SceneLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void SceneLoader::doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    objectmodel::BaseObject::parse(arg);
-
     if (canLoad())
         load(/*m_filename.getFullPath().c_str()*/);
     else

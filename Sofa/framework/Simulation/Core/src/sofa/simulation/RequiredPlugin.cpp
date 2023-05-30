@@ -61,11 +61,10 @@ RequiredPlugin::RequiredPlugin()
     }, {&d_loadedPlugins});
 }
 
-void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void RequiredPlugin::doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     d_componentState = sofa::core::objectmodel::ComponentState::Invalid;
-
-    Inherit1::parse(arg);
+    
     if(loadPlugin())
         d_componentState = sofa::core::objectmodel::ComponentState::Valid;
 }

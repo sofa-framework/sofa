@@ -61,10 +61,9 @@ ComplementaryROI<DataTypes>::~ComplementaryROI()
 
 /// Parse the given description to assign values to this object's fields and potentially other parameters
 template <class DataTypes>
-void ComplementaryROI<DataTypes>::parse ( BaseObjectDescription* arg )
+void ComplementaryROI<DataTypes>::doBaseObjectParse ( BaseObjectDescription* arg )
 {
     vd_setIndices.parseSizeData(arg, d_nbSet);
-    Inherit1::parse(arg);
 }
 
 /// Assign the field values stored in the given map of name -> value pairs

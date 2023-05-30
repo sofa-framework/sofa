@@ -47,9 +47,8 @@ void ImplicitSurfaceMapping<In,Out>::init()
 }
 
 template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
+void ImplicitSurfaceMapping<In,Out>::doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg)
 {
-    this->Inherit::parse(arg);
     if ( arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
         this->setGridMin(arg->getAttributeAsFloat("minx",-100.0),
                          arg->getAttributeAsFloat("miny",-100.0),

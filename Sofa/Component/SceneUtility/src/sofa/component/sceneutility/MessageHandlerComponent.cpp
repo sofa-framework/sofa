@@ -64,10 +64,8 @@ MessageHandlerComponent::MessageHandlerComponent() :
     m_isValid = false ;
 }
 
-void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
+void MessageHandlerComponent::doBaseObjectParse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
-
     const char* type=arg->getAttribute("handler") ;
     if(type==nullptr){
         msg_info(this) << "The 'handler' attribute is missing. The default sofa style will be used. "
@@ -120,10 +118,8 @@ FileMessageHandlerComponent::~FileMessageHandlerComponent()
     delete m_handler ;
 }
 
-void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
+void FileMessageHandlerComponent::doBaseObjectParse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
-
     const char* type=arg->getAttribute("filename") ;
     if(type==nullptr){
         msg_warning(this) << "Name of the log file is missing. "

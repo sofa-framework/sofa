@@ -53,20 +53,17 @@ OglLabel::OglLabel():
     f_listening.setValue(true);
 }
 
-void OglLabel::parse(BaseObjectDescription *arg)
+void OglLabel::doBaseObjectParse(BaseObjectDescription *arg)
 {
     // BACKWARD COMPATIBILITY April 2017
     const char* value = arg->getAttribute("color") ;
     if(value==nullptr || strcmp(value, "contrast")){
-        VisualModel::parse(arg);
         return ;
     }
 
     arg->setAttribute("selectContrastingColor", std::string("true"));
     arg->removeAttribute("color") ;
-
-    VisualModel::parse(arg);
-
+    
     /// A send the message after the parsing of the base class so that the "name" of the component
     /// is correctly reported in the message.
     msg_deprecated() << "Attribute color='contrast' is deprecated since SOFA v17.06" << msgendl

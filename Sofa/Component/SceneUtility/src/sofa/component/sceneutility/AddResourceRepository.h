@@ -44,8 +44,8 @@ protected:
 
 public:
     DataFileName d_repositoryPath; ///< Path to add to the pool of resources
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+ 
+ void doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
     bool updateRepositoryPath();
     void cleanup() override;
 

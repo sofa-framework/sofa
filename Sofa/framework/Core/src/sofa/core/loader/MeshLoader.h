@@ -87,7 +87,7 @@ public:
     bool canLoad() override;
 
     //virtual void init();
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void doBaseObjectParse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     void init() override;
 

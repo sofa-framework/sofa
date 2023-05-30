@@ -117,10 +117,9 @@ MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
 }
 
 template <typename TDataTypes1, typename TDataTypes2>
-void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::parse(
+void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::doBaseObjectParse(
     core::objectmodel::BaseObjectDescription* arg)
 {
-    Inherit1::parse(arg);
     if (!arg->getAttribute("yesIKnowMatrixMappingIsSupportedAutomatically", nullptr))
     {
         msg_warning() << "Matrix mapping is now supported automatically. Therefore, "

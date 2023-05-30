@@ -116,14 +116,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+void TriangularFEMForceFieldOptim<DataTypes>::doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     const char* method = arg->getAttribute("method");
     if (method && *method && std::string(method) != std::string("large"))
     {
         msg_warning() << "Attribute method was specified as \""<<method<<"\" while this version only implements the \"large\" method. Ignoring...";
     }
-    Inherited::parse(arg);
 }
 
 // --------------------------------------------------------------------------------------

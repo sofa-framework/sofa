@@ -327,9 +327,8 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     //Temporary function to warn the user when old attribute names are used and if it tried to specify the masstype (deprecated)
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    void doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
-        Inherited::parse(arg);
         parseMassTemplate<MassType>(arg, this);
         if (arg->getAttribute("mass"))
         {

@@ -40,10 +40,8 @@ MakeAliasComponent::MakeAliasComponent() :
     d_componentState.setValue(ComponentState::Invalid) ;
 }
 
-void MakeAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
+void MakeAliasComponent::doBaseObjectParse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
-
     const char* target=arg->getAttribute("targetcomponent") ;
     if(target==nullptr)
     {

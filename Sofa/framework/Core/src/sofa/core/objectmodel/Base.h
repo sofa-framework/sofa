@@ -175,8 +175,10 @@ public:
     /// Check if a given Data field or Link exists
     virtual bool hasField( const std::string& attribute) const;
 
+    void parse( BaseObjectDescription* arg );
+
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( BaseObjectDescription* arg );
+    virtual void doBaseParse ( BaseObjectDescription* ) {}
 
     /// Assign the field values stored in the given list of name + value pairs of strings
     void parseFields ( const std::list<std::string>& str );

@@ -57,8 +57,8 @@ public:
     void drawVisual(const core::visual::VisualParams* vparams) override;
 
     void handleEvent(core::objectmodel::Event *) override;
-
-    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+    
+    void doBaseObjectParse(core::objectmodel::BaseObjectDescription *arg) override;
     void setColor(float r, float g, float b, float a) ;
 
 

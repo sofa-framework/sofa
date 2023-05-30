@@ -129,12 +129,6 @@ BoxROI<DataTypes>::BoxROI()
     addOutput(&d_nbIndices);
 }
 
-template<class DataTypes>
-void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
-{
-    Inherit1::parse(arg);
-}
-
 
 template <class DataTypes>
 void BoxROI<DataTypes>::init()

@@ -108,8 +108,8 @@ public:
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2) override;
 
     void createVariableData ( std::string variable );
-
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    
+    void doBaseObjectParse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
 protected:
     RuleBasedContactManager();

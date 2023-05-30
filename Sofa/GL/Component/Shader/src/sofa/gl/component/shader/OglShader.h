@@ -106,7 +106,7 @@ public:
     void reinit() override;
     void drawVisual(const core::visual::VisualParams* vparams) override;
     void updateVisual() override;
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg) override;
 
     void start() override;
     void stop() override;

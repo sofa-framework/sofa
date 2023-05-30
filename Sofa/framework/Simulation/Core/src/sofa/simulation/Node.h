@@ -162,7 +162,7 @@ public:
     /// @{
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void doBaseParse ( sofa::core::objectmodel::BaseObjectDescription* arg ) final;
 
     /// Initialize the components
     void init(const sofa::core::ExecParams* params);

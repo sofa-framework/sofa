@@ -258,7 +258,7 @@ protected:
     virtual void optimizeAndCopyMappingJacobianToEigenFormat2(const typename DataTypes2::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
 
 public:
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////

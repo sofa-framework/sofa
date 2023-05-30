@@ -555,6 +555,8 @@ void  Base::parse ( BaseObjectDescription* arg )
         parseField(attrName, it.second);
     }
     updateLinks(false);
+
+    doBaseParse(arg);
 }
 
 /// Update pointers in case the pointed-to objects have appeared

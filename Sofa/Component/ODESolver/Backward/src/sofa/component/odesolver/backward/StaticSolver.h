@@ -143,8 +143,8 @@ public:
         else
             return vect[outputDerivative];
     }
-
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    
+    virtual void doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
 

@@ -51,10 +51,8 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using type::vector;
 
-void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
+void VisualModelImpl::doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg)
 {
-    this->core::visual::VisualModel::parse(arg);
-
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=nullptr)
@@ -99,6 +97,8 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
                                   (Real)arg->getAttributeAsFloat("sy",1.0),
                                   (Real)arg->getAttributeAsFloat("sz",1.0)));
     }
+
+    doVisualModelParse(arg);
 }
 
 int VisualModelImplClass = core::RegisterObject("Generic visual model. If a viewer is active it will replace the VisualModel alias, otherwise nothing will be displayed.")

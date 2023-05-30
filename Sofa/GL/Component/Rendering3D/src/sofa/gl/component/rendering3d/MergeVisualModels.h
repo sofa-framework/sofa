@@ -310,11 +310,10 @@ protected:
     }
 
 public:
-
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    
+    void doOglModelParse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vl_input.parseSizeLinks(arg, d_nbInput);
-        Inherit1::parse(arg);
     }
     void parseFields ( const std::map<std::string,std::string*>& str ) override
     {

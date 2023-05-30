@@ -131,10 +131,8 @@ public:
     void reinit() override;
 
     /// Temporary function to warn the user when old attribute names are used
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    void doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
-        Inherit::parse(arg);
-
         if (arg->getAttribute("activateAtIteration"))
         {
             msg_warning() << "input data 'activateAtIteration' has been deprecated, please use the boolean data 'activate' instead and an engine or a script to change the behavior at the right step (see PR #3327).";

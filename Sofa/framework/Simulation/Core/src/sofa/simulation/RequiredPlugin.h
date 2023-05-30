@@ -48,8 +48,8 @@ protected:
     ~RequiredPlugin() override = default;
 
 public:
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    
+    void doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
     /// load a list of plugins requested in Data
     bool loadPlugin();

@@ -60,15 +60,14 @@ RegularGridTopology::RegularGridTopology(const type::Vec3i& n, type::BoundingBox
 }
 
 
-void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+void RegularGridTopology::doMeshTopologyParse(core::objectmodel::BaseObjectDescription* arg)
 {
     float scale=1.0f;
     if (arg->getAttribute("scale")!=nullptr)
     {
         scale = arg->getAttributeAsFloat("scale", 1.0);
     }
-
-    this->GridTopology::parse(arg);
+    
     if (arg->getAttribute("xmin") != nullptr &&
         arg->getAttribute("ymin") != nullptr &&
         arg->getAttribute("zmin") != nullptr &&

@@ -788,10 +788,8 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseObjectDescription* arg)
+void RigidMapping<TIn, TOut>::doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg)
 {
-    Inherit::parse(arg);
-
     // to be backward compatible with previous data structure
     const char* repartitionChar = arg->getAttribute("repartition");
     if( repartitionChar )

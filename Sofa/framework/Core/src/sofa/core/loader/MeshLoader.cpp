@@ -187,10 +187,8 @@ void MeshLoader::clearBuffers()
     doClearBuffers();
 }
 
-void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void MeshLoader::doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    objectmodel::BaseObject::parse(arg);
-
     if (arg->getAttribute("scale"))
     {
         SReal s = (SReal) arg->getAttributeAsFloat("scale", 1.0);

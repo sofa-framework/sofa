@@ -56,7 +56,7 @@ public :
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Real> > InvertData;
 
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
     bool doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data);

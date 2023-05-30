@@ -54,9 +54,8 @@ public:
     SOFA_ATTRIBUTE_DISABLED__SHEWCHUKPCGLINEARSOLVER_EXPLICITLINK()
     Data< std::string > f_preconditioners; ///< If not empty: path to the solvers to use as preconditioners
     //SOFA_ATTRIBUTE_DISABLED__SHEWCHUKPCGLINEARSOLVER_EXPLICITLINK()
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
-        Inherit1::parse(arg);
         if (arg->getAttribute("preconditioners"))
         {
             msg_warning() << "String data \"preconditioners\" is now replaced by explicit data link: \"preconditioner\" (PR #3155)";

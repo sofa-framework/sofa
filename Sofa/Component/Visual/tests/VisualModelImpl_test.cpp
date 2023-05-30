@@ -38,7 +38,11 @@ struct VisualModelImpl_test : public ::testing::Test
 
 };
 
-struct StubVisualModelImpl : public component::visual::VisualModelImpl {};
+struct StubVisualModelImpl : public component::visual::VisualModelImpl
+{
+private:
+    void doVisualModelParse(core::objectmodel::BaseObjectDescription*) {}
+};
 
 // Define the list of DataTypes to instanciate
 using testing::Types;

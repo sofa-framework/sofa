@@ -1,24 +1,24 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #pragma once
 #include <sofa/component/topology/container/constant/config.h>
 
@@ -29,23 +29,23 @@ namespace sofa::component::topology::container::constant
 
 namespace
 {
-    using sofa::type::Vec3;
+using sofa::type::Vec3;
 }
 
 class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API CubeTopology : public MeshTopology
 {
-public:
+   public:
     SOFA_CLASS(CubeTopology,MeshTopology);
 
     SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Vector3, sofa::type::Vec3);
 
-protected:
+   protected:
     CubeTopology(int nx, int ny, int nz);
     CubeTopology();
-public:
+   public:
     void setSize(int nx, int ny, int nz);
 
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void doMeshTopologyParse(core::objectmodel::BaseObjectDescription* arg) final;
 
     int getNx() const { return nx.getValue(); }
     int getNy() const { return ny.getValue(); }
@@ -59,13 +59,13 @@ public:
     void reinit() override;
 
     enum Plane { PLANE_UNKNOWN=0,
-            PLANE_X0,
-            PLANE_X1,
-            PLANE_Y0,
-            PLANE_Y1,
-            PLANE_Z0,
-            PLANE_Z1
-               };
+        PLANE_X0,
+        PLANE_X1,
+        PLANE_Y0,
+        PLANE_Y1,
+        PLANE_Z0,
+        PLANE_Z1
+    };
 
     int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const;
 
@@ -93,7 +93,7 @@ public:
 
     void setSplitNormals(bool b) {splitNormals.setValue(b);}
 
-protected:
+   protected:
     Data<int> nx; ///< z grid resolution
     Data<int> ny;
     Data<int> nz;

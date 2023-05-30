@@ -44,10 +44,9 @@ void MergeROIs::reinit()
     update();
 }
 
-void MergeROIs::parse ( core::objectmodel::BaseObjectDescription* arg )
+void MergeROIs::doBaseObjectParse ( core::objectmodel::BaseObjectDescription* arg )
 {
     f_indices.parseSizeData(arg, d_nbROIs);
-    Inherit1::parse(arg);
 }
 
 void MergeROIs::parseFields ( const std::map<std::string,std::string*>& str )

@@ -113,7 +113,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     // parse method attribute (for compatibility with non-optimized version)
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Class to store FEM information on each triangle, for topology modification handling
     class TriangleInfo

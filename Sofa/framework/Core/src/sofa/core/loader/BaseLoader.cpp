@@ -37,10 +37,8 @@ BaseLoader::~BaseLoader()
 {
 }
 
-void BaseLoader::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
+void BaseLoader::doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription *arg)
 {
-    objectmodel::BaseObject::parse(arg);
-
     bool success = false;
     if (canLoad())
         success = load();

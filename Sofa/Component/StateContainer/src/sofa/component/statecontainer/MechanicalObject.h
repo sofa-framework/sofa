@@ -83,7 +83,7 @@ public:
 protected:
     virtual ~MechanicalObject();
 public:
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
+    void doBaseObjectParse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data< VecCoord > x; ///< position coordinates of the degrees of freedom
     Data< VecDeriv > v; ///< velocity coordinates of the degrees of freedom

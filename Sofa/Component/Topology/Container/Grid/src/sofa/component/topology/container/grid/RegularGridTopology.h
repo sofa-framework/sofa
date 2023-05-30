@@ -65,7 +65,7 @@ public:
     void reinit() override;
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void doMeshTopologyParse(core::objectmodel::BaseObjectDescription* arg) final;
 
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
      * Get Point in grid @return Vec3 given its position in grid @param i, @param j, @param k

@@ -86,10 +86,8 @@ FreeMotionAnimationLoop::~FreeMotionAnimationLoop()
         defaultSolver.reset();
 }
 
-void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+void FreeMotionAnimationLoop::doBaseObjectParse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
-    simulation::CollisionAnimationLoop::parse(arg);
-
     defaultSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::LCPConstraintSolver>();
     defaultSolver->parse(arg);
     defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), core::ComponentNameHelper::Convention::python));

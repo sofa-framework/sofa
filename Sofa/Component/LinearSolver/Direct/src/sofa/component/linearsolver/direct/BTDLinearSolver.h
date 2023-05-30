@@ -150,7 +150,7 @@ public:
     bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);
 
 
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    void doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg) override
     {
         Inherit1::parse(arg);
 

@@ -94,7 +94,7 @@ void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, b
     else     { ptr->l_master.reset(); ptr->l_context.reset(); }
 }
 
-void BaseObject::parse( BaseObjectDescription* arg )
+void BaseObject::doBaseParse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
     {
@@ -120,7 +120,9 @@ void BaseObject::parse( BaseObjectDescription* arg )
         }
         arg->removeAttribute("src");
     }
-    Base::parse(arg);
+
+    // delegate to child;
+    doBaseObjectParse(arg);
 }
 
 void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)

@@ -109,6 +109,7 @@ public:
     int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
     void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
 
+    void doMeshTopologyParse(core::objectmodel::BaseObjectDescription*) final {};
 
     /// Resolution
     sofa::type::Vec<3, int> getN() const { return n.getValue();}

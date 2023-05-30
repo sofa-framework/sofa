@@ -29,9 +29,8 @@ namespace sofa::component::topology::container::constant
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+void CubeTopology::doMeshTopologyParse(core::objectmodel::BaseObjectDescription* arg)
 {
-    this->MeshTopology::parse(arg);
     float scale=1.0f;
     if (arg->getAttribute("scale")!=nullptr)
     {

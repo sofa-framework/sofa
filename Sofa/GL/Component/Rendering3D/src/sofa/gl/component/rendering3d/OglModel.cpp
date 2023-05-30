@@ -113,14 +113,14 @@ OglModel::~OglModel()
     deleteBuffers();
 }
 
-void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
+void OglModel::doVisualModelParse(core::objectmodel::BaseObjectDescription* arg)
 {
     if (arg->getAttribute("isToPrint")!=nullptr)
     {
         msg_deprecated() << "The 'isToPrint' data field has been deprecated in SOFA v19.06 due to lack of consistency in how it should work." << msgendl
                             "Please contact sofa-dev team in case you need similar.";
     }
-    Inherit1::parse(arg);
+    doOglModelParse(arg);
 }
 
 

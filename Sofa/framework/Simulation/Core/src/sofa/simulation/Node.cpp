@@ -121,9 +121,8 @@ Node::~Node()
 {
 }
 
-void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+void Node::doBaseParse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
-    Inherit1::parse( arg );
     static const char* oldVisualFlags[] =
     {
         "showAll",

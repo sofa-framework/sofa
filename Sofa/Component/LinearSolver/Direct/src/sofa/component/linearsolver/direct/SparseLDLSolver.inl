@@ -40,10 +40,8 @@ SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
     : numStep(0){}
 
 template <class TMatrix, class TVector, class TThreadManager>
-void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void SparseLDLSolver<TMatrix, TVector, TThreadManager>::doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    Inherit1::parse(arg);
-
     if (!arg->getAttribute("template"))
     {
         std::string header = this->getClassName();

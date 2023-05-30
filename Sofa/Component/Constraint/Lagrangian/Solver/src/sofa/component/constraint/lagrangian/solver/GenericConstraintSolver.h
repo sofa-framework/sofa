@@ -90,9 +90,8 @@ public:
     SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_DATA("Make the \"unbuild\" option as an option group \"resolutionMethod\".")
     Data<bool> unbuilt; ///< Compliance is not fully built  (for the PGS solver only)
     //SOFA_ATTRIBUTE_DISABLED__GENERICCONSTRAINTSOLVER_DATA("Make the \"unbuild\" option as an option group \"resolutionMethod\".")
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
-        Inherit1::parse(arg);
         if (arg->getAttribute("unbuilt"))
         {
             msg_warning() << "String data \"unbuilt\" is now an option group \"resolutionMethod\" (PR #3053)" << msgendl << "Use: resolutionMethod=\"UnbuildGaussSeidel\"";

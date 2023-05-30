@@ -157,8 +157,8 @@ public:
     /// for backward compatibility with previous data structure
     void setRepartition(sofa::Size value);
     void setRepartition(sofa::type::vector<sofa::Size> values);
-
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    
+    void doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg) override;
 
     void getGlobalToLocalCoords(OutCoord& result, const InCoord& xfrom, const OutCoord& xto);
     void updateOmega(typename InDeriv::Rot& omega, const OutDeriv& out, const OutCoord& rotatedpoint);

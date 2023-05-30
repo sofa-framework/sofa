@@ -73,11 +73,10 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void doBaseObjectParse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         f_indices.parseSizeData(arg, nbROIs);
         f_value.parseSizeData(arg, nbROIs);
-        Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs

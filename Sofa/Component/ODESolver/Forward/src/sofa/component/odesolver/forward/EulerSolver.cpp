@@ -246,10 +246,8 @@ void EulerExplicitSolver::init()
     reinit();
 }
 
-void EulerExplicitSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void EulerExplicitSolver::doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    Inherit1::parse(arg);
-
     const char* val = arg->getAttribute("optimizedForDiagonalMatrix",nullptr) ;
     if(val)
     {

@@ -55,10 +55,8 @@ MakeDataAliasComponent::~MakeDataAliasComponent()
     }
 }
 
-void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
+void MakeDataAliasComponent::doBaseObjectParse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
-
     const char* component=arg->getAttribute("componentname") ;
     if(component==nullptr)
     {

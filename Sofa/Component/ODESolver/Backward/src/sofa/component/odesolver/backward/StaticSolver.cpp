@@ -71,7 +71,7 @@ StaticSolver::StaticSolver()
             "Divergence criterion: The newton iterations will stop when the residual is greater than the one from the previous iteration."))
 {}
 
-void StaticSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void StaticSolver::doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     /// Now handling backward compatibility with old scenes.
     /// point is deprecated since '19.06'
@@ -125,7 +125,6 @@ void StaticSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
                          << "The attribute was renamed for '" << d_absolute_residual_tolerance_threshold.getName() << "'.";
         arg->setAttribute(d_absolute_residual_tolerance_threshold.getName(), val);
     }
-    sofa::core::behavior::OdeSolver::parse(arg) ;
 }
 
 void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)

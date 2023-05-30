@@ -183,11 +183,8 @@ void OglShader::initVisual()
 
 
 
-void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
+void OglShader::doBaseObjectParse(core::objectmodel::BaseObjectDescription* arg)
 {
-    Inherit1::parse(arg);
-
-
     // BACKWARD COMPATIBILITY oct 2016
     const char* fileVertexShader = arg->getAttribute("fileVertexShader");
     const char* fileVertexShaderAlias = arg->getAttribute("vertFilename");

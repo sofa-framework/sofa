@@ -110,7 +110,9 @@ public:
     void initVisual() override;
 
     void init() override { VisualModelImpl::init(); }
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+
+    void doVisualModelParse(core::objectmodel::BaseObjectDescription* arg) final;
+    virtual void doOglModelParse(core::objectmodel::BaseObjectDescription*) {}
 
     void updateBuffers() override;
 

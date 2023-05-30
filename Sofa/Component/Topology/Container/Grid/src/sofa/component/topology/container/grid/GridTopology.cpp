@@ -58,10 +58,8 @@ void GridTopology::GridUpdate::doUpdate()
         updateEdges();
 }
 
-void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+void GridTopology::doMeshTopologyParse(core::objectmodel::BaseObjectDescription* arg)
 {
-    this->MeshTopology::parse(arg);
-
     if (arg->getAttribute("nx")!=nullptr && arg->getAttribute("ny")!=nullptr && arg->getAttribute("nz")!=nullptr )
     {
         int nx = arg->getAttributeAsInt("nx", d_n.getValue().x());

@@ -294,10 +294,8 @@ MechanicalObject<DataTypes> &MechanicalObject<DataTypes>::operator = (const Mech
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+void MechanicalObject<DataTypes>::doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
-    Inherited::parse(arg);
-
     if (arg->getAttribute("size") != nullptr)
     {
         int newsize = arg->getAttributeAsInt("size", 1) ;
