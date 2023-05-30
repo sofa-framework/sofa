@@ -2301,7 +2301,7 @@ void RealGUI::step()
     }
 
     sofa::simulation::animateNode(root, dt);
-    simulation::getSimulation()->updateVisual( root );
+    sofa::simulation::updateVisual(root);
 
     if ( m_dumpState )
         simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
