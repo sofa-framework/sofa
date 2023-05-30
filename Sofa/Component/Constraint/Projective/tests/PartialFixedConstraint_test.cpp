@@ -94,7 +94,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         typename PartialFixedConstraint::SPtr constraint = addNew<PartialFixedConstraint>(node);
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
 
         for(unsigned i=0; i<sizeD; i++)
         {

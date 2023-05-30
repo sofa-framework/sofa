@@ -144,7 +144,7 @@ void LCPForceFeedback_test::loadTestScene(const std::string& filename)
 
     EXPECT_NE(m_root, nullptr);
 
-    sofa::simulation::getSimulation()->init(m_root.get());
+    sofa::simulation::initNode(m_root.get());
 }
 
 

@@ -78,7 +78,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
     bool compareSimulatedToTheoreticalPositions(double tolerance)
     {
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
         double time = root->getTime();
         double stiffnessSpring = 100;
         double mass = 10;

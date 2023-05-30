@@ -112,7 +112,7 @@ struct FixedConstraint_test : public BaseTest
         node->addObject(cst);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
 
         /// Perform one time step
         sofa::simulation::getSimulation()->animate(root.get(),0.5);
@@ -204,7 +204,7 @@ struct FixedConstraint_test : public BaseTest
 
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
 
         /// Perform two time steps
         sofa::simulation::getSimulation()->animate(root.get(), 0.1);

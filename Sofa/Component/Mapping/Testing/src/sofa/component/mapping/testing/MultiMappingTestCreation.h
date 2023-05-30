@@ -170,7 +170,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         }
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
 
         /// apply the mapping
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());

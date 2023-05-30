@@ -139,7 +139,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
 
         // end create scene
         //*********
-        simu->init(root.get());
+        sofa::simulation::initNode(root.get());
         //*********
         // run simulation
 
@@ -255,7 +255,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
         // end create scene
         //*********
-        simu->init(root.get());
+        sofa::simulation::initNode(root.get());
         //*********
         // run simulation
 

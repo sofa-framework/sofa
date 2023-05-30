@@ -112,7 +112,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
         projection->f_indices.setValue(indices);
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
     }
 
     /** Constrain all the particles.
@@ -125,7 +125,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
          projection->f_indices.setValue(indices);
 
          /// Init
-         sofa::simulation::getSimulation()->init(root.get());
+         sofa::simulation::initNode(root.get());
     }
     ///@}
 

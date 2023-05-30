@@ -229,7 +229,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     }
     bool testLinearElasticityInTraction(LinearElasticityFF createForceField){
 
-        sofa::simulation::getSimulation()->init(tractionStruct.root.get());
+        sofa::simulation::initNode(tractionStruct.root.get());
 
         size_t i,j,k;
         for (k=0;k<sizeYoungModulusArray;++k) {

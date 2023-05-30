@@ -130,7 +130,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         }
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(this->root.get());
+        sofa::simulation::initNode(this->root.get());
 
         // Mass parameters
         typename DiagonalMass::SPtr mass = temperatureNode->get<DiagonalMass>(temperatureNode->SearchDown);

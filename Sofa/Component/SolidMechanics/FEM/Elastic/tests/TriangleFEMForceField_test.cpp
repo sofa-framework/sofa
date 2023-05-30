@@ -125,7 +125,7 @@ public:
         createObject(m_root, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
 
@@ -168,7 +168,7 @@ public:
         ASSERT_NE(m_root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
     void addTriangleFEMNode(int FEMType, unsigned int fixP, std::string nodeName)
@@ -282,7 +282,7 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
     void checkEmptyTopology(int FEMType)
@@ -316,7 +316,7 @@ public:
         EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
 
@@ -351,7 +351,7 @@ public:
         EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
         if (FEMType == 0)
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();

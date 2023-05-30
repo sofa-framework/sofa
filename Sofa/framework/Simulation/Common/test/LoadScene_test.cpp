@@ -52,7 +52,7 @@ struct LoadScene_test: public BaseTest
        LoadScene(sceneName);
       
        // Init the scene
-       sofa::simulation::getSimulation()->init(root.get());
+       sofa::simulation::initNode(root.get());
 
        // Test if root is not null
        if(!root)

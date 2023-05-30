@@ -112,7 +112,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         }
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(this->root.get());
+        sofa::simulation::initNode(this->root.get());
 
         ///  Get mechanical object of tracked points
         dof = mooneyNode->get<DOF>(mooneyNode->SearchDown);

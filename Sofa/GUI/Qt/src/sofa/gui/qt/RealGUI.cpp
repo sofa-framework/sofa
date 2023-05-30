@@ -861,7 +861,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     const std::vector<std::string> sceneArgs = ArgumentParser::extra_args();
     mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
-    simulation::getSimulation()->init ( mSimulation.get() );
+    sofa::simulation::initNode(mSimulation.get());
     if ( mSimulation == nullptr )
     {
         msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
@@ -2148,9 +2148,9 @@ void RealGUI::activateNode(sofa::simulation::Node* node, bool activate)
     if ( sofalistview == simulationGraph && activate )
     {
         if ( node == currentSimulation() )
-            simulation::getSimulation()->init(node);
+            simulation::initNode(node);
         else
-            simulation::getSimulation()->initNode(node);
+            simulation::initNodeNoContextUpdate(node);
     }
 }
 

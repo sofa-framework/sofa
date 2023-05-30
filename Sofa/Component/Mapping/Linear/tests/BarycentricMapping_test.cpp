@@ -110,7 +110,9 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
         nodeMapping->addObject(triangleContainer);
         nodeMapping->addObject(thisObject);
 
-        EXPECT_NO_THROW(simu->init(node.get()));
+        EXPECT_NO_THROW(
+            sofa::simulation::initNode(node.get())
+        );
     }
 
     void init_test()

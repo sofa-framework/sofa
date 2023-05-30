@@ -178,7 +178,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         // init scene and compute force
         if (initScene)
         {
-            sofa::simulation::getSimulation()->init(this->node.get());
+            sofa::simulation::initNode(this->node.get());
         }
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);

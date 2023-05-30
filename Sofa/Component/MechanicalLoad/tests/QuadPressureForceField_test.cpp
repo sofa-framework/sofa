@@ -90,7 +90,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
     // Test that the force value is constant
     void test_constantForce()
     {
-        sofa::simulation::getSimulation()->init(Inherited::node.get());
+        sofa::simulation::initNode(Inherited::node.get());
 
         // Do a few animation steps
         for(int k=0;k<10;k++)

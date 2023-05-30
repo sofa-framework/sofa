@@ -139,7 +139,7 @@ namespace sofa {
         // Initialization of the scene
         void initScene()
         {
-            sofa::simulation::getSimulation()->init(this->root.get());
+            sofa::simulation::initNode(root.get());
         }
 
         // Run five steps of simulation

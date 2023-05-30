@@ -99,7 +99,7 @@ BaseSimulationTest::SceneInstance::~SceneInstance()
 
 void BaseSimulationTest::SceneInstance::initScene()
 {
-    simulation->init(root.get());
+    sofa::simulation::initNode(root.get());
 }
 
 void BaseSimulationTest::SceneInstance::simulate(const double timestep)

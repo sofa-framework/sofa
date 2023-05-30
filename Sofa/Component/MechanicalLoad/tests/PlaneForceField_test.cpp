@@ -161,7 +161,7 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_planeForceFieldSPtr->d_planeNormal.setValue(normal);
 
         m_root->addObject(m_planeForceFieldSPtr) ;
-        simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
     void tearDownDefaultScene()

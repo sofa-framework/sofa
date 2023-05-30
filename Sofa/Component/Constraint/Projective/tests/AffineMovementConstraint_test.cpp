@@ -128,7 +128,7 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
      bool projectPosition(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
      {
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
 
         // Compute the theoretical final positions
         VecCoord finalPos;

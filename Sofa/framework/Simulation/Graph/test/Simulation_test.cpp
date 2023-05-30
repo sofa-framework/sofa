@@ -96,7 +96,7 @@ struct Scene_test: public NumericTest<SReal>
 
         // end create scene
         //*********
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
         //*********
 
         type::Vec3 sceneMinBBox, sceneMaxBBox;
@@ -171,7 +171,7 @@ struct Scene_test: public NumericTest<SReal>
         core::objectmodel::BaseNode* child  = root->createChild("child").get();
         child->addObject(core::objectmodel::New<MechanicalObject3>());
 
-        simulation->init(root.get());
+        sofa::simulation::initNode(root.get());
 
         {
             simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);

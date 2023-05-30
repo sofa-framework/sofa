@@ -54,7 +54,7 @@ public:
         // Add the spring to test
         sofa::simpleapi::createObject(childNode, "PolynomialRestShapeSpringsForceField", {{"polynomialStiffness", "10 10"},{"polynomialDegree", "2"},{"points", "0"},{"smoothShift", "1e-4"},{"smoothScale", "1e7"}});
 
-        simulation->init(root.get());
+        sofa::simulation::initNode(root.get());
         for(int i=0; i<2; i++)
         {
             simulation->animate(root.get(), dt);

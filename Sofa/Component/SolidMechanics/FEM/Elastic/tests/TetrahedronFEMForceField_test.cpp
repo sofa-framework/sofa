@@ -104,7 +104,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
         Inherited::force->f_method.setValue("small");
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(Inherited::node.get());
+        sofa::simulation::initNode(Inherited::node.get());
     }
 
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
@@ -233,7 +233,7 @@ public:
         createObject(m_root, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
 
@@ -294,7 +294,7 @@ public:
         ASSERT_NE(m_root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
 
@@ -347,7 +347,7 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         /// Init simulation
-        sofa::simulation::getSimulation()->init(m_root.get());
+        sofa::simulation::initNode(m_root.get());
     }
 
     void checkEmptyTopology(int FEMType)
@@ -366,13 +366,13 @@ public:
         if (FEMType == 0)
         {
             EXPECT_MSG_EMIT(Error); // TODO: Need to change this behavior
-            sofa::simulation::getSimulation()->init(m_root.get());
+            sofa::simulation::initNode(m_root.get());
         }
         else
         {
             EXPECT_MSG_EMIT(Warning);
             /// Init simulation
-            sofa::simulation::getSimulation()->init(m_root.get());
+            sofa::simulation::initNode(m_root.get());
         }
     }
 
@@ -409,13 +409,13 @@ public:
         if (FEMType == 0)
         {
             EXPECT_MSG_EMIT(Error); // TODO: Need to unify this behavior
-            sofa::simulation::getSimulation()->init(m_root.get());
+            sofa::simulation::initNode(m_root.get());
         }
         else
         {
             EXPECT_MSG_EMIT(Warning);
             /// Init simulation
-            sofa::simulation::getSimulation()->init(m_root.get());
+            sofa::simulation::initNode(m_root.get());
         }
 
        

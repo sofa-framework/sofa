@@ -238,7 +238,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyToData(xout,childInit);
 
         /// Init based on parentInit
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::initNode(root.get());
 
         /// Updated to parentNew
         sofa::testing::copyToData(xin,parentNew);

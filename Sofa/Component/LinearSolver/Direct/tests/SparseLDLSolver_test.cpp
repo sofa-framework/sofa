@@ -219,7 +219,7 @@ TEST(SparseLDLSolver, EmptyMState)
     sofa::simpleapi::createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"position", ""}});
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::initNode(root.get());
 
     {
         EXPECT_MSG_EMIT(Warning);
@@ -256,7 +256,7 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
                                   {{"useDataInputs", "true"}, {"timeToRemove", "0.05"},
                                    {"pointsToRemove", "0"}});
 
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::initNode(root.get());
 
     {
         EXPECT_MSG_NOEMIT(Warning);

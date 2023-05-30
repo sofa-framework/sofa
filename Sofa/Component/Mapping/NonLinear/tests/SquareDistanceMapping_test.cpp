@@ -253,7 +253,7 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "CGLinearSolver", {{"iterations", "1e4"}, {"tolerance", "1.0e-9"}, {"threshold", "1.0e-9"}});
     }
 
-    simulation::getSimulation()->init(root.get());
+    sofa::simulation::initNode(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
@@ -270,7 +270,7 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "EigenSparseLU", {{"template", "CompressedRowSparseMatrixMat3x3d"}});
     }
 
-    simulation::getSimulation()->init(root.get());
+    sofa::simulation::initNode(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
