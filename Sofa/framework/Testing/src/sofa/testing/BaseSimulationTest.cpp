@@ -85,7 +85,7 @@ void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filenam
     simulation = simulation::getSimulation();
     assert(simulation);
 
-    root = simulation->load(filename);
+    root = sofa::simulation::load(filename);
     
     if (root == nullptr)
         msg_error("BaseSimulationTest") << "Unable to find a valid loader for: '" << filename << "'";

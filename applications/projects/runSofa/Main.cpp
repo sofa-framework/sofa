@@ -467,7 +467,7 @@ int main(int argc, char** argv)
     }
 
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
-    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName, false, sceneArgs);
+    Node::SPtr groot = sofa::simulation::load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 

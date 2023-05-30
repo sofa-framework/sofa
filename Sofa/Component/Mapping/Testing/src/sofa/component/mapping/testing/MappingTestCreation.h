@@ -149,7 +149,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false);
+        root = sofa::simulation::load(fileName.c_str(), false);
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);

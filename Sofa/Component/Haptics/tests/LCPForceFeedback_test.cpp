@@ -140,7 +140,7 @@ void LCPForceFeedback_test::loadTestScene(const std::string& filename)
     /// Load the scene
     std::string sceneFilename = std::string(SOFA_COMPONENT_HAPTICS_TEST_SCENES_DIR) + "/" + filename;
     m_root = simu->createNewGraph("root");    
-    m_root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
+    m_root = sofa::simulation::load(sceneFilename.c_str());
 
     EXPECT_NE(m_root, nullptr);
 

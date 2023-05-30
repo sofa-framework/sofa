@@ -92,7 +92,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
 
     void scene_load()
     {
-        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
+        root = sofa::simulation::load(sceneFilename.c_str());
 
         hyperelasticNode = root->getChild("Hyperelastic-Liver");
 

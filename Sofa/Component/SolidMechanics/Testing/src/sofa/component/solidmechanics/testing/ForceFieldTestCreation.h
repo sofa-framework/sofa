@@ -137,7 +137,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
 
         /// Load the scene
         node = simu->createNewGraph("root");
-        node = sofa::simulation::getSimulation()->load(filename.c_str());
+        node = sofa::simulation::load(filename.c_str());
 
         ///  Get mechanical object
         dof = node->get<DOF>(node->SearchDown);

@@ -96,7 +96,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
+        root = sofa::simulation::load(sceneFilename.c_str());
 
     }
 

@@ -734,7 +734,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         return;
     }
     this->unloadScene();
-    mSimulation = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
+    mSimulation = dynamic_cast< Node *> (sofa::simulation::load ( scene.c_str() ));
     getSimulation()->init(mSimulation);
     if ( mSimulation )
     {
@@ -859,7 +859,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     if( currentSimulation() ) this->unloadScene();
 
     const std::vector<std::string> sceneArgs = ArgumentParser::extra_args();
-    mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
+    mSimulation = sofa::simulation::load ( filename, reload, sceneArgs );
 
     sofa::simulation::initNode(mSimulation.get());
     if ( mSimulation == nullptr )
