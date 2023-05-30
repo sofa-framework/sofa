@@ -425,7 +425,7 @@ public:
 
     bool isTransformed();
     const Matrix3& getRotation();
-    const Vector3& getTranslation();
+    const Vec3& getTranslation();
 
     void setGrid(CudaDistanceGrid* surf);
 
@@ -434,12 +434,12 @@ public:
     /// @{
     CudaDistanceGrid* getPrevGrid();
     const Matrix3& getPrevRotation();
-    const Vector3& getPrevTranslation();
+    const Vec3& getPrevTranslation();
     double getPrevDt();
     /// @}
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+    void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vec3& translation);
 };
 
 class CudaRigidDistanceGridCollisionModel : public core::CollisionModel
@@ -452,7 +452,7 @@ protected:
     {
     public:
         Matrix3 rotation;
-        Vector3 translation;
+        Vec3 translation;
         CudaDistanceGrid* grid;
 
         /// @name Previous state data
@@ -460,7 +460,7 @@ protected:
         /// @{
         CudaDistanceGrid* prevGrid; ///< Previous grid
         Matrix3 prevRotation; ///< Previous rotation
-        Vector3 prevTranslation; ///< Previous translation
+        Vec3 prevTranslation; ///< Previous translation
         double prevDt; ///< Time difference between previous and current state
         /// @}
 
@@ -512,7 +512,7 @@ public:
     {
         return elems[index].rotation;
     }
-    const Vector3& getTranslation(Index index=0)
+    const Vec3& getTranslation(Index index=0)
     {
         return elems[index].translation;
     }
@@ -527,7 +527,7 @@ public:
     {
         return elems[index].prevRotation;
     }
-    const Vector3& getPrevTranslation(Index index=0)
+    const Vec3& getPrevTranslation(Index index=0)
     {
         return elems[index].prevTranslation;
     }
@@ -537,12 +537,12 @@ public:
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(Index index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+    void setNewState(Index index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vec3& translation);
 
     /// @}
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+    void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vec3& translation);
 
     // -- CollisionModel interface
 
@@ -570,14 +570,14 @@ inline void CudaRigidDistanceGridCollisionElement::setGrid(CudaDistanceGrid* sur
 
 inline bool CudaRigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
 inline const Matrix3& CudaRigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
-inline const Vector3& CudaRigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+inline const Vec3& CudaRigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
 
 inline CudaDistanceGrid* CudaRigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
 inline const Matrix3& CudaRigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
-inline const Vector3& CudaRigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
+inline const Vec3& CudaRigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
 inline double CudaRigidDistanceGridCollisionElement::getPrevDt() { return model->getPrevDt(index); }
 
-inline void CudaRigidDistanceGridCollisionElement::setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+inline void CudaRigidDistanceGridCollisionElement::setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vec3& translation)
 {
     return model->setNewState(dt, grid, rotation, translation);
 }

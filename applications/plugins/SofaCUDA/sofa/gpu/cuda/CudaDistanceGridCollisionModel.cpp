@@ -685,7 +685,7 @@ void CudaRigidDistanceGridCollisionModel::draw(const core::visual::VisualParams*
         m.identity();
         m = elems[index].rotation;
         m.transpose();
-        m[3] = Vector4(elems[index].translation,1.0);
+        m[3] = Vec4(elems[index].translation,1.0);
         sofa::gl::glMultMatrix(m.ptr());
     }
 
