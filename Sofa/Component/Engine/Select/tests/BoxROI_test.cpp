@@ -89,7 +89,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
     void TearDown() override
     {
         if (m_root != nullptr){
-            m_simu->unload(m_root);
+            sofa::simulation::unload(m_root);
         }
     }
 

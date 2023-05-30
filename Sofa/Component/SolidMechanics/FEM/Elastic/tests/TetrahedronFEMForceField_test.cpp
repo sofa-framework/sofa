@@ -188,7 +188,7 @@ public:
     void TearDown() override
     {
         if (m_root != nullptr)
-            simulation::getSimulation()->unload(m_root);
+            sofa::simulation::unload(m_root);
     }
 
     void addTetraFEMForceField(Node::SPtr node, int FEMType, Real young, Real poisson, std::string method)

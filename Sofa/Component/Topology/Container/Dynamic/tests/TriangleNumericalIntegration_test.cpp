@@ -139,7 +139,7 @@ struct TriangleNumericalIntegration_test : public NumericTest<typename _DataType
     void TearDown() override
     {
         if (root != nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::unload(root);
     }
 
 };

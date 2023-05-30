@@ -116,7 +116,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
             fixed[i] = false;
         }
 
-        simulation::getSimulation()->unload(root);
+        sofa::simulation::unload(root);
         return true;
     }
 };

@@ -1096,7 +1096,7 @@ void RealGUI::unloadScene(bool _withViewer)
     if(_withViewer && getViewer())
         getViewer()->unload();
 
-    simulation::getSimulation()->unload ( currentSimulation() );
+    sofa::simulation::unload ( currentSimulation() );
 
     if(_withViewer && getViewer())
         getViewer()->setScene(nullptr);

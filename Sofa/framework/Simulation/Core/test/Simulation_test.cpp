@@ -43,7 +43,7 @@ TEST(simulationLoad, existingFilename)
     ASSERT_NE(simulation, nullptr);
     const simulation::Node::SPtr groot = sofa::simulation::load(path, false, {});
     EXPECT_NE(groot, nullptr);
-    simulation->unload(groot);
+    sofa::simulation::unload(groot);
 }
 
 
@@ -59,7 +59,7 @@ TEST(simulationLoad, nonExistingFilename)
     ASSERT_NE(simulation, nullptr);
     const simulation::Node::SPtr groot = sofa::simulation::load(std::string{filename}, false, {});
     EXPECT_EQ(groot, nullptr);
-    simulation->unload(groot);
+    sofa::simulation::unload(groot);
 }
 
 }

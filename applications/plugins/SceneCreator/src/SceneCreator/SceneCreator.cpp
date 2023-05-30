@@ -696,7 +696,7 @@ void initScene(Node::SPtr _root)
 Node::SPtr clearScene()
 {
     if( root )
-        simulation::getSimulation()->unload( root );
+        sofa::simulation::unload( root );
     root = simulation::getSimulation()->createNewGraph("");
     return root;
 }

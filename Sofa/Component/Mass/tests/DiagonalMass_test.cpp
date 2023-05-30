@@ -109,7 +109,7 @@ public:
     void TearDown() override
     {
         if (root!=nullptr)
-            simulation::getSimulation()->unload(root);
+            sofa::simulation::unload(root);
     }
 
     void createSceneGraph(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms)

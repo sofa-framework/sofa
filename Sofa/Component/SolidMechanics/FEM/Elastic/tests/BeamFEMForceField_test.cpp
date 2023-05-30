@@ -75,7 +75,7 @@ public:
     void TearDown() override
     {
         if (m_root != nullptr)
-            simulation::getSimulation()->unload(m_root);
+            sofa::simulation::unload(m_root);
     }
 
     void createSimpleBeam(Real radius, Real youngModulus, Real poissonRatio)

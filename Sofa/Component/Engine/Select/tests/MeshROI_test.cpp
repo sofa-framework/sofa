@@ -88,7 +88,7 @@ struct MeshROI_test : public BaseSimulationTest,
 
     void TearDown() override
     {
-        simulation::getSimulation()->unload(m_root) ;
+        sofa::simulation::unload(m_root) ;
     }
 
     /// It is important to freeze what are the available Data field

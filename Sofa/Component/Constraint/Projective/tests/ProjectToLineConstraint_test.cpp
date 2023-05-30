@@ -207,7 +207,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::unload(root);
     }
 
 

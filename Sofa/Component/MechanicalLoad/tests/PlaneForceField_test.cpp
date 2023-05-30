@@ -166,7 +166,7 @@ struct PlaneForceField_test : public BaseSimulationTest
 
     void tearDownDefaultScene()
     {
-        m_simulation->unload( m_root );
+        sofa::simulation::unload(m_root);
     }
 
     bool testBasicAttributes()

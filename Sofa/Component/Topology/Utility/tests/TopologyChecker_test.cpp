@@ -84,7 +84,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     void TearDown() override
     {
         if (m_instance.root !=nullptr)
-            sofa::simulation::getSimulation()->unload(m_instance.root);
+            sofa::simulation::unload(m_instance.root);
     }
 
 };

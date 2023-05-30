@@ -222,7 +222,7 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::unload(root);
     }
 
 

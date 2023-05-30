@@ -84,7 +84,7 @@ public:
     void TearDown() override
     {
         if (root)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::unload(root);
     }
 };
 

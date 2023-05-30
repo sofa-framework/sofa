@@ -226,7 +226,7 @@ TEST(SparseLDLSolver, EmptyMState)
         sofa::simulation::animateNode(root.get(), 0.5_sreal);
     }
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::unload(root);
 }
 
 
@@ -268,7 +268,7 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
         sofa::simulation::animateNode(root.get(), 0.1_sreal);
     }
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::unload(root);
 }
 
 

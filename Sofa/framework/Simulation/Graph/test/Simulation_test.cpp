@@ -180,14 +180,14 @@ struct Scene_test: public NumericTest<SReal>
         }
 
         sofa::simulation::animateNode(root.get());
-        simulation->unload(root);
+        sofa::simulation::unload(root);
     }
 
     /// create and unload a scene and check if all the objects have been destroyed.
     void sceneDestruction_unload()
     {
         createScene();
-        simulation->unload(root);
+        sofa::simulation::unload(root);
         checkDeletions();
     }
 

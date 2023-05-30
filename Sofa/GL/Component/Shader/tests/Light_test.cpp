@@ -82,7 +82,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(lm, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -123,7 +123,7 @@ void TestLight::checkPositionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -164,7 +164,7 @@ void TestLight::checkDirectionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -209,7 +209,7 @@ void TestLight::checkSpotLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    sofa::simulation::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 

@@ -284,7 +284,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     void TearDown()
     {
         if (tractionStruct.root!=nullptr)
-            sofa::simulation::getSimulation()->unload(tractionStruct.root);
+            sofa::simulation::unload(tractionStruct.root);
     }
 
 };

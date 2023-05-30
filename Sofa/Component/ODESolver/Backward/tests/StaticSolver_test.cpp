@@ -79,7 +79,7 @@ public:
     }
 
     void onTearDown() override {
-        getSimulation()->unload(root);
+        sofa::simulation::unload(root);
     }
 
     auto execute() -> std::pair<std::vector<SReal>, std::vector<SReal>> {

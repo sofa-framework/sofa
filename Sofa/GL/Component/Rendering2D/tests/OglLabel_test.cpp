@@ -84,7 +84,7 @@ public:
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 
@@ -114,7 +114,7 @@ public:
         EXPECT_TRUE(ogllabel->d_selectContrastingColor.getValue()) ;
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 
@@ -144,7 +144,7 @@ public:
         for(auto& attrname : attrnames)
             EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-        sofa::simulation::getSimulation()->unload(root);
+        sofa::simulation::unload(root);
         sofa::simulation::getSimulation()->createNewGraph("");
     }
 };

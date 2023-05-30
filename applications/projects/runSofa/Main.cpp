@@ -528,7 +528,7 @@ int main(int argc, char** argv)
     }
 
     if (groot!=nullptr)
-        sofa::simulation::getSimulation()->unload(groot);
+        sofa::simulation::unload(groot);
 
 
     GUIManager::closeGUI();

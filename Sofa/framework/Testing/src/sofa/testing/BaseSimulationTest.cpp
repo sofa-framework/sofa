@@ -94,7 +94,7 @@ void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filenam
 
 BaseSimulationTest::SceneInstance::~SceneInstance()
 {
-    simulation::getSimulation()->unload(root) ;
+    sofa::simulation::unload(root) ;
 }
 
 void BaseSimulationTest::SceneInstance::initScene()

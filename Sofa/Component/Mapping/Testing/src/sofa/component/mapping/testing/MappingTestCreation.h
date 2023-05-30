@@ -476,7 +476,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     ~Mapping_test() override
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::unload(root);
     }
 
 protected:

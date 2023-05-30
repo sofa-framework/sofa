@@ -223,7 +223,7 @@ namespace sofa {
         void TearDown() override
         {
             if (root!=nullptr)
-                sofa::simulation::getSimulation()->unload(root);
+                sofa::simulation::unload(root);
         }
 
     };

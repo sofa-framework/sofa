@@ -104,7 +104,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)
 
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
@@ -127,7 +127,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
@@ -151,7 +151,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
@@ -174,7 +174,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
@@ -197,7 +197,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::unload(root);
 }
 
 TEST(MakeDataAliasComponent, checkValidBehavior)
@@ -220,7 +220,7 @@ TEST(MakeDataAliasComponent, checkValidBehavior)
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
 
-    theSimulation->unload(root) ;
+    sofa::simulation::unload(root);
 }
 
 }
