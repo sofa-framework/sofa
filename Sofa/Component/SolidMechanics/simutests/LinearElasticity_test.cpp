@@ -245,7 +245,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                     Real pressure= pressureArray[i];
 
                     tractionStruct.forceField.get()->setPressure(Coord(0, 0, pressure));
-                    sofa::simulation::getSimulation()->reset(tractionStruct.root.get());
+                    sofa::simulation::resetNode(tractionStruct.root.get());
                     
                     // record the initial point of a given vertex
                     Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];

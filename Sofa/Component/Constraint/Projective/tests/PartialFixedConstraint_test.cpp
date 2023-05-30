@@ -112,7 +112,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
                 return false;
             }
 
-            sofa::simulation::getSimulation()->reset(root.get());
+            sofa::simulation::resetNode(root.get());
             fixed[i] = false;
         }
 

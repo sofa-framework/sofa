@@ -2367,7 +2367,7 @@ void RealGUI::resetScene()
     {
         m_frameCounter=0;
 
-        simulation::getSimulation()->reset ( root );
+        sofa::simulation::resetNode(root);
         eventNewTime();
         emit newStep();
     }

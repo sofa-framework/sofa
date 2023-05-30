@@ -676,7 +676,7 @@ public:
                 timeMax = diffTimed;
 
             diffTimeMs += diffTimed;
-            m_simulation->reset(m_root.get());
+            sofa::simulation::resetNode(m_root.get());
         }
         
         //std::cout << "timeMean: " << diffTimeMs/nbrTest << std::endl;
