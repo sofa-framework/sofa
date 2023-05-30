@@ -566,7 +566,7 @@ void QtViewer::DisplayOBJs()
     {
         // 		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        getSimulation()->initTextures(groot.get());
+        sofa::simulation::initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
