@@ -413,9 +413,7 @@ struct MutationListener_test : public BaseTest
 
     void SetUp() override
     {
-        sofa::simulation::Simulation* simu;
-        sofa::simulation::setSimulation(
-                    simu = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         root = simu->createNewGraph("root");
         root->addListener(&listener);

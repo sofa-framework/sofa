@@ -125,7 +125,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         /// Parent node
         root = simulation->createNewGraph("root");
@@ -138,9 +138,14 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
+    Mapping_test(std::string fileName)
+        : simulation(sofa::simulation::getSimulation()),
+          deltaRange(1, 1000),
+          errorMax(100),
+          errorFactorDJ(1),
+          flags(TEST_ASSEMBLY_API|TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        assert(simulation);
 
         /// Load the scene
         root = simulation->createNewGraph("root");

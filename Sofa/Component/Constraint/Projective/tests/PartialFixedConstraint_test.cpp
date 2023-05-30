@@ -65,8 +65,8 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         typename sofa::component::statecontainer::MechanicalObject<DataTypes>::SPtr  mstate;
 
         /// Scene initialization
-        sofa::simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        assert(simulation);
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vec3(0,0,0) );
         simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitSolver", integrationScheme);

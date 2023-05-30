@@ -57,7 +57,6 @@ public:
 
     void SetUp() override
     {
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     void TearDown() override

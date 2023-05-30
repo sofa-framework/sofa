@@ -44,7 +44,6 @@ struct DAG_test : public BaseTest
 {
     DAG_test()
     {
-        sofa::simulation::setSimulation(new simulation::graph::DAGSimulation());
     }
 
 

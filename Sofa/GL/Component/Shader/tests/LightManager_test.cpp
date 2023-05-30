@@ -58,8 +58,6 @@ struct TestLightManager : public BaseTest
     {
         sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 };
 

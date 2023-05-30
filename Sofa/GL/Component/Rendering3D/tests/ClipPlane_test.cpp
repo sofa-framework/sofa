@@ -64,8 +64,6 @@ public:
     {
         sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     void checkClipPlaneValidAttributes();

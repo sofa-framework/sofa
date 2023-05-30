@@ -84,8 +84,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
     {
         timeStep = 0.02;
 
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         /// Load the scene
         root = simu->createNewGraph("root");

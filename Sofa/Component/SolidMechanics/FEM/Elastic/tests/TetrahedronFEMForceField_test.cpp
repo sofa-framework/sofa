@@ -182,7 +182,7 @@ public:
 
     void SetUp() override
     {
-        simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
+        m_simulation = sofa::simulation::getSimulation();
     }
 
     void TearDown() override

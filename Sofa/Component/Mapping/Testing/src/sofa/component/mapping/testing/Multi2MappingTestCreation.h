@@ -118,10 +118,12 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
 
 
     /// Constructor
-    Multi2Mapping_test() :deltaRange(1, 1000), errorMax(10)
+    Multi2Mapping_test()
+        : simulation(sofa::simulation::getSimulation()),
+          deltaRange(1, 1000),
+          errorMax(10)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
+        assert(simulation);
     }
 
     ~Multi2Mapping_test() override

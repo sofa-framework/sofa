@@ -51,18 +51,15 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const 
         return ;
     }
 
-    if(simulation::getSimulation() == nullptr)
-        simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
-
     simulation = simulation::getSimulation() ;
+    assert(simulation);
     root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str()) ;
 }
 
 BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFile(const std::string& filename)
 {
     BaseSimulationTest::SceneInstance instance ;
-    if(simulation::getSimulation() == nullptr)
-        simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
+    assert(sofa::simulation::getSimulation());
 
     for(SceneLoader* loader : (*SceneLoaderFactory::getInstance()->getEntries()) )
     {
@@ -78,19 +75,15 @@ BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFil
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
 {
-    if(simulation::getSimulation() == nullptr)
-        simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
-
     simulation = simulation::getSimulation() ;
+    assert(simulation);
     root = simulation::getSimulation()->createNewNode(rootname) ;
 }
 
 void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filename)
 {
-    if (simulation::getSimulation() == nullptr)
-        simulation::setSimulation(new simulation::graph::DAGSimulation());
-
     simulation = simulation::getSimulation();
+    assert(simulation);
 
     root = simulation->load(filename);
     
@@ -116,7 +109,7 @@ void BaseSimulationTest::SceneInstance::simulate(const double timestep)
 
 BaseSimulationTest::BaseSimulationTest()
 {
-    simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
+    assert(sofa::simulation::getSimulation());
 }
 
 } // namespace sofa::testing

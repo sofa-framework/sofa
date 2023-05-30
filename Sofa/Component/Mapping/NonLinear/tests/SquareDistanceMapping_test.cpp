@@ -151,10 +151,6 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
 
     void onSetUp() override
     {
-        if (!simulation::getSimulation()) {
-            simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
-        }
-
         root = simulation::getSimulation()->createNewNode("root");
 
         simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});

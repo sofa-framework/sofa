@@ -72,8 +72,8 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
      // Create the context for the scene
      void SetUp() override
      {
-        // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+         // Init simulation
+         simulation = sofa::simulation::getSimulation();
 
          root = simulation::getSimulation()->createNewGraph("root");
 

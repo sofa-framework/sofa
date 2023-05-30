@@ -71,8 +71,8 @@ struct ProjectToPlaneConstraint_test : public BaseSimulationTest, NumericTest<ty
     /// Create the context for the matrix tests.
     void SetUp() override
     {
-//        if( sofa::simulation::getSimulation()==nullptr )
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
+        ASSERT_NE(simulation, nullptr);
 
         /// Create the scene
         root = simulation->createNewGraph("root");

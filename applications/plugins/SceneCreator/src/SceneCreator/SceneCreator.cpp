@@ -675,7 +675,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
 
 Node::SPtr initSofa()
 {
-    setSimulation(new simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
     root = simulation::getSimulation()->createNewGraph("root");
     return root;
 }

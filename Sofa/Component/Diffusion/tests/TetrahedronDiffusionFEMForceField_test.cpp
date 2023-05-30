@@ -33,6 +33,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <iostream>
 #include <fstream>
+#include <gtest/gtest.h>
 
 namespace sofa {
 
@@ -98,8 +99,8 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         timeStep = 0.0001;
         idMiddlePoint = 1270;
 
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         /// Load the scene
         root = simu->createNewGraph("root");

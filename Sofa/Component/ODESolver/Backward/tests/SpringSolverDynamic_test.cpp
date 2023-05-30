@@ -63,7 +63,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
     void SetUp() override
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
     }
 

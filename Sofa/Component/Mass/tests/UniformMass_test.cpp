@@ -38,7 +38,6 @@ using sofa::simulation::graph::DAGSimulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::ExecParams ;
@@ -81,7 +80,7 @@ struct UniformMassTest :  public BaseTest
     void SetUp() override
     {
         todo = true ;
-        setSimulation( m_simu = new DAGSimulation() );
+        m_simu = sofa::simulation::getSimulation();
         m_root = m_simu->createNewGraph("root");
     }
 

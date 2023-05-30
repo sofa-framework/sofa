@@ -75,11 +75,6 @@ void perTestInit()
     sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
     sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
-    if(theSimulation==nullptr){
-        theSimulation = new DAGSimulation();
-        sofa::simulation::setSimulation(theSimulation);
-    }
-
     if(defaultHandler==nullptr)
         defaultHandler=new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ;
 

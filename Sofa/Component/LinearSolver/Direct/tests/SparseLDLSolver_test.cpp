@@ -208,7 +208,6 @@ TEST(SparseLDLSolver, EmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
     sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");
@@ -237,7 +236,6 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
     sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
 
     sofa::simpleapi::importPlugin("Sofa.Component.LinearSolver.Direct");

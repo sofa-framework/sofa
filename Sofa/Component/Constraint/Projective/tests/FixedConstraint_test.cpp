@@ -67,8 +67,9 @@ struct FixedConstraint_test : public BaseTest
     {
         //Init
 
-        simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        assert(simulation);
+
         Coord initCoord1, initCoord2;
         Deriv force;
         for(unsigned i=0; i<force.size(); i++)
@@ -148,8 +149,8 @@ struct FixedConstraint_test : public BaseTest
 
     bool testTopologicalChanges()
     {
-        simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        assert(simulation);
         
         /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");

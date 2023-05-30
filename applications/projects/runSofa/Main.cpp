@@ -326,7 +326,7 @@ int main(int argc, char** argv)
 
     if (simulationType == "tree")
         msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
-    sofa::simulation::setSimulation(new DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable

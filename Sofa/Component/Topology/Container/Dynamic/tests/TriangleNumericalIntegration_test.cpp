@@ -68,7 +68,7 @@ struct TriangleNumericalIntegration_test : public NumericTest<typename _DataType
     void SetUp() override
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
 
         root = simulation::getSimulation()->createNewGraph("root");
     }

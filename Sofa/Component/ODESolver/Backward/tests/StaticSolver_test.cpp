@@ -53,10 +53,6 @@ class StaticSolverTest : public sofa::testing::BaseTest
 public:
     void onSetUp() override {
 
-        if (! getSimulation()) {
-            setSimulation(new DAGSimulation()) ;
-        }
-
         root = getSimulation()->createNewNode("root");
 
         createObject(root, "RequiredPlugin", {{"pluginName", "Sofa.Component"}});

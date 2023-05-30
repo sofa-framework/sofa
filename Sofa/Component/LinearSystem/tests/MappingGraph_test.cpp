@@ -171,8 +171,7 @@ TEST(MappingGraph, diamondMapping)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::Simulation* simulation;
-    sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+    sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
     sofa::simulation::Node::SPtr root = simulation->createNewGraph("root");
     EXPECT_EQ(root->getName(), "root");

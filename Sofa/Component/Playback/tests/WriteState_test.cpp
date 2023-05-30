@@ -74,7 +74,6 @@ namespace sofa {
         void SetUp() override
         {
             // Init simulation
-            sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
             root = simulation::getSimulation()->createNewGraph("root");
         }
 

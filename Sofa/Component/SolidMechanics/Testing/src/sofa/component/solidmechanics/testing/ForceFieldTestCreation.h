@@ -111,8 +111,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         ///  node 1
         node = simu->createNewGraph("root");
@@ -132,8 +132,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        assert(simu);
 
         /// Load the scene
         node = simu->createNewGraph("root");

@@ -69,8 +69,6 @@ TEST(MessageHandlerComponent, simpleInit)
         "   </Node> "
         "</Node>                                                             " ;
 
-    sofa::simulation::setSimulation(new DAGSimulation());
-
     Node::SPtr root = SceneLoaderXML::loadFromMemory("test1", scene.c_str());
     EXPECT_TRUE(root!=nullptr) ;
 

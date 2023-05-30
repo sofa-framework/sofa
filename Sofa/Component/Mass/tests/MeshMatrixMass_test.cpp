@@ -105,7 +105,7 @@ public:
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
-        simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
+        simulation = simulation::getSimulation();
         root = simulation::getSimulation()->createNewGraph("root");
     }
 

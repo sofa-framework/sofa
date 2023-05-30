@@ -43,7 +43,6 @@ using sofa::core::objectmodel::New;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 
@@ -93,8 +92,7 @@ struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public Baryc
     }
 
     void scene_test(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
+        Simulation* simu = sofa::simulation::getSimulation();
 
         typename BarycentricMapping<In,Out>::SPtr thisObject = New<BarycentricMapping<In,Out>>();
         thisObject->setName("barycentricMapping");

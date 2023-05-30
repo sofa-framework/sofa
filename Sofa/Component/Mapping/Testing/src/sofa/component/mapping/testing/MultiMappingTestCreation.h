@@ -93,10 +93,12 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 
 
-    MultiMapping_test():deltaRange(1,1000),errorMax(10)
+    MultiMapping_test()
+        : simulation(sofa::simulation::getSimulation()),
+          deltaRange(1, 1000),
+          errorMax(10)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
+        assert(simulation);
     }
 
     /** Create scene with given number of parent states. Currently, only one child state is handled.

@@ -53,8 +53,6 @@ public:
  {
          sofa::simpleapi::importPlugin("Sofa.GL.Component.Shader");
          sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
-
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     void checkSpotLightValidAttributes();
@@ -173,9 +171,6 @@ void TestLight::checkDirectionalLightValidAttributes()
 void TestLight::checkSpotLightValidAttributes()
 {
     EXPECT_MSG_NOEMIT(Warning, Error) ;
-
-    if(sofa::simulation::getSimulation()==nullptr)
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"

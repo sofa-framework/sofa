@@ -40,9 +40,6 @@ struct LoadScene_test: public BaseTest
 
    bool LoadScene(std::string sceneName)
    {
-       simulation::Simulation* simulation;
-       sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
        // Load the scene from the xml file
        std::string fileName = std::string(SOFASIMULATION_TEST_SCENES_DIR) + "/" + sceneName;
        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));

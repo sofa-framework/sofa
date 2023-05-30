@@ -92,8 +92,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         // Simulation gives a slightly different reference:
         refY[0] = -0.106832;
 
-        simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simu = sofa::simulation::getSimulation();
 
         /// Load the scene
         root = simu->createNewGraph("root");

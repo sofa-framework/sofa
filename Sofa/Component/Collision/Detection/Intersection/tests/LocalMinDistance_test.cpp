@@ -77,7 +77,7 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
 {
     ExpectMessage warning(Message::Warning) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -106,7 +106,7 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
 {
     ExpectMessage warning(Message::Warning) ;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -129,7 +129,7 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
 
 void TestLocalMinDistance::checkAttributes()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -162,7 +162,7 @@ void TestLocalMinDistance::checkAttributes()
 
 void TestLocalMinDistance::checkDoubleInit()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -190,7 +190,7 @@ void TestLocalMinDistance::checkDoubleInit()
 
 void TestLocalMinDistance::checkInitReinit()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    assert(sofa::simulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"

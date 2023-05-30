@@ -27,7 +27,6 @@ using sofa::testing::BaseSimulationTest;
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
@@ -122,7 +121,7 @@ struct PlaneForceField_test : public BaseSimulationTest
     {
         if(m_simulation==nullptr){
             BackTrace::autodump() ;
-            sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
+            m_simulation = sofa::simulation::getSimulation();
         }
         /// Create the scene
         m_root = m_simulation->createNewGraph("root");

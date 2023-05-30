@@ -69,7 +69,7 @@ public:
 
     void SetUp() override
     {
-        simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
+        m_simulation = sofa::simulation::getSimulation();
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
         sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
     }

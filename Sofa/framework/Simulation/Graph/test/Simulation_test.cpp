@@ -71,15 +71,14 @@ struct Scene_test: public NumericTest<SReal>
 
     Scene_test()
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
     }
 
     /// Test Simulation::computeBBox
     void computeBBox()
     {
         // Init Sofa
-        simulation::Simulation* simulation;
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
         root = simulation::getSimulation()->createNewGraph("root");
 

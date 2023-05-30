@@ -199,7 +199,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     void SetUp()
     {
         // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
         size_t resolutionCircumferential=7;
         size_t  resolutionRadial=3;
         size_t  resolutionHeight=7;

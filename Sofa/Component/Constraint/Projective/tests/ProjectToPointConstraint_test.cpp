@@ -71,8 +71,8 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
     /// Create the context for the tests.
     void SetUp() override
     {
-        // Init
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        simulation = sofa::simulation::getSimulation();
+        ASSERT_NE(simulation, nullptr);
 
         /// Create the scene
         root = simulation->createNewGraph("root");

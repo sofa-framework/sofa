@@ -134,8 +134,8 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
 
 void LCPForceFeedback_test::loadTestScene(const std::string& filename)
 {
-    simulation::Simulation* simu;
-    sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+    simulation::Simulation* simu = sofa::simulation::getSimulation();
+    ASSERT_NE(simu, nullptr);
 
     /// Load the scene
     std::string sceneFilename = std::string(SOFA_COMPONENT_HAPTICS_TEST_SCENES_DIR) + "/" + filename;
