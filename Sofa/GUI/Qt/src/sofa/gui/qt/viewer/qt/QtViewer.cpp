@@ -573,7 +573,7 @@ void QtViewer::DisplayOBJs()
 
     {
 
-        getSimulation()->draw(vparams,groot.get());
+        sofa::simulation::drawNode(vparams, groot.get());
 
         if (m_bShowAxis)
         {
