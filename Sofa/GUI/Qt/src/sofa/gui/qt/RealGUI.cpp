@@ -1146,7 +1146,7 @@ void RealGUI::fileSave()
 
 void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
-    simulation::getSimulation()->exportGraph ( node, filename );
+    sofa::simulation::exportGraph ( node, filename );
 }
 
 //------------------------------------
