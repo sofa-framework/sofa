@@ -101,6 +101,7 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 
 bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
+    const auto _mu = mu.getValue();
 
     std::map < std::string, sofa::type::vector<SReal> >& graph = *f_graph.beginEdit();
 
@@ -243,7 +244,6 @@ LCPConstraintSolver::LCPConstraintSolver()
     , showCellWidth( initData(&showCellWidth, "showCellWidth", "Distance between each constraint cells"))
     , showTranslation( initData(&showTranslation, "showTranslation", "Position of the first cell"))
     , showLevelTranslation( initData(&showLevelTranslation, "showLevelTranslation", "Translation between levels"))
-    , _mu(0.6)
     , lcp(&lcp1)
     , last_lcp(nullptr)
     , _W(&lcp1.W)
@@ -252,7 +252,6 @@ LCPConstraintSolver::LCPConstraintSolver()
     , _Wdiag(nullptr)
 {
     _numConstraints = 0;
-    _mu = 0.0;
     constraintGroups.beginEdit()->insert(0);
     constraintGroups.endEdit();
 
@@ -395,7 +394,8 @@ void LCPConstraintSolver::build_LCP()
 
     accumulateMatrixDeriv(cparams);
 
-    _mu = mu.getValue();
+    const auto _mu = mu.getValue();
+
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
     lcp->mu = _mu;
@@ -741,7 +741,8 @@ void LCPConstraintSolver::build_problem_info()
 
     accumulateMatrixDeriv(cparams);
 
-    _mu = mu.getValue();
+    const auto _mu = mu.getValue();
+
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
     lcp->mu = _mu;
@@ -766,6 +767,7 @@ void LCPConstraintSolver::computeInitialGuess()
 {
     sofa::helper::AdvancedTimer::StepVar vtimer("InitialGuess");
 
+    const auto _mu = mu.getValue();
     const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[0];
     const VecPersistentID& constraintIds = hierarchy_constraintIds[0];
     int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
@@ -781,7 +783,7 @@ void LCPConstraintSolver::computeInitialGuess()
         else
         {
             (*_result)[c] =  0.0;
-            (*_result)[c+numContact] =  0.0;
+            //(*_result)[c+numContact] =  0.0;
         }
     }
     for (const ConstraintBlockInfo& info : constraintBlockInfo)
@@ -844,6 +846,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     if(!_numConstraints)
         return 0;
 
+    auto _mu = mu.getValue();
     if(_mu==0.0)
     {
         msg_error() << "frictionless case with unbuilt nlcp is not implemented";
@@ -865,7 +868,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
     // data for iterative procedure
     SReal _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
-    SReal _mu = mu.getValue();
 
     /// each constraintCorrection has an internal force vector that is set to "0"
 
@@ -1101,6 +1103,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::v
 
 int LCPConstraintSolver::gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* residuals)
 {
+    const auto _mu = mu.getValue();
+
     if (_mu == 0.0)
         return lcp_gaussseidel_unbuilt(dfree, f, residuals);
     return nlcp_gaussseidel_unbuilt(dfree, f, residuals);
@@ -1110,7 +1114,12 @@ int LCPConstraintSolver::gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::vector<SReal>* /*residuals*/)
 {
+    if (!_numConstraints)
+        return 0;
+
     auto buildConstraintsTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_constraints");
+
+    const auto _mu = mu.getValue();
 
     if(_mu!=0.0)
     {
@@ -1263,6 +1272,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(SReal *dfree, SReal *f, std::ve
             /// ATTENTION  NOUVEAU GS_STATE : maintenant dn inclue les forces fn
             //W33[c1].New_GS_State(_mu,dn,dt,ds,fn,ft,fs);
             fn -= dn / W11[c1];
+
             if (fn < 0) fn = 0;
             error += fabs(W11[c1] * (fn - fn0));
 
@@ -1337,6 +1347,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
+    const auto _mu = mu.getValue();
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 

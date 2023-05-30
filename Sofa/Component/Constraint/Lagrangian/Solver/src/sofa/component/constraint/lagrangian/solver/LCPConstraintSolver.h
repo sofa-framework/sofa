@@ -115,7 +115,6 @@ private:
     void keepContactForcesValue();
 
     unsigned int _numConstraints;
-    SReal _mu;
 
     /// Call the method resetConstraint on all the mechanical states and BaseConstraintSet
     void resetConstraints(core::ConstraintParams cparams);
