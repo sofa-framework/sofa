@@ -51,8 +51,6 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const 
         return ;
     }
 
-    simulation = simulation::getSimulation() ;
-    assert(simulation);
     root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str()) ;
 }
 
@@ -75,16 +73,11 @@ BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFil
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
 {
-    simulation = simulation::getSimulation() ;
-    assert(simulation);
     root = simulation::getSimulation()->createNewNode(rootname) ;
 }
 
 void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filename)
 {
-    simulation = simulation::getSimulation();
-    assert(simulation);
-
     root = sofa::simulation::load(filename);
     
     if (root == nullptr)

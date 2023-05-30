@@ -50,7 +50,6 @@ public:
         static SceneInstance LoadFromFile(const std::string& filename) ;
 
         Node::SPtr root ;
-        Simulation* simulation {nullptr} ;
 
         void initScene() ;
         void simulate(const double timestep) ;
