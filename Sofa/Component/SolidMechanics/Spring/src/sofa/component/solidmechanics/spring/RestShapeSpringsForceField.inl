@@ -117,9 +117,6 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 {
     ForceField<DataTypes>::init();
 
-    // setting component state to valid and it is invalidated later if the initialization goes wrong
-    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-
     if (d_stiffness.getValue().empty())
     {
         msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
@@ -161,6 +158,8 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     }
 
     recomputeIndices();
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
+        return;
 
     BaseMechanicalState* state = this->getContext()->getMechanicalState();
     if(!state)
@@ -197,6 +196,8 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     }
 
     lastUpdatedStep = -1.0;
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
