@@ -63,6 +63,10 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , m_updateStiffnessMatrix(true)
 {
     d_poissonRatio.setRequired(true);
+    d_youngModulus.setRequired(true);
+    d_radius.setRequired(true);
+    d_radiusInner.setRequired(true);
+
     d_youngModulus.setReadOnly(true);
 }
 
@@ -200,7 +204,7 @@ void BeamFEMForceField<DataTypes>::createBeamInfo(Index edgeIndex, BeamInfo &ei,
 template<class DataTypes>
 Quat<SReal>& BeamFEMForceField<DataTypes>::beamQuat(int i)
 {
-    type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
     return bd[i].quat;
 }
 
@@ -216,7 +220,7 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
     if (!m_indexedElements)
         return;
 
-    VecDeriv& f = *(dataF.beginEdit());
+    helper::WriteAccessor<Data<VecDeriv> > f = dataF;
     const VecCoord& p=dataX.getValue();
     f.resize(p.size());
 
@@ -233,7 +237,7 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
             Index a = edge[0];
             Index b = edge[1];
             initLarge(i,a,b);
-            accumulateForceLarge( f, p, i, a, b );
+            accumulateForceLarge( f.wref(), p, i, a, b );
         }
     }
     else
@@ -246,11 +250,9 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
             Index b = (*it)[1];
 
             initLarge(i,a,b);
-            accumulateForceLarge( f, p, i, a, b );
+            accumulateForceLarge( f.wref(), p, i, a, b );
         }
     }
-
-    dataF.endEdit();
 }
 
 template<class DataTypes>
@@ -259,7 +261,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
     if (!m_indexedElements)
         return;
 
-    VecDeriv& df = *(datadF.beginEdit());
+    helper::WriteAccessor<Data<VecDeriv> > df = datadF;
     const VecDeriv& dx=datadX.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
@@ -274,7 +276,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
             Index a = edge[0];
             Index b = edge[1];
 
-            applyStiffnessLarge(df, dx, i, a, b, kFactor);
+            applyStiffnessLarge(df.wref(), dx, i, a, b, kFactor);
         }
     }
     else
@@ -286,11 +288,9 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
             Index a = (*it)[0];
             Index b = (*it)[1];
 
-            applyStiffnessLarge(df, dx, i, a, b, kFactor);
+            applyStiffnessLarge(df.wref(), dx, i, a, b, kFactor);
         }
     }
-
-    datadF.endEdit();
 }
 
 template<class DataTypes>
@@ -329,7 +329,7 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     else
         phiz = (Real)(24.0*(1.0+_nu)*_Iy/(_Asz*L2));
 
-    type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
     StiffnessMatrix& k_loc = bd[i]._k_loc;
 
     // Define stiffness matrix 'k' in local coordinates
@@ -359,8 +359,6 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     for (int i=0; i<=10; i++)
         for (int j=i+1; j<12; j++)
             k_loc[i][j] = k_loc[j][i];
-
-    m_beamsData.endEdit();
 }
 
 inline type::Quat<SReal> qDiff(type::Quat<SReal> a, const type::Quat<SReal>& b)
@@ -414,8 +412,6 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     }
     else
         beamQuat(i)= quatA;
-
-    m_beamsData.endEdit();
 }
 
 template<class DataTypes>
@@ -425,8 +421,6 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
     beamQuat(i)= x[a].getOrientation();
     beamQuat(i).normalize();
-
-    m_beamsData.endEdit();
 
     type::Vec<3,Real> u, P1P2, P1P2_0;
 
@@ -850,9 +844,8 @@ void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< type::Vec3 >*
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initBeams(std::size_t size)
 {
-    type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
     bd.resize(size);
-    m_beamsData.endEdit();
 }
 
 template<class DataTypes>
@@ -864,9 +857,8 @@ void BeamFEMForceField<DataTypes>::setUpdateStiffnessMatrix(bool val)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::setBeam(Index i, SReal E, SReal L, SReal nu, SReal r, SReal rInner)
 {
-    type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
+    helper::WriteAccessor<Data<type::vector<BeamInfo> > > bd = m_beamsData;
     bd[i].init(E,L,nu,r,rInner);
-    m_beamsData.endEdit();
 }
 
 template<class DataTypes>
