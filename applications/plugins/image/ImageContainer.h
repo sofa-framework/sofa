@@ -370,9 +370,8 @@ public:
 
     bool transformIsSet;
 
-    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override
+    void doBaseObjectParse(sofa::core::objectmodel::BaseObjectDescription *arg) override
     {
-        Inherited::parse(arg);
 
         this->transformIsSet = false;
         if (this->transform.isSet())

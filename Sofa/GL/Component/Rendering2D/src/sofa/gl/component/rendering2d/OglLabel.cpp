@@ -61,16 +61,14 @@ void OglLabel::doBaseObjectParse(BaseObjectDescription *arg)
         return ;
     }
 
-    arg->setAttribute("selectContrastingColor", std::string("true"));
-    arg->removeAttribute("color") ;
-    
     /// A send the message after the parsing of the base class so that the "name" of the component
     /// is correctly reported in the message.
     msg_deprecated() << "Attribute color='contrast' is deprecated since SOFA v17.06" << msgendl
                      << "Using deprecated attributes may result in lower performance or un-expected behaviors" << msgendl
                      << "To remove this message you need to update your scene by replacing color='contrast' with "
                         " selectContrastingColor='true'" ;
-
+    d_selectContrastingColor.setValue(true);
+    d_color.setValue(RGBAColor::white());
 }
 
 void OglLabel::init()

@@ -83,7 +83,7 @@ protected:
 public:
     void init() override;
 
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void doMeshTopologyParse(core::objectmodel::BaseObjectDescription* arg) override;
 
     double getStep() const { return mStep.getValue(); }
     void setStep(double val) { mStep.setValue(val); }

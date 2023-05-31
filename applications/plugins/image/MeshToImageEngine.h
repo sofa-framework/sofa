@@ -217,7 +217,7 @@ public:
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void doBaseObjectParse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vf_positions.parseSizeData(arg, f_nbMeshes);
         vf_edges.parseSizeData(arg, f_nbMeshes);
@@ -227,7 +227,6 @@ public:
         vf_InsideValues.parseSizeData(arg, f_nbMeshes);
         vf_roiIndices.parseSizeData(arg, f_nbMeshes);
         vf_roiValue.parseSizeData(arg, f_nbMeshes);
-        Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
