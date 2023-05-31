@@ -29,14 +29,10 @@ namespace sofa::component::linearsolver::direct
 
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , S(nullptr), N(nullptr)
-    , d_typePermutation(initData(&d_typePermutation, "permutation", "Type of fill reducing permutation"))
-{   
-    sofa::helper::OptionsGroup d_typePermutationOptions{"None", "SuiteSparse", "METIS"};
-    d_typePermutationOptions.setSelectedItem(0); // default None
-    d_typePermutation.setValue(d_typePermutationOptions);
-}
+    : S(nullptr), N(nullptr)
+    , d_typePermutation(initData(&d_typePermutation, {"None", "SuiteSparse", "METIS"},
+        "permutation", "Type of fill reducing permutation"))
+{}
 
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::~SparseCholeskySolver()
@@ -168,6 +164,18 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         }
     }
 
+}
+
+template <class TMatrix, class TVector>
+void SparseCholeskySolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit1::parse(arg);
 }
 
 template <class TMatrix, class TVector>
