@@ -783,7 +783,6 @@ void LCPConstraintSolver::computeInitialGuess()
         else
         {
             (*_result)[c] =  0.0;
-            //(*_result)[c+numContact] =  0.0;
         }
     }
     for (const ConstraintBlockInfo& info : constraintBlockInfo)
