@@ -35,8 +35,7 @@ namespace sofa::component::linearsolver::preconditioner
 
 template<class TMatrix, class TVector, class TThreadManager>
 SSORPreconditioner<TMatrix,TVector,TThreadManager>::SSORPreconditioner()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_omega( initData(&f_omega,1.0, "omega","Omega coefficient") )
+    : f_omega( initData(&f_omega,1.0, "omega","Omega coefficient") )
 {
 }
 
@@ -85,6 +84,19 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     Index n = M.rowSize();
     data->inv_diag.resize(n);
     for (Index j=0; j<n; j++) data->inv_diag[j] = 1.0 / M.element(j,j);
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
+void SSORPreconditioner<TMatrix, TVector, TThreadManager>::parse(
+    core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("verbose"))
+    {
+        msg_warning() << "Attribute 'verbose' has no use in this component. "
+                         "To disable this warning, remove the attribute from the scene.";
+    }
+
+    Inherit::parse(arg);
 }
 
 } // namespace sofa::component::linearsolver::preconditioner
