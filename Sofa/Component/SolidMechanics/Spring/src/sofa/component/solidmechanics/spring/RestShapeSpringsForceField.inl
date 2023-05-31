@@ -362,11 +362,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(v);
 
-    // Checking the componentState, to trigger a callback if other data fields (specifically
-    // d_points or d_external_points) were changed
-    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
-        return;
-
     WriteAccessor< DataVecDeriv > f1 = f;
     ReadAccessor< DataVecCoord > p1 = x;
 
@@ -472,11 +467,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    // Checking the componentState, to trigger a callback if other data fields (specifically
-    // d_points or d_external_points) were changed
-    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
-        return;
-
     WriteAccessor< DataVecDeriv > df1 = df;
     ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -539,11 +529,6 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
-    // Checking the componentState, to trigger a callback if other data fields (specifically
-    // d_points or d_external_points) were changed
-    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
-        return;
-
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
     vparams->drawTool()->setLightingEnabled(false);
 
@@ -587,11 +572,6 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    // Checking the componentState, to trigger a callback if other data fields (specifically
-    // d_points or d_external_points) were changed
-    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
-        return;
-
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
