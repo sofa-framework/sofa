@@ -69,6 +69,7 @@ sofa::helper::OptionsGroup CollisionResponse::initializeResponseOptions(sofa::co
 
 void CollisionResponse::init()
 {
+    Inherit1::init();
     if (response.getValue().size() == 0)
     {
         response.setValue(initializeResponseOptions(getContext()));
