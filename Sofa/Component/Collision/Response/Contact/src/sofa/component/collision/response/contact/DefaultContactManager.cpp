@@ -69,6 +69,7 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
 
 void DefaultContactManager::init()
 {
+    Inherit1::init();
     if (response.getValue().size() == 0)
     {
         response.setValue(initializeResponseOptions(getContext()));
