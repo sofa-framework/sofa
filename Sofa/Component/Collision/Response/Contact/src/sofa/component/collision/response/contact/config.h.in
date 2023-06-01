@@ -36,8 +36,8 @@
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__RENAME_COLLISIONRESPONSE() \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "v23.06", "v23.12", \
-        "DefaultContactManager renamed as CollisionResponse in #XXXX: Sofa/Component/Collision/Response/Contact/src/sofa/component/collision/response/contact/CollisionResponse.h")
+        "v23.12", "v24.06", \
+        "DefaultContactManager renamed as CollisionResponse in #3891: Sofa/Component/Collision/Response/Contact/src/sofa/component/collision/response/contact/CollisionResponse.h")
 #endif
 
 namespace sofa::component::collision::response::contact
