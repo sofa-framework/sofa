@@ -23,3 +23,47 @@
 #include <sofa/config.h>
 
 SOFA_DEPRECATED_HEADER("v23.12", "v24.06", "sofa/component/mass/MeshMatrixMass.h")
+
+#include <sofa/component/mass/config.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
+
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/topology/TopologyData.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+
+#include <sofa/component/mass/VecMassType.h>
+#include <sofa/component/mass/RigidMassType.h>
+
+#include <type_traits>
+
+namespace sofa::component::mass
+{
+
+/**
+* @class    DiagonalMass
+* @brief    This component computes the integral of this mass density over the volume of the object geometry but it supposes that the Mass matrix is diagonal.
+* @remark   Similar to MeshMatrixMass but it does not simplify the Mass Matrix as diagonal.
+* @remark   https://www.sofa-framework.org/community/doc/components/masses/diagonalmass/
+* @tparam   DataTypes type of the state associated with this mass
+* @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
+*/
+template <class DataTypes, class GeometricalTypes = DataTypes>
+class DiagonalMass : public MeshMatrixMass<DataTypes, GeometricalTypes>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes));
+
+protected:
+
+    DiagonalMass()
+    {
+        this->d_lumping.setValue(true);
+    }
+
+};
+
+} // namespace sofa::component::mass
