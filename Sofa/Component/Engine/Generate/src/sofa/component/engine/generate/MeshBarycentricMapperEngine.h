@@ -44,6 +44,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef type::Vec<3,Real> Vec3;
+    typedef type::Mat<3,3,Real> Mat3x3;
     SOFA_ATTRIBUTE_REPLACED__TYPEMEMBER(Index, sofa::Index);
     typedef typename sofa::type::vector<sofa::Index>  VecIndices;
 
