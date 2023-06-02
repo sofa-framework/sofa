@@ -80,7 +80,6 @@ int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each 
         .add< MeshMatrixMass<Vec1Types> >()
         .add< MeshMatrixMass<Vec1Types, Vec2Types> >()
         .add< MeshMatrixMass<Vec1Types, Vec3Types> >()
-        .addAlias("DiagonalMass")
 ;
 
 template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
