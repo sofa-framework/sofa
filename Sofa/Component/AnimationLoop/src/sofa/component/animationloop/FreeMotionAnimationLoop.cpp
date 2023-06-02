@@ -400,7 +400,7 @@ void FreeMotionAnimationLoop::computeFreeMotion(const sofa::core::ExecParams* pa
 
 int FreeMotionAnimationLoopClass = core::RegisterObject(R"(
 The animation loop to use with constraints.
-You must add this loop at the beginning of the scene if you are using constraints.")")
+You must add this loop at the beginning of the scene if you are using constraints.)")
                                    .add< FreeMotionAnimationLoop >()
                                    .addAlias("FreeMotionMasterSolver");
 
