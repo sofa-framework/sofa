@@ -58,12 +58,12 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
     , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
     , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
-    , d_showElementGapScale(initData(&d_showElementGapScale, 0.333f, "showElementGapScale", "draw gap between elements (when showWireFrame is disabled) [0,1]: 0: no gap, 1: no element"))
     , _showStressColorMap(initData(&_showStressColorMap, std::string("Blue to Red"),"showStressColorMap", "Color map used to show stress values"))
     , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
     , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points showing vonMises stress interpolated in nodes"))
     , d_showVonMisesStressPerNodeColorMap(initData(&d_showVonMisesStressPerNodeColorMap,false,"showVonMisesStressPerNodeColorMap","draw elements showing vonMises stress interpolated in nodes"))
     , _showVonMisesStressPerElement(initData(&_showVonMisesStressPerElement, false, "showVonMisesStressPerElement", "draw triangles showing vonMises stress interpolated in elements"))
+    , d_showElementGapScale(initData(&d_showElementGapScale, 0.333f, "showElementGapScale", "draw gap between elements (when showWireFrame is disabled) [0,1]: 0: no gap, 1: no element"))
     , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     , l_topology(initLink("topology", "link to the tetrahedron topology container"))
 {
@@ -96,6 +96,37 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
         {
             msg_warning() << "Value of " << _computeVonMisesStress.getName() << " is invalid (must be 0, 1 or 2). ";
             return sofa::core::objectmodel::ComponentState::Invalid;
+        }
+
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+
+    this->addUpdateCallback("clampElementGapScale", {&d_showElementGapScale}, [this](const core::DataTracker& )
+    {
+        if(d_showElementGapScale.getValue() > 1.0)
+        {
+            msg_warning() << "data showElementGapScale is > 1.0 (" << d_showElementGapScale.getValue() << ") but it can only be between [0.0,1.0]. Clamping it to 1.0";
+            d_showElementGapScale.setValue(1.0);
+        }
+
+        if(d_showElementGapScale.getValue() < 0.0)
+        {
+            msg_warning() << "data showElementGapScale is < 0 (" << d_showElementGapScale.getValue() << ") but it can only be between [0.0,1.0]. Clamping it to 0";
+            d_showElementGapScale.setValue(0.0);
+        }
+
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+
+    this->addUpdateCallback("visualOptionExclusion", {&d_showVonMisesStressPerNodeColorMap, &_showVonMisesStressPerElement}, [this](const core::DataTracker& tracker)
+    {
+        if(tracker.hasChanged(d_showVonMisesStressPerNodeColorMap) && d_showVonMisesStressPerNodeColorMap.getValue() && _showVonMisesStressPerElement.getValue())
+        {
+            _showVonMisesStressPerElement.setValue(false);
+        }
+        else if(tracker.hasChanged(_showVonMisesStressPerElement) && _showVonMisesStressPerElement.getValue() && d_showVonMisesStressPerNodeColorMap.getValue())
+        {
+            d_showVonMisesStressPerNodeColorMap.setValue(false);
         }
 
         return sofa::core::objectmodel::ComponentState::Valid;
@@ -1840,9 +1871,6 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
         {
             const Coord center = (p[0] + p[1] + p[2] + p[3]) * 0.25;
 
-            if(showElementGapScale > 1.0) d_showElementGapScale.setValue(1.0);
-            if(showElementGapScale < 0.0) d_showElementGapScale.setValue(0.0);
-
             for (auto& pi : p)
             {
                 pi = (pi - center) * Real(1.0 - showElementGapScale) + center;
@@ -1896,13 +1924,15 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
         *pointsIt++ = p[2];  *pointsIt++ = p[3];  *pointsIt++ = p[0];
         *pointsIt++ = p[3];  *pointsIt++ = p[0];  *pointsIt++ = p[1];
 
-        if(!d_showVonMisesStressPerNodeColorMap.getValue()){
+        if(!d_showVonMisesStressPerNodeColorMap.getValue())
+        {
             *colorsIt++ = color[0];  *colorsIt++ = color[0];  *colorsIt++ = color[0];
             *colorsIt++ = color[1];  *colorsIt++ = color[1];  *colorsIt++ = color[1];
             *colorsIt++ = color[2];  *colorsIt++ = color[2];  *colorsIt++ = color[2];
             *colorsIt++ = color[3];  *colorsIt++ = color[3];  *colorsIt++ = color[3];
         }
-        else{
+        else
+        {
             *colorsIt++ = color[0];  *colorsIt++ = color[1];  *colorsIt++ = color[2];
             *colorsIt++ = color[1];  *colorsIt++ = color[2];  *colorsIt++ = color[3];
             *colorsIt++ = color[2];  *colorsIt++ = color[3];  *colorsIt++ = color[0];
