@@ -54,9 +54,9 @@ template <sofa::Size L, sofa::Size C, class real>
 void MatrixAccumulatorInterface::matAdd(sofa::SignedIndex row, sofa::SignedIndex col,
     const sofa::type::Mat<L, C, real>& value)
 {
-    for (sofa::SignedIndex i = 0; i < L; ++i)
+    for (sofa::SignedIndex i = 0; i < sofa::SignedIndex(L); ++i)
     {
-        for (sofa::SignedIndex j = 0; j < C; ++j)
+        for (sofa::SignedIndex j = 0; j < sofa::SignedIndex(C); ++j)
         {
             add(row + i, col + j, value(i, j));
         }
