@@ -1824,6 +1824,8 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
     auto pointsIt = m_renderedPoints.begin() + elementId * 3 * 4;
     auto colorsIt = m_renderedColors.begin() + elementId * 3 * 4;
 
+    float showElementGapScale = d_showElementGapScale.getValue();
+
     for (auto it = range.start; it != range.end; ++it, ++elementId)
     {
         sofa::type::fixed_array<sofa::type::RGBAColor, 4> color;
@@ -1834,16 +1836,16 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
             p[vId] = x[(*it)[vId]];
         }
 
-        if ( !showWireFrame && d_showElementGapScale.getValue() != 0.0 )
+        if ( !showWireFrame && showElementGapScale != 0.0 )
         {
             const Coord center = (p[0] + p[1] + p[2] + p[3]) * 0.25;
 
-            if(d_showElementGapScale.getValue() > 1.0) d_showElementGapScale.setValue(1.0);
-            if(d_showElementGapScale.getValue() < 0.0) d_showElementGapScale.setValue(0.0);
+            if(showElementGapScale > 1.0) d_showElementGapScale.setValue(1.0);
+            if(showElementGapScale < 0.0) d_showElementGapScale.setValue(0.0);
 
             for (auto& pi : p)
             {
-                pi = (pi - center) * Real(1.0 - d_showElementGapScale.getValue()) + center;
+                pi = (pi - center) * Real(1.0 - showElementGapScale) + center;
             }
         }
 
