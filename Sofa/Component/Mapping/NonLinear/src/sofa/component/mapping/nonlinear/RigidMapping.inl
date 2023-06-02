@@ -765,7 +765,7 @@ struct RigidMappingMatrixHelper<3, Real>
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 {
-    MBloc& block = *m_matrixJ->wbloc(outIdx, inIdx, true);
+    MBloc& block = *m_matrixJ->wblock(outIdx, inIdx, true);
     RigidMappingMatrixHelper<N, OutReal>::setMatrix(block, m_rotatedPoints[outIdx]);
 }
 
