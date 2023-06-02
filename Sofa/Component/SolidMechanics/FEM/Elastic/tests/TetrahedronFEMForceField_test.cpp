@@ -230,8 +230,8 @@ public:
 
         addTetraFEMForceField(m_root, FEMType, young, poisson, method);
         
-        createObject(m_root, "DiagonalMass", {
-            {"name","mass"}, {"massDensity","0.1"} });
+        createObject(m_root, "MeshMatrixMass", {
+            {"name","mass"}, {"massDensity","0.1"}, {"lumping","1"} });
         /// Init simulation
         sofa::simulation::getSimulation()->init(m_root.get());
     }
@@ -286,8 +286,8 @@ public:
         createObject(FEMNode, "FixedConstraint", { {"mstate", "@dof"},
             {"name","fixC"}, {"indices","@ROI1.indices"} });
 
-        createObject(FEMNode, "DiagonalMass", {
-            {"name","mass"}, {"massDensity","1.0"} });
+        createObject(FEMNode, "MeshMatrixMass", {
+            {"name","mass"}, {"massDensity","1.0"}, {"lumping","1"} });
 
         addTetraFEMForceField(FEMNode, FEMType, 600, 0.3, "large");
 
@@ -305,7 +305,7 @@ public:
 
         typename MState::SPtr dofs = m_root->getTreeObject<MState>();
         ASSERT_TRUE(dofs.get() != nullptr);
-        ASSERT_EQ(dofs->getSize(), 4);
+        ASSERT_EQ(dofs->getSize(), 4u);
 
         if (FEMType == 0)
         {

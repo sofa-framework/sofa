@@ -122,7 +122,7 @@ public:
             {"name","GeomAlgo"}, {"template","Vec3d"} });
         
         createObject(FNode, "TriangularBendingSprings", { {"Name","TBS"}, {"stiffness", str(ks)}, {"damping", str(kd)} });
-        createObject(FNode, "DiagonalMass", { {"name","mass"}, {"massDensity","0.1"} });
+        createObject(FNode, "MeshMatrixMass", { {"name","mass"}, {"massDensity","0.1"}, {"lumping","1"} });
 
         ASSERT_NE(m_root.get(), nullptr);
 
