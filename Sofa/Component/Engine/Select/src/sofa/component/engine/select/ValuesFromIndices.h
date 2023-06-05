@@ -73,7 +73,7 @@ extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 3> >;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
-extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<double>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<SReal>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec2>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec3>;
 extern template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec4>;

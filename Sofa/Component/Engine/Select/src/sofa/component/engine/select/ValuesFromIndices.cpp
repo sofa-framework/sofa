@@ -36,7 +36,7 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 3> > >()
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 4> > >()
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 8> > >()
-        .add< ValuesFromIndices<double> >()
+        .add< ValuesFromIndices<SReal> >()
         .add< ValuesFromIndices<type::Vec2> >()
         .add< ValuesFromIndices<type::Vec3> >()
         .add< ValuesFromIndices<type::Vec4> >()
@@ -55,7 +55,7 @@ template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_a
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 3> >;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
-template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<double>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<SReal>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec2>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec3>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec4>;
