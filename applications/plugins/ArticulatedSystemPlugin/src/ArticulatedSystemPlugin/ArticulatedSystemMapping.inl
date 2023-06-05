@@ -373,8 +373,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
-    int i = 0;
-
     for (; ac != acEnd; ac++)
     {
         int parent = (*ac)->parentIndex.getValue();
@@ -406,7 +404,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
             {
                 getVCenter(out[child]) += axis*value.x();
             }
-            i++;
 
         }
     }
@@ -428,7 +425,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.end();
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
 
-    int i=ArticulationAxis.size();
     while (ac != acBegin)
     {
         ac--;
@@ -448,7 +444,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
         while (a != aBegin)
         {
             a--;
-            i--;
             int ind = (*a)->articulationIndex.getValue();
             sofa::type::Vec<3,OutReal> axis = ArticulationAxis[ind];
             sofa::type::Vec<3,Real> A = ArticulationPos[ind] ;
@@ -583,7 +578,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
         std::vector< sofa::type::Vec3 > points;
         std::vector< sofa::type::Vec3 > pointsLine;
 
-        unsigned int i=0;
         for (const auto & ac: articulationCenters)
         {
             type::vector< sofa::component::container::Articulation* > articulations = ac->getArticulations();
@@ -596,8 +590,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
                 pointsLine.push_back(ArticulationPos[ind]);
                 sofa::type::Vec<3,OutReal> Pos_axis = ArticulationPos[ind] + ArticulationAxis[ind];
                 pointsLine.push_back(Pos_axis);
-
-                i++;
             }
         }
 
