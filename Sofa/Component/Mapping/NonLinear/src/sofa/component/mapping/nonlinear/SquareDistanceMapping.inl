@@ -279,7 +279,7 @@ void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         return;
     }
 
-    const auto childForce = this->toModel->readForces();
+    const auto childForce = this->toModel->readTotalForces();
     const SeqEdges& links = l_topology->getEdges();
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 

@@ -5,6 +5,8 @@ set(SRC_ROOT "src/sofa/core")
 
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
+    ${SRC_ROOT}/AccumulationVecId.h
+    ${SRC_ROOT}/AccumulationVecId.inl
     ${SRC_ROOT}/BaseMatrixAccumulatorComponent.h
     ${SRC_ROOT}/BaseLocalMappingMatrix.h
     ${SRC_ROOT}/BaseMapping.h
@@ -190,6 +192,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    ${SRC_ROOT}/AccumulationVecId.cpp
     ${SRC_ROOT}/BaseMatrixAccumulatorComponent.cpp
     ${SRC_ROOT}/BaseMapping.cpp
     ${SRC_ROOT}/BaseState.cpp

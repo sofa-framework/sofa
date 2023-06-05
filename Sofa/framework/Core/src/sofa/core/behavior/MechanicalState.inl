@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/State.inl>
 
 namespace sofa::core::behavior
 {

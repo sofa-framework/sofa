@@ -416,7 +416,7 @@ void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { return; }
 
-    const auto childForce = this->getToModels()[0]->readForces();
+    const auto childForce = this->getToModels()[0]->readTotalForces();
     const SeqEdges& links = l_topology->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
