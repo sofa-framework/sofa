@@ -293,6 +293,8 @@ public:
 		virtual void stepBegin(IdStep id, IdObj obj) = 0;
 		virtual void stepEnd  (IdStep id) = 0;
 		virtual void stepEnd  (IdStep id, IdObj obj) = 0;
+		virtual void valSet(IdVal id, double val) = 0;
+		virtual void valAdd(IdVal id, double val) = 0;
 	};
 
 	struct SofaTimerMethodWrapper : public BaseTimerMethodWrapper
@@ -301,6 +303,8 @@ public:
 		virtual void stepBegin(IdStep id, IdObj obj);
 		virtual void stepEnd  (IdStep id);
 		virtual void stepEnd  (IdStep id, IdObj obj);
+		virtual void valSet(IdVal id, double val);
+		virtual void valAdd(IdVal id, double val);
 	};
 
     enum outputType
