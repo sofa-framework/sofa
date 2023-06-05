@@ -225,11 +225,17 @@ public:
     Data<type::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
     Data<type::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
     Data<type::vector<type::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
-    
+
+    Real m_minVonMisesPerNode;
+    Real m_maxVonMisesPerNode;
+
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
     Data<bool> _showVonMisesStressPerNode; ///< draw points showing vonMises stress interpolated in nodes
+    Data<bool> d_showVonMisesStressPerNodeColorMap; ///< draw triangles showing vonMises stress interpolated in nodes
     Data<bool> _showVonMisesStressPerElement; ///< draw triangles showing vonMises stress interpolated in elements
+
+    Data<Real> d_showElementGapScale; ///< draw gap between elements (when showWireFrame is disabled)
 
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
