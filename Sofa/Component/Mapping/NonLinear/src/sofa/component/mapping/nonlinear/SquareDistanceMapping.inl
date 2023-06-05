@@ -283,7 +283,6 @@ void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     const SeqEdges& links = l_topology->getEdges();
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-    unsigned int size = this->fromModel->getSize();
     for(size_t i=0; i<links.size(); i++)
     {
         const sofa::topology::Edge link = links[i];

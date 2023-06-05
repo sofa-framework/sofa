@@ -40,7 +40,7 @@ int CapsuleIntTool::computeIntersection(geometry::TCapsule<DataTypes1> & e1,geom
     const type::Vec3 CD = D-C;//segment of the capsule e2
     const type::Vec3 AC = C-A;
     Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two capsules
-    Vector2 b;
+    Vec2 b;
 
     Amat[0][0] = AB*AB;
     Amat[1][1] = CD*CD;

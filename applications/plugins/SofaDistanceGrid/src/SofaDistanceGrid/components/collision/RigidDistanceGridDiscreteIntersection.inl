@@ -27,7 +27,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
 
 #include "RigidDistanceGridDiscreteIntersection.h"
 

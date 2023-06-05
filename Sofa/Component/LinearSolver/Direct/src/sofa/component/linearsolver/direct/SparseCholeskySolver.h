@@ -49,7 +49,7 @@ public:
     void invert(Matrix& M) override;
 
 protected:
-
+    SOFA_ATTRIBUTE_DEPRECATED__SOLVER_DIRECT_VERBOSEDATA()
     Data<bool> f_verbose; ///< Dump system state at each iteration
     cs A;
     cs* permuted_A;

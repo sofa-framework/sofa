@@ -28,7 +28,6 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
 
 #include "FFDDistanceGridDiscreteIntersection.h"
 
