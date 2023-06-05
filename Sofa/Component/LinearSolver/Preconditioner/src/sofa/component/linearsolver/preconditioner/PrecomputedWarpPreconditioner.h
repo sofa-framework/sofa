@@ -107,7 +107,7 @@ public:
 
     Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
 
-    SOFA_ATTRIBUTE_DEPRECATED__MATRIXDUMP()
+    SOFA_ATTRIBUTE_DEPRECATED__PRECONDITIONER_VERBOSEDATA()
     Data<bool> f_verbose; ///< Dump system state at each iteration
 
     Data<bool> use_file; ///< Dump system matrix in a file

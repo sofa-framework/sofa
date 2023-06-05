@@ -96,7 +96,7 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::copyLocalVectorToGlobalVector(co
 {
     if (globalVector)
     {
-        if (globalVector->size() < m_mappingGraph.getTotalNbMainDofs())
+        if (sofa::Size(globalVector->size()) < m_mappingGraph.getTotalNbMainDofs())
         {
             globalVector->resize(m_mappingGraph.getTotalNbMainDofs());
         }

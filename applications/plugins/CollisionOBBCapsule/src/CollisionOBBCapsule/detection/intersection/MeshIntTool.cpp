@@ -47,7 +47,7 @@ int MeshIntTool::doCapLineInt(const type::Vec3 & p1,const type::Vec3 & p2,SReal 
     const type::Vec3 CD = q2-q1;//line segment
     const type::Vec3 AC = q1-p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = CD*CD;
     A[0][1] = A[1][0] = -CD*AB;
@@ -196,7 +196,7 @@ int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const type:
     const type::Vec3 AC = p3-p1;
     const type::Vec3 AQ = q -p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -333,7 +333,7 @@ int MeshIntTool::projectPointOnTriangle(int flags, const type::Vec3& p1, const t
     const type::Vec3 AC = p3-p1;
     const type::Vec3 AQ = to_be_projected -p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
@@ -413,7 +413,7 @@ void MeshIntTool::triangleBaryCoords(const type::Vec3& to_be_projected,const typ
     const type::Vec3 AC = p3-p1;
     const type::Vec3 AQ = to_be_projected -p1;
     Matrix2 A;
-    Vector2 b;
+    Vec2 b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
