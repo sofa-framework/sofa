@@ -43,7 +43,7 @@ endif()
 # SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
 # Eg: SOFA_WITH_FLOAT indicate that you need to generate the
 # float code and SOFA_WITH_DOUBLE indicates that you
-# nedd to generate the double related code.
+# need to generate the double related code.
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
     set(SOFA_WITH_FLOAT 1)
     set(SOFA_WITH_DOUBLE 0)
@@ -60,8 +60,9 @@ option(SOFA_DUMP_VISITOR_INFO "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macr
 if(MSVC)
     option(SOFA_VECTORIZE "(deprecated) Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
     option(SOFA_ENABLE_SIMD "Enable the use of SIMD instructions by the compiler (AVX/AVX2 for msvc, march=native for gcc/clang)." OFF)
-    option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theorically faster but can bring unexpected results/bugs)." OFF)
 endif()
+option(SOFA_ENABLE_FAST_MATH "Enable floating-point model to fast (theoretically faster but can bring unexpected results/bugs)." OFF)
+
 ### Mask
 ### Removed since v21.12
 ### Warn the user if he set the option by himself
@@ -71,7 +72,7 @@ if(SOFA_USE_MASK)
 endif()
 
 ### SOFA_DEV_TOOL
-option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
+option(SOFA_WITH_DEVTOOLS "Compile with development extra features." ON)
 
 # Variables to expose in configured files
 sofa_set_01(SOFA_NO_UPDATE_BBOX_ VALUE ${SOFA_NO_UPDATE_BBOX}) # build_option_bbox.h.in
@@ -173,6 +174,10 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "C
 
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PUBLIC -Wno-attributes)
+
+    if(SOFA_ENABLE_FAST_MATH)
+        list(APPEND SOFACONFIG_COMPILE_OPTIONS "-ffast-math")
+    endif()
 endif()
 
 ## Windows-specific
