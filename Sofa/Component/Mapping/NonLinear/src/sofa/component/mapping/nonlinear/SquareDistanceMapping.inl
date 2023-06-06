@@ -283,15 +283,17 @@ void SquareDistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     const SeqEdges& links = l_topology->getEdges();
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-    for(size_t i=0; i<links.size(); i++)
+    for(sofa::Size i=0; i<links.size(); i++)
     {
+        const OutDeriv force_i = childForce[i];
+
         const sofa::topology::Edge link = links[i];
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
         // this results in a undefinite implicit matrix that causes instabilies
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        if( force_i[0] < 0 || geometricStiffness==1 )
         {
-            SReal tmp = 2*childForce[i][0];
+            const Real tmp = 2 * force_i[0];
 
             for(unsigned k=0; k<In::spatial_dimensions; k++)
             {
