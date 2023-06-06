@@ -113,7 +113,7 @@ public:
     AccumulationVecId<TDataTypes, V_DERIV, V_READ> accumulatedForces;
 
     /// Returns a proxy objects offering simplified access to elements of the cumulative sum of all force containers
-    AccumulationVecId<TDataTypes, V_DERIV, V_READ> readTotalForces() const { return accumulatedForces;}
+    const AccumulationVecId<TDataTypes, V_DERIV, V_READ>& readTotalForces() const { return accumulatedForces;}
     //@}
 
     /// The provided VecDerivId will contribute to the sum of all force containers
