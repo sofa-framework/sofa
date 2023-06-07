@@ -81,12 +81,6 @@ class CompressedRowSparseMatrixToEigenSparse< sofa::type::Vec<N,Real> >
 
 };
 
-//template< int N, typename Real >
-//class CompressedRowSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
-//    : public CompressedRowSparseMatrixToEigenSparseVec<sofa::defaulttype::RigidDeriv<N, Real>>
-//{
-//
-//};
 
 
 template< class TBlock >
