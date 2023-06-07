@@ -56,8 +56,8 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void PrecomputedConstraintCo
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            sofa::type::Vec3d n_i = q.inverseRotate(getVCenter(n));
-            sofa::type::Vec3d wn_i= q.inverseRotate(getVOrientation(n));
+            sofa::type::Vec3 n_i = q.inverseRotate(getVCenter(n));
+            sofa::type::Vec3 wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {

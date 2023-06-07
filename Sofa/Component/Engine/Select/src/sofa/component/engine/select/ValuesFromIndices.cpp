@@ -36,11 +36,11 @@ int ValuesFromIndicesClass = core::RegisterObject("Find the values given a list 
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 3> > >()
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 4> > >()
         .add< ValuesFromIndices< type::fixed_array<unsigned int, 8> > >()
-        .add< ValuesFromIndices<double> >()
-        .add< ValuesFromIndices<type::Vec2d> >()
-        .add< ValuesFromIndices<type::Vec3d> >()
-		.add< ValuesFromIndices<type::Vec4d> >()
-		.add< ValuesFromIndices<type::Vec6d> >()
+        .add< ValuesFromIndices<SReal> >()
+        .add< ValuesFromIndices<type::Vec2> >()
+        .add< ValuesFromIndices<type::Vec3> >()
+        .add< ValuesFromIndices<type::Vec4> >()
+        .add< ValuesFromIndices<type::Vec6> >()
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Coord> >()
         .add< ValuesFromIndices<defaulttype::Rigid2Types::Deriv> >()
         .add< ValuesFromIndices<defaulttype::Rigid3Types::Coord> >()
@@ -55,11 +55,11 @@ template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_a
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 3> >;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 4> >;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices< type::fixed_array<unsigned int, 8> >;
-template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<double>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec2d>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec3d>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec4d>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec6d>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<SReal>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec2>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec3>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec4>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<type::Vec6>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid2Types::Coord>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid2Types::Deriv>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API ValuesFromIndices<defaulttype::Rigid3Types::Coord>;

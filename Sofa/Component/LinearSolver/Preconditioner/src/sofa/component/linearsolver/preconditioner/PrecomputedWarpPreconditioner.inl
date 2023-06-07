@@ -301,8 +301,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0
-    const sofa::type::Vec3d gravity = this->getContext()->getGravity();
-    const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
+    const sofa::type::Vec3 gravity = this->getContext()->getGravity();
+    static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
     this->getContext()->setGravity(gravity_zero);
 
     component::linearsolver::iterative::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;

@@ -47,12 +47,9 @@ namespace sofa::component::mapping::linear
 using namespace topology;
 using sofa::type::Vec3;
 using sofa::type::Matrix3;
-using sofa::type::Mat3x3d;
-using sofa::type::Vec3d;
 using sofa::core::objectmodel::ComponentState;
 using sofa::linearalgebra::EigenSparseMatrix;
 
-// 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
