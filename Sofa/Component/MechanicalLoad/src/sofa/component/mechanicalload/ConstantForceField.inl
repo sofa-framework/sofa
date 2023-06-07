@@ -36,8 +36,6 @@ using sofa::core::objectmodel::BaseObjectDescription ;
 namespace sofa::component::mechanicalload
 {
 
-using namespace sofa::core::objectmodel;
-
 template<class DataTypes>
 ConstantForceField<DataTypes>::ConstantForceField()
     : d_indices(initData(&d_indices, "indices", "indices where the forces are applied"))
@@ -53,7 +51,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
 
-    Base::addUpdateCallback("dataInternalUpdate", {&d_indices, &d_forces, &d_force, &d_totalForce}, [this](const core::DataTracker& tracker)
+    sofa::core::objectmodel::Base::addUpdateCallback("dataInternalUpdate", {&d_indices, &d_forces, &d_force, &d_totalForce}, [this](const core::DataTracker& tracker)
     {
         if (tracker.hasChanged(d_indices))
         {
