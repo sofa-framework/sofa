@@ -55,8 +55,6 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
     Base::addUpdateCallback("dataInternalUpdate", {&d_indices, &d_forces, &d_force, &d_totalForce}, [this](const core::DataTracker& tracker)
     {
-        std::cout<<"CALL BAAAACK"<<std::endl;
-
         if (tracker.hasChanged(d_indices))
         {
             msg_info() << "dataInternalUpdate: data indices has changed";
