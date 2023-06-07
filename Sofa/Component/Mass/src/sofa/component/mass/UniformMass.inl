@@ -89,7 +89,7 @@ UniformMass<DataTypes>::UniformMass()
             }
             else
             {
-                msg_error() << "doUpdateInternal: incorrect update from totalMass";
+                msg_error() << "dataInternalUpdate: incorrect update from totalMass";
                 return sofa::core::objectmodel::ComponentState::Invalid;
             }
         }
@@ -101,7 +101,7 @@ UniformMass<DataTypes>::UniformMass()
             }
             else
             {
-                msg_error() << "doUpdateInternal: incorrect update from vertexMass";
+                msg_error() << "dataInternalUpdate: incorrect update from vertexMass";
                 return sofa::core::objectmodel::ComponentState::Invalid;
             }
         }
@@ -293,7 +293,7 @@ void UniformMass<DataTypes>::reinit()
 template <class DataTypes>
 void UniformMass<DataTypes>::doUpdateInternal()
 {
-    // function empty in #XXXX
+    // function empty in #3927
 }
 
 
