@@ -14,8 +14,9 @@
     <!-- Constant force for a deformable -->
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop/>
+    <InteractiveCamera position="1.27 0.48 4.5" orientation="0 0 0 1"  distance="3.86" fieldOfView="45"/>
     
-    <Node name="BasicDeformableObject">
+    <Node name="BasicDeformableObject" >
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="0 0 0  0 0 0  0 0 0  0 0 0" />
