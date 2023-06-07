@@ -96,6 +96,8 @@ public:
     void applyConstraint(const MechanicalParams* mparams, BaseVector* vect,
                                  const MultiMatrixAccessor* matrix) override;
 
+    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
     void setDirection (Coord dir);
     void selectVerticesAlongPlane();
     void setDminAndDmax(const Real _dmin,const Real _dmax);
