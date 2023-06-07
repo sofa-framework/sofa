@@ -55,6 +55,8 @@ ConstantForceField<DataTypes>::ConstantForceField()
 
     Base::addUpdateCallback("dataInternalUpdate", {&d_indices, &d_forces, &d_force, &d_totalForce}, [this](const core::DataTracker& tracker)
     {
+        std::cout<<"CALL BAAAACK"<<std::endl;
+
         if (tracker.hasChanged(d_indices))
         {
             msg_info() << "dataInternalUpdate: data indices has changed";
@@ -204,6 +206,19 @@ void ConstantForceField<DataTypes>::init()
 
     if (d_forces.isSet())
     {
+        if(d_force.isSet() && d_totalForce.isSet())
+        {
+            msg_warning() <<"Data \'forces\', \'force\' and \'totalForce\' can not be used simultaneously, please set only one of them to revove this warning";
+        }
+        else if(d_force.isSet())
+        {
+            msg_warning() <<"Both data \'forces\' and \'force\' can not be used simultaneously, please set only one of them to revove this warning";
+        }
+        else if(d_totalForce.isSet())
+        {
+            msg_warning() <<"Both data \'forces\' and \'totalForce\' can not be used simultaneously, please set only one of them to revove this warning";
+        }
+
         const VecDeriv &forces = d_forces.getValue();
         if( checkForces(forces) )
         {
@@ -219,6 +234,11 @@ void ConstantForceField<DataTypes>::init()
     }
     else if (d_force.isSet())
     {
+        if(d_totalForce.isSet())
+        {
+            msg_warning() <<"Both data \'force\' and \'totalForce\' can not be used simultaneously, please set only one of them to revove this warning";
+        }
+
         const Deriv &force = d_force.getValue();
         if( checkForce(force) )
         {
