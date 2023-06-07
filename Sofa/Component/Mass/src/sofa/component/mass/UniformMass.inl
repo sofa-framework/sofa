@@ -78,6 +78,41 @@ UniformMass<DataTypes>::UniformMass()
     , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();
+
+    sofa::core::objectmodel::Base::addUpdateCallback("dataInternalUpdate", {&d_totalMass, &d_vertexMass}, [this](const core::DataTracker& tracker)
+    {
+        if (tracker.hasChanged(d_totalMass))
+        {
+            if(checkTotalMass())
+            {
+                initFromTotalMass();
+            }
+            else
+            {
+                msg_error() << "doUpdateInternal: incorrect update from totalMass";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+        }
+        else if(tracker.hasChanged(d_vertexMass))
+        {
+            if(checkVertexMass())
+            {
+                initFromVertexMass();
+            }
+            else
+            {
+                msg_error() << "doUpdateInternal: incorrect update from vertexMass";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+        }
+
+        //Info post-reinit
+        msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
+                      "vertexMass = " << d_vertexMass.getValue();
+
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
+
 }
 
 template <class DataTypes>
@@ -250,44 +285,15 @@ void UniformMass<DataTypes>::initDefaultImpl()
 template <class DataTypes>
 void UniformMass<DataTypes>::reinit()
 {
-    // Now update is handled through the doUpdateInternal mechanism
-    // called at each begin of step through the UpdateInternalDataVisitor
+    // Now update is handled through the callack mechanism
+    // called each time the componentState is checked
 }
 
 
 template <class DataTypes>
 void UniformMass<DataTypes>::doUpdateInternal()
 {
-    if (this->hasDataChanged(d_totalMass))
-    {
-        if(checkTotalMass())
-        {
-            initFromTotalMass();
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-        else
-        {
-            msg_error() << "doUpdateInternal: incorrect update from totalMass";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        }
-    }
-    else if(this->hasDataChanged(d_vertexMass))
-    {
-        if(checkVertexMass())
-        {
-            initFromVertexMass();
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-        else
-        {
-            msg_error() << "doUpdateInternal: incorrect update from vertexMass";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        }
-    }
-
-    //Info post-reinit
-    msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
-                  "vertexMass = " << d_vertexMass.getValue();
+    // function empty in #XXXX
 }
 
 
@@ -398,6 +404,9 @@ void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*,
                                                 const DataVecDeriv& vdx,
                                                 SReal factor)
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
 
@@ -558,6 +567,9 @@ template <class DataTypes>
 void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
                                                      const MultiMatrixAccessor* matrix)
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     const MassType& m = d_vertexMass.getValue();
 
     static constexpr auto N = Deriv::total_size;
