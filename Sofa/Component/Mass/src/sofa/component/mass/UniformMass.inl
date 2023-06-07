@@ -426,6 +426,9 @@ void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*,
                                                   DataVecDeriv& va,
                                                   const DataVecDeriv& vf )
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     WriteOnlyAccessor<DataVecDeriv> a = va;
     ReadAccessor<DataVecDeriv> f = vf;
 
@@ -589,6 +592,9 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
 template <class DataTypes>
 void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     const MassType& m = d_vertexMass.getValue();
     static constexpr auto N = Deriv::total_size;
 
