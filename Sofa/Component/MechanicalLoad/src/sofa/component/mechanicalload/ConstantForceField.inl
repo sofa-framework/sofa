@@ -278,7 +278,7 @@ void ConstantForceField<DataTypes>::reinit()
 template<class DataTypes>
 void ConstantForceField<DataTypes>::doUpdateInternal()
 {
-    // function empty in #XXXX
+    // function empty in #3924
 }
 
 
