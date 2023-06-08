@@ -25,23 +25,24 @@
 
 #include <sofa/type/fixed_array.h>
 
+
 namespace sofa::type::pairwise
 {
 
 /// @brief clamp a single value. This function should be removed when std::clamp will be available
-template<class T>
-const T& stdclamp( const T& v, const T& lo, const T& hi )
+template <class T>
+const T& stdclamp(const T& v, const T& lo, const T& hi)
 {
-    assert( !(hi < lo) );
+    assert(!(hi < lo));
     return (v < lo) ? lo : (hi < v) ? hi : v;
 }
 
 /// @brief clamp all the values of a fixed_array to be within a given interval.
-template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
+template <class T, class TT=typename T::value_type, size_t TN = T::static_size>
 T clamp(const T& in, const TT& minValue, const TT& maxValue)
 {
-    T result {};
-    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
+    T result{};
+    for (typename T::size_type i = 0; i < typename T::size_type(TN); ++i)
     {
         result[i] = stdclamp(in[i], minValue, maxValue);
     }
@@ -49,11 +50,11 @@ T clamp(const T& in, const TT& minValue, const TT& maxValue)
 }
 
 /// @brief pairwise add of two fixed_array
-template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
+template <class T, class TT=typename T::value_type, size_t TN = T::static_size>
 T operator+(const T& l, const T& r)
 {
-    T result {};
-    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
+    T result{};
+    for (typename T::size_type i = 0; i < typename T::size_type(TN); ++i)
     {
         result[i] = l[i] + r[i];
     }
@@ -61,11 +62,11 @@ T operator+(const T& l, const T& r)
 }
 
 /// @brief pairwise subtract of two fixed_array
-template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
+template <class T, class TT=typename T::value_type, size_t TN = T::static_size>
 T operator-(const T& l, const T& r)
 {
-    T result {};
-    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
+    T result{};
+    for (typename T::size_type i = 0; i < typename T::size_type(TN); ++i)
     {
         result[i] = l[i] - r[i];
     }
@@ -73,11 +74,11 @@ T operator-(const T& l, const T& r)
 }
 
 /// @brief multiply from l the r components.
-template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
+template <class T, class TT=typename T::value_type, size_t TN = T::static_size>
 T operator*(const T& r, const typename T::value_type& f)
 {
-    T result {};
-    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
+    T result{};
+    for (typename T::size_type i = 0; i < typename T::size_type(TN); ++i)
     {
         result[i] = r[i] * f;
     }
@@ -85,11 +86,11 @@ T operator*(const T& r, const typename T::value_type& f)
 }
 
 /// @brief multiply from l the r components.
-template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
+template <class T, class TT=typename T::value_type, size_t TN = T::static_size>
 T operator/(const T& r, const typename T::value_type& f)
 {
-    T result {};
-    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
+    T result{};
+    for (typename T::size_type i = 0; i < typename T::size_type(TN); ++i)
     {
         result[i] = r[i] / f;
     }
@@ -98,4 +99,3 @@ T operator/(const T& r, const typename T::value_type& f)
 
 
 } /// namespace sofa::type::pairwise
-

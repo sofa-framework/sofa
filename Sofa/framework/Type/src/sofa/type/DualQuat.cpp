@@ -24,6 +24,7 @@
 
 #include <sofa/type/Quat.inl>
 
+
 namespace sofa::type
 {
 

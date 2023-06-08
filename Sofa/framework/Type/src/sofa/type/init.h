@@ -25,6 +25,7 @@
 
 #include <string>
 
+
 namespace sofa::type
 {
 
@@ -45,12 +46,11 @@ SOFA_TYPE_API bool isCleanedUp();
 /// @brief Print a warning about a library not being initialized (meant for
 /// internal use).
 SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
-                                                      const std::string& initFunction);
+                                                    const std::string& initFunction);
 
 /// @brief Print a warning about a library not being cleaned up (meant for
 /// internal use).
 SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
-                                                     const std::string& cleanupFunction);
+                                                   const std::string& cleanupFunction);
 
 } // namespace sofa::type
-

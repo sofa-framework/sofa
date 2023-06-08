@@ -24,20 +24,21 @@
 #include <algorithm>
 #include <sofa/type/vector_T.h>
 
+
 namespace sofa::type
 {
 /** Remove the first occurence of a given value.
     The remaining values are shifted.
 */
-template<class T1, class T2>
-void remove( T1& v, const T2& elem )
+template <class T1, class T2>
+void remove(T1& v, const T2& elem)
 {
-    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
-    if( e != v.end() )
+    typename T1::iterator e = std::find(v.begin(), v.end(), elem);
+    if (e != v.end())
     {
         typename T1::iterator next = e;
         next++;
-        for( ; next != v.end(); ++e, ++next )
+        for (; next != v.end(); ++e, ++next)
             *e = *next;
     }
     v.pop_back();
@@ -47,28 +48,28 @@ void remove( T1& v, const T2& elem )
 
 The last value is moved to where the value was found, and the other values are not shifted.
 */
-template<class T1, class T2>
-void removeValue( T1& v, const T2& elem )
+template <class T1, class T2>
+void removeValue(T1& v, const T2& elem)
 {
-    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
-    if( e != v.end() )
+    typename T1::iterator e = std::find(v.begin(), v.end(), elem);
+    if (e != v.end())
     {
-        if (e != v.end()-1)
+        if (e != v.end() - 1)
             *e = v.back();
         v.pop_back();
     }
 }
 
 /// Remove value at given index, replace it by the value at the last index, other values are not changed
-template<class T, class TT>
-void removeIndex( std::vector<T,TT>& v, size_t index )
+template <class T, class TT>
+void removeIndex(std::vector<T, TT>& v, size_t index)
 {
-    if constexpr(sofa::type::isEnabledVectorAccessChecking)
+    if constexpr (sofa::type::isEnabledVectorAccessChecking)
     {
-        if (index>=v.size())
+        if (index >= v.size())
             vector_access_failure(&v, v.size(), index, typeid(T));
     }
-    if (index != v.size()-1)
+    if (index != v.size() - 1)
         v[index] = v.back();
     v.pop_back();
 }

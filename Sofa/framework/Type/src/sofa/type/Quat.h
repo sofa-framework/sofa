@@ -29,10 +29,11 @@
 #include <iosfwd>
 #include <cassert>
 
+
 namespace // anonymous
 {
 
-template<typename QuatReal, typename OtherReal>
+template <typename QuatReal, typename OtherReal>
 constexpr void getOpenGlMatrix(const QuatReal& q, OtherReal* m)
 {
     m[0 * 4 + 0] = static_cast<OtherReal>(1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]));
@@ -58,20 +59,25 @@ constexpr void getOpenGlMatrix(const QuatReal& q, OtherReal* m)
 
 }
 
+
 namespace sofa::type
 {
 
-struct qNoInit {};
+struct qNoInit
+{};
+
+
 constexpr qNoInit QNOINIT;
 
-template<class Real>
+
+template <class Real>
 class Quat
 {
     sofa::type::fixed_array<Real, 4> _q{};
 
     typedef type::Vec<3, Real> Vec3;
-    typedef type::Mat<3,3, Real> Mat3x3;
-    typedef type::Mat<4,4, Real> Mat4x4;
+    typedef type::Mat<3, 3, Real> Mat3x3;
+    typedef type::Mat<4, 4, Real> Mat4x4;
 
 public:
     typedef Real value_type;
@@ -84,30 +90,30 @@ public:
 
     /// Fast constructor: no initialization
     explicit constexpr Quat(qNoInit)
-    {
-    }
+    { }
 
     ~Quat() = default;
+
     constexpr Quat(Real x, Real y, Real z, Real w)
     {
         set(x, y, z, w);
     }
 
-    template<class Real2>
+    template <class Real2>
     constexpr Quat(const Real2 q[])
-    { 
-        for (int i=0; i<4; i++) 
-            _q[i] = Real(q[i]); 
+    {
+        for (int i = 0; i < 4; i++)
+            _q[i] = Real(q[i]);
     }
 
-    template<class Real2>
-    constexpr Quat(const Quat<Real2>& q) 
-    { 
-        for (int i=0; i<4; i++) 
-            _q[i] = Real(q[i]); 
+    template <class Real2>
+    constexpr Quat(const Quat<Real2>& q)
+    {
+        for (int i = 0; i < 4; i++)
+            _q[i] = Real(q[i]);
     }
 
-    Quat( const Vec3& axis, Real angle );
+    Quat(const Vec3& axis, Real angle);
 
     /** Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo.        
         vFrom and vTo are assumed to be normalized.
@@ -116,7 +122,7 @@ public:
 
     static Quat identity()
     {
-        return Quat(0,0,0,1);
+        return Quat(0, 0, 0, 1);
     }
 
     void set(Real x, Real y, Real z, Real w)
@@ -147,17 +153,17 @@ public:
 
     void clear()
     {
-        set(0.0,0.0,0.0,1);
+        set(0.0, 0.0, 0.0, 1);
     }
 
     /// Convert the reference frame orientation into an orientation quaternion
-    void fromFrame(const Vec3& x, const Vec3&y, const Vec3&z);
+    void fromFrame(const Vec3& x, const Vec3& y, const Vec3& z);
 
     /// Convert a rotation matrix into an orientation quaternion
-    void fromMatrix(const Mat3x3 &m);
+    void fromMatrix(const Mat3x3& m);
 
     /// Convert the quaternion into an orientation matrix
-    void toMatrix(Mat3x3 &m) const
+    void toMatrix(Mat3x3& m) const
     {
         m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
         m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
@@ -174,7 +180,7 @@ public:
 
     /// Convert the quaternion into an orientation homogeneous matrix
     /// The homogeneous part is set to 0,0,0,1
-    constexpr void toHomogeneousMatrix(Mat4x4 &m) const
+    constexpr void toHomogeneousMatrix(Mat4x4& m) const
     {
         m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
         m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
@@ -198,17 +204,17 @@ public:
     }
 
     /// Apply the rotation to a given vector
-    constexpr auto rotate( const Vec3& v ) const -> Vec3
+    constexpr auto rotate(const Vec3& v) const -> Vec3
     {
-        const Vec3 qxyz{ _q[0], _q[1] , _q[2] };
+        const Vec3 qxyz{_q[0], _q[1], _q[2]};
         const auto t = qxyz.cross(v) * 2;
         return (v + _q[3] * t + qxyz.cross(t));
     }
 
     /// Apply the inverse rotation to a given vector
-    constexpr auto inverseRotate( const Vec3& v ) const -> Vec3
+    constexpr auto inverseRotate(const Vec3& v) const -> Vec3
     {
-        const Vec3 qxyz{ -_q[0], -_q[1] , -_q[2] };
+        const Vec3 qxyz{-_q[0], -_q[1], -_q[2]};
         const auto t = qxyz.cross(v) * 2;
         return (v + _q[3] * t + qxyz.cross(t));
     }
@@ -216,34 +222,35 @@ public:
     /// Given two quaternions, add them together to get a third quaternion.
     /// Adding quaternions to get a compound rotation is analagous to adding
     /// translations to get a compound translation.
-    auto operator+(const Quat &q1) const -> Quat;
+    auto operator+(const Quat& q1) const -> Quat;
+
     constexpr auto operator*(const Quat& q1) const -> Quat
     {
-        Quat	ret(QNOINIT);
+        Quat ret(QNOINIT);
 
         ret._q[3] = _q[3] * q1._q[3] -
-            (_q[0] * q1._q[0] +
-                _q[1] * q1._q[1] +
-                _q[2] * q1._q[2]);
+        (_q[0] * q1._q[0] +
+            _q[1] * q1._q[1] +
+            _q[2] * q1._q[2]);
         ret._q[0] = _q[3] * q1._q[0] +
-            _q[0] * q1._q[3] +
-            _q[1] * q1._q[2] -
-            _q[2] * q1._q[1];
+                _q[0] * q1._q[3] +
+                _q[1] * q1._q[2] -
+                _q[2] * q1._q[1];
         ret._q[1] = _q[3] * q1._q[1] +
-            _q[1] * q1._q[3] +
-            _q[2] * q1._q[0] -
-            _q[0] * q1._q[2];
+                _q[1] * q1._q[3] +
+                _q[2] * q1._q[0] -
+                _q[0] * q1._q[2];
         ret._q[2] = _q[3] * q1._q[2] +
-            _q[2] * q1._q[3] +
-            _q[0] * q1._q[1] -
-            _q[1] * q1._q[0];
+                _q[2] * q1._q[3] +
+                _q[0] * q1._q[1] -
+                _q[1] * q1._q[0];
 
         return ret;
     }
 
-    constexpr auto operator*(const Real &r) const -> Quat
+    constexpr auto operator*(const Real& r) const -> Quat
     {
-        Quat  ret(QNOINIT);
+        Quat ret(QNOINIT);
         ret[0] = _q[0] * r;
         ret[1] = _q[1] * r;
         ret[2] = _q[2] * r;
@@ -251,9 +258,9 @@ public:
         return ret;
     }
 
-    auto operator/(const Real &r) const -> Quat
+    auto operator/(const Real& r) const -> Quat
     {
-        Quat  ret(QNOINIT);
+        Quat ret(QNOINIT);
         ret[0] = _q[0] / r;
         ret[1] = _q[1] / r;
         ret[2] = _q[2] / r;
@@ -261,7 +268,7 @@ public:
         return ret;
     }
 
-    void operator*=(const Real &r)
+    void operator*=(const Real& r)
     {
         _q[0] *= r;
         _q[1] *= r;
@@ -269,7 +276,7 @@ public:
         _q[3] *= r;
     }
 
-    void operator/=(const Real &r)
+    void operator/=(const Real& r)
     {
         _q[0] /= r;
         _q[1] /= r;
@@ -321,7 +328,7 @@ public:
      When \p allowFlip is \c true (default) the slerp interpolation will always use the "shortest path"
      between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
      negate()). */
-    void slerp(const Quat& a, const Quat& b, Real t, bool allowFlip=true);
+    void slerp(const Quat& a, const Quat& b, Real t, bool allowFlip = true);
 
     /// A useful function, builds a rotation matrix in Matrix based on
     /// given quaternion.
@@ -362,73 +369,91 @@ public:
     /// the given vector) and an angle about which to rotate.  The angle is
     /// expressed in radians.
     auto axisToQuat(Vec3 a, Real phi) -> Quat;
-    void quatToAxis(Vec3 & a, Real &phi) const;
+    void quatToAxis(Vec3& a, Real& phi) const;
 
-    static auto createQuaterFromFrame(const Vec3 &lox, const Vec3 &loy,const Vec3 &loz) -> Quat;
+    static auto createQuaterFromFrame(const Vec3& lox, const Vec3& loy, const Vec3& loz) -> Quat;
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     static auto createFromRotationVector(const Vec3& a) -> Quat;
+
 
     /// Create a quaternion from Euler angles
     /// Thanks to https://github.com/mrdoob/three.js/blob/dev/src/math/Quaternion.js#L199
     enum class EulerOrder
     {
-        XYZ, YXZ, ZXY, ZYX, YZX, XZY
+        XYZ,
+        YXZ,
+        ZXY,
+        ZYX,
+        YZX,
+        XZY
     };
+
 
     static auto createQuaterFromEuler(const Vec3& v, EulerOrder order = EulerOrder::ZYX) -> Quat;
 
     /// Create a quaternion from Euler angles
-    static auto fromEuler( Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX ) -> Quat;
+    static auto fromEuler(Real alpha, Real beta, Real gamma, EulerOrder order = EulerOrder::ZYX) -> Quat;
 
     /// Create using the entries of a rotation vector (axis*angle) given in parent coordinates
-    static auto createFromRotationVector(Real a0, Real a1, Real a2 ) -> Quat;
+    static auto createFromRotationVector(Real a0, Real a1, Real a2) -> Quat;
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
-    static auto set(const Vec3& a) { return createFromRotationVector(a); }
+    static auto set(const Vec3& a)
+    {
+        return createFromRotationVector(a);
+    }
 
     /// Create using using the entries of a rotation vector (axis*angle) given in parent coordinates
-    static auto set(Real a0, Real a1, Real a2) { return createFromRotationVector(a0,a1,a2); }
+    static auto set(Real a0, Real a1, Real a2)
+    {
+        return createFromRotationVector(a0, a1, a2);
+    }
 
     /// Return the quaternion resulting of the movement between 2 quaternions
-    static auto quatDiff( Quat a, const Quat& b) -> Quat;
+    static auto quatDiff(Quat a, const Quat& b) -> Quat;
 
     /// Return the eulerian vector resulting of the movement between 2 quaternions
-    static auto angularDisplacement( const Quat& a, const Quat& b) -> Vec3;
+    static auto angularDisplacement(const Quat& a, const Quat& b) -> Vec3;
 
     /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
     void setFromUnitVectors(const Vec3& vFrom, const Vec3& vTo);
 
-    auto slerp(const Quat &q1, Real t) const -> Quat;
-    auto slerp2(const Quat &q1, Real t) const-> Quat;
+    auto slerp(const Quat& q1, Real t) const -> Quat;
+    auto slerp2(const Quat& q1, Real t) const -> Quat;
 
     void operator+=(const Quat& q2);
+
     constexpr void operator*=(const Quat& q1)
     {
         Quat q2 = *this;
         _q[3] = q2._q[3] * q1._q[3] -
-            (q2._q[0] * q1._q[0] +
-                q2._q[1] * q1._q[1] +
-                q2._q[2] * q1._q[2]);
+        (q2._q[0] * q1._q[0] +
+            q2._q[1] * q1._q[1] +
+            q2._q[2] * q1._q[2]);
         _q[0] = q2._q[3] * q1._q[0] +
-            q2._q[0] * q1._q[3] +
-            q2._q[1] * q1._q[2] -
-            q2._q[2] * q1._q[1];
+                q2._q[0] * q1._q[3] +
+                q2._q[1] * q1._q[2] -
+                q2._q[2] * q1._q[1];
         _q[1] = q2._q[3] * q1._q[1] +
-            q2._q[1] * q1._q[3] +
-            q2._q[2] * q1._q[0] -
-            q2._q[0] * q1._q[2];
+                q2._q[1] * q1._q[3] +
+                q2._q[2] * q1._q[0] -
+                q2._q[0] * q1._q[2];
         _q[2] = q2._q[3] * q1._q[2] +
-            q2._q[2] * q1._q[3] +
-            q2._q[0] * q1._q[1] -
-            q2._q[1] * q1._q[0];
+                q2._q[2] * q1._q[3] +
+                q2._q[0] * q1._q[1] -
+                q2._q[1] * q1._q[0];
     }
 
     bool operator==(const Quat& q) const;
     bool operator!=(const Quat& q) const;
 
     static constexpr Size static_size = 4;
-    static Size size() {return static_size;}
+
+    static Size size()
+    {
+        return static_size;
+    }
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
     static constexpr Size total_size = 4;
@@ -439,22 +464,26 @@ public:
 
 
 /// Same as Quat except the values are not initialized by default
-template<class Real>
+template <class Real>
 class QuatNoInit : public Quat<Real>
 {
 public:
     constexpr QuatNoInit() noexcept
         : Quat<Real>(QNOINIT)
     {}
+
     using Quat<Real>::Quat;
 
 };
 
+
 /// write to an output stream
-template<class Real> SOFA_TYPE_API std::ostream& operator << ( std::ostream& out, const Quat<Real>& v );
+template <class Real>
+SOFA_TYPE_API std::ostream& operator <<(std::ostream& out, const Quat<Real>& v);
 
 /// read from an input stream
-template<class Real> SOFA_TYPE_API std::istream& operator >> (std::istream& in, Quat<Real>& v);
+template <class Real>
+SOFA_TYPE_API std::istream& operator >>(std::istream& in, Quat<Real>& v);
 
 #if !defined(SOFA_TYPE_QUAT_CPP)
 extern template class SOFA_TYPE_API Quat<double>;

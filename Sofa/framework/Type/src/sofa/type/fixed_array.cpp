@@ -23,6 +23,7 @@
 
 #include <sofa/type/fixed_array.h>
 
+
 namespace sofa::type
 {
 
@@ -45,4 +46,3 @@ template class SOFA_TYPE_API fixed_array<float, 7>;
 template class SOFA_TYPE_API fixed_array<double, 7>;
 
 } // namespace sofa::type
-

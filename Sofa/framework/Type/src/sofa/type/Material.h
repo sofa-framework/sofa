@@ -24,37 +24,38 @@
 #include <sofa/type/config.h>
 #include <sofa/type/RGBAColor.h>
 
+
 namespace sofa::type
 {
 
 class SOFA_TYPE_API Material
 {
 public:
-    std::string 	name;		        /* name of material */
-    RGBAColor  diffuse ;	/* diffuse component */
-    RGBAColor  ambient ;	/* ambient component */
-    RGBAColor  specular;	/* specular component */
-    RGBAColor  emissive;	/* emmissive component */
-    float  shininess;	                /* specular exponent */
-    bool   useDiffuse;
-    bool   useSpecular;
-    bool   useAmbient;
-    bool   useEmissive;
-    bool   useShininess;
-    bool   useTexture;
-    bool   useBumpMapping;
-    bool   activated;
-    std::string   textureFilename; // path to the texture linked to the material
-    std::string   bumpTextureFilename; // path to the bump texture linked to the material
+    std::string name; /* name of material */
+    RGBAColor diffuse; /* diffuse component */
+    RGBAColor ambient; /* ambient component */
+    RGBAColor specular; /* specular component */
+    RGBAColor emissive; /* emmissive component */
+    float shininess; /* specular exponent */
+    bool useDiffuse;
+    bool useSpecular;
+    bool useAmbient;
+    bool useEmissive;
+    bool useShininess;
+    bool useTexture;
+    bool useBumpMapping;
+    bool activated;
+    std::string textureFilename; // path to the texture linked to the material
+    std::string bumpTextureFilename; // path to the bump texture linked to the material
 
-    friend SOFA_TYPE_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
-    friend SOFA_TYPE_API std::istream& operator >> (std::istream& in, Material &m ) ;
+    friend SOFA_TYPE_API std::ostream& operator <<(std::ostream& out, const Material& m);
+    friend SOFA_TYPE_API std::istream& operator >>(std::istream& in, Material& m);
 
-    void setColor(float r, float g, float b, float a) ;
+    void setColor(float r, float g, float b, float a);
 
-    Material() ;
-    Material(const Material& mat) ;
-    Material & operator= (const Material& other);
+    Material();
+    Material(const Material& mat);
+    Material& operator=(const Material& other);
 };
 
 } /// namespace sofa::type

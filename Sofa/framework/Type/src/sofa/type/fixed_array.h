@@ -63,38 +63,38 @@
 namespace sofa::type
 {
 
-template<class T, sofa::Size N>
+template <class T, sofa::Size N>
 class fixed_array
 {
 public:
-    T elems[N]{};    // fixed-size array of elements of type T
+    T elems[N]{}; // fixed-size array of elements of type T
 
     typedef T Array[N]; ///< name the array type
 
     // type definitions
-    typedef T              value_type;
-    typedef T*             iterator;
-    typedef const T*       const_iterator;
-    typedef T&             reference;
-    typedef const T&       const_reference;
-    typedef sofa::Size     size_type;
+    typedef T value_type;
+    typedef T* iterator;
+    typedef const T* const_iterator;
+    typedef T& reference;
+    typedef const T& const_reference;
+    typedef sofa::Size size_type;
     typedef std::ptrdiff_t difference_type;
 
-    constexpr fixed_array() {}
+    constexpr fixed_array()
+    {}
 
     /// Specific constructor for 1-element vectors.
-    template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
+    template <size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
     explicit constexpr fixed_array(value_type r1) noexcept
     {
         elems[0] = r1;
     }
 
-    template<typename... ArgsT,
-        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, value_type> && ...) >,
-        typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
-    >
+    template <typename... ArgsT,
+              typename = std::enable_if_t<(std::is_convertible_v<ArgsT, value_type> && ...)>,
+              typename = std::enable_if_t<(sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1)>>
     constexpr fixed_array(ArgsT&&... r) noexcept
-        : elems{static_cast<value_type>(std::forward< ArgsT >(r))...}
+        : elems{static_cast<value_type>(std::forward<ArgsT>(r))...}
     {}
 
     // iterator support
@@ -102,10 +102,12 @@ public:
     {
         return elems;
     }
+
     constexpr const_iterator begin() const noexcept
     {
         return elems;
     }
+
     constexpr const_iterator cbegin() const noexcept
     {
         return elems;
@@ -113,12 +115,14 @@ public:
 
     constexpr iterator end() noexcept
     {
-        return elems+N;
+        return elems + N;
     }
+
     constexpr const_iterator end() const noexcept
     {
-        return elems+N;
+        return elems + N;
     }
+
     constexpr const_iterator cend() const noexcept
     {
         return elems + N;
@@ -132,6 +136,7 @@ public:
 #endif
         return elems[i];
     }
+
     constexpr const_reference operator[](size_type i) const
     {
 #ifndef NDEBUG
@@ -140,29 +145,29 @@ public:
         return elems[i];
     }
 
-    template< std::size_t I >
+    template <std::size_t I>
     [[nodiscard]] constexpr T& get() & noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return elems[I];
     }
 
-    template< std::size_t I >
-    [[nodiscard]] constexpr const T& get() const& noexcept
+    template <std::size_t I>
+    [[nodiscard]] constexpr const T& get() const & noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return elems[I];
     }
 
-    template< std::size_t I >
+    template <std::size_t I>
     [[nodiscard]] constexpr T&& get() && noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return std::move(elems[I]);
     }
 
-    template< std::size_t I >
-    [[nodiscard]] constexpr const T&& get() const&& noexcept
+    template <std::size_t I>
+    [[nodiscard]] constexpr const T&& get() const && noexcept
     {
         static_assert(I < N, "array index out of bounds");
         return std::move(elems[I]);
@@ -175,6 +180,7 @@ public:
         rangecheck(i);
         return elems[i];
     }
+
     constexpr const_reference at(size_type i) const
     {
         rangecheck(i);
@@ -186,17 +192,20 @@ public:
     {
         return elems[0];
     }
+
     constexpr const_reference front() const
     {
         return elems[0];
     }
+
     constexpr reference back()
     {
-        return elems[N-1];
+        return elems[N - 1];
     }
+
     constexpr const_reference back() const
     {
-        return elems[N-1];
+        return elems[N - 1];
     }
 
     // size is constant
@@ -204,20 +213,25 @@ public:
     {
         return N;
     }
+
     static bool empty() noexcept
     {
         return false;
     }
+
     static constexpr size_type max_size() noexcept
     {
         return N;
     }
+
+
     enum { static_size = N };
 
+
     // swap (note: linear complexity)
-    void swap (fixed_array<T,N>& y)
+    void swap(fixed_array<T, N>& y)
     {
-        std::swap_ranges(begin(),end(),y.begin());
+        std::swap_ranges(begin(), end(), y.begin());
     }
 
     // direct access to data
@@ -240,40 +254,39 @@ public:
 
     // assignment with type conversion
     template <typename T2>
-    constexpr fixed_array<T,N>& operator= (const fixed_array<T2,N>& rhs) noexcept
+    constexpr fixed_array<T, N>& operator=(const fixed_array<T2, N>& rhs) noexcept
     {
-        for (size_type i=0; i<N; i++)
+        for (size_type i = 0; i < N; i++)
             elems[i] = rhs[i];
         return *this;
     }
 
     // assign one value to all elements
-    constexpr inline void assign (const T& value) noexcept
+    constexpr inline void assign(const T& value) noexcept
     {
-        for (size_type i=0; i<N; i++)
+        for (size_type i = 0; i < N; i++)
             elems[i] = value;
     }
 
-    inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
+    inline friend std::ostream& operator <<(std::ostream& out, const fixed_array<T, N>& a)
     {
-        static_assert(N>0, "Cannot create a zero size arrays") ;
-        for( size_type i=0; i<N-1; i++ )
-            out << a.elems[i]<<" ";
-        out << a.elems[N-1];
+        static_assert(N > 0, "Cannot create a zero size arrays") ;
+        for (size_type i = 0; i < N - 1; i++)
+            out << a.elems[i] << " ";
+        out << a.elems[N - 1];
         return out;
     }
 
-    inline friend std::istream& operator >> (std::istream& in, fixed_array<T,N>& a)
+    inline friend std::istream& operator >>(std::istream& in, fixed_array<T, N>& a)
     {
-        for( size_type i=0; i<N; i++ )
-            in>>a.elems[i];
+        for (size_type i = 0; i < N; i++)
+            in >> a.elems[i];
         return in;
     }
 
 private:
-
     // check range (may be private because it is static)
-    static void rangecheck (size_type i)
+    static void rangecheck(size_type i)
     {
         if (i >= size())
         {
@@ -282,30 +295,31 @@ private:
     }
 };
 
-template<typename... Ts>
+
+template <typename... Ts>
 constexpr auto make_array(Ts&&... ts) -> fixed_array<std::common_type_t<Ts...>, sizeof...(Ts)>
 {
-    return { std::forward<Ts>(ts)... };
+    return {std::forward<Ts>(ts)...};
 }
 
 /// Checks if v1 is lexicographically less than v2. Similar to std::lexicographical_compare
-template<typename T, sofa::Size N>
+template <typename T, sofa::Size N>
 constexpr bool
-operator<(const fixed_array<T, N>& v1, const fixed_array<T, N>& v2 ) noexcept
+operator<(const fixed_array<T, N>& v1, const fixed_array<T, N>& v2) noexcept
 {
-    for( sofa::Size i=0; i<N; i++ )
+    for (sofa::Size i = 0; i < N; i++)
     {
-        if( v1[i] < v2[i] )
+        if (v1[i] < v2[i])
             return true;
-        if( v2[i] < v1[i] )
+        if (v2[i] < v1[i])
             return false;
     }
     return false;
 }
 
-template<typename T, sofa::Size N>
+template <typename T, sofa::Size N>
 constexpr bool
-operator>(const fixed_array<T, N>& v1, const fixed_array<T, N>& v2 ) noexcept
+operator>(const fixed_array<T, N>& v1, const fixed_array<T, N>& v2) noexcept
 {
     return v2 < v1;
 }
@@ -334,10 +348,12 @@ extern template class SOFA_TYPE_API fixed_array<double, 7>;
 
 namespace std
 {
-template<typename T, sofa::Size N>
-struct tuple_size<::sofa::type::fixed_array<T, N> > : integral_constant<size_t, N> {};
+template <typename T, sofa::Size N>
+struct tuple_size<::sofa::type::fixed_array<T, N> > : integral_constant<size_t, N>
+{};
 
-template<std::size_t I, typename T, sofa::Size N>
+
+template <std::size_t I, typename T, sofa::Size N>
 struct tuple_element<I, ::sofa::type::fixed_array<T, N> >
 {
     using type = T;

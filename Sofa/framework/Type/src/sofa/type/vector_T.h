@@ -38,7 +38,7 @@
 namespace sofa::type
 {
 
-static constexpr bool isEnabledVectorAccessChecking {SOFA_VECTOR_CHECK_ACCESS};
+static constexpr bool isEnabledVectorAccessChecking{SOFA_VECTOR_CHECK_ACCESS};
 
 [[noreturn]]
 extern void SOFA_TYPE_API vector_access_failure(const void* vec, std::size_t size, std::size_t i, const std::type_info& type);
@@ -46,6 +46,7 @@ extern void SOFA_TYPE_API vector_access_failure(const void* vec, std::size_t siz
 // standard vector dont use the CPUMemoryManager given as template
 template <typename T>
 class CPUMemoryManager;
+
 
 /// Regular vector
 /// Using CPUMemoryManager, it has the same behavior as std::vector with extra conveniences:
@@ -58,44 +59,64 @@ public:
     typedef CPUMemoryManager<T> memory_manager;
     typedef std::allocator<T> Alloc;
     /// Size
-    typedef typename std::vector<T,Alloc>::size_type Size;
+    typedef typename std::vector<T, Alloc>::size_type Size;
     /// reference to a value (read-write)
-    typedef typename std::vector<T,Alloc>::reference reference;
+    typedef typename std::vector<T, Alloc>::reference reference;
     /// const reference to a value (read only)
-    typedef typename std::vector<T,Alloc>::const_reference const_reference;
+    typedef typename std::vector<T, Alloc>::const_reference const_reference;
 
-    template<class T2>
-    using rebind_to = vector< T2, CPUMemoryManager<T2> >;
+    template <class T2>
+    using rebind_to = vector<T2, CPUMemoryManager<T2> >;
 
-    template<class T2> struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
+
+    template <class T2>
+    struct SOFA_ATTRIBUTE_DISABLED__REBIND() rebind
     {
         typedef DeprecatedAndRemoved other;
     };
 
 
     /// Basic constructor
-    vector() : std::vector<T,Alloc>() {}
+    vector()
+        : std::vector<T, Alloc>()
+    {}
+
     /// Constructor
-    vector(Size n, const T& value): std::vector<T,Alloc>(n,value) {}
+    vector(Size n, const T& value)
+        : std::vector<T, Alloc>(n, value)
+    {}
+
     /// Constructor
-    explicit vector(Size n): std::vector<T,Alloc>(n) {}
+    explicit vector(Size n)
+        : std::vector<T, Alloc>(n)
+    {}
+
     /// Constructor
-    vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
+    vector(const std::vector<T, Alloc>& x)
+        : std::vector<T, Alloc>(x)
+    {}
+
     /// Brace initalizer constructor
-    vector(const std::initializer_list<T>& t) : std::vector<T,Alloc>(t) {}
+    vector(const std::initializer_list<T>& t)
+        : std::vector<T, Alloc>(t)
+    {}
+
     /// Move constructor
-    vector(std::vector<T,Alloc>&& v): std::vector<T,Alloc>(std::move(v)) {}
+    vector(std::vector<T, Alloc>&& v)
+        : std::vector<T, Alloc>(std::move(v))
+    {}
 
     /// Copy operator
     vector& operator=(const std::vector<T, Alloc>& x)
     {
-        std::vector<T,Alloc>::operator=(x);
+        std::vector<T, Alloc>::operator=(x);
         return *this;
     }
+
     /// Move assignment operator
-    vector& operator=(std::vector<T,Alloc>&& v)
+    vector& operator=(std::vector<T, Alloc>&& v)
     {
-        std::vector<T,Alloc>::operator=(std::move(v));
+        std::vector<T, Alloc>::operator=(std::move(v));
         return *this;
     }
 
@@ -105,7 +126,9 @@ public:
     vector(InputIterator first, InputIterator last): std::vector<T,Alloc>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    vector(typename vector<T>::const_iterator first, typename vector<T>::const_iterator last): std::vector<T>(first,last) {}
+    vector(typename vector<T>::const_iterator first, typename vector<T>::const_iterator last)
+        : std::vector<T>(first, last)
+    {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
     /// Read/write random access
@@ -132,36 +155,45 @@ public:
 
     std::ostream& write(std::ostream& os) const
     {
-        if( this->size()>0 )
+        if (this->size() > 0)
         {
-            for( Size i=0; i<this->size()-1; ++i )
-                os<<(*this)[i]<<" ";
-            os<<(*this)[this->size()-1];
+            for (Size i = 0; i < this->size() - 1; ++i)
+                os << (*this)[i] << " ";
+            os << (*this)[this->size() - 1];
         }
         return os;
     }
 
     std::istream& read(std::istream& in)
     {
-        T t=T();
+        T t = T();
         this->clear();
-        while(in>>t)
+        while (in >> t)
         {
             this->push_back(t);
         }
-        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        if (in.rdstate() & std::ios_base::eofbit)
+        {
+            in.clear();
+        }
         return in;
     }
 
 
     /// Output stream
-    friend std::ostream& operator<< ( std::ostream& os, const vector& vec ) { return vec.write(os); }
+    friend std::ostream& operator<<(std::ostream& os, const vector& vec)
+    {
+        return vec.write(os);
+    }
 
     /// Input stream
-    friend std::istream& operator>> ( std::istream& in, vector& vec ){ return vec.read(in); }
+    friend std::istream& operator>>(std::istream& in, vector& vec)
+    {
+        return vec.read(in);
+    }
 
     /// Sets every element to 'value'
-    void fill( const T& value )
+    void fill(const T& value)
     {
         std::fill(this->begin(), this->end(), value);
     }

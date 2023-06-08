@@ -23,10 +23,13 @@
 #include <sofa/type/vector_T.h>
 
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
-template<> SOFA_TYPE_API std::istream& sofa::type::vector<int>::read( std::istream& in );
-template<> SOFA_TYPE_API std::istream& sofa::type::vector<unsigned int>::read( std::istream& in );
+template <>
+SOFA_TYPE_API std::istream& sofa::type::vector<int>::read(std::istream& in);
+template <>
+SOFA_TYPE_API std::istream& sofa::type::vector<unsigned int>::read(std::istream& in);
 
 /// Specialization for writing vectors of unsigned char
-template<> SOFA_TYPE_API std::ostream& sofa::type::vector<unsigned char>::write(std::ostream& os) const;
-template<> SOFA_TYPE_API std::istream& sofa::type::vector<unsigned char>::read(std::istream& in);
-
+template <>
+SOFA_TYPE_API std::ostream& sofa::type::vector<unsigned char>::write(std::ostream& os) const;
+template <>
+SOFA_TYPE_API std::istream& sofa::type::vector<unsigned char>::read(std::istream& in);

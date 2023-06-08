@@ -29,6 +29,7 @@
 #include <string>
 #include <cmath>
 
+
 namespace sofa::type
 {
 
@@ -43,14 +44,14 @@ using sofa::type::fixed_array ;
 class SOFA_TYPE_API RGBAColor : public fixed_array<float, 4>
 {
 public:
-    static RGBAColor fromString(const std::string& str) ;
-    static RGBAColor fromFloat(float r, float g, float b, float a) ;
-    static RGBAColor fromVec4(const fixed_array<float, 4>& color) ;
-    static RGBAColor fromVec4(const fixed_array<double, 4>& color) ;
+    static RGBAColor fromString(const std::string& str);
+    static RGBAColor fromFloat(float r, float g, float b, float a);
+    static RGBAColor fromVec4(const fixed_array<float, 4>& color);
+    static RGBAColor fromVec4(const fixed_array<double, 4>& color);
 
-    static RGBAColor fromHSVA(float h, float s, float v, float a) ;
+    static RGBAColor fromHSVA(float h, float s, float v, float a);
 
-    static bool read(const std::string& str, RGBAColor& color) ;
+    static bool read(const std::string& str, RGBAColor& color);
 
     constexpr static const RGBAColor& white();
     constexpr static const RGBAColor& black();
@@ -67,69 +68,169 @@ public:
     /// @brief enlight a color by a given factor.
     static RGBAColor lighten(const RGBAColor& in, const SReal factor);
 
-    constexpr float& r(){ return this->elems[0] ; }
-    constexpr float& g(){ return this->elems[1] ; }
-    constexpr float& b(){ return this->elems[2] ; }
-    constexpr float& a(){ return this->elems[3] ; }
-    constexpr const float& r() const { return this->elems[0] ; }
-    constexpr const float& g() const { return this->elems[1] ; }
-    constexpr const float& b() const { return this->elems[2] ; }
-    constexpr const float& a() const { return this->elems[3] ; }
-
-    constexpr void r(const float r){ this->elems[0]=r; }
-    constexpr void g(const float g){ this->elems[1]=g; }
-    constexpr void b(const float b){ this->elems[2]=b; }
-    constexpr void a(const float a){ this->elems[3]=a; }
-
-    void set(float r, float g, float b, float a) ;
-
-    bool operator==(const fixed_array<float,4>& b) const
+    constexpr float& r()
     {
-        for (int i=0; i<4; i++)
-            if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return false;
+        return this->elems[0];
+    }
+
+    constexpr float& g()
+    {
+        return this->elems[1];
+    }
+
+    constexpr float& b()
+    {
+        return this->elems[2];
+    }
+
+    constexpr float& a()
+    {
+        return this->elems[3];
+    }
+
+    constexpr const float& r() const
+    {
+        return this->elems[0];
+    }
+
+    constexpr const float& g() const
+    {
+        return this->elems[1];
+    }
+
+    constexpr const float& b() const
+    {
+        return this->elems[2];
+    }
+
+    constexpr const float& a() const
+    {
+        return this->elems[3];
+    }
+
+    constexpr void r(const float r)
+    {
+        this->elems[0] = r;
+    }
+
+    constexpr void g(const float g)
+    {
+        this->elems[1] = g;
+    }
+
+    constexpr void b(const float b)
+    {
+        this->elems[2] = b;
+    }
+
+    constexpr void a(const float a)
+    {
+        this->elems[3] = a;
+    }
+
+    void set(float r, float g, float b, float a);
+
+    bool operator==(const fixed_array<float, 4>& b) const
+    {
+        for (int i = 0; i < 4; i++)
+            if (fabs(this->elems[i] - b[i]) > RGBACOLOR_EQUALITY_THRESHOLD)
+                return false;
         return true;
     }
 
-    bool operator!=(const fixed_array<float,4>& b) const
+    bool operator!=(const fixed_array<float, 4>& b) const
     {
-        for (int i=0; i<4; i++)
-            if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return true;
+        for (int i = 0; i < 4; i++)
+            if (fabs(this->elems[i] - b[i]) > RGBACOLOR_EQUALITY_THRESHOLD)
+                return true;
         return false;
     }
 
     RGBAColor operator*(float f) const;
 
-    friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
-    friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
+    friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t);
+    friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t);
 
-    constexpr RGBAColor() : fixed_array<float, 4>(1.f, 1.f, 1.f, 1.f) {}
-    constexpr RGBAColor(const fixed_array<float, 4>& c) : fixed_array<float, 4>(c) {}
-    constexpr RGBAColor(float r, float g, float b, float a) : fixed_array<float, 4>(r, g, b, a) {}
+    constexpr RGBAColor()
+        : fixed_array<float, 4>(1.f, 1.f, 1.f, 1.f)
+    {}
+
+    constexpr RGBAColor(const fixed_array<float, 4>& c)
+        : fixed_array<float, 4>(c)
+    {}
+
+    constexpr RGBAColor(float r, float g, float b, float a)
+        : fixed_array<float, 4>(r, g, b, a)
+    {}
 
 };
 
-inline constexpr RGBAColor g_white     {1.0f,1.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_black     {0.0f,0.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_red       {1.0f,0.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_green     {0.0f,1.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_blue      {0.0f,0.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_cyan      {0.0f,1.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_magenta   {1.0f,0.0f,1.0f,1.0f};
-inline constexpr RGBAColor g_yellow    {1.0f,1.0f,0.0f,1.0f};
-inline constexpr RGBAColor g_gray      {0.5f,0.5f,0.5f,1.0f};
-inline constexpr RGBAColor g_darkgray  {0.25f,0.25f,0.25f,1.0f};
-inline constexpr RGBAColor g_lightgray {0.75f,0.75f,0.75f,1.0f};
 
-constexpr const RGBAColor& RGBAColor::white()    { return g_white;     }
-constexpr const RGBAColor& RGBAColor::black()    { return g_black;     }
-constexpr const RGBAColor& RGBAColor::red()      { return g_red;       }
-constexpr const RGBAColor& RGBAColor::green()    { return g_green;     }
-constexpr const RGBAColor& RGBAColor::blue()     { return g_blue;      }
-constexpr const RGBAColor& RGBAColor::cyan()     { return g_cyan;      }
-constexpr const RGBAColor& RGBAColor::magenta()  { return g_magenta;   }
-constexpr const RGBAColor& RGBAColor::yellow()   { return g_yellow;    }
-constexpr const RGBAColor& RGBAColor::gray()     { return g_gray;      }
-constexpr const RGBAColor& RGBAColor::darkgray() { return g_darkgray;  }
-constexpr const RGBAColor& RGBAColor::lightgray(){ return g_lightgray; }
+inline constexpr RGBAColor g_white{1.0f, 1.0f, 1.0f, 1.0f};
+inline constexpr RGBAColor g_black{0.0f, 0.0f, 0.0f, 1.0f};
+inline constexpr RGBAColor g_red{1.0f, 0.0f, 0.0f, 1.0f};
+inline constexpr RGBAColor g_green{0.0f, 1.0f, 0.0f, 1.0f};
+inline constexpr RGBAColor g_blue{0.0f, 0.0f, 1.0f, 1.0f};
+inline constexpr RGBAColor g_cyan{0.0f, 1.0f, 1.0f, 1.0f};
+inline constexpr RGBAColor g_magenta{1.0f, 0.0f, 1.0f, 1.0f};
+inline constexpr RGBAColor g_yellow{1.0f, 1.0f, 0.0f, 1.0f};
+inline constexpr RGBAColor g_gray{0.5f, 0.5f, 0.5f, 1.0f};
+inline constexpr RGBAColor g_darkgray{0.25f, 0.25f, 0.25f, 1.0f};
+inline constexpr RGBAColor g_lightgray{0.75f, 0.75f, 0.75f, 1.0f};
+
+constexpr const RGBAColor& RGBAColor::white()
+{
+    return g_white;
+}
+
+constexpr const RGBAColor& RGBAColor::black()
+{
+    return g_black;
+}
+
+constexpr const RGBAColor& RGBAColor::red()
+{
+    return g_red;
+}
+
+constexpr const RGBAColor& RGBAColor::green()
+{
+    return g_green;
+}
+
+constexpr const RGBAColor& RGBAColor::blue()
+{
+    return g_blue;
+}
+
+constexpr const RGBAColor& RGBAColor::cyan()
+{
+    return g_cyan;
+}
+
+constexpr const RGBAColor& RGBAColor::magenta()
+{
+    return g_magenta;
+}
+
+constexpr const RGBAColor& RGBAColor::yellow()
+{
+    return g_yellow;
+}
+
+constexpr const RGBAColor& RGBAColor::gray()
+{
+    return g_gray;
+}
+
+constexpr const RGBAColor& RGBAColor::darkgray()
+{
+    return g_darkgray;
+}
+
+constexpr const RGBAColor& RGBAColor::lightgray()
+{
+    return g_lightgray;
+}
 
 } // namespace sofa::type

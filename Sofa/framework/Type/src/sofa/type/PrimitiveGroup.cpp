@@ -24,16 +24,17 @@
 #include <istream>
 #include <ostream>
 
+
 namespace sofa::type
 {
 
-std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+std::ostream& operator <<(std::ostream& out, const PrimitiveGroup& g)
 {
     out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
     return out;
 }
 
-std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
+std::istream& operator >>(std::istream& in, PrimitiveGroup& g)
 {
     in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
     return in;
@@ -44,9 +45,12 @@ bool PrimitiveGroup::operator <(const PrimitiveGroup& p) const
     return p0 < p.p0;
 }
 
-PrimitiveGroup::PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
+PrimitiveGroup::PrimitiveGroup()
+    : p0(0), nbp(0), materialId(-1)
+{}
 
 PrimitiveGroup::PrimitiveGroup(const int p0, const int nbp, std::string materialName, std::string groupName, int materialId)
-    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId) {}
+    : p0(p0), nbp(nbp), materialName(std::move(materialName)), groupName(std::move(groupName)), materialId(materialId)
+{}
 
 } /// namespace sofa::type

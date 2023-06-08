@@ -24,6 +24,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 
+
 namespace sofa::type
 {
 
@@ -34,25 +35,25 @@ namespace sofa::type
 // ---   res[dim..2*dim-1] = F
 // -----------------------------------------------------------------
 template <Size dim, typename real>
-[[nodiscard]] 
-bool solveLCP(const Vec<dim,real> &q, const Mat<dim,dim,real> &M, Vec<dim * 2, real> &res)
+[[nodiscard]]
+bool solveLCP(const Vec<dim, real>& q, const Mat<dim, dim, real>& M, Vec<dim * 2, real>& res)
 {
-    constexpr real EPSILON_ZERO  = 0.00001;	        // epsilon pour tests = 0
-    constexpr real EPSILON_PIVOT = 0.00000000001;	// epsilon pour pivot
-    constexpr Size MAX_NB_LOOP   = 50;	            // nombre maximal de boucles de calcul
+    constexpr real EPSILON_ZERO = 0.00001; // epsilon pour tests = 0
+    constexpr real EPSILON_PIVOT = 0.00000000001; // epsilon pour pivot
+    constexpr Size MAX_NB_LOOP = 50; // nombre maximal de boucles de calcul
 
-    const Size	dim_mult2 = 2 * dim;
-    const Size	dim_mult2_plus1 = dim_mult2 + 1;
+    const Size dim_mult2 = 2 * dim;
+    const Size dim_mult2_plus1 = dim_mult2 + 1;
 
-    Index       ii, jj;
-    int         ligPiv;	// ligne du pivot
-    int         colPiv;	// colonne du pivot
-    double      pivot;	// pivot
-    double      min;	// recherche du minimum pour le pivot
-    double      coeff;	// valeur du coefficient de la combinaison lineaire
-    Index       boucles;	// ii du nombre de passages dans la boucle
-    double      mat[dim][dim_mult2_plus1];
-    Index       base[dim];		// base des variables non nulles
+    Index ii, jj;
+    int ligPiv; // ligne du pivot
+    int colPiv; // colonne du pivot
+    double pivot; // pivot
+    double min; // recherche du minimum pour le pivot
+    double coeff; // valeur du coefficient de la combinaison lineaire
+    Index boucles; // ii du nombre de passages dans la boucle
+    double mat[dim][dim_mult2_plus1];
+    Index base[dim]; // base des variables non nulles
 
     // matrix initialization
     for (ii = 0; ii < dim; ii++)
