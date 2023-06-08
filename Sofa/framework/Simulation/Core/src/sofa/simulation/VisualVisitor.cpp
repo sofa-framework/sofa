@@ -49,6 +49,10 @@ Visitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
 
 Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 {
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return RESULT_PRUNE;
+
     // NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
     // which will most probably be the case when there are no visual models, so we skip the search unless we have visual models.
     hasShader = !node->visualModel.empty() && (node->getShader()!=nullptr);
@@ -61,11 +65,19 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 {
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
 }
 
 void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
 {
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
     if (vparams->pass() == core::visual::VisualParams::Transparent || vparams->pass() == core::visual::VisualParams::Shadow)
     {
         msg_info_when(DO_DEBUG_DRAW, o) << " entering VisualVisitor::draw()" ;
