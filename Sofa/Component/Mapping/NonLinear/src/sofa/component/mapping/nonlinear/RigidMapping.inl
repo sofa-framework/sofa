@@ -658,7 +658,7 @@ void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     {
         const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-        const auto childForces = this->toModel->readForces();
+        const auto childForces = this->toModel->readTotalForces();
 
         std::map<unsigned, sofa::type::vector<unsigned> > in_out;
         for(sofa::Index i = 0; i < m_rotatedPoints.size(); ++i)

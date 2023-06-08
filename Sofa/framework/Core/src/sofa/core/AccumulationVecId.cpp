@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,35 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/BaseState.h>
-#include <sofa/core/objectmodel/BaseNode.h>
+#define SOFA_CORE_ACCUMULATIONVECID_CPP
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+#include <sofa/core/AccumulationVecId.inl>
 
 namespace sofa::core
 {
-
-
-bool BaseState::insertInNode( objectmodel::BaseNode* node )
-{
-    node->addState(this);
-    Inherit1::insertInNode(node);
-    return true;
+template struct SOFA_CORE_API AccumulationVecId<defaulttype::Vec3dTypes, V_DERIV, V_READ>;
+template struct SOFA_CORE_API AccumulationVecId<defaulttype::Vec2Types, V_DERIV, V_READ>;
+template struct SOFA_CORE_API AccumulationVecId<defaulttype::Vec1Types, V_DERIV, V_READ>;
+template struct SOFA_CORE_API AccumulationVecId<defaulttype::Vec6Types, V_DERIV, V_READ>;
+template struct SOFA_CORE_API AccumulationVecId<defaulttype::Rigid3Types, V_DERIV, V_READ>;
+template struct SOFA_CORE_API AccumulationVecId<defaulttype::Rigid2Types, V_DERIV, V_READ>;
+template struct SOFA_CORE_API AccumulationVecId<defaulttype::Vec3fTypes, V_DERIV, V_READ>;
 }
-
-bool BaseState::removeInNode( objectmodel::BaseNode* node )
-{
-    node->removeState(this);
-    Inherit1::removeInNode(node);
-    return true;
-}
-
-void BaseState::addToTotalForces(core::ConstVecDerivId forceId)
-{
-    SOFA_UNUSED(forceId);
-}
-
-void BaseState::removeFromTotalForces(core::ConstVecDerivId forceId)
-{
-    SOFA_UNUSED(forceId);
-}
-} // namespace sofa::core
-
