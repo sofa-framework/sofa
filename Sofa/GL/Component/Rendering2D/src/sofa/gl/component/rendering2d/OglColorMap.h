@@ -70,7 +70,7 @@ public:
     //void initVisual() { initTextures(); }
     //void clearVisual() { }
     //void initTextures() {}
-    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     //void drawTransparent(const VisualParams* /*vparams*/)
     //void updateVisual();
 

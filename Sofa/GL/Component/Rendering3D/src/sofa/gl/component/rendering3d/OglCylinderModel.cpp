@@ -63,12 +63,8 @@ void OglCylinderModel::reinit()
 {
 }
 
-void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
+void OglCylinderModel::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
     vparams->drawTool()->setLightingEnabled(true);

@@ -109,10 +109,8 @@ OglColorMap* OglColorMap::getDefault()
     return defaultOglColorMap.get();
 }
 
-void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
+void OglColorMap::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if( !vparams->displayFlags().getShowVisual() ) return;
-
     if (!d_showLegend.getValue()) return;
 
     // Prepare texture for legend

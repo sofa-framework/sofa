@@ -53,6 +53,7 @@ public:
 
     void reinit() override;
 
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 public:

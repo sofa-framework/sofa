@@ -108,7 +108,7 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
             shader->start();
 
         msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawVisual" ;
-
+        
         vm->drawVisual(vparams);
 
         msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;

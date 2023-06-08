@@ -91,10 +91,8 @@ void DataDisplay::updateVisual()
     computeNormals();
 }
 
-void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
+void DataDisplay::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualModels()) return;
-
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 

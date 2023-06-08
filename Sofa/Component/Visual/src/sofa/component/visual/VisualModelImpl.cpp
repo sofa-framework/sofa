@@ -215,7 +215,7 @@ bool VisualModelImpl::hasOpaque()
     return false;
 }
 
-void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
+void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Loading)
     {
