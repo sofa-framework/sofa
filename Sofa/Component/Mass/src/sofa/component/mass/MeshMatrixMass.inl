@@ -59,6 +59,42 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
     , m_massTopologyType(geometry::ElementType::UNKNOWN)
 {
     f_graph.setWidget("graph");
+
+    d_vertexMass.setDisplayed(false);
+    d_edgeMass.setDisplayed(false);
+
+    sofa::core::objectmodel::Base::addUpdateCallback("dataInternalUpdate", {&d_totalMass, &d_massDensity}, [this](const core::DataTracker& tracker)
+    {
+        if (tracker.hasChanged(d_totalMass))
+        {
+            if(checkTotalMass())
+            {
+                initFromTotalMass();
+            }
+            else
+            {
+                msg_error() << "dataInternalUpdate: incorrect update from totalMass";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+        }
+        else if(tracker.hasChanged(d_massDensity))
+        {
+            if(checkMassDensity())
+            {
+                initFromMassDensity();
+            }
+            else
+            {
+                msg_error() << "dataInternalUpdate: incorrect update from massDensity";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+        }
+
+        //Info post-init
+        msg_info() << "mass information updated";
+        printMass();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 template <class DataTypes, class GeometricalTypes>
@@ -1510,44 +1546,15 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::reinit()
 {
-    // Now update is handled through the doUpdateInternal mechanism
-    // called at each begin of step through the UpdateInternalDataVisitor
+    // Now update is handled through the callback mechanism
+    // called each time the componentState is checked
 }
 
 
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::doUpdateInternal()
 {
-    if (this->hasDataChanged(d_totalMass))
-    {
-        if(checkTotalMass())
-        {
-            initFromTotalMass();
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-        else
-        {
-            msg_error() << "doUpdateInternal: incorrect update from totalMass";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        }
-    }
-    else if(this->hasDataChanged(d_massDensity))
-    {
-        if(checkMassDensity())
-        {
-            initFromMassDensity();
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-        else
-        {
-            msg_error() << "doUpdateInternal: incorrect update from massDensity";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        }
-    }
-
-    //Info post-init
-    msg_info() << "mass information updated";
-    printMass();
+    // function empty in #XXXX
 }
 
 
@@ -2000,6 +2007,9 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::clear()
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::addMDx(const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
 
@@ -2064,6 +2074,9 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMDx(const core::MechanicalP
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     SOFA_UNUSED(mparams);
     if( !isLumped() )
     {
@@ -2192,6 +2205,9 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addGravityToV(const core::Mech
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset)
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
 
@@ -2273,6 +2289,9 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgeb
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
+    if(this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+        return;
+
     const MassVector &vertexMass= d_vertexMass.getValue();
     const MassVector &edgeMass= d_edgeMass.getValue();
 
