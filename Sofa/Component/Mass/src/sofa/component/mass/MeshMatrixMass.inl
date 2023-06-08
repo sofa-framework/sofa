@@ -1554,7 +1554,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::reinit()
 template <class DataTypes, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, GeometricalTypes>::doUpdateInternal()
 {
-    // function empty in #XXXX
+    // function empty in #3928
 }
 
 
