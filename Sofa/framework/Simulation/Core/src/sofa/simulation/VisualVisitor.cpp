@@ -1,24 +1,24 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -96,47 +96,51 @@ void VisualDrawVisitor::bwdVisualModel(simulation::Node* /*node*/,core::visual::
 
 void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
 {
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    // don't draw if the component is not in valid state
+    if( vm->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+        return;
+
+    // don't draw if this component is specifically configure to be disabled
+    if (!vm->d_draw.getValue())
+        return;
+
+    if(vparams->pass() == core::visual::VisualParams::Shadow)
+    {
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawShadow" ;
+        vm->drawShadow(vparams);
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
+        return;
+    }
+
     sofa::core::visual::Shader* shader = nullptr;
     if (hasShader)
         shader = node->getShader(subsetsToManage);
 
+    if (shader && shader->isActive())
+        shader->start();
+
     switch(vparams->pass())
     {
-    case core::visual::VisualParams::Std:
-    {
-        if (shader && shader->isActive())
-            shader->start();
-
-        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawVisual" ;
-        
-        vm->drawVisual(vparams);
-
-        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
-
-        if (shader && shader->isActive())
-            shader->stop();
-        break;
+        case core::visual::VisualParams::Std:
+            msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawVisual" ;
+            vm->drawVisual(vparams);
+            msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
+            break;
+        case core::visual::VisualParams::Transparent:
+            msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawTransparent" ;
+            vm->drawTransparent(vparams);
+            msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawTransparent" ;
+            break;
+        default:
+            return;
     }
-    case core::visual::VisualParams::Transparent:
-    {
-        if (shader && shader->isActive())
-            shader->start();
 
-        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawTransparent" ;
-
-        vm->drawTransparent(vparams);
-
-        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawTransparent" ;
-        if (shader && shader->isActive())
-            shader->stop();
-        break;
-    }
-    case core::visual::VisualParams::Shadow:
-        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawShadow" ;
-        vm->drawShadow(vparams);
-        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
-        break;
-    }
+    if (shader && shader->isActive())
+        shader->stop();
 }
 
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)

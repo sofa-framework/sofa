@@ -49,7 +49,6 @@ public:
     SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
 
-
     Data<bool> d_draw; ///< Display the visual model or not
 
     /**
@@ -60,8 +59,6 @@ public:
 
 protected:
     VisualModel();
-
-    /// Destructor
     ~VisualModel() override { }
 
 private:
