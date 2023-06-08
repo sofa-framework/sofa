@@ -24,6 +24,8 @@
     <CollisionResponse response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
 
+    <InteractiveCamera position="-2 2.6 17.9" orientation="0 0 0 1" distance="17.9" />
+
     <MeshGmshLoader name="MeshLoader" filename="mesh/liver.msh" />
     <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
