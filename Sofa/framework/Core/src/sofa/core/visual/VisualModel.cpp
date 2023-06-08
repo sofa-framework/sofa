@@ -27,7 +27,7 @@ namespace sofa::core::visual
 {
 
 VisualModel::VisualModel():
-    d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
+    d_draw(initData(&d_draw, true,  "draw", "Display the object or not"))
 {}
 
 void VisualModel::drawVisual(const VisualParams* vparams)
