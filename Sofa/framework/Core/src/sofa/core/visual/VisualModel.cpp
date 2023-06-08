@@ -21,9 +21,33 @@
 ******************************************************************************/
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::core::visual
 {
+
+VisualModel::VisualModel():
+    d_draw(initData(&d_draw, true,  "draw", "Display the grid or not"))
+{}
+
+void VisualModel::drawVisual(const VisualParams* vparams)
+{
+    // don't draw if specified not to do so in the user interface
+    if (!vparams->displayFlags().getShowVisualModels())
+        return;
+
+    // don't draw if the component is not in valid state
+    if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
+        return;
+
+    // don't draw if this component is specifically configure to be disabled
+    if (!d_draw.getValue())
+        return;
+
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    doDrawVisual(vparams);
+}
 
 bool VisualModel::insertInNode( objectmodel::BaseNode* node )
 {
