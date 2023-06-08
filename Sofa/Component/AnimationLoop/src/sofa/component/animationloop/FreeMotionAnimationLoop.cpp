@@ -196,6 +196,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(gnode);
     }
 
+    // This animation loop works with lagrangian constraints. Forces derive from the constraints.
+    // Therefore we notice the States that they have to consider them in the total accumulation of
+    // forces.
+    for (auto* state : this->getContext()->getObjects<sofa::core::BaseState>(sofa::core::objectmodel::BaseContext::SearchDirection::SearchDown))
+    {
+        state->addToTotalForces(cparams.lambda().getId(state));
+    }
+
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");

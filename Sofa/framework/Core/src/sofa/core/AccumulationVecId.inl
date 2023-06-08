@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,35 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/BaseState.h>
-#include <sofa/core/objectmodel/BaseNode.h>
+#pragma once
+#include <sofa/core/AccumulationVecId.h>
+#include <sofa/core/State.h>
+#include <numeric>
 
 namespace sofa::core
 {
 
-
-bool BaseState::insertInNode( objectmodel::BaseNode* node )
+template <class TDataTypes, VecType vtype, VecAccess vaccess>
+typename TDataTypes::Deriv
+AccumulationVecId<TDataTypes, vtype, vaccess>::operator[](Size i) const
 {
-    node->addState(this);
-    Inherit1::insertInNode(node);
-    return true;
+    return std::accumulate(m_contributingVecIds.begin(), m_contributingVecIds.end(), Deriv{},
+       [i, this](Deriv a, core::ConstVecDerivId v)
+       {
+           return std::move(a) + m_state.read(v)->getValue()[i];
+       });
 }
 
-bool BaseState::removeInNode( objectmodel::BaseNode* node )
+template <class TDataTypes, VecType vtype, VecAccess vaccess>
+void AccumulationVecId<TDataTypes, vtype, vaccess>::addToContributingVecIds(core::ConstVecDerivId vecDerivId)
 {
-    node->removeState(this);
-    Inherit1::removeInNode(node);
-    return true;
+    if (std::find(m_contributingVecIds.begin(), m_contributingVecIds.end(), vecDerivId) == m_contributingVecIds.end())
+    {
+        m_contributingVecIds.emplace_back(vecDerivId);
+    }
 }
 
-void BaseState::addToTotalForces(core::ConstVecDerivId forceId)
+template <class TDataTypes, VecType vtype, VecAccess vaccess>
+void AccumulationVecId<TDataTypes, vtype, vaccess>::removeFromContributingVecIds(
+    core::ConstVecDerivId vecDerivId)
 {
-    SOFA_UNUSED(forceId);
+    m_contributingVecIds.erase(
+        std::remove(m_contributingVecIds.begin(), m_contributingVecIds.end(), vecDerivId)
+        , m_contributingVecIds.end());
 }
 
-void BaseState::removeFromTotalForces(core::ConstVecDerivId forceId)
-{
-    SOFA_UNUSED(forceId);
-}
-} // namespace sofa::core
 
+}

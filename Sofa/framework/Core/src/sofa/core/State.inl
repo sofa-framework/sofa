@@ -22,9 +22,28 @@
 #pragma once
 
 #include <sofa/core/State.h>
+#include <sofa/core/AccumulationVecId.inl>
 
 namespace sofa::core
 {
+template <class TDataTypes>
+void State<TDataTypes>::addToTotalForces(core::ConstVecDerivId forceId)
+{
+    accumulatedForces.addToContributingVecIds(forceId);
+}
+
+template <class TDataTypes>
+void State<TDataTypes>::removeFromTotalForces(core::ConstVecDerivId forceId)
+{
+    accumulatedForces.removeFromContributingVecIds(forceId);
+}
+
+template <class TDataTypes>
+State<TDataTypes>::State()
+    : accumulatedForces(*this)
+{
+    State::addToTotalForces(core::ConstVecDerivId::force());
+}
 
 template<class DataTypes>
 objectmodel::BaseData* State<DataTypes>::baseWrite(VecId v)

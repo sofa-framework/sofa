@@ -191,11 +191,11 @@ void SquareMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
         return;
     }
 
-    const auto childForce = this->toModel->readForces();
-    unsigned int size = this->fromModel->getSize();
+    const auto childForce = this->toModel->readTotalForces();
+    const unsigned int size = this->fromModel->getSize();
     const auto dJdx = matrices->getMappingDerivativeIn(this->fromModel).withRespectToPositionsIn(this->fromModel);
 
-    for( size_t i=0 ; i<size ; ++i )
+    for( sofa::Size i=0 ; i<size ; ++i )
     {
         dJdx(i, i) += 2*childForce[i][0];
     }

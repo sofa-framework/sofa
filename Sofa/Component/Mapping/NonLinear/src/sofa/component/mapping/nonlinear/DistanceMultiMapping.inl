@@ -416,16 +416,18 @@ void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
     const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { return; }
 
-    const auto childForce = this->getToModels()[0]->readForces();
+    const auto childForce = this->getToModels()[0]->readTotalForces();
     const SeqEdges& links = l_topology->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
-    for(size_t i=0; i<links.size(); i++)
+    for(sofa::Size i=0; i<links.size(); i++)
     {
+        const OutDeriv force_i = childForce[i];
+
         // force in compression (>0) can lead to negative eigen values in geometric stiffness
         // this results in a undefinite implicit matrix that causes instabilies
         // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
+        if( force_i[0] < 0 || geometricStiffness==1 )
         {
             type::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
             for(unsigned j=0; j<In::spatial_dimensions; j++)
@@ -435,7 +437,7 @@ void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
                     b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[j] * directions[k];
                 }
             }
-            b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+            b *= force_i[0] * invlengths[i];  // (I - uu^T)*f/l
 
             const type::Vec2i& pair0 = pairs[ links[i][0] ];
             const type::Vec2i& pair1 = pairs[ links[i][1] ];
