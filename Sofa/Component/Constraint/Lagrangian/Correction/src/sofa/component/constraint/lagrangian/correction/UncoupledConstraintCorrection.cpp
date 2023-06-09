@@ -24,6 +24,7 @@
 #include <sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -160,7 +161,7 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
         .add< UncoupledConstraintCorrection< Vec2Types > >()
         .add< UncoupledConstraintCorrection< Vec3Types > >()
         .add< UncoupledConstraintCorrection< Rigid3Types > >()
-    ;
+        .setTemplateDeductionMethod(sofa::core::getTemplateFromMechanicalState);
 
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API UncoupledConstraintCorrection< Vec1Types >;
 template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API UncoupledConstraintCorrection< Vec2Types >;

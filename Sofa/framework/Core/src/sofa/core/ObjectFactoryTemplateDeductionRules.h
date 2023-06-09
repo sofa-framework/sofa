@@ -32,7 +32,7 @@ SOFA_CORE_API std::string getTemplateFromMeshTopology(sofa::core::objectmodel::B
 
 /// Deduce the object template from the object pointed by the linkName, if not set, use the provided defaultValue
 template<class TargetObject>
-SOFA_CORE_API std::string getTemplateFromFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+std::string getTemplateFromLink(const std::string& attributeName, const std::string defaultValue, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     // get the template type from the object pointed by the linkPath
     const std::string linkedPath = arg->getAttribute(attributeName, defaultValue.c_str());
