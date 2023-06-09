@@ -13,7 +13,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <!-- Constant force for a deformable -->
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop computeBoundingBox="0"/>
     <InteractiveCamera position="1.27 0.48 4.5" orientation="0 0 0 1"  distance="3.86" fieldOfView="45"/>
     
     <Node name="BasicDeformableObject" >
