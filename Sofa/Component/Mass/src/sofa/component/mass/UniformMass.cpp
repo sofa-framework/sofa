@@ -1,30 +1,31 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_CPP
 
 #include <sofa/component/mass/UniformMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
 #include <sstream>
@@ -154,7 +155,7 @@ void UniformMass<RigidTypes>::loadFromFileRigidImpl(const string& filename)
                             double viscosity = 0;
                             if( fscanf(file, "%lf", &viscosity) < 1 )
                                 msg_warning(this) << "error reading file '" << filename << "'.\n"
-                                                     " Unable to decode command 'visc'. \n";
+                                                                                           " Unable to decode command 'visc'. \n";
                         }
                         else if (!strcmp(cmd,"stck"))
                         {
@@ -236,13 +237,13 @@ void UniformMass<RigidTypes>::drawRigid3DImpl(const VisualParams* vparams)
     typename RigidTypes::Vec3 gravityCenter;
     type::Vec3d len;
 
-    // The moment of inertia of a box is:
-    //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
-    //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
-    //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
-    // So to get lx,ly,lz back we need to do
-    //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
-    // Note that RigidMass inertiaMatrix is already divided by M
+            // The moment of inertia of a box is:
+            //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+            //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+            //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+            // So to get lx,ly,lz back we need to do
+            //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+            // Note that RigidMass inertiaMatrix is already divided by M
     double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
     double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
     double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
@@ -291,11 +292,11 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
     std::vector<sofa::type::RGBAColor> colors;
 
     constexpr sofa::type::RGBAColor colorSet[3]
-    {
-        sofa::type::RGBAColor::red(),
-        sofa::type::RGBAColor::green(),
-        sofa::type::RGBAColor::blue()
-    };
+        {
+            sofa::type::RGBAColor::red(),
+            sofa::type::RGBAColor::green(),
+            sofa::type::RGBAColor::blue()
+        };
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
@@ -324,8 +325,8 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
 template <class RigidTypes>
 template <class T>
 Vec6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
-                                                                  const DataVecCoord& d_x,
-                                                                  const DataVecDeriv& d_v ) const
+                                                     const DataVecCoord& d_x,
+                                                     const DataVecDeriv& d_v ) const
 {
     ReadAccessor<DataVecDeriv> v = d_v;
     ReadAccessor<DataVecCoord> x = d_x;
@@ -351,8 +352,8 @@ Vec6 UniformMass<RigidTypes>::getMomentumRigid3DImpl( const MechanicalParams*,
 template <class Vec3Types>
 template <class T>
 Vec6 UniformMass<Vec3Types>::getMomentumVec3DImpl ( const MechanicalParams*,
-                                                                 const DataVecCoord& d_x,
-                                                                 const DataVecDeriv& d_v ) const
+                                                  const DataVecCoord& d_x,
+                                                  const DataVecDeriv& d_v ) const
 {
     ReadAccessor<DataVecDeriv> v = d_v;
     ReadAccessor<DataVecCoord> x = d_x;
@@ -376,7 +377,7 @@ Vec6 UniformMass<Vec3Types>::getMomentumVec3DImpl ( const MechanicalParams*,
 template <class VecTypes>
 template <class T>
 SReal UniformMass<VecTypes>::getPotentialEnergyRigidImpl(const core::MechanicalParams* mparams,
-                                                                    const DataVecCoord& p_x) const
+                                                         const DataVecCoord& p_x) const
 {
     SOFA_UNUSED(mparams) ;
     SReal e = 0;
@@ -393,9 +394,9 @@ SReal UniformMass<VecTypes>::getPotentialEnergyRigidImpl(const core::MechanicalP
 template <class VecTypes>
 template <class T>
 void UniformMass<VecTypes>::addMDxToVectorVecImpl(linearalgebra::BaseVector *resVect,
-                                                     const VecDeriv* dx,
-                                                     SReal mFact,
-                                                     unsigned int& offset)
+                                                  const VecDeriv* dx,
+                                                  SReal mFact,
+                                                  unsigned int& offset)
 {
     unsigned int derivDim = (unsigned)Deriv::size();
     double m = d_vertexMass.getValue();
@@ -416,7 +417,7 @@ void UniformMass<VecTypes>::addMDxToVectorVecImpl(linearalgebra::BaseVector *res
 
 
 template<> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3Types>::constructor_message()
+    void UniformMass<Rigid3Types>::constructor_message()
 {
     d_filenameMass.setDisplayed(true) ;
     d_filenameMass.setReadOnly(true) ;
@@ -424,12 +425,12 @@ void UniformMass<Rigid3Types>::constructor_message()
 }
 
 template<> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3Types>::init()
+    void UniformMass<Rigid3Types>::init()
 {
     initDefaultImpl() ;
 
-    // Call recalc from RigidTypes:
-    // computes inertiaMassMatrix, invInertiaMatrix and invInertiaMassMatrix
+            // Call recalc from RigidTypes:
+            // computes inertiaMassMatrix, invInertiaMatrix and invInertiaMassMatrix
     d_vertexMass.beginEdit()->recalc();
     d_vertexMass.endEdit();
 }
@@ -437,64 +438,64 @@ void UniformMass<Rigid3Types>::init()
 
 template<>
 SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3Types>::loadRigidMass(const string& filename)
+    void UniformMass<Rigid3Types>::loadRigidMass(const string& filename)
 {
     loadFromFileRigidImpl<Rigid3Types>(filename) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3Types>::draw(const VisualParams* vparams)
+    void UniformMass<Rigid3Types>::draw(const VisualParams* vparams)
 {
     drawRigid3DImpl<Rigid3Types>(vparams) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid2Types>::draw(const VisualParams* vparams)
+    void UniformMass<Rigid2Types>::draw(const VisualParams* vparams)
 {
     drawRigid2DImpl<Rigid3Types>(vparams) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-SReal UniformMass<Rigid3Types>::getPotentialEnergy( const MechanicalParams* params,
-                                                                 const DataVecCoord& d_x ) const
+    SReal UniformMass<Rigid3Types>::getPotentialEnergy( const MechanicalParams* params,
+                                                 const DataVecCoord& d_x ) const
 {
     return getPotentialEnergyRigidImpl<Rigid3Types>(params, d_x) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-SReal UniformMass<Rigid2Types>::getPotentialEnergy( const MechanicalParams* params,
-                                                                 const DataVecCoord& vx ) const
+    SReal UniformMass<Rigid2Types>::getPotentialEnergy( const MechanicalParams* params,
+                                                 const DataVecCoord& vx ) const
 {
     return getPotentialEnergyRigidImpl<Rigid2Types>(params, vx) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Vec6Types>::draw(const core::visual::VisualParams* vparams)
+    void UniformMass<Vec6Types>::draw(const core::visual::VisualParams* vparams)
 {
     drawVec6Impl<Vec6Types>(vparams) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Vec3Types>::addMDxToVector(linearalgebra::BaseVector *resVect,
-                                                     const VecDeriv* dx,
-                                                     SReal mFact,
-                                                     unsigned int& offset)
+    void UniformMass<Vec3Types>::addMDxToVector(linearalgebra::BaseVector *resVect,
+                                           const VecDeriv* dx,
+                                           SReal mFact,
+                                           unsigned int& offset)
 {
     addMDxToVectorVecImpl<Vec3Types>(resVect, dx,mFact,offset) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-Vec6 UniformMass<Vec3Types>::getMomentum ( const MechanicalParams* params,
-                                                       const DataVecCoord& d_x,
-                                                       const DataVecDeriv& d_v ) const
+    Vec6 UniformMass<Vec3Types>::getMomentum ( const MechanicalParams* params,
+                                        const DataVecCoord& d_x,
+                                        const DataVecDeriv& d_v ) const
 {
     return getMomentumVec3DImpl<Vec3Types>(params, d_x, d_v) ;
 }
 
 template <> SOFA_COMPONENT_MASS_API
-Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
-                                                             const DataVecCoord& d_x,
-                                                             const DataVecDeriv& d_v ) const
+    Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
+                                          const DataVecCoord& d_x,
+                                          const DataVecDeriv& d_v ) const
 {
     return getMomentumRigid3DImpl<Rigid3Types>(params, d_x, d_v);
 }
@@ -510,15 +511,13 @@ Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
 /// 3-.add<>(true) : Set default template
 // Register in the Factory
 int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
-
-        .add< UniformMass<Vec3Types> >()
-        .add< UniformMass<Vec2Types> >()
-        .add< UniformMass<Vec1Types> >()
-        .add< UniformMass<Vec6Types> >()
-        .add< UniformMass<Rigid3Types> >()
-        .add< UniformMass<Rigid2Types> >()
-
-        ;
+                           .add< UniformMass<Vec3Types> >()
+                           .add< UniformMass<Vec2Types> >()
+                           .add< UniformMass<Vec1Types> >()
+                           .add< UniformMass<Vec6Types> >()
+                           .add< UniformMass<Rigid3Types> >()
+                           .add< UniformMass<Rigid2Types> >()
+                           .setTemplateDeductionMethod(core::getTemplateFromMechanicalState);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
