@@ -204,15 +204,15 @@ void ConstantForceField<DataTypes>::init()
     {
         if(d_force.isSet() && d_totalForce.isSet())
         {
-            msg_warning() <<"Data \'forces\', \'force\' and \'totalForce\' can not be used simultaneously, please set only one of them to revove this warning";
+            msg_warning() <<"Data \'forces\', \'force\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
         }
         else if(d_force.isSet())
         {
-            msg_warning() <<"Both data \'forces\' and \'force\' can not be used simultaneously, please set only one of them to revove this warning";
+            msg_warning() <<"Both data \'forces\' and \'force\' cannot be used simultaneously, please set only one of them to remove this warning";
         }
         else if(d_totalForce.isSet())
         {
-            msg_warning() <<"Both data \'forces\' and \'totalForce\' can not be used simultaneously, please set only one of them to revove this warning";
+            msg_warning() <<"Both data \'forces\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
         }
 
         const VecDeriv &forces = d_forces.getValue();
@@ -232,7 +232,7 @@ void ConstantForceField<DataTypes>::init()
     {
         if(d_totalForce.isSet())
         {
-            msg_warning() <<"Both data \'force\' and \'totalForce\' can not be used simultaneously, please set only one of them to revove this warning";
+            msg_warning() <<"Both data \'force\' and \'totalForce\' cannot be used simultaneously, please set only one of them to remove this warning";
         }
 
         const Deriv &force = d_force.getValue();
