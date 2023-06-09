@@ -56,14 +56,14 @@ public:
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > d_indexFromEnd;
 
-    /// Per-point forces.
-    Data< VecDeriv > d_forces;
+    /// Input for the per-point forces.
+    Data< VecDeriv > d_inputForces;
 
-    /// Force applied at each point, if per-point forces are not specified
-    Data< Deriv > d_force;
+    /// Input for the force applied at each point, if per-point forces are not specified
+    Data< Deriv > d_inputForce;
 
-    /// Sum of the forces applied at each point, if per-point forces are not specified
-    Data< Deriv > d_totalForce;
+    /// Input for the sum of the forces applied at each point, if per-point forces are not specified
+    Data< Deriv > d_inputTotalForce;
 
     /// S for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< SReal > d_showArrowSize;
@@ -114,12 +114,18 @@ public:
 protected:
     ConstantForceField();
 
+    /// Per-point forces.
+    Data< VecDeriv > d_forces;
+
+    /// Sum of the forces applied at each point, if per-point forces are not specified
+    Data< Deriv > d_totalForce;
+
     /// Functions checking inputs before update
     bool checkForce(const Deriv&  force);
     bool checkForces(const VecDeriv& forces);
 
     /// Functions computing and updating the constant force vector
-    void computeForceFromSingleForce();
+    void computeForceFromSingleForce(const Deriv& singleForce);
     void computeForceFromForceVector();
     void computeForceFromTotalForce();
 
