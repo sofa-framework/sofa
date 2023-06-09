@@ -215,10 +215,10 @@ int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dva
     //EXPECT_NE( (root.get()), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    CollisionPipeline* clp = dynamic_cast<CollisionPipeline*>(root->getObject("pipeline")) ;
+    const CollisionPipeline* clp = dynamic_cast<CollisionPipeline*>(root->getObject("pipeline")) ;
     //ASSERT_NE( (clp), nullptr) ;
 
-    int rv = clp->d_depth.getValue() ;
+    const int rv = clp->d_depth.getValue() ;
 
     return rv;
 }

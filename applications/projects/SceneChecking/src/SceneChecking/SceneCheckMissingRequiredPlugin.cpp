@@ -141,7 +141,7 @@ void SceneCheckMissingRequiredPlugin::doInit(sofa::simulation::Node* node)
     m_requiredPlugins.clear();
     m_loadedPlugins.clear();
 
-    for(auto& plugin : plugins)
+    for(const auto& plugin : plugins)
     {
         for(auto& pluginName : plugin->d_loadedPlugins.getValue())
         {

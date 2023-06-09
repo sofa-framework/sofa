@@ -71,7 +71,7 @@ simulation::Visitor::Result ReadTopologyCreator::processNodeTopDown( simulation:
 
 void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topology, simulation::Node* gnode)
 {
-    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    const sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     sofa::core::BaseMapping *mapping;
     context->get(mapping);
     if (createInMapping || mapping== nullptr)

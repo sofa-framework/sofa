@@ -251,15 +251,15 @@ public:
     {
         createSimpleBeam(0.05, 20000000, 0.49);
 
-        typename EdgeModifier::SPtr edgeModif = m_root->getTreeObject<EdgeModifier>();
+        const typename EdgeModifier::SPtr edgeModif = m_root->getTreeObject<EdgeModifier>();
         ASSERT_TRUE(edgeModif.get() != nullptr);
 
         typename BeamFEM::SPtr bFEM = m_root->getTreeObject<BeamFEM>();
         const VecBeamInfo& EdgeInfos = bFEM->m_beamsData.getValue();
 
         ASSERT_EQ(EdgeInfos.size(), 3);
-        
-        sofa::topology::SetIndex indices = { 0 };
+
+        const sofa::topology::SetIndex indices = { 0 };
         edgeModif->removeEdges(indices, true);
 
         m_simulation->animate(m_root.get(), 0.01);

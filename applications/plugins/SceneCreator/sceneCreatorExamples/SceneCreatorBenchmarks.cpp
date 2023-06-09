@@ -148,7 +148,7 @@ int main(int argc, char** argv)
 
 
     // Create the graph root node with collision
-    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    const sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     root->setGravity( sofa::defaulttype::Vec3Types::Deriv(0,-10.0,0) );
 
 

@@ -233,7 +233,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
             for(int k=0 ; k<8 ; ++k )
             {
-                int indice = k*3;
+                const int indice = k*3;
                 for(int j=0 ; j<3 ; ++j )
                     actualDx[indice+j] = _dx[hexahedra[i][k]][j];
             }

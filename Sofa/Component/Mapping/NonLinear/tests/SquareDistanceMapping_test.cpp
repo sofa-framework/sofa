@@ -55,7 +55,7 @@ struct SquareDistanceMappingTest : public sofa::mapping_test::Mapping_test<Squar
 //        map->f_computeDistance.setValue(true);
         sofa::helper::getWriteAccessor(map->d_geometricStiffness)->setSelectedItem(1);
 
-        component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = sofa::core::objectmodel::New<component::topology::container::dynamic::EdgeSetTopologyContainer>();
+        const component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = sofa::core::objectmodel::New<component::topology::container::dynamic::EdgeSetTopologyContainer>();
         this->root->addObject(edges);
         edges->addEdge( 0, 1 );
         edges->addEdge( 2, 1 );
@@ -176,8 +176,8 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
             simpleapi::createObject(node, "DiagonalMass", {{"totalMass", "1e-2"}});
         }
 
-        auto oneMappingExtension = simpleapi::createChild(oneMapping, "extensionsNode");
-        auto twoMappingsExtension = simpleapi::createChild(twoMappings, "extensionsNode");
+        const auto oneMappingExtension = simpleapi::createChild(oneMapping, "extensionsNode");
+        const auto twoMappingsExtension = simpleapi::createChild(twoMappings, "extensionsNode");
 
         simpleapi::createObject(oneMappingExtension, "MechanicalObject", {{"name", "extensionsDOF"}, {"template", "Vec1"}});
         simpleapi::createObject(twoMappingsExtension, "MechanicalObject", {{"name", "extensionsDOF"}, {"template", "Vec1"}});
@@ -195,7 +195,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
                                 {{"topology", "@../topology"}, {"input", "@../defoDOF"},
                                  {"output", "@extensionsDOF"}, {"geometricStiffness", "1"},
                                  {"applyRestPosition", "true"}, {"computeDistance", "true"}});
-        auto distanceMappingNode = simpleapi::createChild(twoMappingsExtension, "square");
+        const auto distanceMappingNode = simpleapi::createChild(twoMappingsExtension, "square");
         simpleapi::createObject(distanceMappingNode, "MechanicalObject", {{"name", "squaredDOF"}, {"template", "Vec1"}});
         simpleapi::createObject(distanceMappingNode, "SquareMapping",
                                         {{"input", "@../extensionsDOF"},

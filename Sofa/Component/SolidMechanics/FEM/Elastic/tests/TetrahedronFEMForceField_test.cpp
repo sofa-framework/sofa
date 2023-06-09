@@ -130,8 +130,8 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
                  "  </Node>                                             \n"
                  "</Node>                                               \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str()) ;
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                                scene.str().c_str()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
         BaseObject* fem = root->getTreeNode("FEMnode")->getObject("fem") ;
@@ -812,15 +812,15 @@ public:
 
     void testFEMPerformance(int FEMType)
     {
-        type::Vec3 grid = type::Vec3(8, 26, 8);
+        const type::Vec3 grid = type::Vec3(8, 26, 8);
 
         // load TetrahedronFEMForceField grid
         createGridFEMScene(FEMType, grid);
         if (m_root.get() == nullptr)
             return;
 
-        int nbrStep = 1000;
-        int nbrTest = 4;
+        const int nbrStep = 1000;
+        const int nbrTest = 4;
         double diffTimeMs = 0;
         double timeMin = std::numeric_limits<double>::max();
         double timeMax = std::numeric_limits<double>::min();
@@ -830,14 +830,14 @@ public:
 
         for (int i = 0; i < nbrTest; ++i)
         {
-            ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
+            const ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
             for (int i = 0; i < nbrStep; i++)
             {
                 m_simulation->animate(m_root.get(), 0.01);
             }
 
-            ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
-            double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
+            const ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
+            const double diffTimed = sofa::helper::system::thread::CTime::toSecond(diffTime);
 
             if (timeMin > diffTimed)
                 timeMin = diffTimed;

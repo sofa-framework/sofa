@@ -368,7 +368,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
     vparams->drawTool()->setLightingEnabled(true);
 
-    bool external = (this->mstate1!=this->mstate2);
+    const bool external = (this->mstate1!=this->mstate2);
     const type::vector<Spring>& springs = d_springs.getValue();
 
     type::vector<Vec3> vertices;

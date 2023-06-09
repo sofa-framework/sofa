@@ -76,7 +76,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-        PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSetTopologyContainer>();
+const PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSetTopologyContainer>();
         root->addObject(topology);
 
         dofs = core::objectmodel::New<MechanicalObject>();

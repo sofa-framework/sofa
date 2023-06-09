@@ -86,7 +86,7 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
-        Index i = M.rowIndex[rowId] * 3;
+        const Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
 
@@ -97,7 +97,7 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
 
             for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
             {
-                Index j = M.colsIndex[xj] * 3;
+                const Index j = M.colsIndex[xj] * 3;
                 type::Mat<3, 3, double> b = M.colsValue[xj];
                 if ((*filter)(i + lb, j + 0, b[lb][0], ref))
                 {
@@ -151,7 +151,7 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
-        Index i = M.rowIndex[rowId] * 3;
+        const Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
 
@@ -162,7 +162,7 @@ void CompressedRowSparseMatrixMechanical<double>::filterValues(CompressedRowSpar
 
             for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
             {
-                Index j = M.colsIndex[xj] * 3;
+                const Index j = M.colsIndex[xj] * 3;
                 type::Mat<3, 3, double> b = M.colsValue[xj];
                 if ((*filter)(i + lb, j + 0, b[lb][0], ref))
                 {
@@ -216,7 +216,7 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
-        Index i = M.rowIndex[rowId] * 3;
+        const Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
 
@@ -227,7 +227,7 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
 
             for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
             {
-                Index j = M.colsIndex[xj] * 3;
+                const Index j = M.colsIndex[xj] * 3;
                 type::Mat<3, 3, float> b = M.colsValue[xj];
                 if ((*filter)(i + lb, j + 0, b[lb][0], ref))
                 {
@@ -281,7 +281,7 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
     Index vid = 0;
     for (std::size_t rowId = 0; rowId < M.rowIndex.size(); ++rowId)
     {
-        Index i = M.rowIndex[rowId] * 3;
+        const Index i = M.rowIndex[rowId] * 3;
 
         Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId + 1]);
 
@@ -292,7 +292,7 @@ void CompressedRowSparseMatrixMechanical<float>::filterValues(CompressedRowSpars
 
             for (std::size_t xj = static_cast<std::size_t>(rowRange.begin()); xj < static_cast<std::size_t>(rowRange.end()); ++xj)
             {
-                Index j = M.colsIndex[xj] * 3;
+                const Index j = M.colsIndex[xj] * 3;
                 type::Mat<3, 3, float> b = M.colsValue[xj];
                 if ((*filter)(i + lb, j + 0, b[lb][0], ref))
                 {

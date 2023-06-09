@@ -41,7 +41,7 @@ AboutSOFADialog::AboutSOFADialog(QWidget *parent)
     std::string file = "icons/AboutSOFA.png";
     if (DataRepository.findFile(file))
     {
-        QPixmap pix(QPixmap::fromImage(QImage(DataRepository.getFile ( file ).c_str())));
+        const QPixmap pix(QPixmap::fromImage(QImage(DataRepository.getFile ( file ).c_str())));
         label_2->setPixmap(pix);
     }
 }

@@ -266,7 +266,7 @@ public:
     }
     static std::size_t add(T& c, TDestPtr v)
     {
-        std::size_t index = c.size();
+        const std::size_t index = c.size();
         c.push_back(TValueType(v));
         return index;
     }
@@ -277,7 +277,7 @@ public:
     }
     static std::size_t find(const T& c, TDestPtr v)
     {
-        size_t s = c.size();
+        const size_t s = c.size();
         for (size_t i=0; i<s; ++i)
             if (c[i] == v) return i;
         return s;
@@ -371,7 +371,7 @@ public:
     {
         if (!v)
             return false;
-        std::size_t index = TraitsContainer::addBegin(m_value,v);
+        const std::size_t index = TraitsContainer::addBegin(m_value,v);
         updateCounter();
         added(v, index);
         return true;
@@ -381,7 +381,7 @@ public:
     {
         if (!v)
             return false;
-        std::size_t index = TraitsContainer::add(m_value,v);
+        const std::size_t index = TraitsContainer::add(m_value,v);
         updateCounter();
         added(v, index);
         return true;
@@ -430,7 +430,7 @@ public:
     bool removePath(const std::string& path)
     {
         if (path.empty()) return false;
-        std::size_t n = m_value.size();
+        const std::size_t n = m_value.size();
         for (std::size_t index=0; index<n; ++index)
         {
             std::string p = getPath(index);

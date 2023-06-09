@@ -71,7 +71,7 @@ QGraphStatWidget::~QGraphStatWidget()
 
 void QGraphStatWidget::step()
 {
-    SReal time = m_node->getTime();
+    const SReal time = m_node->getTime();
     if (time <= m_lastTime)
         return;
 
@@ -80,7 +80,7 @@ void QGraphStatWidget::step()
 
     if (m_cptStep > m_bufferSize) // start swipping the Xaxis
     {
-        qreal min = m_axisX->min() + m_node->getDt();
+        const qreal min = m_axisX->min() + m_node->getDt();
         m_axisX->setRange(min, time);        
 
         // flush series data not anymore display for memory storage
@@ -109,7 +109,7 @@ void QGraphStatWidget::step()
 
 void QGraphStatWidget::flushSeries()
 {
-    for (auto serie : m_curves)
+    for (const auto serie : m_curves)
     {
         if (serie->count() >= m_bufferSize) {
             serie->removePoints(0, m_bufferSize);

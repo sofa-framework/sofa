@@ -76,7 +76,7 @@ void decodePosition(BodyPicked& body, const sofa::type::Vec4f colour, const Tria
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
     {
-        sofa::component::collision::geometry::Triangle t(const_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
+        const sofa::component::collision::geometry::Triangle t(const_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
         body.point = (t.p1()*colour[0]) + (t.p2()*colour[1]) + (t.p3()*colour[2]) ;
 
     }
@@ -86,7 +86,7 @@ void decodePosition(BodyPicked& body, const sofa::type::Vec4f colour, const Tria
 void decodePosition(BodyPicked& body, const sofa::type::Vec4f /*colour*/, const SphereCollisionModel<sofa::defaulttype::Vec3Types> *model,
         const unsigned int index)
 {
-    Sphere s(const_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
+    const Sphere s(const_cast<SphereCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
     body.point = s.center();
 }
 
@@ -126,7 +126,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
     type::vector<core::CollisionModel*>::iterator iter;
     float r,g;
 
-    int size = tmodel->getSize();
+    const int size = tmodel->getSize();
 
     node->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
     iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), tmodel);
@@ -183,9 +183,9 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
 
     node->get< sofa::core::CollisionModel >( &listCollisionModel, BaseContext::SearchRoot);
     const std::size_t totalCollisionModel = listCollisionModel.size();
-    type::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), smodel);
+    const type::vector<core::CollisionModel*>::iterator iter = std::find(listCollisionModel.begin(), listCollisionModel.end(), smodel);
     const int indexCollisionModel = std::distance(listCollisionModel.begin(),iter ) + 1 ;
-    float red = (float)indexCollisionModel / (float)totalCollisionModel;
+    const float red = (float)indexCollisionModel / (float)totalCollisionModel;
     // Check topological modifications
 
     const int npoints = smodel->getMechanicalState()->getSize();

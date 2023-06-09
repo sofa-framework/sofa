@@ -63,7 +63,7 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::type::
 {
     assert( hexahedra.size() == indices.size());
 
-    unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
+    const unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
     type::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 

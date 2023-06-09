@@ -43,7 +43,7 @@ TEST(OglModel, templateName)
 
     simulation::Simulation* simulation;
     sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-    simulation::Node::SPtr root = simulation->createNewGraph("root");
+    const simulation::Node::SPtr root = simulation->createNewGraph("root");
     {
         EXPECT_MSG_NOEMIT(Error);
 

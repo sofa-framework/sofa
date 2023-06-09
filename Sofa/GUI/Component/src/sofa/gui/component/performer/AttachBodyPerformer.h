@@ -55,7 +55,7 @@ public:
 
     virtual void configure(sofa::component::setting::MouseButtonSetting* setting)
     {
-       auto* s = dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(setting);
+        const auto* s = dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(setting);
         if (s)
         {
             setStiffness(s->stiffness.getValue());

@@ -46,7 +46,7 @@ template<class TMatrix, class TVector>
 void CholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
     //Compute L
-    int n = L.colSize();
+    const int n = L.colSize();
 
     //Solve L u = b
     for (int j=0; j<n; j++)

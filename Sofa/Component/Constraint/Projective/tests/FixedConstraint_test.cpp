@@ -75,7 +75,7 @@ struct FixedConstraint_test : public BaseTest
             force[i]=10;
 
         /// Scene creation
-        simulation::Node::SPtr root = simulation->createNewGraph("root");
+        const simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vec3(0,0,0) );
 
         simpleapi::createObject(root , "RequiredPlugin", {{"name", "Sofa.Component.LinearSolver.Direct"}}) ;
@@ -152,7 +152,7 @@ struct FixedConstraint_test : public BaseTest
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         
         /// Scene creation
-        simulation::Node::SPtr root = simulation->createNewGraph("root");
+        const simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity(type::Vec3(0, 0, 0));
 
         /// Create euler solver
@@ -164,8 +164,8 @@ struct FixedConstraint_test : public BaseTest
         dofs->resize(nbrDofs);
         
         /// Add PointSetTopology
-        auto tCon = sofa::core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyContainer>();
-        auto tMod = sofa::core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyModifier>();
+        const auto tCon = sofa::core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyContainer>();
+        const auto tMod = sofa::core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyModifier>();
         tCon->setNbPoints(nbrDofs);
         node->addObject(tCon);
         node->addObject(tMod);

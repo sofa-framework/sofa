@@ -108,8 +108,8 @@ public:
         createObject(m_root, "DefaultVisualManagerLoop");
         createObject(m_root, "RegularGridTopology", { {"name", "grid"}, 
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
-        
-        Node::SPtr FNode = sofa::simpleapi::createChild(m_root, "SpringNode");
+
+        const Node::SPtr FNode = sofa::simpleapi::createChild(m_root, "SpringNode");
         createObject(FNode, "EulerImplicitSolver");
         createObject(FNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-8"}});
         createObject(FNode, "MechanicalObject", {
@@ -209,7 +209,7 @@ public:
 
         // only one commun edge == only one spring between [0; 3] with restLength = ||(1,1,1)||
         int cptActivated = 0;
-        float restLength = sqrtf(3);
+        const float restLength = sqrtf(3);
         for (auto& ei : EdgeInfos)
         {
             ASSERT_TRUE(ei.is_initialized == true);
@@ -232,7 +232,7 @@ public:
     {
         // load Triangular FEM
         int nbrGrid = 20;
-        int nbrStep = 10;
+        const int nbrStep = 10;
         createGridScene(nbrGrid, 300, 0.5);
 
         if (m_root.get() == nullptr)
@@ -285,16 +285,16 @@ public:
         if (m_root.get() == nullptr)
             return;
 
-        typename TriangleBS::SPtr triBS = m_root->getTreeObject<TriangleBS>();        
-        typename TriangleModifier::SPtr triModif = m_root->getTreeObject<TriangleModifier>();
+        typename TriangleBS::SPtr triBS = m_root->getTreeObject<TriangleBS>();
+        const typename TriangleModifier::SPtr triModif = m_root->getTreeObject<TriangleModifier>();
 
         ASSERT_TRUE(triBS.get() != nullptr);
         ASSERT_TRUE(triModif.get() != nullptr);
 
         const VecEdgeInfo& EdgeInfos = triBS->edgeInfo.getValue();
         ASSERT_EQ(EdgeInfos.size(), 56);
-        
-        sofa::topology::SetIndex triIndices = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 
+
+        const sofa::topology::SetIndex triIndices = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 
         triModif->removeTriangles(triIndices, true, true); // remove 10 first triangles
 
         m_simulation->animate(m_root.get(), 0.01);

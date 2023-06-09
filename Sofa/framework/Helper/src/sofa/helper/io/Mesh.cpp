@@ -36,7 +36,7 @@ namespace io
 Mesh* Mesh::Create(const std::string& filename)
 {
     std::string loader="default";
-    std::string::size_type p = filename.rfind('.');
+    const std::string::size_type p = filename.rfind('.');
     if (p!=std::string::npos)
         loader = std::string(filename, p+1);
     return FactoryMesh::CreateObject(loader, filename);

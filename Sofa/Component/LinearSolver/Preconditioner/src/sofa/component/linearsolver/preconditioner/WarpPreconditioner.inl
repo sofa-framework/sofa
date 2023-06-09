@@ -101,7 +101,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit()
         }
     }
 
-    sofa::core::objectmodel::BaseContext * c = this->getContext();
+    const sofa::core::objectmodel::BaseContext * c = this->getContext();
     c->get<sofa::core::behavior::BaseRotationFinder >(&rotationFinders, sofa::core::objectmodel::BaseContext::Local);
 
     std::stringstream tmpStr;

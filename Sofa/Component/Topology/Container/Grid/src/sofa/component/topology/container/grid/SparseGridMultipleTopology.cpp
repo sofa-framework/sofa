@@ -68,7 +68,7 @@ void SparseGridMultipleTopology::buildAsFinest()
         // 			return;
     }
 
-    unsigned regularGridsSize = _regularGrids.size();
+    const unsigned regularGridsSize = _regularGrids.size();
 
     if (regularGridsSize < _fileTopologies.getValue().size())
     {

@@ -74,7 +74,7 @@ void checkAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -83,7 +83,7 @@ void checkAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {
+    const vector<string> attrnames = {
         "shadows", "softShadows", "ambient", "debugDraw"
     };
 

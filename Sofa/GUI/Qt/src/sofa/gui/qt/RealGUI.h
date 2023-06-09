@@ -313,7 +313,7 @@ protected:
     void sleep(float seconds, float init_time)
     {
         [[maybe_unused]] unsigned int t = 0;
-        clock_t goal = (clock_t) (seconds + init_time);
+        const clock_t goal = (clock_t) (seconds + init_time);
         while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
     }
 
@@ -452,7 +452,7 @@ struct ActivationFunctor
             desact_text.remove(QString("Deactivated "), Qt::CaseInsensitive);
             item->setText(0,desact_text);
             //Remove the icon
-            QPixmap *p = getPixmap(n, false,false, false);
+            const QPixmap *p = getPixmap(n, false,false, false);
             item->setIcon(0, QIcon(*p));
 //            item->setOpen(true);
             item->setExpanded(true);

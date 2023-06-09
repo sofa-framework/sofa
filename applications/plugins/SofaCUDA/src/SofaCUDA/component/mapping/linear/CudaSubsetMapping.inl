@@ -99,7 +99,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ
 
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
-    unsigned int insize = out.size();
+    const unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f_applyJT1(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else
@@ -149,7 +149,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::appl
 
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
-    unsigned int insize = out.size();
+    const unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f1_applyJT1(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else
@@ -197,7 +197,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::apply
 
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
-    unsigned int insize = out.size();
+    const unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f1_3f_applyJT1(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else
@@ -245,7 +245,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
 
     InVecDeriv& out = *dOut.beginEdit();
     const OutVecDeriv& in = dIn.getValue();
-    unsigned int insize = out.size();
+    const unsigned int insize = out.size();
     if (data.mapT.empty())
         SubsetMappingCuda3f_3f1_applyJT1(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
     else

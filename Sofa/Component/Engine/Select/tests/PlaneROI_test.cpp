@@ -72,7 +72,7 @@ struct PlaneROI_test : public BaseSimulationTest,
 
 
         // SetUp2
-        string scene1 =
+        const string scene1 =
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                             "

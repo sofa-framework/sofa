@@ -42,7 +42,7 @@ inline bool isMsysPty(int fd) noexcept
         return false;
     }
 
-    HANDLE h = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
+    const HANDLE h = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
     if (h == INVALID_HANDLE_VALUE) {
         return false;
     }
@@ -59,7 +59,7 @@ inline bool isMsysPty(int fd) noexcept
         WCHAR FileName[MAX_PATH];
     };
 
-    auto pNameInfo = std::unique_ptr<MY_FILE_NAME_INFO>(
+    const auto pNameInfo = std::unique_ptr<MY_FILE_NAME_INFO>(
       new (std::nothrow) MY_FILE_NAME_INFO());
     if (!pNameInfo) {
         return false;
@@ -71,7 +71,7 @@ inline bool isMsysPty(int fd) noexcept
                                          sizeof(MY_FILE_NAME_INFO))) {
         return false;
     }
-    std::wstring name(pNameInfo->FileName, pNameInfo->FileNameLength / sizeof(WCHAR));
+    const std::wstring name(pNameInfo->FileName, pNameInfo->FileNameLength / sizeof(WCHAR));
     if ((name.find(L"msys-") == std::wstring::npos
          && name.find(L"cygwin-") == std::wstring::npos)
         || name.find(L"-pty") == std::wstring::npos) {
@@ -115,7 +115,7 @@ inline HANDLE getConsoleHandle(const std::streambuf *osbuf) noexcept
 
 inline bool setWinTermAnsiColors(const std::streambuf *osbuf) noexcept
 {
-    HANDLE h = getConsoleHandle(osbuf);
+    const HANDLE h = getConsoleHandle(osbuf);
     if (h == INVALID_HANDLE_VALUE) {
         return false;
     }

@@ -161,7 +161,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
         return;
 
-    BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    const BaseMechanicalState* state = this->getContext()->getMechanicalState();
     if(!state)
     {
         msg_warning() << "MechanicalState of the current context returns null pointer";
@@ -573,9 +573,9 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
+    const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     const VecReal& k = d_stiffness.getValue();

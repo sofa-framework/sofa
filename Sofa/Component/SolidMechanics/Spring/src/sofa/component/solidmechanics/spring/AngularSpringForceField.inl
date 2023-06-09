@@ -148,9 +148,9 @@ template<class DataTypes>
 void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     const int N = 6;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
+    const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index curIndex = 0;

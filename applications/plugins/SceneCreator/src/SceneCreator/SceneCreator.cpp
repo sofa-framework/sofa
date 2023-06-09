@@ -403,12 +403,12 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
     else
         cube = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofFEM = simpleapi::createObject(cube, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofFEM = simpleapi::createObject(cube, "MechanicalObject", {
+                                                    {"name", objectName+"_dof"},
+                                                    {"translation", str(translation)},
+                                                    {"rotation", str(rotation)},
+                                                    {"scale", str(scale)}
+                                                });
 
     // Add FEM and Mass system
     if (!isRigid) // Add FEM and Mass system
@@ -474,12 +474,12 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
     else
         cylinder = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofFEM = simpleapi::createObject(cylinder, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofFEM = simpleapi::createObject(cylinder, "MechanicalObject", {
+                                                    {"name", objectName+"_dof"},
+                                                    {"translation", str(translation)},
+                                                    {"rotation", str(rotation)},
+                                                    {"scale", str(scale)}
+                                                });
 
     if (!isRigid) // Add FEM and Mass system
         addTetraFEM(cylinder, objectName, totalMass, young, poisson);
@@ -538,12 +538,12 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
     else
         sphere = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofFEM = simpleapi::createObject(sphere, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofFEM = simpleapi::createObject(sphere, "MechanicalObject", {
+                                                    {"name", objectName+"_dof"},
+                                                    {"translation", str(translation)},
+                                                    {"rotation", str(rotation)},
+                                                    {"scale", str(scale)}
+                                                });
 
     if (!isRigid) // Add FEM and Mass system
         addTetraFEM(sphere, objectName, totalMass, young, poisson);
@@ -598,12 +598,12 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
     else
         plane = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
-    auto dofPlane = simpleapi::createObject(plane, "MechanicalObject", {
-                                {"name", objectName+"_dof"},
-                                {"translation", str(translation)},
-                                {"rotation", str(rotation)},
-                                {"scale", str(scale)}
-                            });
+    const auto dofPlane = simpleapi::createObject(plane, "MechanicalObject", {
+                                                      {"name", objectName+"_dof"},
+                                                      {"translation", str(translation)},
+                                                      {"rotation", str(rotation)},
+                                                      {"scale", str(scale)}
+                                                  });
 
     if (!isRigid) // Add FEM and Mass system
         addTetraFEM(plane, objectName, totalMass, young, poisson);

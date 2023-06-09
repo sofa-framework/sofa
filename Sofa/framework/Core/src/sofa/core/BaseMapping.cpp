@@ -149,7 +149,7 @@ bool BaseMapping::testMechanicalState(BaseState* state)
     bool isMecha = false;
     if(state)
     {
-        behavior::BaseMechanicalState* toMechaModel = state->toBaseMechanicalState();
+        const behavior::BaseMechanicalState* toMechaModel = state->toBaseMechanicalState();
         isMecha = (toMechaModel) ? true : false;
     }
     return isMecha;

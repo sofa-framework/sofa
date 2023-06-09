@@ -1085,7 +1085,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations1_kernel(int nbVertex,
     if (index0+index1<nbVertex) {
         for (int s = 0;s < nbElemPerVertex; s++)
         {
-            int i = *velems -1;
+            const int i = *velems -1;
             if (i == -1) break;
             velems+=BSIZE;
 
@@ -1140,7 +1140,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations4_kernel(int nbVertex9
 
     for (int s = 0;s < nb4ElemPerVertex; s++)
     {
-        int i = *velems -1;
+        const int i = *velems -1;
         if (i == -1) break;
         velems+=BSIZE;
 
@@ -1203,7 +1203,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations8_kernel(int nbVertex9
 
     for (int s = 0;s < nb8ElemPerVertex; s++)
     {
-        int i = *velems -1;
+        const int i = *velems -1;
         if (i == -1) break;
         velems+=BSIZE;
 

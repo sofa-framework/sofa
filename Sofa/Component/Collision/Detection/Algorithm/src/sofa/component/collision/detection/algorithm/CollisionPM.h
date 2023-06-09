@@ -113,8 +113,8 @@ namespace sofa::component::collision::detection::algorithm
             assert(elem1.getIndex() < elem1.getCollisionModel()->getSize());
             assert(elem2.getIndex() < elem2.getCollisionModel()->getSize());
 
-            core::CollisionModel * cm1 = elem1.getCollisionModel();
-            core::CollisionModel * cm2 = elem2.getCollisionModel();
+            const core::CollisionModel * cm1 = elem1.getCollisionModel();
+            const core::CollisionModel * cm2 = elem2.getCollisionModel();
             if(_order[cm1->getEnumType()][cm2->getEnumType()] == 2){//it means that cm1->getEnumType() == cm2->getEnumType()
                 if(a < b)
                     _coll_pairs[cm1->getEnumType()][cm2->getEnumType()][std::make_pair(a,b)].init(elem1,elem2);
@@ -164,8 +164,8 @@ namespace sofa::component::collision::detection::algorithm
             assert(elem1.getIndex() < elem1.getCollisionModel()->getSize());
             assert(elem2.getIndex() < elem2.getCollisionModel()->getSize());
 
-            core::CollisionModel * cm1 = elem1.getCollisionModel();
-            core::CollisionModel * cm2 = elem2.getCollisionModel();
+            const core::CollisionModel * cm1 = elem1.getCollisionModel();
+            const core::CollisionModel * cm2 = elem2.getCollisionModel();
             if(_order[cm1->getEnumType()][cm2->getEnumType()] == 0){
                 return;
             }

@@ -60,7 +60,7 @@ bool TemplateAliases::addAlias(const std::string& name, const std::string& resul
 const TemplateAlias* TemplateAliases::getTemplateAlias(const std::string &name)
 {
     TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
-    TemplateAliasesMapIterator it = templateAliases.find(name);
+    const TemplateAliasesMapIterator it = templateAliases.find(name);
     if (it != templateAliases.end())
         return  &(it->second);
     return nullptr;

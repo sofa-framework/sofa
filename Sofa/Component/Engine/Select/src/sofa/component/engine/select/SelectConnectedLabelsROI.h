@@ -105,7 +105,7 @@ protected:
         helper::WriteOnlyAccessor< Data< type::vector<sofa::Index> > > indices = d_indices;
         indices.clear();
 
-        unsigned int nb = d_nbLabels.getValue();
+        const unsigned int nb = d_nbLabels.getValue();
         if(nb<2) return;
 
         // convert connectLabels to set for efficient look-up
@@ -126,7 +126,7 @@ protected:
             labels.push_back(&rlab.ref());
         }
 
-        size_t nbp = (*labels[0]).size();
+        const size_t nbp = (*labels[0]).size();
         for(size_t i=0; i<nbp;i++)
         {
             bool connected = false;

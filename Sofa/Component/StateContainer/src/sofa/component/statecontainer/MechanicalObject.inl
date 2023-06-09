@@ -379,11 +379,11 @@ void MechanicalObject<DataTypes>::handleStateChange()
     this->getContext()->get(geoAlgo, sofa::core::objectmodel::BaseContext::Local);
 
     std::list< const TopologyChange * >::const_iterator itBegin = l_topology->beginStateChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = l_topology->endStateChange();
+    const std::list< const TopologyChange * >::const_iterator itEnd = l_topology->endStateChange();
 
     while( itBegin != itEnd )
     {
-        TopologyChangeType changeType = (*itBegin)->getChangeType();
+        const TopologyChangeType changeType = (*itBegin)->getChangeType();
 
         switch( changeType )
         {
@@ -392,7 +392,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
             using sofa::type::vector;
             const PointsAdded &pointsAdded = *static_cast< const PointsAdded * >( *itBegin );
 
-            Size prevSizeMechObj = getSize();
+            const Size prevSizeMechObj = getSize();
             Size nbPoints = Size(pointsAdded.getNbAddedVertices());
 
             if (Size(pointsAdded.pointIndexArray.size()) != nbPoints)
@@ -481,7 +481,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
         {
             const auto& tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
 
-            unsigned int prevSizeMechObj   = getSize();
+            const unsigned int prevSizeMechObj   = getSize();
             unsigned int lastIndexMech = prevSizeMechObj - 1;
             for (unsigned int i = 0; i < tab.size(); ++i)
             {
@@ -691,7 +691,7 @@ void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry, const SReal rz)
 {
-    sofa::type::Quat<SReal> q =
+    const sofa::type::Quat<SReal> q =
             type::Quat< SReal >::createQuaterFromEuler(sofa::type::Vec3(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
@@ -990,7 +990,7 @@ void MechanicalObject<DataTypes>::init()
 
     if (maxElement != vector_sizes.end())
     {
-        Size maxSize = (*maxElement).second;
+        const Size maxSize = (*maxElement).second;
 
         // Resize the mechanical object size to match the maximum size of argument's vectors
         if (getSize() < maxSize)
@@ -1660,9 +1660,9 @@ void MechanicalObject<DataTypes>::setVecIdProperties(core::TVecId<vtype, vaccess
 {
     if (!properties.label.empty())
     {
-        std::string newname = properties.label;
-        std::string oldname = properties.label + core::VecTypeLabels.at(vtype);
-        auto base = vec_d->getOwner();
+        const std::string newname = properties.label;
+        const std::string oldname = properties.label + core::VecTypeLabels.at(vtype);
+        const auto base = vec_d->getOwner();
         if(base && !base->findData(oldname))
         {
             base->addAlias(vec_d, oldname.c_str());
@@ -2467,7 +2467,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
 {
-    float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
+    const float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
     std::vector<type::Vec3> positions;
     positions.reserve(d_size.getValue());
@@ -2491,7 +2491,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
         type::Vec3 p1 = type::Vec3(getPX(i), getPY(i), getPZ(i));
         type::Vec3 p2 = type::Vec3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
-        float rad = (float)( (p1-p2).norm()/20.0 );
+        const float rad = (float)( (p1-p2).norm()/20.0 );
         switch (drawMode.getValue())
         {
         case 0:
@@ -2592,7 +2592,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
             type::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             SReal distToRay = vecPoint.norm2();
-            SReal maxr = radius0 + dRadius*dist;
+            const SReal maxr = radius0 + dRadius*dist;
             if (distToRay <= maxr*maxr)
             {
                 particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));

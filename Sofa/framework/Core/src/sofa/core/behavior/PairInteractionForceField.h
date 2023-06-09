@@ -193,8 +193,8 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
+            const std::string object1 = arg->getAttribute("object1","");
+            const std::string object2 = arg->getAttribute("object2","");
             if (!object1.empty())
             {
                 arg->setAttribute("object1", object1);

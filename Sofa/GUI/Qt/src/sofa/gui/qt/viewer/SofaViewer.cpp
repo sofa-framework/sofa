@@ -74,7 +74,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Shift:
     {
         if (!getPickHandler()) break;
-        int viewport[4] = {};
+        const int viewport[4] = {};
         getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
         break;
     }
@@ -115,11 +115,11 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                 case SofaVideoRecorderManager::MOVIE:
                 {
                     SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
-                    unsigned int bitrate = videoManager->getBitrate();
-                    unsigned int framerate = videoManager->getFramerate();
+                    const unsigned int bitrate = videoManager->getBitrate();
+                    const unsigned int framerate = videoManager->getFramerate();
 
-                    int width = getQWidget()->width();
-                    int height = getQWidget()->height();
+                    const int width = getQWidget()->width();
+                    const int height = getQWidget()->height();
                     m_backend->initRecorder(width, height, framerate, bitrate, videoManager->getCodecExtension(), videoManager->getCodecName());
 
                     break;
@@ -129,9 +129,9 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
                 }
                 if (SofaVideoRecorderManager::getInstance()->realtime())
                 {
-                    unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
+                    const unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
                     msg_info("SofaViewer") << "Starting capture timer ( " << framerate << " Hz )";
-                    unsigned int interv = (1000 + framerate - 1) / framerate;
+                    const unsigned int interv = (1000 + framerate - 1) / framerate;
                     captureTimer.start(interv);
                 }
             }
@@ -463,7 +463,7 @@ void SofaViewer::captureEvent()
     if (_video)
     {
         bool skip = false;
-        unsigned int frameskip = SofaVideoRecorderManager::getInstance()->getFrameskip();
+        const unsigned int frameskip = SofaVideoRecorderManager::getInstance()->getFrameskip();
         if (frameskip)
         {
             static unsigned int skipcounter = 0;

@@ -128,10 +128,10 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_root = m_simulation->createNewGraph("root");
         m_root->setGravity(Vec3d(-9.8, 0.0,0.0));
 
-        typename EulerImplicitSolverType::SPtr eulerImplicitSolver = New<EulerImplicitSolverType>();
+        const typename EulerImplicitSolverType::SPtr eulerImplicitSolver = New<EulerImplicitSolverType>();
         m_root->addObject(eulerImplicitSolver);
 
-        typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
+        const typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
         m_root->addObject(cgLinearSolver);
         cgLinearSolver->d_maxIter.setValue(25);
         cgLinearSolver->d_tolerance.setValue(1e-5);
@@ -204,7 +204,7 @@ struct PlaneForceField_test : public BaseSimulationTest
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -272,7 +272,7 @@ struct PlaneForceField_test : public BaseSimulationTest
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -303,7 +303,7 @@ struct PlaneForceField_test : public BaseSimulationTest
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

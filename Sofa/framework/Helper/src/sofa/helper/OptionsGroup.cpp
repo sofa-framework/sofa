@@ -43,7 +43,7 @@ OptionsGroup::OptionsGroup(int nbofRadioButton,...)
     {
         const char * tempochar=va_arg(vl,char *);
         assert( strcmp( tempochar, "") );
-        std::string tempostring(tempochar);
+        const std::string tempostring(tempochar);
         item = tempostring;
     }
     va_end(vl);
@@ -74,7 +74,7 @@ void OptionsGroup::setNames(int nbofRadioButton,...)
     for (auto& item : textItems)
     {
         const char * tempochar=va_arg(vl,char *);
-        std::string  tempostring(tempochar);
+        const std::string  tempostring(tempochar);
         assert( strcmp( tempochar, "") );
         item=tempostring;
     }

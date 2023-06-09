@@ -251,7 +251,7 @@ sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
         {
             if (mapping)
             {
-                for (auto* child : mapping->getMechTo())
+                for (const auto* child : mapping->getMechTo())
                 {
                     if (child != nullptr && child == mstate)
                     {

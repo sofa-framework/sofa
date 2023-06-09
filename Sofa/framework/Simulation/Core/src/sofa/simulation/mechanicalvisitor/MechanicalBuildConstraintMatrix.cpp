@@ -28,7 +28,7 @@ namespace sofa::simulation::mechanicalvisitor
 {
 Visitor::Result MechanicalBuildConstraintMatrix::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
-    ctime_t t0 = begin(node, c);
+    const ctime_t t0 = begin(node, c);
     c->buildConstraintMatrix(cparams, res, contactId);
     end(node, c, t0);
     return RESULT_CONTINUE;

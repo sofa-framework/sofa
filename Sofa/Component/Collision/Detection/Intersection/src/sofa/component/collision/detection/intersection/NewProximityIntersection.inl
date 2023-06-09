@@ -60,7 +60,7 @@ bool NewProximityIntersection::testIntersection(SphereType1& sph1, SphereType2& 
 
     OutputVector contacts;
     const double alarmDist2 = alarmDist + sph1.r() + sph2.r();
-    int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), &contacts, -1);
+    const int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), &contacts, -1);
     return n > 0;
 }
 
@@ -71,7 +71,7 @@ int NewProximityIntersection::computeIntersection(SphereType1& sph1, SphereType2
     const auto contactDist = this->getContactDistance() + sph1.getProximity() + sph2.getProximity();
 
     const double alarmDist2 = alarmDist + sph1.r() + sph2.r();
-    int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), contacts, (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex());
+    const int n = doIntersectionPointPoint(alarmDist2 * alarmDist2, sph1.center(), sph2.center(), contacts, (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex());
     if (n > 0)
     {
         const double contactDist2 = contactDist + sph1.r() + sph2.r();

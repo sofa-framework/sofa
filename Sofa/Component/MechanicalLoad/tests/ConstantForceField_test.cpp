@@ -88,7 +88,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <ConstantForceField name='myForceField' indices='0' force='100.0 0.0 0'/>         \n"
                  "</Node>                                                                                                                                                               \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -169,7 +169,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <ConstantForceField name='myPlaneForceField'/>                              \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         EXPECT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -206,7 +206,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "   <ConstantForceField name='myPlaneForceField'/>                              \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;

@@ -69,7 +69,7 @@ public:
                  "  <OglLabel name='label1' color='0 0 0 0' selectContrastingColor='true' />     \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -100,7 +100,7 @@ public:
                  "  <OglLabel name='label1' color='contrast' printLog='true'/>                   \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -127,7 +127,7 @@ public:
                  "  <OglLabel name='label1'/>                                                    \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+        const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
 
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
@@ -137,7 +137,7 @@ public:
 
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
-        vector<string> attrnames = {
+        const vector<string> attrnames = {
             "prefix", "label", "suffix", "x", "y", "fontsize", "color",
             "selectContrastingColor", "updateLabelEveryNbSteps",
             "visible"};

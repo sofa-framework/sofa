@@ -107,7 +107,7 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     {
         return nullptr;
     }
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     // We go the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );

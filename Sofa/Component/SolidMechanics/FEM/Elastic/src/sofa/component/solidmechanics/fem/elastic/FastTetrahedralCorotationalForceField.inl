@@ -257,7 +257,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation()
 {
-    sofa::Size nbTetrahedra=m_topology->getNbTetrahedra();
+    const sofa::Size nbTetrahedra=m_topology->getNbTetrahedra();
 
     helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
 
@@ -312,7 +312,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 
 
     unsigned int j,k,l;
-    int nbTetrahedra=m_topology->getNbTetrahedra();
+    const int nbTetrahedra=m_topology->getNbTetrahedra();
     int i;
 
     helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
@@ -420,7 +420,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
 
     unsigned int j;
     int i;
-    int nbEdges=m_topology->getNbEdges();
+    const int nbEdges=m_topology->getNbEdges();
 
     if (updateMatrix==true)
     {
@@ -428,7 +428,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
         helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;
 
-        int nbTetrahedra=m_topology->getNbTetrahedra();
+        const int nbTetrahedra=m_topology->getNbTetrahedra();
         Mat3x3NoInit tmp;
 
         updateMatrix=false;
@@ -499,9 +499,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linear
 
     unsigned int j;
     int i, matCol, matRow;
-    int nbEdges=m_topology->getNbEdges();
-    int nbPoints=m_topology->getNbPoints();
-    int nbTetrahedra=m_topology->getNbTetrahedra();
+    const int nbEdges=m_topology->getNbEdges();
+    const int nbPoints=m_topology->getNbPoints();
+    const int nbTetrahedra=m_topology->getNbTetrahedra();
 
     helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
     helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;

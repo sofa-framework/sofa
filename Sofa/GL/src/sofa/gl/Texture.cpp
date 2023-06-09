@@ -221,16 +221,16 @@ static bool isPowerOfTwo(unsigned a)
 
 void Texture::update()
 {
-    helper::io::Image::TextureType textureType = image->getTextureType();
+    const helper::io::Image::TextureType textureType = image->getTextureType();
     target = targetTable[textureType];
-    unsigned format = formatTable[image->getChannelFormat()];
-    unsigned type = typeTable[image->getDataType()];
-    unsigned mipmaps = image->getMipmapCount();
+    const unsigned format = formatTable[image->getChannelFormat()];
+    const unsigned type = typeTable[image->getDataType()];
+    const unsigned mipmaps = image->getMipmapCount();
     unsigned internalFormat = internalFormatTable[image->getDataType()][image->getChannelFormat()];
 
     if (srgbColorspace)
     {
-        unsigned internalFormatSRGB = internalFormatTableSRGB[image->getDataType()][image->getChannelFormat()];
+        const unsigned internalFormatSRGB = internalFormatTableSRGB[image->getDataType()][image->getChannelFormat()];
         if (internalFormatSRGB)
         {
 #if defined(GLEW_EXT_texture_sRGB) && defined(GLEW_ARB_framebuffer_sRGB)
@@ -307,7 +307,7 @@ void Texture::update()
 
 void Texture::init()
 {
-    helper::io::Image::TextureType textureType = image->getTextureType();
+    const helper::io::Image::TextureType textureType = image->getTextureType();
     target = GL_TEXTURE_2D; // Default value in case the format is not supported.
 
     // Check OpenGL support.
@@ -451,7 +451,7 @@ void Texture::init()
         // Always supported.
     }
 
-    unsigned mipmaps = image->getMipmapCount();
+    const unsigned mipmaps = image->getMipmapCount();
 
     glGenTextures(1, &id); // Create the texture.
     glBindTexture(target, id);

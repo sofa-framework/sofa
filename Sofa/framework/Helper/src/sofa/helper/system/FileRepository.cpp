@@ -63,7 +63,7 @@ std::string cleanPath( const std::string& path )
 {
     std::string p = path;
     size_t pos = p.find("//");
-    size_t len = p.length();
+    const size_t len = p.length();
     while( pos != std::string::npos )
     {
         if ( pos == (len-1))
@@ -245,9 +245,9 @@ std::string FileRepository::getFirstPath()
 bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
-    std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
+    const std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
 
-    std::filesystem::path p = std::filesystem::u8path(newfname);
+    const std::filesystem::path p = std::filesystem::u8path(newfname);
     if (std::filesystem::exists(p))
     {
         // File found
@@ -330,7 +330,7 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
     std::string tmppath=path;
     std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
 
-    std::string::size_type loc = tmppath.find( refPath, 0 );
+    const std::string::size_type loc = tmppath.find( refPath, 0 );
     if (loc != std::string::npos)
     {
         path = path.substr(refPath.size());

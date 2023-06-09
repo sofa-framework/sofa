@@ -83,7 +83,7 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
         tmp << "  "
                 << gettypename(t1) << "-"
                 << gettypename(t2);
-        ElementIntersector* i = it->second;
+        const ElementIntersector* i = it->second;
         if (!i)
             tmp << "  nullptr";
         else
@@ -119,7 +119,7 @@ void IntersectorMap::add_impl(const objectmodel::ClassInfo& c1,
 void IntersectorMap::insert(const helper::TypeInfo& t1, const helper::TypeInfo& t2, ElementIntersector* intersector)
 {
     const MapValue mapValue(MapKey(t1, t2), intersector);
-    InternalMap::iterator it = intersectorsMap.find(mapValue.first);
+    const InternalMap::iterator it = intersectorsMap.find(mapValue.first);
     if(it != intersectorsMap.end())
     {
         delete it->second;
@@ -140,7 +140,7 @@ Intersection::~Intersection()
 bool Intersection::isSupported(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     bool swap;
-    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel(), swap);
+    const ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel(), swap);
     return i != nullptr;
 }
 } // namespace sofa::core::collision

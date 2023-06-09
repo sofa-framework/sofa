@@ -116,10 +116,10 @@ void Base::addUpdateCallback(const std::string& name,
     if(std::find(engine.getOutputs().begin(), engine.getOutputs().end(), &d_componentState) == engine.getOutputs().end())
         engine.addOutput(&d_componentState);
 
-    for (auto i : inputs)
+    for (const auto i : inputs)
         i->cleanDirty();
     engine.cleanDirty();
-    for (auto o : outputs)
+    for (const auto o : outputs)
         o->cleanDirty();
 }
 
@@ -154,7 +154,7 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
 
     if (strlen(name) >= 4)
     {
-        std::string_view prefix = std::string_view(name).substr(0, 4);
+        const std::string_view prefix = std::string_view(name).substr(0, 4);
 
         if (prefix == draw_prefix || prefix == show_prefix)
             res.group = "Visualization";
@@ -318,7 +318,7 @@ void Base::removeTag(Tag t)
 void Base::removeData(BaseData* d)
 {
     m_vecData.erase(std::find(m_vecData.begin(), m_vecData.end(), d));
-    auto range = m_aliasData.equal_range(d->getName());
+    const auto range = m_aliasData.equal_range(d->getName());
     m_aliasData.erase(range.first, range.second);
 }
 
@@ -329,7 +329,7 @@ BaseData* Base::findData( const std::string &name ) const
     //Search in the aliases
     if(m_aliasData.size())
     {
-        auto range = m_aliasData.equal_range(name);
+        const auto range = m_aliasData.equal_range(name);
         if (range.first != range.second)
             return range.first->second;
         else
@@ -344,7 +344,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 {
     std::vector<BaseData*> result;
     //Search in the aliases
-    auto range = m_aliasData.equal_range(name);
+    const auto range = m_aliasData.equal_range(name);
     for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -356,7 +356,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
 BaseLink* Base::findLink( const std::string &name ) const
 {
     //Search in the aliases
-    auto range = m_aliasLink.equal_range(name);
+    const auto range = m_aliasLink.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -368,7 +368,7 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
 {
     std::vector<BaseLink*> result;
     //Search in the aliases
-    auto range = m_aliasLink.equal_range(name);
+    const auto range = m_aliasLink.equal_range(name);
     for (auto itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -563,7 +563,7 @@ void Base::updateLinks(bool logErrors)
     // update links
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
     {
-        bool ok = (*iLink)->updateLinks();
+        const bool ok = (*iLink)->updateLinks();
         if (!ok && (*iLink)->storePath() && logErrors)
         {
             msg_warning() << "Link update failed for " << (*iLink)->getName() << " = " << (*iLink)->getValueString() ;
@@ -575,7 +575,7 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
-        BaseData* field = *iData;
+        const BaseData* field = *iData;
         std::string name = field->getName();
         if( args[name] != nullptr )
             *args[name] = field->getValueString();
@@ -584,7 +584,7 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
     }
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
     {
-        BaseLink* link = *iLink;
+        const BaseLink* link = *iLink;
         std::string name = link->getName();
         if( args[name] != nullptr )
             *args[name] = link->getValueString();
@@ -615,7 +615,7 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
-        BaseData* field = *iData;
+        const BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
             out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
@@ -632,7 +632,7 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
     }
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
     {
-        BaseLink* link = *iLink;
+        const BaseLink* link = *iLink;
         if(link->storePath())
         {
             std::string val = link->getValueString();

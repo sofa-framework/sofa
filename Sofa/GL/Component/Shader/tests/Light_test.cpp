@@ -77,7 +77,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -102,7 +102,7 @@ void TestLight::checkPositionalLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -114,7 +114,7 @@ void TestLight::checkPositionalLightValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {///These are the attributes that any light must have.
+    const vector<string> attrnames = {///These are the attributes that any light must have.
                                 "drawSource", "zNear", "zFar",
                                 "shadowsEnabled", "softShadows", "textureUnit",
 
@@ -143,7 +143,7 @@ void TestLight::checkDirectionalLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -155,7 +155,7 @@ void TestLight::checkDirectionalLightValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {///These are the attributes that any light must have.
+    const vector<string> attrnames = {///These are the attributes that any light must have.
                                 "drawSource", "zNear", "zFar",
                                 "shadowsEnabled", "softShadows", "textureUnit",
 
@@ -187,7 +187,7 @@ void TestLight::checkSpotLightValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -199,7 +199,7 @@ void TestLight::checkSpotLightValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {///These are the attributes that any light must have.
+    const vector<string> attrnames = {///These are the attributes that any light must have.
                                 "drawSource", "zNear", "zFar",
                                 "shadowsEnabled", "softShadows", "textureUnit",
 
@@ -236,7 +236,7 @@ TEST_F(TestLight, checkSpotLightValidAttributes)
 
 TEST_F(TestLight, checkLightMissingLightManager)
 {
-    std::vector<std::string> typeoflight={"PositionalLight", "DirectionalLight", "SpotLight"} ;
+    const std::vector<std::string> typeoflight={"PositionalLight", "DirectionalLight", "SpotLight"} ;
     for(auto& lighttype : typeoflight)
         checkLightMissingLightManager(lighttype);
 }

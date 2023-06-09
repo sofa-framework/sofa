@@ -221,7 +221,7 @@ public:
 
     const std::list<Vec3i> &getRemovedVoxels(const Index hexaId) const
     {
-        auto it = _removedFineVoxels.find(hexaId);
+        const auto it = _removedFineVoxels.find(hexaId);
         if(it != _removedFineVoxels.end())
             return it->second;
         else

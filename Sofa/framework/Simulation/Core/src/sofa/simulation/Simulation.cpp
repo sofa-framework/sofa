@@ -111,7 +111,7 @@ Simulation* getSimulation()
 void Simulation::print ( Node* root )
 {
     if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->execute<PrintVisitor>(params);
 }
 
@@ -119,7 +119,7 @@ void Simulation::print ( Node* root )
 void Simulation::exportXML ( Node* root, const char* fileName )
 {
     if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     if ( fileName!=nullptr )
     {
         std::ofstream out ( fileName );
@@ -158,7 +158,7 @@ void Simulation::init ( Node* root )
 {
     sofa::helper::AdvancedTimer::stepBegin("Simulation::init");
     if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     if (!root->getAnimationLoop())
     {
@@ -166,8 +166,8 @@ void Simulation::init ( Node* root )
                             "of your scene to fix this warning. The list of available animation loop components is: ["
         << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
         << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
-        
-        DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
+
+        const DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
         aloop->setName(root->getNameHelper().resolveName(aloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
         root->addObject(aloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
@@ -179,7 +179,7 @@ void Simulation::init ( Node* root )
         << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
         << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
 
-        DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
+        const DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
         root->addObject(vloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
@@ -218,7 +218,7 @@ void Simulation::initNode( Node* node)
     node->execute(pe);
 
     {
-        sofa::core::MechanicalParams mparams(*params);
+        const sofa::core::MechanicalParams mparams(*params);
         node->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
         node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
     }
@@ -235,7 +235,7 @@ void Simulation::animate ( Node* root, SReal dt )
         msg_error() << "Simulation::animate, no root found";
         return;
     }
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop();
     if(aloop)
@@ -275,7 +275,7 @@ void Simulation::updateVisual ( Node* root)
 void Simulation::reset ( Node* root )
 {
     if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     // start by resetting the time
     const sofa::core::behavior::BaseAnimationLoop *animLoop = root->getAnimationLoop();
@@ -288,7 +288,7 @@ void Simulation::reset ( Node* root )
     // by definition cleanup() MUST only be called right before destroying the object
     // if for some reason some components need to do something, it has to be done in reset or storeResetState
     root->execute<ResetVisitor>(params);
-    sofa::core::MechanicalParams mparams(*params);
+    const sofa::core::MechanicalParams mparams(*params);
     root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
     root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
     root->execute<UpdateMappingVisitor>(params);
@@ -340,7 +340,7 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
 void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
 {
     assert ( root!=nullptr );
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->execute<UpdateBoundingBoxVisitor>( params );
     type::BoundingBox bb = root->f_bbox.getValue();
     for(int i=0; i<3; i++){
@@ -353,7 +353,7 @@ void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
 void Simulation::updateContext ( Node* root )
 {
     if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->execute<UpdateContextVisitor>(params);
 }
 
@@ -379,7 +379,7 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
     sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
 
-    for(auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
+    for(const auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
     {
         if (!vparams) vparams = sofa::core::visual::visualparams::defaultInstance();
         vparams->update();
@@ -429,7 +429,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 {
     sofa::helper::ScopedAdvancedTimer dumpStateTimer("dumpState");
 
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     out<<root->getTime() <<" ";
     WriteStateVisitor ( params, out ).execute ( root );
     out<<std::endl;
@@ -480,7 +480,7 @@ Node::SPtr Simulation::load ( const std::string& filename, bool reload, const st
 void Simulation::unload(Node::SPtr root)
 {
     if ( !root ) return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->detachFromGraph();
     root->execute<CleanupVisitor>(params);
     root->execute<DeleteVisitor>(params);

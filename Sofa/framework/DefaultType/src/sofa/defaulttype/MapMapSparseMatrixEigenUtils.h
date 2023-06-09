@@ -115,8 +115,8 @@ struct EigenSparseToMapMapSparseMatrixVec
 
         for (int rowIndex = 0; rowIndex < eigenMat.outerSize(); ++rowIndex)
         {
-            int offset      = *(outerIndexPtr + rowIndex);
-            int rowNonZeros = *(outerIndexPtr + rowIndex + 1) - *(outerIndexPtr + rowIndex);
+            const int offset      = *(outerIndexPtr + rowIndex);
+            const int rowNonZeros = *(outerIndexPtr + rowIndex + 1) - *(outerIndexPtr + rowIndex);
 
             if (rowNonZeros != 0)
             {

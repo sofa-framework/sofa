@@ -85,7 +85,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
@@ -94,7 +94,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
 
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
-    vector<string> attrnames = {"position", "normal", "id", "active"};
+    const vector<string> attrnames = {"position", "normal", "id", "active"};
 
     for(auto& attrname : attrnames)
         EXPECT_NE( clp->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
@@ -117,7 +117,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
+    const Node::SPtr root = SceneLoaderXML::loadFromMemory("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 

@@ -217,7 +217,7 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 {
     //Save previous Material
     _materialDataWidget->updateDataValue();
-    Material mat(_currentMaterial.getValue() );
+    const Material mat(_currentMaterial.getValue() );
     _vectorEditedMaterial[_currentMaterialPos] = mat;
 
     //Update current Material
@@ -232,7 +232,7 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 void VectorMaterialDataWidget::writeToData()
 {
     _materialDataWidget->updateDataValue();
-    Material mat(_currentMaterial.getValue() );
+    const Material mat(_currentMaterial.getValue() );
     _vectorEditedMaterial[_currentMaterialPos] = mat;
 
     VectorMaterial* vecMaterial = getData()->beginEdit();

@@ -121,7 +121,7 @@ void SquareMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, c
     }
     else
     {
-        size_t size = parentDisplacement.size();
+        const size_t size = parentDisplacement.size();
         kfactor *= 2.0;
 
         for(unsigned i=0; i<size; i++ )

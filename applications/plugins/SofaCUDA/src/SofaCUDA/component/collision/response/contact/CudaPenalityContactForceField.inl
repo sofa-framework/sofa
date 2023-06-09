@@ -80,7 +80,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*
     }
     */
     sofa::type::Vec4f c(norm, dist);
-    Real fact = helper::rsqrt(ks);
+    const Real fact = helper::rsqrt(ks);
     c *= fact;
     contacts.push_back(c);
     pen.push_back(0);
@@ -96,7 +96,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
     for (int i=0; i<n; i++)
     {
         const sofa::core::collision::GPUContact* o = outputs->get(i);
-        Real distance = (useDistance) ? d0 + o->distance : d0;
+        const Real distance = (useDistance) ? d0 + o->distance : d0;
         Real ks = (distance > 1.0e-10) ? stiffness / distance : stiffness;
         Coord n = (normXForm)?(*normXForm)*o->normal : o->normal;
         type::Vec4f c(n, distance);
@@ -218,7 +218,7 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
         Coord u = p2[i]-p1[i];
         Coord norm(c[0],c[1],c[2]);
         //c.pen = c.dist - u*c.norm;
-        Real d = c[3] - u*norm;
+        const Real d = c[3] - u*norm;
         /*if (c.age > 10) //c.spen > c.mu_s * c.ks * 0.99)
             if (d > 0)
                 glColor4f(1,0,1,1);

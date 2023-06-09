@@ -98,7 +98,7 @@ void FlagTreeItem::propagateStateUp(FlagTreeItem* origin)
     tristate flag = origin->m_state;
     for( unsigned int i = 0 ; i < parent->m_child.size(); ++i)
     {
-        FlagTreeItem* current = parent->m_child[i];
+        const FlagTreeItem* current = parent->m_child[i];
         flag = fusion_tristate(current->m_state,flag);
     }
 
@@ -172,8 +172,8 @@ std::istream& FlagTreeItem::read(std::istream& in,
 /*static*/
 void FlagTreeItem::create_parse_map(FlagTreeItem *root, std::map<std::string, bool, ci_comparison> &map)
 {
-    size_t sizeShow = root->m_showName.size();
-    size_t sizeHide = root->m_hideName.size();
+    const size_t sizeShow = root->m_showName.size();
+    const size_t sizeHide = root->m_hideName.size();
     for(size_t i=0; i<sizeShow; i++)
     {
         map[root->m_showName[i]] = false;
@@ -197,8 +197,8 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
     std::map<std::string,bool>::const_iterator iter_hide;
     for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter)
     {
-        size_t sizeShow = (*iter)->m_showName.size();
-        size_t sizeHide = (*iter)->m_hideName.size();
+        const size_t sizeShow = (*iter)->m_showName.size();
+        const size_t sizeHide = (*iter)->m_hideName.size();
 
         bool found = false;
 
@@ -207,7 +207,7 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
             iter_hide = parse_map.find((*iter)->m_hideName[i]);
             if( iter_hide != parse_map.end() )
             {
-                bool hide = iter_hide->second;
+                const bool hide = iter_hide->second;
                 if(hide)
                 {
                     if(i != 0)
@@ -225,7 +225,7 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
             iter_show = parse_map.find((*iter)->m_showName[i]);
             if( iter_show != parse_map.end() )
             {
-                bool show  = iter_show->second;
+                const bool show  = iter_show->second;
                 if(show)
                 {
                     if(i != 0)

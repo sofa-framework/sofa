@@ -98,7 +98,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::bwdInit()
 
     recomputeIndices();
 
-    core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    const core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     if(!state)
     {
         msg_warning() << "MechanicalState of the current context returns null pointer";
@@ -110,7 +110,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::bwdInit()
         vPolynomialWriteDegree.push_back(1);
     }
 
-    helper::ReadAccessor<Data<type::vector<unsigned int>>> vPolynomialDegree = d_polynomialDegree;
+    const helper::ReadAccessor<Data<type::vector<unsigned int>>> vPolynomialDegree = d_polynomialDegree;
 
     m_polynomialsMap.clear();
     type::vector<unsigned int> polynomial;
@@ -355,7 +355,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::ComputeJacobian(sofa::Inde
             (springIndex < zeroLength.size() ? zeroLength[springIndex] : zeroLength[0]);
     msg_info() << "PolynomialDerivativeRes: " << polynomialDerivativeRes;
 
-    double exponentialDerivative = 1.0 - d_smoothScale.getValue() *
+    const double exponentialDerivative = 1.0 - d_smoothScale.getValue() *
             exp(d_smoothShift.getValue() - d_smoothScale.getValue() * m_coordinateSquaredNorm[springIndex]);
 
     // compute data for Jacobian matrix
@@ -455,9 +455,9 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
 
     sofa::helper::AdvancedTimer::stepBegin("restShapePolynomialSpringAddKToMatrix");
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
+    const unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
     sofa::Index curIndex = 0;
@@ -480,7 +480,7 @@ template<class DataTypes>
 double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned int springIndex, double strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
-    helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
+    const helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial data: ";
     double highOrderStrain = 1.0;
@@ -499,7 +499,7 @@ template<class DataTypes>
 double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigned int springIndex, double strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
-    helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
+    const helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial derivative data: ";
     double highOrderStrain = 1.0;

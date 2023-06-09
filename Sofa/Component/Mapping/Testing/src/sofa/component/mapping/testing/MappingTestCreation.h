@@ -154,7 +154,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         inDofs = root->get<InDOFs>(root->SearchDown);
 
         // Get child nodes
-        simulation::Node::SPtr patchNode = root->getChild("Patch");
+        const simulation::Node::SPtr patchNode = root->getChild("Patch");
         simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
 
         // Add OutDofs

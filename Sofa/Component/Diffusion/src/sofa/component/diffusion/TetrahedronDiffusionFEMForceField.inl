@@ -54,7 +54,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
     const typename TetrahedronDiffusionFEMForceField<DataTypes>::MechanicalTypes::VecCoord position = this->mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
 
     typename DataTypes::Real anisotropyRatio = this->d_transverseAnisotropyRatio.getValue();
-    bool isotropicDiffusion = (anisotropyRatio == 1.0);
+    const bool isotropicDiffusion = (anisotropyRatio == 1.0);
 
     for (i=0; i<nbTetra; ++i)
     {
@@ -436,7 +436,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         this->mechanicalObject->read(core::ConstVecCoordId::restPosition())->getValue();
         vparams->drawTool()->setLightingEnabled(false);
 
-        auto nbr = m_topology->getNbTriangles();
+        const auto nbr = m_topology->getNbTriangles();
         sofa::type::vector<sofa::Index> surfaceTri;
 
         for (sofa::Index i=0; i<nbr; ++i)
@@ -464,7 +464,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
 
         vparams->drawTool()->drawLines(vertices, 1, colorLine);
 
-        auto nbrTetra = m_topology->getNbTetrahedra();
+        const auto nbrTetra = m_topology->getNbTetrahedra();
         Real maxDiffusion = 0.0;
         for (sofa::Index i = 0; i<nbrTetra; ++i)
         {

@@ -466,7 +466,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv&
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int indice = k*3;
         for(int j=0 ; j<3 ; ++j )
             D[indice+j] = hexahedronInf[i].rotatedInitialElements[k][j] - deformed[k][j];
     }
@@ -567,7 +567,7 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar(WDataRefVecDeriv& 
     Displacement D;
     for(int k=0 ; k<8 ; ++k )
     {
-        int indice = k*3;
+        const int indice = k*3;
         for(int j=0 ; j<3 ; ++j )
             D[indice+j] = hexahedronInf[i].rotatedInitialElements[k][j] - deformed[k][j];
     }

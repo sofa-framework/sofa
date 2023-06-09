@@ -99,8 +99,8 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
     {
         EXPECT_MSG_NOEMIT(Error) ;
         //*******
-        auto simu = simpleapi::createSimulation();
-        simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
+        const auto simu = simpleapi::createSimulation();
+        const simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
         //*******
         // begin create scene under the root node
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
@@ -121,7 +121,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
             { "threshold", simpleapi::str(1e-5)},
         });
 
-        simulation::Node::SPtr string = massSpringString (
+        const simulation::Node::SPtr string = massSpringString (
                     root, // attached to root node
                     0,1,0,     // first particle position
                     0,0,0,     // last  particle position
@@ -195,8 +195,8 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
     EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium()
     {
         //*******
-        auto simu = simpleapi::createSimulation();
-        simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
+        const auto simu = simpleapi::createSimulation();
+        const simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
         //*******
         // create scene
         root->setGravity(Vec3(0,0,0));
@@ -230,7 +230,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         });
 
         // create a child node with its own DOF
-        simulation::Node::SPtr child = root->createChild("childNode");
+        const simulation::Node::SPtr child = root->createChild("childNode");
         simpleapi::createObject(child, "MechanicalObject", {
             {"name", "childDof"},
             {"position", simpleapi::str("0.0 -1.0 0.0")},

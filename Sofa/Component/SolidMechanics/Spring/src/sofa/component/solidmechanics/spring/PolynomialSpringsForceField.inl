@@ -104,7 +104,7 @@ void PolynomialSpringsForceField<DataTypes>::bwdInit()
     }
 
     // read and fill polynomial parameters
-    helper::ReadAccessor<Data<type::vector<unsigned int>>> vPolynomialDegree = d_polynomialDegree;
+    const helper::ReadAccessor<Data<type::vector<unsigned int>>> vPolynomialDegree = d_polynomialDegree;
 
     m_polynomialsMap.clear();
     type::vector<unsigned int> polynomial;
@@ -408,10 +408,10 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
 
     if (this->mstate1 == this->mstate2)
     {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate1);
+        const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate1);
         if (!mref) return;
         sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
-        unsigned int offset = mref.offset;
+        const unsigned int offset = mref.offset;
 
         for (unsigned int index = 0; index < m_firstObjectIndices.size(); index++)
         {
@@ -465,7 +465,7 @@ template<class DataTypes>
 double PolynomialSpringsForceField<DataTypes>::PolynomialValue(unsigned int springIndex, double strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
-    helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
+    const helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial data: ";
     double highOrderStrain = 1.0;
@@ -484,7 +484,7 @@ template<class DataTypes>
 double PolynomialSpringsForceField<DataTypes>::PolynomialDerivativeValue(unsigned int springIndex, double strainValue)
 {
     helper::ReadAccessor<Data<VecReal>> vPolynomialStiffness = d_polynomialStiffness;
-    helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
+    const helper::ReadAccessor<Data<type::vector<unsigned int> >> vPolynomialDegree = d_polynomialDegree;
 
     msg_info() << "Polynomial derivative data: ";
     double highOrderStrain = 1.0;

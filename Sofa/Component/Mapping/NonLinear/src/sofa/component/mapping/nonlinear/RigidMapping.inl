@@ -147,7 +147,7 @@ template <class TIn, class TOut>
 sofa::Size RigidMapping<TIn, TOut>::addPoint(const OutCoord& c)
 {
     helper::WriteAccessor<Data<OutVecCoord> > points = d_points;
-    sofa::Size i = sofa::Size(points.size());
+    const sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
     return i;
 }
@@ -156,7 +156,7 @@ template <class TIn, class TOut>
 sofa::Size RigidMapping<TIn, TOut>::addPoint(const OutCoord& c, sofa::Index indexFrom)
 {
     OutVecCoord& points = *d_points.beginEdit();
-    sofa::Size i = sofa::Size(points.size());
+    const sofa::Size i = sofa::Size(points.size());
     points.push_back(c);
     d_points.endEdit();
 
@@ -245,7 +245,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 
     type::vector<unsigned int>& rigidIndexPerPoint = *d_rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->getSize();
+    const size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -269,7 +269,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> valu
 
     type::vector<unsigned int>& rigidIndexPerPoint = *d_rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->getSize();
+    const size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -432,7 +432,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 
             for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
             {
-                unsigned int rigidIndex = getRigidIndex( colIt.index() );
+                const unsigned int rigidIndex = getRigidIndex( colIt.index() );
                 if(rigidIndex != ito)
                     continue;
 
@@ -722,7 +722,7 @@ const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 
         for (unsigned int outIdx = 0; outIdx < pts.size() ; outIdx++)
         {
-            unsigned int inIdx = getRigidIndex(outIdx);
+            const unsigned int inIdx = getRigidIndex(outIdx);
 
             setJMatrixBlock(outIdx, inIdx);
         }

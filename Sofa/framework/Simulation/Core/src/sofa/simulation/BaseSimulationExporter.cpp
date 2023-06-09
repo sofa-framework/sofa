@@ -61,7 +61,7 @@ const std::string BaseSimulationExporter::getOrCreateTargetPath(const std::strin
     }
 
     /// If the path does not exists on the FS...we create It
-    std::string parentPath = FileSystem::getParentDirectory(path) ;
+    const std::string parentPath = FileSystem::getParentDirectory(path) ;
     if( !FileSystem::exists(parentPath) ){
         FileSystem::findOrCreateAValidPath(parentPath) ;
     }

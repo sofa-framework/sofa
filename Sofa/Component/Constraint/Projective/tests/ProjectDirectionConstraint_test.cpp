@@ -77,7 +77,7 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-        PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
+        const PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
         root->addObject(topology);
 
         dofs = New<MechanicalObject>();

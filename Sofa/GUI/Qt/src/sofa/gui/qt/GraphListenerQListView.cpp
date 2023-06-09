@@ -159,10 +159,10 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         if (!pixmaps.count(flags))
         {
             /// Create a new image from pixmap
-            QImage timg(icon) ;
+            const QImage timg(icon) ;
             QImage* img = new QImage(timg.convertToFormat(QImage::Format_ARGB32)) ;
 
-            QImage* overlaysymbol=nullptr;
+            const QImage* overlaysymbol=nullptr;
             if( haveInfo )
                 overlaysymbol = &imgInfo8 ;
             if( haveWarning )
@@ -248,7 +248,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         for (int i=0; i<ALLCOLORS; i++)
             if (flags & (1<<i))
                 ++nc;
-        int nx = 2+iconWidth*nc+iconMargin;
+        const int nx = 2+iconWidth*nc+iconMargin;
         //QImage * img = new QImage(nx,iconHeight,32);
         QImage * img = new QImage(nx,iconHeight,QImage::Format_ARGB32);
 
@@ -267,13 +267,13 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         for (int i=0; i<ALLCOLORS; i++)
             if (flags & (1<<i))
             {
-                int x0 = 1+iconWidth*nc;
-                int x1 = x0+iconWidth-1;
+                const int x0 = 1+iconWidth*nc;
+                const int x1 = x0+iconWidth-1;
                 const char* color = COLOR[i];
-                int r = (hexval(color[1])*16+hexval(color[2]));
-                int g = (hexval(color[3])*16+hexval(color[4]));
-                int b = (hexval(color[5])*16+hexval(color[6]));
-                int a = 255;
+                const int r = (hexval(color[1])*16+hexval(color[2]));
+                const int g = (hexval(color[3])*16+hexval(color[4]));
+                const int b = (hexval(color[5])*16+hexval(color[6]));
+                const int a = 255;
                 for (int x=x0; x <=x1 ; x++)
                 {
                     img->setPixel(x,iconMargin-1,qRgba(0,0,0,255));
@@ -288,7 +288,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         for (int y=iconMargin ; y < iconHeight ; y++)
             img->setPixel(2+iconWidth*nc-1,y,qRgba(0,0,0,255));
 
-        QImage* overlaysymbol=nullptr;
+        const QImage* overlaysymbol=nullptr;
         if( haveInfo )
             overlaysymbol = &imgInfo8 ;
         if( haveWarning )
@@ -316,11 +316,11 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
 
 void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
 {
-    bool haveInfos = object->countLoggedMessages({Message::Info, Message::Deprecated, Message::Advice})!=0;
-    bool haveWarnings = object->countLoggedMessages({Message::Warning})!=0;
-    bool haveErrors = object->countLoggedMessages({Message::Error, Message::Fatal})!=0;
+    const bool haveInfos = object->countLoggedMessages({Message::Info, Message::Deprecated, Message::Advice})!=0;
+    const bool haveWarnings = object->countLoggedMessages({Message::Warning})!=0;
+    const bool haveErrors = object->countLoggedMessages({Message::Error, Message::Fatal})!=0;
 
-    QPixmap* pix = getPixmap(object, haveInfos, haveWarnings, haveErrors);
+    const QPixmap* pix = getPixmap(object, haveInfos, haveWarnings, haveErrors);
     if (pix)
         item->setIcon(0, QIcon(*pix));
 }
@@ -347,8 +347,8 @@ void ObjectStateListener::notifyEndEdit()
 {
     setMessageIconFrom(item, object.get());
 
-    QString oldName = item->text(0);
-    QString newName = QString::fromStdString(object->getName());
+    const QString oldName = item->text(0);
+    const QString newName = QString::fromStdString(object->getName());
     if(newName != oldName)
         item->setText(0, newName);
 }
@@ -646,7 +646,7 @@ void GraphListenerQListView::sleepChanged(Node* node)
     if (items.count(node))
     {
         QTreeWidgetItem* item = items[node];
-        QPixmap* pix = getPixmap(node,false,false,false);
+        const QPixmap* pix = getPixmap(node,false,false,false);
         if (pix)
             item->setIcon(0, QIcon(*pix));
     }
