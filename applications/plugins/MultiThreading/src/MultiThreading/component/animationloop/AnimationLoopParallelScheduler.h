@@ -1,24 +1,24 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #pragma once
 
 #include <MultiThreading/config.h>
@@ -40,42 +40,43 @@ namespace multithreading::component::animationloop
 {
 
 class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler :
-    public sofa::core::behavior::BaseAnimationLoop,
-    public TaskSchedulerUser
+                                                                       public sofa::core::behavior::BaseAnimationLoop,
+                                                                       public TaskSchedulerUser
 {
-public:
+   public:
 
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
     SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_taskSchedulerType instead.")
-    sofa::Data<std::string> schedulerName; ///< scheduler name type
+    sofa::core::objectmodel::RemovedData schedulerName {this,
+                                                       "scheduler",
+                                                       "To fix you scene you can rename 'scheduler' with 'taskSchedulerType'."};
 
     SOFA_ATTRIBUTE_DEPRECATED__TASKSCHEDULERUSER_DATANAME("Use TaskSchedulerUser::d_nbThreads instead.")
-    sofa::Data<unsigned int> threadNumber; ///< number of thread
+    sofa::core::objectmodel::RemovedData threadNumber {this,
+                                                       "threadNumber",
+                                                      "To fix you scene you can rename 'threadNumber' with 'nbThreads'."};
 
-
-protected:
+   protected:
     AnimationLoopParallelScheduler(sofa::simulation::Node* gnode = NULL);
 
     ~AnimationLoopParallelScheduler() override;
 
-public:
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-
+   public:
     void init() override;
 
-    /// Initialization method called at graph creation and modification, during bottom-up traversal.
+            /// Initialization method called at graph creation and modification, during bottom-up traversal.
     void bwdInit() override;
 
-    /// Update method called when variables used in precomputation are modified.
+            /// Update method called when variables used in precomputation are modified.
     void reinit() override;
 
     void cleanup() override;
 
     void step(const sofa::core::ExecParams* params, SReal dt) override;
 
-    /// Construction method called by ObjectFactory.
+            /// Construction method called by ObjectFactory.
     template<class T>
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
@@ -86,7 +87,7 @@ public:
         return obj;
     }
 
-private :
+   private :
 
     sofa::simulation::Node* gnode;
 
