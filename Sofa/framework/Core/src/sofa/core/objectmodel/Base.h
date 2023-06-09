@@ -23,6 +23,7 @@
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/DeprecatedData.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -46,21 +47,6 @@ virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 namespace sofa::core::objectmodel
 {
 
-class DeprecatedAttribute
-{
-   public:
-    std::string m_name;
-    std::string m_helptext;
-    bool m_isRemoved;
-    DeprecatedAttribute(Base* b, const std::string& name, const std::string& helptext);
-};
-
-class RemovedAttribute : public DeprecatedAttribute
-{
-   public:
-    RemovedAttribute(Base* b, const std::string& name, const std::string& helptext);
-};
-
 /**
  *  \brief Base class for everything
  *
@@ -81,8 +67,8 @@ public:
     virtual const BaseClass* getClass() const { return GetClass(); }
 
 
-    void addDeprecatedAttribute(DeprecatedAttribute* attribute);
-    std::vector<DeprecatedAttribute*> m_oldAttributes;
+    void addDeprecatedAttribute(DeprecatedData* attribute);
+    std::vector<DeprecatedData*> m_oldAttributes;
 
 protected:
     /// Constructor cannot be called directly

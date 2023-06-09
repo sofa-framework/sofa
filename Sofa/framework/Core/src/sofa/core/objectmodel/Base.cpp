@@ -539,7 +539,7 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
     }
 }
 
-DeprecatedAttribute::DeprecatedAttribute(Base* b, const std::string& name, const std::string& helptext)
+DeprecatedData::DeprecatedData(Base* b, const std::string& name, const std::string& helptext)
 {
     m_name = name;
     m_helptext = helptext;
@@ -547,13 +547,13 @@ DeprecatedAttribute::DeprecatedAttribute(Base* b, const std::string& name, const
     b->addDeprecatedAttribute(this);
 }
 
-RemovedAttribute::RemovedAttribute(Base* b, const std::string& name, const std::string& helptext) :
-                                                                                                    DeprecatedAttribute(b,name,helptext)
+RemovedData::RemovedData(Base* b, const std::string& name, const std::string& helptext) :
+                                                                                                    DeprecatedData(b,name,helptext)
 {
     m_isRemoved = true;
 }
 
-void Base::addDeprecatedAttribute(DeprecatedAttribute* attribute)
+void Base::addDeprecatedAttribute(DeprecatedData* attribute)
 {
     m_oldAttributes.push_back(attribute);
 }
@@ -566,9 +566,9 @@ void  Base::parse ( BaseObjectDescription* arg )
         if(arg->getAttribute(attribute->m_name))
         {
             if(attribute->m_isRemoved)
-               msg_error() << "Attribute '" << attribute->m_name << "' has been removed. To fix your scene " << attribute->m_helptext;
+               msg_error() << "Attribute '" << attribute->m_name << "' has been removed. " << attribute->m_helptext;
             else
-               msg_deprecated() << "Attribute '" << attribute->m_name << "' is deprecated. To update your scene " << attribute->m_helptext;
+               msg_deprecated() << "Attribute '" << attribute->m_name << "' is deprecated. " << attribute->m_helptext;
 
         }
     }
