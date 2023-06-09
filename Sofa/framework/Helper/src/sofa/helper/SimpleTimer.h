@@ -24,10 +24,7 @@
 
 #include <sofa/helper/system/thread/CTime.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /**
@@ -152,8 +149,6 @@ public:
 };
 
 typedef TSimpleTimer<> SimpleTimer;
-
-}
 
 }
 

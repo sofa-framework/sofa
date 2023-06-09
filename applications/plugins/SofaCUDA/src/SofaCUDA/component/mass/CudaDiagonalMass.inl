@@ -27,9 +27,7 @@
 
 namespace sofa
 {
-namespace gpu
-{
-namespace cuda
+namespace gpu::cuda
 {
 
 using namespace sofa::gpu::cuda;
@@ -49,7 +47,6 @@ extern "C"
 
 }
 
-}
 
 namespace component
 {

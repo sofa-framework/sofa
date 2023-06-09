@@ -51,13 +51,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalVSizeVisitor;
 #include <sofa/simulation/VelocityThresholdVisitor.h>
 #include <sofa/simulation/MechanicalVPrintVisitor.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace common
+namespace sofa::simulation::common
 {
 
 VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext *ctx, bool precomputedTraversalOrder):
@@ -203,6 +197,4 @@ SReal VectorOperations::finish()
 
 }
 
-}
-}
 }

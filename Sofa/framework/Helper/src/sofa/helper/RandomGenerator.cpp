@@ -37,10 +37,7 @@
 #include <sofa/helper/RandomGenerator.h>
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 RandomGenerator::RandomGenerator()
@@ -105,7 +102,5 @@ unsigned long RandomGenerator::randomBase()
 }
 
 
-
-}
 
 }
