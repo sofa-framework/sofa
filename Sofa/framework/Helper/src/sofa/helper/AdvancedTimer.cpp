@@ -40,10 +40,7 @@
 using json = sofa::helper::json;
 
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;
@@ -1513,8 +1510,6 @@ std::string AdvancedTimer::getTimeAnalysis(IdTimer id, double time, double delta
     }
 
     return outputStr;
-}
-
 }
 
 }
