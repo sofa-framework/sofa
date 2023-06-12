@@ -55,7 +55,7 @@ using sofa::helper::system::FileSystem ;
   error "Missing the <filesystem> header."
 #endif
 namespace{
-std::string tempdir = fs::temp_directory_path().string() ;
+const std::string tempdir = sofa::helper::system::FileRepository::getTempPath() ;
 
 
 class VisualModelOBJExporter_test : public BaseSimulationTest {
