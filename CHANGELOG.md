@@ -1,6 +1,15 @@
 # SOFA Changelog
 
+## [helper-filesystem-gcc8]()
 
+### Highlighted contributions
+- [Helper] Add experimental filesystem library for "GNU" version < 9.1
+
+### Improvements
+
+**Modules**
+- [Sofa.Helper] Update the CMakeLists.txt file to include the experimental filesystem library that is not included by default. 
+- [Sofa.Helper] Update all the files that called functions from the library _std::filesystem_. 
 
 ## [v22.12.00]( https://github.com/sofa-framework/sofa/tree/v22.12.00 )
 

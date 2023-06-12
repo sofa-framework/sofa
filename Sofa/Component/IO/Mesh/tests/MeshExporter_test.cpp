@@ -49,9 +49,17 @@ using sofa::helper::system::FileSystem ;
 
 using ::testing::Types;
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 namespace {
-std::string tempdir = std::filesystem::temp_directory_path().string() ;
+std::string tempdir = fs::temp_directory_path().string() ;
 
 class MeshExporter_test : public BaseSimulationTest,
                           public ::testing::WithParamInterface<vector<string>>

@@ -45,9 +45,17 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 namespace{
-std::string tempdir = std::filesystem::temp_directory_path().string() ;
+std::string tempdir = fs::temp_directory_path().string() ;
 
 
 class VisualModelOBJExporter_test : public BaseSimulationTest {
