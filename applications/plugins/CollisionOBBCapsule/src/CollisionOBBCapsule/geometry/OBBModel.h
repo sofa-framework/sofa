@@ -164,21 +164,6 @@ public:
 
     sofa::core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<sofa::core::behavior::MechanicalState<TDataTypes>*>(context->getMechanicalState()) == nullptr && context->getMechanicalState() != nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
     /**
       *Returns the axis of the local frame at i-th dimension of the OBB at index index.
       */
