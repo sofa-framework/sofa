@@ -238,13 +238,13 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Link the experimental library if the compiler version is less than gcc-9 or clang-9
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.1)
-		target_link_libraries(${PROJECT_NAME} PUBLIC stdc++fs)
-	endif()
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.1)
+        target_link_libraries(${PROJECT_NAME} PUBLIC stdc++fs)
+    endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
-		target_link_libraries(${PROJECT_NAME} PUBLIC c++fs)
-	endif()
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
+        target_link_libraries(${PROJECT_NAME} PUBLIC c++fs)
+    endif()
 endif()
 
 # Json (header only) needed by AdvancedTimer
