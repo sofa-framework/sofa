@@ -28,6 +28,19 @@
 namespace sofa::core
 {
 
+template<class T>
+class HasTemplateDeductionMethod
+{
+    typedef char YesType[1];
+    typedef char NoType[2];
+
+    template<typename C> static YesType& test( decltype (&C::TemplateDeductionMethod) );
+    template<typename C> static NoType& test(...);
+
+   public:
+    enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
+};
+
 /**
  *  \brief Main class used to register and dynamically create objects
  *
@@ -347,6 +360,12 @@ class SOFA_CORE_API RegisterObject
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
+
+        // if there is a custom deduction method in the class then we use it. This is often used
+        // to implement a single "per" class deduction system.
+        if constexpr ( HasTemplateDeductionMethod<RealObject>::value )
+            entry.deduceTemplate = RealObject::TemplateDeductionMethod;
+
 
         return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }
