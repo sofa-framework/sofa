@@ -28,7 +28,7 @@
 namespace sofa::core::objectmodel
 {
 
-class DeprecatedData
+class SOFA_CORE_API DeprecatedData
 {
    public:
     std::string m_name;
@@ -37,7 +37,7 @@ class DeprecatedData
     DeprecatedData(Base* b, const std::string& name, const std::string& helptext);
 };
 
-class RemovedData : public DeprecatedData
+class SOFA_CORE_API RemovedData : public DeprecatedData
 {
    public:
     RemovedData(Base* b, const std::string& name, const std::string& helptext);
