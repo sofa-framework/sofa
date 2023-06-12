@@ -143,20 +143,6 @@ public:
 
     Data<bool> bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
     {
         return l_topology.get();

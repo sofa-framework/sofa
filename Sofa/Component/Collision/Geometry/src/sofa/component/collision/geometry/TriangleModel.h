@@ -196,21 +196,6 @@ public:
 
     Deriv velocity(sofa::Index index)const;
 
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
-        {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() +
-                          "' found in the context node.");
-            return false;
-        }
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
