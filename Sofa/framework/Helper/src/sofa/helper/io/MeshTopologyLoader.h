@@ -64,8 +64,8 @@ private:
     
 
     bool loadVtk(const char *filename);
-        
-    /// method to load unknown format. TODO remove this method and deprecated attached format.
+
+    SOFA_MESHTOPOLOGYLOADER_LOADMESHFUNCTION_DEPRECATED()
     bool loadMesh(std::ifstream &file);
 
     // will take all data from loaded into @see m_mesh and add it to the current topology using methods api.
