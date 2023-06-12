@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
+#include <sofa/core/ObjectFactoryTemplateDeductionRules.h>
 
 //todo(dmarchal 2018-06-19) I really wonder why a collision model has a dependency to a RGBAColors.
 #include <sofa/type/RGBAColor.h>
@@ -102,6 +103,12 @@ protected:
     ~CollisionModel() override {}
 
 public:
+    static std::string TemplateDeductionMethod(sofa::core::objectmodel::BaseContext* context,
+                                               sofa::core::objectmodel::BaseObjectDescription* description)
+    {
+        return sofa::core::getTemplateFromMechanicalState(context, description);
+    }
+
     void bwdInit() override;
 
     /// Return true if there are no elements
