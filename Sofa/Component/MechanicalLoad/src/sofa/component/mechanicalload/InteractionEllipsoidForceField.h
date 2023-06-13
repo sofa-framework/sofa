@@ -146,6 +146,8 @@ public:
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
+
     void init() override;
     void reinit() override;
 

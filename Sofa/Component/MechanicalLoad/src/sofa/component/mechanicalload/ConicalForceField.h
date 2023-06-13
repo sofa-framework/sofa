@@ -110,6 +110,7 @@ public:
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
 
     virtual void updateStiffness( const VecCoord& x );
 

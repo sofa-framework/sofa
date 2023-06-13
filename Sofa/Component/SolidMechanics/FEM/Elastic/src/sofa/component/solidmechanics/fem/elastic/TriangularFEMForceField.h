@@ -105,6 +105,7 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;

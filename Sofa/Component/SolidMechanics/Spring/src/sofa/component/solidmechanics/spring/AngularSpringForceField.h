@@ -90,6 +90,7 @@ public:
 
     /// Brings ForceField contribution to the global system stiffness matrix.
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
     void draw(const core::visual::VisualParams* vparams) override;
 
 protected :

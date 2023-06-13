@@ -110,6 +110,8 @@ public:
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
+
 
 protected:
     ConstantForceField();

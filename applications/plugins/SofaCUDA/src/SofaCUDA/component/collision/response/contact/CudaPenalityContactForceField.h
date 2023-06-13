@@ -87,6 +87,8 @@ public:
 
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2) override;
 
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
+
     virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const override;
 
     void draw(const core::visual::VisualParams*) override;
