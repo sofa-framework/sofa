@@ -47,15 +47,6 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#if __has_include(<filesystem>)
-  #include <filesystem>
-  namespace fs = std::filesystem;
-#elif __has_include(<experimental/filesystem>)
-  #include <experimental/filesystem> 
-  namespace fs = std::experimental::filesystem;
-#else
-  error "Missing the <filesystem> header."
-#endif
 namespace {
 const std::string tempdir = sofa::helper::system::FileRepository::getTempPath() ;
 
