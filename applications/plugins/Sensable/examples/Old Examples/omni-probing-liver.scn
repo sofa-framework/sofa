@@ -6,7 +6,7 @@
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
-	<DefaultContactManager name="Response"  response="PenalityContactForceField" />
+	<CollisionResponse name="Response"  response="PenalityContactForceField" />
 	<TreeCollisionGroupManager name="Group" />
 	<Node 	name="Liver" gravity="0 -9.81 0" depend="topo dofs"  >
 		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />

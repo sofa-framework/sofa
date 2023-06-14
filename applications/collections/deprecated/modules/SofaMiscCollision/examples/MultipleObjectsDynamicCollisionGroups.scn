@@ -6,7 +6,7 @@
     <CollisionPipeline />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager />
+    <CollisionResponse />
     <MinProximityIntersection alarmDistance="0.5" contactDistance="0.2" />
     <!-- Component Creating dynamic collision group -->
     <DefaultCollisionGroupManager />
