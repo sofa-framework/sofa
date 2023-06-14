@@ -360,8 +360,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
             unitary_force.clear();
             force[f] = unitary_force;
-        }
-        msg_info() << tmpStr.str();
+            msg_info() << tmpStr.str();
+        }        
 
         // Do not recompute the matrix for the rest of the precomputation
         if (linearSolver)
