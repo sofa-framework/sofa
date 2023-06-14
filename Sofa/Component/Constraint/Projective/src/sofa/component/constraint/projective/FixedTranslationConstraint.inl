@@ -125,8 +125,11 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
     }
     else
     {
-        for (unsigned int i = 0; i < dx.size(); i++)
-            clear(dx, i);
+        const SetIndexArray & indices = f_indices.getValue();
+        for (const auto index : indices)
+        {
+            clear(dx, index);
+        }
     }
 }
 
