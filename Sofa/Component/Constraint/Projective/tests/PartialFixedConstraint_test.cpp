@@ -94,7 +94,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         typename PartialFixedConstraint::SPtr constraint = addNew<PartialFixedConstraint>(node);
 
         // Init simulation
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         for(unsigned i=0; i<sizeD; i++)
         {
@@ -102,7 +102,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
             constraint->d_fixedDirections.setValue(fixed);
 
             // Perform one time step
-            sofa::simulation::node::animateNode(root.get(), 0.5);
+            sofa::simulation::node::animate(root.get(), 0.5);
 
             // Check if the particle moved in a fixed direction
             typename MechanicalObject::ReadVecDeriv readV = mstate->readVelocities();
@@ -112,7 +112,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
                 return false;
             }
 
-            sofa::simulation::node::resetNode(root.get());
+            sofa::simulation::node::reset(root.get());
             fixed[i] = false;
         }
 

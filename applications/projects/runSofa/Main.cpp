@@ -484,7 +484,7 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::begin("Init");
     }
 
-    sofa::simulation::node::initNode(groot.get());
+    sofa::simulation::node::initRoot(groot.get());
     if( computationTimeAtBegin )
     {
         msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
@@ -524,7 +524,7 @@ int main(int argc, char** argv)
     {
         string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::node::exportNodeInXML(groot.get(), xmlname.c_str());
+        sofa::simulation::node::exportInXML(groot.get(), xmlname.c_str());
     }
 
     if (groot!=nullptr)

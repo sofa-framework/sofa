@@ -139,7 +139,7 @@ namespace sofa {
         // Initialization of the scene
         void initScene()
         {
-            sofa::simulation::node::initNode(root.get());
+            sofa::simulation::node::initRoot(root.get());
         }
 
         // Run five steps of simulation
@@ -147,7 +147,7 @@ namespace sofa {
         {
             for(int i=0; i<7; i++)
             {
-                sofa::simulation::node::animateNode(root.get(), timeStep);
+                sofa::simulation::node::animate(root.get(), timeStep);
             }
         }
 

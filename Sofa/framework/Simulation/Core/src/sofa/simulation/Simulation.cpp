@@ -80,11 +80,13 @@ using namespace sofa;
 namespace node
 {
 
-void initNode(Node* root)
+void initRoot(Node* root)
 {
     sofa::helper::ScopedAdvancedTimer timer("Simulation::init");
     if (!root)
+    {
         return;
+    }
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
     if (!root->getAnimationLoop())
@@ -102,9 +104,9 @@ void initNode(Node* root)
     if (!root->getVisualLoop())
     {
         msg_info(root) << "A visual loop is required, but has not been found. Add a visual loop in the root "
-                        "of your scene to fix this warning. The list of available visual loop components is: ["
-    << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
-    << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
+            "of your scene to fix this warning. The list of available visual loop components is: ["
+            << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
+            << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
 
         const DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
@@ -114,7 +116,7 @@ void initNode(Node* root)
     // all the objects have now been created, update the links
     root->execute<UpdateLinksVisitor>(params);
 
-    initNodeNoContextUpdate(root);
+    init(root);
 
     root->execute<UpdateBoundingBoxVisitor>(params);
 
@@ -122,7 +124,7 @@ void initNode(Node* root)
     updateVisualContext(root);
 }
 
-void initNodeNoContextUpdate(Node* node)
+void init(Node* node)
 {
     if (!node)
     {
@@ -151,10 +153,12 @@ void initNodeNoContextUpdate(Node* node)
     node->execute<StoreResetStateVisitor>(params);
 }
 
-void exportNodeInXML(Node* root, const char* fileName)
+void exportInXML(Node* root, const char* fileName)
 {
     if (!root)
+    {
         return;
+    }
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     if (fileName != nullptr)
     {
@@ -171,11 +175,13 @@ void exportNodeInXML(Node* root, const char* fileName)
     }
 }
 
-void printNode(Node* root)
+void print(Node* root)
 {
     if (!root)
+    {
         return;
-    sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
+    }
+    const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->execute<PrintVisitor>(params);
 }
 
@@ -198,7 +204,7 @@ void updateVisualContext(Node* root)
     }
 }
 
-void animateNode(Node* root, SReal dt)
+void animate(Node* root, SReal dt)
 {
     sofa::helper::ScopedAdvancedTimer timer("Simulation::animate");
 
@@ -237,7 +243,7 @@ void updateVisual(Node* root)
     }
 }
 
-void resetNode(Node* root)
+void reset(Node* root)
 {
     if (!root)
     {
@@ -328,7 +334,7 @@ void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
     }
 }
 
-void drawNode(sofa::core::visual::VisualParams* vparams, Node* root)
+void draw(sofa::core::visual::VisualParams* vparams, Node* root)
 {
     sofa::helper::ScopedAdvancedTimer timer("Simulation::draw");
 
@@ -487,13 +493,13 @@ Simulation* getSimulation()
 /// Print all object in the graph
 void Simulation::print ( Node* root )
 {
-    sofa::simulation::node::printNode(root);
+    sofa::simulation::node::print(root);
 }
 
 /// Print all object in the graph
 void Simulation::exportXML ( Node* root, const char* fileName )
 {
-    sofa::simulation::node::exportNodeInXML(root, fileName);
+    sofa::simulation::node::exportInXML(root, fileName);
 }
 
 /// Print all object in the graph
@@ -505,18 +511,18 @@ void Simulation::exportGraph ( Node* root, const char* filename )
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
-    sofa::simulation::node::initNode(root);
+    sofa::simulation::node::initRoot(root);
 }
 
 void Simulation::initNode( Node* node)
 {
-    sofa::simulation::node::initNodeNoContextUpdate(node);
+    sofa::simulation::node::init(node);
 }
 
 /// Execute one timestep. If do is 0, the dt parameter in the graph will be used
 void Simulation::animate ( Node* root, SReal dt )
 {
-    sofa::simulation::node::animateNode(root, dt);
+    sofa::simulation::node::animate(root, dt);
 }
 
 void Simulation::updateVisual ( Node* root)
@@ -527,7 +533,7 @@ void Simulation::updateVisual ( Node* root)
 /// Reset to initial state
 void Simulation::reset ( Node* root )
 {
-    sofa::simulation::node::resetNode(root);
+    sofa::simulation::node::reset(root);
 }
 
 /// Initialize the textures
@@ -563,7 +569,7 @@ void Simulation::updateVisualContext (Node* root)
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
-    sofa::simulation::node::drawNode(vparams, root);
+    sofa::simulation::node::draw(vparams, root);
 }
 
 /// Export a scene to an OBJ 3D Scene

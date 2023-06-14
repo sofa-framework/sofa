@@ -118,9 +118,9 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
         projection->setSkeletalMotion(joints, bones);
 
         /// Init
-        sofa::simulation::node::initNode(root.get());
-        sofa::simulation::node::animateNode(root.get(), 0.25_sreal);
-        sofa::simulation::node::animateNode(root.get(), 0.25_sreal);
+        sofa::simulation::node::initRoot(root.get());
+        sofa::simulation::node::animate(root.get(), 0.25_sreal);
+        sofa::simulation::node::animate(root.get(), 0.25_sreal);
 
     }
 

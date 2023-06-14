@@ -229,7 +229,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     }
     bool testLinearElasticityInTraction(LinearElasticityFF createForceField){
 
-        sofa::simulation::node::initNode(tractionStruct.root.get());
+        sofa::simulation::node::initRoot(tractionStruct.root.get());
 
         size_t i,j,k;
         for (k=0;k<sizeYoungModulusArray;++k) {
@@ -245,13 +245,13 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
                     Real pressure= pressureArray[i];
 
                     tractionStruct.forceField.get()->setPressure(Coord(0, 0, pressure));
-                    sofa::simulation::node::resetNode(tractionStruct.root.get());
+                    sofa::simulation::node::reset(tractionStruct.root.get());
                     
                     // record the initial point of a given vertex
                     Coord p0=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];
 
                     //  do one step of the static solver
-                    sofa::simulation::node::animateNode(tractionStruct.root.get(), 0.5_sreal);
+                    sofa::simulation::node::animate(tractionStruct.root.get(), 0.5_sreal);
 
                     // Get the simulated final position of that vertex
                     Coord p1=tractionStruct.dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[vIndex];

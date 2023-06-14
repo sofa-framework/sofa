@@ -689,7 +689,7 @@ Node::SPtr getRoot()
 void initScene(Node::SPtr _root)
 {
     root = _root;
-    sofa::simulation::node::initNode(_root.get());
+    sofa::simulation::node::initRoot(_root.get());
 }
 
 Node::SPtr clearScene()

@@ -54,10 +54,10 @@ public:
         // Add the spring to test
         sofa::simpleapi::createObject(childNode, "PolynomialRestShapeSpringsForceField", {{"polynomialStiffness", "10 10"},{"polynomialDegree", "2"},{"points", "0"},{"smoothShift", "1e-4"},{"smoothScale", "1e7"}});
 
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
         for(int i=0; i<2; i++)
         {
-            sofa::simulation::node::animateNode(root.get(), dt);
+            sofa::simulation::node::animate(root.get(), dt);
         }
 
         EXPECT_EQ(meca->findData("force")->getValueString(), std::string("-23.1 0 0")); //F = S sigma(L) where L = 1.1 , S=1 and sigma(L) = 10*L + 10*L^2

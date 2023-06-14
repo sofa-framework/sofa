@@ -112,7 +112,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         }
 
         // Init simulation
-        sofa::simulation::node::initNode(this->root.get());
+        sofa::simulation::node::initRoot(this->root.get());
 
         ///  Get mechanical object of tracked points
         dof = mooneyNode->get<DOF>(mooneyNode->SearchDown);
@@ -125,7 +125,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         unsigned int nbSteps = timeEvaluation/timeStep;
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
-            sofa::simulation::node::animateNode(root.get(), timeStep);
+            sofa::simulation::node::animate(root.get(), timeStep);
     }
 
 

@@ -861,7 +861,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     const std::vector<std::string> sceneArgs = ArgumentParser::extra_args();
     mSimulation = sofa::simulation::node::load ( filename, reload, sceneArgs );
 
-    sofa::simulation::node::initNode(mSimulation.get());
+    sofa::simulation::node::initRoot(mSimulation.get());
     if ( mSimulation == nullptr )
     {
         msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
@@ -2149,11 +2149,11 @@ void RealGUI::activateNode(sofa::simulation::Node* node, bool activate)
     {
         if (node == currentSimulation())
         {
-            sofa::simulation::node::initNode(node);
+            sofa::simulation::node::initRoot(node);
         }
         else
         {
-            sofa::simulation::node::initNodeNoContextUpdate(node);
+            sofa::simulation::node::init(node);
         }
     }
 }
@@ -2304,7 +2304,7 @@ void RealGUI::step()
         m_clockBeforeLastStep = currentClock;
     }
 
-    sofa::simulation::node::animateNode(root, dt);
+    sofa::simulation::node::animate(root, dt);
     sofa::simulation::node::updateVisual(root);
 
     if ( m_dumpState )
@@ -2371,7 +2371,7 @@ void RealGUI::resetScene()
     {
         m_frameCounter=0;
 
-        sofa::simulation::node::resetNode(root);
+        sofa::simulation::node::reset(root);
         eventNewTime();
         emit newStep();
     }

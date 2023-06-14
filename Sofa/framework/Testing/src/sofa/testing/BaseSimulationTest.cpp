@@ -92,12 +92,12 @@ BaseSimulationTest::SceneInstance::~SceneInstance()
 
 void BaseSimulationTest::SceneInstance::initScene()
 {
-    sofa::simulation::node::initNode(root.get());
+    sofa::simulation::node::initRoot(root.get());
 }
 
 void BaseSimulationTest::SceneInstance::simulate(const double timestep)
 {
-    sofa::simulation::node::animateNode(root.get(), static_cast<SReal>(timestep) );
+    sofa::simulation::node::animate(root.get(), static_cast<SReal>(timestep) );
 }
 
 BaseSimulationTest::BaseSimulationTest()

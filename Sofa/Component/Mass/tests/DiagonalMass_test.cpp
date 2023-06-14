@@ -144,7 +144,7 @@ public:
                  MassType expectedTotalMass, const VecMass& expectedMass)
     {
         createSceneGraph(positions, topologyContainer, geometryAlgorithms);
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
         check(expectedTotalMass, expectedMass);
     }
 
@@ -653,7 +653,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
         ASSERT_NE(mass, nullptr);
@@ -724,7 +724,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
         
         /// Init simulation
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
         ASSERT_NE(mass, nullptr);
@@ -788,7 +788,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
         ASSERT_NE(mass, nullptr);
@@ -876,7 +876,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
         ASSERT_NE(mass, nullptr);
@@ -945,7 +945,7 @@ public:
         ASSERT_NE(root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>();
         ASSERT_NE(mass, nullptr);

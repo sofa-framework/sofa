@@ -38,21 +38,21 @@ namespace node
 {
 
 /// Initialize the objects
-void SOFA_SIMULATION_CORE_API initNode(Node* root);
+void SOFA_SIMULATION_CORE_API initRoot(Node* root);
 ///Init a node without changing the context of the simulation.
-void SOFA_SIMULATION_CORE_API initNodeNoContextUpdate(Node* node);
+void SOFA_SIMULATION_CORE_API init(Node* node);
 /// Print all object in the graph in XML format
-void SOFA_SIMULATION_CORE_API exportNodeInXML(Node* root, const char* fileName);
+void SOFA_SIMULATION_CORE_API exportInXML(Node* root, const char* fileName);
 /// Print all object in the graph
-void SOFA_SIMULATION_CORE_API printNode(Node* root);
+void SOFA_SIMULATION_CORE_API print(Node* root);
 /// Update contexts. Required before drawing the scene if root flags are modified.
 void SOFA_SIMULATION_CORE_API updateVisualContext(Node* root);
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-void SOFA_SIMULATION_CORE_API animateNode(Node* root, SReal dt=0.0);
+void SOFA_SIMULATION_CORE_API animate(Node* root, SReal dt=0.0);
 /// Update the Visual Models: triggers the Mappings
 void SOFA_SIMULATION_CORE_API updateVisual(Node* root);
 /// Reset to initial state
-void SOFA_SIMULATION_CORE_API resetNode(Node* root);
+void SOFA_SIMULATION_CORE_API reset(Node* root);
 /// Initialize the textures
 void SOFA_SIMULATION_CORE_API initTextures(Node* root);
 /// Update contexts. Required before drawing the scene if root flags are modified.
@@ -72,7 +72,7 @@ void SOFA_SIMULATION_CORE_API computeBBox(Node* root, SReal* minBBox, SReal* max
  */
 void SOFA_SIMULATION_CORE_API computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
 /// Render the scene
-void SOFA_SIMULATION_CORE_API drawNode(sofa::core::visual::VisualParams* vparams, Node* root);
+void SOFA_SIMULATION_CORE_API draw(sofa::core::visual::VisualParams* vparams, Node* root);
 /// Export a scene to an OBJ 3D Scene
 void SOFA_SIMULATION_CORE_API exportOBJ(Node* root, const char* filename, bool exportMTL = true);
 /// Print all objects in the graph in the given file (format is given by the filename extension)

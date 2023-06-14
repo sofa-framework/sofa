@@ -95,7 +95,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         Inherited::force->isCompliance.setValue(0);
 
         // Init simulation
-        sofa::simulation::node::initNode(Inherited::node.get());
+        sofa::simulation::node::initRoot(Inherited::node.get());
 
     }
 
@@ -114,7 +114,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         typename DOF::WriteVecCoord xdof = this->dof->writePositions();
         sofa::testing::copyToData( xdof, x );
         // init scene and compute force
-        sofa::simulation::node::initNode(this->node.get());
+        sofa::simulation::node::initRoot(this->node.get());
 
         Inherited::force->computeBBox(nullptr, true);
 

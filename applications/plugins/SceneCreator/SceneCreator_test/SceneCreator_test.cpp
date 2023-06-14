@@ -103,7 +103,7 @@ bool SceneCreator_test::createCubeFailed()
     Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
     cube = sofa::modeling::addRigidCube(root, "cubeFIX_3", Vec3Types::Deriv(0, 5, 5),
                                         Vec3Types::Deriv(0, 5, 0));
-    sofa::simulation::node::initNode(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(cube, nullptr);
 
@@ -203,7 +203,7 @@ bool SceneCreator_test::createCylinderFailed()
                                            Vec3Types::Deriv(1, 0, 0), 0.5, 3.0,
                                            Vec3Types::Deriv(0, 5, 0));
 
-    sofa::simulation::node::initNode(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(cyl, nullptr);
     return true;
@@ -301,7 +301,7 @@ bool SceneCreator_test::createSphereFailed()
     cyl = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(0, 5, 5),
                                             sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
                                             sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
-    sofa::simulation::node::initNode(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(cyl, nullptr);
 
@@ -402,7 +402,7 @@ bool SceneCreator_test::createPlaneFailed()
                                           Vec3Types::Deriv(0, 0, 0),
                                           Vec3Types::Deriv(40, 0, 40));
 
-    sofa::simulation::node::initNode(root.get());
+    sofa::simulation::node::initRoot(root.get());
 
     EXPECT_EQ(plane, nullptr);
 

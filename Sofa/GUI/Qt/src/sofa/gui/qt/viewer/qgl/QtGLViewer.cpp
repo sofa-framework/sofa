@@ -588,7 +588,7 @@ void QtGLViewer::DisplayOBJs()
                                   qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()));
 
         //Draw Debug information of the components
-        sofa::simulation::node::drawNode(vparams, groot.get());
+        sofa::simulation::node::draw(vparams, groot.get());
         if (m_bShowAxis)
         {
             //DrawAxis(0.0, 0.0, 0.0, 10.0);

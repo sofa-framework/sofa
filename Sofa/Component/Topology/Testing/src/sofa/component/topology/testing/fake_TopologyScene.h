@@ -117,7 +117,7 @@ public:
                 
         }
 
-        sofa::simulation::node::initNode(m_root.get());
+        sofa::simulation::node::initRoot(m_root.get());
 
         return true;
     }

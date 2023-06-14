@@ -111,7 +111,7 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
         projection->f_indices.setValue(indices);
 
         /// Init
-        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::initRoot(root.get());
     }
 
     /** Constraint all the particles.
@@ -124,7 +124,7 @@ struct ProjectDirectionConstraint_test : public BaseSimulationTest, NumericTest<
          projection->f_indices.setValue(indices);
 
          /// Init
-         sofa::simulation::node::initNode(root.get());
+         sofa::simulation::node::initRoot(root.get());
     }
     ///@}
 

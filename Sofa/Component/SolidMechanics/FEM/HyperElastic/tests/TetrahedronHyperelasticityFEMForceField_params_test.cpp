@@ -122,7 +122,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
         FF->setparameter(param_vector);
 
         // Init simulation
-        sofa::simulation::node::initNode(this->root.get());
+        sofa::simulation::node::initRoot(this->root.get());
 
         //Check component creation
         sofa::core::objectmodel::BaseObject* hefem = root->getTreeNode("Hyperelastic-Liver")->getObject("FEM") ;
