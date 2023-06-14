@@ -155,7 +155,7 @@ void UniformMass<RigidTypes>::loadFromFileRigidImpl(const string& filename)
                             double viscosity = 0;
                             if( fscanf(file, "%lf", &viscosity) < 1 )
                                 msg_warning(this) << "error reading file '" << filename << "'.\n"
-                                                                                           " Unable to decode command 'visc'. \n";
+                                                  << " Unable to decode command 'visc'. \n";
                         }
                         else if (!strcmp(cmd,"stck"))
                         {
@@ -294,8 +294,8 @@ void UniformMass<Vec6Types>::drawVec6Impl(const core::visual::VisualParams* vpar
     constexpr sofa::type::RGBAColor colorSet[3]
     {
         sofa::type::RGBAColor::red(),
-                sofa::type::RGBAColor::green(),
-                sofa::type::RGBAColor::blue()
+        sofa::type::RGBAColor::green(),
+        sofa::type::RGBAColor::blue()
     };
 
     for (unsigned int i=0; i<indices.size(); i++)
@@ -511,13 +511,13 @@ Vec6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
 /// 3-.add<>(true) : Set default template
 // Register in the Factory
 int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
-        .add< UniformMass<Vec3Types> >()
-        .add< UniformMass<Vec2Types> >()
-        .add< UniformMass<Vec1Types> >()
-        .add< UniformMass<Vec6Types> >()
-        .add< UniformMass<Rigid3Types> >()
-        .add< UniformMass<Rigid2Types> >()
-        .setTemplateDeductionMethod(core::getTemplateFromMechanicalState);
+                       .add< UniformMass<Vec3Types> >()
+                       .add< UniformMass<Vec2Types> >()
+                       .add< UniformMass<Vec1Types> >()
+                       .add< UniformMass<Vec6Types> >()
+                       .add< UniformMass<Rigid3Types> >()
+                       .add< UniformMass<Rigid2Types> >()
+                       .setTemplateDeductionMethod(core::getTemplateFromMechanicalState);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
