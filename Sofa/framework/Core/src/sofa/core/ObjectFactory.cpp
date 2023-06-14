@@ -190,7 +190,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if (creators.empty())
         {
             msg_deprecated("ObjectFactory") << "Unable to deduce template from context for " << classname << ". Create the first one that match ! "
-                                               "This behavior is deprecated. Please fix your scene to set the template";
+                                                                                                             "This behavior is deprecated. Please fix your scene to set the template";
             CreatorMap::iterator it3;
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
@@ -317,16 +317,16 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         if (isUserTemplateNameInTemplateList)
         {
             msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
-                                      << "is not compatible with the current context. "
-                                      << "Falling back to the first compatible template: '"
-                                      << object->getTemplateName() << "'.";
+                                    << "is not compatible with the current context. "
+                                    << "Falling back to the first compatible template: '"
+                                    << object->getTemplateName() << "'.";
         }
         else
         {
             msg_error(object.get()) << "Requested template '" << usertemplatename << "' "
-                                      << "cannot be found in the list of available templates [" << ss.str() << "]. "
-                                      << "Falling back to the first compatible template: '"
-                                      << object->getTemplateName() << "'.";
+                                    << "cannot be found in the list of available templates [" << ss.str() << "]. "
+                                    << "Falling back to the first compatible template: '"
+                                    << object->getTemplateName() << "'.";
         }
     }
     else if (creators.size() > 1)
