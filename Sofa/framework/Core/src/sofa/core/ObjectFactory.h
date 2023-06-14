@@ -366,7 +366,6 @@ public:
         if constexpr ( HasTemplateDeductionMethod<RealObject>::value )
                 entry.deduceTemplate = RealObject::TemplateDeductionMethod;
 
-
         return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }
 

@@ -167,10 +167,6 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         // If template was neither provided by user or deduced from context create the first one in the list.
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
         {
-            for(auto& t : entry->creatorMap)
-            {
-                templatename = t.first;
-            }
             templatename = entry->creatorMap.begin()->first;
         }
 
