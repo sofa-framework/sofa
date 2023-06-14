@@ -19,24 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
-#define SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 
 #include <sofa/simulation/fwd.h>
 
+
 namespace sofa::core
 {
-class ExecParams ;
+class ExecParams;
 }
 
 
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -44,21 +41,22 @@ namespace simulation
  *
  *
  */
-
 class SOFA_SIMULATION_CORE_API DefaultAnimationLoop : public sofa::core::behavior::BaseAnimationLoop
 {
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
-    SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::BaseAnimationLoop);
+    SOFA_CLASS(DefaultAnimationLoop, sofa::core::behavior::BaseAnimationLoop);
+
 protected:
-    DefaultAnimationLoop(simulation::Node* gnode = nullptr);
+    explicit DefaultAnimationLoop(simulation::Node* gnode = nullptr);
 
     ~DefaultAnimationLoop() override;
+
 public:
     /// Set the simulation node this animation loop is controlling
-    virtual void setNode( simulation::Node* );
+    virtual void setNode(simulation::Node*);
 
     /// Set the simulation node to the local context if not specified previously
     void init() override;
@@ -68,24 +66,34 @@ public:
 
 
     /// Construction method called by ObjectFactory.
-    template<class T>
+    template <class T>
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
         simulation::Node* gnode = node::getNodeFrom(context);
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
+        if (context)
+        {
+            context->addObject(obj);
+        }
+        if (arg)
+        {
+            obj->parse(arg);
+        }
         return obj;
     }
 
 protected :
+    simulation::Node* gnode{nullptr}; ///< the node controlled by the loop
 
-    simulation::Node* gnode;  ///< the node controlled by the loop
+    void behaviorUpdatePosition(const sofa::core::ExecParams* params, SReal dt) const;
+    void updateInternalData(const sofa::core::ExecParams* params) const;
+    void animate(const sofa::core::ExecParams* params, SReal dt) const;
+    void updateSimulationContext(const sofa::core::ExecParams* params, SReal dt, SReal startTime) const;
+    void animateEndEvent(const sofa::core::ExecParams* params, SReal dt) const;
+    void updateMapping(const sofa::core::ExecParams* params, SReal dt) const;
+    void computeBoundingBox(const sofa::core::ExecParams* params) const;
+    void animateBeginEvent(const sofa::core::ExecParams* params, SReal dt) const;
 
 };
 
-} // namespace simulation
-
-} // namespace sofa
-
-#endif  /* SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H */
+} // namespace sofa::simulation
