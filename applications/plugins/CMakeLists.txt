@@ -53,6 +53,9 @@ sofa_add_subdirectory(plugin SofaAssimp SofaAssimp) # ColladaSceneLoader Depends
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
 sofa_add_subdirectory(plugin OpenCTMPlugin OpenCTMPlugin EXTERNAL)
 sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL)
+sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL)
+sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL)
+
 
 sofa_add_subdirectory(plugin PSL PSL EXPERIMENTAL)
 
