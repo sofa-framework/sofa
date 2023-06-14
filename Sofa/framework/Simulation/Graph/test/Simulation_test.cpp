@@ -96,11 +96,11 @@ struct Scene_test: public NumericTest<SReal>
 
         // end create scene
         //*********
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
         //*********
 
         type::Vec3 sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        sofa::simulation::node::computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if( vectorMaxDiff(sceneMinBBox,expectedMin)>this->epsilon() || vectorMaxDiff(sceneMaxBBox,expectedMax)>this->epsilon() )
         {
@@ -171,7 +171,7 @@ struct Scene_test: public NumericTest<SReal>
         core::objectmodel::BaseNode* child  = root->createChild("child").get();
         child->addObject(core::objectmodel::New<MechanicalObject3>());
 
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         {
             simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
@@ -179,15 +179,15 @@ struct Scene_test: public NumericTest<SReal>
             nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
         }
 
-        sofa::simulation::animateNode(root.get());
-        sofa::simulation::unload(root);
+        sofa::simulation::node::animateNode(root.get());
+        sofa::simulation::node::unload(root);
     }
 
     /// create and unload a scene and check if all the objects have been destroyed.
     void sceneDestruction_unload()
     {
         createScene();
-        sofa::simulation::unload(root);
+        sofa::simulation::node::unload(root);
         checkDeletions();
     }
 

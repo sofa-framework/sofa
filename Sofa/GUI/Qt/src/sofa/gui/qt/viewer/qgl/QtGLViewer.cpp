@@ -577,7 +577,7 @@ void QtGLViewer::DisplayOBJs()
     {
         //		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        sofa::simulation::initTextures(groot.get());
+        sofa::simulation::node::initTextures(groot.get());
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -588,7 +588,7 @@ void QtGLViewer::DisplayOBJs()
                                   qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()));
 
         //Draw Debug information of the components
-        sofa::simulation::drawNode(vparams, groot.get());
+        sofa::simulation::node::drawNode(vparams, groot.get());
         if (m_bShowAxis)
         {
             //DrawAxis(0.0, 0.0, 0.0, 10.0);

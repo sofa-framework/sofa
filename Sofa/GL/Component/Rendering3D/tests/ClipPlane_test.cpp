@@ -97,7 +97,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( clp->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 
@@ -122,7 +122,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
     BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 

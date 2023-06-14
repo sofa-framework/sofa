@@ -170,7 +170,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         }
 
         /// Init
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         /// apply the mapping
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
@@ -421,7 +421,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
     ~MultiMapping_test() override
     {
         if (root!=nullptr)
-            sofa::simulation::unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 };

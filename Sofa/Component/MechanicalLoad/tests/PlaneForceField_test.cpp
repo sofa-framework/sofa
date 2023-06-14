@@ -161,12 +161,12 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_planeForceFieldSPtr->d_planeNormal.setValue(normal);
 
         m_root->addObject(m_planeForceFieldSPtr) ;
-        sofa::simulation::initNode(m_root.get());
+        sofa::simulation::node::initNode(m_root.get());
     }
 
     void tearDownDefaultScene()
     {
-        sofa::simulation::unload(m_root);
+        sofa::simulation::node::unload(m_root);
     }
 
     bool testBasicAttributes()
@@ -315,7 +315,7 @@ struct PlaneForceField_test : public BaseSimulationTest
     {
         for(int i=0; i<100; i++)
         {
-            sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
+            sofa::simulation::node::animateNode(m_root.get(), 0.01_sreal);
         }
         Real x = m_mechanicalObj->x.getValue()[0][0];
 

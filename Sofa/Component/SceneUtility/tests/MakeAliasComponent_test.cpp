@@ -106,7 +106,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
     EXPECT_TRUE(component!=nullptr) ;
 
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
@@ -129,7 +129,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
@@ -151,7 +151,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
@@ -175,7 +175,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 TEST(MakeAliasComponent, checkValidBehavior)
@@ -197,7 +197,7 @@ TEST(MakeAliasComponent, checkValidBehavior)
 
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 }

@@ -79,13 +79,13 @@ public:
     }
 
     void onTearDown() override {
-        sofa::simulation::unload(root);
+        sofa::simulation::node::unload(root);
     }
 
     auto execute() -> std::pair<std::vector<SReal>, std::vector<SReal>> {
         using namespace std;
-        sofa::simulation::initNode(root.get());
-        sofa::simulation::animateNode(root.get(), 1_sreal);
+        sofa::simulation::node::initNode(root.get());
+        sofa::simulation::node::animateNode(root.get(), 1_sreal);
         auto residuals = solver->squared_residual_norms();
         auto corrections = solver->squared_increment_norms();
         transform(begin(residuals), end(residuals), begin(residuals), [](SReal r) {return sqrt(r);});

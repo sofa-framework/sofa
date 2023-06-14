@@ -467,7 +467,7 @@ int main(int argc, char** argv)
     }
 
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
-    Node::SPtr groot = sofa::simulation::load(fileName, false, sceneArgs);
+    Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 
@@ -484,7 +484,7 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::begin("Init");
     }
 
-    sofa::simulation::initNode(groot.get());
+    sofa::simulation::node::initNode(groot.get());
     if( computationTimeAtBegin )
     {
         msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
@@ -524,11 +524,11 @@ int main(int argc, char** argv)
     {
         string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         msg_info("") << "Exporting to XML " << xmlname ;
-        sofa::simulation::exportNodeInXML(groot.get(), xmlname.c_str());
+        sofa::simulation::node::exportNodeInXML(groot.get(), xmlname.c_str());
     }
 
     if (groot!=nullptr)
-        sofa::simulation::unload(groot);
+        sofa::simulation::node::unload(groot);
 
 
     GUIManager::closeGUI();

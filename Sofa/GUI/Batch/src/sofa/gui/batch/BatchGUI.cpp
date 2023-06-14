@@ -67,7 +67,7 @@ int BatchGUI::mainLoop()
         }
 
         AdvancedTimer::begin("Animate");
-        sofa::simulation::animateNode(groot.get());
+        sofa::simulation::node::animateNode(groot.get());
         msg_info("BatchGUI") << "Processing." << AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
         sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
         sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
@@ -82,7 +82,7 @@ int BatchGUI::mainLoop()
             {
                 AdvancedTimer::begin("Animate");
 
-                sofa::simulation::animateNode(groot.get());
+                sofa::simulation::node::animateNode(groot.get());
 
                 const std::string timerOutputStr = AdvancedTimer::end("Animate", groot->getTime(), groot->getDt());
                 if (canExportJson(timerOutputStr, "Animate"))
@@ -138,7 +138,7 @@ void BatchGUI::resetScene()
     if ( root )
     {
         root->setTime(0.);
-        sofa::simulation::resetNode(root);
+        sofa::simulation::node::resetNode(root);
 
         sofa::simulation::UpdateSimulationContextVisitor(sofa::core::execparams::defaultInstance()).execute(root);
     }

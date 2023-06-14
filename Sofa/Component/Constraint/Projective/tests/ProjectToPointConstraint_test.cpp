@@ -111,7 +111,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
         projection->f_indices.setValue(indices);
 
         /// Init
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
     }
 
     /** Constrain all the particles.
@@ -124,7 +124,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
          projection->f_indices.setValue(indices);
 
          /// Init
-         sofa::simulation::initNode(root.get());
+         sofa::simulation::node::initNode(root.get());
     }
     ///@}
 
@@ -210,7 +210,7 @@ struct ProjectToPointConstraint_test : public BaseSimulationTest, NumericTest<ty
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 

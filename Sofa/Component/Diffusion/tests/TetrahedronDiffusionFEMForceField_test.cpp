@@ -104,7 +104,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::simulation::load(sceneFilename.c_str());
+        root = sofa::simulation::node::load(sceneFilename.c_str());
 
     }
 
@@ -130,7 +130,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         }
 
         // Init simulation
-        sofa::simulation::initNode(this->root.get());
+        sofa::simulation::node::initNode(this->root.get());
 
         // Mass parameters
         typename DiagonalMass::SPtr mass = temperatureNode->get<DiagonalMass>(temperatureNode->SearchDown);
@@ -157,7 +157,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
         {
-            sofa::simulation::animateNode(root.get(), timeStep);
+            sofa::simulation::node::animateNode(root.get(), timeStep);
         }
     }
 

@@ -36,8 +36,8 @@ SOFA_SIMULATION_GRAPH_API void init()
     if (!s_initialized)
     {
         sofa::simulation::common::init();
-        sofa::simulation::Simulation::theSimulation = std::make_shared<sofa::simulation::graph::DAGSimulation>();
         s_initialized = true;
+        sofa::simulation::Simulation::theSimulation = std::make_shared<sofa::simulation::graph::DAGSimulation>();
     }
 }
 

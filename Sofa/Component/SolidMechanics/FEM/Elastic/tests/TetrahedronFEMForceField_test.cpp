@@ -104,7 +104,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
         Inherited::force->f_method.setValue("small");
 
         // Init simulation
-        sofa::simulation::initNode(Inherited::node.get());
+        sofa::simulation::node::initNode(Inherited::node.get());
     }
 
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
@@ -188,7 +188,7 @@ public:
     void TearDown() override
     {
         if (m_root != nullptr)
-            sofa::simulation::unload(m_root);
+            sofa::simulation::node::unload(m_root);
     }
 
     void addTetraFEMForceField(Node::SPtr node, int FEMType, Real young, Real poisson, std::string method)
@@ -233,7 +233,7 @@ public:
         createObject(m_root, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
         /// Init simulation
-        sofa::simulation::initNode(m_root.get());
+        sofa::simulation::node::initNode(m_root.get());
     }
 
 
@@ -294,7 +294,7 @@ public:
         ASSERT_NE(m_root.get(), nullptr);
 
         /// Init simulation
-        sofa::simulation::initNode(m_root.get());
+        sofa::simulation::node::initNode(m_root.get());
     }
 
 
@@ -347,7 +347,7 @@ public:
         EXPECT_MSG_EMIT(Error);
 
         /// Init simulation
-        sofa::simulation::initNode(m_root.get());
+        sofa::simulation::node::initNode(m_root.get());
     }
 
     void checkEmptyTopology(int FEMType)
@@ -366,13 +366,13 @@ public:
         if (FEMType == 0)
         {
             EXPECT_MSG_EMIT(Error); // TODO: Need to change this behavior
-            sofa::simulation::initNode(m_root.get());
+            sofa::simulation::node::initNode(m_root.get());
         }
         else
         {
             EXPECT_MSG_EMIT(Warning);
             /// Init simulation
-            sofa::simulation::initNode(m_root.get());
+            sofa::simulation::node::initNode(m_root.get());
         }
     }
 
@@ -409,13 +409,13 @@ public:
         if (FEMType == 0)
         {
             EXPECT_MSG_EMIT(Error); // TODO: Need to unify this behavior
-            sofa::simulation::initNode(m_root.get());
+            sofa::simulation::node::initNode(m_root.get());
         }
         else
         {
             EXPECT_MSG_EMIT(Warning);
             /// Init simulation
-            sofa::simulation::initNode(m_root.get());
+            sofa::simulation::node::initNode(m_root.get());
         }
 
        
@@ -641,7 +641,7 @@ public:
         // perform some steps
         for (int i = 0; i < 100; i++)
         {
-            sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
+            sofa::simulation::node::animateNode(m_root.get(), 0.01_sreal);
         }
 
         EXPECT_NEAR(positions[159][0], 9.99985, 1e-4);
@@ -833,7 +833,7 @@ public:
             ctime_t startTime = sofa::helper::system::thread::CTime::getRefTime();
             for (int i = 0; i < nbrStep; i++)
             {
-                sofa::simulation::animateNode(m_root.get(), 0.01_sreal);
+                sofa::simulation::node::animateNode(m_root.get(), 0.01_sreal);
             }
 
             ctime_t diffTime = sofa::helper::system::thread::CTime::getRefTime() - startTime;
@@ -845,7 +845,7 @@ public:
                 timeMax = diffTimed;
 
             diffTimeMs += diffTimed;
-            sofa::simulation::resetNode(m_root.get());
+            sofa::simulation::node::resetNode(m_root.get());
         }
 
         std::cout << "timeMean: " << diffTimeMs / nbrTest << std::endl;

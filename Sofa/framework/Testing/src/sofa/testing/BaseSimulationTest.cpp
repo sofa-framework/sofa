@@ -78,7 +78,7 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
 
 void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filename)
 {
-    root = sofa::simulation::load(filename);
+    root = sofa::simulation::node::load(filename);
     
     if (root == nullptr)
         msg_error("BaseSimulationTest") << "Unable to find a valid loader for: '" << filename << "'";
@@ -87,17 +87,17 @@ void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filenam
 
 BaseSimulationTest::SceneInstance::~SceneInstance()
 {
-    sofa::simulation::unload(root) ;
+    sofa::simulation::node::unload(root) ;
 }
 
 void BaseSimulationTest::SceneInstance::initScene()
 {
-    sofa::simulation::initNode(root.get());
+    sofa::simulation::node::initNode(root.get());
 }
 
 void BaseSimulationTest::SceneInstance::simulate(const double timestep)
 {
-    sofa::simulation::animateNode(root.get(), static_cast<SReal>(timestep) );
+    sofa::simulation::node::animateNode(root.get(), static_cast<SReal>(timestep) );
 }
 
 BaseSimulationTest::BaseSimulationTest()

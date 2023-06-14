@@ -171,7 +171,7 @@ int main(int argc, char** argv)
 
     root->setAnimate(false);
 
-    sofa::simulation::initNode(root.get());
+    sofa::simulation::node::initNode(root.get());
 
     //=======================================
     // Run the main loop

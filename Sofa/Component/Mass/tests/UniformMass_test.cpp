@@ -87,7 +87,7 @@ struct UniformMassTest :  public BaseTest
     void TearDown() override
     {
         if (m_root != nullptr){
-            sofa::simulation::unload(m_root);
+            sofa::simulation::node::unload(m_root);
         }
     }
 

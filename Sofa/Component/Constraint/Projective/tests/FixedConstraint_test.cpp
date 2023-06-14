@@ -112,10 +112,10 @@ struct FixedConstraint_test : public BaseTest
         node->addObject(cst);
 
         /// Init simulation
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         /// Perform one time step
-        sofa::simulation::animateNode(root.get(), 0.5);
+        sofa::simulation::node::animateNode(root.get(), 0.5);
 
         /// Check if the first particle moved...this one should because it is not fixed
         /// so it is a failure if the particle is not moving at all.
@@ -204,11 +204,11 @@ struct FixedConstraint_test : public BaseTest
 
 
         /// Init simulation
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         /// Perform two time steps
-        sofa::simulation::animateNode(root.get(), 0.1);
-        sofa::simulation::animateNode(root.get(), 0.1);
+        sofa::simulation::node::animateNode(root.get(), 0.1);
+        sofa::simulation::node::animateNode(root.get(), 0.1);
 
         typename MechanicalObject::ReadVecCoord readX = dofs->readPositions();
 

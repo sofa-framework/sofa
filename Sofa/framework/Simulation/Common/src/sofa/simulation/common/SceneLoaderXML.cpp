@@ -95,7 +95,7 @@ sofa::simulation::Node::SPtr SceneLoaderXML::doLoad(const std::string& filename,
 
 void SceneLoaderXML::write(Node *node, const char *filename)
 {
-    sofa::simulation::exportNodeInXML(node, filename);
+    sofa::simulation::node::exportNodeInXML(node, filename);
 }
 
 /// Load a scene from a file

@@ -253,11 +253,11 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "CGLinearSolver", {{"iterations", "1e4"}, {"tolerance", "1.0e-9"}, {"threshold", "1.0e-9"}});
     }
 
-    sofa::simulation::initNode(root.get());
+    sofa::simulation::node::initNode(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        sofa::simulation::animateNode(root.get(), 0.01_sreal);
+        sofa::simulation::node::animateNode(root.get(), 0.01_sreal);
 
         compareMechanicalObjects(i, 1e-7_sreal);
     }
@@ -270,11 +270,11 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
         simpleapi::createObject(node, "EigenSparseLU", {{"template", "CompressedRowSparseMatrixMat3x3d"}});
     }
 
-    sofa::simulation::initNode(root.get());
+    sofa::simulation::node::initNode(root.get());
 
     for (unsigned int i = 0 ; i < 100; ++i)
     {
-        sofa::simulation::animateNode(root.get(), 0.01_sreal);
+        sofa::simulation::node::animateNode(root.get(), 0.01_sreal);
 
         for (const auto& node : {oneMapping, twoMappings})
         {

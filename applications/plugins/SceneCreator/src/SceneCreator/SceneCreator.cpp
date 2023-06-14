@@ -689,13 +689,13 @@ Node::SPtr getRoot()
 void initScene(Node::SPtr _root)
 {
     root = _root;
-    sofa::simulation::initNode(_root.get());
+    sofa::simulation::node::initNode(_root.get());
 }
 
 Node::SPtr clearScene()
 {
     if( root )
-        sofa::simulation::unload( root );
+        sofa::simulation::node::unload( root );
     root = simulation::getSimulation()->createNewGraph("");
     return root;
 }

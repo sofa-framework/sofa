@@ -71,14 +71,14 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
     {
         // Load the scene from the xml file
         std::string fileName = std::string(SOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR) + "/" + sceneName;
-        root = sofa::simulation::load(fileName.c_str());
+        root = sofa::simulation::node::load(fileName.c_str());
     }
 
     /// After simulation compare the positions of points to the theoretical positions.
     bool compareSimulatedToTheoreticalPositions(double tolerance)
     {
         // Init simulation
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
         double time = root->getTime();
         double stiffnessSpring = 100;
         double mass = 10;
@@ -108,7 +108,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
             }
 
             //Animate
-            sofa::simulation::animateNode(root.get(), 0.001_sreal);
+            sofa::simulation::node::animateNode(root.get(), 0.001_sreal);
             time = root->getTime();
         }
         while (time < 2);

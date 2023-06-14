@@ -149,7 +149,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::load(fileName.c_str(), false);
+        root = sofa::simulation::node::load(fileName.c_str(), false);
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);
@@ -238,7 +238,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyToData(xout,childInit);
 
         /// Init based on parentInit
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         /// Updated to parentNew
         sofa::testing::copyToData(xin,parentNew);
@@ -476,7 +476,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     ~Mapping_test() override
     {
         if (root!=nullptr)
-            sofa::simulation::unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 protected:

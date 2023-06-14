@@ -42,7 +42,7 @@ struct LoadScene_test: public BaseTest
    {
        // Load the scene from the xml file
        std::string fileName = std::string(SOFASIMULATION_TEST_SCENES_DIR) + "/" + sceneName;
-       root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::load(fileName.c_str()));
+       root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::node::load(fileName.c_str()));
 
        return root != nullptr;
    }
@@ -52,7 +52,7 @@ struct LoadScene_test: public BaseTest
        LoadScene(sceneName);
       
        // Init the scene
-       sofa::simulation::initNode(root.get());
+       sofa::simulation::node::initNode(root.get());
 
        // Test if root is not null
        if(!root)

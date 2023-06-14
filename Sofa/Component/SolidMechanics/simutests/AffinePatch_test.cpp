@@ -204,7 +204,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
     bool compareSimulatedToTheoreticalPositions(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
     {
         // Init simulation
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         // Compute the theoretical final positions
         VecCoord finalPos;
@@ -226,7 +226,7 @@ struct AffinePatch_sofa_test : public sofa::testing::BaseSimulationTest, sofa::t
         do
         {
             hasConverged = true;
-            sofa::simulation::animateNode(root.get(), 0.5_sreal);
+            sofa::simulation::node::animateNode(root.get(), 0.5_sreal);
             typename MechanicalObject::ReadVecCoord x = patchStruct.dofs->readPositions();
 
             // Compute dx

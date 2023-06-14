@@ -92,7 +92,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
 
     void scene_load()
     {
-        root = sofa::simulation::load(sceneFilename.c_str());
+        root = sofa::simulation::node::load(sceneFilename.c_str());
 
         hyperelasticNode = root->getChild("Hyperelastic-Liver");
 
@@ -122,7 +122,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
         FF->setparameter(param_vector);
 
         // Init simulation
-        sofa::simulation::initNode(this->root.get());
+        sofa::simulation::node::initNode(this->root.get());
 
         //Check component creation
         sofa::core::objectmodel::BaseObject* hefem = root->getTreeNode("Hyperelastic-Liver")->getObject("FEM") ;

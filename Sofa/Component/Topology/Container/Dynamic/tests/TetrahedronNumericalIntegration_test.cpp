@@ -139,7 +139,7 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 };

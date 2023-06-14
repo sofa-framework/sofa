@@ -37,7 +37,7 @@ public:
         sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.IO.Mesh" } });
         auto loader = sofa::simpleapi::createObject(root, "MeshXspLoader",
                                       {{"filename", std::string(SOFA_COMPONENT_IO_MESH_TEST_FILES_DIR)+"test.xs3"}});
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         return true;
     }
@@ -52,7 +52,7 @@ public:
             EXPECT_MSG_EMIT(Error);
             sofa::simpleapi::createObject(root, "MeshXspLoader",
                                       {{"filename", std::string(SOFA_COMPONENT_IO_MESH_TEST_FILES_DIR)+"invalidFile.xs3"}});
-            sofa::simulation::initNode(root.get());
+            sofa::simulation::node::initNode(root.get());
         }
 
         return true;

@@ -128,7 +128,7 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
      bool projectPosition(double convergenceAccuracy, double diffMaxBetweenSimulatedAndTheoreticalPosition)
      {
         // Init simulation
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
 
         // Compute the theoretical final positions
         VecCoord finalPos;
@@ -150,7 +150,7 @@ struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<ty
         do
         {
             hasConverged = true;
-            sofa::simulation::animateNode(root.get(), 0.5);
+            sofa::simulation::node::animateNode(root.get(), 0.5);
             typename MechanicalObject::ReadVecCoord x = patchStruct.dofs->readPositions();
 
             // Compute dx

@@ -129,7 +129,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
     ~Multi2Mapping_test() override
     {
         if (root!=nullptr)
-            sofa::simulation::unload(root);
+            sofa::simulation::node::unload(root);
     }
 
     /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)

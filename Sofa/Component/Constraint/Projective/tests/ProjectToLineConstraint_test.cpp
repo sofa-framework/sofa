@@ -112,7 +112,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
         projection->f_indices.setValue(indices);
 
         /// Init
-        sofa::simulation::initNode(root.get());
+        sofa::simulation::node::initNode(root.get());
     }
 
     /** Constrain all the particles.
@@ -125,7 +125,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
          projection->f_indices.setValue(indices);
 
          /// Init
-         sofa::simulation::initNode(root.get());
+         sofa::simulation::node::initNode(root.get());
     }
     ///@}
 
@@ -207,7 +207,7 @@ struct ProjectToLineConstraint_test : public BaseSimulationTest, NumericTest<typ
     void TearDown() override
     {
         if (root!=nullptr)
-            sofa::simulation::unload(root);
+            sofa::simulation::node::unload(root);
     }
 
 

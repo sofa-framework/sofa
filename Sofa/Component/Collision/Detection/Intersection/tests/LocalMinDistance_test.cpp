@@ -97,7 +97,7 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
     LocalMinDistance* lmdt = dynamic_cast<LocalMinDistance*>(lmd);
     ASSERT_NE(lmdt, nullptr) ;
 
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 
@@ -123,7 +123,7 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
     auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 void TestLocalMinDistance::checkAttributes()
@@ -155,7 +155,7 @@ void TestLocalMinDistance::checkAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( lmd->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 
@@ -183,7 +183,7 @@ void TestLocalMinDistance::checkDoubleInit()
 
     FAIL() << "TODO: Calling init twice does not produce any warning message";
  
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 
@@ -209,7 +209,7 @@ void TestLocalMinDistance::checkInitReinit()
 
     lmd->reinit() ;
 
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
 }
 
 

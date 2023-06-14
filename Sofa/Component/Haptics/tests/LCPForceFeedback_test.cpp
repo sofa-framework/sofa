@@ -140,11 +140,11 @@ void LCPForceFeedback_test::loadTestScene(const std::string& filename)
     /// Load the scene
     std::string sceneFilename = std::string(SOFA_COMPONENT_HAPTICS_TEST_SCENES_DIR) + "/" + filename;
     m_root = simu->createNewGraph("root");    
-    m_root = sofa::simulation::load(sceneFilename.c_str());
+    m_root = sofa::simulation::node::load(sceneFilename.c_str());
 
     EXPECT_NE(m_root, nullptr);
 
-    sofa::simulation::initNode(m_root.get());
+    sofa::simulation::node::initNode(m_root.get());
 }
 
 
@@ -214,7 +214,7 @@ bool LCPForceFeedback_test::test_SimpleCollision()
     int pctTru = 0; 
     for (int step = 0; step < 140; step++)
     {
-        sofa::simulation::animateNode(m_root.get());
+        sofa::simulation::node::animateNode(m_root.get());
 
         if (step % 10 == 0) 
         {
@@ -262,7 +262,7 @@ bool LCPForceFeedback_test::test_Collision()
 
     for (int step = 0; step < 100; step++)
     {
-        sofa::simulation::animateNode(m_root.get());
+        sofa::simulation::node::animateNode(m_root.get());
     }
 
     const VecCoord& coords = meca->x.getValue();
@@ -368,7 +368,7 @@ bool LCPForceFeedback_test::test_multiThread()
     simulation::Simulation* simu = sofa::simulation::getSimulation();
     for (int step = 0; step < 500; step++)
     {
-        sofa::simulation::animateNode(m_root.get());
+        sofa::simulation::node::animateNode(m_root.get());
         
         const VecCoord& coords = meca->x.getValue();        
         mtxPosition.lock();

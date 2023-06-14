@@ -96,7 +96,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::simulation::load(sceneFilename.c_str());
+        root = sofa::simulation::node::load(sceneFilename.c_str());
 
     }
 
@@ -112,7 +112,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         }
 
         // Init simulation
-        sofa::simulation::initNode(this->root.get());
+        sofa::simulation::node::initNode(this->root.get());
 
         ///  Get mechanical object of tracked points
         dof = mooneyNode->get<DOF>(mooneyNode->SearchDown);
@@ -125,7 +125,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         unsigned int nbSteps = timeEvaluation/timeStep;
         unsigned int stepId;
         for (stepId = 0; stepId < nbSteps; ++stepId)
-            sofa::simulation::animateNode(root.get(), timeStep);
+            sofa::simulation::node::animateNode(root.get(), timeStep);
     }
 
 

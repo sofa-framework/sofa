@@ -87,7 +87,7 @@ void checkAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::unload(root);
+    sofa::simulation::node::unload(root);
     sofa::simulation::getSimulation()->createNewGraph("");
 }
 

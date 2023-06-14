@@ -41,9 +41,9 @@ TEST(simulationLoad, existingFilename)
 
     simulation::Simulation* simulation = sofa::simulation::getSimulation();
     ASSERT_NE(simulation, nullptr);
-    const simulation::Node::SPtr groot = sofa::simulation::load(path, false, {});
+    const simulation::Node::SPtr groot = sofa::simulation::node::load(path, false, {});
     EXPECT_NE(groot, nullptr);
-    sofa::simulation::unload(groot);
+    sofa::simulation::node::unload(groot);
 }
 
 
@@ -57,9 +57,9 @@ TEST(simulationLoad, nonExistingFilename)
 
     simulation::Simulation* simulation = simulation::getSimulation();
     ASSERT_NE(simulation, nullptr);
-    const simulation::Node::SPtr groot = sofa::simulation::load(std::string{filename}, false, {});
+    const simulation::Node::SPtr groot = sofa::simulation::node::load(std::string{filename}, false, {});
     EXPECT_EQ(groot, nullptr);
-    sofa::simulation::unload(groot);
+    sofa::simulation::node::unload(groot);
 }
 
 }

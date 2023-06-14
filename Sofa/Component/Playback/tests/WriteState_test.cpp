@@ -139,7 +139,7 @@ namespace sofa {
         // Initialization of the scene
         void initScene()
         {
-            sofa::simulation::initNode(root.get());
+            sofa::simulation::node::initNode(root.get());
         }
 
         // Run five steps of simulation
@@ -147,7 +147,7 @@ namespace sofa {
         {
             for(int i=0; i<7; i++)
             {
-                sofa::simulation::animateNode(root.get(), timeStep);
+                sofa::simulation::node::animateNode(root.get(), timeStep);
             }
         }
 
@@ -223,7 +223,7 @@ namespace sofa {
         void TearDown() override
         {
             if (root!=nullptr)
-                sofa::simulation::unload(root);
+                sofa::simulation::node::unload(root);
         }
 
     };

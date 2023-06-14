@@ -34,6 +34,9 @@ namespace sofa::simulation
 namespace sofa::simulation
 {
 
+namespace node
+{
+
 /// Initialize the objects
 void SOFA_SIMULATION_CORE_API initNode(Node* root);
 ///Init a node without changing the context of the simulation.
@@ -80,6 +83,8 @@ void SOFA_SIMULATION_CORE_API dumpState( Node* root, std::ofstream& out );
 NodeSPtr SOFA_SIMULATION_CORE_API load(const std::string& /* filename */, bool reload = false, const std::vector<std::string>& sceneArgs = std::vector<std::string>(0));
 /// Unload a scene from a Node.
 void SOFA_SIMULATION_CORE_API unload(NodeSPtr root);
+
+}
 
 /** Main controller of the scene.
     Defines how the scene is inited at the beginning, and updated at each time step.

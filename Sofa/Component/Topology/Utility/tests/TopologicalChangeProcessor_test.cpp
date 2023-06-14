@@ -71,7 +71,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     void TearDown() override
     {
         if (m_instance.root !=nullptr)
-            sofa::simulation::unload(m_instance.root);
+            sofa::simulation::node::unload(m_instance.root);
     }
 
 };
