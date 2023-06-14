@@ -1,24 +1,24 @@
 /******************************************************************************
- *                 SOFA, Simulation Open-Framework Architecture                *
- *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
- *                                                                             *
- * This program is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This program is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
- *******************************************************************************
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -37,7 +37,7 @@ class HasTemplateDeductionMethod
     template<typename C> static YesType& test( decltype (&C::TemplateDeductionMethod) );
     template<typename C> static NoType& test(...);
 
-   public:
+public:
     enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
 };
 
@@ -56,12 +56,12 @@ class HasTemplateDeductionMethod
 typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
 class SOFA_CORE_API ObjectFactory
 {
-   public:
+public:
 
-            /// Abstract interface of objects used to create instances of a given type
+    /// Abstract interface of objects used to create instances of a given type
     class Creator
     {
-       public:
+    public:
         typedef std::shared_ptr<Creator> SPtr;
 
         virtual ~Creator() { }
@@ -70,28 +70,28 @@ class SOFA_CORE_API ObjectFactory
         /// \return true if the object can be created successfully.
         virtual bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
 
-                /// Construction method called by the factory.
-                ///
-                /// \pre canCreate(context, arg) == true.
+        /// Construction method called by the factory.
+        ///
+        /// \pre canCreate(context, arg) == true.
         virtual objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
 
-                /// type_info structure associated with the type of intanciated objects.
+        /// type_info structure associated with the type of intanciated objects.
         virtual const std::type_info& type() = 0;
 
-                /// BaseClass structure associated with the type of intanciated objects.
+        /// BaseClass structure associated with the type of intanciated objects.
         virtual const objectmodel::BaseClass* getClass() = 0;
 
-                /// The name of the library or executable containing the binary code for this component
+        /// The name of the library or executable containing the binary code for this component
         virtual const char* getTarget() = 0;
 
         virtual const char* getHeaderFileLocation() = 0;
     };
     typedef std::map<std::string, Creator::SPtr> CreatorMap;
 
-            /// Record storing information about a class
+    /// Record storing information about a class
     class ClassEntry
     {
-       public:
+    public:
         typedef std::shared_ptr<ClassEntry> SPtr;
 
         std::string className;
@@ -103,7 +103,7 @@ class SOFA_CORE_API ObjectFactory
 
         std::function<std::string(sofa::core::objectmodel::BaseContext*,
                                   sofa::core::objectmodel::BaseObjectDescription*)> deduceTemplate {[](sofa::core::objectmodel::BaseContext*,
-                              sofa::core::objectmodel::BaseObjectDescription*)->std::string{return "";}};
+                    sofa::core::objectmodel::BaseObjectDescription*)->std::string{return "";}};
 
         std::string getPreferredTemplate(sofa::core::objectmodel::BaseContext *context,
                                          sofa::core::objectmodel::BaseObjectDescription* args)
@@ -121,83 +121,83 @@ class SOFA_CORE_API ObjectFactory
     };
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 
-   protected:
+protected:
     /// Main class registry
     ClassEntryMap registry;
     OnCreateCallback m_callbackOnCreate ;
 
-   public:
+public:
 
     ~ObjectFactory();
 
-            /// Get an entry given a class name (or alias)
+    /// Get an entry given a class name (or alias)
     ClassEntry& getEntry(std::string classname);
 
-            /// Test if a creator exists for a given classname
+    /// Test if a creator exists for a given classname
     bool hasCreator(std::string classname);
 
-            /// Return the shortname for this classname. Empty string if
-            /// no creator exists for this classname.
+    /// Return the shortname for this classname. Empty string if
+    /// no creator exists for this classname.
     std::string shortName(std::string classname);
 
-            /// Fill the given vector with all the registered classes
+    /// Fill the given vector with all the registered classes
     void getAllEntries(std::vector<ClassEntry::SPtr>& result);
 
-            /// Fill the given vector with the registered classes from a given target
+    /// Fill the given vector with the registered classes from a given target
     void getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target);
 
-            /// Return the list of classes from a given target
+    /// Return the list of classes from a given target
     std::string listClassesFromTarget(std::string target, std::string separator = ", ");
 
-            /// Fill the given vector with all the registered classes derived from BaseClass
+    /// Fill the given vector with all the registered classes derived from BaseClass
     template<class BaseClass>
     void getEntriesDerivedFrom(std::vector<ClassEntry::SPtr>& result) const;
 
-            /// Return the list of classes derived from BaseClass as a string
+    /// Return the list of classes derived from BaseClass as a string
     template<class BaseClass>
     std::string listClassesDerivedFrom(const std::string& separator = ", ") const;
 
-            /// Add an alias name for an already registered class
-            ///
-            /// \param name     name of the new alias
-            /// \param target   class pointed to by the new alias
-            /// \param force    set to true if this method should override any entry already registered for this name
-            /// \param previous (output) previous ClassEntry registered for this name
+    /// Add an alias name for an already registered class
+    ///
+    /// \param name     name of the new alias
+    /// \param target   class pointed to by the new alias
+    /// \param force    set to true if this method should override any entry already registered for this name
+    /// \param previous (output) previous ClassEntry registered for this name
     bool addAlias(std::string name, std::string target, bool force=false,
                   ClassEntry::SPtr* previous = nullptr);
 
-            /// Reset an alias to a previous state
-            ///
-            /// \param name     name of the new alias
-            /// \param previous previous ClassEntry that need to be registered back for this name
+    /// Reset an alias to a previous state
+    ///
+    /// \param name     name of the new alias
+    /// \param previous previous ClassEntry that need to be registered back for this name
     void resetAlias(std::string name, ClassEntry::SPtr previous);
 
-            /// Create an object given a context and a description.
+    /// Create an object given a context and a description.
     objectmodel::BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
-            /// Get the ObjectFactory singleton instance
+    /// Get the ObjectFactory singleton instance
     static ObjectFactory* getInstance();
 
-            /// \copydoc createObject
+    /// \copydoc createObject
     static objectmodel::BaseObject::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
         return getInstance()->createObject(context, arg);
     }
 
-            /// \copydoc addAlias
+    /// \copydoc addAlias
     static bool AddAlias(std::string name, std::string result, bool force=false,
                          ClassEntry::SPtr* previous = nullptr)
     {
         return getInstance()->addAlias(name, result, force, previous);
     }
 
-            /// \copydoc resetAlias
+    /// \copydoc resetAlias
     static void ResetAlias(std::string name, ClassEntry::SPtr previous)
     {
         getInstance()->resetAlias(name, previous);
     }
 
-            /// \copydoc hasCreator
+    /// \copydoc hasCreator
     static bool HasCreator(std::string classname)
     {
         return getInstance()->hasCreator(classname);
@@ -208,13 +208,13 @@ class SOFA_CORE_API ObjectFactory
         return getInstance()->shortName(classname);
     }
 
-            /// Dump the content of the factory to a text stream.
+    /// Dump the content of the factory to a text stream.
     void dump(std::ostream& out = std::cout);
 
-            /// Dump the content of the factory to a XML stream.
+    /// Dump the content of the factory to a XML stream.
     void dumpXML(std::ostream& out = std::cout);
 
-            /// Dump the content of the factory to a HTML stream.
+    /// Dump the content of the factory to a HTML stream.
     void dumpHTML(std::ostream& out = std::cout);
 
     void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
@@ -264,7 +264,7 @@ std::string ObjectFactory::listClassesDerivedFrom(const std::string& separator) 
 template<class RealObject>
 class ObjectCreator : public ObjectFactory::Creator
 {
-   public:
+public:
     bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
         RealObject* instance = nullptr;
@@ -318,40 +318,40 @@ class ObjectCreator : public ObjectFactory::Creator
  */
 class SOFA_CORE_API RegisterObject
 {
-   protected:
+protected:
     /// Class entry being constructed
     ObjectFactory::ClassEntry entry;
-   public:
+public:
 
-            /// Start the registration by giving the description of this class.
+    /// Start the registration by giving the description of this class.
     RegisterObject(const std::string& description);
 
-            /// Add an alias name for this class
+    /// Add an alias name for this class
     RegisterObject& addAlias(std::string val);
 
-            /// Add more descriptive text about this class
+    /// Add more descriptive text about this class
     RegisterObject& addDescription(std::string val);
 
-            /// Specify a list of authors (separated with spaces)
+    /// Specify a list of authors (separated with spaces)
     RegisterObject& addAuthor(std::string val);
 
-            /// Specify a custom template deduction method. Provide one if you want a component to
-            /// be able to deduce its own template from its context;
+    /// Specify a custom template deduction method. Provide one if you want a component to
+    /// be able to deduce its own template from its context;
     RegisterObject& setTemplateDeductionMethod(std::function<std::string(sofa::core::objectmodel::BaseContext*,
                                                                          sofa::core::objectmodel::BaseObjectDescription*)>);
 
-            /// Specify a license (LGPL, GPL, ...)
+    /// Specify a license (LGPL, GPL, ...)
     RegisterObject& addLicense(std::string val);
 
-            /// Add a creator able to instance this class with the given templatename.
-            ///
-            /// See the add<RealObject>() method for an easy way to add a Creator.
+    /// Add a creator able to instance this class with the given templatename.
+    ///
+    /// See the add<RealObject>() method for an easy way to add a Creator.
     RegisterObject& addCreator(std::string classname, std::string templatename,
                                ObjectFactory::Creator::SPtr creator);
 
-            /// Add a template instanciation of this class.
-            ///
-            /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
+    /// Add a template instanciation of this class.
+    ///
+    /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
@@ -364,13 +364,13 @@ class SOFA_CORE_API RegisterObject
         // if there is a custom deduction method in the class then we use it. This is often used
         // to implement a single "per" class deduction system.
         if constexpr ( HasTemplateDeductionMethod<RealObject>::value )
-            entry.deduceTemplate = RealObject::TemplateDeductionMethod;
+                entry.deduceTemplate = RealObject::TemplateDeductionMethod;
 
 
         return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }
 
-            /// This is the final operation that will actually commit the additions to the ObjectFactory.
+    /// This is the final operation that will actually commit the additions to the ObjectFactory.
     operator int();
 };
 } // namespace sofa::core
