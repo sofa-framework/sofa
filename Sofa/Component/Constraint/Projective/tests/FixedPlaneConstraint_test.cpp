@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/graph/SimpleApi.h>
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/component/constraint/projective/PartialFixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedPlaneConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -45,12 +46,12 @@ void createUniformMass(simulation::Node::SPtr node, component::statecontainer::M
 }
 
 template <typename _DataTypes>
-struct PartialFixedConstraint_test : public BaseSimulationTest
+struct FixedPlaneConstraint_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Real  Real;
 
-    typedef component::constraint::projective::PartialFixedConstraint<DataTypes> PartialFixedConstraint;
+    typedef component::constraint::projective::FixedPlaneConstraint<DataTypes> FixedPlaneConstraint;
     typedef component::mechanicalload::ConstantForceField<DataTypes> ForceField;
     typedef component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
@@ -69,7 +70,8 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vec3(0,0,0) );
-        simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitSolver", integrationScheme);
+
+        simulation::Node::SPtr node = createEulerSolverNode(root,"EulerSolver", integrationScheme);
 
         mstate = New<sofa::component::statecontainer::MechanicalObject<DataTypes> >();
         mstate->resize(1);
@@ -77,29 +79,31 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
         createUniformMass<DataTypes>(node, *mstate.get());
 
         Deriv force;
-        size_t sizeD = force.size();
+        const size_t sizeD = force.size();
         for(unsigned i=0; i<sizeD; i++)
         {
             force[i]=10;
         }
 
-        VecBool fixed;
-        for(unsigned i=0; i<sizeD; i++)
-        {
-            fixed[i]=false;
-        }
+        Coord fixed;
 
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
         forceField->setForce( 0, force );
-        typename PartialFixedConstraint::SPtr constraint = addNew<PartialFixedConstraint>(node);
+        typename FixedPlaneConstraint::SPtr constraint = addNew<FixedPlaneConstraint>(node);
+        constraint->d_indices.setValue({0});
+        if(constraint->d_indices.getValue().empty())
+        {
+            ADD_FAILURE() << "Empty indices" << std::endl;
+            return false;
+        }
 
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
-        for(unsigned i=0; i<sizeD; i++)
+        for(unsigned i=0; i < _DataTypes::spatial_dimensions; i++)
         {
-            fixed[i] = true;
-            constraint->d_fixedDirections.setValue(fixed);
+            fixed[i] = 1.;
+            constraint->d_direction.setValue(fixed);
 
             // Perform one time step
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
@@ -108,7 +112,7 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
             typename MechanicalObject::ReadVecDeriv readV = mstate->readVelocities();
             if( readV[0][i] > epsilon )
             {
-                ADD_FAILURE() << "position (index " << i << ") changed, fixed direction did not work" << std::endl;
+                ADD_FAILURE() << "position (index " << i << ") changed, fixed direction did not work " << readV[0] << std::endl;
                 return false;
             }
 
@@ -124,31 +128,28 @@ struct PartialFixedConstraint_test : public BaseSimulationTest
 // Define the list of DataTypes to instanciate
 using ::testing::Types;
 typedef Types<
-    defaulttype::Vec1Types,
-    defaulttype::Vec2Types,
     defaulttype::Vec3Types,
     defaulttype::Vec6Types,
-    defaulttype::Rigid2Types,
     defaulttype::Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_SUITE(PartialFixedConstraint_test, DataTypes);
+TYPED_TEST_SUITE(FixedPlaneConstraint_test, DataTypes);
 
 // test cases
-TYPED_TEST( PartialFixedConstraint_test , testContraintExplicit )
+TYPED_TEST( FixedPlaneConstraint_test , testContraintExplicit )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
-TYPED_TEST( PartialFixedConstraint_test , testContraintImplicitWithCG )
+TYPED_TEST( FixedPlaneConstraint_test , testConstraintImplicitWithCG )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8, std::string("Implicit")) );
 }
 
-TYPED_TEST( PartialFixedConstraint_test , testContraintImplicitWithSparseLDL )
+TYPED_TEST( FixedPlaneConstraint_test , testConstraintImplicitWithSparseLDL )
 {
     EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8, std::string("Implicit_SparseLDL")) );
