@@ -158,10 +158,13 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
 
         // Add OutDofs
-        outDofs = modeling::addNew<OutDOFs>(elasticityNode);
+        outDofs = core::objectmodel::New<OutDOFs>();
+        elasticityNode->addObject(outDofs);
 
         // Add mapping to the scene
-        mapping = modeling::addNew<Mapping>(elasticityNode).get();
+        auto mappingSptr = core::objectmodel::New<Mapping>();
+        mapping = mappingSptr.get();
+        elasticityNode->addObject(mapping);
         mapping->setModels(inDofs.get(),outDofs.get());
         
     }
