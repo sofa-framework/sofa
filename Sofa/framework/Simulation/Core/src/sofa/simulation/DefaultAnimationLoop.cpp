@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/ConstraintParams.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
@@ -33,11 +33,24 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/CollisionBeginEvent.h>
+#include <sofa/simulation/CollisionEndEvent.h>
+#include <sofa/simulation/CollisionVisitor.h>
+#include <sofa/simulation/IntegrateBeginEvent.h>
+#include <sofa/simulation/IntegrateEndEvent.h>
+#include <sofa/simulation/SolveVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
 
 namespace sofa::simulation
@@ -87,13 +100,6 @@ void DefaultAnimationLoop::updateInternalData(const core::ExecParams* params) co
     gnode->execute<UpdateInternalDataVisitor>(params);
 }
 
-void DefaultAnimationLoop::animate(const core::ExecParams* params, const SReal dt) const
-{
-    sofa::helper::ScopedAdvancedTimer timer("AnimateVisitor");
-    AnimateVisitor act(params, dt);
-    gnode->execute(act);
-}
-
 void DefaultAnimationLoop::updateSimulationContext(const core::ExecParams* params, const SReal dt, const SReal startTime) const
 {
     sofa::helper::ScopedAdvancedTimer timer("UpdateSimulationContextVisitor");
@@ -101,8 +107,9 @@ void DefaultAnimationLoop::updateSimulationContext(const core::ExecParams* param
     gnode->execute<UpdateSimulationContextVisitor>(params);
 }
 
-void DefaultAnimationLoop::animateEndEvent(const core::ExecParams* params, const SReal dt) const
+void DefaultAnimationLoop::propagateAnimateEndEvent(const core::ExecParams* params, const SReal dt) const
 {
+    sofa::helper::ScopedAdvancedTimer timer("propagateAnimateEndEvent");
     AnimateEndEvent ev(dt);
     PropagateEventVisitor propagateEventVisitor(params, &ev);
     gnode->execute(propagateEventVisitor);
@@ -129,16 +136,160 @@ void DefaultAnimationLoop::computeBoundingBox(const core::ExecParams* params) co
     }
 }
 
-void DefaultAnimationLoop::animateBeginEvent(const core::ExecParams* params, const SReal dt) const
+void DefaultAnimationLoop::propagateAnimateBeginEvent(const core::ExecParams* params, const SReal dt) const
 {
+    sofa::helper::ScopedAdvancedTimer timer("propagateAnimateBeginEvent");
     AnimateBeginEvent ev(dt);
     PropagateEventVisitor act(params, &ev);
     gnode->execute(act);
 }
 
+void DefaultAnimationLoop::resetConstraint(const core::ExecParams* params) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("resetConstraint");
+    const sofa::core::ConstraintParams cparams(*params);
+    sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor resetConstraint(&cparams);
+    gnode->execute(&resetConstraint);
+}
+
+void DefaultAnimationLoop::beginIntegration(const core::ExecParams* params, SReal dt) const
+{
+    propagateIntegrateBeginEvent(params);
+
+    sofa::helper::ScopedAdvancedTimer timer("beginIntegration");
+    mechanicalvisitor::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
+    gnode->execute(&beginVisitor);
+}
+
+void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* params) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("propagateIntegrateBeginEvent");
+    IntegrateBeginEvent evBegin;
+    PropagateEventVisitor eventPropagation( params, &evBegin);
+    eventPropagation.execute(gnode);
+}
+
+void DefaultAnimationLoop::buildConstraintMatrix(core::ConstraintParams cparams) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("buildConstraintMatrix");
+    unsigned int constraintId=0;
+    mechanicalvisitor::MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
+    buildConstraintMatrix.execute(gnode);
+}
+
+void DefaultAnimationLoop::accumulateMatrixDeriv(const core::ConstraintParams cparams) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("accumulateMatrixDeriv");
+    mechanicalvisitor::MechanicalAccumulateMatrixDeriv accumulateMatrixDeriv(&cparams, core::MatrixDerivId::constraintJacobian());
+    accumulateMatrixDeriv.execute(gnode);
+}
+
+void DefaultAnimationLoop::solve(const core::ExecParams* params, SReal dt) const
+{
+    constexpr bool parallelSolving = false;
+    constexpr bool usefreeVecIds = false;
+    sofa::helper::ScopedAdvancedTimer timer("solve");
+    simulation::SolveVisitor freeMotion(params, dt, usefreeVecIds, parallelSolving);
+    freeMotion.execute(gnode);
+}
+
+void DefaultAnimationLoop::propagateIntegrateEndEvent(const core::ExecParams* params) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("propagateIntegrateEndEvent");
+    IntegrateEndEvent evBegin;
+    PropagateEventVisitor eventPropagation(params, &evBegin);
+    eventPropagation.execute(gnode);
+}
+
+void DefaultAnimationLoop::endIntegration(const core::ExecParams* params, const SReal dt) const
+{
+    {
+        sofa::helper::ScopedAdvancedTimer timer("endIntegration");
+        mechanicalvisitor::MechanicalEndIntegrationVisitor endVisitor(params, dt);
+        gnode->execute(&endVisitor);
+    }
+
+    propagateIntegrateEndEvent(params);
+}
+
+void DefaultAnimationLoop::projectPositionAndVelocity(const SReal nextTime, const sofa::core::MechanicalParams& mparams) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("projectPositionAndVelocity");
+    mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,
+                                                                   sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+    ).execute( gnode );
+}
+
+void DefaultAnimationLoop::propagateOnlyPositionAndVelocity(const SReal nextTime, const sofa::core::MechanicalParams& mparams) const
+{
+    sofa::helper::ScopedAdvancedTimer timer("propagateOnlyPositionAndVelocity");
+    mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,
+                                                                         core::VecCoordId::position(),
+                                                                         core::VecDerivId::velocity()).execute( gnode );
+}
+
+void DefaultAnimationLoop::propagateCollisionBeginEvent(const core::ExecParams* params) const
+{
+    CollisionBeginEvent evBegin;
+    PropagateEventVisitor eventPropagation( params, &evBegin);
+    eventPropagation.execute(gnode);
+}
+
+void DefaultAnimationLoop::propagateCollisionEndEvent(const core::ExecParams* params) const
+{
+    CollisionEndEvent evEnd;
+    PropagateEventVisitor eventPropagation( params, &evEnd);
+    eventPropagation.execute(gnode);
+}
+
+void DefaultAnimationLoop::collisionDetection(const core::ExecParams* params) const
+{
+    propagateCollisionBeginEvent(params);
+
+    {
+        sofa::helper::ScopedAdvancedTimer timer("collision");
+        CollisionVisitor act(params);
+        gnode->execute(&act);
+    }
+
+    propagateCollisionEndEvent(params);
+}
+
+void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) const
+{
+    const SReal startTime = gnode->getTime();
+    const SReal nextTime = startTime + dt;
+
+    sofa::core::MechanicalParams mparams(*params);
+    mparams.setDt(dt);
+
+    behaviorUpdatePosition(params, dt);
+    updateInternalData(params);
+
+    resetConstraint(params);
+
+    beginIntegration(params, dt);
+    {
+        collisionDetection(params);
+
+
+        const core::ConstraintParams cparams;
+        buildConstraintMatrix(cparams);
+        accumulateMatrixDeriv(cparams);
+
+        solve(params, dt);
+
+        projectPositionAndVelocity(nextTime, mparams);
+        propagateOnlyPositionAndVelocity(nextTime, mparams);
+    }
+    endIntegration(params, dt);
+
+    updateSimulationContext(params, dt, startTime);
+}
+
 void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 {
-    if (dt == 0)
+    if (dt == 0_sreal)
     {
         dt = this->gnode->getDt();
     }
@@ -147,15 +298,10 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     simulation::Visitor::printNode("Step");
 #endif
 
-    animateBeginEvent(params, dt);
-
-    const SReal startTime = gnode->getTime();
-
-    behaviorUpdatePosition(params, dt);
-    updateInternalData(params);
+    propagateAnimateBeginEvent(params, dt);
     animate(params, dt);
-    updateSimulationContext(params, dt, startTime);
-    animateEndEvent(params, dt);
+    propagateAnimateEndEvent(params, dt);
+
     updateMapping(params, dt);
     computeBoundingBox(params);
 
