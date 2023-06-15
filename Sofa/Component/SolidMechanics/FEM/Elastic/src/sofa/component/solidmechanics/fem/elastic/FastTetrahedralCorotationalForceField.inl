@@ -584,6 +584,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::buildDampingMatrix(
     core::behavior::DampingMatrix* matrix)
 {
     //no damping in this force field
+    SOFA_UNUSED(matrix);
 }
 
 
