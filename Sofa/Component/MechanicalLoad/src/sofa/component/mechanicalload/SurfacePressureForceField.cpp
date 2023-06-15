@@ -33,7 +33,7 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::addDForce(const core::
                                                                     DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    VecDeriv& df = *(d_df.beginEdit());
+    auto df = sofa::helper::getWriteOnlyAccessor(df);
     const VecDeriv& dx = d_dx.getValue();
 
 
@@ -46,7 +46,6 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::addDForce(const core::
         }
     }
 
-    d_df.endEdit();
 }
 
 template <>
