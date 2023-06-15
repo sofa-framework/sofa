@@ -1030,35 +1030,255 @@ void Node::setSleeping(bool val)
     }
 }
 
-#define NODE_DEFINE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    void Node::add##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.add(obj); } \
-    void Node::remove##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.remove(obj); }
+void Node::addAnimationLoop(sofa::core::behavior::BaseAnimationLoop* obj)
+{
+    animationManager.add(obj);
+}
 
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseState, State, state )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMass, Mass, mass )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseForceField, ForceField, forceField )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+void Node::removeAnimationLoop(sofa::core::behavior::BaseAnimationLoop* obj)
+{
+    animationManager.remove(obj);
+}
+
+void Node::addVisualLoop(sofa::core::visual::VisualLoop* obj)
+{
+    visualLoop.add(obj);
+}
+
+void Node::removeVisualLoop(sofa::core::visual::VisualLoop* obj)
+{
+    visualLoop.remove(obj);
+}
+
+void Node::addBehaviorModel(sofa::core::BehaviorModel* obj)
+{
+    behaviorModel.add(obj);
+}
+
+void Node::removeBehaviorModel(sofa::core::BehaviorModel* obj)
+{
+    behaviorModel.remove(obj);
+}
+
+void Node::addMapping(sofa::core::BaseMapping* obj)
+{
+    mapping.add(obj);
+}
+
+void Node::removeMapping(sofa::core::BaseMapping* obj)
+{
+    mapping.remove(obj);
+}
+
+void Node::addOdeSolver(sofa::core::behavior::OdeSolver* obj)
+{
+    solver.add(obj);
+}
+
+void Node::removeOdeSolver(sofa::core::behavior::OdeSolver* obj)
+{
+    solver.remove(obj);
+}
+
+void Node::addConstraintSolver(sofa::core::behavior::ConstraintSolver* obj)
+{
+    constraintSolver.add(obj);
+}
+
+void Node::removeConstraintSolver(sofa::core::behavior::ConstraintSolver* obj)
+{
+    constraintSolver.remove(obj);
+}
+
+void Node::addLinearSolver(sofa::core::behavior::BaseLinearSolver* obj)
+{
+    linearSolver.add(obj);
+}
+
+void Node::removeLinearSolver(sofa::core::behavior::BaseLinearSolver* obj)
+{
+    linearSolver.remove(obj);
+}
+
+void Node::addTopology(sofa::core::topology::Topology* obj)
+{
+    topology.add(obj);
+}
+
+void Node::removeTopology(sofa::core::topology::Topology* obj)
+{
+    topology.remove(obj);
+}
+
+void Node::addMeshTopology(sofa::core::topology::BaseMeshTopology* obj)
+{
+    meshTopology.add(obj);
+}
+
+void Node::removeMeshTopology(sofa::core::topology::BaseMeshTopology* obj)
+{
+    meshTopology.remove(obj);
+}
+
+void Node::addTopologyObject(sofa::core::topology::BaseTopologyObject* obj)
+{
+    topologyObject.add(obj);
+}
+
+void Node::removeTopologyObject(sofa::core::topology::BaseTopologyObject* obj)
+{
+    topologyObject.remove(obj);
+}
+
+void Node::addState(sofa::core::BaseState* obj)
+{
+    state.add(obj);
+}
+
+void Node::removeState(sofa::core::BaseState* obj)
+{
+    state.remove(obj);
+}
+
+void Node::addMechanicalState(sofa::core::behavior::BaseMechanicalState* obj)
+{
+    mechanicalState.add(obj);
+}
+
+void Node::removeMechanicalState(sofa::core::behavior::BaseMechanicalState* obj)
+{
+    mechanicalState.remove(obj);
+}
+
+void Node::addMechanicalMapping(sofa::core::BaseMapping* obj)
+{
+    mechanicalMapping.add(obj);
+}
+
+void Node::removeMechanicalMapping(sofa::core::BaseMapping* obj)
+{
+    mechanicalMapping.remove(obj);
+}
+
+void Node::addMass(sofa::core::behavior::BaseMass* obj)
+{
+    mass.add(obj);
+}
+
+void Node::removeMass(sofa::core::behavior::BaseMass* obj)
+{
+    mass.remove(obj);
+}
+
+void Node::addForceField(sofa::core::behavior::BaseForceField* obj)
+{
+    forceField.add(obj);
+}
+
+void Node::removeForceField(sofa::core::behavior::BaseForceField* obj)
+{
+    forceField.remove(obj);
+}
+
+void Node::addInteractionForceField(sofa::core::behavior::BaseInteractionForceField* obj)
+{
+    interactionForceField.add(obj);
+}
+
+void Node::removeInteractionForceField(sofa::core::behavior::BaseInteractionForceField* obj)
+{
+    interactionForceField.remove(obj);
+}
+
+void Node::addProjectiveConstraintSet(sofa::core::behavior::BaseProjectiveConstraintSet* obj)
+{
+    projectiveConstraintSet.add(obj);
+}
+
+void Node::removeProjectiveConstraintSet(sofa::core::behavior::BaseProjectiveConstraintSet* obj)
+{
+    projectiveConstraintSet.remove(obj);
+}
+
+void Node::addConstraintSet(sofa::core::behavior::BaseConstraintSet* obj)
+{
+    constraintSet.add(obj);
+}
+
+void Node::removeConstraintSet(sofa::core::behavior::BaseConstraintSet* obj)
+{
+    constraintSet.remove(obj);
+}
+
+void Node::addContextObject(sofa::core::objectmodel::ContextObject* obj)
+{
+    contextObject.add(obj);
+}
+
+void Node::removeContextObject(sofa::core::objectmodel::ContextObject* obj)
+{
+    contextObject.remove(obj);
+}
+
+void Node::addConfigurationSetting(sofa::core::objectmodel::ConfigurationSetting* obj)
+{
+    configurationSetting.add(obj);
+}
+
+void Node::removeConfigurationSetting(sofa::core::objectmodel::ConfigurationSetting* obj)
+{
+    configurationSetting.remove(obj);
+}
+
+void Node::addShader(sofa::core::visual::Shader* obj)
+{
+    shaders.add(obj);
+}
+
+void Node::removeShader(sofa::core::visual::Shader* obj)
+{
+    shaders.remove(obj);
+}
+
+void Node::addVisualModel(sofa::core::visual::VisualModel* obj)
+{
+    visualModel.add(obj);
+}
+
+void Node::removeVisualModel(sofa::core::visual::VisualModel* obj)
+{
+    visualModel.remove(obj);
+}
+
+void Node::addVisualManager(sofa::core::visual::VisualManager* obj)
+{
+    visualManager.add(obj);
+}
+
+void Node::removeVisualManager(sofa::core::visual::VisualManager* obj)
+{
+    visualManager.remove(obj);
+}
+
+void Node::addCollisionModel(sofa::core::CollisionModel* obj)
+{
+    collisionModel.add(obj);
+}
+
+void Node::removeCollisionModel(sofa::core::CollisionModel* obj)
+{
+    collisionModel.remove(obj);
+}
+
+void Node::addCollisionPipeline(sofa::core::collision::Pipeline* obj)
+{
+    collisionPipeline.add(obj);
+}
+
+void Node::removeCollisionPipeline(sofa::core::collision::Pipeline* obj)
+{
+    collisionPipeline.remove(obj);
+}
 
 template class NodeSequence<Node,true>;
 template class NodeSequence<sofa::core::objectmodel::BaseObject,true>;

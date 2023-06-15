@@ -568,42 +568,61 @@ public:
     /// @name virtual functions to add/remove some special components direclty in the right Sequence
     /// @{
 
-#define NODE_DECLARE_SEQUENCE_ACCESSOR( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    void add##FUNCTIONNAME( CLASSNAME* obj ) override ; \
-    void remove##FUNCTIONNAME( CLASSNAME* obj ) override ;
-
     /// WARNINGS subtilities:
     /// an InteractioFF is NOT in the FF Sequence
     /// a MechanicalMapping is NOT in the Mapping Sequence
     /// a Mass is in the FF Sequence
     /// a MeshTopology is in the topology Sequence
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseMeshTopology, MeshTopology, meshTopology )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::BaseTopologyObject, TopologyObject, topologyObject )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseState, State, state )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, MechanicalMapping, mechanicalMapping )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseMass, Mass, mass )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseForceField, ForceField, forceField )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ContextObject, ContextObject, contextObject )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::Shader, Shader, shaders )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualModel, VisualModel, visualModel )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualManager, VisualManager, visualManager )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, collisionModel )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
-
-#undef NODE_DECLARE_SEQUENCE_ACCESSOR
+    void addAnimationLoop(sofa::core::behavior::BaseAnimationLoop* obj) override;
+    void removeAnimationLoop(sofa::core::behavior::BaseAnimationLoop* obj) override;
+    void addVisualLoop(sofa::core::visual::VisualLoop* obj) override;
+    void removeVisualLoop(sofa::core::visual::VisualLoop* obj) override;
+    void addBehaviorModel(sofa::core::BehaviorModel* obj) override;
+    void removeBehaviorModel(sofa::core::BehaviorModel* obj) override;
+    void addMapping(sofa::core::BaseMapping* obj) override;
+    void removeMapping(sofa::core::BaseMapping* obj) override;
+    void addOdeSolver(sofa::core::behavior::OdeSolver* obj) override;
+    void removeOdeSolver(sofa::core::behavior::OdeSolver* obj) override;
+    void addConstraintSolver(sofa::core::behavior::ConstraintSolver* obj) override;
+    void removeConstraintSolver(sofa::core::behavior::ConstraintSolver* obj) override;
+    void addLinearSolver(sofa::core::behavior::BaseLinearSolver* obj) override;
+    void removeLinearSolver(sofa::core::behavior::BaseLinearSolver* obj) override;
+    void addTopology(sofa::core::topology::Topology* obj) override;
+    void removeTopology(sofa::core::topology::Topology* obj) override;
+    void addMeshTopology(sofa::core::topology::BaseMeshTopology* obj) override;
+    void removeMeshTopology(sofa::core::topology::BaseMeshTopology* obj) override;
+    void addTopologyObject(sofa::core::topology::BaseTopologyObject* obj) override;
+    void removeTopologyObject(sofa::core::topology::BaseTopologyObject* obj) override;
+    void addState(sofa::core::BaseState* obj) override;
+    void removeState(sofa::core::BaseState* obj) override;
+    void addMechanicalState(sofa::core::behavior::BaseMechanicalState* obj) override;
+    void removeMechanicalState(sofa::core::behavior::BaseMechanicalState* obj) override;
+    void addMechanicalMapping(sofa::core::BaseMapping* obj) override;
+    void removeMechanicalMapping(sofa::core::BaseMapping* obj) override;
+    void addMass(sofa::core::behavior::BaseMass* obj) override;
+    void removeMass(sofa::core::behavior::BaseMass* obj) override;
+    void addForceField(sofa::core::behavior::BaseForceField* obj) override;
+    void removeForceField(sofa::core::behavior::BaseForceField* obj) override;
+    void addInteractionForceField(sofa::core::behavior::BaseInteractionForceField* obj) override;
+    void removeInteractionForceField(sofa::core::behavior::BaseInteractionForceField* obj) override;
+    void addProjectiveConstraintSet(sofa::core::behavior::BaseProjectiveConstraintSet* obj) override;
+    void removeProjectiveConstraintSet(sofa::core::behavior::BaseProjectiveConstraintSet* obj) override;
+    void addConstraintSet(sofa::core::behavior::BaseConstraintSet* obj) override;
+    void removeConstraintSet(sofa::core::behavior::BaseConstraintSet* obj) override;
+    void addContextObject(sofa::core::objectmodel::ContextObject* obj) override;
+    void removeContextObject(sofa::core::objectmodel::ContextObject* obj) override;
+    void addConfigurationSetting(sofa::core::objectmodel::ConfigurationSetting* obj) override;
+    void removeConfigurationSetting(sofa::core::objectmodel::ConfigurationSetting* obj) override;
+    void addShader(sofa::core::visual::Shader* obj) override;
+    void removeShader(sofa::core::visual::Shader* obj) override;
+    void addVisualModel(sofa::core::visual::VisualModel* obj) override;
+    void removeVisualModel(sofa::core::visual::VisualModel* obj) override;
+    void addVisualManager(sofa::core::visual::VisualManager* obj) override;
+    void removeVisualManager(sofa::core::visual::VisualManager* obj) override;
+    void addCollisionModel(sofa::core::CollisionModel* obj) override;
+    void removeCollisionModel(sofa::core::CollisionModel* obj) override;
+    void addCollisionPipeline(sofa::core::collision::Pipeline* obj) override;
+    void removeCollisionPipeline(sofa::core::collision::Pipeline* obj) override;
 
     /// @}
 

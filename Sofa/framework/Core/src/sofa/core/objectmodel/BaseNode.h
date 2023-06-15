@@ -138,46 +138,87 @@ protected:
     /// Reset the context of an object
     void clearObjectContext(BaseObject::SPtr obj);
 
+public:
 
     /// @name virtual functions to add/remove special components direclty in the right Sequence
     /// Note it is useful for Node, but is not mandatory for every BaseNode Inheritances
     /// so the default implementation does nothing
     /// @{
 
-#define BASENODE_ADD_SPECIAL_COMPONENT( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
-    virtual void add##FUNCTIONNAME( CLASSNAME* ) {} \
-    virtual void remove##FUNCTIONNAME( CLASSNAME* ) {}
+    virtual void addAnimationLoop(core::behavior::BaseAnimationLoop*) {}
+    virtual void removeAnimationLoop(core::behavior::BaseAnimationLoop*) {}
 
-public:
+    virtual void addVisualLoop(core::visual::VisualLoop*) {}
+    virtual void removeVisualLoop(core::visual::VisualLoop*) {}
 
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualLoop, VisualLoop, visualLoop )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::BehaviorModel, BehaviorModel, behaviorModel )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, Mapping, mapping )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::OdeSolver, OdeSolver, solver )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::topology::Topology, Topology, topology )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::topology::BaseMeshTopology, MeshTopology, meshTopology )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::topology::BaseTopologyObject, TopologyObject, topologyObject )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::BaseState, State, state )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, MechanicalMapping, mechanicalMapping )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseMass, Mass, mass )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseForceField, ForceField, forceField )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::objectmodel::ContextObject, ContextObject, contextObject )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::Shader, Shader, shaders )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualModel, VisualModel, visualModel )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualManager, VisualManager, visualManager )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::CollisionModel, CollisionModel, collisionModel )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+    virtual void addBehaviorModel(core::BehaviorModel*) {}
+    virtual void removeBehaviorModel(core::BehaviorModel*) {}
 
-#undef BASENODE_ADD_SPECIAL_COMPONENT
+    virtual void addMapping(core::BaseMapping*) {}
+    virtual void removeMapping(core::BaseMapping*) {}
 
+    virtual void addOdeSolver(core::behavior::OdeSolver*) {}
+    virtual void removeOdeSolver(core::behavior::OdeSolver*) {}
+
+    virtual void addConstraintSolver(core::behavior::ConstraintSolver*) {}
+    virtual void removeConstraintSolver(core::behavior::ConstraintSolver*) {}
+
+    virtual void addLinearSolver(core::behavior::BaseLinearSolver*) {}
+    virtual void removeLinearSolver(core::behavior::BaseLinearSolver*) {}
+
+    virtual void addTopology(core::topology::Topology*) {}
+    virtual void removeTopology(core::topology::Topology*) {}
+
+    virtual void addMeshTopology(core::topology::BaseMeshTopology*) {}
+    virtual void removeMeshTopology(core::topology::BaseMeshTopology*) {}
+
+    virtual void addTopologyObject(core::topology::BaseTopologyObject*) {}
+    virtual void removeTopologyObject(core::topology::BaseTopologyObject*) {}
+
+    virtual void addState(core::BaseState*) {}
+    virtual void removeState(core::BaseState*) {}
+
+    virtual void addMechanicalState(core::behavior::BaseMechanicalState*) {}
+    virtual void removeMechanicalState(core::behavior::BaseMechanicalState*) {}
+
+    virtual void addMechanicalMapping(core::BaseMapping*) {}
+    virtual void removeMechanicalMapping(core::BaseMapping*) {}
+
+    virtual void addMass(core::behavior::BaseMass*) {}
+    virtual void removeMass(core::behavior::BaseMass*) {}
+
+    virtual void addForceField(core::behavior::BaseForceField*) {}
+    virtual void removeForceField(core::behavior::BaseForceField*) {}
+
+    virtual void addInteractionForceField(core::behavior::BaseInteractionForceField*) {}
+    virtual void removeInteractionForceField(core::behavior::BaseInteractionForceField*) {}
+
+    virtual void addProjectiveConstraintSet(core::behavior::BaseProjectiveConstraintSet*) {}
+    virtual void removeProjectiveConstraintSet(core::behavior::BaseProjectiveConstraintSet*) {}
+
+    virtual void addConstraintSet(core::behavior::BaseConstraintSet*) {}
+    virtual void removeConstraintSet(core::behavior::BaseConstraintSet*) {}
+
+    virtual void addContextObject(core::objectmodel::ContextObject*) {}
+    virtual void removeContextObject(core::objectmodel::ContextObject*) {}
+
+    virtual void addConfigurationSetting(core::objectmodel::ConfigurationSetting*) {}
+    virtual void removeConfigurationSetting(core::objectmodel::ConfigurationSetting*) {}
+
+    virtual void addShader(core::visual::Shader*) {}
+    virtual void removeShader(core::visual::Shader*) {}
+
+    virtual void addVisualModel(core::visual::VisualModel*) {}
+    virtual void removeVisualModel(core::visual::VisualModel*) {}
+
+    virtual void addVisualManager(core::visual::VisualManager*) {}
+    virtual void removeVisualManager(core::visual::VisualManager*) {}
+
+    virtual void addCollisionModel(core::CollisionModel*) {}
+    virtual void removeCollisionModel(core::CollisionModel*) {}
+
+    virtual void addCollisionPipeline(core::collision::Pipeline*) {}
+    virtual void removeCollisionPipeline(core::collision::Pipeline*) {}
     /// @}
 
 };
