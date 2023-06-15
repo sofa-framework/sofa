@@ -112,6 +112,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         auto mappingSptr = core::objectmodel::New<Mapping>();
         mapping = mappingSptr.get();
         child->addObject(mapping);
+        mapping->addOutputModel(outDofs.get());
 
         /// Parent states, added to specific parentNode{i} nodes. This is not a simulable scene.
         for( int i=0; i<numParents; i++ )
