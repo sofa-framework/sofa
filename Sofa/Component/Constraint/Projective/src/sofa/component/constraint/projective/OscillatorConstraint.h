@@ -99,8 +99,8 @@ public:
 
 protected:
     template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx,
-        std::function<void(DataDeriv&, const unsigned int)> clear = [](VecDeriv& res, const unsigned int index) { res[index].clear(); });
+    void projectResponseT(DataDeriv& dx,
+        std::function<void(DataDeriv&, const unsigned int)> clear);
 };
 
 

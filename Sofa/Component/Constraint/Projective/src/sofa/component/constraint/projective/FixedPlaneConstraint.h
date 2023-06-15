@@ -123,13 +123,7 @@ protected:
     using ProjectiveConstraintSet<DataTypes>::mstate;
     using ProjectiveConstraintSet<DataTypes>::getContext;
 
-    /// These two are implemented depending on the templates
     bool isPointInPlane(Coord p) const ;
-
-    /// These two are implemented depending on the templates
-    template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx,
-        std::function<void(DataDeriv&, const SetIndexArray&)> project);
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)

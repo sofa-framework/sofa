@@ -109,7 +109,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real ct)
 }
 
 template <class TDataTypes> template <class DataDeriv>
-void SkeletalMotionConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res,
+void SkeletalMotionConstraint<TDataTypes>::projectResponseT(DataDeriv& res,
     std::function<void(DataDeriv&, const unsigned int)> clear)
 {
     if( !active.getValue() ) return;
@@ -121,10 +121,11 @@ void SkeletalMotionConstraint<TDataTypes>::projectResponseT(const core::Mechanic
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     if( !active.getValue() ) return;
 
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), [](VecDeriv& res, const unsigned int index) { res[index].clear(); });
 }
 
 template <class DataTypes>
@@ -237,11 +238,12 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     if( !active.getValue() ) return;
 
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
+    projectResponseT<MatrixDeriv>(c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
 }
 
 template <class DataTypes>

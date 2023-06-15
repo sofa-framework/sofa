@@ -59,7 +59,7 @@ void PartialFixedConstraint<DataTypes>::reinit()
 
 template <class DataTypes>
 template <class DataDeriv>
-void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res,
+void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res,
     std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear)
 {
     const VecBool& blockedDirection = d_fixedDirections.getValue();
@@ -85,8 +85,10 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), [](VecDeriv& dx, const unsigned int index, const VecBool& b)
+    { for (unsigned j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; });
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
@@ -133,9 +135,10 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(),
+    projectResponseT<MatrixDeriv>(c.wref(),
         [](MatrixDeriv& res, const unsigned int index, const VecBool& btype)
         {
             auto itRow = res.begin();
@@ -148,7 +151,8 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::Mechan
                     if (index == (unsigned int)colIt.index())
                     {
                         Deriv b = colIt.val();
-                        for (unsigned int j = 0; j < btype.size(); j++) if (btype[j]) b[j] = 0.0;
+                        for (unsigned int j = 0; j < btype.size(); j++)
+                            if (btype[j]) b[j] = 0.0;
                         res.writeLine(itRow.index()).setCol(colIt.index(), b);
                     }
                 }

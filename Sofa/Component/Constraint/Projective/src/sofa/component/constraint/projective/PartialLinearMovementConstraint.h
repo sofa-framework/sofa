@@ -144,10 +144,8 @@ public:
 
 protected:
     template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx,
-        std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear =
-        [](VecDeriv& dx, const unsigned int index, const VecBool& b)
-        { for (unsigned j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; });
+    void projectResponseT(DataDeriv& dx,
+        std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear);
 
     template <class MyCoord>
     void interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, sofa::defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);

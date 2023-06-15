@@ -119,7 +119,7 @@ void ParabolicConstraint<DataTypes>::reinit()
 
 template <class DataTypes>
 template <class DataDeriv>
-void ParabolicConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx,
+void ParabolicConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
     std::function<void(DataDeriv&, const unsigned int)> clear)
 {
     Real t = (Real) this->getContext()->getTime();
@@ -134,8 +134,9 @@ void ParabolicConstraint<DataTypes>::projectResponseT(const core::MechanicalPara
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(),[](VecDeriv& dx, const unsigned int index) { dx[index].clear(); });
 }
 
 template <class DataTypes>
@@ -198,9 +199,10 @@ void ParabolicConstraint<DataTypes>::projectPosition(const core::MechanicalParam
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
+    projectResponseT<MatrixDeriv>(c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
 }
 
 

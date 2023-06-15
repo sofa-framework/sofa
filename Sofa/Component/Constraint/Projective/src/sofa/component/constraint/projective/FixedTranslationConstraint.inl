@@ -113,7 +113,7 @@ static inline void clearPos(type::Vec<6,T>& v)
 }
 
 template <class DataTypes> template <class DataDeriv>
-void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx,
+void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
     std::function<void(DataDeriv&, const unsigned int)> clear)
 {
     if (f_fixAll.getValue())
@@ -136,8 +136,9 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), [](auto& dx, const unsigned int index) {dx[index].clear(); });
 }
 
 template <class DataTypes>
@@ -153,10 +154,11 @@ void FixedTranslationConstraint<DataTypes>::projectPosition(const core::Mechanic
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
+    projectResponseT<MatrixDeriv>(c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
 }
 
 

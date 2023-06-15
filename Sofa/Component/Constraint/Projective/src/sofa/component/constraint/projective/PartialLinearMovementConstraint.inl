@@ -163,7 +163,7 @@ void PartialLinearMovementConstraint<DataTypes>::reset()
 
 template <class DataTypes>
 template <class DataDeriv>
-void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx,
+void PartialLinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
     std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear)
 {
     Real cT = (Real) this->getContext()->getTime();
@@ -188,8 +188,10 @@ void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::Me
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), [](VecDeriv& dx, const unsigned int index, const VecBool& b)
+                               { for (unsigned j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; });
 }
 
 template <class DataTypes>
@@ -349,8 +351,9 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(),
+    projectResponseT<MatrixDeriv>(c.wref(),
         [](MatrixDeriv& res, const unsigned int index, const VecBool& btype)
         {
             auto itRow = res.begin();

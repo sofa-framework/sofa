@@ -164,19 +164,19 @@ const sofa::type::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i) {
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    WriteAccessor<DataVecDeriv> res = resData;    
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref(),
-        [&](auto& dx, const SetIndexArray& indices)
-        {
-            const auto& dir = getVec(d_direction.getValue());
-            for (const auto& i : indices)
-            {
-                /// only constraint one projection of the displacement to be zero
-                auto val = getVec(dx[i]);
-                val = val - (dir * dot(val, dir));
-                DataTypes::setDPos(dx[i], val);
-            }
-        });
+    SOFA_UNUSED(mparams);
+    WriteAccessor<DataVecDeriv> res = resData;
+
+    const auto& indices = d_indices.getValue();
+    const auto& dir = getVec(d_direction.getValue());
+    auto& dx = res.wref();
+    for (const auto& i : indices)
+    {
+        /// only constraint one projection of the displacement to be zero
+        auto val = getVec(dx[i]);
+        val = val - (dir * dot(val, dir));
+        DataTypes::setDPos(dx[i], val);
+    }
 }
 
 /// project dx to constrained space (dx models a velocity)
@@ -208,28 +208,28 @@ void FixedPlaneConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMa
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     WriteAccessor<DataMatrixDeriv> c = cData;
 
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(),
-        [&](auto& dx, const SetIndexArray& indices)
+    const auto& indices = d_indices.getValue();
+    const auto& dir = getVec(d_direction.getValue());
+    auto& dx = c.wref();
+
+    auto itRow = dx.begin();
+    auto itRowEnd = dx.end();
+    while (itRow != itRowEnd)
+    {
+        for (auto colIt = itRow.begin(); colIt != itRow.end(); colIt++)
         {
-            const auto& dir = getVec(d_direction.getValue());
-            auto itRow = dx.begin();
-            auto itRowEnd = dx.end();
-            while (itRow != itRowEnd)
+            if (std::find(indices.begin(), indices.end(), colIt.index()) != indices.end())
             {
-                for (auto colIt = itRow.begin(); colIt != itRow.end(); colIt++)
-                {
-                    if (std::find(indices.begin(), indices.end(), colIt.index()) != indices.end())
-                    {
-                        auto val = getVec(colIt.val());
-                        Deriv r(type::NOINIT);
-                        DataTypes::setDPos(r, -(dir * dot(val, dir)));
-                        dx.writeLine(itRow.index()).addCol(colIt.index(), r);
-                    }
-                }
+                auto val = getVec(colIt.val());
+                Deriv r(type::NOINIT);
+                DataTypes::setDPos(r, -(dir * dot(val, dir)));
+                dx.writeLine(itRow.index()).addCol(colIt.index(), r);
             }
-        });
+        }
+    }
 }
 
 template <class DataTypes>
@@ -315,13 +315,6 @@ bool FixedPlaneConstraint<DataTypes>::isPointInPlane(Coord p) const
         return true;
     else
         return false;
-}
-
-template <class DataTypes> template <class DataDeriv>
-void FixedPlaneConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& data,
-    std::function<void(DataDeriv&, const SetIndexArray&)> project)
-{
-    project(data, d_indices.getValue());
 }
 
 } // namespace sofa::component::constraint::projective

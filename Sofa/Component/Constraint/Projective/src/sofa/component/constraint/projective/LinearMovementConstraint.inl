@@ -148,7 +148,7 @@ void LinearMovementConstraint<DataTypes>::reset()
 
 template <class DataTypes>
 template <class DataDeriv>
-void LinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx,
+void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
     std::function<void(DataDeriv&, const unsigned int)> clear)
 {
     Real cT = static_cast<Real>(this->getContext()->getTime());
@@ -172,8 +172,9 @@ void LinearMovementConstraint<DataTypes>::projectResponseT(const core::Mechanica
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams, res.wref());
+    projectResponseT<VecDeriv>(res.wref(), [](auto& dx, const unsigned int index) {dx[index].clear(); });
 }
 
 template <class DataTypes>
@@ -287,9 +288,10 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
+    SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
-    projectResponseT<MatrixDeriv>(mparams /* PARAMS FIRST */, c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
+    projectResponseT<MatrixDeriv>(c.wref(), [](MatrixDeriv& res, const unsigned int index) { res.clearColBlock(index); });
 }
 
 template <class DataTypes>
