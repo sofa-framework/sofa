@@ -40,7 +40,7 @@ void VisualModel::drawVisual(const VisualParams* vparams)
     if( d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
         return;
 
-    // don't draw if this component is specifically configure to be disabled
+    // don't draw if this component is specifically configured to be disabled
     if (!d_draw.getValue())
         return;
 

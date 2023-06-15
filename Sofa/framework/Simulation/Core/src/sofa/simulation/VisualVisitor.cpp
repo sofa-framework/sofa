@@ -116,7 +116,7 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
     if( vm->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid )
         return;
 
-    // don't draw if this component is specifically configure to be disabled
+    // don't draw if this component is specifically configured to be disabled
     if (!vm->d_draw.getValue())
         return;
 
