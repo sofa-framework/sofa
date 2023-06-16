@@ -55,6 +55,8 @@ protected:
     ~DefaultAnimationLoop() override;
 
 public:
+    Data<bool> d_parallelODESolving; ///<If true, solves ODE solvers in parallel
+
     /// Set the simulation node this animation loop is controlling
     virtual void setNode(simulation::Node*);
 

@@ -45,7 +45,9 @@
 #include <sofa/simulation/ComputeIsolatedForceVisitor.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/SolveVisitor.h>
+#include <sofa/simulation/TaskScheduler.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalBuildConstraintMatrix.h>
@@ -68,9 +70,33 @@ This loop does the following steps:
 
 DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     : Inherit()
+    , d_parallelODESolving(initData(&d_parallelODESolving, true, "parallelODESolving", "If true, solves all the ODEs in parallel"))
     , gnode(_gnode)
 {
     //assert(gnode);
+
+    this->addUpdateCallback("parallelODESolving", {&d_parallelODESolving},
+    [this](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        if (d_parallelODESolving.getValue())
+        {
+            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
+            assert(taskScheduler);
+
+            if (taskScheduler->getThreadCount() < 1)
+            {
+                taskScheduler->init(0);
+                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
+            }
+            else
+            {
+                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
+            }
+        }
+        return d_componentState.getValue();
+    },
+{});
 }
 
 DefaultAnimationLoop::~DefaultAnimationLoop() = default;
@@ -80,6 +106,15 @@ void DefaultAnimationLoop::init()
     if (!gnode)
     {
         gnode = dynamic_cast<simulation::Node*>(this->getContext());
+    }
+
+    if (!gnode)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
+    else
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
 }
 
@@ -187,10 +222,9 @@ void DefaultAnimationLoop::accumulateMatrixDeriv(const core::ConstraintParams cp
 
 void DefaultAnimationLoop::solve(const core::ExecParams* params, SReal dt) const
 {
-    constexpr bool parallelSolving = false;
     constexpr bool usefreeVecIds = false;
     sofa::helper::ScopedAdvancedTimer timer("solve");
-    simulation::SolveVisitor freeMotion(params, dt, usefreeVecIds, parallelSolving);
+    simulation::SolveVisitor freeMotion(params, dt, usefreeVecIds, d_parallelODESolving.getValue());
     freeMotion.execute(gnode);
 }
 
@@ -258,6 +292,7 @@ void DefaultAnimationLoop::collisionDetection(const core::ExecParams* params) co
 
 void DefaultAnimationLoop::computeIsolatedForces(const core::ExecParams* params, SReal dt) const
 {
+    sofa::helper::ScopedAdvancedTimer timer("computeIsolatedForces");
     ComputeIsolatedForceVisitor visitor(params, dt);
     gnode->execute(&visitor);
 }
@@ -296,6 +331,11 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 {
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
+    {
+        return;
+    }
+
     if (dt == 0_sreal)
     {
         dt = this->gnode->getDt();

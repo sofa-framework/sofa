@@ -12,7 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop parallelODESolving="true"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 
     <Node name="BeamFEM_SMALL">
