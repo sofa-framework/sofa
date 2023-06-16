@@ -42,6 +42,7 @@
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
 #include <sofa/simulation/CollisionVisitor.h>
+#include <sofa/simulation/ComputeIsolatedForceVisitor.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/SolveVisitor.h>
@@ -255,6 +256,12 @@ void DefaultAnimationLoop::collisionDetection(const core::ExecParams* params) co
     propagateCollisionEndEvent(params);
 }
 
+void DefaultAnimationLoop::computeIsolatedForces(const core::ExecParams* params, SReal dt) const
+{
+    ComputeIsolatedForceVisitor visitor(params, dt);
+    gnode->execute(&visitor);
+}
+
 void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) const
 {
     const SReal startTime = gnode->getTime();
@@ -272,7 +279,6 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
     {
         collisionDetection(params);
 
-
         const core::ConstraintParams cparams;
         buildConstraintMatrix(cparams);
         accumulateMatrixDeriv(cparams);
@@ -283,6 +289,7 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
         propagateOnlyPositionAndVelocity(nextTime, mparams);
     }
     endIntegration(params, dt);
+    computeIsolatedForces(params, dt);
 
     updateSimulationContext(params, dt, startTime);
 }
