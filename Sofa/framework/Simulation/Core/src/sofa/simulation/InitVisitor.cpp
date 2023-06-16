@@ -66,7 +66,6 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
     }
 
     node->f_bbox.endEdit();
-    node->bwdInit();
 }
 
 
