@@ -661,9 +661,6 @@ void OglFluidModel<DataTypes>::doDrawVisual(const core::visual::VisualParams* vp
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-
-    vparams->drawTool()->restoreLastState();
-
 }
 template<class DataTypes>
 void OglFluidModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
