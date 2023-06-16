@@ -99,7 +99,7 @@ public:
 
 
     SOFA_ATTRIBUTE_DISABLED__CONSTRAINTCORRECTION_EXPLICITLINK()
-    core::objectmodel::RemovedData  solverName{this, "solverName", "replace \"solverName\" by using an explicit data link: \"linearSolver\" (PR #3152)}"};
+    core::objectmodel::lifecycle::RemovedData  solverName{this, "solverName", "replace \"solverName\" by using an explicit data link: \"linearSolver\" (PR #3152)}"};
 
     void verify_constraints();
 

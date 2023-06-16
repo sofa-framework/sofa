@@ -146,6 +146,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/DataFileNameVector.h
     ${SRC_ROOT}/objectmodel/DataLink.h
     ${SRC_ROOT}/objectmodel/DeprecatedData.h
+    ${SRC_ROOT}/objectmodel/RemovedData.h
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.h
     ${SRC_ROOT}/objectmodel/Event.h
     ${SRC_ROOT}/objectmodel/GUIEvent.h

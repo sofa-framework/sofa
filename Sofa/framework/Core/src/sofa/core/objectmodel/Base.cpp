@@ -539,21 +539,7 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
     }
 }
 
-DeprecatedData::DeprecatedData(Base* b, const std::string& name, const std::string& helptext)
-{
-    m_name = name;
-    m_helptext = helptext;
-    m_isRemoved = false;
-    b->addDeprecatedAttribute(this);
-}
-
-RemovedData::RemovedData(Base* b, const std::string& name, const std::string& helptext) :
-                                                                                                    DeprecatedData(b,name,helptext)
-{
-    m_isRemoved = true;
-}
-
-void Base::addDeprecatedAttribute(DeprecatedData* attribute)
+void Base::addDeprecatedAttribute(lifecycle::DeprecatedData* attribute)
 {
     m_oldAttributes.push_back(attribute);
 }

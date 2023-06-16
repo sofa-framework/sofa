@@ -23,19 +23,26 @@
 
 #include <string>
 #include <sofa/core/config.h>
-#include <sofa/core/fwd.h>
-#include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/DeprecatedData.h>
 
 namespace sofa::core::objectmodel::lifecycle
 {
 
-DeprecatedData::DeprecatedData(Base* b, const std::string& name, const std::string& helptext)
+/// Placeholder for a Data<T> to indicate a Data is now removed
+///
+/// This will also register the data name into a dedicated structure of Base object
+/// so a warning will be issued if users continue accessing it;
+///
+/// Use case:
+///    RemovedData d_sofaIsGreatM(this "sofaIsGread", "")
+class SOFA_CORE_API RemovedData : public DeprecatedData
 {
-    m_name = name;
-    m_helptext = helptext;
-    m_isRemoved = false;
-    b->addDeprecatedAttribute(this);
-}
+public:
+    RemovedData(Base* b, const std::string& name, const std::string& helptext) :
+        DeprecatedData(b,name,helptext)
+    {
+        m_isRemoved = true;
+    }
+};
 
-} // namespace sofa
+} // namespace sofa::core::objectmodel

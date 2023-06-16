@@ -19,23 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
-#include <string>
-#include <sofa/core/config.h>
-#include <sofa/core/fwd.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/DeprecatedData.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
-namespace sofa::core::objectmodel::lifecycle
+#include <sofa/core/objectmodel/RemovedData.h>
+using sofa::core::objectmodel::lifecycle::DeprecatedData;
+using sofa::core::objectmodel::lifecycle::RemovedData;
+
+namespace
 {
 
-DeprecatedData::DeprecatedData(Base* b, const std::string& name, const std::string& helptext)
+class MyObject : public BaseObject
 {
-    m_name = name;
-    m_helptext = helptext;
-    m_isRemoved = false;
-    b->addDeprecatedAttribute(this);
+public:
+    SOFA_CLASS(MyObject, BaseObject);
+
+    DeprecatedData deprecatedData {this, "deprecatedData", "You should now use XXXX"};
+    RemovedData removedData {this, "removedData", "You should now use XXXX"};
+};
+
+class RemoveData_test: public BaseTest
+{
+public:
+    MyObject m_object;
+};
+
+TEST_F(RemoveData_test, testRemoved)
+{
+    EXPECT_MSG_EMIT(Error);
+    EXPECT_MSG_NOEMIT(Deprecated);
+
+    sofa::core::objectmodel::BaseObjectDescription desc;
+    desc.setAttribute("removedData", "one");
+
+    m_object.parse(&desc);
 }
 
-} // namespace sofa
+TEST_F(RemoveData_test, testDeprecated)
+{
+    EXPECT_MSG_EMIT(Deprecated);
+    EXPECT_MSG_NOEMIT(Error);
+
+    sofa::core::objectmodel::BaseObjectDescription desc;
+    desc.setAttribute("deprecatedData", "one");
+
+    m_object.parse(&desc);
+}
+
+}
+

@@ -25,9 +25,14 @@
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>
 
-namespace sofa::core::objectmodel
+namespace sofa::core::objectmodel::lifecycle
 {
 
+/// Placeholder for a Data<T> to indicate it is deprecated
+///
+/// Use case: you want to deprecated Data<bool> d_sofaIsGreat;
+///
+/// add DeprecatedData d_sofaIsGreatM(this "sofaIsGread", "")
 class SOFA_CORE_API DeprecatedData
 {
    public:
@@ -35,12 +40,6 @@ class SOFA_CORE_API DeprecatedData
     std::string m_helptext;
     bool m_isRemoved;
     DeprecatedData(Base* b, const std::string& name, const std::string& helptext);
-};
-
-class SOFA_CORE_API RemovedData : public DeprecatedData
-{
-   public:
-    RemovedData(Base* b, const std::string& name, const std::string& helptext);
 };
 
 } // namespace sofa::core::objectmodel
