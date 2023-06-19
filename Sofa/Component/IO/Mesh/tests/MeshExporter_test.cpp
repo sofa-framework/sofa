@@ -45,6 +45,9 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
+#include <sofa/helper/system/FileRespository.h>
+using sofa::helper::system::FileRepository;
+
 #include <sofa/simulation/graph/SimpleApi.h>
 
 using ::testing::Types;
