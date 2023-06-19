@@ -496,7 +496,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     ///////////////////////     GET K       ////////////////////////////////////////
     CompressedRowSparseMatrix< Real1 >* K = new CompressedRowSparseMatrix< Real1 > ( );
-    K->resizeBlock( m_fullMatrixSize ,  m_fullMatrixSize );
+    K->resizeBloc( m_fullMatrixSize ,  m_fullMatrixSize );
     K->clear();
     DefaultMultiMatrixAccessor* KAccessor;
     KAccessor = new DefaultMultiMatrixAccessor;

@@ -85,7 +85,7 @@ public:
             unsigned int i0 = boffsetL + bi;
             unsigned int j0 = boffsetC + bj;
             //type::Mat<NL,NC,MReal> bconv = b;
-            *m->wblock(i0,j0,true) += b;
+            *m->wbloc(i0,j0,true) += b;
         }
     };
 
@@ -102,7 +102,7 @@ public:
             unsigned int j0 = offsetC + bj*NC;
             for (unsigned int i=0; i<NL; ++i)
                 for (unsigned int j=0; j<NC; ++j)
-                    *m->wblock(i0+i,j0+j,true) += (MReal)b[i][j];
+                    *m->wbloc(i0+i,j0+j,true) += (MReal)b[i][j];
         }
     };
 
