@@ -833,17 +833,6 @@ void Node::setDefaultVisualContextValue()
     */
 }
 
-void Node::bwdInit()
-{
-    if (mechanicalMapping && !mechanicalMapping->isMechanical())
-    {
-        // BUGFIX: the mapping was configured as not mechanical -> remove it from mechanicalMapping and put it in mapping
-        core::BaseMapping* bmap = mechanicalMapping.get();
-        mapping.add(bmap);
-        mechanicalMapping.remove(bmap);
-    }
-}
-
 void Node::initialize()
 {
     initialized = true;  // flag telling is the node is initialized

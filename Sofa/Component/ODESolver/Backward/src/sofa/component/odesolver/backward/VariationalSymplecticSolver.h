@@ -44,7 +44,6 @@ public:
     Data<unsigned int> f_newtonSteps; ///< Maximum number of Newton steps
     Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
-    Data<bool> f_verbose; ///< Dump information on the residual errors and number of Newton iterations
     Data<bool> f_saveEnergyInFile; ///< If kinetic and potential energies should be dumped in a CSV file at each iteration
     Data<bool>       f_explicit; ///< Use explicit integration scheme
     Data<std::string> f_fileName; ///< File name where kinetic and potential energies are saved in a CSV file
@@ -52,6 +51,9 @@ public:
     Data<SReal> f_hamiltonianEnergy; ///< hamiltonian energy
     Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
+
+    SOFA_ATTRIBUTE_DEPRECATED__ODESOLVER_BACKWARD_VERBOSEDATA()
+    Data<bool> f_verbose; ///< Dump information on the residual errors and number of Newton iterations
 
     VariationalSymplecticSolver();
 
@@ -90,6 +92,8 @@ public:
 
         return 0;
     }
+
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
 
 protected:
     sofa::core::MultiVecDerivId pID;

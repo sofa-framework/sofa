@@ -33,6 +33,13 @@
 
 namespace sofa::component::odesolver::backward
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::odesolver::backward
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_ODESOLVER_BACKWARD
+#define SOFA_ATTRIBUTE_DEPRECATED__ODESOLVER_BACKWARD_VERBOSEDATA()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__ODESOLVER_BACKWARD_VERBOSEDATA() \
+    SOFA_ATTRIBUTE_DEPRECATED("v23.12", "v24.06", "This Data is no longer used")
+#endif // SOFA_BUILD_SOFA_COMPONENT_ODESOLVER_BACKWARD

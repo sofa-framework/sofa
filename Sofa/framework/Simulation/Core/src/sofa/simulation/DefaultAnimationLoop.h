@@ -27,10 +27,9 @@
 
 #include <sofa/simulation/fwd.h>
 
-namespace sofa {
-namespace core {
-    class ExecParams ;
-}
+namespace sofa::core
+{
+class ExecParams ;
 }
 
 

@@ -45,6 +45,8 @@ public:
 private:
     bool m_checkDone = false;
     std::stringstream m_message;
+
+    void checkIfContactStiffnessIsSet(const core::objectmodel::BaseContext *root);
 };
 
 } // namespace sofa::_scenechecking_

@@ -633,7 +633,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
             Coord normal = (p1-p0).cross(p2-p0);
             normal.normalize();
             SReal d = -(p0*normal);
-            int nedges = 0;
             int ix0 = ix(bbmin)-1; if (ix0 < 0) ix0 = 0;
             int iy0 = iy(bbmin)-1; if (iy0 < 0) iy0 = 0;
             int iz0 = iz(bbmin)-1; if (iz0 < 0) iz0 = 0;
@@ -660,7 +659,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 if (pointInTriangle<1,2>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    ++nedges;
                                     SReal dist2 = m_cellWidth[0] - dist1;
                                     if (normal[0]<0)
                                     {
@@ -709,7 +707,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 if (pointInTriangle<2,0>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    ++nedges;
                                     SReal dist2 = m_cellWidth[1] - dist1;
                                     if (normal[1]<0)
                                     {
@@ -758,7 +755,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                                 if (pointInTriangle<0,1>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    ++nedges;
                                     SReal dist2 = m_cellWidth[2] - dist1;
                                     if (normal[2]<0)
                                     {

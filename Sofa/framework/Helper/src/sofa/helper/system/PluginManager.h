@@ -31,11 +31,7 @@
 
 #include <sofa/type/vector.h>
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+namespace sofa::helper::system
 {
 class PluginManager;
 
@@ -235,10 +231,6 @@ private:
     std::map<std::string, std::function<void(const std::string&, const Plugin&)>> m_onPluginLoadedCallbacks;
 };
 
-
-}
-
-}
 
 }
 

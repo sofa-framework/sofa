@@ -67,7 +67,7 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
     createObject(theRoot, "EulerImplicitSolver");
     createObject(theRoot, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-5" }, {"threshold", "1e-5"}});
 
-    /// Create an object with a mass and use a rest shape spring ff so it stay
+    /// Create an object with a mass and use a rest shape spring ff so it stays
     /// at the initial position
     auto fixedObject = createChild(theRoot, "fixedObject");
     auto fixedObject_dofs = createObject(fixedObject, "MechanicalObject", {{"name","dofs"},
@@ -122,7 +122,7 @@ void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node
     auto fixedDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
     ASSERT_TRUE( fixedDofs != nullptr );
 
-    auto movingDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
+    auto movingDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("movingObject")->getObject("dofs"));
     ASSERT_TRUE( movingDofs != nullptr );
 
     checkDifference(*fixedDofs, true);

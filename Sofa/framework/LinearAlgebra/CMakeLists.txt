@@ -20,6 +20,8 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/BlockVector.h
     ${SOFALINEARALGEBRASRC_ROOT}/BlockVector.inl
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixGeneric.h
+    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixMechanical.h
     ${SOFALINEARALGEBRASRC_ROOT}/DiagonalMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenSparseMatrix.h
@@ -46,7 +48,8 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/BlockFullMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/BlockVector.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/BTDMatrix.cpp
-    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrix.cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixGeneric.cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrixMechanical.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/FullMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/FullVector.cpp

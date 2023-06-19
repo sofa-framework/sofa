@@ -75,7 +75,7 @@ Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
                                                                {"alarmDistance", "0.3"},
                                                                {"contactDistance", "0.2"}}) ;
 
-    simpleapi::createObject(root, "DefaultContactManager", {
+    simpleapi::createObject(root, "CollisionResponse", {
                                 {"name", "Contact Manager"},
                                 {"response", responseType}
                             });
@@ -88,12 +88,15 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Explicit")
     {
+        simpleapi::createObject(parent, "RequiredPlugin", {{"name", "Sofa.Component.ODESolver.Forward"}});
         simpleapi::createObject(node, "EulerExplicitSolver", {{"name","Euler Explicit"}});
         return node ;
     }
 
     if (scheme == "Implicit")
     {
+        simpleapi::createObject(parent, "RequiredPlugin", {{"name", "Sofa.Component.ODESolver.Backward"}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"name", "Sofa.Component.LinearSolver.Iterative"}});
         simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                               {"rayleighStiffness","0.01"},
                                                               {"rayleighMass", "1.0"}}) ;
@@ -107,6 +110,8 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
+        simpleapi::createObject(parent, "RequiredPlugin", {{"name", "Sofa.Component.ODESolver.Backward"}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"name", "Sofa.Component.LinearSolver.Direct"}});
         simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                                 {"rayleighStiffness","0.01"},
                                                                 {"rayleighMass", "1.0"}}) ;

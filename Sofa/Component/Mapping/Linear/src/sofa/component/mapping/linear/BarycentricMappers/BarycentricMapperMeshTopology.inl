@@ -34,8 +34,6 @@ using sofa::core::visual::VisualParams;
 using sofa::type::Vec;
 using sofa::type::Vec3;
 using sofa::type::Matrix3;
-using sofa::type::Mat3x3d;
-using sofa::type::Vec3d;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -121,7 +119,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             centers.resize ( triangles.size() +quads.size() );
             for ( std::size_t t = 0; t < triangles.size(); t++ )
             {
-                Mat3x3d m,mt;
+                Mat3x3 m,mt;
                 m[0] = in[triangles[t][1]]-in[triangles[t][0]];
                 m[1] = in[triangles[t][2]]-in[triangles[t][0]];
                 m[2] = cross ( m[0],m[1] );
@@ -133,7 +131,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             }
             for ( std::size_t q = 0; q < quads.size(); q++ )
             {
-                Mat3x3d m,mt;
+                Mat3x3 m,mt;
                 m[0] = in[quads[q][1]]-in[quads[q][0]];
                 m[1] = in[quads[q][3]]-in[quads[q][0]];
                 m[2] = cross ( m[0],m[1] );
@@ -178,7 +176,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         centers.resize ( tetras.size() + hexas.size() );
         for ( std::size_t t = 0; t < tetras.size(); t++ )
         {
-            Mat3x3d m,mt;
+            Mat3x3 m,mt;
             m[0] = in[tetras[t][1]]-in[tetras[t][0]];
             m[1] = in[tetras[t][2]]-in[tetras[t][0]];
             m[2] = in[tetras[t][3]]-in[tetras[t][0]];
@@ -190,7 +188,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         }
         for ( std::size_t h = 0; h < hexas.size(); h++ )
         {
-            Mat3x3d m,mt;
+            Mat3x3 m,mt;
             m[0] = in[hexas[h][1]]-in[hexas[h][0]];
             m[1] = in[hexas[h][3]]-in[hexas[h][0]];
             m[2] = in[hexas[h][4]]-in[hexas[h][0]];

@@ -46,6 +46,7 @@ public:
     typedef typename Vector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
+    SOFA_ATTRIBUTE_DEPRECATED__SOLVER_DIRECT_VERBOSEDATA()
     Data<bool> f_verbose; ///< Dump system state at each iteration
 
     CholeskySolver();
@@ -55,6 +56,8 @@ public:
 
     /// Factors the matrix. Must be done before solving
     void invert(Matrix& M) override;
+
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
 
 private :
     linearalgebra::FullMatrix<typename Vector::Real> L;

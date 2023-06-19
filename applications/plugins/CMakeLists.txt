@@ -19,7 +19,6 @@ sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Depends on Sof
 sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
 sofa_add_subdirectory(plugin MultiThreading MultiThreading)
 sofa_add_subdirectory(plugin DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
-sofa_add_subdirectory(plugin SofaPython SofaPython EXTERNAL)
 sofa_add_subdirectory(plugin image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_subdirectory(plugin SofaNewmat SofaNewmat)
 
@@ -54,6 +53,9 @@ sofa_add_subdirectory(plugin SofaAssimp SofaAssimp) # ColladaSceneLoader Depends
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
 sofa_add_subdirectory(plugin OpenCTMPlugin OpenCTMPlugin EXTERNAL)
 sofa_add_subdirectory(plugin BeamAdapter BeamAdapter EXTERNAL)
+sofa_add_subdirectory(plugin CollisionAlgorithm CollisionAlgorithm EXTERNAL)
+sofa_add_subdirectory(plugin ConstraintGeometry ConstraintGeometry EXTERNAL)
+
 
 sofa_add_subdirectory(plugin PSL PSL EXPERIMENTAL)
 

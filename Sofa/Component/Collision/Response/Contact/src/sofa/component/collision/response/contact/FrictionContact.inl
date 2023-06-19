@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/collision/response/contact/FrictionContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/response/contact/DefaultContactManager.h>
+#include <sofa/component/collision/response/contact/CollisionResponse.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/IdentityContactMapper.h>
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>

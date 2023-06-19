@@ -123,6 +123,11 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 {
     Inherit::init();
 
+    if( !defaultCompliance.isSet() && !compliance.isSet() )
+    {
+        msg_warning() << "Neither the \'defaultCompliance\' nor the \'compliance\' data is set, please set one to define your compliance matrix";
+    }
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (compliance.getValue().size() == 1 && defaultCompliance.isSet() && defaultCompliance.getValue() == compliance.getValue()[0])
@@ -132,20 +137,33 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     }
 
     const VecReal& comp = compliance.getValue();
+
     if (x.size() != comp.size() && !comp.empty())
     {
-        if (!defaultCompliance.isSet() && !comp.empty())
-            defaultCompliance.setValue(comp[0]); // set default compliance to first one in case it was given in the compliance vector
+        // case where the size of the state vector does not match the size of the compliance vector data
         if (comp.size() > 1)
-            msg_warning() << "Compliance size ( " << comp.size() << " is not equal to the size of the mstate (" << x.size() << ")";
-        Real comp0 = (!comp.empty()) ? comp[0] : defaultCompliance.getValue();
-        msg_warning() << "Using " << comp0 << " as initial compliance";
+        {
+            msg_warning() << "Compliance size (" << comp.size() << ") is not equal to the size of the mstate (" << x.size() << ")";
+        }
+
+        if (!defaultCompliance.isSet() && !comp.empty())
+        {
+            defaultCompliance.setValue(comp[0]);
+            msg_warning() <<"Instead a default compliance is used, set to the first value of the given vector \'compliance\'";
+        }
+        else
+        {
+            msg_warning() <<"Instead a default compliance is used";
+        }
+
+        Real comp0 = defaultCompliance.getValue();
 
         VecReal UsedComp;
         for (unsigned int i=0; i<x.size(); i++)
         {
             UsedComp.push_back(comp0);
         }
+
         // Keeps user specified compliance even if the initial MState size is null.
         if (!UsedComp.empty())
         {
@@ -168,6 +186,15 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         }
     }
    
+    if(!comp.empty())
+    {
+        msg_info() << "\'compliance\' data is used: " << compliance.getValue();
+    }
+    else
+    {
+        msg_info() << "\'defaultCompliance\' data is used: " << defaultCompliance.getValue();
+    }
+
     this->getContext()->get(m_pOdeSolver);
     if (!m_pOdeSolver)
     {

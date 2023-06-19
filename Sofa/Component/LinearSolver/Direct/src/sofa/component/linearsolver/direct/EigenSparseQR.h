@@ -47,6 +47,7 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(EigenSparseQR, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, SparseQRTraits<Real>));
 
+    bool supportNonSymmetricSystem() const override { return true; }
 };
 
 #ifndef SOFA_COMPONENT_LINEARSOLVER_DIRECT_EIGENSPARSEQR_CPP

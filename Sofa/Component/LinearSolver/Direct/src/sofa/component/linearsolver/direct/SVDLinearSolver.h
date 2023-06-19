@@ -57,6 +57,7 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     Data<Real> f_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.
 
+    bool supportNonSymmetricSystem() const override { return true; }
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_DIRECT_SVDLINEARSOLVER_CPP)

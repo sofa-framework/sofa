@@ -88,10 +88,10 @@ void addMappedMatrixToGlobalMatrixEigen(
     const auto KMap = makeEigenMap(*mappedMatrix);
 
     // nb rows of K = size of first mechanical state
-    msg_error_when(mappedMatrix->rows() != mstatePair[0]->getMatrixSize(), "MatrixMapping")
+    msg_error_when(sofa::Size(mappedMatrix->rows()) != mstatePair[0]->getMatrixSize(), "MatrixMapping")
         << "[K] Incompatible matrix size [rows] " << mappedMatrix->rows() << " " << mstatePair[0]->getMatrixSize();
     // nb cols of K = size of second mechanical state
-    msg_error_when(mappedMatrix->cols() != mstatePair[1]->getMatrixSize(), "MatrixMapping")
+    msg_error_when(sofa::Size(mappedMatrix->cols()) != mstatePair[1]->getMatrixSize(), "MatrixMapping")
         << "[K] Incompatible matrix size [cols] " << mappedMatrix->cols() << " " << mstatePair[1]->getMatrixSize();
 
     const auto inputs1 = mappingGraph.getTopMostMechanicalStates(mstatePair[0]);
@@ -118,18 +118,18 @@ void addMappedMatrixToGlobalMatrixEigen(
         if (J[0])
         {
             // nb rows of J[0] = size of first mechanical state
-            msg_error_when(J[0]->rows() != mstatePair[0]->getMatrixSize(), "MatrixMapping")
+            msg_error_when(sofa::Size(J[0]->rows()) != mstatePair[0]->getMatrixSize(), "MatrixMapping")
                     << "[J0] Incompatible matrix size [rows] " << J[0]->rows() << " " << mstatePair[0]->getMatrixSize();
-            msg_error_when(J[0]->cols() != a->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
+            msg_error_when(sofa::Size(J[0]->cols()) != a->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
                     << "[J0] Incompatible matrix size [cols] " << J[0]->cols() << " " << a->BaseMechanicalState::getMatrixSize();
         }
 
         if (J[1])
         {
             // nb rows of J[1] = size of second mechanical state
-            msg_error_when(J[1]->rows() != mstatePair[1]->getMatrixSize(), "MatrixMapping")
+            msg_error_when(sofa::Size(J[1]->rows()) != mstatePair[1]->getMatrixSize(), "MatrixMapping")
                     << "[J1] Incompatible matrix size [rows] " << J[1]->rows() << " " << mstatePair[1]->getMatrixSize();
-            msg_error_when(J[1]->cols() != b->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
+            msg_error_when(sofa::Size(J[1]->cols()) != b->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
                     << "[J1] Incompatible matrix size [cols] " << J[1]->cols() << " " << b->BaseMechanicalState::getMatrixSize();
         }
 

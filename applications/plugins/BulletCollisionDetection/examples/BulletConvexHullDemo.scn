@@ -5,7 +5,7 @@
 	<Node name="Plugins"  >
 		<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
 		<RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [CollisionPipeline] -->
-		<RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [DefaultContactManager] -->
+		<RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
 		<RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
 		<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 		<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -20,7 +20,7 @@
 	<BulletCollisionDetection name="bulletCollisionDetection0" />
 	<CollisionPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
 	<BulletIntersection contactDistance="1"/>
-	<DefaultContactManager name="Response"  response="PenalityContactForceField" />
+	<CollisionResponse name="Response"  response="PenalityContactForceField" />
 
 	<Node name="Objects"  >
 		<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>

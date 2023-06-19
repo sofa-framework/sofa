@@ -48,7 +48,7 @@ SReal DiagonalMass<RigidTypes, GeometricalTypes>::getPotentialEnergyRigidImpl( c
     const VecCoord& _x = x.getValue();
 
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    const Vec3& g = this->getContext()->getGravity();
     Deriv theGravity;
     RigidTypes::set( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<_x.size(); i++)

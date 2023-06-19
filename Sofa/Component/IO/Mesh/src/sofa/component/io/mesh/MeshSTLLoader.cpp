@@ -91,7 +91,7 @@ bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)
 {
     // Binary STL files have 80-bytes headers. The following 4-bytes is the number of triangular facets in the file
     // Each facet is described with a 50-bytes field, so a valid binary STL file verifies the following condition:
-    // nFacets * 50 + 84-bytes header == filename
+    // nFacets * 50 + 84-bytes header == filesize
 
     long filesize;
     std::ifstream f(filename, std::ifstream::ate | std::ifstream::binary);
@@ -106,9 +106,11 @@ bool isBinarySTLValid(const char* filename, const MeshSTLLoader* _this)
     f.read(buffer, 80);
     uint32_t ntriangles;
     f.read(reinterpret_cast<char*>(&ntriangles), 4);
-    if (filesize != ntriangles * 50 + 84)
+    const uint32_t expectedFileSize = ntriangles * 50 + 84;
+    if (filesize != expectedFileSize)
     {
-        msg_error(_this) << filename << " isn't  binary STL file";
+        msg_error(_this) << filename << " isn't binary STL file. File size expected to be "
+            << expectedFileSize << " (with " << ntriangles << " triangles) but it is " << filesize;
         return false;
     }
     return true;

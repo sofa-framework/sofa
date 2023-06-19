@@ -106,6 +106,24 @@ void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mp
 }
 
 template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::applyConstraint(
+    sofa::core::behavior::ZeroDirichletCondition* matrix)
+{
+    static constexpr unsigned int N = Deriv::size();
+    const Coord dir = d_direction.getValue();
+    for (auto& index : d_indices.getValue())
+    {
+        for (unsigned int c=0; c<N; ++c)
+        {
+            if (dir[c] != 0.0)
+            {
+                matrix->discardRowCol(N * index + c, N * index + c);
+            }
+        }
+    }
+}
+
+template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::addConstraint(Index index)
 {
     d_indices.beginEdit()->push_back(index);

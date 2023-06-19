@@ -312,7 +312,7 @@ protected:
 
     void sleep(float seconds, float init_time)
     {
-        unsigned int t = 0;
+        [[maybe_unused]] unsigned int t = 0;
         clock_t goal = (clock_t) (seconds + init_time);
         while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
     }

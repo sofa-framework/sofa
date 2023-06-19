@@ -56,11 +56,7 @@
 
 #include "polygon_cube_intersection.h"
 
-namespace sofa
-{
-namespace helper
-{
-namespace polygon_cube_intersection
+namespace sofa::helper::polygon_cube_intersection
 {
 
 #ifndef __cplusplus
@@ -76,7 +72,7 @@ namespace polygon_cube_intersection
 		else if ((mask & negbit) && temp < -limit)		\
 			outcode |= negbit;				\
 	}								\
- 
+
 
 /*
  * Tells which of the six face-planes the given point is outside of.
@@ -237,6 +233,4 @@ fast_polygon_intersects_cube(int nverts, const float verts[][3],
         return quick_test;
 }
 
-}
-}
 }

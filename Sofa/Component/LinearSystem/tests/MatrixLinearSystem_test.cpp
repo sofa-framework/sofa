@@ -22,6 +22,8 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
+#include <sofa/linearalgebra/FullMatrix.h>
+
 #include <sofa/testing/TestMessageHandler.h>
 
 #include <sofa/core/MechanicalParams.h>

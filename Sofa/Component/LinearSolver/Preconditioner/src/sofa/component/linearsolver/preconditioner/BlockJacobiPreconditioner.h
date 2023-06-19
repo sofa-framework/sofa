@@ -52,7 +52,9 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef typename TMatrix::Block SubMatrix;
 
+    SOFA_ATTRIBUTE_DEPRECATED__PRECONDITIONER_VERBOSEDATA()
     Data<bool> f_verbose; ///< Dump system state at each iteration
+
 protected:
     BlockJacobiPreconditioner();
 public:
@@ -69,6 +71,7 @@ public:
         return TVector::Name();
     }
 
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_BLOCKJACOBIPRECONDITIONER_CPP)

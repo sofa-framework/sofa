@@ -42,10 +42,14 @@ public:
     void rightAfterLoadingScene(sofa::simulation::NodeSPtr node, simulation::SceneLoader* sceneLoader) override;
 
     // Do nothing on reload
-    void rightBeforeReloadingScene(simulation::SceneLoader* sceneLoader) override {}
+    void rightBeforeReloadingScene(simulation::SceneLoader* sceneLoader) override
+    {
+        SOFA_UNUSED(sceneLoader);
+    }
     void rightAfterReloadingScene(sofa::simulation::NodeSPtr node, simulation::SceneLoader* sceneLoader) override
     {
         SOFA_UNUSED(node);
+        SOFA_UNUSED(sceneLoader);
     }
 
 private:

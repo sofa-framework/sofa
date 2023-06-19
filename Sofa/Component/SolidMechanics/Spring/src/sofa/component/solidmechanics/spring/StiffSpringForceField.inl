@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <sofa/helper/AdvancedTimer.h>

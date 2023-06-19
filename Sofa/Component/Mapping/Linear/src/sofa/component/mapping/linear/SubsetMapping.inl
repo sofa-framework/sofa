@@ -310,7 +310,7 @@ const sofa::linearalgebra::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         {
             if(indices[i] < fromSize)
             {
-                MBloc& block = *matrixJ->wbloc(i, indices[i], true);
+                MBloc& block = *matrixJ->wblock(i, indices[i], true);
                 block.identity();
             }
         }

@@ -42,11 +42,7 @@ using sofa::helper::system::FileSystem;
 
 using sofa::helper::Utils;
 
-namespace sofa
-{
-namespace helper
-{
-namespace system
+namespace sofa::helper::system
 {
 
 namespace
@@ -550,10 +546,6 @@ bool PluginManager::checkDuplicatedPlugin(const Plugin& plugin, const std::strin
     }
 
     return false;
-}
-
-}
-
 }
 
 }
