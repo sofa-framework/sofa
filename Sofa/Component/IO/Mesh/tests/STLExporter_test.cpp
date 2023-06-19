@@ -66,12 +66,20 @@ public:
 
     void TearDown() override
     {
-        return ;
-        for(auto& pathToRemove : dataPath)
+        for (const auto& pathToRemove : dataPath)
         {
-            if(FileSystem::exists(pathToRemove))
-               FileSystem::removeAll(pathToRemove) ;
-       }
+            if (FileSystem::exists(pathToRemove))
+            {
+                if (FileSystem::isDirectory(pathToRemove))
+                {
+                    FileSystem::removeAll(pathToRemove);
+                }
+                else
+                {
+                    std::filesystem::remove(pathToRemove);
+                }
+            }
+        }
     }
 
     void checkBasicBehavior(const std::string& filename, std::vector<std::string> pathes){

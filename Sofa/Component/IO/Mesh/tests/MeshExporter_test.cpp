@@ -233,21 +233,20 @@ TEST_P(MeshExporter_test, checkSimulationWriteEachNbStep)
     const TestParam& params = GetParam();
     constexpr std::string_view filename = "exporterA";
     std::vector<std::string> paths;
-    for (unsigned int i = 0; i < 20; ++i)
+    constexpr unsigned int nbTimeSteps { 20 };
+    constexpr unsigned int exportEveryNumberOfSteps { 5 };
+    for (unsigned int i = 0; i < nbTimeSteps / exportEveryNumberOfSteps; ++i)
     {
         std::stringstream ss;
-        ss << std::setw(5) << std::setfill('0') << i;
+        ss << std::setw(5) << std::setfill('0') << (i+1);
 
-        paths.push_back( tempdir + "/" + std::string(filename) + ss.str() + "." + params.extension);
+        paths.push_back( tempdir + std::string(filename) + ss.str() + "." + params.extension);
         for (const auto& addExtension : params.additionalExtensions)
         {
-            paths.push_back(tempdir + "/" + std::string(filename)+ ss.str() + "." + addExtension);
+            paths.push_back(tempdir + std::string(filename)+ ss.str() + "." + addExtension);
         }
     }
-    ASSERT_NO_THROW(this->checkSimulationWriteEachNbStep(params, tempdir, {tempdir+"/exporterA00001." + params.extension,
-                                                        tempdir+"/exporterA00002." + params.extension,
-                                                        tempdir+"/exporterA00003." + params.extension,
-                                                        tempdir+"/exporterA00004." + params.extension}, 20)) ;
+    ASSERT_NO_THROW(this->checkSimulationWriteEachNbStep(params, tempdir, paths, nbTimeSteps)) ;
 }
 
 INSTANTIATE_TEST_SUITE_P(checkAllBehavior,
