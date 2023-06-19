@@ -46,10 +46,10 @@ using sofa::core::execparams::defaultInstance;
 using sofa::helper::system::FileSystem ;
 
 #include <sofa/helper/system/FileRepository.h>
-sofa::helper::system::FileRepository FR;
+using sofa::helper::system::FileRepository;
 
 namespace{
-const std::string tempdir = FR.getTempPath() ;
+const std::string tempdir = FileRepository().getTempPath() ;
 
 
 class VisualModelOBJExporter_test : public BaseSimulationTest {
