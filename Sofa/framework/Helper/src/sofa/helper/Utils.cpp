@@ -248,7 +248,7 @@ const std::string& Utils::getSofaPathPrefix()
 
 const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
 {
-    std::string path = Utils::getSofaPathPrefix() + "/" + pathFromBuildDir;
+    std::string path = FileSystem::append(Utils::getSofaPathPrefix(), pathFromBuildDir);
     if(FileSystem::exists(path))
     {
         return path;

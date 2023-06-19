@@ -434,30 +434,25 @@ std::string FileSystem::stripDirectory(const std::string& path)
     }
 }
 
-std::string FileSystem::append(const std::string& existingPath, const std::string& toAppend)
+std::string FileSystem::append(const std::string_view& existingPath, const std::string_view& toAppend)
 {
     if (toAppend.empty())
     {
-        return existingPath;
+        return std::string(existingPath);
     }
 
-    const auto firstCharacter = toAppend.front();
-    if (firstCharacter == '/')
+    constexpr auto isADirectorySeparator = [](const char c) { return c == '/' || c == '\\'; };
+
+    if (isADirectorySeparator(toAppend.front()))
     {
         return append(existingPath, toAppend.substr(1));
     }
 
-
-    const char lastCharacter = existingPath.back();
-    if (lastCharacter == '\\')
-    {
-        return append(convertBackSlashesToSlashes(existingPath), toAppend);
-    }
-    else if (lastCharacter == '/')
+    if (isADirectorySeparator(existingPath.back()))
     {
         return append(existingPath.substr(0, existingPath.size() - 1), toAppend);
     }
-    return existingPath + "/" + toAppend;
+    return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
 

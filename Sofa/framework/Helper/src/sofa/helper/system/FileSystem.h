@@ -143,17 +143,14 @@ static std::string stripDirectory(const std::string& path);
 
 
 /// Appends a string to an existing path, ensuring exactly one directory
-/// separator (/) between each part. It may convert \p existingPath if the
-/// last character is a back-slash.
-static std::string append(const std::string& existingPath, const std::string& toAppend);
+/// separator (/) between each part.
+static std::string append(const std::string_view& existingPath, const std::string_view& toAppend);
 
 /// Appends strings to an existing path, ensuring exactly one directory
 /// separator (/) between each part.
-/// @note The function requires all arguments to be of type std::string.
 template<typename... Args>
-static std::string append(const std::string& existingPath, const std::string& toAppend, Args&&... args)
+static std::string append(const std::string_view& existingPath, const std::string_view& toAppend, Args&&... args)
 {
-    static_assert((std::is_same_v<Args, std::string> && ...), "All arguments must be of type std::string.");
     return append(append(existingPath, toAppend), args...);
 }
 
