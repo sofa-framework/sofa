@@ -47,7 +47,7 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <sofa/helper/system/FileRespository.h>
+#include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::FileRepository;
 
 namespace {
