@@ -137,7 +137,7 @@ public:
 protected:
     template <class DataDeriv>
     void projectResponseT(DataDeriv& dx,
-        std::function<void(DataDeriv&, const unsigned int)> clear);
+        const std::function<void(DataDeriv&, const unsigned int)>& clear);
 
     template <class MyCoord>
     void interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);

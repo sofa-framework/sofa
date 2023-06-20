@@ -138,7 +138,7 @@ void HermiteSplineConstraint<DataTypes>::computeDerivateHermiteCoefs( const Real
 
 template <class DataTypes> template <class DataDeriv>
 void HermiteSplineConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
-    std::function<void(DataDeriv&, const unsigned int)> clear)
+    const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())

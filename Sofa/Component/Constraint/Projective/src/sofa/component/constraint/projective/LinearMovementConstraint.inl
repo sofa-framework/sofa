@@ -149,7 +149,7 @@ void LinearMovementConstraint<DataTypes>::reset()
 template <class DataTypes>
 template <class DataDeriv>
 void LinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
-    std::function<void(DataDeriv&, const unsigned int)> clear)
+    const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     Real cT = static_cast<Real>(this->getContext()->getTime());
     if ((cT != currentTime) || !finished)

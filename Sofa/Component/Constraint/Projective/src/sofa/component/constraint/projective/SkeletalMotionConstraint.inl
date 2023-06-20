@@ -110,7 +110,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real ct)
 
 template <class TDataTypes> template <class DataDeriv>
 void SkeletalMotionConstraint<TDataTypes>::projectResponseT(DataDeriv& res,
-    std::function<void(DataDeriv&, const unsigned int)> clear)
+    const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     if( !active.getValue() ) return;
 

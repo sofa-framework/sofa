@@ -164,7 +164,7 @@ void PartialLinearMovementConstraint<DataTypes>::reset()
 template <class DataTypes>
 template <class DataDeriv>
 void PartialLinearMovementConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
-    std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear)
+    const std::function<void(DataDeriv&, const unsigned int, const VecBool&)>& clear)
 {
     Real cT = (Real) this->getContext()->getTime();
     VecBool movedDirection = movedDirections.getValue();

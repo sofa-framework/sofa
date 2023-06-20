@@ -90,7 +90,7 @@ public:
 protected:
     template <class DataDeriv>
     void projectResponseT(DataDeriv& dx,
-        std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear);
+        const std::function<void(DataDeriv&, const unsigned int, const VecBool&)>& clear);
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP)

@@ -60,7 +60,7 @@ void PartialFixedConstraint<DataTypes>::reinit()
 template <class DataTypes>
 template <class DataDeriv>
 void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res,
-    std::function<void(DataDeriv&, const unsigned int, const VecBool&)> clear)
+    const std::function<void(DataDeriv&, const unsigned int, const VecBool&)>& clear)
 {
     const VecBool& blockedDirection = d_fixedDirections.getValue();
 

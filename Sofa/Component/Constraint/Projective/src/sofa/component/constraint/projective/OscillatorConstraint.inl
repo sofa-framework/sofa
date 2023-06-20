@@ -50,7 +50,7 @@ OscillatorConstraint<TDataTypes>*  OscillatorConstraint<TDataTypes>::addConstrai
 
 template <class TDataTypes> template <class DataDeriv>
 void OscillatorConstraint<TDataTypes>::projectResponseT(DataDeriv& res,
-    std::function<void(DataDeriv&, const unsigned int)> clear)
+    const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     const auto& oscillators = constraints.getValue();
 

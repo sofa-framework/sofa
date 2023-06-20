@@ -120,7 +120,7 @@ void ParabolicConstraint<DataTypes>::reinit()
 template <class DataTypes>
 template <class DataDeriv>
 void ParabolicConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
-    std::function<void(DataDeriv&, const unsigned int)> clear)
+    const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())

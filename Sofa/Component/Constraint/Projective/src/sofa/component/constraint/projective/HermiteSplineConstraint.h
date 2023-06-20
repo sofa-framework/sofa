@@ -117,7 +117,7 @@ public:
 protected:
     template <class DataDeriv>
     void projectResponseT(DataDeriv& dx,
-        std::function<void(DataDeriv&, const unsigned int)> clear);
+        const std::function<void(DataDeriv&, const unsigned int)>& clear);
 
 };
 

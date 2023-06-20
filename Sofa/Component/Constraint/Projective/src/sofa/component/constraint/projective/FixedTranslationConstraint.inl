@@ -114,7 +114,7 @@ static inline void clearPos(type::Vec<6,T>& v)
 
 template <class DataTypes> template <class DataDeriv>
 void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
-    std::function<void(DataDeriv&, const unsigned int)> clear)
+    const std::function<void(DataDeriv&, const unsigned int)>& clear)
 {
     if (f_fixAll.getValue())
     {
