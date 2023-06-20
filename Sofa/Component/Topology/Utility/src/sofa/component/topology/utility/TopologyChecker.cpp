@@ -127,8 +127,14 @@ bool TopologyChecker::checkEdgeContainer()
     for (sofa::Index i = 0; i < nbE; ++i)
     {
         const auto& edge = my_edges[i];
-        if (edge[0] == edge[1]) {
+        if (edge[0] == edge[1])
+        {
             msg_error() << "CheckEdgeTopology failed: edge " << i << " has 2 identical vertices: " << edge;
+            res = false;
+        }
+        if (std::any_of(edge.begin(), edge.end(), [](const auto v){ return v == sofa::InvalidID;}))
+        {
+            msg_error() << "CheckEdgeTopology failed: edge " << i << " has an invalid vertex id: " << edge;
             res = false;
         }
     }
@@ -148,15 +154,23 @@ bool TopologyChecker::checkEdgeToVertexCrossContainer()
         const auto& EdgesAV = m_topology->getEdgesAroundVertex(i);
         for (size_t j = 0; j < EdgesAV.size(); ++j)
         {
-            const Topology::Edge& edge = my_edges[EdgesAV[j]];
-            if (!(edge[0] == i || edge[1] == i))
+            if (EdgesAV[j] != sofa::InvalidID)
             {
-                msg_error() << "CheckEdgeTopology failed: edge " << EdgesAV[j] << ": [" << edge << "] not around vertex: " << i;
+                const Topology::Edge& edge = my_edges[EdgesAV[j]];
+                if (!(edge[0] == i || edge[1] == i))
+                {
+                    msg_error() << "CheckEdgeTopology failed: edge " << EdgesAV[j] << ": [" << edge << "] not around vertex: " << i;
+                    res = false;
+                }
+
+                // count number of edge
+                edgeSet.insert(EdgesAV[j]);
+            }
+            else
+            {
+                msg_error() << "CheckEdgeTopology failed: edge " << j << " around vertex " << i << " is an invalid id";
                 res = false;
             }
-
-            // count number of edge
-            edgeSet.insert(EdgesAV[j]);
         }
     }
 
@@ -203,8 +217,14 @@ bool TopologyChecker::checkTriangleContainer()
     for (sofa::Index i = 0; i < nbT; ++i)
     {
         const auto& triangle = my_triangles[i];
-        if (triangle[0] == triangle[1] || triangle[0] == triangle[2] || triangle[1] == triangle[2]) {
+        if (triangle[0] == triangle[1] || triangle[0] == triangle[2] || triangle[1] == triangle[2])
+        {
             msg_error() << "CheckTriangleTopology failed: triangle " << i << " has 2 identical vertices: " << triangle;
+            res = false;
+        }
+        if (std::any_of(triangle.begin(), triangle.end(), [](const auto v){ return v == sofa::InvalidID;}))
+        {
+            msg_error() << "CheckEdgeTopology failed: triangle " << i << " has an invalid vertex id: " << triangle;
             res = false;
         }
     }
@@ -301,15 +321,23 @@ bool TopologyChecker::checkTriangleToVertexCrossContainer()
         const auto& triAV = m_topology->getTrianglesAroundVertex(i);
         for (size_t j = 0; j < triAV.size(); ++j)
         {
-            const Topology::Triangle& triangle = my_triangles[triAV[j]];
-            const bool check_triangle_vertex_shell = (triangle[0] == i) || (triangle[1] == i) || (triangle[2] == i);
-            if (!check_triangle_vertex_shell)
+            if (triAV[j] != sofa::InvalidID)
             {
-                msg_error() << "CheckTriangleTopology failed: triangle " << triAV[j] << ": [" << triangle << "] not around vertex: " << i;
+                const Topology::Triangle& triangle = my_triangles[triAV[j]];
+                const bool check_triangle_vertex_shell = (triangle[0] == i) || (triangle[1] == i) || (triangle[2] == i);
+                if (!check_triangle_vertex_shell)
+                {
+                    msg_error() << "CheckTriangleTopology failed: triangle " << triAV[j] << ": [" << triangle << "] not around vertex: " << i;
+                    ret = false;
+                }
+
+                triangleSet.insert(triAV[j]);
+            }
+            else
+            {
+                msg_error() << "CheckTriangleTopology failed: triangle " << j << " around vertex " << i << " is an invalid id";
                 ret = false;
             }
-
-            triangleSet.insert(triAV[j]);
         }
     }
 
@@ -366,6 +394,11 @@ bool TopologyChecker::checkQuadContainer()
                     res = false;
                 }
             }
+        }
+        if (std::any_of(quad.begin(), quad.end(), [](const auto v){ return v == sofa::InvalidID;}))
+        {
+            msg_error() << "CheckEdgeTopology failed: quad " << i << " has an invalid vertex id: " << quad;
+            res = false;
         }
     }
 
@@ -460,15 +493,23 @@ bool TopologyChecker::checkQuadToVertexCrossContainer()
         const auto& quadAV = m_topology->getQuadsAroundVertex(i);
         for (size_t j = 0; j < quadAV.size(); ++j)
         {
-            const Topology::Quad& quad = my_quads[quadAV[j]];
-            const bool check_quad_vertex_shell = (quad[0] == i) || (quad[1] == i) || (quad[2] == i) || (quad[3] == i);
-            if (!check_quad_vertex_shell)
+            if (quadAV[j] != sofa::InvalidID)
             {
-                msg_error() << "CheckQuadTopology failed: quad " << quadAV[j] << ": [" << quad << "] not around vertex: " << i;
+                const Topology::Quad& quad = my_quads[quadAV[j]];
+                const bool check_quad_vertex_shell = (quad[0] == i) || (quad[1] == i) || (quad[2] == i) || (quad[3] == i);
+                if (!check_quad_vertex_shell)
+                {
+                    msg_error() << "CheckQuadTopology failed: quad " << quadAV[j] << ": [" << quad << "] not around vertex: " << i;
+                    ret = false;
+                }
+
+                quadSet.insert(quadAV[j]);
+            }
+            else
+            {
+                msg_error() << "CheckQuadTopology failed: quad " << j << " around vertex " << i << " is an invalid id";
                 ret = false;
             }
-
-            quadSet.insert(quadAV[j]);
         }
     }
 
@@ -527,6 +568,11 @@ bool TopologyChecker::checkTetrahedronContainer()
                     res = false;
                 }
             }
+        }
+        if (std::any_of(tetra.begin(), tetra.end(), [](const auto v){ return v == sofa::InvalidID;}))
+        {
+            msg_error() << "CheckEdgeTopology failed: tetrahedron " << i << " has an invalid vertex id: " << tetra;
+            res = false;
         }
     }
 
@@ -698,18 +744,26 @@ bool TopologyChecker::checkTetrahedronToVertexCrossContainer()
         const auto& tetraAV = m_topology->getTetrahedraAroundVertex(pId);
         for (auto tetraId : tetraAV)
         {
-            const Topology::Tetrahedron& tetra = my_tetrahedra[tetraId];
-            const bool check_tetra_vertex_shell = (tetra[0] == pId)
-                || (tetra[1] == pId)
-                || (tetra[2] == pId)
-                || (tetra[3] == pId);
-            if (!check_tetra_vertex_shell)
+            if (tetraId != sofa::InvalidID)
             {
-                msg_error() << "checkTetrahedronTopology failed: Tetrahedron " << tetraId << ": [" << tetra << "] not around vertex: " << pId;
+                const Topology::Tetrahedron& tetra = my_tetrahedra[tetraId];
+                const bool check_tetra_vertex_shell = (tetra[0] == pId)
+                    || (tetra[1] == pId)
+                    || (tetra[2] == pId)
+                    || (tetra[3] == pId);
+                if (!check_tetra_vertex_shell)
+                {
+                    msg_error() << "checkTetrahedronTopology failed: Tetrahedron " << tetraId << ": [" << tetra << "] not around vertex: " << pId;
+                    ret = false;
+                }
+
+                tetrahedronSet.insert(tetraId);
+            }
+            else
+            {
+                msg_error() << "checkTetrahedronTopology failed: Tetrahedron around vertex " << pId << " is an invalid id";
                 ret = false;
             }
-
-            tetrahedronSet.insert(tetraId);
         }
     }
 
@@ -768,6 +822,11 @@ bool TopologyChecker::checkHexahedronContainer()
                     res = false;
                 }
             }
+        }
+        if (std::any_of(hexahedron.begin(), hexahedron.end(), [](const auto v){ return v == sofa::InvalidID;}))
+        {
+            msg_error() << "CheckEdgeTopology failed: hexahedron " << i << " has an invalid vertex id: " << hexahedron;
+            res = false;
         }
     }
 
@@ -871,15 +930,23 @@ bool TopologyChecker::checkHexahedronToEdgeCrossContainer()
 
         for (unsigned int j = 0; j < 6; j++)
         {
-            const Topology::Edge& edge = my_edges[eInHexa[j]];
-            int cptFound = 0;
-            for (unsigned int k = 0; k < 8; k++)
-                if (edge[0] == hexahedron[k] || edge[1] == hexahedron[k])
-                    cptFound++;
-
-            if (cptFound != 2)
+            if (eInHexa[j] != sofa::InvalidID)
             {
-                msg_error() << "checkHexahedronTopology failed: edge: " << eInHexa[j] << ": [" << edge << "] not found in hexahedron: " << i << ": " << hexahedron;
+                const Topology::Edge& edge = my_edges[eInHexa[j]];
+                int cptFound = 0;
+                for (unsigned int k = 0; k < 8; k++)
+                    if (edge[0] == hexahedron[k] || edge[1] == hexahedron[k])
+                        cptFound++;
+
+                if (cptFound != 2)
+                {
+                    msg_error() << "checkHexahedronTopology failed: edge: " << eInHexa[j] << ": [" << edge << "] not found in hexahedron: " << i << ": " << hexahedron;
+                    ret = false;
+                }
+            }
+            else
+            {
+                msg_error() << "checkHexahedronTopology failed: edge " << j << " in hexahedron " << i << " has an invalid id" ;
                 ret = false;
             }
         }
@@ -939,23 +1006,31 @@ bool TopologyChecker::checkHexahedronToVertexCrossContainer()
         const auto& hexaAV = m_topology->getHexahedraAroundVertex(pId);
         for (auto hexaId : hexaAV)
         {
-            const Topology::Hexahedron& hexa = my_hexahedra[hexaId];
-            bool check_hexa_vertex_shell = false;
-            for (int j = 0; j < 8; ++j)
+            if (hexaId != sofa::InvalidID)
             {
-                if (hexa[j] == pId) {
-                    check_hexa_vertex_shell = true;
-                    break;
+                const Topology::Hexahedron& hexa = my_hexahedra[hexaId];
+                bool check_hexa_vertex_shell = false;
+                for (int j = 0; j < 8; ++j)
+                {
+                    if (hexa[j] == pId) {
+                        check_hexa_vertex_shell = true;
+                        break;
+                    }
                 }
-            }
 
-            if (!check_hexa_vertex_shell)
+                if (!check_hexa_vertex_shell)
+                {
+                    msg_error() << "checkHexahedronTopology failed: Hexahedron " << hexaId << ": [" << hexa << "] not around vertex: " << pId;
+                    ret = false;
+                }
+
+                hexahedronSet.insert(hexaId);
+            }
+            else
             {
-                msg_error() << "checkHexahedronTopology failed: Hexahedron " << hexaId << ": [" << hexa << "] not around vertex: " << pId;
+                msg_error() << "checkHexahedronTopology failed: hexahedron around vertex " << pId << " is an invalid id";
                 ret = false;
             }
-
-            hexahedronSet.insert(hexaId);
         }
     }
 
