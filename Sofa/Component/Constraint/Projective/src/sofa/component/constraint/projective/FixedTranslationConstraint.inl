@@ -118,7 +118,7 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(DataDeriv& dx,
 {
     if (f_fixAll.getValue())
     {
-        for (unsigned int i = 0; i < dx.size(); i++)
+        for (std::size_t i = 0; i < dx.size(); i++)
         {
             clear(dx, i);
         }
