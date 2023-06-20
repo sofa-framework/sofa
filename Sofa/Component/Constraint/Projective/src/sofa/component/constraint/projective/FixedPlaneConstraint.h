@@ -123,7 +123,7 @@ protected:
     using ProjectiveConstraintSet<DataTypes>::mstate;
     using ProjectiveConstraintSet<DataTypes>::getContext;
 
-    bool isPointInPlane(Coord p) const ;
+    bool isPointInPlane(const Coord& p) const ;
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
