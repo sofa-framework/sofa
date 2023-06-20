@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
+
+    <DefaultAnimationLoop />
+
+    <MechanicalObject name="DOFs" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" position="0 0 0 1 0 0 0 1 0" />
+    <MeshTopology name="triangle" triangles="0 1 2"  drawTriangles="1" position="@DOFs.position"/>
+
+    <TriangleSetTopologyContainer name="TriangleContainer" triangles="@triangle.triangles"/>
+    <TriangleSetTopologyModifier />
+    <TriangleSetGeometryAlgorithms template="Vec3d" />
+    <!--<SurfacePressureForceField pressure="0.6"/>-->
+
+</Node>
