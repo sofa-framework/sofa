@@ -873,7 +873,7 @@ struct TetrahedronTopologyChecker_test : TopologyChecker_test
         // Add triangle without updating cross container
         tetra.push_back(Topology::Tetrahedron(0, 2, 8, 12));
 
-        // Topology checher should detect an error
+        // Topology checker should detect an error
         EXPECT_MSG_EMIT(Error);
         EXPECT_EQ(checker->checkTetrahedronToEdgeCrossContainer(), false);
         // restore good container

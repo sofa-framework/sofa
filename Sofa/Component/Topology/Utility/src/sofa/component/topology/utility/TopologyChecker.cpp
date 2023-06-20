@@ -625,17 +625,26 @@ bool TopologyChecker::checkTetrahedronToEdgeCrossContainer()
 
         for (unsigned int j = 0; j < 6; j++)
         {
-            const Topology::Edge& edge = my_edges[eInTetra[j]];
-            int cptFound = 0;
-            for (unsigned int k = 0; k < 4; k++)
-                if (edge[0] == tetrahedron[k] || edge[1] == tetrahedron[k])
-                    cptFound++;
-
-            if (cptFound != 2)
+            if (eInTetra[j] != sofa::InvalidID)
             {
-                msg_error() << "checkTetrahedronTopology failed: edge: " << eInTetra[j] << ": [" << edge << "] not found in tetrahedron: " << i << ": " << tetrahedron;
+                const Topology::Edge& edge = my_edges[eInTetra[j]];
+                int cptFound = 0;
+                for (unsigned int k = 0; k < 4; k++)
+                    if (edge[0] == tetrahedron[k] || edge[1] == tetrahedron[k])
+                        cptFound++;
+
+                if (cptFound != 2)
+                {
+                    msg_error() << "checkTetrahedronTopology failed: edge: " << eInTetra[j] << ": [" << edge << "] not found in tetrahedron: " << i << ": " << tetrahedron;
+                    ret = false;
+                }
+            }
+            else
+            {
+                msg_error() << "checkTetrahedronTopology failed: edge " << j << " in tetrahedron " << i << " (" << tetrahedron << ") is an invalid id";
                 ret = false;
             }
+
         }
     }
 
