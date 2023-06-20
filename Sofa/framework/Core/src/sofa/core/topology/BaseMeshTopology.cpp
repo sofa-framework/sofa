@@ -31,27 +31,6 @@ using namespace sofa::defaulttype;
 using type::vector;
 using type::fixed_array;
 
-
-BaseMeshTopology::EdgesInTriangle BaseMeshTopology::InvalidEdgesInTriangles;
-BaseMeshTopology::EdgesInQuad     BaseMeshTopology::InvalidEdgesInQuad;
-BaseMeshTopology::TrianglesInTetrahedron BaseMeshTopology::InvalidTrianglesInTetrahedron;
-BaseMeshTopology::EdgesInTetrahedron BaseMeshTopology::InvalidEdgesInTetrahedron;
-BaseMeshTopology::QuadsInHexahedron BaseMeshTopology::InvalidQuadsInHexahedron;
-BaseMeshTopology::EdgesInHexahedron BaseMeshTopology::InvalidEdgesInHexahedron;
-
-int initStaticStructures()
-{
-    BaseMeshTopology::InvalidEdgesInTriangles.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidEdgesInQuad.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidQuadsInHexahedron.assign(sofa::InvalidID);
-    BaseMeshTopology::InvalidEdgesInHexahedron.assign(sofa::InvalidID);
-    return 0;
-}
-
-[[maybe_unused]] static const int _init_  = initStaticStructures();
-
 BaseMeshTopology::BaseMeshTopology()
     : fileTopology(initData(&fileTopology,"filename","Filename of the mesh"))
 {
