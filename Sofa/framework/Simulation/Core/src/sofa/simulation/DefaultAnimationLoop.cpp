@@ -70,7 +70,7 @@ This loop does the following steps:
 
 DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     : Inherit()
-    , d_parallelODESolving(initData(&d_parallelODESolving, true, "parallelODESolving", "If true, solves all the ODEs in parallel"))
+    , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel"))
     , gnode(_gnode)
 {
     //assert(gnode);
