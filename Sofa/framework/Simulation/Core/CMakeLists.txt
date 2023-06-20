@@ -18,7 +18,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionEndEvent.h
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
-    ${SRC_ROOT}/ComputeIsolatedForceVisitor.h
     ${SRC_ROOT}/CpuTask.h
     ${SRC_ROOT}/CpuTaskStatus.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
@@ -157,7 +156,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CollisionBeginEvent.cpp
     ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
-    ${SRC_ROOT}/ComputeIsolatedForceVisitor.cpp
     ${SRC_ROOT}/CpuTask.cpp
     ${SRC_ROOT}/CpuTaskStatus.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp

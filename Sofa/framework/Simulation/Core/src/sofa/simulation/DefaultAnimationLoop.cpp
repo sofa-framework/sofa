@@ -42,7 +42,6 @@
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
 #include <sofa/simulation/CollisionVisitor.h>
-#include <sofa/simulation/ComputeIsolatedForceVisitor.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/MainTaskSchedulerFactory.h>
@@ -208,7 +207,7 @@ void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* 
 void DefaultAnimationLoop::buildConstraintMatrix(core::ConstraintParams cparams) const
 {
     sofa::helper::ScopedAdvancedTimer timer("buildConstraintMatrix");
-    unsigned int constraintId=0;
+    unsigned int constraintId = 0;
     mechanicalvisitor::MechanicalBuildConstraintMatrix buildConstraintMatrix(&cparams, core::MatrixDerivId::constraintJacobian(), constraintId );
     buildConstraintMatrix.execute(gnode);
 }
@@ -223,8 +222,9 @@ void DefaultAnimationLoop::accumulateMatrixDeriv(const core::ConstraintParams cp
 void DefaultAnimationLoop::solve(const core::ExecParams* params, SReal dt) const
 {
     constexpr bool usefreeVecIds = false;
+    constexpr bool computeForceIsolatedInteractionForceFields = true;
     sofa::helper::ScopedAdvancedTimer timer("solve");
-    simulation::SolveVisitor freeMotion(params, dt, usefreeVecIds, d_parallelODESolving.getValue());
+    simulation::SolveVisitor freeMotion(params, dt, usefreeVecIds, d_parallelODESolving.getValue(), computeForceIsolatedInteractionForceFields);
     freeMotion.execute(gnode);
 }
 
@@ -290,13 +290,6 @@ void DefaultAnimationLoop::collisionDetection(const core::ExecParams* params) co
     propagateCollisionEndEvent(params);
 }
 
-void DefaultAnimationLoop::computeIsolatedForces(const core::ExecParams* params, SReal dt) const
-{
-    sofa::helper::ScopedAdvancedTimer timer("computeIsolatedForces");
-    ComputeIsolatedForceVisitor visitor(params, dt);
-    gnode->execute(&visitor);
-}
-
 void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) const
 {
     const SReal startTime = gnode->getTime();
@@ -310,10 +303,10 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
 
     resetConstraint(params);
 
+    collisionDetection(params);
+
     beginIntegration(params, dt);
     {
-        collisionDetection(params);
-
         const core::ConstraintParams cparams;
         buildConstraintMatrix(cparams);
         accumulateMatrixDeriv(cparams);
@@ -324,9 +317,6 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
         propagateOnlyPositionAndVelocity(nextTime, mparams);
     }
     endIntegration(params, dt);
-    computeIsolatedForces(params, dt);
-
-    updateSimulationContext(params, dt, startTime);
 }
 
 void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
@@ -347,6 +337,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 
     propagateAnimateBeginEvent(params, dt);
     animate(params, dt);
+    updateSimulationContext(params, dt, gnode->getTime());
     propagateAnimateEndEvent(params, dt);
 
     updateMapping(params, dt);

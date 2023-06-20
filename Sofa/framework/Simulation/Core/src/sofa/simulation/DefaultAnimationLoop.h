@@ -102,7 +102,6 @@ protected :
     void propagateCollisionBeginEvent(const sofa::core::ExecParams* params) const;
     void propagateCollisionEndEvent(const sofa::core::ExecParams* params) const;
     void collisionDetection(const sofa::core::ExecParams* params) const;
-    void computeIsolatedForces(const sofa::core::ExecParams* params, SReal dt) const;
     void animate(const sofa::core::ExecParams* params, SReal dt) const;
     void updateSimulationContext(const sofa::core::ExecParams* params, SReal dt, SReal startTime) const;
     void propagateAnimateEndEvent(const sofa::core::ExecParams* params, SReal dt) const;
