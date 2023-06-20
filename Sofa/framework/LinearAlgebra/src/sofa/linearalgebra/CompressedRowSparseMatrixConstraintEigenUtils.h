@@ -95,7 +95,7 @@ struct EigenSparseToCompressedRowSparseMatrixVec
 {
     typedef typename TVec::Real Real;
     typedef CompressedRowSparseMatrixConstraint< TVec > TCompressedRowSparseMatrix;
-    typedef Eigen::SparseMatrix<double, Eigen::RowMajor> EigenSparseMatrix;
+    typedef Eigen::SparseMatrix<Real, Eigen::RowMajor> EigenSparseMatrix;
 
 
     TCompressedRowSparseMatrix operator() (const EigenSparseMatrix& eigenMat)
@@ -104,7 +104,7 @@ struct EigenSparseToCompressedRowSparseMatrixVec
 
         const int* outerIndexPtr  = eigenMat.outerIndexPtr();
         const int* innerIndexPtr  = eigenMat.innerIndexPtr();
-        const double* valuePtr      = eigenMat.valuePtr();
+        const Real* valuePtr      = eigenMat.valuePtr();
 
         for (int rowIndex = 0; rowIndex < eigenMat.outerSize(); ++rowIndex)
         {
@@ -117,7 +117,7 @@ struct EigenSparseToCompressedRowSparseMatrixVec
 
                 int i = 0;
                 const int*  colPtr = innerIndexPtr + offset;
-                //const Real* valPtr = valuePtr + offset;
+
                 int   blockIndex   = *colPtr / TVec::size();
                 int   blockOffset  = *colPtr - (blockIndex * TVec::size());
 
@@ -128,10 +128,10 @@ struct EigenSparseToCompressedRowSparseMatrixVec
                     int currenTBlockkIndex = blockIndex;
                     while (currenTBlockkIndex == blockIndex && i != rowNonZeros)
                     {
-                        val[blockOffset] = *valuePtr; // TODO: valPtr ?
+                        val[blockOffset] = *valuePtr;
                         ++i;
                         ++colPtr;
-                        ++valuePtr; // TODO: valPtr ?
+                        ++valuePtr;
                         blockIndex = *colPtr / TVec::size();
                         blockOffset = *colPtr - (blockIndex * TVec::size());
                     }
