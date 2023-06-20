@@ -67,7 +67,6 @@ struct CompressedRowSparseMatrixToEigenSparseVec
         }
 
         eigenMat.setFromTriplets(triplets.begin(), triplets.end());;
-        eigenMat.makeCompressed();
 
         return eigenMat;
     }
