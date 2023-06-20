@@ -110,7 +110,7 @@ public:
 
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 

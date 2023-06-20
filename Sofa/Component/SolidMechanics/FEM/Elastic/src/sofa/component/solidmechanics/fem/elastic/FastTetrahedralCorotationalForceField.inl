@@ -587,6 +587,12 @@ void FastTetrahedralCorotationalForceField<DataTypes>::buildDampingMatrix(
     SOFA_UNUSED(matrix);
 }
 
+template <class DataTypes>
+void FastTetrahedralCorotationalForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal kFactor, unsigned int &offset)

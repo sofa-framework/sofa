@@ -358,6 +358,12 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
     data_df2.endEdit();
 }
 
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

@@ -323,6 +323,12 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 }
 
 template <class DataTypes>
+void EdgePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();

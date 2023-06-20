@@ -477,6 +477,12 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::Mechanica
     }
 }
 
+template <class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::getTriangleVonMisesStress(Index i, Real& stressValue)
 {

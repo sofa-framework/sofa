@@ -114,7 +114,7 @@ public:
     void setNormal(const Coord n) { normal.setValue(n);}
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateEdgeInformation(); }
 
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) override {}
+    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
 protected :
     void selectEdgesAlongPlane();

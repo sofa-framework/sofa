@@ -169,6 +169,12 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
     data_df2.endEdit();
 }
 
+template <class DataTypes>
+void FrameSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

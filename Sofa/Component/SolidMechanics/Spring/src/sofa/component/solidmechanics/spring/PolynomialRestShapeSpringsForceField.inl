@@ -476,6 +476,12 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
     sofa::helper::AdvancedTimer::stepEnd("restShapePolynomialSpringAddKToMatrix");
 }
 
+template <class DataTypes>
+void PolynomialRestShapeSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 double PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialValue(unsigned int springIndex, double strainValue)
 {

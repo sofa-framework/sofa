@@ -162,6 +162,12 @@ void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     }
 }
 
+template <class DataTypes>
+void AngularSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void AngularSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

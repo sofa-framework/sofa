@@ -566,6 +566,12 @@ void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalge
     }
 }
 
+template <class DataTypes>
+void StandardTetrahedralFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

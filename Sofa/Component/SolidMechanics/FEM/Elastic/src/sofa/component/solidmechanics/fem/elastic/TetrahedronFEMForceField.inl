@@ -2170,6 +2170,12 @@ void TetrahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::S
     }
 }
 
+template <class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *event)
 {

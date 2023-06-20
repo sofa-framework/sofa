@@ -247,6 +247,12 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
     }
 }
 
+template <class DataTypes>
+void PlaneForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {

@@ -348,6 +348,12 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 
 }
 
+template <class DataTypes>
+void VectorSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {

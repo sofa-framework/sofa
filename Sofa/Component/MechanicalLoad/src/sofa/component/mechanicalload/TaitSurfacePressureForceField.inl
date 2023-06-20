@@ -397,6 +397,12 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
 }
 
 template <class DataTypes>
+void TaitSurfacePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
+template <class DataTypes>
 void TaitSurfacePressureForceField<DataTypes>::computeMeshVolumeAndArea(Real& volume, Real& area, const helper::ReadAccessor<DataVecCoord>& x)
 {
     volume = 0;

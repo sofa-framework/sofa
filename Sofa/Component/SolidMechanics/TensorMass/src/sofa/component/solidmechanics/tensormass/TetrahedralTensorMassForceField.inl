@@ -451,6 +451,12 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
     sofa::helper::AdvancedTimer::stepEnd("addDForceTetraTensorMass");
 }
 
+template <class DataTypes>
+void TetrahedralTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
+
 
 template<class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::updateLameCoefficients()

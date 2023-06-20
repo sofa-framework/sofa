@@ -1340,8 +1340,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::lineara
     }
 }
 
-
-
+template <class DataTypes>
+void TetrahedralCorotationalFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+{
+    // No damping in this ForceField
+}
 
 
 template<class DataTypes>
