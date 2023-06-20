@@ -67,7 +67,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(DataDeriv& res,
     if (this->d_fixAll.getValue() == true)
     {
         // fix everything
-        for( unsigned i=0; i<res.size(); i++ )
+        for( std::size_t i=0; i<res.size(); i++ )
         {
             clear(res, i, blockedDirection);
         }
@@ -87,8 +87,12 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
 {
     SOFA_UNUSED(mparams);
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(res.wref(), [](VecDeriv& dx, const unsigned int index, const VecBool& b)
-    { for (unsigned j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; });
+    projectResponseT<VecDeriv>(res.wref(), 
+        [](VecDeriv& dx, const unsigned int index, const VecBool& b)
+        { 
+            for (std::size_t j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; 
+        }
+    );
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
