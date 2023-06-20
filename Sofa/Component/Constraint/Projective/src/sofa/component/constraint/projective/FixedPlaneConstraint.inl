@@ -141,7 +141,7 @@ void FixedPlaneConstraint<DataTypes>::removeConstraint(Index index)
 /// This function are there to provide kind of type translation to the vector one so we can
 /// implement the algorithm as is the different objects where of similar type.
 /// this solution is not really satisfactory but for the moment it does the job.
-/// A better solution would that all the used types are following the same iterface which
+/// A better solution would that all the used types are following the same interface which
 /// requires to touch core sofa classes.
 sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i) { return i.getVCenter(); }
 sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i) { return i.getCenter(); }
