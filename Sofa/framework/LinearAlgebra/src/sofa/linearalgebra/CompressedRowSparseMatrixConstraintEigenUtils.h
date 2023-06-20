@@ -46,21 +46,21 @@ struct CompressedRowSparseMatrixToEigenSparseVec
 
     EigenSparseMatrix operator() (const TCompressedRowSparseMatrix& mat, std::size_t size)
     {
-        std::size_t eigenMatSize = size * TVec::size();
+        const std::size_t eigenMatSize = size * TVec::size();
         EigenSparseMatrix eigenMat(eigenMatSize, eigenMatSize);
 
-        std::vector<Eigen::Triplet<Real> > triplets;
+        sofa::type::vector<Eigen::Triplet<Real> > triplets;
 
         for (auto row = mat.begin(); row != mat.end(); ++row)
         {
             for (auto col = row.begin(), colend = row.end(); col !=colend; ++col)
             {
                 const TVec& vec = col.val();
-                int   colIndex  = col.index() * TVec::size();
+                const int   colIndex  = col.index() * TVec::size();
 
                 for (std::size_t i = 0; i < TVec::size(); ++i)
                 {
-                    triplets.emplace_back(Eigen::Triplet<Real>( row.index(), colIndex + i, vec[i]) );
+                    triplets.emplace_back(row.index(), colIndex + i, vec[i]);
                 }
 
             }
@@ -108,8 +108,8 @@ struct EigenSparseToCompressedRowSparseMatrixVec
 
         for (int rowIndex = 0; rowIndex < eigenMat.outerSize(); ++rowIndex)
         {
-            int offset      = *(outerIndexPtr + rowIndex);
-            int rowNonZeros = *(outerIndexPtr + rowIndex + 1) - *(outerIndexPtr + rowIndex);
+            const int offset      = *(outerIndexPtr + rowIndex);
+            const int rowNonZeros = *(outerIndexPtr + rowIndex + 1) - *(outerIndexPtr + rowIndex);
 
             if (rowNonZeros != 0)
             {
@@ -126,7 +126,6 @@ struct EigenSparseToCompressedRowSparseMatrixVec
                 {
                     TVec val;
                     int currenTBlockkIndex = blockIndex;
-                    //int currentCol   = *colPtr;
                     while (currenTBlockkIndex == blockIndex && i != rowNonZeros)
                     {
                         val[blockOffset] = *valuePtr; // TODO: valPtr ?

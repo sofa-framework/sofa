@@ -42,7 +42,7 @@
 
     <Node name="Instrument" >
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="0.01" />
-        <SparseLDLSolver template="CompressedRowSparseMatrixd" />
+        <SparseLDLSolver template="CompressedRowSparseMatrix" />
         
         <MechanicalObject name="instrumentState" template="Rigid3" />
         <UniformMass name="mass" totalMass="0.5" />

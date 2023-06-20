@@ -310,7 +310,7 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 template<class DataTypes>
 bool FixedPlaneConstraint<DataTypes>::isPointInPlane(Coord p) const
 {
-    Real d = getVec(p) * getVec(d_direction.getValue());
+    const Real d = getVec(p) * getVec(d_direction.getValue());
     if ((d>d_dmin.getValue()) && (d<d_dmax.getValue()))
         return true;
     else
