@@ -7,6 +7,7 @@ set(SOURCE_FILES
     PlaneForceField_test.cpp
     QuadPressureForceField_test.cpp
     SkeletalMotionConstraint_test.cpp
+    SurfacePressureForceField_test.cpp
     TrianglePressureForceField_test.cpp
 )
 
