@@ -24,6 +24,7 @@
 #include <sofa/linearalgebra/config.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixGeneric.h>
 
+#include <numeric>
 
 namespace sofa::linearalgebra
 {
@@ -607,80 +608,6 @@ public:
     /// Definition for MapMapSparseMatrix and CompressedRowSparseMatrixConstraint compatibility
     using ColIterator = ColConstIterator;
     using RowIterator = RowWriteAccessor;
-};
-
-/// As it is no longer thread-safe to write to different pre-created rows in CompressedRowSparseMatrixConstraint,
-/// this helper class allows to create a per-row buffer vector that can be filled in parallel and then copied sequentially
-/// to the output matrix.
-///
-/// Usage (processing values from inMatrix to outMatrix):
-///    CompressedRowSparseMatrixConstraintRowsBuffer outRows;
-///    outRows.initRows(inMatrix.begin(),inMatrix.end());
-///    for_each(inMatrix.begin(), inMatrix.end(), [auto rowIt] { my_compute_fn(rowIt, outRows.writeLine(rowIt))}); // parallelized loop
-///    outRows.addToMatrix(outMatrix); // sequential copy to output matrix
-template <class TBlock>
-class SparseMatrixRowsBuffer
-{
-    using Index = int;
-    using Block = TBlock;
-    using VecBlock  = typename linearalgebra::CRSBlockTraits<Block>::VecBlock;
-    using VecIndex = typename linearalgebra::CRSBlockTraits<Block>::VecIndex;
-public:
-    class RowBuffer
-    {
-    public:
-        void init(Index row)
-        {
-            m_row = row;
-            m_cols.clear();
-            m_values.clear();
-        }
-        void addCol(Index col, const TBlock& val)
-        {
-            m_cols.push_back(col);
-            m_values.push_back(val);
-        }
-        template <class OutMatrix>
-        void addToMatrix(OutMatrix& out)
-        {
-            if (!m_cols.empty())
-            {
-                auto rowOut = out.writeLine(m_row);
-                for (std::size_t i = 0; i < m_cols.size(); ++i)
-                {
-                    rowOut.addCol(m_cols[i], m_values[i]);
-                }
-            }
-        }
-    protected:
-        Index m_row;
-        VecIndex m_cols;
-        VecBlock m_values;
-    };
-    template<class RowConstIterator>
-    void initRows(const RowConstIterator& rowBegin, const RowConstIterator& rowEnd)
-    {
-        m_rows.resize(rowEnd-rowBegin);
-        for (RowConstIterator rowIt = rowBegin; rowIt != rowEnd; ++rowIt)
-        {
-            m_rows[std::distance(rowBegin, rowIt)].init(rowIt.index());
-        }
-    }
-    template <class RowConstIterator>
-    RowBuffer& writeLine(const RowConstIterator& rowIt)
-    {
-        return m_rows[rowIt.getInternal()];
-    }
-    template <class OutMatrix>
-    void addToMatrix(OutMatrix& out)
-    {
-        for (auto& row : m_rows)
-        {
-            row.addToMatrix(out);
-        }
-    }
-protected:
-    type::vector<RowBuffer> m_rows;
 };
 
 #if !defined(SOFA_LINEARALGEBRA_COMPRESSEDROWSPARSEMATRIXCONSTRAINT_CPP) 
