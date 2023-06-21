@@ -19,8 +19,8 @@
 **Architecture**
 - [all] Lifecycle v23.06 1/n [#3634](https://github.com/sofa-framework/sofa/pull/3634) 
 - [all] Lifecycle v23.06 2/n [#3649](https://github.com/sofa-framework/sofa/pull/3649) 
--  [all] Lifecycle v23.06 3/n [#3654](https://github.com/sofa-framework/sofa/pull/3654) 
--  [all] Lifecycle v23.06 4/n  [#3655](https://github.com/sofa-framework/sofa/pull/3655) 
+- [all] Lifecycle v23.06 3/n [#3654](https://github.com/sofa-framework/sofa/pull/3654) 
+- [all] Lifecycle v23.06 4/n  [#3655](https://github.com/sofa-framework/sofa/pull/3655) 
 - [Core] Use std::function for Link's Validator (and fix UB) [#3665](https://github.com/sofa-framework/sofa/pull/3665) 
 - [Helper] Improve OptionsGroup [#3737](https://github.com/sofa-framework/sofa/pull/3737) 
 - [Simulation] Suggest required plugin in the syntax of the scene loader [#3799](https://github.com/sofa-framework/sofa/pull/3799) 
