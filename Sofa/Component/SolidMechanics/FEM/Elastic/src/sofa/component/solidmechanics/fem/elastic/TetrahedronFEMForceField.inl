@@ -1879,7 +1879,12 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
             }
         }
 
-        // create corresponding colors
+        // create the bluish default colors
+        color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
+        color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
+        color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
+        color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
+
         if (drawVonMisesStress){
             if (showVonMisesStressPerElement)
             {
@@ -1911,13 +1916,6 @@ void TetrahedronFEMForceField<DataTypes>::drawTrianglesFromRangeOfTetrahedra(
                 color[1] = evalColor(vMN[(*it)[1]]);
                 color[2] = evalColor(vMN[(*it)[2]]);
                 color[3] = evalColor(vMN[(*it)[3]]);
-            }
-            else
-            {
-                color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
-                color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
-                color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
-                color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
             }
         }
 
