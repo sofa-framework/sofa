@@ -110,6 +110,8 @@ public:
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
 
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
 private :

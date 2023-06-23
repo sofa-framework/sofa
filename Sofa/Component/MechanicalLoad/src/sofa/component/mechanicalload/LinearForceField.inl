@@ -182,6 +182,12 @@ void LinearForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix
     SOFA_UNUSED(offset);
 }
 
+template <class DataTypes>
+void LinearForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    SOFA_UNUSED(matrix);
+}
+
 template<class DataTypes>
 SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
