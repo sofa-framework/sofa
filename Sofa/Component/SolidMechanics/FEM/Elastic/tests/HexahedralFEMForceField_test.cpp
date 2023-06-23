@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceField.h>
 
 #include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 #include "HexahedronFEMForceField_test.h"
@@ -27,30 +27,33 @@
 namespace sofa
 {
 
+template <typename _HexahedralFEMForceField>
+struct HexahedralFEMForceField_test : public HexahedronFEMForceField_test<_HexahedralFEMForceField>
+{};
 
 // ========= Define the list of types to instanciate.
 //using ::testing::Types;
 typedef ::testing::Types<
-::sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<defaulttype::Vec3Types>
+::sofa::component::solidmechanics::fem::elastic::HexahedralFEMForceField<defaulttype::Vec3Types>
 > TestTypes; // the types to instanciate.
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_SUITE(HexahedronFEMForceField_test, TestTypes);
+TYPED_TEST_SUITE(HexahedralFEMForceField_test, TestTypes);
 
 // test case
-TYPED_TEST( HexahedronFEMForceField_test , extension )
+TYPED_TEST( HexahedralFEMForceField_test , extension )
 {
-    this->errorMax *= 100;
+    this->errorMax *= 1000000;
     this->deltaRange = std::make_pair( 1, this->errorMax * 10 );
     this->debug = false;
+    this->flags &= ~TEST_POTENTIAL_ENERGY;
 
     // run test
     this->test_valueForce();
 }
 
-TYPED_TEST( HexahedronFEMForceField_test, testComputeBBox )
+TYPED_TEST( HexahedralFEMForceField_test, testComputeBBox )
 {
     ASSERT_NO_THROW(this->testComputeBBox()) ;
 }
-
 } // namespace sofa

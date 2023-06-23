@@ -195,7 +195,9 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
             std::cout << "            expected f = " << ef << std::endl;
             std::cout << "            actual f = " <<  f.ref() << std::endl;
         }
-        ASSERT_TRUE( this->vectorMaxDiff(f,ef)< errorMax*this->epsilon() );
+        ASSERT_TRUE(this->vectorMaxDiff(f,ef)< errorMax*this->epsilon())
+            << "diff = " << this->vectorMaxDiff(f,ef) << ","
+            << "threshold = " << errorMax*this->epsilon();
 
         if( !checkStiffness ) return;
 
