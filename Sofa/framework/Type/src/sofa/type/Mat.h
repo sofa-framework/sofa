@@ -1137,13 +1137,19 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 
 /// Create a matrix as \f$ u v^T \f$
-template <sofa::Size L, sofa::Size C, typename T>
-constexpr Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v ) noexcept
+template <class Tu, class Tv>
+constexpr Mat<Tu::size(), Tv::size(), typename Tu::value_type>
+dyad(const Tu& u, const Tv& v) noexcept
 {
-    Mat<L,C,T> res(NOINIT);
-    for(sofa::Size i=0; i<L; i++ )
-        for(sofa::Size j=0; j<C; j++ )
-            res[i][j] = u[i]*v[j];
+    static_assert(std::is_same_v<typename Tu::value_type, typename Tv::value_type>);
+    Mat<Tu::size(), Tv::size(), typename Tu::value_type> res(NOINIT);
+    for (sofa::Size i = 0; i < Tu::size(); ++i)
+    {
+        for (sofa::Size j = 0; j < Tv::size(); ++j)
+        {
+            res[i][j] = u[i] * v[j];
+        }
+    }
     return res;
 }
 

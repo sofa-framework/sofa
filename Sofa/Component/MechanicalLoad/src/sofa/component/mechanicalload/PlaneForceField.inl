@@ -31,6 +31,7 @@
 #include <iostream>
 #include <sofa/type/BoundingBox.h>
 #include <limits>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/simulation/Node.h>
 
 namespace
@@ -244,6 +245,28 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
                 SReal coef = normal[l] * fact * normal[c];
                 mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
             }
+    }
+}
+
+template <class DataTypes>
+void PlaneForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    if (this->d_componentState.getValue() != ComponentState::Valid)
+    {
+        return;
+    }
+
+    Deriv normal;
+    DataTypes::setDPos(normal, d_planeNormal.getValue());
+    const auto localMatrix = sofa::type::dyad(normal, normal);
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                       .withRespectToPositionsIn(this->mstate);
+
+    for (const auto& contact : m_contacts)
+    {
+        const auto locationInGlobalMatrix = contact * Deriv::total_size;
+        dfdx(locationInGlobalMatrix, locationInGlobalMatrix) += localMatrix;
     }
 }
 
