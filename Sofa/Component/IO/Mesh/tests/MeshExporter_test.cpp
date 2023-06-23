@@ -240,10 +240,10 @@ TEST_P(MeshExporter_test, checkSimulationWriteEachNbStep)
         std::stringstream ss;
         ss << std::setw(5) << std::setfill('0') << (i+1);
 
-        paths.push_back( tempdir + std::string(filename) + ss.str() + "." + params.extension);
+        paths.push_back(FileSystem::append(tempdir, std::string(filename) + ss.str() + "." + params.extension));
         for (const auto& addExtension : params.additionalExtensions)
         {
-            paths.push_back(tempdir + std::string(filename)+ ss.str() + "." + addExtension);
+            paths.push_back(FileSystem::append(tempdir, std::string(filename) + ss.str() + "." + addExtension));
         }
     }
     ASSERT_NO_THROW(this->checkSimulationWriteEachNbStep(params, tempdir, paths, nbTimeSteps)) ;
