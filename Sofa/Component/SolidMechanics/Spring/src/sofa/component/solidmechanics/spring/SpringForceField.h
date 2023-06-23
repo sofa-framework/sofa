@@ -164,6 +164,8 @@ public:
     using Inherit::addKToMatrix;
     virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
 
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+
     SReal getStiffness() const { return ks.getValue(); }
     SReal getDamping() const { return kd.getValue(); }
     void setStiffness(SReal _ks) { ks.setValue(_ks); }

@@ -395,6 +395,12 @@ void SpringForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *
     msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
+template <class DataTypes>
+void SpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    SOFA_UNUSED(matrix);
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
+}
 
 
 template<class DataTypes>
