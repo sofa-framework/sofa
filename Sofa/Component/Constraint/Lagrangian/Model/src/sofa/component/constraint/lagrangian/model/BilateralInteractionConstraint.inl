@@ -54,7 +54,6 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
     , l_topology2(initLink("topology2", "link to the second topology container"))
 {
     this->f_listening.setValue(true);
-    this->d_identifiers.setValue(this->getIdentifiers());
 }
 
 template<class DataTypes>

@@ -45,15 +45,8 @@ public:
     SOFA_ABSTRACT_CLASS(BaseConstraint, BaseConstraintSet);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseConstraint)
 
-    Data<type::vector<std::string> > d_identifiers;
-
 protected:
-    BaseConstraint()
-    : d_identifiers(initData(&d_identifiers, "identifiers", "List of identifiers characterising the constraint behavior"))
-    {
-        d_identifiers.setReadOnly(true);
-    }
-
+    BaseConstraint() {}
     ~BaseConstraint() override {}
 
 private:

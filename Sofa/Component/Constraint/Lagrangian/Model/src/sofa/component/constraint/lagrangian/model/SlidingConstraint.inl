@@ -49,7 +49,6 @@ SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object1, Mechan
     , d_m2b(initData(&d_m2b, 0, "axis_2","index of the other end of the sliding axis"))
     , d_force(initData(&d_force,"force","force (impulse) used to solve the constraint"))
 {
-    this->d_identifiers.setValue(this->getIdentifiers());
 }
 
 template<class DataTypes>

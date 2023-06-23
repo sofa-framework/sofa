@@ -56,12 +56,8 @@ public:
     }
 
 protected:
-    BaseInteractionConstraint()
-    {
-        d_identifiers.setValue(getIdentifiers());
-    }
-
-    ~BaseInteractionConstraint() override {}
+    BaseInteractionConstraint() {}
+    ~BaseInteractionConstraint()override {}
 
     virtual type::vector<std::string> getInteractionIdentifiers(){ return {}; }
 

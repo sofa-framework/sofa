@@ -35,7 +35,6 @@ StopperConstraint<DataTypes>::StopperConstraint(MechanicalState* object)
     , min(initData(&min, -100.0_sreal, "min", "minimum value accepted"))
     , max(initData(&max, 100.0_sreal, "max", "maximum value accepted"))
 {
-    this->d_identifiers.setValue(this->getIdentifiers());
 }
 
 template<class DataTypes>

@@ -36,7 +36,7 @@ UniformConstraint<DataTypes>::UniformConstraint()
     ,d_constraintRestPos(initData(&d_constraintRestPos, false, "constrainToRestPos", "if false, constrains the pos to be zero / if true constraint the current position to stay at rest position"))
     ,m_constraintIndex(0)
 {
-    this->d_identifiers.setValue(this->getIdentifiers());
+
 }
 
 template< class DataTypes >

@@ -37,8 +37,6 @@ UnilateralInteractionConstraint<DataTypes>::UnilateralInteractionConstraint(Mech
     , customTolerance(0.0)
     , contactsStatus(nullptr)
 {
-    this->d_identifiers.setValue(this->getIdentifiers());
-
 }
 
 template<class DataTypes>
