@@ -32,8 +32,7 @@ using namespace sofa::defaulttype;
 
 int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given sphere")
         .add< SphereROI<Vec3Types> >()
-.add< SphereROI<Rigid3Types> >()
- 
+        .add< SphereROI<Rigid3Types> >()
         ;
 
 template class SOFA_COMPONENT_ENGINE_SELECT_API SphereROI<Vec3Types>;
