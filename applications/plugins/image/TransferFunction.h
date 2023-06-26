@@ -73,6 +73,12 @@ struct TransferFunctionSpecialization<defaulttype::Image<Ti>,defaulttype::Image<
         out->setDimensions(dim);
         cimg_library::CImgList<To>& img = out->getCImgList();
 
+        if (p.empty()) //no parameters provided to the filter: the image is just copied as it is
+        {
+            img.assign(in->getCImgList());
+            return;
+        }
+
         switch(This.filter.getValue().getSelectedId())
         {
         case LINEAR:
@@ -162,6 +168,7 @@ protected:
 
     inline To Linear_TransferFunction(const Ti& vi, const iomap & mp) const
     {
+        assert(!mp.empty());
         To vo=mp.begin()->second;
         iomapit mit;
         for (iomapit it=mp.begin(); it!=mp.end(); it++)
