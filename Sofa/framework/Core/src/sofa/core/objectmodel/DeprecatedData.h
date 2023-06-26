@@ -32,7 +32,7 @@ namespace sofa::core::objectmodel::lifecycle
 ///
 /// Use case: you want to deprecated Data<bool> d_sofaIsGreat;
 ///
-/// add DeprecatedData d_sofaIsGreatM(this "sofaIsGread", "")
+/// add DeprecatedData d_sofaIsGreatM(this, "sofaIsGreat", "")
 class SOFA_CORE_API DeprecatedData
 {
    public:
