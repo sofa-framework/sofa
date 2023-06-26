@@ -413,6 +413,8 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
     std::vector< Vec3 > points[4];
     bool external = (this->mstate1 != this->mstate2);
     const type::vector<Spring>& springs = this->springs.getValue();
