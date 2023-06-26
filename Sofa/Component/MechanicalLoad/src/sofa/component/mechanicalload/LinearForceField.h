@@ -81,9 +81,6 @@ protected:
     LinearForceField();
     ~LinearForceField() override { delete data; }
 
-public:
-    void draw(const core::visual::VisualParams* vparams) override;
-
     /// methods to add/remove some indices, keyTimes, keyForces
     void addPoint(unsigned index);
     void removePoint(unsigned int index);

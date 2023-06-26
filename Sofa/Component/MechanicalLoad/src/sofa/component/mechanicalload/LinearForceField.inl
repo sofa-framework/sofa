@@ -205,11 +205,4 @@ SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
     return e;
 }
 
-template< class DataTypes>
-void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
-{
-
-
-}
-
 } // namespace sofa::component::mechanicalload
