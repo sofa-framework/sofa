@@ -34,7 +34,7 @@ namespace sofa::core::objectmodel::lifecycle
 /// so a warning will be issued if users continue accessing it;
 ///
 /// Use case:
-///    RemovedData d_sofaIsGreatM(this "sofaIsGread", "")
+///    RemovedData d_sofaIsGreatM(this, "sofaIsGreat", "")
 class SOFA_CORE_API RemovedData : public DeprecatedData
 {
 public:
