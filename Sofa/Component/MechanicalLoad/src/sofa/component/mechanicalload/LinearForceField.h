@@ -81,6 +81,7 @@ protected:
     LinearForceField();
     ~LinearForceField() override { delete data; }
 
+public:
     /// methods to add/remove some indices, keyTimes, keyForces
     void addPoint(unsigned index);
     void removePoint(unsigned int index);
